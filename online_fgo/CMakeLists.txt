@@ -257,8 +257,25 @@ install(DIRECTORY include/
         DESTINATION include/${PROJECT_NAME}
 )
 if (BUILD_TESTING)
+    find_package(ament_cmake_gtest REQUIRED)
     find_package(ament_lint_auto REQUIRED)
     ament_lint_auto_find_test_dependencies()
+
+    ament_add_gtest(test_ct_relative_factor
+            test/test_ct_relative_factor.cpp
+    )
+    target_include_directories(test_ct_relative_factor
+            PRIVATE
+            ${ONLINEFGO_INCLUDE}
+    )
+    target_link_libraries(test_ct_relative_factor
+            online_fgo_solver
+            online_fgo_util
+            ${ONLINEFGO_LINK}
+    )
+    ament_target_dependencies(test_ct_relative_factor
+            ${ONLINEFGO_ROS_DEP}
+    )
 endif ()
 
 ament_package()

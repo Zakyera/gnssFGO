@@ -66,6 +66,7 @@ enum FactorTypeID : unsigned int {
     ProjectDepthOnly = 41,
     GPSingleProjectDepthOnly = 42,
     GPProjectDepthOnly = 43,
+    GPSameIntervalBetweenPose = 44,
 };
 
 static const std::map<std::string, unsigned int> FactorNameIDMap = {
@@ -85,6 +86,8 @@ static const std::map<std::string, unsigned int> FactorNameIDMap = {
      FactorTypeID::GPDoubleBetweenPose},
     {"GPInterpolatedSinglePose3BetweenFactor",
      FactorTypeID::GPSingleBetweenPose},
+    {"GPInterpolatedSameIntervalPose3BetweenFactor",
+     FactorTypeID::GPSameIntervalBetweenPose},
     {"GPSFactor", FactorTypeID::GPS},
     {"GPInterpolatedGPSFactor", FactorTypeID::GPGPS},
     {"PVTFactor", FactorTypeID::PVT},
