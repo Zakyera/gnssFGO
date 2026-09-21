@@ -195,5 +195,9 @@ Before using real odometry, the next bounded step should be:
 3. test endpoints spanning adjacent and non-adjacent support intervals;
 4. only then connect one saved relative-belief stream to an offline gnssFGO graph.
 
-Final commit and HEAD are recorded after upstream integration below.
+## Version-control result
 
+- Scientific implementation/test commit: `4e85e01` (`Add same-interval CT relative pose factor test`)
+- Official-upstream integration commit: `f447a46` (`Merge remote-tracking branch 'upstream/ros2' into ct-isam2-relative-factor`)
+- Branch: `ct-isam2-relative-factor`
+- The exact final HEAD after the report-only finalization commit is given in the task handoff; a commit cannot embed its own resulting hash.
