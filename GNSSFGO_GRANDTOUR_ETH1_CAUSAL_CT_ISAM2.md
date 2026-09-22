@@ -103,6 +103,12 @@ changed here.
 
 ## Accuracy results
 
+Important terminology: the `IMU + GLIM` and `IMU + Kimera` cases below are
+single-source **gnssFGO graph controls**. They are not the native trajectories
+published directly by GLIM and Kimera. The corrected source-versus-fusion
+comparison is reported in
+`GNSSFGO_GRANDTOUR_ETH1_NATIVE_VS_FUSED_40S.md`.
+
 The AP20 prism provides 14.100 s of matched position coverage in this window.
 ATE uses the existing SE(3) Kabsch/no-scale prism evaluator. The 1 s RPE uses
 the existing CPT7 IE-TC 6-DoF reference over the complete 39.000 s estimate.
