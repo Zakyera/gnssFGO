@@ -829,14 +829,16 @@ int Run(int argc, char ** argv)
                    << residual.head<3>().norm() << '\n';
     };
   size_t next_arrival = 0;
-  auto process_arrival = [&](const ScheduledBelief * scheduled) {
+  auto process_arrival = [&](const ScheduledBelief * scheduled,
+      int64_t insertion_timestamp_ns) {
       gtsam::NonlinearFactorGraph graph;
       const std::string kind = AddRelativeFactor(
         *scheduled, endpoints, support_accelerations, qc_model, &graph);
       backend.Update(graph, gtsam::Values());
-      record_factor(scheduled, kind, scheduled->belief->record_timestamp_ns);
+      record_factor(scheduled, kind, insertion_timestamp_ns);
       maximum_active_values = std::max(maximum_active_values, backend.Estimate().size());
     };
+  std::vector<const ScheduledBelief *> pending_arrivals;
   const auto wall_start = std::chrono::steady_clock::now();
   for (size_t index = 1; index < endpoints.size(); ++index) {
     const int64_t previous_timestamp_ns = endpoints[index - 1];
@@ -847,9 +849,14 @@ int Run(int argc, char ** argv)
       {
         const ScheduledBelief * scheduled = scheduled_by_arrival[next_arrival++];
         if (scheduled->activation_index >= index) {
-          throw std::runtime_error("relative belief arrived before its support states existed");
+          // The belief is causally available, but an interpolated endpoint can
+          // require the next support state, which has not been created yet.
+          // Keep the arrival pending and add its unchanged factor as soon as
+          // every referenced support key exists.
+          pending_arrivals.push_back(scheduled);
+        } else {
+          process_arrival(scheduled, scheduled->belief->record_timestamp_ns);
         }
-        process_arrival(scheduled);
       }
     }
     const double delta_t = static_cast<double>(
@@ -914,14 +921,25 @@ int Run(int argc, char ** argv)
       record_factor(scheduled, kind, timestamp_ns);
     }
     if (options.timeline == "record") {
+      auto pending = pending_arrivals.begin();
+      while (pending != pending_arrivals.end()) {
+        const ScheduledBelief * scheduled = *pending;
+        if (scheduled->activation_index <= index) {
+          process_arrival(scheduled, timestamp_ns);
+          pending = pending_arrivals.erase(pending);
+        } else {
+          ++pending;
+        }
+      }
       while (next_arrival < scheduled_by_arrival.size() &&
         scheduled_by_arrival[next_arrival]->belief->record_timestamp_ns == timestamp_ns)
       {
         const ScheduledBelief * scheduled = scheduled_by_arrival[next_arrival++];
         if (scheduled->activation_index > index) {
-          throw std::runtime_error("relative belief arrived before its support states existed");
+          pending_arrivals.push_back(scheduled);
+        } else {
+          process_arrival(scheduled, scheduled->belief->record_timestamp_ns);
         }
-        process_arrival(scheduled);
       }
     }
     const gtsam::Values estimate = backend.Estimate();
@@ -940,12 +958,15 @@ int Run(int argc, char ** argv)
     }
   }
   if (options.timeline == "record") {
+    if (!pending_arrivals.empty()) {
+      throw std::runtime_error("relative belief has unavailable support states");
+    }
     while (next_arrival < scheduled_by_arrival.size()) {
       const ScheduledBelief * scheduled = scheduled_by_arrival[next_arrival++];
       if (scheduled->activation_index >= endpoints.size()) {
         throw std::runtime_error("relative belief has unavailable support states");
       }
-      process_arrival(scheduled);
+      process_arrival(scheduled, scheduled->belief->record_timestamp_ns);
     }
   }
   if (options.solver == "isam2") {
