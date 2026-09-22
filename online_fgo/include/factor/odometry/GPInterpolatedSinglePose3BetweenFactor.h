@@ -153,11 +153,11 @@ namespace fgo::factor {
       // std::cout << "measured_: " << measured_ << std::endl;
       // std::cout << "rval: " << rval << std::endl;
       if (H1) *H1 = Hlocal * Hpose1 * Hint11_P;
-      if (H2) *H2 = Hlocal * Hint12_P;
-      if (H3) *H3 = Hlocal * Hint13_P;
+      if (H2) *H2 = Hlocal * Hpose1 * Hint12_P;
+      if (H3) *H3 = Hlocal * Hpose1 * Hint13_P;
       if (H4) *H4 = Hlocal * Hpose1 * Hint14_P;
-      if (H5) *H5 = Hlocal * Hint15_P;
-      if (H6) *H6 = Hlocal * Hint16_P;
+      if (H5) *H5 = Hlocal * Hpose1 * Hint15_P;
+      if (H6) *H6 = Hlocal * Hpose1 * Hint16_P;
       if (H7) *H7 = Hlocal * Hpose2;
 
       //gtsam::Vector6 zero = (gtsam::Vector6() << 0.000001, 0.000001, 0.000001, 0.000001, 0.000001, 0.000001).finished();

@@ -29,14 +29,19 @@
 #include <gtsam/slam/PriorFactor.h>
 
 #include "factor/motion/GPWNOAPrior.h"
+#include "factor/odometry/GPInterpolatedDoublePose3BetweenFactor.h"
 #include "factor/odometry/GPInterpolatedSameIntervalPose3BetweenFactor.h"
+#include "factor/odometry/GPInterpolatedSinglePose3BetweenFactor.h"
 #include "model/gp_interpolator/GPWNOAInterpolator.h"
+#include "model/gp_interpolator/GPWNOJInterpolator.h"
 #include "solver/IncrementalFixedLagSmoother.h"
 
 namespace
 {
 
 using fgo::factor::GPInterpolatedSameIntervalPose3BetweenFactor;
+using fgo::factor::GPInterpolatedDoublePose3BetweenFactor;
+using fgo::factor::GPInterpolatedSinglePose3BetweenFactor;
 using fgo::models::GPInterpolator;
 using fgo::models::GPWNOAInterpolator;
 using gtsam::symbol_shorthand::V;
@@ -450,6 +455,239 @@ TEST(CtRelativeFactor, RunsThroughIncrementalFixedLagSmoother) {
   EXPECT_FALSE(fixed_lag_estimate.exists(X(0)));
   EXPECT_TRUE(fixed_lag_estimate.exists(X(1)));
   EXPECT_TRUE(fixed_lag_estimate.exists(X(2)));
+}
+
+struct DoubleSupportState
+{
+  std::array<gtsam::Pose3, 4> poses;
+  std::array<gtsam::Vector3, 4> velocities;
+  std::array<gtsam::Vector3, 4> omegas;
+};
+
+struct SingleSupportState
+{
+  std::array<gtsam::Pose3, 3> poses;
+  std::array<gtsam::Vector3, 2> velocities;
+  std::array<gtsam::Vector3, 2> omegas;
+};
+
+gtsam::Vector EvaluateSingleSupport(
+  const GPInterpolatedSinglePose3BetweenFactor & factor,
+  const SingleSupportState & state)
+{
+  return factor.evaluateError(
+    state.poses[0], state.velocities[0], state.omegas[0],
+    state.poses[1], state.velocities[1], state.omegas[1], state.poses[2]);
+}
+
+gtsam::Matrix NumericalSingleSupportJacobian(
+  const GPInterpolatedSinglePose3BetweenFactor & factor,
+  const SingleSupportState & state,
+  size_t argument)
+{
+  constexpr double epsilon = 1e-6;
+  const bool is_pose = argument == 0 || argument == 3 || argument == 6;
+  const int dimension = is_pose ? 6 : 3;
+  gtsam::Matrix jacobian(6, dimension);
+  for (int column = 0; column < dimension; ++column) {
+    SingleSupportState plus = state;
+    SingleSupportState minus = state;
+    if (is_pose) {
+      const size_t pose_index = argument == 6 ? 2 : argument / 3;
+      gtsam::Vector6 delta = gtsam::Vector6::Zero();
+      delta(column) = epsilon;
+      plus.poses[pose_index] = state.poses[pose_index].retract(delta);
+      minus.poses[pose_index] = state.poses[pose_index].retract(-delta);
+    } else {
+      const size_t support = argument / 3;
+      if (argument % 3 == 1) {
+        plus.velocities[support](column) += epsilon;
+        minus.velocities[support](column) -= epsilon;
+      } else {
+        plus.omegas[support](column) += epsilon;
+        minus.omegas[support](column) -= epsilon;
+      }
+    }
+    jacobian.col(column) =
+      (EvaluateSingleSupport(factor, plus) - EvaluateSingleSupport(factor, minus)) /
+      (2.0 * epsilon);
+  }
+  return jacobian;
+}
+
+TEST(CtRelativeFactor, SingleInterpolationJacobiansMatchFiniteDifferences)
+{
+  const gtsam::Vector3 velocity(0.8, -0.25, 0.18);
+  const gtsam::Vector3 omega(0.03, -0.01, 0.02);
+  const SingleSupportState state{
+    {PoseAt(0.0, velocity), PoseAt(1.0, velocity), PoseAt(2.0, velocity)},
+    {velocity, velocity}, {omega, omega}};
+  const auto interpolator = MakeInterpolator(0.37);
+  const gtsam::Pose3 interpolated_pose = interpolator->interpolatePose(
+    state.poses[0], state.velocities[0], state.omegas[0],
+    state.poses[1], state.velocities[1], state.omegas[1]);
+  const auto noise = gtsam::noiseModel::Gaussian::Covariance(
+    MakeMeasurementCovariance());
+
+  for (const bool interpolated_is_second : {false, true}) {
+    const gtsam::Pose3 measurement = interpolated_is_second ?
+      state.poses[2].between(interpolated_pose) :
+      interpolated_pose.between(state.poses[2]);
+    const GPInterpolatedSinglePose3BetweenFactor factor(
+      X(0), V(0), W(0), X(1), V(1), W(1), X(2), measurement,
+      interpolated_is_second, interpolator, noise);
+    std::array<gtsam::Matrix, 7> jacobians;
+    const gtsam::Vector residual = factor.evaluateError(
+      state.poses[0], state.velocities[0], state.omegas[0],
+      state.poses[1], state.velocities[1], state.omegas[1], state.poses[2],
+      jacobians[0], jacobians[1], jacobians[2], jacobians[3],
+      jacobians[4], jacobians[5], jacobians[6]);
+    EXPECT_LT(residual.norm(), 1e-10);
+    for (size_t argument = 0; argument < jacobians.size(); ++argument) {
+      ExpectMatrixNear(
+        jacobians[argument],
+        NumericalSingleSupportJacobian(factor, state, argument), 1e-3);
+    }
+  }
+}
+
+gtsam::Vector EvaluateDoubleSupport(
+  const GPInterpolatedDoublePose3BetweenFactor & factor,
+  const DoubleSupportState & state)
+{
+  return factor.evaluateError(
+    state.poses[0], state.velocities[0], state.omegas[0],
+    state.poses[1], state.velocities[1], state.omegas[1],
+    state.poses[2], state.velocities[2], state.omegas[2],
+    state.poses[3], state.velocities[3], state.omegas[3]);
+}
+
+gtsam::Matrix NumericalDoubleSupportJacobian(
+  const GPInterpolatedDoublePose3BetweenFactor & factor,
+  const DoubleSupportState & state,
+  size_t argument)
+{
+  constexpr double epsilon = 1e-6;
+  const bool is_pose = argument % 3 == 0;
+  const size_t support = argument / 3;
+  const size_t vector_kind = argument % 3;
+  const int dimension = is_pose ? 6 : 3;
+  gtsam::Matrix jacobian(6, dimension);
+  for (int column = 0; column < dimension; ++column) {
+    DoubleSupportState plus = state;
+    DoubleSupportState minus = state;
+    if (is_pose) {
+      gtsam::Vector6 delta = gtsam::Vector6::Zero();
+      delta(column) = epsilon;
+      plus.poses[support] = state.poses[support].retract(delta);
+      minus.poses[support] = state.poses[support].retract(-delta);
+    } else if (vector_kind == 1) {
+      plus.velocities[support](column) += epsilon;
+      minus.velocities[support](column) -= epsilon;
+    } else {
+      plus.omegas[support](column) += epsilon;
+      minus.omegas[support](column) -= epsilon;
+    }
+    jacobian.col(column) =
+      (EvaluateDoubleSupport(factor, plus) - EvaluateDoubleSupport(factor, minus)) /
+      (2.0 * epsilon);
+  }
+  return jacobian;
+}
+
+TEST(CtRelativeFactor, DistinctSupportDoubleInterpolationJacobiansMatchFiniteDifferences)
+{
+  const gtsam::Vector3 velocity(1.1, -0.35, 0.20);
+  const gtsam::Vector3 omega(0.04, -0.02, 0.03);
+  DoubleSupportState state{
+    {PoseAt(0.0, velocity), PoseAt(1.0, velocity),
+      PoseAt(2.0, velocity), PoseAt(3.0, velocity)},
+    {velocity, velocity, velocity, velocity},
+    {omega, omega, omega, omega}};
+
+  const auto first_interpolator = MakeInterpolator(0.23);
+  const auto second_interpolator = MakeInterpolator(0.71);
+  const gtsam::Pose3 first_pose = first_interpolator->interpolatePose(
+    state.poses[0], state.velocities[0], state.omegas[0],
+    state.poses[1], state.velocities[1], state.omegas[1]);
+  const gtsam::Pose3 second_pose = second_interpolator->interpolatePose(
+    state.poses[2], state.velocities[2], state.omegas[2],
+    state.poses[3], state.velocities[3], state.omegas[3]);
+  const GPInterpolatedDoublePose3BetweenFactor factor(
+    X(0), V(0), W(0), X(1), V(1), W(1),
+    X(2), V(2), W(2), X(3), V(3), W(3),
+    first_pose.between(second_pose), first_interpolator, second_interpolator,
+    gtsam::noiseModel::Gaussian::Covariance(MakeMeasurementCovariance()));
+
+  std::array<gtsam::Matrix, 12> jacobians;
+  const gtsam::Vector residual = factor.evaluateError(
+    state.poses[0], state.velocities[0], state.omegas[0],
+    state.poses[1], state.velocities[1], state.omegas[1],
+    state.poses[2], state.velocities[2], state.omegas[2],
+    state.poses[3], state.velocities[3], state.omegas[3],
+    jacobians[0], jacobians[1], jacobians[2], jacobians[3],
+    jacobians[4], jacobians[5], jacobians[6], jacobians[7],
+    jacobians[8], jacobians[9], jacobians[10], jacobians[11]);
+  EXPECT_LT(residual.norm(), 1e-10);
+  for (size_t argument = 0; argument < jacobians.size(); ++argument) {
+    ExpectMatrixNear(
+      jacobians[argument],
+      NumericalDoubleSupportJacobian(factor, state, argument),
+      1e-3);
+  }
+}
+
+TEST(CtRelativeFactor, WnojDistinctSupportJacobiansMatchFiniteDifferences)
+{
+  const gtsam::Vector3 velocity(0.9, -0.2, 0.15);
+  const gtsam::Vector3 omega(0.02, -0.03, 0.01);
+  DoubleSupportState state{
+    {PoseAt(0.0, velocity), PoseAt(1.0, velocity),
+      PoseAt(2.0, velocity), PoseAt(3.0, velocity)},
+    {velocity, velocity, velocity, velocity},
+    {omega, omega, omega, omega}};
+  const gtsam::Vector6 acceleration_first =
+    (gtsam::Vector6() << 0.003, -0.002, 0.001, 0.02, -0.01, 0.03).finished();
+  const gtsam::Vector6 acceleration_second =
+    (gtsam::Vector6() << -0.002, 0.004, -0.001, -0.01, 0.03, 0.01).finished();
+
+  auto first_interpolator = std::make_shared<fgo::models::GPWNOJInterpolator>(
+    MakeQcModel(), 1.0, 0.23, true, true);
+  auto second_interpolator = std::make_shared<fgo::models::GPWNOJInterpolator>(
+    MakeQcModel(), 1.0, 0.71, true, true);
+  first_interpolator->recalculate(
+    1.0, 0.23, acceleration_first, acceleration_second);
+  second_interpolator->recalculate(
+    1.0, 0.71, acceleration_first, acceleration_second);
+
+  const gtsam::Pose3 first_pose = first_interpolator->interpolatePose(
+    state.poses[0], state.velocities[0], state.omegas[0],
+    state.poses[1], state.velocities[1], state.omegas[1]);
+  const gtsam::Pose3 second_pose = second_interpolator->interpolatePose(
+    state.poses[2], state.velocities[2], state.omegas[2],
+    state.poses[3], state.velocities[3], state.omegas[3]);
+  const GPInterpolatedDoublePose3BetweenFactor factor(
+    X(0), V(0), W(0), X(1), V(1), W(1),
+    X(2), V(2), W(2), X(3), V(3), W(3),
+    first_pose.between(second_pose), first_interpolator, second_interpolator,
+    gtsam::noiseModel::Gaussian::Covariance(MakeMeasurementCovariance()));
+
+  std::array<gtsam::Matrix, 12> jacobians;
+  const gtsam::Vector residual = factor.evaluateError(
+    state.poses[0], state.velocities[0], state.omegas[0],
+    state.poses[1], state.velocities[1], state.omegas[1],
+    state.poses[2], state.velocities[2], state.omegas[2],
+    state.poses[3], state.velocities[3], state.omegas[3],
+    jacobians[0], jacobians[1], jacobians[2], jacobians[3],
+    jacobians[4], jacobians[5], jacobians[6], jacobians[7],
+    jacobians[8], jacobians[9], jacobians[10], jacobians[11]);
+  EXPECT_LT(residual.norm(), 1e-10);
+  for (size_t argument = 0; argument < jacobians.size(); ++argument) {
+    ExpectMatrixNear(
+      jacobians[argument],
+      NumericalDoubleSupportJacobian(factor, state, argument),
+      2e-3);
+  }
 }
 
 }  // namespace

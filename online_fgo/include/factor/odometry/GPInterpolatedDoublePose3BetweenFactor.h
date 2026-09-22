@@ -162,17 +162,17 @@ namespace fgo::factor {
       gtsam::Vector rval = gtsam::traits<gtsam::Pose3>::Local(measured_, hx, boost::none, &Hlocal);
 
       if (H1) { *H1 = Hlocal * Hpose1 * Hint11_P; }// std::cout << "size H1: " << H1->size() << std::endl;}
-      if (H2) { *H2 = Hlocal * Hint12_P; }// std::cout << "size H2: " << H2->size() << std::endl;}
-      if (H3) { *H3 = Hlocal * Hint13_P; }// std::cout << "size H3: " << H3->size() << std::endl;}
+      if (H2) { *H2 = Hlocal * Hpose1 * Hint12_P; }// std::cout << "size H2: " << H2->size() << std::endl;}
+      if (H3) { *H3 = Hlocal * Hpose1 * Hint13_P; }// std::cout << "size H3: " << H3->size() << std::endl;}
       if (H4) { *H4 = Hlocal * Hpose1 * Hint14_P; }// std::cout << "size H4: " << H4->size() << std::endl;}
-      if (H5) { *H5 = Hlocal * Hint15_P; }// std::cout << "size H5: " << H5->size() << std::endl;}
-      if (H6) { *H6 = Hlocal * Hint16_P; }// std::cout << "size H6: " << H6->size() << std::endl;}
+      if (H5) { *H5 = Hlocal * Hpose1 * Hint15_P; }// std::cout << "size H5: " << H5->size() << std::endl;}
+      if (H6) { *H6 = Hlocal * Hpose1 * Hint16_P; }// std::cout << "size H6: " << H6->size() << std::endl;}
       if (H7) { *H7 = Hlocal * Hpose2 * Hint21_P; }// std::cout << "size H7: " << H7->size() << std::endl;}
-      if (H8) { *H8 = Hlocal * Hint22_P; }// std::cout << "size H8: " << H8 ->size() << std::endl;}
-      if (H9) { *H9 = Hlocal * Hint23_P; }// std::cout << "size H9: " << H9->size() << std::endl;}
+      if (H8) { *H8 = Hlocal * Hpose2 * Hint22_P; }// std::cout << "size H8: " << H8 ->size() << std::endl;}
+      if (H9) { *H9 = Hlocal * Hpose2 * Hint23_P; }// std::cout << "size H9: " << H9->size() << std::endl;}
       if (H10) { *H10 = Hlocal * Hpose2 * Hint24_P; }// std::cout << "size H10: " <<H10->size() << std::endl;}
-      if (H11) { *H11 = Hlocal * Hint25_P; }// std::cout << "size H11: " << H11->size() << std::endl;}
-      if (H12) { *H12 = Hlocal * Hint26_P; }// std::cout << "size H12: " << H12->size() << std::endl;}
+      if (H11) { *H11 = Hlocal * Hpose2 * Hint25_P; }// std::cout << "size H11: " << H11->size() << std::endl;}
+      if (H12) { *H12 = Hlocal * Hpose2 * Hint26_P; }// std::cout << "size H12: " << H12->size() << std::endl;}
       return rval;
     }
 
