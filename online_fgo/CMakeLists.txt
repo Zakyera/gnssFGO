@@ -276,6 +276,14 @@ if (BUILD_TESTING)
     ament_target_dependencies(test_ct_relative_factor
             ${ONLINEFGO_ROS_DEP}
     )
+
+    ament_add_gtest(test_grandtour_imu_support
+            test/test_grandtour_imu_support.cpp
+    )
+    target_include_directories(test_grandtour_imu_support
+            PRIVATE
+            ${ONLINEFGO_INCLUDE}
+    )
 endif ()
 
 ament_package()

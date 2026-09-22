@@ -27,6 +27,29 @@ add_library(${ONLINEFGO_OFFLINEPRPCESS_NAME}
         OfflineSteinLOFGO.cpp
 
 )
+
+# Dataset-independent CSV entry point used to exercise the stock continuous-
+# time graph on retained GrandTour relative beliefs.  It deliberately lives
+# outside the ROS bag runners: its inputs are immutable exported measurements
+# and it does not alter the online gnssFGO node or integrators.
+add_executable(grandtour_ct_replay
+        GrandTourCsvReplay.cpp
+)
+target_include_directories(grandtour_ct_replay
+        PRIVATE
+        ${ONLINEFGO_INCLUDE}
+)
+target_link_libraries(grandtour_ct_replay
+        online_fgo_solver
+        online_fgo_util
+        ${ONLINEFGO_LINK}
+)
+ament_target_dependencies(grandtour_ct_replay
+        ${ONLINEFGO_ROS_DEP}
+)
+install(TARGETS grandtour_ct_replay
+        DESTINATION lib/${PROJECT_NAME}
+)
 target_include_directories(${ONLINEFGO_OFFLINEPRPCESS_NAME}
         PUBLIC
         ${ONLINEFGO_INCLUDE}
