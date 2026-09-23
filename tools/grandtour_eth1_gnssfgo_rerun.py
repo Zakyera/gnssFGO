@@ -18,6 +18,7 @@ from pathlib import Path
 import numpy as np
 import rerun as rr
 import rerun.blueprint as rrb
+from rerun.recording import Recording, load_recording
 
 
 PRISM_LEVER_CPT7 = np.array([0.308837802, -0.038312997, -0.234944116])
@@ -123,6 +124,59 @@ def line_strips(times: np.ndarray, xyz: np.ndarray, gap_s: float) -> list[np.nda
     return [piece for piece in np.split(xyz, boundaries) if len(piece) >= 2]
 
 
+def load_glim_map(run_dir: Path, metrics: dict, anchor: np.ndarray) -> tuple[np.ndarray, dict]:
+    """Place this run's saved GLIM submaps in the same aligned world as its path."""
+    submaps = sorted((run_dir / "glim_dump").glob("[0-9]*/points_compact.bin"))
+    if not submaps:
+        raise FileNotFoundError("no saved GLIM submap point clouds")
+    alignment_rotation = np.asarray(metrics["alignment_rotation"], dtype=float)
+    alignment_translation = np.asarray(metrics["alignment_translation_m"], dtype=float)
+    odom_times, odom_xyz, _ = read_tum(run_dir / "odom_imu.txt")
+    batches = []
+    raw_count = 0
+    frame_errors = []
+    for point_path in submaps:
+        data_path = point_path.with_name("data.txt")
+        lines = data_path.read_text(encoding="utf-8").splitlines()
+        def matrix(label: str) -> np.ndarray:
+            marker = lines.index(label)
+            return np.asarray(
+                [[float(field) for field in line.split()] for line in lines[marker + 1 : marker + 5]]
+            )
+
+        transform = matrix("T_world_origin: ")
+        if transform.shape != (4, 4) or not np.allclose(transform[3], [0, 0, 0, 1]):
+            raise ValueError(f"invalid GLIM submap transform: {data_path}")
+        first_stamp = float(next(line.split()[1] for line in lines if line.startswith("stamp: ")))
+        nearest = int(np.argmin(np.abs(odom_times - first_stamp)))
+        if abs(odom_times[nearest] - first_stamp) > 1e-4:
+            raise ValueError(f"submap frame missing from GLIM odometry: {data_path}")
+        imu_world = matrix("T_world_lidar: ") @ matrix("T_lidar_imu: ")
+        frame_errors.append(float(np.linalg.norm(imu_world[:3, 3] - odom_xyz[nearest])))
+        points = np.fromfile(point_path, dtype="<f4")
+        if points.size % 3:
+            raise ValueError(f"invalid compact GLIM points: {point_path}")
+        points = points.reshape(-1, 3)
+        raw_count += len(points)
+        # Deterministic display-only thinning; no geometry or estimator output is changed.
+        stride = max(1, (len(points) + 2499) // 2500)
+        points = points[::stride].astype(np.float64)
+        world = points @ transform[:3, :3].T + transform[:3, 3]
+        aligned = world @ alignment_rotation.T + alignment_translation - anchor
+        batches.append(aligned.astype(np.float32))
+    cloud = np.concatenate(batches)
+    if not np.isfinite(cloud).all():
+        raise ValueError("non-finite aligned GLIM point cloud")
+    if max(frame_errors) > 1e-3:
+        raise ValueError("GLIM submap world is inconsistent with its IMU odometry")
+    return cloud, {
+        "submaps": len(submaps),
+        "raw_points": raw_count,
+        "display_points": len(cloud),
+        "max_lidar_to_imu_odom_position_error_m": max(frame_errors),
+    }
+
+
 def log_path(name: str, times: np.ndarray, xyz: np.ndarray, anchor: np.ndarray) -> None:
     color = COLORS[name]
     points = xyz - anchor
@@ -170,9 +224,13 @@ def make_blueprint(center: np.ndarray, extent: float) -> rrb.Blueprint:
         background=[16, 18, 22],
     )
     trajectories = rrb.Spatial3DView(
-        origin="/gnssfgo_presentation/trajectories",
-        contents=["+ /gnssfgo_presentation/trajectories/**", "- /__properties/**"],
-        name="ETH1 — ground truth, native GLIM/Kimera, gnssFGO fusion",
+        origin="/gnssfgo_presentation",
+        contents=[
+            "+ /gnssfgo_presentation/pointcloud/**",
+            "+ /gnssfgo_presentation/trajectories/**",
+            "- /__properties/**",
+        ],
+        name="ETH1 point cloud + GT / GLIM / Kimera / gnssFGO",
         background=[16, 18, 22],
         line_grid=rrb.LineGrid3D(
             visible=True, spacing=5.0, stroke_width=1.0, color=[90, 96, 105, 90]
@@ -257,11 +315,19 @@ def main() -> None:
 
     output = args.output.resolve()
     output.parent.mkdir(parents=True, exist_ok=True)
-    overlay = output.parent / "gnssfgo_overlay.rrd"
-    blueprint = output.parent / "gnssfgo_dashboard.rbl"
-    rr.init("cbsms", recording_id=recording_id)
+    overlay = output.parent / f"{output.stem}_overlay.rrd"
+    blueprint = output.parent / f"{output.stem}_dashboard.rbl"
+    application_id = "eth1_cbs_on_gnssfgo_pointcloud_presentation"
+    presentation_recording_id = f"{recording_id}_gnssfgo_pointcloud"
+    rr.init(application_id, recording_id=presentation_recording_id)
     rr.save(overlay)
-    rr.log("gnssfgo_presentation/trajectories", rr.ViewCoordinates.RIGHT_HAND_Z_UP, static=True)
+    rr.log("gnssfgo_presentation", rr.ViewCoordinates.RIGHT_HAND_Z_UP, static=True)
+    cloud, cloud_details = load_glim_map(run_dir, outputs["glim"][2], anchor)
+    rr.log(
+        "gnssfgo_presentation/pointcloud/glim_hesai_submaps",
+        rr.Points3D(cloud, colors=[145, 155, 165, 115], radii=rr.Radius.ui_points(1.1)),
+        static=True,
+    )
     log_path("ground_truth", gt_times, gt_xyz, anchor)
     for name, (times, xyz, _) in outputs.items():
         log_path(name, times, xyz, anchor)
@@ -270,6 +336,7 @@ def main() -> None:
         "",
         "Blue: Leica prism GT (only where observed). Green: native GLIM. Orange: native Kimera. Red: gnssFGO GLIM+Kimera.",
         "All estimator paths show their **full output**; GT gaps are disconnected. Poses are transformed to the prism point and independently rigid-aligned without scale, using this replay's saved evaluator transforms. Only observed prism intervals contribute to ATE.",
+        f"The gray cloud is {cloud_details['display_points']:,} display-sampled points from {cloud_details['submaps']} saved Hesai/GLIM submaps of this exact replay, rigidly placed using GLIM's saved scorer transform. It is a static final map, not a live scan.",
         "",
         "| Trajectory | Prism ATE RMSE | Full path | Matched prism coverage |",
         "|---|---:|---:|---:|",
@@ -288,12 +355,23 @@ def main() -> None:
         static=True,
     )
     rr.disconnect()
-    make_blueprint(center, extent).save(application_id="cbsms", path=blueprint)
+    make_blueprint(center, extent).save(application_id=application_id, path=blueprint)
     source_rrd = run_dir / "recordings" / f"{run_dir.name}.rrd"
     if not source_rrd.is_file():
         raise FileNotFoundError(source_rrd)
+    # Repackage the source data without its old dashboard blueprint. This makes
+    # the new upper-right cloud/trajectory panel the unambiguous active view.
+    source_data = load_recording(source_rrd)
+    overlay_data = load_recording(overlay)
+    recording = Recording.from_chunks(
+        [*source_data.chunks(), *overlay_data.chunks()],
+        application_id,
+        presentation_recording_id,
+    )
+    repackaged = output.parent / f"{output.stem}_data.rrd"
+    recording.save(repackaged)
     subprocess.run(
-        ["rerun", "rrd", "merge", "-o", str(output), str(source_rrd), str(overlay), str(blueprint)],
+        ["rerun", "rrd", "merge", "-o", str(output), str(repackaged), str(blueprint)],
         check=True,
     )
     subprocess.run(["rerun", "rrd", "verify", str(output)], check=True)
@@ -307,8 +385,9 @@ def main() -> None:
         "aligned_csv_checks": checks,
         "gt_rows": len(gt_times),
         "trajectory_rows": {name: len(item[0]) for name, item in outputs.items()},
+        "pointcloud": cloud_details,
     }
-    (output.parent / "gnssfgo_rerun_validation.json").write_text(
+    (output.parent / f"{output.stem}_validation.json").write_text(
         json.dumps(validation, indent=2) + "\n", encoding="utf-8"
     )
     print(output)
