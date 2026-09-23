@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Add time-progressive ETH1 paths and GLIM submaps to a saved CBS graph RRD.
+"""Add time-progressive GrandTour paths and GLIM submaps to a CBS graph RRD.
 
 This is visualization only. The same lever arm and Kabsch transforms saved by
 score_grandtour_prism.py are applied to *all* output poses, including those
@@ -234,7 +234,7 @@ def log_path(name: str, times: np.ndarray, xyz: np.ndarray, anchor: np.ndarray) 
     }
 
 
-def make_blueprint(center: np.ndarray, extent: float) -> rrb.Blueprint:
+def make_blueprint(center: np.ndarray, extent: float, sequence_name: str) -> rrb.Blueprint:
     glim_graph = rrb.Spatial3DView(
         origin="/glim/factor_graph_inspector/spatial",
         contents=["+ /glim/factor_graph_inspector/spatial/**", "- /__properties/**"],
@@ -260,7 +260,7 @@ def make_blueprint(center: np.ndarray, extent: float) -> rrb.Blueprint:
             "+ /gnssfgo_presentation/trajectories/**",
             "- /__properties/**",
         ],
-        name="ETH1 point cloud + GT / GLIM / Kimera / gnssFGO",
+        name=f"{sequence_name} point cloud + GT / GLIM / Kimera / gnssFGO",
         background=[16, 18, 22],
         line_grid=rrb.LineGrid3D(
             visible=True, spacing=5.0, stroke_width=1.0, color=[90, 96, 105, 90]
@@ -314,6 +314,7 @@ def main() -> None:
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
     run_dir = args.run_dir.resolve()
+    sequence_name = run_dir.name.split("_")[0].upper()
     evaluation = run_dir / "evaluation"
     recording_id = (run_dir / "rerun_recording_id.txt").read_text().strip()
     inputs = {
@@ -347,7 +348,7 @@ def main() -> None:
     output.parent.mkdir(parents=True, exist_ok=True)
     overlay = output.parent / f"{output.stem}_overlay.rrd"
     blueprint = output.parent / f"{output.stem}_dashboard.rbl"
-    application_id = "eth1_cbs_on_gnssfgo_animated_presentation"
+    application_id = f"grandtour_{sequence_name.lower()}_gnssfgo_animated_presentation"
     presentation_recording_id = f"{recording_id}_gnssfgo_animated"
     rr.init(application_id, recording_id=presentation_recording_id)
     rr.save(overlay)
@@ -366,11 +367,11 @@ def main() -> None:
     for name, (times, xyz, _) in outputs.items():
         animation[name] = log_path(name, times, xyz, anchor)
     lines = [
-        "# ETH1 CBS-ON, 0.15× — matched presentation replay",
+        f"# GrandTour {sequence_name} — matched source and gnssFGO presentation",
         "",
         "Blue: Leica prism GT (only where observed). Green: native GLIM. Orange: native Kimera. Red: gnssFGO GLIM+Kimera.",
         "The four trails and their current-position markers reveal with the shared timeline. GT gaps remain disconnected. The cloud reveals each saved GLIM submap only when its final frame timestamp is reached. This is a completed-submap playback, not a live individual-scan stream.",
-        "**Display-only origin normalization:** each path is translated so its first *available* pose is at the common starting point. Kimera begins 0.52 s before GLIM in the source; no earlier poses were fabricated. This translation changes the visual comparison to the cloud/GT; the ATE values below were calculated from the original, independently rigid-aligned paths *before* the display shift.",
+        f"**Display-only origin normalization:** each path is translated so its first *available* pose is at the common starting point. Kimera's first-pose time minus GLIM's is {outputs['kimera'][0][0] - outputs['glim'][0][0]:+.2f} s; no earlier poses were fabricated. This translation changes the visual comparison to the cloud/GT; the ATE values below were calculated from the original, independently rigid-aligned paths *before* the display shift.",
         f"The gray cloud contains {cloud_details['display_points']:,} display-sampled points from {cloud_details['submaps']} saved Hesai/GLIM submaps of this exact replay, rigidly placed using GLIM's saved scorer transform.",
         "",
         "| Trajectory | Prism ATE RMSE | Full path | Matched prism coverage |",
@@ -381,7 +382,7 @@ def main() -> None:
             f"| {name} | {metrics['ape_rmse_m']:.3f} m | {metrics['estimate_full_path_m']:.1f} m | {metrics['matched_elapsed_coverage_s']:.1f} s |"
         )
     lines.extend([
-        "", "The graph panels are the **live source inspectors** from this same CBS-ON replay. The red trajectory is an offline causal gnssFGO replay of beliefs exported from its saved bag; it was not estimated live inside GLIM or Kimera.",
+        "", "The graph panels are the **live source inspectors** from this same saved source replay. The red trajectory is an offline causal gnssFGO replay of beliefs exported from its saved bag; it was not estimated live inside GLIM or Kimera.",
         "", f"Recording ID: `{recording_id}`",
     ])
     rr.log(
@@ -390,7 +391,7 @@ def main() -> None:
         static=True,
     )
     rr.disconnect()
-    make_blueprint(center, extent).save(application_id=application_id, path=blueprint)
+    make_blueprint(center, extent, sequence_name).save(application_id=application_id, path=blueprint)
     source_rrd = run_dir / "recordings" / f"{run_dir.name}.rrd"
     if not source_rrd.is_file():
         raise FileNotFoundError(source_rrd)
