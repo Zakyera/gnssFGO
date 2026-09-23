@@ -19,8 +19,13 @@ odometry.
 ## Matched source experiment
 
 - Mission: GrandTour `2024-10-01-11-29-55` (ETH1), 348 s playback at 0.30×.
-- GLIM: Hesai + shared CPT7 IMU, `ALL_RIGHT` support.
-- Kimera: AlphaSense front stereo + the same CPT7 IMU, `ALL_RIGHT` support.
+- GLIM: Hesai + shared CPT7 IMU, with its existing effective right-sample
+  integration.
+- Kimera: AlphaSense front stereo + the same CPT7 IMU. This launcher did
+  **not** set `KIMERA_IMU_SAMPLE_SUPPORT`; the current code therefore used
+  its default `current` interpolated-border packet, not the experimental
+  `right` packet. The earlier description of this source run as `ALL_RIGHT`
+  was incorrect. The gnssFGO graph's own IMU integration remained right-held.
 - Same GLIM and Kimera profile directories and 0.20 s target-horizon belief
   export as the previous full CBS-OFF run. The copied GLIM `config.json` and
   Kimera `ImuParams.yaml` are byte-identical across the two source runs.
@@ -48,6 +53,39 @@ exact edges. CBS-ON yielded 2,527 GLIM and 1,471 Kimera beliefs under
 The prior CBS-OFF export had 3,319 GLIM and 1,474 Kimera beliefs. The
 GLIM source stream is therefore materially sparser under this CBS-ON run;
 the graph comparisons are not identical-factor ablations.
+
+### Comparison with the retained September 7 CBS-ON result
+
+The presentation figure's 0.663 m Kimera result is backed by the retained
+run `grandtour_eth1_stereo_shared_cpt7_no_sidecar_bidirectional_stride1_rate015_glimfg30_full_346s_live_rerun_20260907`
+under `/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/grandtour_eth1_presentation/`.
+Its saved evaluator reports 0.662930 m ATE and a 202.722 m full Kimera path;
+the result was not merely a slide transcription. Its matched CBS-OFF run
+reports 9.114752 m Kimera ATE.
+
+These source runs were **not** equivalent replays:
+
+| Setting or observation | September 7 CBS-ON | September 22 CBS-ON |
+|---|---:|---:|
+| Bag playback rate | 0.15× | 0.30× |
+| Requested window | 346 s | 348 s |
+| GLIM poses reported by runner | 3,451 | 2,816 |
+| Kimera poses | 1,493 | 1,491 |
+| GLIM-to-Kimera factor insertions | 1,473 | 257 |
+| Kimera-to-GLIM factor insertions | 1,478 | 1,200 |
+| Kimera rejections for inactive BPSAM window (summed log rows) | 0 | 919 |
+| Kimera native ATE | 0.662930 m | 5.949668 m |
+| Kimera full output path | 202.722 m | 1,372.959 m |
+
+The copied GLIM and Kimera configuration directories are byte-identical.
+The September 7 run enabled the presentation/EKF and factor-graph inspectors;
+the September 22 run disabled them. Both source launchers otherwise request
+bidirectional CBS. The September 7 estimator binaries were not retained or
+identified by a build hash, whereas the current binaries were rebuilt on
+September 21. Thus the playback-rate/load and changed factor-availability
+pattern are concrete differences, but this evidence does **not** isolate
+playback rate as the sole cause. A controlled same-binary, same-window
+replay would be needed for that causal claim.
 
 | Retained CBS-ON input | SHA-256 |
 |---|---|

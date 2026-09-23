@@ -24,8 +24,11 @@ with the same frozen graph and source covariances.
 - Playback length: 348 s.
 - GLIM: same profile as the validated 40 s ETH1 pilot, CBS off, CPT7
   `ALL_RIGHT` support.
-- Kimera: same stereo/CPT7 profile as the validated 40 s ETH1 pilot, CBS off,
-  CPT7 `ALL_RIGHT` support.
+- Kimera: same stereo/CPT7 profile as the validated 40 s ETH1 pilot, CBS off.
+  The source launcher did not set `KIMERA_IMU_SAMPLE_SUPPORT`, so Kimera used
+  the code's default `current` interpolated-border IMU packet. An earlier
+  `ALL_RIGHT` label for this full source run was incorrect. The gnssFGO
+  graph's own IMU integration was right-held.
 - Fusion: gnssFGO continuous WNOJ trajectory, `CombinedImuFactor`, native
   source relative beliefs, full dense source covariance, full iSAM2.
 - Causal chronology: source availability at `record_timestamp_ns`; factor
