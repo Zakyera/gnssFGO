@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Add matched native/fused ETH1 trajectories to a saved CBS factor-graph RRD.
+"""Add time-progressive ETH1 paths and GLIM submaps to a saved CBS graph RRD.
 
 This is visualization only. The same lever arm and Kabsch transforms saved by
 score_grandtour_prism.py are applied to *all* output poses, including those
@@ -124,8 +124,10 @@ def line_strips(times: np.ndarray, xyz: np.ndarray, gap_s: float) -> list[np.nda
     return [piece for piece in np.split(xyz, boundaries) if len(piece) >= 2]
 
 
-def load_glim_map(run_dir: Path, metrics: dict, anchor: np.ndarray) -> tuple[np.ndarray, dict]:
-    """Place this run's saved GLIM submaps in the same aligned world as its path."""
+def load_glim_map(
+    run_dir: Path, metrics: dict, anchor: np.ndarray
+) -> tuple[list[tuple[float, str, np.ndarray]], dict]:
+    """Place completed GLIM submaps in the scorer-aligned world with completion times."""
     submaps = sorted((run_dir / "glim_dump").glob("[0-9]*/points_compact.bin"))
     if not submaps:
         raise FileNotFoundError("no saved GLIM submap point clouds")
@@ -138,6 +140,7 @@ def load_glim_map(run_dir: Path, metrics: dict, anchor: np.ndarray) -> tuple[np.
     for point_path in submaps:
         data_path = point_path.with_name("data.txt")
         lines = data_path.read_text(encoding="utf-8").splitlines()
+
         def matrix(label: str) -> np.ndarray:
             marker = lines.index(label)
             return np.asarray(
@@ -147,7 +150,11 @@ def load_glim_map(run_dir: Path, metrics: dict, anchor: np.ndarray) -> tuple[np.
         transform = matrix("T_world_origin: ")
         if transform.shape != (4, 4) or not np.allclose(transform[3], [0, 0, 0, 1]):
             raise ValueError(f"invalid GLIM submap transform: {data_path}")
-        first_stamp = float(next(line.split()[1] for line in lines if line.startswith("stamp: ")))
+        stamps = [float(line.split()[1]) for line in lines if line.startswith("stamp: ")]
+        if not stamps:
+            raise ValueError(f"submap has no frame timestamps: {data_path}")
+        first_stamp = stamps[0]
+        completion_stamp = stamps[-1]
         nearest = int(np.argmin(np.abs(odom_times - first_stamp)))
         if abs(odom_times[nearest] - first_stamp) > 1e-4:
             raise ValueError(f"submap frame missing from GLIM odometry: {data_path}")
@@ -163,45 +170,68 @@ def load_glim_map(run_dir: Path, metrics: dict, anchor: np.ndarray) -> tuple[np.
         points = points[::stride].astype(np.float64)
         world = points @ transform[:3, :3].T + transform[:3, 3]
         aligned = world @ alignment_rotation.T + alignment_translation - anchor
-        batches.append(aligned.astype(np.float32))
-    cloud = np.concatenate(batches)
-    if not np.isfinite(cloud).all():
-        raise ValueError("non-finite aligned GLIM point cloud")
+        if not np.isfinite(aligned).all():
+            raise ValueError(f"non-finite aligned GLIM submap: {data_path}")
+        batches.append((completion_stamp, point_path.parent.name, aligned.astype(np.float32)))
     if max(frame_errors) > 1e-3:
         raise ValueError("GLIM submap world is inconsistent with its IMU odometry")
-    return cloud, {
+    batches.sort(key=lambda item: (item[0], item[1]))
+    return batches, {
         "submaps": len(submaps),
         "raw_points": raw_count,
-        "display_points": len(cloud),
+        "display_points": sum(len(item[2]) for item in batches),
+        "first_completed_submap_time": batches[0][0],
+        "last_completed_submap_time": batches[-1][0],
         "max_lidar_to_imu_odom_position_error_m": max(frame_errors),
     }
 
 
-def log_path(name: str, times: np.ndarray, xyz: np.ndarray, anchor: np.ndarray) -> None:
+def sampled_indices(times: np.ndarray, period_s: float) -> np.ndarray:
+    if len(times) < 2 or np.any(np.diff(times) <= 0):
+        raise ValueError("trajectory times must be strictly increasing")
+    targets = np.arange(times[0], times[-1], period_s)
+    indices = np.searchsorted(times, targets, side="right") - 1
+    return np.unique(np.r_[0, indices, len(times) - 1].clip(0, len(times) - 1))
+
+
+def log_path(name: str, times: np.ndarray, xyz: np.ndarray, anchor: np.ndarray) -> dict:
     color = COLORS[name]
-    points = xyz - anchor
-    strips = line_strips(times, points, 0.5 if name == "ground_truth" else 1.0)
-    if not strips:
-        raise ValueError(f"no connected path segments for {name}")
-    rr.log(
-        f"gnssfgo_presentation/trajectories/{name}/full_path",
-        rr.LineStrips3D(
-            strips, colors=[color] * len(strips), radii=rr.Radius.ui_points(3.0)
-        ),
-        static=True,
-    )
+    # Display-only common-origin registration. The evaluator-aligned path and
+    # its numerical score remain unchanged; no poses are synthesized.
+    points = xyz - xyz[0]
+    rr.set_time("time", timestamp=float(times[0]))
     rr.log(
         f"gnssfgo_presentation/trajectories/{name}/start",
         rr.Points3D([points[0]], colors=[color], radii=0.2),
-        static=True,
     )
-    stride = max(1, len(times) // 700)
-    for index in range(0, len(times), stride):
+    trail_indices = set(sampled_indices(times, 0.5))
+    current_indices = sampled_indices(times, 0.2)
+    for index in np.union1d(current_indices, np.fromiter(trail_indices, dtype=int)):
         rr.set_time("time", timestamp=float(times[index]))
         rr.log(
             f"gnssfgo_presentation/trajectories/{name}/current",
             rr.Points3D([points[index]], colors=[color], radii=0.3),
         )
+        if index in trail_indices and index > 0:
+            strips = line_strips(
+                times[: index + 1], points[: index + 1],
+                0.5 if name == "ground_truth" else 1.0,
+            )
+            if strips:
+                rr.log(
+                    f"gnssfgo_presentation/trajectories/{name}/trail",
+                    rr.LineStrips3D(
+                        strips, colors=[color] * len(strips),
+                        radii=rr.Radius.ui_points(3.0),
+                    ),
+                )
+    return {
+        "first_timestamp": float(times[0]),
+        "last_timestamp": float(times[-1]),
+        "display_origin_shift_m": (anchor - xyz[0]).tolist(),
+        "trail_updates": len(trail_indices) - 1,
+        "current_updates": len(current_indices),
+    }
 
 
 def make_blueprint(center: np.ndarray, extent: float) -> rrb.Blueprint:
@@ -317,26 +347,31 @@ def main() -> None:
     output.parent.mkdir(parents=True, exist_ok=True)
     overlay = output.parent / f"{output.stem}_overlay.rrd"
     blueprint = output.parent / f"{output.stem}_dashboard.rbl"
-    application_id = "eth1_cbs_on_gnssfgo_pointcloud_presentation"
-    presentation_recording_id = f"{recording_id}_gnssfgo_pointcloud"
+    application_id = "eth1_cbs_on_gnssfgo_animated_presentation"
+    presentation_recording_id = f"{recording_id}_gnssfgo_animated"
     rr.init(application_id, recording_id=presentation_recording_id)
     rr.save(overlay)
     rr.log("gnssfgo_presentation", rr.ViewCoordinates.RIGHT_HAND_Z_UP, static=True)
-    cloud, cloud_details = load_glim_map(run_dir, outputs["glim"][2], anchor)
-    rr.log(
-        "gnssfgo_presentation/pointcloud/glim_hesai_submaps",
-        rr.Points3D(cloud, colors=[145, 155, 165, 115], radii=rr.Radius.ui_points(1.1)),
-        static=True,
-    )
-    log_path("ground_truth", gt_times, gt_xyz, anchor)
+    submaps, cloud_details = load_glim_map(run_dir, outputs["glim"][2], anchor)
+    for completion_stamp, submap_id, cloud in submaps:
+        rr.set_time("time", timestamp=completion_stamp)
+        rr.log(
+            f"gnssfgo_presentation/pointcloud/glim_hesai_submaps/{submap_id}",
+            rr.Points3D(
+                cloud, colors=[145, 155, 165, 115],
+                radii=rr.Radius.ui_points(1.1),
+            ),
+        )
+    animation = {"ground_truth": log_path("ground_truth", gt_times, gt_xyz, anchor)}
     for name, (times, xyz, _) in outputs.items():
-        log_path(name, times, xyz, anchor)
+        animation[name] = log_path(name, times, xyz, anchor)
     lines = [
         "# ETH1 CBS-ON, 0.15× — matched presentation replay",
         "",
         "Blue: Leica prism GT (only where observed). Green: native GLIM. Orange: native Kimera. Red: gnssFGO GLIM+Kimera.",
-        "All estimator paths show their **full output**; GT gaps are disconnected. Poses are transformed to the prism point and independently rigid-aligned without scale, using this replay's saved evaluator transforms. Only observed prism intervals contribute to ATE.",
-        f"The gray cloud is {cloud_details['display_points']:,} display-sampled points from {cloud_details['submaps']} saved Hesai/GLIM submaps of this exact replay, rigidly placed using GLIM's saved scorer transform. It is a static final map, not a live scan.",
+        "The four trails and their current-position markers reveal with the shared timeline. GT gaps remain disconnected. The cloud reveals each saved GLIM submap only when its final frame timestamp is reached. This is a completed-submap playback, not a live individual-scan stream.",
+        "**Display-only origin normalization:** each path is translated so its first *available* pose is at the common starting point. Kimera begins 0.52 s before GLIM in the source; no earlier poses were fabricated. This translation changes the visual comparison to the cloud/GT; the ATE values below were calculated from the original, independently rigid-aligned paths *before* the display shift.",
+        f"The gray cloud contains {cloud_details['display_points']:,} display-sampled points from {cloud_details['submaps']} saved Hesai/GLIM submaps of this exact replay, rigidly placed using GLIM's saved scorer transform.",
         "",
         "| Trajectory | Prism ATE RMSE | Full path | Matched prism coverage |",
         "|---|---:|---:|---:|",
@@ -385,6 +420,7 @@ def main() -> None:
         "aligned_csv_checks": checks,
         "gt_rows": len(gt_times),
         "trajectory_rows": {name: len(item[0]) for name, item in outputs.items()},
+        "animation": animation,
         "pointcloud": cloud_details,
     }
     (output.parent / f"{output.stem}_validation.json").write_text(
