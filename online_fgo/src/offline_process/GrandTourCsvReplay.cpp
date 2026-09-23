@@ -37,6 +37,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <tuple>
 #include <unordered_map>
 #include <utility>
 #include <vector>
@@ -83,6 +84,7 @@ struct ImuSample
 struct RelativeBelief
 {
   size_t ordinal{};
+  size_t revision{};
   uint64_t from_index{};
   uint64_t to_index{};
   int64_t from_timestamp_ns{};
@@ -98,6 +100,7 @@ struct Options
   std::string glim_beliefs_path;
   std::string kimera_beliefs_path;
   std::string output_directory;
+  std::string revision_beliefs_path;
   std::string mode{"glim"};
   std::string timeline{"physical"};
   std::string solver{"fixed_lag"};
@@ -191,6 +194,8 @@ Options ParseOptions(int argc, char ** argv)
       options.kimera_beliefs_path = value;
     } else if (option == "--out") {
       options.output_directory = value;
+    } else if (option == "--revision-beliefs") {
+      options.revision_beliefs_path = value;
     } else if (option == "--mode") {
       options.mode = value;
     } else if (option == "--timeline") {
@@ -207,6 +212,8 @@ Options ParseOptions(int argc, char ** argv)
     options.mode != "kimera" && options.mode != "joint") ||
     (options.timeline != "physical" && options.timeline != "record") ||
     (options.solver != "fixed_lag" && options.solver != "isam2") ||
+    (!options.revision_beliefs_path.empty() &&
+    (options.solver != "isam2" || options.timeline != "record" || options.mode != "glim")) ||
     (options.timeline == "record" && options.solver != "isam2") ||
     ((options.mode == "kimera" || options.mode == "joint") &&
     options.kimera_beliefs_path.empty()))
@@ -214,7 +221,8 @@ Options ParseOptions(int argc, char ** argv)
     throw std::runtime_error(
             "usage: grandtour_ct_replay --imu IMU.csv --glim-beliefs GLIM.csv "
             "[--kimera-beliefs KIMERA.csv] --mode imu|glim|kimera|joint "
-            "[--timeline physical|record] [--solver fixed_lag|isam2] --out DIRECTORY");
+            "[--timeline physical|record] [--solver fixed_lag|isam2] "
+            "[--revision-beliefs REVISION.csv] --out DIRECTORY");
   }
   return options;
 }
@@ -267,6 +275,9 @@ std::vector<RelativeBelief> LoadBeliefs(const std::string & path)
   for (const auto & row : ReadCsv(path).rows) {
     RelativeBelief belief;
     belief.ordinal = std::stoull(Field(row, "ordinal"));
+    if (row.count("revision") != 0) {
+      belief.revision = std::stoull(Field(row, "revision"));
+    }
     belief.from_index = std::stoull(Field(row, "from_index"));
     belief.to_index = std::stoull(Field(row, "to_index"));
     belief.from_timestamp_ns = std::stoll(Field(row, "from_timestamp_ns"));
@@ -549,6 +560,42 @@ public:
     }
   }
 
+  gtsam::FactorIndex ReplaceFactor(
+    const gtsam::NonlinearFactorGraph & graph,
+    const gtsam::FactorIndices & remove_indices)
+  {
+    if (!isam2_ || graph.size() != 1) {
+      throw std::runtime_error("revision replacement requires one factor and full iSAM2");
+    }
+    const auto result = isam2_->update(graph, gtsam::Values(), remove_indices,
+      boost::none, boost::none, boost::none, true);
+    if (result.newFactorsIndices.size() != 1) {
+      throw std::runtime_error("iSAM2 did not return one persistent factor index");
+    }
+    return result.newFactorsIndices.front();
+  }
+
+  size_t ActiveFactorCount() const
+  {
+    if (!isam2_) return 0;
+    size_t count = 0;
+    for (const auto & factor : isam2_->getFactorsUnsafe()) {
+      if (factor) ++count;
+    }
+    return count;
+  }
+
+  gtsam::Pose3 Pose(size_t index) const
+  {
+    if (!isam2_) throw std::runtime_error("diagnostic pose query requires iSAM2");
+    return isam2_->calculateEstimate<gtsam::Pose3>(X(index));
+  }
+
+  size_t ActiveValuesCount() const
+  {
+    return isam2_ ? isam2_->getLinearizationPoint().size() : 0;
+  }
+
   gtsam::Values Estimate() const
   {
     return isam2_ ? isam2_->calculateEstimate() : fixed_lag_->calculateEstimate();
@@ -566,6 +613,9 @@ int Run(int argc, char ** argv)
   const std::vector<ImuSample> imu = LoadImu(options.imu_path);
   const std::vector<RelativeBelief> glim_beliefs = LoadBeliefs(
     options.glim_beliefs_path);
+  const std::vector<RelativeBelief> revision_beliefs =
+    options.revision_beliefs_path.empty() ? std::vector<RelativeBelief>() :
+    LoadBeliefs(options.revision_beliefs_path);
   const std::vector<RelativeBelief> kimera_beliefs =
     options.kimera_beliefs_path.empty() ? std::vector<RelativeBelief>() :
     LoadBeliefs(options.kimera_beliefs_path);
@@ -597,7 +647,9 @@ int Run(int argc, char ** argv)
       }
     };
   if (options.mode == "glim" || options.mode == "joint") {
-    for (const RelativeBelief & belief : glim_beliefs) {
+    const auto & selected = options.revision_beliefs_path.empty() ?
+      glim_beliefs : revision_beliefs;
+    for (const RelativeBelief & belief : selected) {
       schedule(belief, "glim");
     }
   }
@@ -614,6 +666,7 @@ int Run(int argc, char ** argv)
     scheduled_by_support.at(scheduled.activation_index).push_back(&scheduled);
     scheduled_by_arrival.push_back(&scheduled);
   }
+  // Stable sort preserves CSV revision order for equal arrival time and ID.
   std::stable_sort(
     scheduled_by_arrival.begin(), scheduled_by_arrival.end(),
     [](const ScheduledBelief * lhs, const ScheduledBelief * rhs) {
@@ -686,6 +739,14 @@ int Run(int argc, char ** argv)
   std::ofstream state_csv(options.output_directory + "/states.csv");
   std::ofstream residual_csv(options.output_directory + "/belief_residuals.csv");
   std::ofstream event_csv(options.output_directory + "/measurement_events.csv");
+  std::ofstream revision_csv;
+  if (!options.revision_beliefs_path.empty()) {
+    revision_csv.open(options.output_directory + "/revision_events.csv");
+    revision_csv << "ordinal,from_index,to_index,revision,record_timestamp_ns,"
+                    "outcome,old_factor_index,new_factor_index,update_seconds,"
+                    "current_position_correction_m,endpoint_position_correction_m,"
+                    "active_factors\n";
+  }
   std::ofstream acceleration_csv(
     options.output_directory + "/support_accelerations.csv");
   std::ofstream online_trajectory;
@@ -695,6 +756,7 @@ int Run(int argc, char ** argv)
     online_state_csv.open(options.output_directory + "/online_states.csv");
   }
   if (!trajectory || !state_csv || !residual_csv || !event_csv || !acceleration_csv ||
+    (!options.revision_beliefs_path.empty() && !revision_csv) ||
     (options.solver == "isam2" && (!online_trajectory || !online_state_csv)))
   {
     throw std::runtime_error("cannot create GrandTour output files");
@@ -787,6 +849,19 @@ int Run(int argc, char ** argv)
   size_t accepted_beliefs = 0;
   size_t accepted_glim = 0;
   size_t accepted_kimera = 0;
+  struct RevisionLedgerEntry {
+    size_t latest_revision{};
+    gtsam::FactorIndex factor_index{};
+    const ScheduledBelief * latest{};
+    std::string kind;
+  };
+  std::map<std::tuple<std::string, uint64_t, uint64_t>, RevisionLedgerEntry>
+    revision_ledger;
+  size_t revision_insertions = 0;
+  size_t revision_removals = 0;
+  size_t revision_duplicates = 0;
+  size_t revision_stale = 0;
+  double revision_update_seconds = 0.0;
   std::map<std::string, size_t> factor_kind_counts;
   size_t maximum_active_values = 4;
   std::vector<std::pair<const ScheduledBelief *, std::string>> accepted;
@@ -831,6 +906,72 @@ int Run(int argc, char ** argv)
   size_t next_arrival = 0;
   auto process_arrival = [&](const ScheduledBelief * scheduled,
       int64_t insertion_timestamp_ns) {
+      if (!options.revision_beliefs_path.empty()) {
+        const RelativeBelief & belief = *scheduled->belief;
+        if (insertion_timestamp_ns < endpoints.front()) {
+          throw std::runtime_error("revision arrived before first support state");
+        }
+        const auto id = std::make_tuple(scheduled->source,
+          belief.from_index, belief.to_index);
+        const auto previous = revision_ledger.find(id);
+        const bool known = previous != revision_ledger.end();
+        const std::string outcome = !known ? "insert" :
+          belief.revision == previous->second.latest_revision ? "duplicate" :
+          belief.revision < previous->second.latest_revision ? "stale" : "replace";
+        if (!known && belief.revision != 0) {
+          throw std::runtime_error("first revision for a BeliefID must be zero");
+        }
+        if (outcome == "duplicate" || outcome == "stale") {
+          if (outcome == "duplicate") ++revision_duplicates;
+          else ++revision_stale;
+          revision_csv << belief.ordinal << ',' << belief.from_index << ','
+            << belief.to_index << ',' << belief.revision << ','
+            << belief.record_timestamp_ns << ',' << outcome << ','
+            << previous->second.factor_index << ',' << previous->second.factor_index
+            << ",0,0,0," << backend.ActiveFactorCount() << '\n';
+          return;
+        }
+        const size_t current_index = std::min(
+          endpoints.size() - 1,
+          static_cast<size_t>(std::upper_bound(
+            endpoints.begin(), endpoints.end(), insertion_timestamp_ns) -
+            endpoints.begin() - 1));
+        const gtsam::Pose3 before = backend.Pose(current_index);
+        const gtsam::Pose3 before_endpoint = backend.Pose(scheduled->to.exact_index);
+        gtsam::NonlinearFactorGraph graph;
+        const std::string kind = AddRelativeFactor(
+          *scheduled, endpoints, support_accelerations, qc_model, &graph);
+        const gtsam::FactorIndices remove = known ?
+          gtsam::FactorIndices{previous->second.factor_index} : gtsam::FactorIndices{};
+        const auto update_start = std::chrono::steady_clock::now();
+        const gtsam::FactorIndex factor_index = backend.ReplaceFactor(graph, remove);
+        const double elapsed = std::chrono::duration<double>(
+          std::chrono::steady_clock::now() - update_start).count();
+        const gtsam::Pose3 after = backend.Pose(current_index);
+        const gtsam::Pose3 after_endpoint = backend.Pose(scheduled->to.exact_index);
+        const double correction = (after.translation() - before.translation()).norm();
+        const double endpoint_correction =
+          (after_endpoint.translation() - before_endpoint.translation()).norm();
+        revision_update_seconds += elapsed;
+        ++revision_insertions;
+        if (known) ++revision_removals;
+        else {
+          ++accepted_beliefs;
+          ++accepted_glim;
+          ++factor_kind_counts[kind];
+        }
+        const auto old_index = known ? previous->second.factor_index : factor_index;
+        revision_ledger[id] = {belief.revision, factor_index, scheduled, kind};
+        revision_csv << belief.ordinal << ',' << belief.from_index << ','
+          << belief.to_index << ',' << belief.revision << ','
+          << belief.record_timestamp_ns << ',' << outcome << ','
+          << old_index << ',' << factor_index << ',' << std::setprecision(17)
+          << elapsed << ',' << correction << ',' << endpoint_correction << ','
+          << backend.ActiveFactorCount()
+          << '\n';
+        maximum_active_values = std::max(maximum_active_values, backend.ActiveValuesCount());
+        return;
+      }
       gtsam::NonlinearFactorGraph graph;
       const std::string kind = AddRelativeFactor(
         *scheduled, endpoints, support_accelerations, qc_model, &graph);
@@ -979,8 +1120,14 @@ int Run(int argc, char ** argv)
       WriteTrajectoryRow(trajectory, endpoints[index], pose);
       write_state(state_csv, index, endpoints[index], final_estimate);
     }
-    for (const auto & [scheduled, kind] : accepted) {
-      write_residual(scheduled, kind, final_estimate);
+    if (!options.revision_beliefs_path.empty()) {
+      for (const auto & [id, entry] : revision_ledger) {
+        write_residual(entry.latest, entry.kind, final_estimate);
+      }
+    } else {
+      for (const auto & [scheduled, kind] : accepted) {
+        write_residual(scheduled, kind, final_estimate);
+      }
     }
   }
   const auto wall_end = std::chrono::steady_clock::now();
@@ -1004,6 +1151,12 @@ int Run(int argc, char ** argv)
           << "  \"glim_beliefs_loaded\": " << glim_beliefs.size() << ",\n"
           << "  \"kimera_beliefs_loaded\": " << kimera_beliefs.size() << ",\n"
           << "  \"beliefs_accepted\": " << accepted_beliefs << ",\n"
+          << "  \"revision_messages_loaded\": " << revision_beliefs.size() << ",\n"
+          << "  \"revision_insertions\": " << revision_insertions << ",\n"
+          << "  \"revision_removals\": " << revision_removals << ",\n"
+          << "  \"revision_duplicates\": " << revision_duplicates << ",\n"
+          << "  \"revision_stale\": " << revision_stale << ",\n"
+          << "  \"revision_update_seconds\": " << JsonNumber(revision_update_seconds) << ",\n"
           << "  \"glim_beliefs_accepted\": " << accepted_glim << ",\n"
           << "  \"kimera_beliefs_accepted\": " << accepted_kimera << ",\n"
           << "  \"beliefs_skipped_no_support\": " << skipped_no_support << ",\n"
