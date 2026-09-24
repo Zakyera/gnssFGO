@@ -213,7 +213,8 @@ Options ParseOptions(int argc, char ** argv)
     (options.timeline != "physical" && options.timeline != "record") ||
     (options.solver != "fixed_lag" && options.solver != "isam2") ||
     (!options.revision_beliefs_path.empty() &&
-    (options.solver != "isam2" || options.timeline != "record" || options.mode != "glim")) ||
+    (options.solver != "isam2" || options.timeline != "record" ||
+    (options.mode != "glim" && options.mode != "kimera"))) ||
     (options.timeline == "record" && options.solver != "isam2") ||
     ((options.mode == "kimera" || options.mode == "joint") &&
     options.kimera_beliefs_path.empty()))
@@ -654,7 +655,9 @@ int Run(int argc, char ** argv)
     }
   }
   if (options.mode == "kimera" || options.mode == "joint") {
-    for (const RelativeBelief & belief : kimera_beliefs) {
+    const auto & selected = options.mode == "kimera" &&
+      !options.revision_beliefs_path.empty() ? revision_beliefs : kimera_beliefs;
+    for (const RelativeBelief & belief : selected) {
       schedule(belief, "kimera");
     }
   }
@@ -937,7 +940,9 @@ int Run(int argc, char ** argv)
             endpoints.begin(), endpoints.end(), insertion_timestamp_ns) -
             endpoints.begin() - 1));
         const gtsam::Pose3 before = backend.Pose(current_index);
-        const gtsam::Pose3 before_endpoint = backend.Pose(scheduled->to.exact_index);
+        const size_t endpoint_support_index = scheduled->to.exact ?
+          scheduled->to.exact_index : scheduled->to.right_index;
+        const gtsam::Pose3 before_endpoint = backend.Pose(endpoint_support_index);
         gtsam::NonlinearFactorGraph graph;
         const std::string kind = AddRelativeFactor(
           *scheduled, endpoints, support_accelerations, qc_model, &graph);
@@ -948,7 +953,7 @@ int Run(int argc, char ** argv)
         const double elapsed = std::chrono::duration<double>(
           std::chrono::steady_clock::now() - update_start).count();
         const gtsam::Pose3 after = backend.Pose(current_index);
-        const gtsam::Pose3 after_endpoint = backend.Pose(scheduled->to.exact_index);
+        const gtsam::Pose3 after_endpoint = backend.Pose(endpoint_support_index);
         const double correction = (after.translation() - before.translation()).norm();
         const double endpoint_correction =
           (after_endpoint.translation() - before_endpoint.translation()).norm();
@@ -957,7 +962,8 @@ int Run(int argc, char ** argv)
         if (known) ++revision_removals;
         else {
           ++accepted_beliefs;
-          ++accepted_glim;
+          if (scheduled->source == "glim") ++accepted_glim;
+          else ++accepted_kimera;
           ++factor_kind_counts[kind];
         }
         const auto old_index = known ? previous->second.factor_index : factor_index;
