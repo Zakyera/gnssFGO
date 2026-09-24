@@ -11,6 +11,7 @@ import csv
 import json
 import math
 import re
+import sys
 from collections import defaultdict, deque
 from pathlib import Path
 
@@ -189,6 +190,9 @@ def main():
     active, endpoint, published = parse_log(args.log)
     native_times, native_poses = read_tum(args.native)
     n_full = len(native_poses)
+    # The same linear two-parity-chain traversal exceeds Python's default
+    # recursion depth on the full 305 s run; this changes no graph computation.
+    sys.setrecursionlimit(max(sys.getrecursionlimit(), 4 * n_full))
     if sorted(active) != list(range(n_full)):
         raise ValueError("active-pose audit and native TUM index maps differ")
     latest_update = max(row["update"] for rows in active.values() for row in rows)
