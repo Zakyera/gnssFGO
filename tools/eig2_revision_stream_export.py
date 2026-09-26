@@ -38,6 +38,10 @@ def main():
     parser.add_argument("--log", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--retired-pose-count", type=int, default=592)
+    parser.add_argument("--omit-finalized", action="store_true",
+                        help="keep the full source window including right-censored active endpoints; do not claim finalized means")
+    parser.add_argument("--repair-submicrosecond-timestamp-roundoff", action="store_true",
+                        help="clamp a later revision up to revision-0 bag receipt only when the inversion is at most 1000 ns")
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
     with args.beliefs.open(newline="") as stream:
@@ -71,6 +75,8 @@ def main():
         versions[key].append(first)
 
     errors = []
+    repaired_arrivals = 0
+    largest_arrival_repair_ns = 0
     for line in args.log.open(errors="replace"):
         if "GLIM_CBS_REVISION_ERROR_ROW," in line:
             errors.append(line.strip())
@@ -100,7 +106,16 @@ def main():
             raise ValueError(f"nonpositive revision covariance for {key}")
         revised = dict(template)
         revised["revision"] = revision
-        revised["record_timestamp_ns"] = str(round(float(record) * 1e9))
+        record_ns = round(float(record) * 1e9)
+        first_record_ns = int(versions[key][0]["record_timestamp_ns"])
+        if record_ns < first_record_ns:
+            discrepancy_ns = first_record_ns - record_ns
+            if not args.repair_submicrosecond_timestamp_roundoff or discrepancy_ns > 1000:
+                raise ValueError(f"revision precedes first bag receipt for {key} by {discrepancy_ns} ns")
+            record_ns = first_record_ns
+            repaired_arrivals += 1
+            largest_arrival_repair_ns = max(largest_arrival_repair_ns, discrepancy_ns)
+        revised["record_timestamp_ns"] = str(record_ns)
         for coordinate in range(6):
             revised[f"relative_mu_{coordinate}"] = format(mu[coordinate], ".17g")
         for r in range(6):
@@ -120,6 +135,41 @@ def main():
                                 int(row["to_index"]))][-1]
                       for row in selected]
     write_csv(args.out / "last_revision.csv", final_revision, revision_fields)
+
+    if args.omit_finalized:
+        counts = [len(versions[key]) for key in by_id]
+        rotation_ratios = []
+        translation_ratios = []
+        for first, last in zip(selected, final_revision):
+            rotation_ratios.append(sum(float(last[f"covariance_{k}_{k}"])
+                                       for k in range(3)) /
+                                   sum(float(first[f"covariance_{k}_{k}"])
+                                       for k in range(3)))
+            translation_ratios.append(sum(float(last[f"covariance_{k}_{k}"])
+                                          for k in range(3, 6)) /
+                                      sum(float(first[f"covariance_{k}_{k}"])
+                                          for k in range(3, 6)))
+        summary = {
+            "belief_ids": len(by_id),
+            "revision_messages": len(revision_rows),
+            "revisions_per_belief": {
+                "mean": float(np.mean(counts)),
+                "median": float(np.median(counts)),
+                "maximum": max(counts), "minimum": min(counts)},
+            "last_over_first_rotation_covariance_trace_ratio": {
+                "median": float(np.median(rotation_ratios)),
+                "minimum": min(rotation_ratios), "maximum": max(rotation_ratios)},
+            "last_over_first_translation_covariance_trace_ratio": {
+                "median": float(np.median(translation_ratios)),
+                "minimum": min(translation_ratios), "maximum": max(translation_ratios)},
+            "right_censored_finalized_means": True,
+            "submicrosecond_arrivals_repaired": repaired_arrivals,
+            "largest_arrival_repair_ns": largest_arrival_repair_ns,
+            "source_errors": errors,
+        }
+        (args.out / "export_summary.json").write_text(json.dumps(summary, indent=2))
+        print(json.dumps(summary, indent=2))
+        return
 
     final_poses = {index: observations[-1]["pose"]
                    for index, observations in active.items()
