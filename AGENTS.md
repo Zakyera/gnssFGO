@@ -18,3 +18,28 @@ co-running receiver.
 Verify effective launch parameters, copied profiles, input identities, and
 evaluation masks for each sequence. This instruction does not authorize a
 new run, protocol change, or covariance tuning.
+
+For the 2026-10-07 source-preservation checkpoint and latest experimental WNOA
+build, read `experiments/checkpoints/20261007/README.md`. That archive preserves
+the actual diagnostic build separately from the default CMake target, including
+the live-run profiles and validation limits. Do not infer the latest experiment
+from the older WNOJ/default-build paragraphs below.
+
+For live/asynchronous GrandTour receiver work, read
+`GNSSFGO_GRANDTOUR_CLASSIC_LIVE_BASELINE_20260929.md` and
+`GNSSFGO_GRANDTOUR_LIVE_RECEIVER_RUNBOOK.md`, then use the saved
+`config/grandtour_live_receiver.json` template. Source count is configurable,
+not fixed at the synthetic test's four LiDAR/three camera example. Keep the
+independent IMU-driven support clock separate from source arrival times.
+The current live adapter observes full diagnostic revision logs while classic
+source CBS remains unchanged. The matched SPX-3 120-second OFF/ON run validated
+co-running sources and receiver at 0.10x with graph inspectors disabled; it is
+not evidence of 0.3x, 0.5x, or 1x capacity or a universal sequence profile.
+Do not call final retrospective paths live.
+
+An opt-in source-driven WNOJ receiver is documented in
+`GNSSFGO_SOURCE_WNOJ_IMPLEMENTATION_20261005.md`. It estimates acceleration
+and omits central raw-IMU factors/initialization; it is only synthetically
+validated, not a replacement for the frozen live baseline. Default mode remains
+`imu_wnoj`. Do not enable `source_wnoj` in an experiment without authorization,
+or mistake the older `--audit-use-imu false` control for this new model.

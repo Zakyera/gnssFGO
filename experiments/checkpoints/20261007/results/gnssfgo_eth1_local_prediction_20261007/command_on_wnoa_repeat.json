@@ -1,0 +1,33 @@
+{
+  "name": "on_wnoa_repeat",
+  "command": [
+    "/audit/build/wnoa/replay",
+    "--receiver-model",
+    "source_wnoa",
+    "--mode",
+    "sources",
+    "--timeline",
+    "record",
+    "--solver",
+    "isam2",
+    "--support-policy",
+    "uniform_imu",
+    "--support-period-ns",
+    "100000000",
+    "--receiver-startup-samples",
+    "59",
+    "--event-stream",
+    "/long/inputs/on_events.csv",
+    "--out",
+    "/audit/on_wnoa_repeat"
+  ],
+  "returncode": 0,
+  "seconds": 770.9741125810006,
+  "maximum_rss_kib": 301840,
+  "environment": {
+    "WNOJ_INCREMENTAL_PROFILE": "nominal",
+    "WNOJ_STRICT_PUBLICATION": "1",
+    "AUDIT_RECORD_ALL": "1",
+    "WNOJ_AUDIT_INDICES": "74,194,344,394,594,794,964,994,1192"
+  }
+}

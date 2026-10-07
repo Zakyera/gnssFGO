@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <Eigen/Eigenvalues>
+#include <boost/make_shared.hpp>
 #include <gtsam/inference/Symbol.h>
 #include <gtsam/navigation/CombinedImuFactor.h>
 #include <gtsam/navigation/ImuBias.h>
@@ -26,6 +27,7 @@
 #include <chrono>
 #include <cmath>
 #include <cstdint>
+#include <deque>
 #include <filesystem>
 #include <fstream>
 #include <iomanip>
@@ -49,12 +51,17 @@
 #include "factor/odometry/GPInterpolatedSinglePose3BetweenFactor.h"
 #include "model/gp_interpolator/GPWNOJInterpolator.h"
 #include "offline_process/GrandTourImuSupport.h"
+#include "offline_process/CausalSupportClock.h"
+#include "offline_process/SourceModelDiscrepancy.h"
+#include "offline_process/SourceWnojModel.h"
+#include "offline_process/BoundedISAM2Refinement.h"
 #include "solver/IncrementalFixedLagSmoother.h"
 
 namespace
 {
 
 using gtsam::symbol_shorthand::B;
+using gtsam::symbol_shorthand::A;
 using gtsam::symbol_shorthand::V;
 using gtsam::symbol_shorthand::W;
 using gtsam::symbol_shorthand::X;
@@ -77,6 +84,7 @@ struct CsvTable
 struct ImuSample
 {
   int64_t timestamp_ns{};
+  int64_t available_ns{};
   gtsam::Vector3 acceleration{gtsam::Vector3::Zero()};
   gtsam::Vector3 angular_rate{gtsam::Vector3::Zero()};
 };
@@ -85,6 +93,8 @@ struct RelativeBelief
 {
   size_t ordinal{};
   size_t revision{};
+  std::string source_agent;
+  std::string session_id{"default"};
   uint64_t from_index{};
   uint64_t to_index{};
   int64_t from_timestamp_ns{};
@@ -101,9 +111,24 @@ struct Options
   std::string kimera_beliefs_path;
   std::string output_directory;
   std::string revision_beliefs_path;
+  std::string graph_snapshots_out;
+  std::string event_stream;
   std::string mode{"glim"};
   std::string timeline{"physical"};
   std::string solver{"fixed_lag"};
+  std::string receiver_model{"imu_wnoj"};
+  bool source_convergence_check{false};
+  bool audit_use_imu{true};
+  bool audit_use_wnoj{true};
+  double audit_qc_scale{1.0};
+  size_t audit_startup_samples{0};
+  std::string support_policy{"glim_endpoints"};
+  int64_t support_period_ns{100000000};
+  int64_t receiver_duration_ns{0};
+  size_t receiver_startup_samples{59};
+  fgo::offline::SourceModelNoiseMap source_model_noise;
+  std::string kimera_channel{"full"};
+  std::string kimera_covariance{"full"};
 };
 
 struct EndpointLocation
@@ -196,25 +221,126 @@ Options ParseOptions(int argc, char ** argv)
       options.output_directory = value;
     } else if (option == "--revision-beliefs") {
       options.revision_beliefs_path = value;
+    } else if (option == "--graph-snapshots-out") {
+      options.graph_snapshots_out = value;
+    } else if (option == "--event-stream") {
+      options.event_stream = value;
     } else if (option == "--mode") {
       options.mode = value;
     } else if (option == "--timeline") {
       options.timeline = value;
     } else if (option == "--solver") {
       options.solver = value;
+    } else if (option == "--receiver-model") {
+      options.receiver_model = value;
+    } else if (option == "--source-convergence-check") {
+      if (value != "true" && value != "false")
+        throw std::runtime_error("--source-convergence-check must be true or false");
+      options.source_convergence_check = value == "true";
+    } else if (option == "--audit-use-imu") {
+      if (value != "true" && value != "false") {
+        throw std::runtime_error("--audit-use-imu must be true or false");
+      }
+      options.audit_use_imu = value == "true";
+    } else if (option == "--audit-use-wnoj") {
+      if (value != "true" && value != "false") {
+        throw std::runtime_error("--audit-use-wnoj must be true or false");
+      }
+      options.audit_use_wnoj = value == "true";
+    } else if (option == "--audit-qc-scale") {
+      options.audit_qc_scale = std::stod(value);
+    } else if (option == "--audit-startup-samples") {
+      options.audit_startup_samples = std::stoull(value);
+    } else if (option == "--support-policy") {
+      options.support_policy = value;
+    } else if (option == "--support-period-ns") {
+      options.support_period_ns = std::stoll(value);
+    } else if (option == "--receiver-duration-ns") {
+      options.receiver_duration_ns = std::stoll(value);
+    } else if (option == "--receiver-startup-samples") {
+      options.receiver_startup_samples = std::stoull(value);
+    } else if (option == "--source-model-noise") {
+      const auto fields = SplitCsvLine(value);
+      if (fields.size() != 3 || fields[0].empty()) {
+        throw std::runtime_error(
+                "--source-model-noise requires SOURCE,ROTATION_SIGMA_RAD,TRANSLATION_SIGMA_M");
+      }
+      auto parse_sigma = [](const std::string & field) {
+          size_t consumed = 0;
+          const double sigma = std::stod(field, &consumed);
+          if (consumed != field.size()) throw std::runtime_error("invalid source model sigma");
+          return sigma;
+        };
+      const fgo::offline::SourceModelNoise noise{
+        parse_sigma(fields[1]), parse_sigma(fields[2])};
+      fgo::offline::ValidateSourceModelNoise(noise);
+      if (!options.source_model_noise.emplace(fields[0], noise).second) {
+        throw std::runtime_error("duplicate --source-model-noise source: " + fields[0]);
+      }
+    } else if (option == "--kimera-channel") {
+      if (value != "full" && value != "rotation" && value != "rho") {
+        throw std::runtime_error("--kimera-channel must be full, rotation, or rho");
+      }
+      options.kimera_channel = value;
+    } else if (option == "--kimera-covariance") {
+      if (value != "full" && value != "blockdiag") {
+        throw std::runtime_error("--kimera-covariance must be full or blockdiag");
+      }
+      options.kimera_covariance = value;
     } else {
       throw std::runtime_error("unknown option: " + option);
     }
   }
-  if (options.imu_path.empty() || options.glim_beliefs_path.empty() ||
+  if (!options.event_stream.empty()) {
+    if (!options.imu_path.empty() || !options.revision_beliefs_path.empty() ||
+      !options.glim_beliefs_path.empty() || !options.kimera_beliefs_path.empty()) {
+      throw std::runtime_error("stream mode cannot preload sensor CSVs");
+    }
+    options.revision_beliefs_path = "@stream";
+  }
+  if (options.receiver_model != "imu_wnoj" && options.receiver_model != "source_wnoj") {
+    throw std::runtime_error("--receiver-model must be imu_wnoj or source_wnoj");
+  }
+  if (options.source_convergence_check &&
+      (options.receiver_model != "source_wnoj" || options.solver != "isam2"))
+    throw std::runtime_error("source convergence check requires experimental source_wnoj/isam2");
+  if (options.receiver_model == "source_wnoj" &&
+      (options.mode != "sources" || options.support_policy != "uniform_imu" ||
+       !options.audit_use_imu || !options.audit_use_wnoj || options.audit_qc_scale != 1.0 ||
+       options.audit_startup_samples != 0 || !options.source_model_noise.empty() ||
+       options.kimera_channel != "full" || options.kimera_covariance != "full")) {
+    throw std::runtime_error("source_wnoj requires sources/uniform_imu and no legacy model/weight ablations");
+  }
+  if ((options.imu_path.empty() && options.event_stream.empty()) ||
+    (options.glim_beliefs_path.empty() && options.support_policy != "uniform_imu") ||
     options.output_directory.empty() ||
     (options.mode != "imu" && options.mode != "glim" &&
-    options.mode != "kimera" && options.mode != "joint") ||
+    options.mode != "kimera" && options.mode != "joint" && options.mode != "sources") ||
+    (options.support_policy != "glim_endpoints" && options.support_policy != "uniform_imu") ||
+    (options.support_policy == "uniform_imu" &&
+      (options.timeline != "record" || options.solver != "isam2" ||
+       (options.receiver_duration_ns <= 0 && options.event_stream.empty()) || options.support_period_ns <= 0 ||
+       options.receiver_startup_samples < 20 || options.audit_startup_samples != 0 ||
+       !options.audit_use_imu || !options.audit_use_wnoj || options.audit_qc_scale != 1.0)) ||
+    (options.mode == "sources" && (options.support_policy != "uniform_imu" ||
+      options.revision_beliefs_path.empty())) ||
+    (options.kimera_covariance == "blockdiag" && options.kimera_channel != "full") ||
+    (!options.event_stream.empty() && (options.mode != "sources" ||
+      options.support_policy != "uniform_imu")) ||
     (options.timeline != "physical" && options.timeline != "record") ||
     (options.solver != "fixed_lag" && options.solver != "isam2") ||
+    !std::isfinite(options.audit_qc_scale) || options.audit_qc_scale <= 0.0 ||
+    (!options.audit_use_imu && !options.audit_use_wnoj) ||
+    ((!options.audit_use_imu || !options.audit_use_wnoj ||
+      options.audit_qc_scale != 1.0 || options.audit_startup_samples != 0) &&
+      (options.mode != "glim" || options.timeline != "record" || options.solver != "isam2")) ||
     (!options.revision_beliefs_path.empty() &&
     (options.solver != "isam2" || options.timeline != "record" ||
-    (options.mode != "glim" && options.mode != "kimera"))) ||
+    (options.mode != "glim" && options.mode != "kimera" && options.mode != "joint" &&
+      options.mode != "sources"))) ||
+    (!options.graph_snapshots_out.empty() &&
+    (options.solver != "isam2" || options.timeline != "record" ||
+    options.revision_beliefs_path.empty())) ||
     (options.timeline == "record" && options.solver != "isam2") ||
     ((options.mode == "kimera" || options.mode == "joint") &&
     options.kimera_beliefs_path.empty()))
@@ -223,7 +349,19 @@ Options ParseOptions(int argc, char ** argv)
             "usage: grandtour_ct_replay --imu IMU.csv --glim-beliefs GLIM.csv "
             "[--kimera-beliefs KIMERA.csv] --mode imu|glim|kimera|joint "
             "[--timeline physical|record] [--solver fixed_lag|isam2] "
-            "[--revision-beliefs REVISION.csv] --out DIRECTORY");
+            "[--receiver-model imu_wnoj|source_wnoj] "
+            "[--source-convergence-check true|false] "
+            "[--revision-beliefs REVISION.csv] --out DIRECTORY "
+            "[--graph-snapshots-out DIRECTORY] "
+            "[--audit-use-imu true|false] [--audit-use-wnoj true|false] "
+            "[--audit-qc-scale POSITIVE] [--audit-startup-samples COUNT] "
+            "[--support-policy glim_endpoints|uniform_imu] "
+            "[--support-period-ns 100000000] [--receiver-startup-samples 59] "
+            "[--receiver-duration-ns NS] [--event-stream FILE_OR_FIFO] "
+            "[--source-model-noise SOURCE,ROT_SIGMA_RAD,TRANS_SIGMA_M] "
+            "[--kimera-channel full|rotation|rho] "
+            "[--kimera-covariance full|blockdiag]; mode sources accepts arbitrary source_agent "
+            "and optional session_id in --revision-beliefs without GLIM/Kimera files");
   }
   return options;
 }
@@ -253,6 +391,8 @@ std::vector<ImuSample> LoadImu(const std::string & path)
   for (const auto & row : ReadCsv(path).rows) {
     ImuSample sample;
     sample.timestamp_ns = std::stoll(Field(row, "timestamp_ns"));
+    sample.available_ns = row.count("record_timestamp_ns") ?
+      std::stoll(Field(row, "record_timestamp_ns")) : sample.timestamp_ns;
     sample.acceleration << std::stod(Field(row, "ax")),
       std::stod(Field(row, "ay")), std::stod(Field(row, "az"));
     sample.angular_rate << std::stod(Field(row, "gx")),
@@ -276,6 +416,10 @@ std::vector<RelativeBelief> LoadBeliefs(const std::string & path)
   for (const auto & row : ReadCsv(path).rows) {
     RelativeBelief belief;
     belief.ordinal = std::stoull(Field(row, "ordinal"));
+    if (row.count("source_agent") != 0) {
+      belief.source_agent = Field(row, "source_agent");
+    }
+    if (row.count("session_id") != 0) belief.session_id = Field(row, "session_id");
     if (row.count("revision") != 0) {
       belief.revision = std::stoull(Field(row, "revision"));
     }
@@ -300,7 +444,8 @@ std::vector<RelativeBelief> LoadBeliefs(const std::string & path)
     const double symmetry_error =
       (belief.covariance - belief.covariance.transpose()).cwiseAbs().maxCoeff();
     Eigen::SelfAdjointEigenSolver<gtsam::Matrix6> eigen_solver(belief.covariance);
-    if (belief.to_timestamp_ns <= belief.from_timestamp_ns ||
+    if (!tangent.allFinite() || belief.session_id.empty() ||
+      belief.to_timestamp_ns <= belief.from_timestamp_ns ||
       !belief.covariance.allFinite() || symmetry_error > 1e-12 ||
       eigen_solver.info() != Eigen::Success ||
       eigen_solver.eigenvalues().minCoeff() <= 0.0)
@@ -329,6 +474,91 @@ size_t LastImuAtOrBefore(const std::vector<ImuSample> & imu, int64_t timestamp_n
   }
   return static_cast<size_t>(std::distance(imu.begin(), after) - 1);
 }
+
+// Transport adapter only: no estimator mathematics. A journal can be a regular
+// file, named pipe, or stdin. Arrival order is explicit and never resorted.
+// I,arrival_ns,physical_ns,ax,ay,az,gx,gy,gz
+// B,arrival_ns,source,session,ordinal,revision,i,j,ti_ns,tj_ns,mu[6],cov[36]
+// E,arrival_ns   (explicit orderly end; an unmarked EOF is a transport failure)
+struct StreamEvent
+{
+  char kind{};
+  int64_t arrival_ns{};
+  ImuSample imu;
+  RelativeBelief belief;
+};
+
+class EventStream
+{
+public:
+  explicit EventStream(const std::string & path)
+  {
+    if (path == "-") input_ = &std::cin;
+    else {
+      file_.open(path);
+      if (!file_) throw std::runtime_error("cannot open event stream");
+      input_ = &file_;
+    }
+  }
+  StreamEvent Next()
+  {
+    std::string line;
+    if (!std::getline(*input_, line)) throw std::runtime_error("stream disconnected without E marker");
+    const auto f = SplitCsvLine(line);
+    if (f.size() < 2) throw std::runtime_error("short stream event");
+    StreamEvent e;
+    e.kind = f[0].size() == 1 ? f[0][0] : '?';
+    e.arrival_ns = std::stoll(f[1]);
+    if (e.arrival_ns < last_ns_) throw std::runtime_error("stream availability moved backwards");
+    last_ns_ = e.arrival_ns;
+    ++count_;
+    if (e.kind == 'E' && f.size() == 2) return e;
+    if (e.kind == 'I' && f.size() == 9) {
+      e.imu.timestamp_ns = std::stoll(f[2]);
+      e.imu.available_ns = e.arrival_ns;
+      for (int i = 0; i < 3; ++i) {
+        e.imu.acceleration(i) = std::stod(f[3+i]);
+        e.imu.angular_rate(i) = std::stod(f[6+i]);
+      }
+      if (!e.imu.acceleration.allFinite() || !e.imu.angular_rate.allFinite()) {
+        throw std::runtime_error("nonfinite streamed IMU");
+      }
+      return e;
+    }
+    if (e.kind != 'B' || f.size() != 52) throw std::runtime_error("invalid stream event schema");
+    auto & b = e.belief;
+    b.record_timestamp_ns = e.arrival_ns;
+    b.source_agent = f[2]; b.session_id = f[3];
+    for (const auto & id : {b.source_agent, b.session_id}) {
+      if (id.empty() || id.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-") != std::string::npos) {
+        throw std::runtime_error("invalid stream source/session");
+      }
+    }
+    b.ordinal = std::stoull(f[4]); b.revision = std::stoull(f[5]);
+    b.from_index = std::stoull(f[6]); b.to_index = std::stoull(f[7]);
+    b.from_timestamp_ns = std::stoll(f[8]); b.to_timestamp_ns = std::stoll(f[9]);
+    gtsam::Vector6 mu;
+    for (int i = 0; i < 6; ++i) mu(i) = std::stod(f[10+i]);
+    for (int i = 0; i < 6; ++i) for (int j = 0; j < 6; ++j) {
+      b.covariance(i,j) = std::stod(f[16+6*i+j]);
+    }
+    Eigen::SelfAdjointEigenSolver<gtsam::Matrix6> eig(b.covariance);
+    if (!mu.allFinite() || !b.covariance.allFinite() ||
+      (b.covariance-b.covariance.transpose()).cwiseAbs().maxCoeff() > 1e-12 ||
+      eig.info() != Eigen::Success || eig.eigenvalues().minCoeff() <= 0 ||
+      b.to_timestamp_ns <= b.from_timestamp_ns || e.arrival_ns < b.to_timestamp_ns) {
+      throw std::runtime_error("invalid streamed belief");
+    }
+    b.measurement = gtsam::Pose3::Expmap(mu);
+    return e;
+  }
+  size_t count() const { return count_; }
+private:
+  std::ifstream file_;
+  std::istream * input_{};
+  int64_t last_ns_{std::numeric_limits<int64_t>::min()};
+  size_t count_{};
+};
 
 // Integrate [start,end] with the frozen ALL_RIGHT interpretation: sample k,
 // stamped t_k, owns [t_(k-1),t_k].  Only the exact fractional overlap of that
@@ -412,14 +642,25 @@ std::shared_ptr<fgo::models::GPInterpolator> MakeWnojInterpolator(
   return interpolator;
 }
 
+fgo::offline::FullWnojEndpoint FullEndpoint(
+  const EndpointLocation & location, int64_t timestamp_ns,
+  const std::vector<int64_t> & timestamps, const gtsam::SharedNoiseModel & qc)
+{
+  if (location.exact) return fgo::offline::FullWnojEndpoint::Exact(location.exact_index);
+  return fgo::offline::FullWnojEndpoint::Between(location.left_index, location.right_index,
+    (timestamps.at(location.right_index) - timestamps.at(location.left_index)) * kNanosecondsToSeconds,
+    (timestamp_ns - timestamps.at(location.left_index)) * kNanosecondsToSeconds, qc);
+}
+
 gtsam::Pose3 PoseAtEndpoint(
   const EndpointLocation & location,
   int64_t timestamp_ns,
   const std::vector<int64_t> & support_timestamps,
   const std::vector<gtsam::Vector6> & support_accelerations,
   const gtsam::SharedNoiseModel & qc_model,
-  const gtsam::Values & estimate)
+  const gtsam::Values & estimate, bool source_wnoj = false)
 {
+  if (source_wnoj) return FullEndpoint(location, timestamp_ns, support_timestamps, qc_model).pose(estimate);
   if (location.exact) {
     return estimate.at<gtsam::Pose3>(X(location.exact_index));
   }
@@ -434,25 +675,157 @@ gtsam::Pose3 PoseAtEndpoint(
     estimate.at<gtsam::Vector3>(W(location.right_index)));
 }
 
+// Diagnostic-only marginal of the existing relative SE(3) factor. The
+// underlying interpolators and full residual/Jacobians are unchanged; only
+// rows [phi] or [rho] are selected before the Gaussian noise model is applied.
+class SelectedRelativeRowsFactor final : public gtsam::NoiseModelFactor
+{
+public:
+  SelectedRelativeRowsFactor(
+    const boost::shared_ptr<gtsam::NoiseModelFactor> & full,
+    const gtsam::Matrix3 & covariance, size_t first_row)
+  : gtsam::NoiseModelFactor(gtsam::noiseModel::Gaussian::Covariance(covariance, false),
+      full->keys()), full_(full), first_row_(first_row)
+  {
+    if (first_row_ != 0 && first_row_ != 3) {
+      throw std::invalid_argument("selected relative rows must be phi or rho");
+    }
+  }
+
+  gtsam::NonlinearFactor::shared_ptr clone() const override
+  {
+    return boost::make_shared<SelectedRelativeRowsFactor>(*this);
+  }
+
+  const boost::shared_ptr<gtsam::NoiseModelFactor> & fullFactor() const
+  {
+    return full_;
+  }
+
+  gtsam::Vector unwhitenedError(
+    const gtsam::Values & values,
+    boost::optional<std::vector<gtsam::Matrix> &> jacobians = boost::none) const override
+  {
+    if (jacobians) {
+      std::vector<gtsam::Matrix> full_jacobians(keys_.size());
+      const gtsam::Vector full_error = full_->unwhitenedError(values, full_jacobians);
+      jacobians->resize(full_jacobians.size());
+      for (size_t i = 0; i < full_jacobians.size(); ++i) {
+        (*jacobians)[i] = full_jacobians[i].middleRows(first_row_, 3);
+      }
+      return full_error.segment(first_row_, 3);
+    }
+    return full_->unwhitenedError(values).segment(first_row_, 3);
+  }
+
+private:
+  boost::shared_ptr<gtsam::NoiseModelFactor> full_;
+  size_t first_row_;
+};
+
+bool IsKimeraChannelSource(const std::string & source)
+{
+  // ETH-1's real source registry uses kimera_front; legacy CSV modes use kimera.
+  return source == "kimera_front" || source == "kimera";
+}
+
+gtsam::Matrix6 FactorCovariance(
+  const std::string & source, const gtsam::Matrix6 & source_covariance,
+  const std::string & kimera_covariance)
+{
+  gtsam::Matrix6 factor_covariance = source_covariance;
+  if (IsKimeraChannelSource(source) && kimera_covariance == "blockdiag") {
+    // Diagnostic only: retain each dense marginal and remove their cross block.
+    factor_covariance.block<3, 3>(0, 3).setZero();
+    factor_covariance.block<3, 3>(3, 0).setZero();
+  }
+  return factor_covariance;
+}
+
+void ValidateSelectedRowsFactor(
+  const gtsam::NonlinearFactorGraph & graph, const gtsam::Values & values,
+  const gtsam::Matrix6 & source_covariance, const std::string & channel)
+{
+  const auto selected = boost::dynamic_pointer_cast<SelectedRelativeRowsFactor>(graph.at(0));
+  if (!selected) throw std::runtime_error("Kimera subspace factor is missing");
+  const size_t first_row = channel == "rotation" ? 0 : 3;
+  const auto full = selected->fullFactor();
+  std::vector<gtsam::Matrix> full_jacobians(full->keys().size());
+  std::vector<gtsam::Matrix> selected_jacobians(selected->keys().size());
+  const gtsam::Vector full_error = full->unwhitenedError(values, full_jacobians);
+  const gtsam::Vector selected_error = selected->unwhitenedError(values, selected_jacobians);
+  if ((selected_error - full_error.segment(first_row, 3)).cwiseAbs().maxCoeff() > 1e-12) {
+    throw std::runtime_error("Kimera subspace residual does not match full-factor rows");
+  }
+  for (size_t i = 0; i < full_jacobians.size(); ++i) {
+    if ((selected_jacobians[i] - full_jacobians[i].middleRows(first_row, 3))
+      .cwiseAbs().maxCoeff() > 1e-12) {
+      throw std::runtime_error("Kimera subspace Jacobian does not match full-factor rows");
+    }
+  }
+  const auto gaussian = boost::dynamic_pointer_cast<gtsam::noiseModel::Gaussian>(
+    selected->noiseModel());
+  if (!gaussian) {
+    throw std::runtime_error("Kimera subspace noise model is not Gaussian");
+  }
+  const double covariance_difference = (gaussian->covariance() -
+    source_covariance.block<3, 3>(first_row, first_row)).cwiseAbs().maxCoeff();
+  if (covariance_difference > 1e-12) {
+    std::ostringstream diagnostic;
+    diagnostic << std::setprecision(17)
+      << "Kimera subspace covariance differs from marginal block by "
+      << covariance_difference << " (actual " << gaussian->covariance()
+      << "; expected " << source_covariance.block<3, 3>(first_row, first_row) << ')';
+    throw std::runtime_error(diagnostic.str());
+  }
+}
+
 std::string AddRelativeFactor(
   const ScheduledBelief & scheduled,
   const std::vector<int64_t> & support_timestamps,
   const std::vector<gtsam::Vector6> & support_accelerations,
   const gtsam::SharedNoiseModel & qc_model,
-  gtsam::NonlinearFactorGraph * graph)
+  const gtsam::Matrix6 & covariance,
+  const std::string & kimera_channel,
+  const std::string & kimera_covariance,
+  gtsam::NonlinearFactorGraph * graph, bool source_wnoj = false)
 {
   if (graph == nullptr) {
     throw std::invalid_argument("relative factor graph is null");
   }
+  const bool preserve_dense_blocks = IsKimeraChannelSource(scheduled.source) &&
+    kimera_covariance == "blockdiag";
   const auto noise = gtsam::noiseModel::Gaussian::Covariance(
-    scheduled.belief->covariance);
+    covariance, !preserve_dense_blocks);
   const EndpointLocation & first = scheduled.from;
   const EndpointLocation & second = scheduled.to;
+  auto finish = [&](const std::string & kind) {
+      if (IsKimeraChannelSource(scheduled.source) && kimera_channel != "full") {
+        const size_t first_row = kimera_channel == "rotation" ? 0 : 3;
+        const gtsam::Matrix3 marginal = covariance.block<3, 3>(first_row, first_row);
+        const auto full = boost::dynamic_pointer_cast<gtsam::NoiseModelFactor>(graph->at(0));
+        if (!full || graph->size() != 1) {
+          throw std::runtime_error("Kimera subspace requires one full relative factor");
+        }
+        graph->at(0) = boost::make_shared<SelectedRelativeRowsFactor>(full, marginal, first_row);
+      }
+      return kind;
+    };
+  if (source_wnoj) {
+    graph->emplace_shared<fgo::offline::FullWnojRelativeFactor>(
+      FullEndpoint(first, scheduled.belief->from_timestamp_ns, support_timestamps, qc_model),
+      FullEndpoint(second, scheduled.belief->to_timestamp_ns, support_timestamps, qc_model),
+      scheduled.belief->measurement, gtsam::noiseModel::Gaussian::Covariance(covariance, false));
+    return first.exact && second.exact ? "exact" : first.exact ? "single_second" :
+      second.exact ? "single_first" :
+      first.left_index == second.left_index && first.right_index == second.right_index ?
+      "same_support" : "double";
+  }
   if (first.exact && second.exact) {
     graph->emplace_shared<fgo::factor::BetweenPose3Factor>(
       X(first.exact_index), X(second.exact_index),
       scheduled.belief->measurement, noise);
-    return "exact";
+    return finish("exact");
   }
 
   if (!first.exact && second.exact) {
@@ -464,7 +837,7 @@ std::string AddRelativeFactor(
       X(first.right_index), V(first.right_index), W(first.right_index),
       X(second.exact_index), scheduled.belief->measurement, false,
       first_interpolator, noise);
-    return "single_first";
+    return finish("single_first");
   }
 
   if (first.exact && !second.exact) {
@@ -476,7 +849,7 @@ std::string AddRelativeFactor(
       X(second.right_index), V(second.right_index), W(second.right_index),
       X(first.exact_index), scheduled.belief->measurement, true,
       second_interpolator, noise);
-    return "single_second";
+    return finish("single_second");
   }
 
   const auto first_interpolator = MakeWnojInterpolator(
@@ -494,7 +867,7 @@ std::string AddRelativeFactor(
       X(first.right_index), V(first.right_index), W(first.right_index),
       scheduled.belief->measurement, first_interpolator,
       second_interpolator, noise);
-    return "same_support";
+    return finish("same_support");
   }
 
   graph->emplace_shared<fgo::factor::GPInterpolatedDoublePose3BetweenFactor>(
@@ -504,7 +877,7 @@ std::string AddRelativeFactor(
     X(second.right_index), V(second.right_index), W(second.right_index),
     scheduled.belief->measurement, first_interpolator,
     second_interpolator, noise);
-  return "double";
+  return finish("double");
 }
 
 std::string JsonNumber(double value)
@@ -586,6 +959,25 @@ public:
     return count;
   }
 
+  template<class Factor> size_t ActiveFactorTypeCount() const
+  {
+    if (!isam2_) throw std::runtime_error("factor type audit requires iSAM2");
+    size_t count = 0;
+    for (const auto & factor : isam2_->getFactorsUnsafe())
+      if (factor && dynamic_cast<const Factor *>(factor.get())) ++count;
+    return count;
+  }
+
+  gtsam::KeyVector FactorKeys(gtsam::FactorIndex index) const
+  {
+    if (!isam2_) throw std::runtime_error("graph snapshot requires iSAM2");
+    const auto & factors = isam2_->getFactorsUnsafe();
+    if (index >= factors.size() || !factors.at(index)) {
+      throw std::runtime_error("graph snapshot found a missing active factor");
+    }
+    return factors.at(index)->keys();
+  }
+
   gtsam::Pose3 Pose(size_t index) const
   {
     if (!isam2_) throw std::runtime_error("diagnostic pose query requires iSAM2");
@@ -602,6 +994,11 @@ public:
     return isam2_ ? isam2_->calculateEstimate() : fixed_lag_->calculateEstimate();
   }
 
+  fgo::offline::BoundedRefinementResult Refine()
+  {
+    return fgo::offline::RefineISAM2(isam2_);
+  }
+
 private:
   std::string solver_;
   std::unique_ptr<gtsam::ISAM2> isam2_;
@@ -611,50 +1008,130 @@ private:
 int Run(int argc, char ** argv)
 {
   const Options options = ParseOptions(argc, argv);
-  const std::vector<ImuSample> imu = LoadImu(options.imu_path);
-  const std::vector<RelativeBelief> glim_beliefs = LoadBeliefs(
-    options.glim_beliefs_path);
+  const bool source_wnoj = options.receiver_model == "source_wnoj";
+  const bool use_imu = !source_wnoj && options.audit_use_imu;
+  const bool streaming = !options.event_stream.empty();
+  if (streaming && std::filesystem::exists(options.output_directory)) {
+    throw std::runtime_error("stream receiver requires a new output directory");
+  }
+  std::vector<ImuSample> imu = streaming ? std::vector<ImuSample>() : LoadImu(options.imu_path);
+  std::unique_ptr<EventStream> event_stream;
+  if (streaming) event_stream = std::make_unique<EventStream>(options.event_stream);
+  std::deque<RelativeBelief> streamed_beliefs;
+  const std::vector<RelativeBelief> glim_beliefs = options.glim_beliefs_path.empty() ?
+    std::vector<RelativeBelief>() : LoadBeliefs(options.glim_beliefs_path);
   const std::vector<RelativeBelief> revision_beliefs =
-    options.revision_beliefs_path.empty() ? std::vector<RelativeBelief>() :
+    (options.revision_beliefs_path.empty() || streaming) ? std::vector<RelativeBelief>() :
     LoadBeliefs(options.revision_beliefs_path);
   const std::vector<RelativeBelief> kimera_beliefs =
     options.kimera_beliefs_path.empty() ? std::vector<RelativeBelief>() :
     LoadBeliefs(options.kimera_beliefs_path);
 
-  std::set<int64_t> endpoint_set;
-  for (const RelativeBelief & belief : glim_beliefs) {
-    endpoint_set.insert(belief.from_timestamp_ns);
-    endpoint_set.insert(belief.to_timestamp_ns);
+  const bool independent_clock = options.support_policy == "uniform_imu";
+  std::vector<int64_t> endpoints, support_available;
+  fgo::offline::CausalSupportClock clock(options.receiver_startup_samples, options.support_period_ns);
+  auto receive_imu = [&](const ImuSample & sample) {
+      const auto ready = clock.ObserveImu(sample.timestamp_ns, sample.available_ns);
+      imu.push_back(sample);
+      for (const auto & support : ready) {
+        if (options.receiver_duration_ns <= 0 ||
+          support.physical_ns - imu.front().timestamp_ns <= options.receiver_duration_ns) {
+          endpoints.push_back(support.physical_ns);
+          support_available.push_back(support.available_ns);
+        }
+      }
+    };
+  if (streaming) {
+    while (endpoints.empty()) {
+      const auto event = event_stream->Next();
+      if (event.kind == 'E') throw std::runtime_error("stream ended before IMU initialization");
+      if (event.kind == 'I') receive_imu(event.imu);
+      else streamed_beliefs.push_back(event.belief);
+    }
+  } else if (independent_clock) {
+    // The CSV adapter materializes the clock's output for endpoint lookup.
+    // Optimizer keys are still created ONLY at each emitted availability time.
+    // Live event-stream mode feeds this same clock incrementally.
+    const int64_t stop_ns = imu.front().timestamp_ns + options.receiver_duration_ns;
+    for (const auto & sample : imu) {
+      for (const auto & ready : clock.ObserveImu(sample.timestamp_ns, sample.available_ns)) {
+        if (ready.physical_ns <= stop_ns) {
+          endpoints.push_back(ready.physical_ns);
+          support_available.push_back(ready.available_ns);
+        }
+      }
+      if (sample.timestamp_ns >= stop_ns) break;
+    }
+  } else {
+    std::set<int64_t> endpoint_set;
+    for (const RelativeBelief & belief : glim_beliefs) {
+      endpoint_set.insert(belief.from_timestamp_ns);
+      endpoint_set.insert(belief.to_timestamp_ns);
+    }
+    endpoints.assign(endpoint_set.begin(), endpoint_set.end());
+    support_available = endpoints;
   }
-  const std::vector<int64_t> endpoints(endpoint_set.begin(), endpoint_set.end());
-  if (endpoints.front() < imu.front().timestamp_ns || endpoints.back() > imu.back().timestamp_ns) {
+  if (endpoints.size() < (streaming ? 1U : 2U) || endpoints.front() < imu.front().timestamp_ns ||
+    endpoints.back() > imu.back().timestamp_ns) {
     throw std::runtime_error("IMU does not bracket GrandTour support grid");
   }
 
-  std::vector<ScheduledBelief> scheduled_beliefs;
-  scheduled_beliefs.reserve(glim_beliefs.size() + kimera_beliefs.size());
+  std::deque<ScheduledBelief> scheduled_beliefs;
   size_t skipped_no_support = 0;
+  std::vector<std::pair<const RelativeBelief *, std::string>> unsupported;
   auto schedule = [&](const RelativeBelief & belief, const std::string & source) {
+      if (independent_clock && belief.record_timestamp_ns < belief.to_timestamp_ns) {
+        throw std::runtime_error("belief availability precedes its physical endpoint");
+      }
       try {
-        const EndpointLocation from = LocateEndpoint(
-          endpoints, belief.from_timestamp_ns);
-        const EndpointLocation to = LocateEndpoint(endpoints, belief.to_timestamp_ns);
+        auto locate = [&](int64_t stamp) -> EndpointLocation {
+            if (!streaming) return LocateEndpoint(endpoints, stamp);
+            if (stamp < endpoints.front()) throw std::out_of_range("before initialization");
+            const int64_t offset = stamp - endpoints.front();
+            const size_t left = offset / options.support_period_ns;
+            if (offset % options.support_period_ns == 0) return {true, left, left, left};
+            return {false, 0, left, left + 1};
+          };
+        const EndpointLocation from = locate(belief.from_timestamp_ns);
+        const EndpointLocation to = locate(belief.to_timestamp_ns);
         const size_t activation_index = std::max(
           from.exact ? from.exact_index : from.right_index,
           to.exact ? to.exact_index : to.right_index);
         scheduled_beliefs.push_back({&belief, source, from, to, activation_index});
       } catch (const std::out_of_range &) {
         ++skipped_no_support;
+        unsupported.emplace_back(&belief, source);
       }
     };
-  if (options.mode == "glim" || options.mode == "joint") {
+  if (options.mode == "sources") {
+    for (const auto & belief : revision_beliefs) {
+      if (belief.source_agent.empty() ||
+        belief.source_agent.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-") != std::string::npos ||
+        belief.session_id.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-") != std::string::npos) {
+        throw std::runtime_error("source/session must be nonempty safe identifiers");
+      }
+      const std::string source = belief.source_agent == "g" ? "glim" :
+        belief.source_agent == "k" ? "kimera" : belief.source_agent;
+      schedule(belief, source);
+    }
+  } else if (options.mode == "joint" && !options.revision_beliefs_path.empty()) {
+    for (const RelativeBelief & belief : revision_beliefs) {
+      if (belief.source_agent == "g" || belief.source_agent == "glim") {
+        schedule(belief, "glim");
+      } else if (belief.source_agent == "k" || belief.source_agent == "kimera") {
+        schedule(belief, "kimera");
+      } else {
+        throw std::runtime_error("joint revision row has invalid source_agent");
+      }
+    }
+  } else if (options.mode == "glim" || options.mode == "joint") {
     const auto & selected = options.revision_beliefs_path.empty() ?
       glim_beliefs : revision_beliefs;
     for (const RelativeBelief & belief : selected) {
       schedule(belief, "glim");
     }
   }
-  if (options.mode == "kimera" || options.mode == "joint") {
+  if (options.mode == "kimera" || (options.mode == "joint" && options.revision_beliefs_path.empty())) {
     const auto & selected = options.mode == "kimera" &&
       !options.revision_beliefs_path.empty() ? revision_beliefs : kimera_beliefs;
     for (const RelativeBelief & belief : selected) {
@@ -686,10 +1163,24 @@ int Run(int argc, char ** argv)
   gtsam::Vector3 mean_acceleration = gtsam::Vector3::Zero();
   gtsam::Vector3 mean_angular_rate = gtsam::Vector3::Zero();
   size_t startup_samples = 0;
-  for (const ImuSample & sample : imu) {
-    if (sample.timestamp_ns >= initial_timestamp_ns) {
-      break;
-    }
+  gtsam::Vector3 gravity = gtsam::Vector3::Zero();
+  gtsam::Vector3 initial_accelerometer_bias = gtsam::Vector3::Zero();
+  gtsam::Vector3 initial_gyroscope_bias = gtsam::Vector3::Zero();
+  gtsam::imuBias::ConstantBias initial_bias;
+  boost::shared_ptr<gtsam::PreintegrationCombinedParams> preintegration_parameters;
+  if (!source_wnoj) {
+  const size_t available_startup_samples = independent_clock ?
+    options.receiver_startup_samples : static_cast<size_t>(
+    std::lower_bound(imu.begin(), imu.end(), initial_timestamp_ns,
+      [](const ImuSample & sample, int64_t timestamp) {
+        return sample.timestamp_ns < timestamp;
+      }) - imu.begin());
+  const size_t first_startup_sample = options.audit_startup_samples == 0 ||
+      options.audit_startup_samples >= available_startup_samples ? 0 :
+      available_startup_samples - options.audit_startup_samples;
+  for (size_t imu_index = first_startup_sample;
+    imu_index < available_startup_samples; ++imu_index) {
+    const ImuSample & sample = imu[imu_index];
     mean_acceleration += sample.acceleration;
     mean_angular_rate += sample.angular_rate;
     ++startup_samples;
@@ -699,13 +1190,13 @@ int Run(int argc, char ** argv)
   }
   mean_acceleration /= static_cast<double>(startup_samples);
   mean_angular_rate /= static_cast<double>(startup_samples);
-  const gtsam::Vector3 gravity = -9.81 * mean_acceleration.normalized();
-  const gtsam::Vector3 initial_accelerometer_bias = mean_acceleration + gravity;
-  const gtsam::Vector3 initial_gyroscope_bias = mean_angular_rate;
-  const gtsam::imuBias::ConstantBias initial_bias(
+  gravity = -9.81 * mean_acceleration.normalized();
+  initial_accelerometer_bias = mean_acceleration + gravity;
+  initial_gyroscope_bias = mean_angular_rate;
+  initial_bias = gtsam::imuBias::ConstantBias(
     initial_accelerometer_bias, initial_gyroscope_bias);
 
-  auto preintegration_parameters =
+  preintegration_parameters =
     boost::make_shared<gtsam::PreintegrationCombinedParams>(gravity);
   preintegration_parameters->accelerometerCovariance =
     std::pow(kAccelerometerDensity, 2) * gtsam::I_3x3;
@@ -721,9 +1212,11 @@ int Run(int argc, char ** argv)
   preintegration_parameters->biasAccOmegaInt = 1e-5 * gtsam::I_6x6;
   preintegration_parameters->omegaCoriolis = gtsam::Vector3::Zero();
   preintegration_parameters->setUse2ndOrderCoriolis(false);
+  }
 
   const gtsam::SharedNoiseModel qc_model =
-    gtsam::noiseModel::Diagonal::Variances(gtsam::Vector6::Constant(10000.0));
+    gtsam::noiseModel::Diagonal::Variances(
+      gtsam::Vector6::Constant(10000.0 * options.audit_qc_scale));
 
   gtsam::ISAM2Params isam_parameters;
   isam_parameters.relinearizeThreshold = 0.01;
@@ -738,9 +1231,37 @@ int Run(int argc, char ** argv)
   IncrementalBackend backend(options.solver, isam_parameters);
 
   std::filesystem::create_directories(options.output_directory);
+  std::ofstream clock_csv(options.output_directory + "/support_clock.csv");
+  clock_csv << "state_index,physical_timestamp_ns,available_timestamp_ns\n";
+  for (size_t i = 0; i < endpoints.size(); ++i) {
+    clock_csv << i << ',' << endpoints[i] << ',' << support_available[i] << '\n';
+  }
+  std::ofstream unsupported_csv(options.output_directory + "/unsupported_beliefs.csv");
+  unsupported_csv << "source,session,ordinal,revision,from_timestamp_ns,to_timestamp_ns,reason\n";
+  for (const auto & item : unsupported) {
+    const auto & b = *item.first;
+    unsupported_csv << item.second << ',' << b.session_id << ',' << b.ordinal << ','
+      << b.revision << ',' << b.from_timestamp_ns << ',' << b.to_timestamp_ns << ','
+      << (b.from_timestamp_ns < endpoints.front() ? "before_initialization" : "after_support_horizon") << '\n';
+  }
+  std::ofstream dispatch_csv(options.output_directory + "/causal_dispatch.csv");
+  dispatch_csv << "source,session,from_index,to_index,revision,arrival_ns,insertion_ns,required_support,created_support,outcome\n";
   std::ofstream trajectory(options.output_directory + "/trajectory.tum");
   std::ofstream state_csv(options.output_directory + "/states.csv");
   std::ofstream residual_csv(options.output_directory + "/belief_residuals.csv");
+  std::ofstream source_model_csv(options.output_directory + "/source_model_covariance.csv");
+  source_model_csv << "source,session,from_index,to_index,revision,rotation_sigma_rad,translation_sigma_m";
+  for (int row = 0; row < 6; ++row) {
+    for (int column = 0; column < 6; ++column) {
+      source_model_csv << ",reported_" << row << column;
+    }
+  }
+  for (int row = 0; row < 6; ++row) {
+    for (int column = 0; column < 6; ++column) {
+      source_model_csv << ",effective_" << row << column;
+    }
+  }
+  source_model_csv << '\n';
   std::ofstream event_csv(options.output_directory + "/measurement_events.csv");
   std::ofstream revision_csv;
   if (!options.revision_beliefs_path.empty()) {
@@ -752,57 +1273,111 @@ int Run(int argc, char ** argv)
   }
   std::ofstream acceleration_csv(
     options.output_directory + "/support_accelerations.csv");
+  std::ofstream model_covariance_csv(
+    options.output_directory + "/model_covariance.csv");
   std::ofstream online_trajectory;
   std::ofstream online_state_csv;
+  std::ofstream convergence_csv;
+  if (options.source_convergence_check) {
+    convergence_csv.open(options.output_directory + "/convergence_checks.csv");
+    if (!convergence_csv) throw std::runtime_error("cannot create convergence diagnostics");
+    convergence_csv << "phase,state_index,timestamp_ns,attempted,accepted,error_before,error_after,"
+      "normalized_gradient_before,normalized_gradient_after,status,seconds\n";
+  }
+  auto refine_before_output = [&](const char* phase, size_t index, int64_t timestamp_ns) {
+    if (!options.source_convergence_check) return;
+    const auto begin = std::chrono::steady_clock::now();
+    const auto r = backend.Refine();
+    const double elapsed = std::chrono::duration<double>(std::chrono::steady_clock::now() - begin).count();
+    convergence_csv << phase << ',' << index << ',' << timestamp_ns << ',' << r.attempted << ','
+      << r.accepted << std::setprecision(17) << ',' << r.error_before << ',' << r.error_after << ','
+      << r.gradient_before << ',' << r.gradient_after << ',' << r.status << ',' << elapsed << '\n';
+    convergence_csv.flush();
+  };
+  std::ofstream graph_pose_csv;
+  std::ofstream graph_factor_csv;
   if (options.solver == "isam2") {
     online_trajectory.open(options.output_directory + "/online_trajectory.tum");
     online_state_csv.open(options.output_directory + "/online_states.csv");
   }
-  if (!trajectory || !state_csv || !residual_csv || !event_csv || !acceleration_csv ||
+  if (!options.graph_snapshots_out.empty()) {
+    std::filesystem::create_directories(options.graph_snapshots_out);
+    graph_pose_csv.open(options.graph_snapshots_out + "/pose_snapshots.csv");
+    graph_factor_csv.open(options.graph_snapshots_out + "/factor_snapshots.csv");
+  }
+  if (!trajectory || !state_csv || !residual_csv || !source_model_csv || !event_csv || !acceleration_csv ||
+    !model_covariance_csv ||
     (!options.revision_beliefs_path.empty() && !revision_csv) ||
-    (options.solver == "isam2" && (!online_trajectory || !online_state_csv)))
+    (options.solver == "isam2" && (!online_trajectory || !online_state_csv)) ||
+    (!options.graph_snapshots_out.empty() && (!graph_pose_csv || !graph_factor_csv)))
   {
     throw std::runtime_error("cannot create GrandTour output files");
   }
-  state_csv << "state_index,timestamp_ns,px,py,pz,qx,qy,qz,qw,vx,vy,vz,bax,bay,baz,bgx,bgy,bgz\n";
+  const std::string state_header = source_wnoj ?
+    "state_index,timestamp_ns,px,py,pz,qx,qy,qz,qw,vx,vy,vz,wx,wy,wz,alpha_x,alpha_y,alpha_z,a_x,a_y,a_z\n" :
+    "state_index,timestamp_ns,px,py,pz,qx,qy,qz,qw,vx,vy,vz,bax,bay,baz,bgx,bgy,bgz\n";
+  state_csv << state_header;
   if (options.solver == "isam2") {
-    online_state_csv <<
-      "state_index,timestamp_ns,px,py,pz,qx,qy,qz,qw,vx,vy,vz,bax,bay,baz,bgx,bgy,bgz\n";
+    online_state_csv << state_header;
+  }
+  if (!options.graph_snapshots_out.empty()) {
+    graph_pose_csv << "snapshot_index,snapshot_timestamp_ns,state_index,state_timestamp_ns,"
+      "px,py,pz,qx,qy,qz,qw\n";
+    graph_factor_csv << "snapshot_index,snapshot_timestamp_ns,source,from_index,to_index,"
+      "revision,factor_index,from_timestamp_ns,to_timestamp_ns,keys\n";
   }
   residual_csv <<
-    "source,factor_kind,ordinal,from_index,to_index,translation_residual,rotation_residual\n";
+    "source,factor_kind,ordinal,from_index,to_index,translation_residual,rotation_residual,"
+    "mahalanobis_squared,r0,r1,r2,r3,r4,r5\n";
   event_csv <<
     "source,ordinal,from_timestamp_ns,to_timestamp_ns,record_timestamp_ns,"
     "insertion_timestamp_ns,delay_seconds,factor_kind\n";
   acceleration_csv << "state_index,timestamp_ns,alpha_x,alpha_y,alpha_z,a_x,a_y,a_z\n";
+  model_covariance_csv << "state_index,delta_t_seconds,imu_rotation_trace_rad2,"
+    "imu_position_trace_m2,wnoj_rotation_pose_trace_rad2,"
+    "wnoj_translation_pose_trace_m2\n";
 
   gtsam::NonlinearFactorGraph initial_graph;
   gtsam::Values initial_values;
   const gtsam::Pose3 initial_pose;
   const gtsam::Vector3 initial_velocity = gtsam::Vector3::Zero();
-  const gtsam::Vector3 initial_omega = CorrectedAngularRate(
-    imu, initial_timestamp_ns, initial_bias);
-  const gtsam::Vector6 pose_sigmas =
-    (gtsam::Vector6() << 0.174533, 0.174533, 0.00174533,
-    1e-5, 1e-5, 1e-5).finished();
-  const gtsam::Vector3 velocity_sigmas = gtsam::Vector3::Constant(0.001);
+  const gtsam::Vector3 initial_omega = source_wnoj ? gtsam::Vector3::Zero().eval() :
+    CorrectedAngularRate(imu, initial_timestamp_ns, initial_bias);
+  // Source-only initial pose fixes the 6D gauge, not an IMU gravity direction.
+  const gtsam::Vector6 pose_sigmas = source_wnoj ? gtsam::Vector6::Constant(1e-5).eval() :
+    (gtsam::Vector6() << 0.174533, 0.174533, 0.00174533, 1e-5, 1e-5, 1e-5).finished();
+  // Broad, finite, zero-mean derivative priors. Engineering constants, not GT
+  // fitted: V 10 m/s; W 3 rad/s; A [10 rad/s^2, 10 m/s^2]. No source data reused.
+  const gtsam::Vector3 velocity_sigmas = gtsam::Vector3::Constant(source_wnoj ? 10.0 : 0.001);
   const gtsam::Vector6 bias_sigmas =
     (gtsam::Vector6() << 0.1, 0.1, 0.1, 0.01, 0.01, 0.01).finished();
-  const gtsam::Vector3 omega_sigmas = gtsam::Vector3::Constant(0.1);
+  const gtsam::Vector3 omega_sigmas = gtsam::Vector3::Constant(source_wnoj ? 3.0 : 0.1);
   initial_graph.emplace_shared<gtsam::PriorFactor<gtsam::Pose3>>(
     X(0), initial_pose, gtsam::noiseModel::Diagonal::Sigmas(pose_sigmas));
   initial_graph.emplace_shared<gtsam::PriorFactor<gtsam::Vector3>>(
     V(0), initial_velocity, gtsam::noiseModel::Diagonal::Sigmas(velocity_sigmas));
-  initial_graph.emplace_shared<gtsam::PriorFactor<gtsam::imuBias::ConstantBias>>(
-    B(0), initial_bias, gtsam::noiseModel::Diagonal::Sigmas(bias_sigmas));
-  initial_graph.emplace_shared<gtsam::PriorFactor<gtsam::Vector3>>(
-    W(0), initial_omega, gtsam::noiseModel::Diagonal::Sigmas(omega_sigmas));
+  if (use_imu) {
+    initial_graph.emplace_shared<gtsam::PriorFactor<gtsam::imuBias::ConstantBias>>(
+      B(0), initial_bias, gtsam::noiseModel::Diagonal::Sigmas(bias_sigmas));
+  }
+  if (options.audit_use_wnoj) {
+    initial_graph.emplace_shared<gtsam::PriorFactor<gtsam::Vector3>>(
+      W(0), initial_omega, gtsam::noiseModel::Diagonal::Sigmas(omega_sigmas));
+  }
+  if (source_wnoj) {
+    initial_graph.emplace_shared<gtsam::PriorFactor<gtsam::Vector6>>(
+      A(0), gtsam::Vector6::Zero().eval(), gtsam::noiseModel::Isotropic::Sigma(6, 10.0));
+    initial_values.insert(A(0), gtsam::Vector6::Zero().eval());
+  }
   initial_values.insert(X(0), initial_pose);
   initial_values.insert(V(0), initial_velocity);
-  initial_values.insert(B(0), initial_bias);
-  initial_values.insert(W(0), initial_omega);
+  if (use_imu) initial_values.insert(B(0), initial_bias);
+  if (options.audit_use_wnoj) initial_values.insert(W(0), initial_omega);
   fgo::solvers::FixedLagSmoother::KeyTimestampMap initial_timestamps{
-    {X(0), 0.0}, {V(0), 0.0}, {B(0), 0.0}, {W(0), 0.0}};
+    {X(0), 0.0}, {V(0), 0.0}};
+  if (use_imu) initial_timestamps.emplace(B(0), 0.0);
+  if (source_wnoj) initial_timestamps.emplace(A(0), 0.0);
+  if (options.audit_use_wnoj) initial_timestamps.emplace(W(0), 0.0);
   backend.Update(initial_graph, initial_values, initial_timestamps);
 
   std::vector<gtsam::Pose3> poses;
@@ -812,7 +1387,7 @@ int Run(int argc, char ** argv)
   }
   std::vector<gtsam::Vector6> support_accelerations;
   support_accelerations.reserve(endpoints.size());
-  support_accelerations.push_back(
+  support_accelerations.push_back(source_wnoj ? gtsam::Vector6::Zero().eval() :
     SupportAcceleration(
       imu, initial_timestamp_ns, initial_pose, initial_bias, gravity));
   acceleration_csv << 0 << ',' << initial_timestamp_ns;
@@ -826,18 +1401,26 @@ int Run(int argc, char ** argv)
     WriteTrajectoryRow(trajectory, initial_timestamp_ns, initial_pose);
   }
 
-  auto write_state = [](
+  auto write_state = [&initial_bias, source_wnoj](
     std::ostream & output, size_t index, int64_t timestamp_ns,
     const gtsam::Values & estimate) {
       const gtsam::Pose3 pose = estimate.at<gtsam::Pose3>(X(index));
       const gtsam::Vector3 velocity = estimate.at<gtsam::Vector3>(V(index));
-      const auto bias = estimate.at<gtsam::imuBias::ConstantBias>(B(index));
+      const auto bias = estimate.exists(B(index)) ?
+        estimate.at<gtsam::imuBias::ConstantBias>(B(index)) : initial_bias;
       const gtsam::Quaternion quaternion = pose.rotation().toQuaternion();
       output << index << ',' << timestamp_ns << std::setprecision(17)
              << ',' << pose.x() << ',' << pose.y() << ',' << pose.z()
              << ',' << quaternion.x() << ',' << quaternion.y() << ',' << quaternion.z()
              << ',' << quaternion.w() << ',' << velocity.x() << ',' << velocity.y()
-             << ',' << velocity.z() << ',' << bias.accelerometer().x()
+             << ',' << velocity.z();
+      if (source_wnoj) {
+        for (double value : estimate.at<gtsam::Vector3>(W(index))) output << ',' << value;
+        for (double value : estimate.at<gtsam::Vector6>(A(index))) output << ',' << value;
+        output << '\n';
+        return;
+      }
+      output << ',' << bias.accelerometer().x()
              << ',' << bias.accelerometer().y() << ',' << bias.accelerometer().z()
              << ',' << bias.gyroscope().x() << ',' << bias.gyroscope().y()
              << ',' << bias.gyroscope().z() << '\n';
@@ -858,15 +1441,54 @@ int Run(int argc, char ** argv)
     const ScheduledBelief * latest{};
     std::string kind;
   };
-  std::map<std::tuple<std::string, uint64_t, uint64_t>, RevisionLedgerEntry>
+  std::map<std::tuple<std::string, std::string, uint64_t, uint64_t>, RevisionLedgerEntry>
     revision_ledger;
+  // Visualization-only snapshots of the actual optimized active iSAM2 graph.
+  // They never feed back into the estimator or change its event ordering.
+  auto write_graph_snapshot = [&](size_t snapshot_index, size_t current_state_index,
+      int64_t timestamp_ns, const gtsam::Values & estimate) {
+      if (options.graph_snapshots_out.empty()) return;
+      const size_t expected_factors = initial_graph.size() +
+        (source_wnoj ? 1 : static_cast<size_t>(use_imu) + options.audit_use_wnoj) *
+        current_state_index + revision_ledger.size();
+      if (backend.ActiveFactorCount() != expected_factors) {
+        throw std::runtime_error("graph snapshot active-factor count mismatch");
+      }
+      for (size_t state_index = 0; state_index <= current_state_index; ++state_index) {
+        const gtsam::Pose3 pose = estimate.at<gtsam::Pose3>(X(state_index));
+        const gtsam::Quaternion q = pose.rotation().toQuaternion();
+        graph_pose_csv << snapshot_index << ',' << timestamp_ns << ','
+          << state_index << ',' << endpoints[state_index] << std::setprecision(17)
+          << ',' << pose.x() << ',' << pose.y() << ',' << pose.z()
+          << ',' << q.x() << ',' << q.y() << ',' << q.z() << ',' << q.w() << '\n';
+      }
+      for (const auto & [id, entry] : revision_ledger) {
+        const RelativeBelief & belief = *entry.latest->belief;
+        const gtsam::KeyVector keys = backend.FactorKeys(entry.factor_index);
+        graph_factor_csv << snapshot_index << ',' << timestamp_ns << ','
+          << std::get<0>(id) << ',' << std::get<2>(id) << ',' << std::get<3>(id)
+          << ',' << entry.latest_revision << ',' << entry.factor_index << ','
+          << belief.from_timestamp_ns << ',' << belief.to_timestamp_ns << ',';
+        for (size_t key_index = 0; key_index < keys.size(); ++key_index) {
+          if (key_index) graph_factor_csv << ';';
+          const gtsam::Symbol symbol(keys[key_index]);
+          graph_factor_csv << symbol.chr() << symbol.index();
+        }
+        graph_factor_csv << '\n';
+      }
+    };
+  write_graph_snapshot(0, 0, support_available.front(), initial_estimate);
   size_t revision_insertions = 0;
   size_t revision_removals = 0;
   size_t revision_duplicates = 0;
   size_t revision_stale = 0;
   double revision_update_seconds = 0.0;
+  double maximum_factor_covariance_abs_difference = 0.0;
+  bool selected_rows_validated = false;
+  bool kimera_blockdiag_validated = false;
+  double maximum_removed_kimera_cross_covariance = 0.0;
   std::map<std::string, size_t> factor_kind_counts;
-  size_t maximum_active_values = 4;
+  size_t maximum_active_values = initial_values.size();
   std::vector<std::pair<const ScheduledBelief *, std::string>> accepted;
   accepted.reserve(scheduled_beliefs.size());
   auto record_factor = [&](const ScheduledBelief * scheduled, const std::string & kind,
@@ -893,37 +1515,71 @@ int Run(int argc, char ** argv)
       const gtsam::Values & estimate) {
       const gtsam::Pose3 from_pose = PoseAtEndpoint(
         scheduled->from, scheduled->belief->from_timestamp_ns, endpoints,
-        support_accelerations, qc_model, estimate);
+        support_accelerations, qc_model, estimate, source_wnoj);
       const gtsam::Pose3 to_pose = PoseAtEndpoint(
         scheduled->to, scheduled->belief->to_timestamp_ns, endpoints,
-        support_accelerations, qc_model, estimate);
+        support_accelerations, qc_model, estimate, source_wnoj);
       const gtsam::Vector6 residual = scheduled->belief->measurement.localCoordinates(
         from_pose.between(to_pose));
+      const gtsam::Matrix6 effective_covariance = fgo::offline::EffectiveSourceCovariance(
+        scheduled->belief->covariance, scheduled->source, options.source_model_noise);
+      const double mahalanobis_squared = residual.dot(
+        effective_covariance.llt().solve(residual));
       residual_csv << scheduled->source << ',' << kind << ','
                    << scheduled->belief->ordinal << ','
                    << scheduled->belief->from_index << ','
                    << scheduled->belief->to_index << ','
                    << std::setprecision(17) << residual.tail<3>().norm() << ','
-                   << residual.head<3>().norm() << '\n';
+                   << residual.head<3>().norm() << ',' << mahalanobis_squared;
+      for (int component = 0; component < 6; ++component) {
+        residual_csv << ',' << residual(component);
+      }
+      residual_csv << '\n';
     };
   size_t next_arrival = 0;
+  size_t created_support = 0;
+  size_t queued_arrivals = 0;
+  size_t pending_at_end = 0;
+  int64_t maximum_wait_ns = 0;
+  std::map<std::string, size_t> source_counts;
   auto process_arrival = [&](const ScheduledBelief * scheduled,
       int64_t insertion_timestamp_ns) {
+      if (independent_clock &&
+        (insertion_timestamp_ns < scheduled->belief->record_timestamp_ns ||
+        insertion_timestamp_ns < support_available[scheduled->activation_index] ||
+        scheduled->activation_index > created_support)) {
+        throw std::runtime_error("causality violation: unavailable measurement/IMU/support");
+      }
+      maximum_wait_ns = std::max(maximum_wait_ns,
+        insertion_timestamp_ns - scheduled->belief->record_timestamp_ns);
       if (!options.revision_beliefs_path.empty()) {
         const RelativeBelief & belief = *scheduled->belief;
         if (insertion_timestamp_ns < endpoints.front()) {
           throw std::runtime_error("revision arrived before first support state");
         }
-        const auto id = std::make_tuple(scheduled->source,
+        const auto id = std::make_tuple(scheduled->source, belief.session_id,
           belief.from_index, belief.to_index);
         const auto previous = revision_ledger.find(id);
         const bool known = previous != revision_ledger.end();
         const std::string outcome = !known ? "insert" :
           belief.revision == previous->second.latest_revision ? "duplicate" :
           belief.revision < previous->second.latest_revision ? "stale" : "replace";
-        if (!known && belief.revision != 0) {
+        if (!known && belief.revision != 0 && !independent_clock) {
           throw std::runtime_error("first revision for a BeliefID must be zero");
         }
+        if (known && (belief.from_timestamp_ns != previous->second.latest->belief->from_timestamp_ns ||
+          belief.to_timestamp_ns != previous->second.latest->belief->to_timestamp_ns)) {
+          throw std::runtime_error("revision changed stable-ID endpoint timestamps");
+        }
+        if (known && outcome == "duplicate" &&
+          (belief.measurement.localCoordinates(previous->second.latest->belief->measurement).norm() > 1e-12 ||
+          (belief.covariance - previous->second.latest->belief->covariance).cwiseAbs().maxCoeff() > 1e-12)) {
+          throw std::runtime_error("conflicting payload for identical revision");
+        }
+        dispatch_csv << scheduled->source << ',' << belief.session_id << ',' << belief.from_index
+          << ',' << belief.to_index << ',' << belief.revision << ',' << belief.record_timestamp_ns
+          << ',' << insertion_timestamp_ns << ',' << scheduled->activation_index << ','
+          << created_support << ',' << outcome << '\n';
         if (outcome == "duplicate" || outcome == "stale") {
           if (outcome == "duplicate") ++revision_duplicates;
           else ++revision_stale;
@@ -934,7 +1590,7 @@ int Run(int argc, char ** argv)
             << ",0,0,0," << backend.ActiveFactorCount() << '\n';
           return;
         }
-        const size_t current_index = std::min(
+        const size_t current_index = independent_clock ? created_support : std::min(
           endpoints.size() - 1,
           static_cast<size_t>(std::upper_bound(
             endpoints.begin(), endpoints.end(), insertion_timestamp_ns) -
@@ -944,8 +1600,52 @@ int Run(int argc, char ** argv)
           scheduled->to.exact_index : scheduled->to.right_index;
         const gtsam::Pose3 before_endpoint = backend.Pose(endpoint_support_index);
         gtsam::NonlinearFactorGraph graph;
+        const gtsam::Matrix6 effective_covariance = fgo::offline::EffectiveSourceCovariance(
+          belief.covariance, scheduled->source, options.source_model_noise);
+        const gtsam::Matrix6 factor_covariance = FactorCovariance(
+          scheduled->source, effective_covariance, options.kimera_covariance);
         const std::string kind = AddRelativeFactor(
-          *scheduled, endpoints, support_accelerations, qc_model, &graph);
+          *scheduled, endpoints, support_accelerations, qc_model,
+          factor_covariance, options.kimera_channel, options.kimera_covariance, &graph, source_wnoj);
+        if (!selected_rows_validated && IsKimeraChannelSource(scheduled->source) &&
+          options.kimera_channel != "full") {
+          ValidateSelectedRowsFactor(
+            graph, backend.Estimate(), effective_covariance, options.kimera_channel);
+          selected_rows_validated = true;
+        }
+        if (graph.size() != 1) {
+          throw std::runtime_error("one revision must create exactly one factor");
+        }
+        const auto * noise_factor = dynamic_cast<const gtsam::NoiseModelFactor *>(
+          graph.at(0).get());
+        if (!noise_factor) {
+          throw std::runtime_error("relative factor has no noise model");
+        }
+        const auto * gaussian = dynamic_cast<const gtsam::noiseModel::Gaussian *>(
+          noise_factor->noiseModel().get());
+        if (!gaussian) {
+          throw std::runtime_error("relative factor has non-Gaussian noise");
+        }
+        const bool selected = IsKimeraChannelSource(scheduled->source) &&
+          options.kimera_channel != "full";
+        const size_t first_row = options.kimera_channel == "rotation" ? 0 : 3;
+        const gtsam::Matrix expected_covariance = selected ?
+          gtsam::Matrix(factor_covariance.block<3, 3>(first_row, first_row)) :
+          gtsam::Matrix(factor_covariance);
+        const double covariance_difference =
+          (gaussian->covariance() - expected_covariance).cwiseAbs().maxCoeff();
+        maximum_factor_covariance_abs_difference = std::max(
+          maximum_factor_covariance_abs_difference, covariance_difference);
+        if (IsKimeraChannelSource(scheduled->source) &&
+          options.kimera_covariance == "blockdiag") {
+          if (gaussian->dim() != 6 || covariance_difference > 1e-12) {
+            throw std::runtime_error("Kimera block-diagonal factor covariance is invalid");
+          }
+          kimera_blockdiag_validated = true;
+          maximum_removed_kimera_cross_covariance = std::max(
+            maximum_removed_kimera_cross_covariance,
+            effective_covariance.block<3, 3>(0, 3).cwiseAbs().maxCoeff());
+        }
         const gtsam::FactorIndices remove = known ?
           gtsam::FactorIndices{previous->second.factor_index} : gtsam::FactorIndices{};
         const auto update_start = std::chrono::steady_clock::now();
@@ -962,8 +1662,9 @@ int Run(int argc, char ** argv)
         if (known) ++revision_removals;
         else {
           ++accepted_beliefs;
+          ++source_counts[scheduled->source];
           if (scheduled->source == "glim") ++accepted_glim;
-          else ++accepted_kimera;
+          else if (scheduled->source == "kimera") ++accepted_kimera;
           ++factor_kind_counts[kind];
         }
         const auto old_index = known ? previous->second.factor_index : factor_index;
@@ -979,28 +1680,84 @@ int Run(int argc, char ** argv)
         return;
       }
       gtsam::NonlinearFactorGraph graph;
+      const gtsam::Matrix6 effective_covariance = fgo::offline::EffectiveSourceCovariance(
+        scheduled->belief->covariance, scheduled->source, options.source_model_noise);
+      const gtsam::Matrix6 factor_covariance = FactorCovariance(
+        scheduled->source, effective_covariance, options.kimera_covariance);
       const std::string kind = AddRelativeFactor(
-        *scheduled, endpoints, support_accelerations, qc_model, &graph);
+        *scheduled, endpoints, support_accelerations, qc_model,
+        factor_covariance, options.kimera_channel, options.kimera_covariance, &graph, source_wnoj);
       backend.Update(graph, gtsam::Values());
       record_factor(scheduled, kind, insertion_timestamp_ns);
       maximum_active_values = std::max(maximum_active_values, backend.Estimate().size());
     };
   std::vector<const ScheduledBelief *> pending_arrivals;
+  std::ofstream stream_progress;
+  if (streaming) {
+    stream_progress.open(options.output_directory + "/stream_progress.csv");
+    stream_progress << "event_count,arrival_ns,wall_unix_ns,created_support,pending\n";
+  }
+  auto stream_belief = [&](const RelativeBelief & belief) {
+      const auto previous_size = scheduled_beliefs.size();
+      const std::string source = belief.source_agent == "g" ? "glim" :
+        belief.source_agent == "k" ? "kimera" : belief.source_agent;
+      schedule(belief, source);
+      if (scheduled_beliefs.size() == previous_size) {
+        unsupported_csv << source << ',' << belief.session_id << ',' << belief.ordinal << ','
+          << belief.revision << ',' << belief.from_timestamp_ns << ',' << belief.to_timestamp_ns
+          << ",before_initialization\n";
+        return;
+      }
+      const auto * scheduled = &scheduled_beliefs.back();
+      if (scheduled->activation_index > created_support) {
+        pending_arrivals.push_back(scheduled);
+        ++queued_arrivals;
+      } else {
+        process_arrival(scheduled, belief.record_timestamp_ns);
+      }
+    };
+  for (const auto & belief : streamed_beliefs) stream_belief(belief);
+  auto ensure_stream_support = [&](size_t index) {
+      while (index >= endpoints.size()) {
+        const auto event = event_stream->Next();
+        if (event.kind == 'E') return false;
+        if (event.kind == 'I') {
+          const size_t before = endpoints.size();
+          receive_imu(event.imu);
+          for (size_t i = before; i < endpoints.size(); ++i) {
+            clock_csv << i << ',' << endpoints[i] << ',' << support_available[i] << '\n';
+          }
+        } else {
+          streamed_beliefs.push_back(event.belief);
+          stream_belief(streamed_beliefs.back());
+        }
+        const auto wall_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(
+          std::chrono::system_clock::now().time_since_epoch()).count();
+        stream_progress << event_stream->count() << ',' << event.arrival_ns << ','
+          << wall_ns << ',' << created_support << ',' << pending_arrivals.size() << '\n';
+        stream_progress.flush();
+      }
+      return true;
+    };
   const auto wall_start = std::chrono::steady_clock::now();
-  for (size_t index = 1; index < endpoints.size(); ++index) {
+  for (size_t index = 1;
+    streaming ? ensure_stream_support(index) : index < endpoints.size(); ++index) {
     const int64_t previous_timestamp_ns = endpoints[index - 1];
     const int64_t timestamp_ns = endpoints[index];
+    const int64_t ready_ns = support_available[index];
     if (options.timeline == "record") {
       while (next_arrival < scheduled_by_arrival.size() &&
-        scheduled_by_arrival[next_arrival]->belief->record_timestamp_ns < timestamp_ns)
+        scheduled_by_arrival[next_arrival]->belief->record_timestamp_ns < ready_ns)
       {
         const ScheduledBelief * scheduled = scheduled_by_arrival[next_arrival++];
-        if (scheduled->activation_index >= index) {
+        if (scheduled->activation_index >= index ||
+          (independent_clock && scheduled->belief->record_timestamp_ns < support_available.front())) {
           // The belief is causally available, but an interpolated endpoint can
           // require the next support state, which has not been created yet.
           // Keep the arrival pending and add its unchanged factor as soon as
           // every referenced support key exists.
           pending_arrivals.push_back(scheduled);
+          ++queued_arrivals;
         } else {
           process_arrival(scheduled, scheduled->belief->record_timestamp_ns);
         }
@@ -1012,16 +1769,39 @@ int Run(int argc, char ** argv)
       timestamp_ns - initial_timestamp_ns) * kNanosecondsToSeconds;
 
     const gtsam::Values previous_estimate = backend.Estimate();
+    gtsam::NonlinearFactorGraph graph;
+    gtsam::Values values;
+    if (source_wnoj) {
+      const auto predicted = fgo::offline::PredictSourceWnoj(
+        fgo::offline::ReadSourceWnojState(previous_estimate, index - 1), delta_t);
+      fgo::offline::InsertSourceWnojState(values, index, predicted);
+      graph.emplace_shared<fgo::factor::GPWNOJPriorFull>(
+        X(index - 1), V(index - 1), W(index - 1), A(index - 1),
+        X(index), V(index), W(index), A(index), delta_t, qc_model, true, true);
+      const double wnoj_pose_variance = 10000.0 * std::pow(delta_t, 5.0) / 20.0;
+      // Empty IMU covariance columns mean absent, not a zero-noise factor.
+      model_covariance_csv << index << ',' << std::setprecision(17) << delta_t
+        << ",,," << 3.0 * wnoj_pose_variance << ',' << 3.0 * wnoj_pose_variance << '\n';
+    } else {
     const gtsam::Pose3 previous_pose = previous_estimate.at<gtsam::Pose3>(X(index - 1));
     const gtsam::Vector3 previous_velocity =
       previous_estimate.at<gtsam::Vector3>(V(index - 1));
-    const auto previous_bias =
-      previous_estimate.at<gtsam::imuBias::ConstantBias>(B(index - 1));
+    const auto previous_bias = options.audit_use_imu ?
+      previous_estimate.at<gtsam::imuBias::ConstantBias>(B(index - 1)) :
+      initial_bias;
 
     gtsam::PreintegratedCombinedMeasurements preintegration(
       preintegration_parameters, previous_bias);
     IntegrateAllRight(
       imu, previous_timestamp_ns, timestamp_ns, &preintegration);
+    const gtsam::Matrix imu_covariance = preintegration.preintMeasCov();
+    const double wnoj_pose_variance =
+      10000.0 * options.audit_qc_scale * std::pow(delta_t, 5.0) / 20.0;
+    model_covariance_csv << index << ',' << std::setprecision(17) << delta_t
+      << ',' << imu_covariance.block(0, 0, 3, 3).trace()
+      << ',' << imu_covariance.block(3, 3, 3, 3).trace()
+      << ',' << 3.0 * wnoj_pose_variance
+      << ',' << 3.0 * wnoj_pose_variance << '\n';
     const gtsam::NavState predicted = preintegration.predict(
       gtsam::NavState(previous_pose, previous_velocity), previous_bias);
     const gtsam::Vector3 predicted_omega = CorrectedAngularRate(
@@ -1037,33 +1817,44 @@ int Run(int argc, char ** argv)
     }
     acceleration_csv << '\n';
 
-    gtsam::NonlinearFactorGraph graph;
-    gtsam::Values values;
-    graph.emplace_shared<gtsam::CombinedImuFactor>(
-      X(index - 1), V(index - 1), X(index), V(index),
-      B(index - 1), B(index), preintegration);
-    graph.emplace_shared<fgo::factor::GPWNOJPrior>(
-      X(index - 1), V(index - 1), W(index - 1),
-      X(index), V(index), W(index), acceleration_i, acceleration_j,
-      delta_t, qc_model, false, true);
+    if (options.audit_use_imu) {
+      graph.emplace_shared<gtsam::CombinedImuFactor>(
+        X(index - 1), V(index - 1), X(index), V(index),
+        B(index - 1), B(index), preintegration);
+    }
+    if (options.audit_use_wnoj) {
+      graph.emplace_shared<fgo::factor::GPWNOJPrior>(
+        X(index - 1), V(index - 1), W(index - 1),
+        X(index), V(index), W(index), acceleration_i, acceleration_j,
+        delta_t, qc_model, false, true);
+    }
     values.insert(X(index), predicted.pose());
     values.insert(V(index), predicted.v());
-    values.insert(B(index), previous_bias);
-    values.insert(W(index), predicted_omega);
+    if (options.audit_use_imu) values.insert(B(index), previous_bias);
+    if (options.audit_use_wnoj) values.insert(W(index), predicted_omega);
+    }
 
     std::vector<std::pair<const ScheduledBelief *, std::string>> added;
     if (options.timeline == "physical") {
       for (const ScheduledBelief * scheduled : scheduled_by_support[index]) {
+        const gtsam::Matrix6 effective_covariance = fgo::offline::EffectiveSourceCovariance(
+          scheduled->belief->covariance, scheduled->source, options.source_model_noise);
+        const gtsam::Matrix6 factor_covariance = FactorCovariance(
+          scheduled->source, effective_covariance, options.kimera_covariance);
         const std::string kind = AddRelativeFactor(
-          *scheduled, endpoints, support_accelerations, qc_model, &graph);
+          *scheduled, endpoints, support_accelerations, qc_model,
+          factor_covariance, options.kimera_channel, options.kimera_covariance, &graph);
         added.emplace_back(scheduled, kind);
       }
     }
 
     fgo::solvers::FixedLagSmoother::KeyTimestampMap timestamps{
-      {X(index), relative_time}, {V(index), relative_time},
-      {B(index), relative_time}, {W(index), relative_time}};
+      {X(index), relative_time}, {V(index), relative_time}};
+    if (use_imu) timestamps.emplace(B(index), relative_time);
+    if (source_wnoj) timestamps.emplace(A(index), relative_time);
+    if (options.audit_use_wnoj) timestamps.emplace(W(index), relative_time);
     backend.Update(graph, values, timestamps);
+    created_support = index;
     for (const auto & [scheduled, kind] : added) {
       record_factor(scheduled, kind, timestamp_ns);
     }
@@ -1072,29 +1863,46 @@ int Run(int argc, char ** argv)
       while (pending != pending_arrivals.end()) {
         const ScheduledBelief * scheduled = *pending;
         if (scheduled->activation_index <= index) {
-          process_arrival(scheduled, timestamp_ns);
+          process_arrival(scheduled, ready_ns);
           pending = pending_arrivals.erase(pending);
         } else {
           ++pending;
         }
       }
       while (next_arrival < scheduled_by_arrival.size() &&
-        scheduled_by_arrival[next_arrival]->belief->record_timestamp_ns == timestamp_ns)
+        scheduled_by_arrival[next_arrival]->belief->record_timestamp_ns == ready_ns)
       {
         const ScheduledBelief * scheduled = scheduled_by_arrival[next_arrival++];
         if (scheduled->activation_index > index) {
           pending_arrivals.push_back(scheduled);
+          ++queued_arrivals;
         } else {
           process_arrival(scheduled, scheduled->belief->record_timestamp_ns);
         }
       }
     }
+    refine_before_output("online", index, timestamp_ns);
     const gtsam::Values estimate = backend.Estimate();
+    if (source_wnoj) {
+      acceleration_csv << index << ',' << timestamp_ns;
+      for (double value : estimate.at<gtsam::Vector6>(A(index)))
+        acceleration_csv << ',' << std::setprecision(17) << value;
+      acceleration_csv << '\n';
+    }
+    write_graph_snapshot(index, index, ready_ns, estimate);
     maximum_active_values = std::max(maximum_active_values, estimate.size());
     const gtsam::Pose3 pose = estimate.at<gtsam::Pose3>(X(index));
     if (options.solver == "isam2") {
       WriteTrajectoryRow(online_trajectory, timestamp_ns, pose);
       write_state(online_state_csv, index, timestamp_ns, estimate);
+      if (streaming) {
+        online_trajectory.flush();
+        online_state_csv.flush();
+        dispatch_csv.flush();
+        clock_csv.flush();
+        graph_pose_csv.flush();
+        graph_factor_csv.flush();
+      }
     } else {
       poses.push_back(pose);
       WriteTrajectoryRow(trajectory, timestamp_ns, pose);
@@ -1105,6 +1913,16 @@ int Run(int argc, char ** argv)
     }
   }
   if (options.timeline == "record") {
+    if (streaming) {
+      pending_at_end = pending_arrivals.size();
+      for (const auto * pending : pending_arrivals) {
+        const auto & b = *pending->belief;
+        unsupported_csv << pending->source << ',' << b.session_id << ',' << b.ordinal << ','
+          << b.revision << ',' << b.from_timestamp_ns << ',' << b.to_timestamp_ns
+          << ",missing_right_support_at_end\n";
+      }
+      pending_arrivals.clear();
+    }
     if (!pending_arrivals.empty()) {
       throw std::runtime_error("relative belief has unavailable support states");
     }
@@ -1115,9 +1933,33 @@ int Run(int argc, char ** argv)
       }
       process_arrival(scheduled, scheduled->belief->record_timestamp_ns);
     }
+    refine_before_output("final", endpoints.size() - 1, endpoints.back());
+    if (streaming && !options.graph_snapshots_out.empty() && !streamed_beliefs.empty()) {
+      write_graph_snapshot(endpoints.size(), endpoints.size() - 1,
+        std::max(support_available.back(), streamed_beliefs.back().record_timestamp_ns),
+        backend.Estimate());
+    } else if (!options.graph_snapshots_out.empty() && !scheduled_by_arrival.empty()) {
+      const int64_t last_arrival_ns = scheduled_by_arrival.back()->belief->record_timestamp_ns;
+      if (last_arrival_ns > endpoints.back()) {
+        write_graph_snapshot(endpoints.size(), endpoints.size() - 1,
+          last_arrival_ns, backend.Estimate());
+      }
+    }
   }
   if (options.solver == "isam2") {
     const gtsam::Values final_estimate = backend.Estimate();
+    if (source_wnoj) {
+      if (backend.ActiveFactorCount() != 4 + endpoints.size() - 1 + revision_ledger.size() ||
+          final_estimate.size() != 4 * endpoints.size() ||
+          backend.ActiveFactorTypeCount<gtsam::CombinedImuFactor>() != 0 ||
+          backend.ActiveFactorTypeCount<fgo::factor::GPWNOJPriorFull>() != endpoints.size() - 1 ||
+          backend.ActiveFactorTypeCount<fgo::offline::FullWnojRelativeFactor>() != revision_ledger.size())
+        throw std::runtime_error("source WNOJ final graph accounting mismatch");
+      for (size_t i = 0; i < endpoints.size(); ++i) {
+        if (final_estimate.exists(B(i)) || !final_estimate.exists(A(i)))
+          throw std::runtime_error("source WNOJ must have A states and no bias states");
+      }
+    }
     poses.clear();
     poses.reserve(endpoints.size());
     for (size_t index = 0; index < endpoints.size(); ++index) {
@@ -1136,15 +1978,81 @@ int Run(int argc, char ** argv)
       }
     }
   }
+  if (options.kimera_channel != "full" && !selected_rows_validated) {
+    throw std::runtime_error("Kimera channel ablation selected no Kimera factors");
+  }
+  if (options.kimera_covariance == "blockdiag" &&
+    (!kimera_blockdiag_validated || maximum_removed_kimera_cross_covariance == 0.0)) {
+    throw std::runtime_error("Kimera block-diagonal diagnostic changed no factors");
+  }
   const auto wall_end = std::chrono::steady_clock::now();
   const double wall_seconds = std::chrono::duration<double>(wall_end - wall_start).count();
   const double path_length = PathLength(poses);
+  fgo::offline::ValidateConfiguredSourceCoverage(options.source_model_noise, source_counts);
+  std::ofstream source_csv(options.output_directory + "/source_accounting.csv");
+  source_csv << "source,unique_active_beliefs\n";
+  for (const auto & item : source_counts) source_csv << item.first << ',' << item.second << '\n';
+
+  auto write_source_covariance = [&](const ScheduledBelief * scheduled) {
+      const auto & belief = *scheduled->belief;
+      const auto noise = options.source_model_noise.find(scheduled->source);
+      const fgo::offline::SourceModelNoise model = noise == options.source_model_noise.end() ?
+        fgo::offline::SourceModelNoise{} : noise->second;
+      const gtsam::Matrix6 effective = fgo::offline::EffectiveSourceCovariance(
+        belief.covariance, scheduled->source, options.source_model_noise);
+      source_model_csv << scheduled->source << ',' << belief.session_id << ','
+        << belief.from_index << ',' << belief.to_index << ',' << belief.revision << ','
+        << std::setprecision(17) << model.rotation_sigma_rad << ','
+        << model.translation_sigma_m;
+      for (int row = 0; row < 6; ++row) {
+        for (int column = 0; column < 6; ++column) {
+          source_model_csv << ',' << belief.covariance(row, column);
+        }
+      }
+      for (int row = 0; row < 6; ++row) {
+        for (int column = 0; column < 6; ++column) {
+          source_model_csv << ',' << effective(row, column);
+        }
+      }
+      source_model_csv << '\n';
+    };
+  if (!options.revision_beliefs_path.empty()) {
+    for (const auto & [id, entry] : revision_ledger) write_source_covariance(entry.latest);
+  } else {
+    for (const auto & [scheduled, kind] : accepted) write_source_covariance(scheduled);
+  }
 
   std::ofstream summary(options.output_directory + "/summary.json");
   summary << "{\n"
-          << "  \"mode\": \"grandtour_all_right_" << options.mode << "\",\n"
-          << "  \"imu_support\": \"right_interval_end\",\n"
-          << "  \"motion_prior\": \"WNOJ\",\n"
+          << "  \"receiver_model\": \"" << options.receiver_model << "\",\n"
+          << "  \"support_policy\": \"" << options.support_policy << "\",\n"
+          << "  \"kimera_channel\": \"" << options.kimera_channel << "\",\n"
+          << "  \"kimera_covariance\": \"" << options.kimera_covariance << "\",\n"
+          << "  \"selected_rows_validated\": "
+          << (selected_rows_validated ? "true" : "false") << ",\n"
+          << "  \"kimera_blockdiag_validated\": "
+          << (kimera_blockdiag_validated ? "true" : "false") << ",\n"
+          << "  \"maximum_removed_kimera_cross_covariance\": "
+          << JsonNumber(maximum_removed_kimera_cross_covariance) << ",\n"
+          << "  \"streaming\": " << (streaming ? "true" : "false") << ",\n"
+          << "  \"pending_at_end\": " << pending_at_end << ",\n"
+          << "  \"support_period_ns\": " << options.support_period_ns << ",\n"
+          << "  \"initial_timestamp_ns\": " << initial_timestamp_ns << ",\n"
+          << "  \"imu_availability\": \"" << (streaming ? "event-stream adapter receipt timestamp" :
+             "CSV record_timestamp_ns; physical timestamp fallback") << "\",\n"
+          << "  \"queued_arrival_events\": " << queued_arrivals << ",\n"
+          << "  \"maximum_support_wait_seconds\": " << JsonNumber(maximum_wait_ns * 1e-9) << ",\n"
+          << "  \"mode\": \"" << (source_wnoj ? "source_wnoj_" : "grandtour_all_right_")
+          << options.mode << "\",\n"
+          << "  \"imu_support\": \"" << (source_wnoj ? "timestamp_clock_only" : "right_interval_end") << "\",\n"
+          << "  \"motion_prior\": \""
+          << (source_wnoj ? "WNOJFull_estimated_acceleration" : options.audit_use_wnoj ? "WNOJ" : "none") << "\",\n"
+          << "  \"audit_use_imu\": "
+          << (use_imu ? "true" : "false") << ",\n"
+          << "  \"audit_qc_variance\": "
+          << JsonNumber(10000.0 * options.audit_qc_scale) << ",\n"
+          << "  \"audit_startup_sample_limit\": "
+          << options.audit_startup_samples << ",\n"
           << "  \"timeline\": \"" << options.timeline << "\",\n"
           << "  \"solver\": \"" << options.solver << "\",\n"
           << "  \"smoother\": \""
@@ -1157,11 +2065,23 @@ int Run(int argc, char ** argv)
           << "  \"glim_beliefs_loaded\": " << glim_beliefs.size() << ",\n"
           << "  \"kimera_beliefs_loaded\": " << kimera_beliefs.size() << ",\n"
           << "  \"beliefs_accepted\": " << accepted_beliefs << ",\n"
-          << "  \"revision_messages_loaded\": " << revision_beliefs.size() << ",\n"
+          << "  \"revision_messages_loaded\": " << (streaming ? streamed_beliefs.size() : revision_beliefs.size()) << ",\n"
           << "  \"revision_insertions\": " << revision_insertions << ",\n"
           << "  \"revision_removals\": " << revision_removals << ",\n"
           << "  \"revision_duplicates\": " << revision_duplicates << ",\n"
           << "  \"revision_stale\": " << revision_stale << ",\n"
+          << "  \"maximum_factor_covariance_abs_difference\": "
+          << JsonNumber(maximum_factor_covariance_abs_difference) << ",\n"
+          << "  \"source_model_noise\": {";
+  bool first_source_model = true;
+  for (const auto & [source, noise] : options.source_model_noise) {
+    if (!first_source_model) summary << ", ";
+    first_source_model = false;
+    summary << "\"" << source << "\": ["
+            << JsonNumber(noise.rotation_sigma_rad) << ", "
+            << JsonNumber(noise.translation_sigma_m) << "]";
+  }
+  summary << "},\n"
           << "  \"revision_update_seconds\": " << JsonNumber(revision_update_seconds) << ",\n"
           << "  \"glim_beliefs_accepted\": " << accepted_glim << ",\n"
           << "  \"kimera_beliefs_accepted\": " << accepted_kimera << ",\n"
@@ -1178,8 +2098,21 @@ int Run(int argc, char ** argv)
     kNanosecondsToSeconds) << ",\n"
           << "  \"path_length_m\": " << JsonNumber(path_length) << ",\n"
           << "  \"maximum_active_values\": " << maximum_active_values << ",\n"
-          << "  \"wall_seconds\": " << JsonNumber(wall_seconds) << ",\n"
-          << "  \"gravity\": [" << JsonNumber(gravity.x()) << ", "
+          << "  \"wall_seconds\": " << JsonNumber(wall_seconds) << ",\n";
+  if (source_wnoj) {
+    summary << "  \"gravity\": null,\n  \"initial_accelerometer_bias\": null,\n"
+      << "  \"initial_gyroscope_bias\": null,\n"
+      << "  \"source_wnoj_initial_sigmas\": {\"pose_rad_m\": 0.00001, \"velocity_m_s\": 10, "
+      << "\"omega_rad_s\": 3, \"acceleration_rad_m_s2\": 10},\n"
+      << "  \"imu_factor_count\": 0,\n  \"bias_variable_count\": 0,\n"
+      << "  \"wnoj_full_factor_count\": " << endpoints.size() - 1 << ",\n"
+      << "  \"acceleration_variable_count\": " << endpoints.size() << ",\n"
+      << "  \"initial_prior_count\": 4,\n"
+      << "  \"relative_factor_count\": "
+      << backend.ActiveFactorTypeCount<fgo::offline::FullWnojRelativeFactor>() << ",\n"
+      << "  \"active_factor_count\": " << backend.ActiveFactorCount() << "\n}\n";
+  } else {
+    summary << "  \"gravity\": [" << JsonNumber(gravity.x()) << ", "
           << JsonNumber(gravity.y()) << ", " << JsonNumber(gravity.z()) << "],\n"
           << "  \"initial_accelerometer_bias\": ["
           << JsonNumber(initial_accelerometer_bias.x()) << ", "
@@ -1190,11 +2123,17 @@ int Run(int argc, char ** argv)
           << JsonNumber(initial_gyroscope_bias.y()) << ", "
           << JsonNumber(initial_gyroscope_bias.z()) << "]\n"
           << "}\n";
+  }
 
   std::cout << "GrandTour CT replay (" << options.mode << ", "
             << options.timeline << ", " << options.solver << ") completed: "
-            << accepted_beliefs << " beliefs (GLIM " << accepted_glim
-            << ", Kimera " << accepted_kimera << "), " << endpoints.size()
+            << accepted_beliefs << " beliefs";
+  if (options.mode == "sources") {
+    std::cout << " (per-source counts: source_accounting.csv)";
+  } else {
+    std::cout << " (GLIM " << accepted_glim << ", Kimera " << accepted_kimera << ")";
+  }
+  std::cout << ", " << endpoints.size()
             << " support states, path "
             << path_length << " m, wall " << wall_seconds << " s\n";
   return 0;

@@ -1,0 +1,14 @@
+{
+  "scope": "Approved Steps 1-3 only: frozen-journal matched cutoff, prediction/revision localization, source-belief and factor-interaction audit.",
+  "source_capture": "gnssfgo_eth1_live_wnoa_20261007/full_off and bounded120_on",
+  "cutoff": "minimum of first IMU +120 seconds and the existing ON end marker; preserve every input line in observed order up to this arrival cutoff, with an explicit common end marker",
+  "receiver": "exact live WNOA executable fb56ffc5c6c9cb575d6129289688caeabb4e3baba32e429b857f3d6a30e50d1f",
+  "settings": "unchanged Qc, priors, source covariance scale 1, strict nominal publications, stable-ID replacements, independent 100ms clock; no central IMU factors",
+  "identity_gate": "online states and trajectory must equal original captured prefixes; ON final must equal captured final if its information set is unchanged; stop on scientific identity or validity failure",
+  "diagnostics": "existing read-only all-publication snapshots and copied-graph checks at indices 294,594,894,1192; never feed diagnostic solutions back",
+  "event_selection": "regular 30-second checkpoints plus the largest same-time current-position correction per mode; retain the adjacent before/after graphs. No selection by ATE.",
+  "belief_comparison": "exact source/from/to physical intervals, first publication and latest available at ages 1s and 2s and common cutoff; exclude age-censored rows from matched age summaries; one row per edge per age",
+  "evaluation": "unchanged AP20 prism/IE-TC 1s evaluators, common timestamp mask, native ROS GLIM/Kimera and receiver online/final separately",
+  "not_authorized": "new native source runs, CBS or model edits, covariance swaps, parameter sweeps, gating, weighting interventions, other sequences",
+  "reference_limits": "IE-TC shares CPT7 and lacks joint relative covariance; discrepancies/whitened post-fit residuals are not calibrated NIS/NEES; source family curvature is not a percentage of trajectory influence"
+}

@@ -1,0 +1,13 @@
+{
+  "authorization": "User proceeded with the one proposed final-graph covariance counterfactual.",
+  "case": "CBS-ON final means/topology with the matched CBS-OFF complete source covariance matrices",
+  "base": "/home/yeranis/results/gnssfgo_eth1_wnoa_mechanism_20261007",
+  "cutoff_ns": 1727775127854656555,
+  "matching": "source ID and exact physical from/to endpoints; verify source indices; latest observed covariance in each run by the common cutoff, not matched revision number",
+  "intervention": "cloneWithNewNoiseModel on 1189 GLIM and 581 Kimera factors; retain original ON factor means, endpoint interpolation and keys; scale 1; no diagonalization or coordinate change",
+  "freeze": "All 1192 WNOA factors, Qc, support times, three priors, variable definitions and no-central-IMU model unchanged",
+  "solver": "Retrospective LM on the copied final objective from ON final Values; existing SnapshotAudit settings CeresDefaults, MULTIFRONTAL_QR, 500 iterations then 100 polish, relative/absolute tolerance 1e-11; fresh normalized gradient must be <=1e-5",
+  "validation": "Original snapshot reconstruction and payload probe; unchanged-graph solver check; exact unwhitened residual/Jacobian identity before/after covariance-only cloning; factor/input hashes preserved",
+  "evaluation": "Unchanged common 1161-point grid, prism/IE-TC 1-second evaluators, no-scale alignment, lever arm, and reference mask; do not score until stationarity passes",
+  "limits": "One retrospective diagnostic, not an online policy or causal-arrival replay. No native rerun, reverse swap, per-source swap, sweep, tuning, source protocol change or production edit. This does not test covariance calibration or shared-source correlation. No restart/tolerance adjustment on failure."
+}

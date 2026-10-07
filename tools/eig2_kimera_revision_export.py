@@ -160,6 +160,8 @@ def main():
                    help="CSV: source update ID, ROS bag record timestamp ns")
     p.add_argument("--odom-csv", required=True, type=Path)
     p.add_argument("--out", required=True, type=Path)
+    p.add_argument("--include-right-censored", action="store_true",
+                   help="retain published tail beliefs with their last observed jointly valid revision; do not call them finalized")
     args = p.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
     published = list(rows(args.beliefs))
@@ -194,9 +196,11 @@ def main():
     excluded_tail, missing_source, unmatched_publication = [], [], []
     for original in published:
         key = (int(original["from_index"]), int(original["to_index"]))
-        if key[0] not in retired or key[1] not in retired:
+        fully_retired = key[0] in retired and key[1] in retired
+        if not fully_retired:
             excluded_tail.append(key)
-            continue
+            if not args.include_right_censored:
+                continue
         if key not in logged:
             missing_source.append(key)
             continue
@@ -252,21 +256,25 @@ def main():
         latest_row["record_timestamp_ns"] = str(prev_availability)
         last.append(latest_row)
         last_latency_sec.append((prev_availability - physical_end) / 1e9)
-        final_mean = log_se3(inverse(retired[key[0]]["pose"]) @
-                             retired[key[1]]["pose"])
-        final = set_mu_cov(latest_row, final_mean, last_version["cov"])
-        finalized.append(final)
-        for target, translations, rotations in (
-                (last_version["mu"], relative_first_to_last_translation,
-                 relative_first_to_last_rotation),
-                (final_mean, relative_first_to_final_translation,
-                 relative_first_to_final_rotation)):
-            delta = log_se3(inverse(exp_se3(first_mu)) @ exp_se3(target))
-            translations.append(float(np.linalg.norm(delta[3:])))
-            rotations.append(float(np.linalg.norm(delta[:3]) * 180 / math.pi))
-        delta = log_se3(inverse(exp_se3(last_version["mu"])) @ exp_se3(final_mean))
-        latest_to_final_translation.append(float(np.linalg.norm(delta[3:])))
-        latest_to_final_rotation.append(float(np.linalg.norm(delta[:3]) * 180 / math.pi))
+        delta = log_se3(inverse(exp_se3(first_mu)) @
+                        exp_se3(last_version["mu"]))
+        relative_first_to_last_translation.append(
+            float(np.linalg.norm(delta[3:])))
+        relative_first_to_last_rotation.append(
+            float(np.linalg.norm(delta[:3]) * 180 / math.pi))
+        if fully_retired:
+            final_mean = log_se3(inverse(retired[key[0]]["pose"]) @
+                                 retired[key[1]]["pose"])
+            final = set_mu_cov(latest_row, final_mean, last_version["cov"])
+            finalized.append(final)
+            delta = log_se3(inverse(exp_se3(first_mu)) @ exp_se3(final_mean))
+            relative_first_to_final_translation.append(
+                float(np.linalg.norm(delta[3:])))
+            relative_first_to_final_rotation.append(
+                float(np.linalg.norm(delta[:3]) * 180 / math.pi))
+            delta = log_se3(inverse(exp_se3(last_version["mu"])) @ exp_se3(final_mean))
+            latest_to_final_translation.append(float(np.linalg.norm(delta[3:])))
+            latest_to_final_rotation.append(float(np.linalg.norm(delta[:3]) * 180 / math.pi))
         covariance_ratios_rotation.append(float(np.trace(last_version["cov"][:3, :3]) /
                                                  np.trace(first_cov[:3, :3])))
         covariance_ratios_translation.append(float(np.trace(last_version["cov"][3:, 3:]) /
@@ -275,7 +283,7 @@ def main():
         raise ValueError(f"unmatched source belief: absent={missing_source[:5]} "
                          f"payload={unmatched_publication[:5]}")
     if not selected:
-        raise ValueError("no fully retired published beliefs")
+        raise ValueError("no selected published beliefs")
     if len({(r["from_index"], r["to_index"]) for r in selected}) != len(selected):
         raise ValueError("duplicate published BeliefID")
     first_ids = {(int(r["from_index"]), int(r["to_index"])) for r in selected}
@@ -324,9 +332,11 @@ def main():
             shared_start.append(float(np.linalg.norm(delta[3:])))
             shared_end.append(float(np.linalg.norm(delta[:3]) * 180 / math.pi))
     summary = {
-        "published_total": len(published), "fully_retired_beliefs": len(selected),
+        "published_total": len(published),
+        "fully_retired_beliefs": len(selected) - len(excluded_tail) if args.include_right_censored else len(selected),
         "right_censored_beliefs": len(excluded_tail),
-        "retired_source_poses": len(retired), "represented_retired_poses": len(represented),
+        "retired_source_poses": len(retired),
+        "represented_retired_poses": len(represented & set(retired)),
         "unrepresented_retired_pose_indices": unrepresented,
         "components": [{"root": c[0], "end": c[-1], "poses": len(c),
                         "edges": sum(int(r["from_index"]) in c for r in selected)}
@@ -357,6 +367,8 @@ def main():
         "native_smoother_first_missing_indices": smoother_first_missing,
         "availability_basis": "first: recorded belief; revisions: recorded ROS odometry of same smoother update (conservative max with previous arrival)",
     }
+    if args.include_right_censored:
+        summary["right_censored_in_revisions"] = True
     (args.out / "export_summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     print(json.dumps(summary, indent=2))
 

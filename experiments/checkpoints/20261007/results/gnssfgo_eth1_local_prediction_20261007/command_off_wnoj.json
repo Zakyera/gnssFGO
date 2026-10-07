@@ -1,0 +1,33 @@
+{
+  "name": "off_wnoj",
+  "command": [
+    "/audit/build/wnoj/replay",
+    "--receiver-model",
+    "source_wnoj",
+    "--mode",
+    "sources",
+    "--timeline",
+    "record",
+    "--solver",
+    "isam2",
+    "--support-policy",
+    "uniform_imu",
+    "--support-period-ns",
+    "100000000",
+    "--receiver-startup-samples",
+    "59",
+    "--event-stream",
+    "/long/inputs/off_events.csv",
+    "--out",
+    "/audit/off_wnoj"
+  ],
+  "returncode": 0,
+  "seconds": 1147.4995365090008,
+  "maximum_rss_kib": 449984,
+  "environment": {
+    "WNOJ_INCREMENTAL_PROFILE": "nominal",
+    "WNOJ_STRICT_PUBLICATION": "1",
+    "AUDIT_RECORD_ALL": "1",
+    "WNOJ_AUDIT_INDICES": "74,194,344,394,594,794,964,994,1192"
+  }
+}

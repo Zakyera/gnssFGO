@@ -1,0 +1,36 @@
+--- 
++++ 
+@@ -18,6 +18,7 @@
+   bool recovery{false};
+   bool consensus{false};
+   double qr_disagreement{0};
++  bool local_prediction{false};
+ };
+ struct Result : fgo::offline::BoundedRefinementResult {
+   std::vector<Step> steps;
+@@ -103,8 +104,12 @@
+               const auto y=fresh->calculateBestEstimate();
+               fgo::offline::RequireSameFactorSlots(before,trial->getFactorsUnsafe());
+               fgo::offline::RequireSameFactorSlots(before,fresh->getFactorsUnsafe());
+-              const auto cx=fgo::offline::GaussianCostChange(before,anchor,x);
+-              const auto cy=fgo::offline::GaussianCostChange(before,anchor,y);
++              const auto cx=fgo::offline::CumulativeCostWithLocalPrediction(
++                fgo::offline::GaussianCostChange(before,anchor,x),
++                fgo::offline::GaussianCostChange(before,seed,x));
++              const auto cy=fgo::offline::CumulativeCostWithLocalPrediction(
++                fgo::offline::GaussianCostChange(before,anchor,y),
++                fgo::offline::GaussianCostChange(before,seed,y));
+               const double gx=fgo::offline::NormalizedGradient(before,x),gy=fgo::offline::NormalizedGradient(before,y);
+               const double ex=before.error(x),ey=before.error(y);
+               const double sx=anchor.localCoordinates(x).norm(),sy=anchor.localCoordinates(y).norm();
+@@ -114,8 +119,8 @@
+               const bool consensus2=!descent2&&std::isfinite(ex)&&std::isfinite(ey)&&std::isfinite(sx)&&std::isfinite(sy)&&
+                 fgo::offline::StationaryQRConsensus(cx,cy,result.error_after,result.gradient_after,gx,gy,agreement,tolerance);
+               const bool accept2=descent2||consensus2;
+-              result.steps.push_back({pass,update2.variablesRelinearized,result.error_after,ex,gx,false,false,0.,sx,cx});
+-              result.steps.push_back({pass,0,result.error_after,ey,gy,accept2,descent2,0.,sy,cy,true,consensus2,agreement});
++              result.steps.push_back({pass,update2.variablesRelinearized,result.error_after,ex,gx,false,false,0.,sx,cx,false,false,0.,true});
++              result.steps.push_back({pass,0,result.error_after,ey,gy,accept2,descent2,0.,sy,cy,true,consensus2,agreement,true});
+               if(accept2) {
+                 solver.swap(fresh);++result.accepted;result.error_after=ey;result.gradient_after=gy;
+                 result.status="stationary";return result;

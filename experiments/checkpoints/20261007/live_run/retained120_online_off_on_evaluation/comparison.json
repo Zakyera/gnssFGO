@@ -1,0 +1,129 @@
+{
+  "description": "First120s retained live/as-published comparison. No final graphs or shutdown GLIM dumps.",
+  "off_caveat": "OFF longer trial failed throughput later at218.570044s. This is a prefix-scoring audit, not full_OFF validation or deterministic repeat.",
+  "common_times": 1161,
+  "start": 1727775011.5750432,
+  "end": 1727775127.5750432,
+  "common_scoring_interval": {
+    "start": 1727775008.675043,
+    "end": 1727775127.674791,
+    "duration": 118.99974799156189,
+    "note": "Same physical interval, existing evaluator association and gap rules; prism coverage is partial, not full-window ground truth."
+  },
+  "inputs": {
+    "off_native_glim": {
+      "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_live_wnoa_20261007/full_off_source/glim_odometry.csv",
+      "sha256": "f7414732b5459674682bf8af13c2dc2f7480a959bda1317e1e50ddcfbb98278c"
+    },
+    "off_native_kimera": {
+      "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_live_wnoa_20261007/full_off_source/kimera_odometry.csv",
+      "sha256": "8bb36aa13fcda77d215464ba57d24a6d5b945d8b104f1d1ca7d26f5ef9932cb0"
+    },
+    "off_fused_online": {
+      "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_live_wnoa_20261007/full_off_receiver/receiver/online_trajectory.tum",
+      "sha256": "23263b74ab4243be7aed7fbf5ffd75089a910b1cea14b668c8874d274d7f4c23"
+    },
+    "on_native_glim": {
+      "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_live_wnoa_20261007/bounded120_on_source/glim_odometry.csv",
+      "sha256": "adb816c1873fb365b3665cccf6274265d7b45cf97be480fc6c7ad44763972c93"
+    },
+    "on_native_kimera": {
+      "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_live_wnoa_20261007/bounded120_on_source/kimera_odometry.csv",
+      "sha256": "a1c2941bfcf6a7445621089911ee081b64f02cfd07329022331902033a4f676a"
+    },
+    "on_fused_online": {
+      "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_live_wnoa_20261007/bounded120_on_receiver/receiver/online_trajectory.tum",
+      "sha256": "b9b28773240c344793b5ae837e8f84e3aa5b609761358b4d9b44bcd9aa378480"
+    }
+  },
+  "prefix_checks": {
+    "off": {
+      "prefix_monitor_rows": 600,
+      "max_observed_queue": 3,
+      "median_output_age_s": 0.070012,
+      "p95_output_age_s": 0.120019,
+      "max_output_age_s": 0.130023,
+      "publication_checks": 1194,
+      "publication_status_counts": {
+        "stationary": 1194
+      },
+      "max_publication_gradient": 9.904711830567713e-06,
+      "binary_sha256": "fb56ffc5c6c9cb575d6129289688caeabb4e3baba32e429b857f3d6a30e50d1f"
+    },
+    "on": {
+      "prefix_monitor_rows": 615,
+      "max_observed_queue": 16,
+      "median_output_age_s": 0.070013,
+      "p95_output_age_s": 0.120019,
+      "max_output_age_s": 0.150025,
+      "publication_checks": 1193,
+      "publication_status_counts": {
+        "stationary": 1193
+      },
+      "max_publication_gradient": 9.998128466044178e-06,
+      "binary_sha256": "fb56ffc5c6c9cb575d6129289688caeabb4e3baba32e429b857f3d6a30e50d1f"
+    }
+  },
+  "results": {
+    "off_native_glim": {
+      "ate_m": 0.028294834223709955,
+      "translation_rpe_m": 0.029413712150456312,
+      "rotation_rpe_deg": 0.35820843495784394,
+      "common_grid_body_path_m": 72.7366677351783,
+      "evaluation_prism_path_m": 72.78193201886594,
+      "matched_prism_poses": 626,
+      "gt_coverage_s": 62.09999966621399,
+      "rpe_pairs": 1151
+    },
+    "off_native_kimera": {
+      "ate_m": 0.5410477397372508,
+      "translation_rpe_m": 0.04594964698766163,
+      "rotation_rpe_deg": 0.5414796251366731,
+      "common_grid_body_path_m": 69.720802683526,
+      "evaluation_prism_path_m": 69.74986816176573,
+      "matched_prism_poses": 626,
+      "gt_coverage_s": 62.09999966621399,
+      "rpe_pairs": 1151
+    },
+    "off_fused_online": {
+      "ate_m": 0.05038450464934248,
+      "translation_rpe_m": 0.031364283924397635,
+      "rotation_rpe_deg": 1.261075524074622,
+      "common_grid_body_path_m": 74.45235252775694,
+      "evaluation_prism_path_m": 74.73720697913635,
+      "matched_prism_poses": 626,
+      "gt_coverage_s": 62.09999966621399,
+      "rpe_pairs": 1151
+    },
+    "on_native_glim": {
+      "ate_m": 0.038209035876019676,
+      "translation_rpe_m": 0.04116338964811796,
+      "rotation_rpe_deg": 0.4688004336836627,
+      "common_grid_body_path_m": 75.47967512597428,
+      "evaluation_prism_path_m": 75.17354205870461,
+      "matched_prism_poses": 626,
+      "gt_coverage_s": 62.09999966621399,
+      "rpe_pairs": 1151
+    },
+    "on_native_kimera": {
+      "ate_m": 0.3827905139991479,
+      "translation_rpe_m": 0.03353324815577755,
+      "rotation_rpe_deg": 0.5889659812286817,
+      "common_grid_body_path_m": 71.26691284832971,
+      "evaluation_prism_path_m": 71.33833228964762,
+      "matched_prism_poses": 626,
+      "gt_coverage_s": 62.09999966621399,
+      "rpe_pairs": 1151
+    },
+    "on_fused_online": {
+      "ate_m": 0.11774850150813024,
+      "translation_rpe_m": 0.052404097995938446,
+      "rotation_rpe_deg": 1.7930907395613946,
+      "common_grid_body_path_m": 77.56191890640841,
+      "evaluation_prism_path_m": 78.32351596951213,
+      "matched_prism_poses": 626,
+      "gt_coverage_s": 62.09999966621399,
+      "rpe_pairs": 1151
+    }
+  }
+}

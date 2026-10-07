@@ -1,0 +1,18 @@
+{
+  "build_and_solve_image": "sha256:6a664509d183e504230b22edfd747dfe1ca5bca8ae6fc34c76154db8ffd1fc8d",
+  "scoring_image": "sha256:7ad3854c699fb9a292aa5d42f8f890dfbd5dccb16633e043a93d135221418aaa",
+  "container_flags": ["--rm", "--network", "none", "--read-only", "--user", "1000:1000", "--tmpfs", "/tmp:rw,exec,size=2g"],
+  "build_and_solve_env": {"LD_LIBRARY_PATH":"/runtime/lib", "OMP_NUM_THREADS":"1"},
+  "mounts": {
+    "/audit": "/home/yeranis/results/gnssfgo_eth1_wnoa_covariance_counterfactual_20261007 (read-write)",
+    "/base": "/home/yeranis/results/gnssfgo_eth1_wnoa_mechanism_20261007 (read-only)",
+    "/previous": "/home/yeranis/results/gnssfgo_eth1_local_prediction_20261007 (read-only)",
+    "/old_audit": "/home/yeranis/results/gnssfgo_eth1_wnoa_prediction_audit_20261007 (read-only)",
+    "/source": "/home/yeranis/repos/gnssFGO (read-only)",
+    "/runtime": "/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime (read-only)"
+  },
+  "scoring_mounts": "Same /audit and /base plus /home/yeranis/repos/V4RL/cbs_gtsam4.3 at its host absolute path, read-only",
+  "commands": ["python3 /audit/run.py build", "python3 /audit/run.py run", "bash -c 'source /opt/ros/noetic/setup.bash && python3 /audit/score.py'"],
+  "host_analysis_python": "/home/yeranis/.local/share/pipx/venvs/evo/bin/python",
+  "production_files_changed": false
+}

@@ -284,6 +284,19 @@ if (BUILD_TESTING)
             PRIVATE
             ${ONLINEFGO_INCLUDE}
     )
+    ament_add_gtest(test_causal_support_clock test/test_causal_support_clock.cpp)
+    target_include_directories(test_causal_support_clock PRIVATE ${ONLINEFGO_INCLUDE})
+
+    ament_add_gtest(test_source_model_discrepancy test/test_source_model_discrepancy.cpp)
+    target_include_directories(test_source_model_discrepancy PRIVATE ${ONLINEFGO_INCLUDE})
+
+    ament_add_gtest(test_source_wnoj test/test_source_wnoj.cpp)
+    target_include_directories(test_source_wnoj PRIVATE ${ONLINEFGO_INCLUDE})
+    target_link_libraries(test_source_wnoj online_fgo_solver online_fgo_util ${ONLINEFGO_LINK})
+    ament_target_dependencies(test_source_wnoj ${ONLINEFGO_ROS_DEP})
+    ament_add_gtest(test_bounded_isam2_refinement test/test_bounded_isam2_refinement.cpp)
+    target_include_directories(test_bounded_isam2_refinement PRIVATE ${ONLINEFGO_INCLUDE})
+    target_link_libraries(test_bounded_isam2_refinement ${ONLINEFGO_LINK})
 endif ()
 
 ament_package()

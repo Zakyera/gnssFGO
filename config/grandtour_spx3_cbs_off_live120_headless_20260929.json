@@ -1,0 +1,32 @@
+{
+  "sequence": "SPX-3 2024-11-02-17-43-10, bag offset 32 s, duration 120 s, classic CBS OFF, headless live",
+  "source_protocol": "classic",
+  "ros_master_uri": "http://127.0.0.1:11368",
+  "imu_topic": "/boxi/cpt7/imu",
+  "imu_frame": "cpt7_imu",
+  "world_frame": "gnssfgo_world",
+  "support_period_ns": 100000000,
+  "startup_samples": 59,
+  "max_imu_gap_ns": 30000000,
+  "max_queued_events": 200000,
+  "drain_timeout_wall_sec": 300,
+  "ros1_container": "cbsms_ws_gpu",
+  "receiver_container": "ubuntu-jammy-humble-nvidia",
+  "receiver_binary": "/home/yeranis/workspaces/gnssfgo_ct_ws/build/online_fgo/src/offline_process/grandtour_ct_replay",
+  "sources": [
+    {
+      "id": "glim_hesai",
+      "session": "spx3_off_live120_headless_20260929",
+      "kind": "glim",
+      "belief_body_frame": "cpt7_imu",
+      "log_glob": "${SOURCE_RUN}/ros_logs/*/glim_rosnode-*-stdout.log"
+    },
+    {
+      "id": "kimera_front",
+      "session": "spx3_off_live120_headless_20260929",
+      "kind": "kimera",
+      "belief_body_frame": "cpt7_imu",
+      "log_glob": "${SOURCE_RUN}/estimators.log"
+    }
+  ]
+}
