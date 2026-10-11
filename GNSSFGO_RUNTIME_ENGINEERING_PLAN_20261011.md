@@ -423,6 +423,46 @@ documentation/archival/version control only; no estimator implementation or run.
   proposed next step, NOT launched. Opt-in defaults retained, owned processes
   exited. Local completion commit contains this report/ledger; no push.
 
+### E1/E2 live160 capacity gate
+
+- Authorization: user "Proceed" after the combined live60 pass and explicit
+  proposal for a separate 160-second validation.
+- Status: CAPTURE COMPLETE; VALIDATION BLOCKED; HEADROOM MISSED, 2026-10-11.
+  One first-160-second ETH1 CBS-ON capture at
+  0.1x, headless; exact E1 + corrected E2 binary/profile/settings from live60.
+- Protocol: `experiments/e1_e2_live160_20261011/PROTOCOL.txt`.
+- Parent `7109c4cac7a8c24e2b37c5742fbabb33fb7453b8`; isolated branch
+  `engineering/e1-e2-live160-20261011`. No estimator edits, tuning, affinity
+  changes, E1b/E3/E4, retry, production-default change or new sequence.
+- Preserve strict publication, covariance, lifecycle, conservation and queue
+  limits. Stop on capture/validation failure; report late-window growth and
+  800 ms scan-p95 target independently from basic completion.
+- Report: `experiments/e1_e2_live160_20261011/REPORT.txt`; 81 byte-identical
+  small evidence files archived, including the failing validator traceback.
+- Capture completed without queue abort: peak 60, final 0; output-age p95
+  .120033 simulated seconds. 1593 logged stationary publications, max gradient
+  9.94881047e-6. No source retry; no saved-journal replay was reached.
+- Native validator failed at `assert (ri,rj) in mats`: 780 aligned Kimera
+  candidates vs 775 matrix logs. All five missing edges match unchanged
+  `drop_before_stage` guard decisions. Alignment is logged before admission;
+  the validator assumes construction too early. Original validator and guard
+  unchanged. No newly reproduced E1/E2 numerical defect established by this.
+- Existing Kimera guard calls: 5 pre-stage drops, 47 staged rollbacks, 21 active
+  factor removals/retries. Do not describe Gaussian/health-off as guard-free.
+  End-to-end covariance/lifecycle/conservation and repeat certification remain
+  blocked; later validation stages were not executed or silently waived.
+- Full/late GLIM scan p95 1045.406/1129.950 ms miss the 800 ms target; 101 of
+  398 late scans exceed 1000 ms. Late mean 617.202 ms allows this capture to
+  finish, not a long-run capacity guarantee. Late receiver refinement p95
+  929.644 ms. Main/LOCAL sidecar costs remain; covariance preparation late p95
+  27.595 ms. Historical comparisons are not identical nonlinear workloads.
+- 18/18 focused E1 Release tests; 635 protected hashes unchanged, source
+  worktrees clean, owned processes exited. No full suite/sanitizer rerun claim.
+- Proposed next step only: lifecycle-aware validator with explicit guard
+  outcomes, then resume on the saved capture; no need to recapture sources
+  solely for this blocker. No guard/estimator/default edits, E1b/E3/E4 or tuning.
+- Local completion commit contains this report/ledger; no push.
+
 ### Template for subsequent tasks
 
 Copy this block under its task ID; do not erase earlier attempts.

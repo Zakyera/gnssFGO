@@ -1,0 +1,231 @@
+E1 + corrected E2: 160-second ETH1 live capacity gate — 2026-10-11
+
+Outcome: CAPTURE COMPLETE; VALIDATION BLOCKED; TIMING HEADROOM MISSED.
+
+One CBS-ON capture completed the requested first160s at0.10x, with native GLIM,
+native Kimera and the WNOA receiver co-running. Unlike the old attempt that
+stopped near143.79s, it did not hit the queue gate. Peak queue60, finalqueue0.
+However, this is NOT a fully validated pass and NOT proof of full-sequence
+capacity or improved accuracy. No retry, tuning, estimator edit or promotion.
+
+Two separate findings:
+1. The first post-capture validator assumes every aligned Kimera candidate must
+   have a factor-matrix log. Five candidates were explicitly rejected by the
+   pre-existing BPSAM pre-stage residual guard BEFORE that log. All five missing
+   entries have matching recorded guard decisions. This is a validator-contract
+   mismatch, not evidence of lost log entries or a reproduced E1/E2 numerical bug.
+   The original failing validator remains unchanged. Per protocol, validation
+   stopped there: no lifecycle/diagnostic stages or saved-journal replay ran.
+2. GLIM scan-time p95 grew to1129.950ms in the final40s, above both the desired
+   800ms margin target and one1000ms paced scan interval. Full-run p951045.406ms.
+   Completing this run does not erase the remaining long-run capacity concern.
+
+1. Exact scope and frozen settings
+
+Run root:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_e1_e2_live160_20261011
+Case: prepared/live160_on_{source,receiver,control}.
+ETH1 mission2024-10-01-11-29-55, offset0, requested160s, ROS master11405,
+rate0.10, headless, source drain25wallseconds. No OFF/full346s/new sequence.
+Measured playback ratio over the first93.44sensor seconds was0.1000258.
+
+The exact passed E1/E2 live60 configuration was copied privately. Only duration,
+case names/output paths/port and corresponding160s coverage minima changed.
+Sources: Hesai/shared CPT7/front stereo, GLIM5s/Kimera25states, classic
+active_window_temporary. Native-IMU mean alignment; outgoing corrected main
+smoother means with LOCAL covariance,0.20s horizon, onepair/update, full dense
+schur_relative_between covariance, scale1, Gaussian, health weighting off.
+Source live_revision remains off; downstream full smoother revisions remain on.
+Kimera experimental IMU support override remains unset/current, as in live60.
+The inherited active-window residual/rollback guards remain present and enabled;
+Gaussian factors/health-off must NOT be described as absence of every source
+admission guard. No new guard, Huber or covariance adjustment was introduced.
+
+Receiver: source_wnoa X/V/W, no central IMU/bias/acceleration/GNSS factors,
+independent100ms timestamp support clock,59sample timestamp anchor, full-history
+iSAM2QR, stable-ID replacement of every admitted version. Frozen Qc
+[.00375,.00375,.00375,.015,.015,.015], prior sigmas1e-5/10/3, Gaussian scale1.
+Strict nominal publication gradient<=1e-5, refinement budget20, existing
+recovery/rollback behavior retained. No change to mathematical/arrival semantics.
+E1 local GPU covariance-preparation batching and corrected E2 exact-input cache
+remain opt-in. No affinity/governor change; actual process affinity0-23 observed.
+
+2. Preflight, capture and preservation
+
+-18/18 existing focused E1 Release tests passed with the private libraries.
+ Earlier E1/E2 mathematical/sanitizer tests are prior evidence, not rerun here.
+ No new full-repository or sanitizer-suite claim.
+-635 protected file hashes matched before launch and after the validation stop.
+ Source repository worktrees remain clean at the same commits. Production
+ defaults, working binaries, prior reports/runs and original validators unchanged.
+-Live snapshots verified the actual receiver executable SHA256, E2 cache=1,
+ strict nominal settings, loaded library paths and source process identities.
+-Exactly one capture,1648.550931wallseconds including startup/playback/drain.
+ Receiver1628.328175wallseconds includes waiting for the stream, not pure solve.
+ Source/receiver/controller completion markers exist. No capture failure marker.
+-All owned source/master/receiver processes exited; both containers returned to
+ their idle entrypoints. No saved-journal repeat directory was created.
+
+3. Exact validation blocker and bounded diagnosis
+
+Failure log: validation_logs/native.log; traceback:
+ prepared/validate_native_bidirectional.py:59
+ assert (ri,rj) in mats
+
+Recorded alignment candidates vs factor-matrix entries:
+ receiver GLIM:781 vs781, no missing edge;
+ receiver Kimera:780 vs775, five missing edges.
+
+The five edges, with receiver endpoint time relative to bag start:
+ GLIM sender   Kimera receiver  endpoint(s) available(s) pre-residual
+ 1047->1049    511->512           105.551340  105.951337   6.190546527
+ 1345->1347    660->661           135.351135  135.751132   3.138617138
+ 1451->1453    713->714           145.951080  146.351078   2.791257669
+ 1455->1457    715->716           146.351078  146.751076   2.159776168
+ 1457->1459    716->717           146.551076  146.951074   2.566274854
+
+Every row has exactly one matching action=drop_before_stage in Kimera stdout.
+The threshold is2.0 in the existing SE(3) residual norm; do not label it meters
+or a whitened NIS threshold. Exact log filenames, line numbers and full decisions
+are retained in capture_evidence.json and its byte-identical archive.
+
+Code path (unchanged current source):
+-Kimera-VIO/src/backend/VioBackend.cpp:2933-2949 aligns the candidate and logs it;
+ 2966 onward queues the candidate for the CBS backend. This is not yet admission.
+-cbs/src/bpsam/bpsam.cpp:3629 BPSAM::update;3847-3864 checks the existing
+ active-window pre-residual guard and continues without constructing a factor.
+ The threshold constant is at47.
+-Only after that branch does3929 call logOdomFactorCovarianceRow;
+ its matrix log is at733. Gaussian factor construction follows3936-3947.
+
+Thus alignment-log presence does not imply factor construction. The inherited
+validator's assertion is too strong for this already-existing guard path. Its
+comment accounts for rejection AFTER construction, but not BEFORE construction.
+This guard did not fire in the passed60s capture; no E1/E2 code change is needed
+to explain why the longer capture first exposes the validator limitation.
+
+Other recorded Kimera guard activity:47 staged rollback/retry decisions and21
+active-factor removal/retry decisions. These are log-event counts, not all
+distinct backend updates. They are real pre-existing source behavior, not a
+new performance fix, and must remain explicit in later analysis. No claim is
+made here about the estimator-health cause or desirability of these guards.
+
+The run remains blocked. No validator assertion was removed/relaxed, no
+estimator threshold changed, and no subsequent validation stage was executed.
+In particular, no complete wire-covariance/lifecycle/conservation certification
+or deterministic live-vs-journal equivalence is claimed for this160s capture.
+
+4. Observed timing, separate from full validation
+
+Physical section  GLIM scan median/p95(ms) receiver refinement median/p95(ms)
+0-40s                    205.728/511.092                 53.148/128.488
+40-80s                   430.982/631.143                150.603/267.042
+80-120s                  396.268/812.105                241.315/452.304
+120-160s                 719.684/1129.950               516.167/929.644
+Whole run                415.577/1045.406               185.243/709.597
+
+Whole GLIM scan mean412.282ms,max1812.205ms.109/1591 scans exceed1000ms;
+101 of those are among398 scans in120-160s. The final40s mean617.202ms remains
+below1000ms, which is consistent with completing the run without a sustained
+queue backlog despite expensive tails. This is not a worst-case latency bound.
+
+Late120-160s source breakdown, median/p95(ms):
+ main smoother354.150/707.909;
+ LOCAL sidecar update335.207/383.426;
+ LOCAL covariance preparation24.470/27.595;
+ belief query2.296/3.691;
+ outgoing+revision path36.718/85.352.
+Nested timers overlap: do not sum these as independent costs. Covariance
+preparation is now much smaller than the remaining main/sidecar optimizations.
+That does not prove their entire cost is redundant or authorize removing them.
+
+Historical comparison to the failed original160s capture:
+1431 common physical scan IDs/stamps through143.770688s. On those scans,
+ total scan median/p95:596.439/1188.889 ->407.961/939.817ms;
+ covariance preparation median/p95:193.331/359.458 ->12.834/23.461ms
+ (1425 vs1430 available nested-timer rows).
+On238 common scans from120s to143.77s:
+ total scan median/p95:1064.295/1471.178 ->711.262/1062.792ms.
+Different live arrivals/nonlinear Values/workloads: these are historical context,
+NOT a controlled isolated E2 speedup. The old failed capture remains failed.
+
+Peak transport queue60; sampled peak58; final0. Output age in SIMULATED seconds:
+ whole median.060042,p95.120033,max.200032;
+ final40s median.070047,p95.150030,max.200032.
+No previous1000-event abort or1s-p95 age violation observed. These good queue
+figures do not override the missed800ms full/late source-headroom targets.
+
+Receiver log:1593 stationary publications,max gradient9.9488104702885e-6.
+2491 refinement steps including67 existing recovery steps. Final graph reports
+1592WNOA+2370relative+3priors=3965 factors,4779X/V/W Values.
+These are observed logs, not a substitute for the halted end-to-end validator.
+No non-stationary publication is recorded; convergence does not imply accuracy.
+
+E2 final WNOA calls/hits6576688/1711090;relative9838085/2534222;failures0.
+3962 live cache entries,11554288 matrix/signature bytes(~11.02MiB).
+Hit counts are not an end-to-end speedup measurement. The full graph still grows.
+Five resource snapshots retained. Around151.6s, RSS GLIM1218240KiB,
+Kimera419900KiB,receiver397964KiB; sampled HWM1241368/451700/397964KiB.
+This is sampled resource evidence, not a full allocation/peak-memory profile.
+
+5. Coverage/products, not accuracy
+
+Requested160s;15986 CPT7 timestamp-clock messages span159.850035s.
+Sources' existing coverage check passed. Observed retained trajectories:
+
+Output                         Rows Span(s)    Path(m)
+Original/native GLIM            1591 158.999623 109.881834
+Original/native Kimera ROS       784 159.599086 104.026197
+Fused ONLINE/as-played           1593 159.200000 144.660138
+Fused FINAL retrospective       1593 159.200000 115.043232
+
+Native tail gaps.178844/.099028s; fused tail~.070035s. Kimera's existing
+3.199979s startup pose gap remains; later max gap.200043s. No fabricated startup
+coverage. No GT scoring, ATE/RPE or OFF/ON accuracy conclusion in this task.
+
+Receiver/transport self-report95162 source versions (75912GLIM,19250Kimera),
+95137 insertions including92767 replacements,2370 admitted IDs,25 pre-init
+unsupported versions,0pending/stale/duplicates. Since the dedicated conservation
+stage was not reached, these are recorded counts, NOT a fresh losslessness proof.
+
+6. Provenance and artifacts
+
+Exact receiver executable:
+/home/yeranis/results/gnssfgo_e1_e2_correctness_audit_20261011/candidate/replay
+SHA2569d2ef832941c5ff2592da8428cb80104352590bcfea50c187624aaf4e90d60e0
+E1 GLIM wrapper822377b019b3e22f24a3aeace45e1f495235f5e410dc0ca218dd0a285e8e7879
+E1 CUDA library756f4555d7bcabfc71c41c90f62b0dc7320ee03f421fb0f3e5b79122e3868270
+CBS library82f85c2a307a9d9a849b2b8f09bb5c1e026ad80a4ef0a633c903d30cca712476
+Input journaldb9abe20a9b85fd5d5aaaa401f412708bbae34515a4c0870ca4e68051219da41
+Source commits:gtsam_points8578196,glim_ros1fad72d6,cbs7c3a1e6,
+Kimera-VIO560ad0f,cbsms91c70b7. CompleteSHAs in capture_evidence.json.
+
+81 small evidence files archived byte-identically,2069623bytes. The failed
+traceback is preserved. Large source logs, bag recordings, states/trajectories,
+event journal and binaries remain at the original run paths, not in Git.
+All81 archived files and their originals rechecked against archive hashes;
+20 Python syntax checks and3 shell/env syntax checks passed. Raw ROS YAML
+trailing blank lines remain unchanged for byte-identical evidence preservation.
+Preflight/protected manifests retain exact config/profile/library hashes. Raw
+dataset identity was checked by retained path/size/mtime, not newly fully hashed.
+The source stdout hashes and event-journal SHA are saved after completion.
+
+Branch engineering/e1-e2-live160-20261011, parent
+7109c4cac7a8c24e2b37c5742fbabb33fb7453b8. Completion is the local commit containing
+this report; resolve with git log -1 --format=%H --
+experiments/e1_e2_live160_20261011/REPORT.txt. No push requested/performed.
+
+7. Decision / next bounded action (not performed)
+
+Do not declare E1/E2 broken from this validator failure, and do not declare
+the full pipeline certified. The existing guard explicitly explains all five
+missing matrix rows. A narrowly scoped next step is to correct/test the
+validator's lifecycle accounting: accepted factor, explicit pre-stage rejection,
+and post-stage rollback must be distinct outcomes. Preserve covariance checks
+on constructed factors and reject any UNEXPLAINED missing factor. Then resume
+validation on this SAME saved capture, without another source run.
+
+Separately, runtime margin is still insufficient by the predeclared target.
+The accelerated covariance-preparation cost stayed small; source main/LOCAL
+sidecar solves and full-history receiver cost remain. No new engineering task,
+fixed-lag conversion, covariance change, guard change or longer run started.

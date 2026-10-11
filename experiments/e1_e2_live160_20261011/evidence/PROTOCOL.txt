@@ -1,0 +1,58 @@
+E1/E2 live160 capacity gate, authorized by user Proceed, 2026-10-11.
+
+ONE first160s ETH1 CBS-ON co-running capture, offset0, rate0.10, headless,
+fresh port11405. This extends the passed combined60s operating point WITHOUT
+any mathematical/performance patch. No CBS-OFF run, full346s, new sequence,
+automatic retry, parameter tuning, covariance/loss change, E1b/E3/E4 or promotion.
+
+Reuse exact gnssfgo_e1_e2_live60_20261011/prepared sources/profile/controller,
+validators, E1 libraries and corrected E2 executable/cache=1. Source sensors:
+Hesai/shared CPT7/front stereo, GLIM5s/Kimera25states. Classic
+active_window_temporary, native-IMU mean alignment, LOCAL covariance with main
+smoother mean, .20s horizon, one pair/update, full dense Schur covariance,
+scale1 Gaussian, no health weighting or source live_revision. Kimera support
+override unset/current. Same bounded diagnostic load, no graph inspectors.
+
+Receiver source_wnoa X/V/W, full-history iSAM2QR, no central IMU/bias/accel/GNSS
+factors, independent100ms timestamp clock with59sample anchor, stable-ID
+replacement, all versions, physical/availability semantics unchanged. Qc
+[.00375,.00375,.00375,.015,.015,.015], priors1e-5/10/3, strict nominal
+gradient<=1e-5/refinement budget20, unchanged rollback and failure behavior.
+Executable9d2ef832941c5ff2592da8428cb80104352590bcfea50c187624aaf4e90d60e0.
+Same private exec-only E2 environment wrapper; production transport unchanged.
+Do not pin CPUs/change governor or suppress logging for this capture.
+
+Only harness changes: fresh root/session/port, duration60->160s, corresponding
+coverage assertion and original160s source row minima1400GLIM/600Kimera.
+Keep source drain25s, existing controller/transport limits. Controller rejects
+queued OR observed transport peak>=1000; never increase that gate. If aborted,
+preserve partial products, clean up owned processes and report the failure;
+do not count successful draining as a successful160s run or retry automatically.
+
+Preflight: no other estimator/controller or occupied port, free disk/GPU,
+protected input hashes, identical profile/flags/params except paths, same E1
+private libs and E2 executable/wrapper,18 focused E1 Release tests.
+Earlier E2/sanitizer/math tests remain prior evidence, not new tests claimed here.
+Verify actual live executable/environment/library maps/affinity snapshots.
+
+Full acceptance requires full160s coverage, source wire all36 covariance entries,
+native aligned means/cutoffs, temporary factor lifecycle, lossless revision
+payload/order and exactly-once accounting, causal support binding, all publications
+stationary, no unaccounted/pending/stale/duplicate versions. Unsupported explicit.
+Finalqueue0, p95liveoutputage<1s. Desired GLIM total-scan p95<800ms for full run
+and report separately final40s margin against1000ms paced budget. A missed
+headroom goal is not hidden by completing the playback.
+
+Only after successful capture and earlier integrity gates, ONE saved-journal
+replay with same exact binary/cache, unchanged numerical_equivalence limits:
+p/v/w1e-7,orientation1e-8, exact identities/clock/accounting/decisions. Record
+byte equality additionally; no tolerance relaxation or repeated trial to obtain
+favorable results. No GT/accuracy experiment: retain original native GLIM,
+native Kimera, fusedONLINE and fusedFINAL separately, coverage and path lengths.
+
+Report timing in0-40/40-80/80-120/120-160s, including main/LOCAL sidecar/covariance,
+receiver refinement/recovery, queues/age/memory/cache, initial/final revisions,
+historical overlapping scan comparisons. Historical captures are not identical
+nonlinear workloads; do not infer an isolated E2 speedup from them. Prior160s
+attempt failed at143.79s, remains failed. Full-history growth remains possible.
+Save report/ledger/provenance and stop. Do not proceed to any next method/run.
