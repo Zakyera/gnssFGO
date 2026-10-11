@@ -1,0 +1,10 @@
+--- 
++++ 
+@@ -94,6 +94,6 @@
+                 guards=dict(guards), rollbacks=rollbacks, removals=removals),
+     glim=dict(queued=gqueued, removed=grem, remaining=len(gactive), removals=gremovals),
+     caveat='Verifies logged factor slot lifecycle and successful completion. Not a matrix-level proof of zero indirect CBS information in marginal priors.')
+-with (ROOT/(tag+'_lifecycle_validation.json')).open('x') as f:
++with (OUT/(tag+'_lifecycle_validation.json')).open('x') as f:
+     json.dump(result, f, indent=2)
+ print(json.dumps({k:{a:b for a,b in v.items() if a!='removals'} if isinstance(v,dict) else v for k,v in result.items()}, indent=2))

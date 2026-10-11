@@ -1,0 +1,131 @@
+{
+  "receiver": {
+    "publications": 1593,
+    "statuses": {
+      "stationary": 1593
+    },
+    "max_gradient": 9.9488104702885e-06,
+    "steps": 2491,
+    "rejected_steps": 67,
+    "recovery_steps": 67,
+    "recovery_publications": 67,
+    "accepted_recoveries": 67,
+    "consensus_recoveries": 54,
+    "local_prediction_rows": 0,
+    "recovery_cost_change_abs": {
+      "mean": 2.989329798226633e-08,
+      "median": 1.5402520952306687e-08,
+      "p95": 9.458406358876994e-08,
+      "max": 1.5936775447860065e-07
+    },
+    "recovery_state_step_mixed_units": {
+      "mean": 0.0005181898710740525,
+      "median": 0.00043451890391685126,
+      "p95": 0.001222931577773902,
+      "max": 0.0014804509750782834
+    },
+    "first_recovery": {
+      "phase": "support",
+      "index": "842",
+      "iteration": "2",
+      "relinearized": "0",
+      "error_before": "221671.07744348003",
+      "error_after": "221671.07744348032",
+      "gradient_after": "3.7048987941850431e-09",
+      "accepted": "1",
+      "roundoff": "0",
+      "objective_allowance": "0",
+      "state_step_norm": "3.5653673798795182e-07",
+      "stable_cost_delta": "9.5833386271820361e-11",
+      "arithmetic_bound": "9.4313894347461865e-18",
+      "predicted_delta": "-1.5832178776621551e-10",
+      "predicted_bound": "9.4313931856005377e-18",
+      "recovery": "1",
+      "consensus": "1",
+      "qr_disagreement": "1.5409895564770182e-13",
+      "local_prediction": "0",
+      "bag_seconds": 84.78000020980835
+    },
+    "largest_recovery_step": {
+      "phase": "support",
+      "index": "1258",
+      "iteration": "5",
+      "relinearized": "0",
+      "error_before": "18488199.849829052",
+      "error_after": "18488199.84982923",
+      "gradient_after": "4.0133678894563689e-06",
+      "accepted": "1",
+      "roundoff": "0",
+      "objective_allowance": "0",
+      "state_step_norm": "0.0014804509750782834",
+      "stable_cost_delta": "1.5936775447860065e-07",
+      "arithmetic_bound": "4.5734485728037605e-15",
+      "predicted_delta": "-5.2084114870090735e-07",
+      "predicted_bound": "4.5734998236118169e-15",
+      "recovery": "1",
+      "consensus": "1",
+      "qr_disagreement": "9.9314994691744403e-12",
+      "local_prediction": "0",
+      "bag_seconds": 126.38000011444092
+    },
+    "all_accepted_recoveries_stationary": true,
+    "all_normal_steps_relinearize_all_values": true
+  },
+  "source": {
+    "guard_events": 73,
+    "first_guard": {
+      "update": 490,
+      "edge": [
+        488,
+        489
+      ],
+      "bag_seconds": 101.15136694908142,
+      "line": 84938,
+      "text": "[2026-10-11 18:12:52.445] [warning] CBS_BPSAM_ACTIVE_WINDOW_RECEIVER_EDGE_ROW,k,g,x488->x489,active_window_staged_residual_observed,pre_residual=0.1758490846708348,post_residual=0.7871704257453549,max_allowed=0.5,action=rollback_and_retry_without_staged_cbs",
+      "pre": {
+        "line": 84929,
+        "columns": [
+          "G2K",
+          "k",
+          "g",
+          "x488",
+          "x489",
+          "active_window_temporary_odom_applied",
+          "calculate_estimate",
+          "0.1758490846708348",
+          "0.00182403739219114",
+          "0.17583962428065614",
+          "0.0004056298256681617",
+          "0.02324087705541301",
+          "4.008614714456158e-06",
+          "148.93620770699243",
+          "22181.99396614039"
+        ]
+      },
+      "alignment_line": 1250564
+    },
+    "rollback_transactions": {
+      "staged_residual_regression": 47,
+      "active_residual_regression": 17
+    },
+    "undone_constructions": 59,
+    "invalid_identity_or_exception_log_counts": {},
+    "committed_lifecycle": {
+      "kimera": {
+        "tracked": 716,
+        "removed_by_update": 698,
+        "remaining": 18,
+        "guards": {
+          "rollback_and_retry_without_staged_cbs": 47,
+          "drop_before_stage": 5,
+          "rollback_remove_active_and_retry": 21
+        }
+      },
+      "glim": {
+        "queued": 781,
+        "removed": 756,
+        "remaining": 25
+      }
+    }
+  }
+}

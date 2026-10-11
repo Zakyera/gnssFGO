@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/workspace/cbs_gtsam4.3/runs/gnssfgo_e1_e2_live160_validation_20261011/validate_native.py", line 55, in <module>
+    rows=verify_candidates(candidates,outcomes,wire[sender])
+  File "/workspace/cbs_gtsam4.3/runs/gnssfgo_e1_e2_live160_validation_20261011/admission_contract.py", line 68, in verify_candidates
+    assert any(c['cov'] == p['cov'] and max(abs(x-y) for x,y in zip(c['raw'],p['mu'])) < 1e-12
+AssertionError: ('wire mismatch', (4, 2, 3))

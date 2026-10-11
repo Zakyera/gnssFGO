@@ -1,0 +1,40 @@
+--- 
++++ 
+@@ -166,7 +166,7 @@
+     # Operational smoke gate, not an accuracy/model tuning threshold.
+     assert np.quantile(ages,.95)<1.0 and max(r['queued'] for r in monitor)<1000, 'live throughput gate failed'
+     if True:  # One saved-journal validation, not another source run.
+-        repeat=ROOT/(tag+'_numerical_repeat')
++        repeat=OUT/(tag+'_numerical_repeat')
+         assert not repeat.exists(), 'Refuse duplicate validation replay'
+         args=['env',*[k+'='+v for k,v in sorted(ENV.items())],
+           str(BINARY),'--receiver-model','source_wnoa','--mode','sources','--timeline','record','--solver','isam2',
+@@ -175,7 +175,7 @@
+         command=['docker','exec','ubuntu-jammy-humble-nvidia','bash','-lc',
+                  'source /opt/ros/humble/setup.bash && exec '+shlex.join(args)]
+         run=subprocess.run(command,capture_output=True,text=True)
+-        with (ROOT/(tag+'_numerical_repeat.log')).open('x') as f: f.write(run.stdout+run.stderr)
++        with (OUT/(tag+'_numerical_repeat.log')).open('x') as f: f.write(run.stdout+run.stderr)
+         assert run.returncode==0,run.stderr
+     numerical = compare(live/'receiver', repeat)
+     identities={}
+@@ -217,15 +217,15 @@
+     for key in required:
+         assert (counts[key]>0)==(mode=='on'), ('unexpected/missing active-window lifecycle evidence',key)
+     result['source_lifecycle_counts']=dict(counts)
+-    result['native_alignment']=json.loads((ROOT/(tag+'_native_validation.json')).read_text())
++    result['native_alignment']=json.loads((OUT/(tag+'_native_validation.json')).read_text())
+     assert result['native_alignment']['passed']
+-    result['diagnostics']=json.loads((ROOT/(tag+'_diagnostics_validation.json')).read_text())
++    result['diagnostics']=json.loads((OUT/(tag+'_diagnostics_validation.json')).read_text())
+     assert result['diagnostics']['passed']
+     if mode=='on':
+-        result['lifecycle']=json.loads((ROOT/(tag+'_lifecycle_validation.json')).read_text())
++        result['lifecycle']=json.loads((OUT/(tag+'_lifecycle_validation.json')).read_text())
+         assert result['lifecycle']['passed']
+     result['interpretation_limit']='Mode includes legacy guards. Counts validate lifecycle activity, not a numerical proof of zero inherited information.'
+-    path=ROOT/(phase+'_'+mode+'_validation.json')
++    path=OUT/(phase+'_'+mode+'_validation.json')
+     with path.open('x') as f:
+         json.dump(result,f,indent=2)
+     print(json.dumps({k:v for k,v in result.items() if k not in ['summary','unsupported','source_metadata','parameter_path_differences','repeat_files','native_alignment','numerical_repeat']},indent=2))

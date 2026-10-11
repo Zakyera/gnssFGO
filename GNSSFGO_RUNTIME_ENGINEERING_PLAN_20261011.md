@@ -463,6 +463,47 @@ documentation/archival/version control only; no estimator implementation or run.
   solely for this blocker. No guard/estimator/default edits, E1b/E3/E4 or tuning.
 - Local completion commit contains this report/ledger; no push.
 
+### E1/E2 live160 validation continuation and bounded bug audit
+
+- Authorization: user "Ok proceed and check for any other bugs that cause these
+  instab", 2026-10-11. Status: FUNCTIONAL VALIDATION PASSED; HEADROOM MISSED.
+- Scope: correct/test candidate-admission validation, then resume retained gates
+  on the SAME completed live160 capture and ONE unchanged-binary journal replay.
+  Inspect recorded rollback/recovery paths for concrete defects. No source rerun,
+  tuning, guard change, production edit, E1b/E3/E4 or default promotion.
+- Parent b6c94ca46739761073b5213c5b03f718a539ba46; isolated branch
+  engineering/e1-e2-live160-validation-20261011.
+- Protocol: experiments/e1_e2_live160_validation_20261011/PROTOCOL.txt.
+- Preserve original failed validation and all capture/binary/profile bytes.
+  Unexplained missing factors, covariance mutation, wrong-update or duplicate
+  guard evidence must FAIL. Factor construction and post-stage rollback remain
+  distinct. Existing numerical limits and performance gates are unchanged.
+- Report: experiments/e1_e2_live160_validation_20261011/REPORT.txt.
+- Two validator defects corrected only in continuation scripts: pre-stage guard
+  rejection versus construction, and active-factor/nested rollback accounting.
+  781 GLIM constructions; Kimera780 candidates/775 constructions/5 explicit
+  pre-stage drops,59 undone constructions,716 retained admissions,698 removals,
+  18 remaining.47 staged rollback transactions and17 active rollback transactions
+  (21 old-factor guards). All restored slots/counts reconcile.
+- 24 new validator tests; unchanged focused receiver50/50 Release and50/50
+  ASan/UBSan. No source re-run, new build, full suite or dependency/GPU sanitizer.
+- ONE saved-journal replay,481.537839s: all19 non-timing products exact; online
+  and final1593-row state/trajectory products byte-identical, zero differences.
+  95162 source versions exactly conserved,92767 replacements,2370 IDs,
+  25 explicit unsupported pre-init,0 pending/stale/duplicate. All1593 outputs
+  stationary, max gradient9.94881047e-6;67 numerical recoveries reproduce.
+- No additional E1/E2 defect reproduced in the checked paths. First Kimera
+  staged residual guard at101.151367s; this is separate from receiver numerical
+  recovery beginning84.78s. Individual residual regression is not proof of an
+  optimizer bug. No complete posterior covariance/source rollback equivalence
+  claim; this validates recorded lifecycle and retained receiver replay.
+- 635 protected originals,3 full source logs and81 earlier archive files
+  unchanged; source worktrees clean, owned processes exited. Original failed
+  logs/report remain immutable. No push; local completion commit holds report.
+- Headroom still fails: full/late GLIMscan p951045/1130ms, target800ms.
+  Every ordinary receiver refinement relinearizes all retained X/V/W states.
+  No promotion, tuning, longer capture, E1b/E3/E4 or follow-up change performed.
+
 ### Template for subsequent tasks
 
 Copy this block under its task ID; do not erase earlier attempts.

@@ -1,0 +1,32 @@
+E1/E2 live160 retained-capture validation continuation — 2026-10-11
+
+Only the completed gnssfgo_e1_e2_live160_20261011/prepared/live160_on capture.
+Original failed validator, logs and capture remain immutable. New output root:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_e1_e2_live160_validation_20261011
+
+First patch: native validator must distinguish aligned candidate, constructed
+factor, explicit pre-stage guard rejection. Match Kimera backend update, sender
+and receiver IDs, all36 covariance entries and exact guard decision. No broad
+missing-factor exemption. Test negatives including stale/unrelated/duplicate
+guard, unexplained missing construction, covariance corruption, and construction
+followed by rollback. Covariance checks apply to every wire payload and every
+constructed factor. Rejected candidates have no constructed-factor covariance.
+
+Then run retained lifecycle/diagnostic gates with output-only redirection.
+If a gate fails, stop the pipeline and inspect exact evidence. Any further
+validator-contract correction requires its own tests/patch; do not skip checks.
+Bounded read-only source/receiver rollback/cache audit is authorized; no source
+or solver math changes in this task. Report reproducible bugs separately from
+suspected causes and model disagreement. No ATE experiment.
+
+Only after earlier gates pass: lossless source version payload/order, settings,
+causal clock/dispatch, stationarity/coverage/throughput checks, then ONE journal
+replay with exact executable SHA9d2ef832941c5ff2592da8428cb80104352590bcfea50c187624aaf4e90d60e0,
+E2 cache=1 and unchanged frozen ENV. No pinning, tuning, automatic retry or
+tolerance change. Frozen numerical_equivalence: p/v/w1e-7, rotation1e-8,
+exact identity/clock/slot/accounting/decisions. Byte equality reported separately.
+No full posterior covariance was exported by this runner; do not invent it.
+
+Keep existing800ms scan-p95 headroom goal separate: full/late miss is not repaired
+by a validator correction. No live sources, full sequence, new method, production
+changes or follow-on engineering task. Archive small evidence and update ledger.

@@ -1,0 +1,20 @@
+--- 
++++ 
+@@ -57,7 +57,7 @@
+     if tag.endswith('_off'):
+         assert 'CBS_RECEIVER_INCOMING_MATRIX_ROW,' not in gtext
+         assert 'CBS_COVARIANCE_EXCHANGE_SUMMARY_ROW,' not in ktext
+-        with (ROOT/(tag+'_diagnostics_validation.json')).open('x') as f:
++        with (OUT/(tag+'_diagnostics_validation.json')).open('x') as f:
+             json.dump(dict(passed=True,reason='OFF: no received source factors or incoming-factor audits expected'),f)
+         return
+     gmat={}
+@@ -116,7 +116,7 @@
+                 glim_local_covariance_rows=len(local),kimera_relative_rows=len(krelative),
+                 interpretation='Full-covariance factor algebra and sampled local diagnostics only. '
+                 'No calibrated dominance/accuracy claim. Raw mixed-unit trace ratios are NOT weight scores.')
+-    with (ROOT/(tag+'_diagnostics_validation.json')).open('x') as f: json.dump(result,f,indent=2)
++    with (OUT/(tag+'_diagnostics_validation.json')).open('x') as f: json.dump(result,f,indent=2)
+     print(json.dumps(result,indent=2))
+ 
+ if __name__=='__main__':main()

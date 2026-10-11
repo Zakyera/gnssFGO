@@ -1,0 +1,244 @@
+E1/E2 retained live160 validation and bounded instability audit — 2026-10-11
+
+FUNCTIONAL VALIDATION PASSED; RUNTIME HEADROOM STILL NOT MET.
+
+The already-completed160s ETH1 CBS-ON capture now passes source admission,
+wire covariance, logged lifecycle, sampled factor algebra, source conservation,
+causality, coverage, publication and single-journal-repeat checks. Online and
+final receiver states/trajectories are byte-identical on replay. No new source
+experiment, tuning, estimator edit or default promotion occurred.
+
+Two actual validator defects were corrected in isolated continuation scripts.
+No additional E1/E2 numerical defect was reproduced in the inspected paths.
+This is bounded evidence, NOT proof that all implementation bugs are impossible.
+In particular, it does not establish long-duration runtime capacity, estimator
+accuracy, or full statistical independence after temporary CBS removal.
+
+1. Scope and provenance
+
+Parent b6c94ca46739761073b5213c5b03f718a539ba46.
+Branch engineering/e1-e2-live160-validation-20261011.
+Task in GNSSFGO_RUNTIME_ENGINEERING_PLAN_20261011.md:
+E1/E2 live160 validation continuation and bounded bug audit.
+
+Frozen capture:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_e1_e2_live160_20261011
+Fresh continuation artifacts:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_e1_e2_live160_validation_20261011
+
+Exact receiver executable:
+/home/yeranis/results/gnssfgo_e1_e2_correctness_audit_20261011/candidate/replay
+SHA2569d2ef832941c5ff2592da8428cb80104352590bcfea50c187624aaf4e90d60e0.
+Input journalSHA256db9abe20a9b85fd5d5aaaa401f412708bbae34515a4c0870ca4e68051219da41.
+
+All prior settings preserved: E1 LOCAL covariance GPU batching, corrected E2
+exact-input cache=1; classic source active_window_temporary, native-IMU mean
+alignment, LOCAL dense covariance/current main-smoother means; GLIM5s/Kimera25
+states; source live_revision OFF. Existing source residual safeguards unchanged.
+Receiver source_wnoa X/V/W, no central IMU factors, independent100ms support
+clock/59timestamp anchor, full-history iSAM2QR, all stable-ID revisions,
+Qc[.00375,.00375,.00375,.015,.015,.015], priors1e-5/10/3, Gaussian scale1,
+strict nominal gradient<=1e-5 and existing20-step budget/recovery. No CPU pinning.
+
+The original failed validation and report remain unchanged. New scripts point
+to original inputs and redirect outputs/replay only to the fresh directory.
+numerical_retained.diff records output-path changes; original numerical limits
+and all original numerical/conservation assertions are preserved.
+
+2. Defect V1 — alignment is not admission
+
+Original prepared/validate_native_bidirectional.py:59 requires a matrix row for
+every aligned candidate. Kimera logs alignment in VioBackend.cpp:2939 before
+BPSAM admission; bpsam.cpp:3847-3864 can explicitly drop the candidate first.
+The covariance matrix is logged only at3929, then factor construction at3943.
+
+Correction: require one explicit outcome for the exact backend update and
+receiver edge, cross-check queued sender identity/covariance, and distinguish
+construction from drop_before_stage. An unrelated/stale/duplicate rejection
+cannot excuse a missing matrix. All36 wire entries and every CONSTRUCTED
+factor covariance remain exact; rejected candidates still require wire equality.
+Physical endpoints must be causal. Source timestamp seconds are also checked
+against the alignment log; Kimera records integer ns, GLIM records seconds.
+
+Result:
+receiver  aligned candidates  constructed  pre-stage rejected
+GLIM                    781          781                   0
+Kimera                  780          775                   5
+
+All missing matrix rows are explained by exactly matched existing guards.
+This does not mean every constructed factor survives optimization.
+
+During development the first NEW validator attempt exposed a reader error in
+the newly added timestamp check: Kimera ns were compared directly with wire
+seconds. Fixed only the reader conversion using VioBackend.cpp:2942-2944;
+native.log preserves that failure; validate_native_v2.py/native_v2.log preserve
+the successful run. Neither failure changed the source or its timestamps.
+
+3. Defect V2 — incomplete rollback lifecycle state machine
+
+The original check_lifecycle.py:35 accepts only staged_residual_regression.
+At stdout line91558, backend529, the actual code also performs
+active_residual_regression, removing an older factor before retrying.
+Its old parser also ignored active_window_remove_committed and assumed the
+only checkpoint was the outer IFLS lifecycle line.
+
+Correct contract follows the code:
+- BPSAM backup at3655-3663.
+- Newly staged rejection restores it, clears pending candidates and recursively
+  retries at3687-3712.
+- Already-active rejection restores it, commits tracked removal, supplies those
+  exact slots to the recursive update at3715-3760.
+- Every recursive update takes its own checkpoint; no new IFLS lifecycle line
+  is emitted. The parser must checkpoint at the retry boundary as well.
+- IFLS computes departing keys/removal slots before the update at156-191;
+  ordinary removal is therefore separate from residual-guard removal.
+
+New checks reconcile every active count, receiver edge and factor slot; require
+that a post-solve guard's slot still refers to the same edge AFTER restoration;
+reject duplicate live slots, missing commits, unmatched guards and wrong retry
+counts. The original GLIM lifecycle checks are retained unchanged.
+
+Actual successful-transaction accounting:
+Kimera:775 constructions -59 undone constructions =716 retained admissions;
+       698 subsequent removals,18 remaining active.
+GLIM:  781 queued/admitted,756 removals,25 remaining active.
+
+Kimera has47 staged-rollback transactions and17 active-removal transactions.
+The latter cover21 individual guarded old factors;21 is NOT the number of
+transactions. All restored slots and lifecycle counts reconcile. No recorded
+stale-slot removal, duplicate active slot, or unaccounted source factor found.
+
+This checks logged graph bookkeeping and successful completion, not numerical
+equality to a clean source solve after every rollback. In particular, no claim
+that all nonlinear history or marginal-prior information becomes independent.
+
+4. Remaining instability: what the evidence actually says
+
+Native Kimera's first guarded regression is at backend490 / about101.151367s,
+receiver edge488->489, stdout line84938:
+pre-residual norm0.175849085 -> post-residual0.787170426, allowed0.5.
+The candidate is rolled back. These norms use the existing mixed SE(3) residual,
+not a pure position error or a calibrated NIS. Across the run:5 pre-stage drops,
+47 staged rejection events and21 already-active residual events.
+
+The first pre-stage drop is later, edge511->512 at105.951337s availability:
+residual6.190546527 exceeds existing2.0 threshold. See original capture report
+for all five edges; instability_audit.json records exact rows and line numbers.
+
+A source factor's own residual need not decrease when a nonlinear optimizer
+reduces the TOTAL graph objective. Thus these real residual regressions do not
+by themselves prove an optimizer or E1/E2 bug. They also cannot establish which
+source is accurate. We did not rerun a source or use GT to retune the guards.
+
+Receiver numerical recovery is a DIFFERENT phenomenon:
+-1593 publications, every one stationary; max normalized gradient9.948810470e-6.
+-2491 logged steps;67 ordinary rejected steps followed by67 accepted recoveries
+ in67 publications.54 accepted via existing QR-consensus test,13 via existing
+ stable-descent test. No extra local-prediction polish passes or failed output.
+-First recovery at support842,84.780000s; objective221671.07744348003 ->
+ 221671.07744348032, final gradient3.7049e-9, QR disagreement1.5410e-13.
+-Recovery absolute stable cost change median1.5403e-8,max1.5937e-7.
+ Maximum aggregate state-step norm.00148045 is mixed X/V/W units across the
+ graph, NOT meters or an ATE measurement.
+
+FullPublicationRefinement.h:27-147 operates on a private candidate and commits
+only a validated solve. TransactionalISAM2Rebuild.h preserves factor slots,
+null holes, keys and the frozen QR policy. Its consensus path is an existing
+relative objective convergence tolerance, NOT a guarantee of strictly negative
+exact-arithmetic cost change. It was not relaxed in this task.
+
+E2 cache audit: per-factor exact X/V/W signatures include all stored pose
+rotation/translation entries and all velocity/angular-rate entries; immutable
+revision objects get distinct cache instances, clone returns a fresh cache,
+Gaussian factors are cloned on return, exceptions invalidate. No recorded
+cache failures. Existing replacement/rollback/cache tests rerun below.
+
+No recorded missing-state exception, invalid factor-slot fallback, unavailable
+alignment history or missing pre-injection pose was found in the checked logs.
+This is scoped evidence, not an exhaustive proof about every unexecuted branch.
+
+5. Integrity and deterministic replay
+
+ONE journal-only replay, same binary/environment, no source rerun or retry.
+Wall481.537839s; not a controlled speed benchmark against the live process,
+which also waited for playback. Focused unit tests briefly ran concurrently.
+
+95162 source versions exactly conserved:
+95137 insertions including92767 replacements,2370 final stable IDs,
+25 explicitly unsupported before initialization,0 stale/duplicate/pending.
+Source payload AND per-ID version order match raw logs, not just totals.
+Exactly one end marker. Causal dispatch/right-support availability all checked.
+
+All19 non-timing receiver products match exactly, including publication_steps,
+covariance diagnostic files, factor residuals, revision slot ledger, dispatch,
+support clock, source accounting and E2 counters. This includes recovery
+decisions, so the67 recoveries reproduce on the same information stream.
+
+Product                   rows  max p/v/w/orientation difference
+online_states.csv          1593  all0; byte-identical
+states.csv (final revised) 1593  all0; byte-identical
+online_trajectory.tum      1593  position/orientation0; byte-identical
+trajectory.tum (final)     1593  position/orientation0; byte-identical
+
+Frozen tolerance p/v/w1e-7,orientation1e-8 unchanged; zero observed differences.
+Full real posterior covariance was NOT exported; equality of diagnostic files
+must not be described as a newly measured full posterior comparison.
+
+Unchanged sampled factor algebra validates40 GLIM and40 Kimera incoming factors:
+full covariance whitening, J^T Sigma^-1 J and gradient/cost match at retained
+1e-8 tolerance; Kimera residual uses the same actual Values, checked at1e-12.
+No covariance scaling, loss or frame convention was changed.
+
+6. Coverage and runtime limits
+
+Original/native GLIM158.999623s/109.881834m;
+original/native Kimera ROS159.599086s/104.026197m;
+fusedONLINE159.200000s/144.660138m;
+fusedFINAL retrospective159.200000s/115.043232m.
+Existing Kimera3.199979s startup gap remains explicit. No ATE/RPE experiment.
+
+Observed original live queue peak60,final0; output age p95.120033 simulated s.
+GLIM scan p95 full1045.406ms / last40s1129.950ms; desired800ms target still FAILS.
+101/398 late scans exceed1000ms. Completing160s is not sustainable worst-case
+headroom or a full-sequence guarantee. Late receiver refinement p95929.644ms.
+
+The code and ALL non-recovery refinement rows agree: each ordinary refinement
+relinearizes3*(support index+1) variables, i.e. every retained X/V/W state.
+At end that is4779 variables. E2 avoids repeated exact-input calculations; it
+does NOT remove full-history visits/refinement. This is a concrete remaining
+growth cost, not evidence of corrupted state. Source main/LOCAL sidecar costs
+also remain expensive; their late median354/335ms and covariance-preparation
+p9527.595ms were already measured. Nested timers must not be added together.
+This task does not prove why all source stage timings grew, nor authorize
+removing the LOCAL graph, changing lag, or enabling another engineering task.
+
+7. Tests, preservation and commits
+
+-24 focused Python validator tests pass, including negative guard/covariance
+ and nested rollback/slot corruption cases. Final strict active-slot uniqueness
+ check also passes the actual saved Kimera log.
+-Existing frozen receiver Release:50/50 pass; ASan/UBSan:50/50 pass.
+ One disabled microbenchmark, not an omitted correctness case. Leak checking
+ disabled as in prior harness. Dependency libraries/device kernels are not
+ newly instrumented. No fresh full build, complete ROS suite or GPU ASan claim.
+-635 protected original hashes,3 full source logs and all81 original archived
+ evidence files match previous hashes. Source repositories remain clean at
+ their previous commits; working binaries and defaults untouched.
+-Original failed validation logs retained. New failing timestamp-reader and
+ old lifecycle-validator logs retained alongside corrected successful gates.
+-Both existing containers return to idle; no source/controller/replay remains.
+
+Local completion commit contains this report and ledger. Resolve exact SHA:
+git log -1 --format=%H -- experiments/e1_e2_live160_validation_20261011/REPORT.txt
+No push requested/performed. Small byte-identical evidence archived under
+evidence/ with ARCHIVE_MANIFEST.json; original large logs/journal and new full
+repeat products remain at the run paths above.
+35 small evidence files,2518917bytes, verified byte-identical. Raw unified-diff
+context/header spaces and test-log terminal blank lines are deliberately retained;
+authored-code whitespace checks exclude these immutable evidence files.
+
+Decision: two validator bugs fixed; this160s capture is now functionally
+validated with exact replay. No additional estimator/cache defect reproduced.
+Keep E1/E2 opt-in and preserve the remaining headroom failure. The next decision
+is a separately scoped runtime change, not another longer run or parameter
+tuning. No E1b/E3/E4, model, covariance or source-policy change started.
