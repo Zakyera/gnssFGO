@@ -1,0 +1,68 @@
+E1/E2 correctness audit continuation — 2026-10-11
+Predeclared before new test results or candidate edits.
+
+Scope
+Re-audit corrected E1 synchronous-compatible LOCAL GPU batching and E2 exact
+X/V/W factor linearization memoization. No new estimator/source/live experiment,
+no new optimization method, model edits, tuning, promotion or default enabling.
+No overwrites of previous artifacts. One demonstrated code defect per patch.
+
+References
+E1: gtsam_points 857819676921650510e249018cd82d45c08d7e8d;
+glim_ros1 fad72d6e11219e42cbbe09658341fff4512769dc.
+E2: gnssFGO parent 267d2c5edf8537d75a137272a432a6b87efde672;
+/home/yeranis/results/gnssfgo_e2_exact_evaluation_20261011/candidate_build.
+Working receiver: /home/yeranis/results/gnssfgo_vw_jacobian_20261011/build/replay.
+Fresh results: /home/yeranis/results/gnssfgo_e1_e2_correctness_audit_20261011.
+
+Correctness gates
+E1 keeps previous CPU 1e-12+1e-12*maxabs(reference), GPU Hessian
+1e-8+1e-6*maxabs(reference), full joint/relative covariance
+1e-10+1e-6*maxabs(reference) bounds. Review native hooks, fallback, cache
+consumption, exceptions, integration selection and unchanged LOCAL conditioning.
+Repeat existing 14 tests and add targeted lifecycle regressions if gaps found.
+Keep previous failed prototype rejected. GPU ASan is not covered by CPU ASan.
+
+E2 must be exact (not near-equal) for Gaussian blocks, costs, X/V/W, full
+synthetic covariance, solver decisions and non-timing frozen replay products.
+Review all referenced keys, same-object/new-revision/clone/noise lifecycle,
+inactive/null/nonfinite/failing calls, copy isolation and rollback.
+Use existing 47-test Release/ASan+UBSan suite plus targeted regressions.
+The known duplicate augmentedJacobian() allocation is a separate potential
+performance defect, not evidence of wrong filter outputs. If fixed, retain
+the same weighted finite check and measurement/derivative computations.
+
+Controlled timing gate
+Same executable, cache OFF/ON, same frozen 60s event journal, serial execution,
+one explicitly verified P core, OMP_NUM_THREADS=1, unchanged strict nominal
+publication policy. Two pairs in ABBA order (OFF, ON, ON, OFF), no selective
+discard/retry. Record binary/hash, affinity, wall/CPU time, RSS, load/frequency
+observations and per-publication timings. Compare every output with saved
+reference; only existing timing fields excluded. Build separate candidate if
+needed; do not compare different binaries as the cache OFF/ON control.
+Run focused fixed-input derivative/caching microbenchmarks to separate hit,
+miss, signature and clone overhead if useful; not a whole-pipeline prediction.
+No frequency/governor/system-affinity changes. A pinned core does not eliminate
+thermal/shared-machine variability. No full-run performance certification.
+
+Stop
+Stop on numerical failure, preserve evidence, isolate cause; no gate relaxation.
+Archive commands/results, verify protected hashes, update ledger/report and
+commit local audit work. Report remaining limits. No E3 or new live run.
+
+Diagnostic addendum after off1 (before any ON replay)
+The pinned cache-OFF replay differs from the previously unpinned saved result
+starting at publication index 62; first position-component difference is about
+3.81e-11 m. All 593 publications pass and counts match, but exact gate FAILED.
+Pause ABBA. Run the unchanged frozen working executable with the SAME pinned
+environment as an isolated control, then compare exactly to off1. This does not
+relax arithmetic tolerance or erase the failed comparison. If identical, keep
+the pinned reference as the matched environment oracle and separately retain
+the old-oracle difference. If not identical, isolate further before ON timing.
+
+Pinned frozen reference now matches off1 exactly in all 18 products. Next,
+run that SAME frozen reference unpinned with otherwise identical environment
+to check whether it reproduces the old saved oracle. Require both controls
+exact before resuming ON. These two diagnostic runs interrupt the timing
+series; retain them and do not describe the resulting series as uninterrupted
+ABBA. No performance headline from selectively discarded runs.

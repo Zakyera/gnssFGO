@@ -1,0 +1,37 @@
+{
+  "build": [
+    "c++",
+    "-std=c++20",
+    "-O3",
+    "-I/usr/include/eigen3",
+    "/home/yeranis/repos/gnssFGO/experiments/e1_e2_correctness_audit_20261011/cpu_cache_probe.cpp",
+    "-o",
+    "/home/yeranis/results/gnssfgo_e1_e2_correctness_audit_20261011/cpu_cache_probe"
+  ],
+  "results": [
+    {
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/home/yeranis/results/gnssfgo_e1_e2_correctness_audit_20261011/cpu_cache_probe"
+      ],
+      "output": "cpu=2 eigen_l1=49152 eigen_l2=3145728 eigen_l3=37748736"
+    },
+    {
+      "command": [
+        "taskset",
+        "-c",
+        "8",
+        "/home/yeranis/results/gnssfgo_e1_e2_correctness_audit_20261011/cpu_cache_probe"
+      ],
+      "output": "cpu=8 eigen_l1=32768 eigen_l2=4194304 eigen_l3=37748736"
+    },
+    {
+      "command": [
+        "/home/yeranis/results/gnssfgo_e1_e2_correctness_audit_20261011/cpu_cache_probe"
+      ],
+      "output": "cpu=13 eigen_l1=32768 eigen_l2=4194304 eigen_l3=37748736"
+    }
+  ]
+}

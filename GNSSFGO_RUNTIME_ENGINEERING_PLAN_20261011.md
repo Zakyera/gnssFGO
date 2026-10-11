@@ -80,8 +80,8 @@ shared IMU, past means or nonlinear history are statistically independent.
 | ID | Isolated task | Required evidence before acceptance | Status |
 | --- | --- | --- | --- |
 | E0 | Save this plan and push a recoverable checkpoint | Exact-commit manifest; archive hashes; verified Zakyera branch SHAs; original runtime untouched | Completed 2026-10-11 |
-| E1 | GPU-batched GLIM LOCAL covariance reconstruction | Same LOCAL factors and Values; same Gaussian blocks, full 6x6 covariance and means within predeclared arithmetic tolerance; focused tests; measured stage latency | Synthetic/real-graph and live60 correctness gates pass; covariance preparation accelerated; extra scan-headroom target missed, no full-run acceptance; default-off |
-| E2 | Receiver evaluation reuse at identical Values | Correct invalidation on any referenced Values/factor/revision change; identical outputs and decisions for arithmetic-preserving reuse; timing of normal and recovery paths | Bounded experiment completed 2026-10-11; exact correctness passed, runtime benefit not certified due to mixed/variable timing; default-off, not promoted |
+| E1 | GPU-batched GLIM LOCAL covariance reconstruction | Same LOCAL factors and Values; same Gaussian blocks, full 6x6 covariance and means within predeclared arithmetic tolerance; focused tests; measured stage latency | Re-audit 18/18 tests and zero matrix differences; component acceleration repeats. Earlier live60 headroom target missed; no full-run acceptance; default-off |
+| E2 | Receiver evaluation reuse at identical Values | Correct invalidation on any referenced Values/factor/revision change; identical outputs and decisions for arithmetic-preserving reuse; timing of normal and recovery paths | Re-audit: 50/50 Release and sanitizer, matched replay exact; isolated redundant whitening fixed. Same-executable/core mean ~5.2% shorter on frozen60; full/live capacity uncertified; default-off |
 | E3a | Remaining WNOA motion-factor derivatives | Independent numerical derivative checks; manifold/frame tests; frozen-journal state/cost/covariance checks with predeclared tight tolerances | Not started |
 | E3b | Remaining interpolated pose derivative blocks | Separate patch and independent checks as for E3a; do not redo already validated V/W substitution | Not started |
 | E4 | Selective incremental publication refinement | Same factors/events and fresh current-Values stationarity certificate; reference full refinement fallback; short/medium/late replay comparisons | Not started; higher risk |
@@ -349,6 +349,51 @@ documentation/archival/version control only; no estimator implementation or run.
 - Decision: retain mathematically validated prototype, default-off; runtime
   acceptance and full-sequence capacity remain unproven. No retries/retuning or
   further candidate edits after benchmarking. E3a/E3b/E4/E1b are NOT started.
+
+### E1/E2 correctness audit continuation
+
+- Authorization: user "we need to make sure that e1 e2 have no bugs before we
+  move to other solutions. proceed", 2026-10-11.
+- Status: COMPLETED, bounded correctness validated. E1/E2 only; no E1b/E3/E4, source capture,
+  live experiment, default promotion, covariance/model/timing-policy change.
+- Isolated branch: `engineering/e1-e2-correctness-audit-20261011`, parent
+  `267d2c5edf8537d75a137272a432a6b87efde672`.
+- Protocol: `experiments/e1_e2_correctness_audit_20261011/PROTOCOL.txt`.
+- First audit existing code and exception/cache integration paths, add missing
+  focused tests, then fix only reproduced defects in isolated patches. Existing
+  binaries/journals/test results stay immutable. Separate mathematical
+  correctness from controlled performance evidence; never claim proof of no bugs.
+- Report: `experiments/e1_e2_correctness_audit_20261011/REPORT.txt`; 50 archived
+  small evidence files and full artifact hashes. No reproduced remaining
+  numerical defect, not an assertion that all bugs are impossible.
+- E1: 18/18 Release and GPU-host UBSan; 6/6 CPU ASan/UBSan. Release and UBSan
+  each print 263 zero-difference Hessian/joint/relative comparisons. No E1
+  implementation change; repeated 64-factor component median 14.023 -> .44781 ms.
+- E2 original and fixed candidate: 50/50 Release; fixed candidate 50/50 ASan/
+  UBSan. Fixed duplicate augmentedJacobian construction/whitening on misses only,
+  retaining weighted finite check. New private executable SHA256
+  `9d2ef832941c5ff2592da8428cb80104352590bcfea50c187624aaf4e90d60e0`.
+- First pinned OFF vs old unpinned oracle failed exact equality. Paused before
+  ON and isolated with unchanged receiver: pinned original matches pinned OFF
+  exactly; unpinned original reproduces old oracle exactly. Cross-environment
+  maximum position difference ~9e-9 m. Existing TBB cap is already 1; do not
+  attribute this to multiworker reductions. P/E Eigen cache-size difference
+  confirmed, precise floating-point operation not traced. No tolerance relaxed.
+- Matched pinned original vs corrected cache OFF/ON: all 18 non-timing products
+  exact, both repeats deterministic; 34142 versions conserved, 33247 replacements,
+  870 IDs, 25 explicit pre-init unsupported, 0 pending/stale/duplicate. 593/593
+  publications stationary, max gradient 9.976530603e-6. Full real posterior
+  covariance is not exported; full synthetic covariance tested instead.
+- OFF times 59.4404/59.3413 s; ON 56.4364/56.1856 s, mean reduction 5.1857%.
+  Diagnostic original controls interrupted ABBA and are retained; two samples
+  per mode, same executable/core, no frequency lock. Late p95 gain inconsistent.
+  No new live/143-second replay or whole-pipeline throughput claim.
+- All 557 protected originals unchanged; source worktrees unchanged, working
+  binary/defaults preserved, owned processes exited. GPU ASan/device sanitizer
+  and full repository suite not claimed. Isolated candidate remains default-off.
+- Commit: the local completion commit containing this ledger/report (parent
+  above; `git log -1 --format=%H -- experiments/e1_e2_correctness_audit_20261011/REPORT.txt`).
+  No push. Stop at E1/E2; no other engineering task started.
 
 ### Template for subsequent tasks
 

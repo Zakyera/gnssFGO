@@ -1,0 +1,235 @@
+E1/E2 correctness and integration audit — 2026-10-11
+
+Conclusion
+No remaining E1/E2 numerical correctness defect was reproduced in the expanded
+tests and matched frozen replay. This is bounded validation, not proof that all
+bugs are absent. One E2 implementation inefficiency was confirmed and corrected
+in an isolated candidate: duplicate matrix construction/whitening on cache misses.
+An execution-environment mismatch in the first comparison was detected, isolated,
+and retained, not hidden by loosening the numerical gate.
+
+E1's component acceleration repeats. E2 has a repeatable modest benefit on this
+60 s journal: mean process time 59.39084 s OFF vs 56.31101 s ON, a 5.1857% reduction.
+Neither result proves sustainable live whole-pipeline throughput. Both candidates
+remain default-off; no installed/working receiver or launch profile was replaced.
+E1b/E3/E4 and fresh source/live runs were NOT started.
+
+1. What was audited
+
+E1 is GLIM LOCAL covariance-preparation batching, NOT acceleration of the main
+or LOCAL sidecar optimizer. E2 is exact same-factor/same-referenced-Values
+linearization reuse, NOT selective/stale relinearization or a new optimizer.
+
+E1 trace:
+- glim_ros1/src/glim_ros/cbs_bridge.cpp:1112 callbacks registered; :1267 LOCAL
+  sidecar update; :1516 outgoing beliefs; :3349 optional LOCAL preparation.
+- The native odometry backend invokes pre-update/update/post-update in sequence
+  (glim/src/glim/odometry/odometry_estimation_imu.cpp:427-436). ROS belief input
+  queues separately. GPU preparation is on that backend path, not concurrently
+  applied to the same factor objects by this helper.
+- glim_ros1/include/glim_ros/cbs_local_graph_linearizer.hpp:22: unique exact
+  VGICP types and valid Pose3 preflight; ordinary fallback for duplicate pointers,
+  derived/unsupported GPU factors, or pending native caches; drain prepared GPU
+  caches before CPU factors can throw. CPU-only graphs use ordinary linearize.
+- gtsam_points/src/gtsam_points/cuda/nonlinear_factor_set_gpu.cpp:74: reuse the
+  existing allocation/copy/kernel/synchronization loop with compatibility storage.
+- integrated_vgicp_factor_gpu.cpp:247: compatibility storage preserves both native
+  inlier state and pre-existing error cache. Default store_linearized at :239
+  still performs the original native inlier/error-cache update.
+- cbs/src/bpsam/bpsam.cpp:4737-4873: unchanged LOCAL filtering and Values,
+  Gaussian slot/key validation, Marginals construction before covariance/count
+  commit. Main source mean, Schur-relative covariance and source policy unchanged.
+- Header/parameter selector defaults remain false. No E1 implementation edits
+  were needed in this audit.
+
+E2 trace (private candidate, not the default repository CMake target):
+- DiagnosticReplay.cpp:810 creates each source factor; :939 replaces the old
+  slot with a NEW factor object; :1797 creates WNOA prior factors.
+- ExactLinearizationMemo.h:32: disabled branch calls Base::linearize directly.
+  Enabled path keys on all referenced X/V/W bits, with a per-instance mutex.
+  Changed Values discard the previous entry; inactive/failing calls clear it.
+  Unexpected/nonfinite results are not cached. Every successful returned cache
+  hit is a clone, so caller mutation cannot alter the retained Gaussian.
+- clone() copies immutable factor data, not cache state. Revised mean/covariance
+  uses a new object. cloneWithNewNoiseModel also begins with an empty cache.
+- This is scoped to the frozen immutable factor use. In-place mutation of
+  externally shared noise/interpolator objects is NOT a supported generic cache
+  contract. The audited receiver does not use that mutation path.
+- Neither graph.error(), residuals, derivatives, whitening formula, stationarity
+  checks nor rollback policy is changed. No source versions are coalesced/skipped.
+
+The initial E1 prototype DID have a numerical bug (native batching altered
+inlier/error-cache semantics). Its rejected fixture/report remain rejected.
+This audit concerns the corrected synchronous-compatible implementation; it does
+not retroactively declare the original prototype correct.
+
+2. Expanded correctness tests
+
+All prior assertions and predeclared tolerances retained:
+CPU 1e-12+1e-12*maxabs(reference); GPU Hessian 1e-8+1e-6*maxabs(reference);
+full joint/relative covariance 1e-10+1e-6*maxabs(reference). E2 exact equality.
+
+E1 Release: 18/18 PASS (previous 14 plus four new tests).
+E1 GPU-host UBSan: 18/18 PASS with existing instrumented changed host units.
+E1 CPU ASan/UBSan: 6/6 PASS.
+E1 printed comparisons: Release 263, UBSan 263, CPU sanitizer 25; all max_abs=0.
+New checks: empty/holey graphs; wrong-type GPU Values rejected without prepared
+caches; shared factor objects across graphs at different Values; 256-GPU-factor
+batch followed by a CPU exception leaves no stale linearization caches.
+Existing tests retain complete joint and full dense 6x6 relative covariance,
+fixed-lag key retirement, factor replacement, native-cache interleaving, native
+pending-cache/unsupported-type fallback, and covariance publication rollback.
+
+E2 original implementation with expanded tests: 50/50 Release PASS.
+E2 corrected candidate: 50/50 Release and 50/50 ASan/UBSan PASS.
+New checks: every coordinate of both V/W endpoints and all pose tangent axes;
+inactive/null/nonfinite/unexpected Gaussian type/exception paths; revised means
+and dense covariances with no inherited cache; cache allocation counters return
+to their prior values after factor destruction. Previous tests retain one-bit
+invalidation, cloning/noise replacement, caller mutation, concurrent independent
+Values, nonlinear refinement/transactional rejection and complete synthetic
+joint covariance equality. The disabled timing tests were run explicitly.
+
+Limits: no full ROS/repository suite, GPU ASan or CUDA device-memory sanitizer
+claim. compute-sanitizer is unavailable in the existing Noetic container; no
+installation attempted. Dependency libraries/CUDA kernels are not newly ASan
+instrumented. The prior GPU ASan allocation blocker remains a validation limit.
+Existing unused gnssFGO GP base overloads emit no-return compiler warnings;
+this audit did not change or exercise those unsupported overloads.
+
+3. Isolated E2 fix
+
+Old miss path called jac->augmentedJacobian() for allFinite(), then again solely
+for .size(). GTSAM's implementation constructs AND whitens a dense matrix on
+each call. The candidate stores that temporary once, performs the SAME finite
+check and uses its size for bookkeeping. Returned/stored Gaussian factors and
+factor arithmetic are unchanged. Original E2 source/binary retained untouched.
+
+Pinned WNOA microfixture median microseconds/call (five samples, 3000 calls each):
+                           original E2   corrected E2
+native computation          13.5801       13.9599
+wrapper cache OFF           13.6248       13.7524
+alternating Values/misses   14.1362       14.1153
+repeated Values/hits         0.1295        0.1356
+
+The tiny miss-time change is below the variability of this small test; no
+standalone speedup is attributed to the fix. Hits are cheap but most calls miss.
+The complete replay OFF/ON comparison below measures the reuse mechanism as a
+whole, not the isolated benefit of removing the redundant whitening.
+
+4. Exact replay gate and the caught environment mismatch
+
+Journal: runs/gnssfgo_e1_live60_20261011/prepared/live60_on_receiver/events.csv
+under /home/yeranis/repos/V4RL/cbs_gtsam4.3. No new sources were generated.
+Same corrected executable with cache OFF/ON; P-core 2 affinity inherited by
+the child, OMP_NUM_THREADS=1, existing strict nominal policy. Frequency/governor
+not modified. Reference uses the original frozen working executable.
+
+First pinned OFF vs old unpinned saved oracle FAILED byte equality. First
+divergence: publication index 62, physical_ns=1727775014783475000; objective
+3009.9245506093525 vs 3009.924550609353, then px differs by ~3.81e-11 m.
+Timing sequence stopped before ON. Two original-executable controls isolated it:
+- Original frozen executable, same pinned environment: EXACTLY matches off1
+  in all 18 non-timing products.
+- SAME original executable, unpinned: EXACTLY reproduces all 18 old products.
+Thus this difference is present without E2 at all. Matching the environment
+restores an exact oracle; no tolerance was relaxed. The failed comparison and
+both controls are retained in environment_control.json and command records.
+
+Cross-environment maximum position differences: online 8.99611e-9 m; final
+5.09948e-9 m. Original and corrected outputs have matching event counts and
+publication decisions. Do NOT diagnose this as stale cache or loosen equality
+for matched-environment candidate comparisons.
+
+The Intel Core Ultra 9 275HX has P cores 0-7 and E cores 8-23. The probe confirms
+Eigen detects different cache sizes: P-core 2 L1=49152/L2=3145728; E-core 8
+L1=32768/L2=4194304 bytes; unpinned probe ran on E-core 13. Eigen queries these
+sizes for matrix-product blocking. This is a plausible low-level mechanism for
+different arithmetic order, NOT a traced proof of the exact first operation.
+The receiver already caps TBB parallelism at 1 (DiagnosticReplay.cpp:2197), so
+the difference must NOT be casually attributed to multiworker TBB reductions.
+No claim is made about which cores executed the OLD variable timing samples.
+
+5. Matched exact results and timing
+
+                     cache OFF 1    cache ON 1     cache ON 2     cache OFF 2
+process wall s        59.440402      56.436384      56.185636      59.341270
+publication median ms 68.800261      62.795582      62.127277      68.526411
+publication p95 ms   126.535183     123.936301     123.849117     125.651550
+publication max ms   217.068472     195.945602     193.824963     214.851277
+late (40-60s) p95 ms 131.120450     133.318496     132.660749     133.579751
+peak process RSS MiB 119.9375       126.3008       126.0781       119.8281
+
+All four exactly match the pinned original executable in all 18 products after
+excluding ONLY pre-existing timing fields (seconds, update_seconds,
+wall_unix_ns; summary wall_seconds/revision_update_seconds). Includes online
+and final X/V/W, trajectories, residuals, covariance export, factor/event/slot
+accounting, clock, publication steps/decisions. Both ON runs are deterministic.
+Full real-graph posterior covariance is NOT exported by this runner; equality
+of that quantity is tested on synthetic graphs, not asserted as measured here.
+
+Independent checks, each case:
+- 34142 source versions exactly accounted, 33247 replacements, 870 active IDs;
+  25 explicit before-initialization unsupported versions; zero pending/stale/
+  duplicate versions. No consumption before arrival or required support exists.
+- 593/593 stationary publications; maximum normalized gradient
+  9.976530603080659e-6 < 1e-5. Source covariance export difference from input
+  at most 1.3552527156068805e-20 (same across cases).
+- No central IMU/bias/acceleration/GNSS factors, unchanged independent support
+  clock, source means/covariances, WNOA, Qc/priors/scales and Gaussian loss.
+- WNOA calls/hits 672252/101119; relative calls/hits 1005275/144663. Failures 0.
+  1462 entries; matrix+signature payload 4262288 bytes, not total object memory.
+
+Means 59.390836 vs 56.311010 s: 5.1857% less wall time with reuse. Late p95
+does not improve consistently. The sequence was OFF1, diagnostic pinned and
+unpinned original controls, ON1, ON2, OFF2 — not uninterrupted ABBA. No run was
+discarded; the interrupted series is disclosed. Only two samples per mode,
+no locked frequency/thermal/shared-host environment, no live queue test. This
+is bounded repeatability evidence, not production/full-sequence certification.
+
+6. E1 component timing repeated, not a pipeline promise
+
+GPU factors   ordinary median/p95 ms       batched median/p95 ms
+8             1.47998 / 2.57195            0.137929 / 0.370445
+64           14.02300 /15.39840            0.447810 / 0.546730
+256          55.23940 /55.93070            1.528690 / 1.916370
+
+Same 864-point, 16-pose synthetic fixture; 25 alternating samples after warmup,
+pinned test, linearization+Marginals+query; ordinary sync warning I/O included.
+Not timing sidecar/main updates, source traffic or receiver refinement. Previous
+real-graph/live60 evidence remains historical; no new real capture was launched.
+
+7. What this means for the unresolved delay
+
+It was too strong to expect E1/E2 alone to eliminate the overall delay. E1
+successfully removes a specific preparation cost while main/sidecar optimization
+remains. E2 avoids about 15% of derivative calls in this short journal, but still
+visits all factors and pays invalidation/signature/copy cost. Most evaluations
+are genuinely at changed Values and correctly cannot use this exact cache.
+Full-history storage/visits/refinement still grow. These facts explain a modest
+gain without requiring a remaining E1/E2 numerical bug. They do not prove a
+cause for every historical timing spike or justify beginning a new method here.
+
+8. Preservation, artifacts and commits
+
+557 protected originals match their preflight SHA256 values. Both source repos
+remain clean and unchanged. Original failed prototype, corrected E1 libraries,
+old E2 candidate, working receiver, profiles and journals remain intact.
+50 small evidence files archived byte-identically; ARCHIVE_MANIFEST.json and
+evidence/cpu/preservation.json retain identities of binaries and full products.
+All owned test/replay processes exited; no services or launch defaults changed.
+
+CPU results: /home/yeranis/results/gnssfgo_e1_e2_correctness_audit_20261011
+GPU results: /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/e1_correctness_audit_20261011
+Candidate executable: CPU results/candidate/replay
+SHA256 9d2ef832941c5ff2592da8428cb80104352590bcfea50c187624aaf4e90d60e0
+Candidate memo header SHA256
+de06b598510aeb879b493e5491d90a2efd201536280344cf6818f1039ac33044
+
+Branch engineering/e1-e2-correctness-audit-20261011; parent
+267d2c5edf8537d75a137272a432a6b87efde672. Completion is the local commit containing
+this report; resolve with git log -1 --format=%H --
+experiments/e1_e2_correctness_audit_20261011/REPORT.txt. No push requested/performed.
+
+Decision: E1/E2 BOUNDED CORRECTNESS VALIDATED; isolated E2 inefficiency fixed;
+full-pipeline throughput remains unproven. Defaults remain off. Stop before E3.
