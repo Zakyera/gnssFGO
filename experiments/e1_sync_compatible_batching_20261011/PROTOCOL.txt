@@ -1,0 +1,39 @@
+E1 continuation: preserve synchronous VGICP semantics during batching
+Authorization: user Proceed, 2026-10-11. No real sequence or receiver run.
+
+Reference: original synchronous LOCAL graph.linearize + Marginals.
+Retain previous failed attempt and its logs under e1_local_gpu_batching_20261011.
+Do not reinterpret the previous strict joint-covariance failure as a pass.
+
+Single change: reuse NonlinearFactorSetGPU's existing allocation/copy/kernel/sync
+loop through a per-call opt-in path. For exact IntegratedVGICPFactorGPU factors,
+store only the computed linearization without compacting inliers or modifying
+an existing error cache. Existing default GPU hooks keep their old behavior.
+No new kernels/process model, no global flags, no new object data or vtable slots.
+Unsupported/derived GPU factors, duplicate pointers and pending linearization
+caches fall back to ordinary graph.linearize. Keep the GLIM selector default-off.
+
+Same tolerances as the preceding predeclared protocol:
+CPU matrices: maxabs difference <= 1e-12 + 1e-12*maxabs(reference).
+GPU augmented Hessian: <= 1e-8 + 1e-6*maxabs(reference).
+GPU joint and full 6x6 relative covariance: <= 1e-10 + 1e-6*maxabs(reference).
+Same slots/keys, means, Values, graph filtering and extraction mathematics.
+
+Run the original nine focused tests unchanged in their assertions, plus tests
+for long value histories, prior native batching/error caches, fallback cases,
+missing keys, unary GPU factors and default-native batching nonregression.
+Compare the default native path against installed baseline using an old-API-only
+probe under both shared libraries. Record actual loaded library paths/hashes.
+Focused Release, CPU ASan/UBSan, and GPU UBSan where practical; GPU ASan is not
+already validated (prior harness stopped on CUDA allocation). Report limits.
+
+Private libraries only, no catkin install or overwrites of devel/build artifacts.
+Use existing CUDA/Noetic container; one isolated output root. Reuse unchanged
+kernel objects/dependencies, record compiler commands and provenance.
+Benchmark the same 8/64/256-factor fixtures with alternating execution order,
+plus changing-Values covariance checks. No inference about full ETH1 throughput.
+
+Stop after the compatibility result/report and update E1 ledger. If synthetic
+gates pass, mark kernel validation only: a bounded real-graph capture and live
+acceptance still require their own explicit scope. Do not enable a production
+launch, start E1b/E2, tune thresholds/Q/R or loosen numerical tolerances.

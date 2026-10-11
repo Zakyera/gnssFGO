@@ -80,7 +80,7 @@ shared IMU, past means or nonlinear history are statistically independent.
 | ID | Isolated task | Required evidence before acceptance | Status |
 | --- | --- | --- | --- |
 | E0 | Save this plan and push a recoverable checkpoint | Exact-commit manifest; archive hashes; verified Zakyera branch SHAs; original runtime untouched | Completed 2026-10-11 |
-| E1 | GPU-batched GLIM LOCAL covariance reconstruction | Same LOCAL factors and Values; same Gaussian blocks, full 6x6 covariance and means within predeclared arithmetic tolerance; focused tests; measured stage latency | Prototype not accepted 2026-10-11: strict joint-covariance gate fails; disabled |
+| E1 | GPU-batched GLIM LOCAL covariance reconstruction | Same LOCAL factors and Values; same Gaussian blocks, full 6x6 covariance and means within predeclared arithmetic tolerance; focused tests; measured stage latency | Compatibility continuation passes synthetic kernel gates 2026-10-11; real-graph/live acceptance pending; disabled |
 | E2 | Receiver evaluation reuse at identical Values | Correct invalidation on any referenced Values/factor/revision change; identical outputs and decisions for arithmetic-preserving reuse; timing of normal and recovery paths | Not started |
 | E3a | Remaining WNOA motion-factor derivatives | Independent numerical derivative checks; manifold/frame tests; frozen-journal state/cost/covariance checks with predeclared tight tolerances | Not started |
 | E3b | Remaining interpolated pose derivative blocks | Separate patch and independent checks as for E3a; do not redo already validated V/W substitution | Not started |
@@ -194,6 +194,43 @@ documentation/archival/version control only; no estimator implementation or run.
   preserve ordinary GPU inlier/cache semantics in a scoped batching compatibility
   path, then rerun the same strict fixture before any bounded real capture.
   Do not begin E2/E1b or treat this as the runtime-delay problem solved.
+
+### E1 continuation — synchronous-compatible GPU batching
+
+- Authorization: user "Proceed" after the E1 prototype rejection, 2026-10-11.
+- Status: synthetic kernel validation passed; NOT production/live accepted.
+  E1 only. No E1b, E2, source/fusion run or tuning.
+- Hypothesis: an opt-in call reusing the native GPU batch implementation but
+  preserving ordinary VGICP inlier/error-cache semantics will pass the SAME
+  strict fixture. No tolerance change or altered covariance formula.
+- Protocol: `experiments/e1_sync_compatible_batching_20261011/PROTOCOL.txt`.
+- Preserve the previous rejected candidate, checkpoint and installed binaries.
+  gtsam_points receives a separate candidate branch/private build; default native
+  batching behavior and global hook registration remain unchanged.
+- Report: `experiments/e1_sync_compatible_batching_20261011/REPORT.txt`;
+  commands, XML, comparison summaries and binary hashes archived beside it.
+- gtsam_points `857819676921650510e249018cd82d45c08d7e8d`; glim_ros1
+  `fad72d6e11219e42cbbe09658341fff4512769dc`; cbs remains
+  `7c3a1e66767938e105d46fd072bd853ad5ec50c2`. Local candidate branches only.
+- Original nine tests pass unchanged. Expanded 14 tests pass five consecutive
+  times. Printed Hessian/full joint/full Schur-relative covariance differences
+  are zero, including independent changing-Values histories. Same tolerances.
+- Old-API native-hook probe under installed vs candidate library passes those
+  gates. Small cross-process Hessian/error variation also occurs installed vs
+  installed; covariance is exact. Not claiming bit-identical native probe logs.
+- CPU ASan/UBSan 5/5; expanded UBSan 14/14 with both changed GPU host files
+  instrumented. CUDA kernels/dependency libraries are not sanitizer-instrumented;
+  GPU ASan remains unvalidated. Private wrapper builds/resolves in Noetic.
+- Synthetic idle-build timing (linearize + Marginals/query), 64 GPU factors:
+  median 13.6634 ms old vs 0.475765 ms batch; p95 14.4535 vs 0.697894 ms.
+  Includes ordinary sync warnings, excludes sidecar optimization and live queues.
+  No whole-pipeline speedup or completed 160-second run is claimed.
+- Preservation: prior candidate/checkpoint binaries unchanged, 190/193 protected
+  entries match checkpoint, same three already-known source changes, zero NEW
+  protected changes. All source candidate worktrees clean after local commits.
+- Decision: keep selector default-off. Next proposed E1 gate is one bounded
+  real-graph capture/comparison at identical LOCAL factors/Values, then a separate
+  authorized headless acceptance run. Neither was started here; E2 stays pending.
 
 ### Template for subsequent tasks
 

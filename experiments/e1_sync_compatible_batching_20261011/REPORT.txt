@@ -1,0 +1,179 @@
+E1 continuation — synchronous-compatible LOCAL GPU batching
+Date: 2026-10-11
+Decision: SYNTHETIC_KERNEL_VALIDATED — still disabled; live acceptance pending.
+
+1. Scope and finding
+
+The preceding candidate remains rejected and retained in
+../e1_local_gpu_batching_20261011. Its full joint covariance error was
+2.37628e-5, above its predeclared 1.10310e-8 bound. No gate was relaxed here.
+
+The ordinary GPU batching hook does more than schedule kernels:
+IntegratedVGICPFactorGPU::store_linearized() also sets evaluation_result and
+calls derivatives->update_inliers(). Ordinary synchronous derivatives->linearize()
+does neither. Using the native optimization hook unchanged was therefore NOT
+a behavior-preserving replacement for the old LOCAL covariance preparation.
+Inlier compaction can change subsequent floating-point reductions; covariance
+inversion can amplify small differences. This is an implementation-equivalence
+issue, not an uncertainty-calibration finding or evidence about CBS accuracy.
+
+The new per-call compatibility path stores only the prepared linearization,
+without compacting inliers or altering any prior error cache. The original failed
+fixture and independent changing-Values histories now match exactly. This
+supports the cache/inlier-semantics diagnosis; it is not a claim that every
+possible real GPU graph is bit-identical or that all runtime delays are solved.
+
+2. Implementation
+
+gtsam_points:
+- NonlinearFactorSetGPU::linearizePreservingSynchronousVGICP() validates unique
+  exact IntegratedVGICPFactorGPU types, no pending linearization, and valid Pose3
+  Values before work. It reuses the existing buffer/copy/kernel/synchronization
+  loop through linearizeImpl(). No second kernel implementation was created.
+- IntegratedVGICPFactorGPU::store_linearized_preserving_sync() only supplies the
+  linearization cache. Default store_linearized() and native hook semantics stay
+  unchanged. No object data members or virtual-method slots were added.
+
+glim_ros1:
+- linearizeCbsLocalGraphBatched() uses this per-call path on the backend thread.
+  It does not change the global hook registry. GPU caches are consumed before
+  CPU factors can throw. Missing GPU keys/types fail before preparation.
+- Duplicate pointers, derived/other GPU factor types, or already-prepared native
+  linearizations use ordinary whole-graph linearize(). CPU-only graphs use it
+  without constructing a CUDA batch object. No concurrent use is supported.
+- Pre-existing native error caches are preserved, not drained/replaced. A pending
+  native linearization retains its old consumption behavior; this patch does not
+  redesign that older API's cache contract.
+- The existing glim_cbs_experimental_local_gpu_batching selector remains false
+  by default. No launch or saved profile enables it.
+
+No edits to sidecar optimization, LOCAL filtering, Schur covariance mathematics,
+full dense source covariance, source mean, source CBS timing/policy, receiver,
+WNOA, Qc, priors, scales, publication checks or event journals. No GLIM, Kimera,
+gnssFGO, bag playback or sequence experiment ran. This is E1, not E1b or E2.
+
+3. Numerical validation
+
+Original predeclared gates from PROTOCOL.txt, unchanged:
+CPU matrices: maxabs difference <= 1e-12 + 1e-12*maxabs(reference).
+GPU augmented Hessian: <= 1e-8 + 1e-6*maxabs(reference).
+GPU joint and full 6x6 relative covariance: <= 1e-10 + 1e-6*maxabs(reference).
+
+Original nine focused tests, before adding tests: 9/9 PASS.
+Expanded fixture: 14/14 PASS in each of five consecutive repeats.
+All printed matrix comparisons have max_abs=0 (Hessian, complete joint
+covariance, full 6x6 Schur-relative covariance, and CPU callback covariance).
+Original assertions were not changed. Default benchmark remains disabled in
+normal test execution and was selected explicitly for timings.
+
+Coverage:
+- LOCAL exclusion of CBS factors and inactive keys, exact supplied sidecar Values;
+- CPU dense correlated covariance, slots/holes, duplicate pointers/replacement;
+- fixed-lag active keys after marginalization;
+- transactional callback failure/wrong-size result retains published covariance,
+  factor count and estimate; default FULL behavior remains ordinary;
+- original mixed CPU/GPU fixture, both call orders, changed Values;
+- CPU failure after GPU preparation does not leak a pending linearization;
+- error evaluation at later Values, independent reference/candidate graphs;
+- 40 independent changing-Values steps, interleaved native batching/compaction
+  with prior native error caches; Hessian/joint/relative/error comparisons;
+- pending native linearization falls back without overwriting it;
+- unary GPU factor; derived GPU class forces synchronous whole-graph fallback;
+- missing-key, duplicate-set and pending-cache preflight rejection.
+
+Native-hook nonregression is a SEPARATE old-API-only probe executable run with
+the installed vs private CUDA library. It uses 12 changing-Values steps and
+records native batched and subsequent synchronous Hessians, joint covariance,
+cached error and hook-evaluated error. Library resolution is retained in logs.
+The first byte comparison differed, so it was NOT called bit-identical.
+Installed-vs-installed repeat also differed by the same maximum magnitudes:
+- augmented Hessian max difference: 0.00146484375, only 0.001402 of its bound;
+- joint covariance max difference: 0;
+- error max difference: 0.000732421875, at most 0.054324 of its bound.
+Candidate-vs-installed and candidate repeat pass the original numerical gates.
+check_native_probe.py / native_probe_comparison.json retain the comparison.
+The native hook's small cross-process variability is not a new covariance failure.
+
+4. Build and sanitizer checks
+
+Private Release GPU library and GLIM wrapper build: PASS.
+Recompiled only the two changed gtsam_points C++ host units; reused unchanged
+CUDA objects and dependencies from the existing Noetic workspace. No catkin
+install/rebuild or overwrite of build/devel libraries. Original CBS candidate
+library is reused unchanged through a private link. Compiler/link commands are
+archived. A future candidate deployment must load the matching private CUDA
+library; the new opt-in symbol is not in the installed baseline library.
+
+Focused CPU ASan/UBSan: 5/5 PASS, established Eigen allocation ABI flag,
+-no-pie, ASAN detect_leaks=0, halt_on_error=1. Dependency libraries are Release.
+Focused expanded UBSan: 14/14 PASS. Both changed GPU host C++ units AND harness
+instrumented, halt_on_error=1. Existing CUDA kernels and other dependencies are
+not instrumented. GPU ASan is NOT claimed: earlier CUDA-allocation blocker
+remains a validation limit; it was not hidden by relabeling UBSan as ASan.
+No full repository suite or CUDA device memory sanitizer ran in this bounded task.
+
+Two build-only harness mistakes were fixed and their logs retained: missing
+Pose3 include in helper preflight (test build attempt1), and an Eigen auto-expression
+in the old-API probe (probe build attempt1). Neither involved tolerance changes.
+The first ldd check omitted the ROS runtime environment and reported missing ROS
+dependencies. Repeating with source /opt/ros/noetic/setup.bash resolves all symbols
+and uses the private CBS/CUDA libraries; wrapper_noetic_ldd.log is the valid check.
+
+5. Synthetic cost — NOT a whole-pipeline benchmark
+
+Same disabled fixture as prior E1: 864 deterministic points, 16 poses, three
+warmups then 25 samples per mode with alternating order. Measures linearization
++ Marginals construction + one covariance query. Latest repeat after builds
+completed (milliseconds):
+
+GPU factors | old median / p95 / max       | batched median / p95 / max
+8           | 1.84239 / 2.41242 / 2.63399  | 0.139386 / 0.156708 / 0.212446
+64          | 13.6634 / 14.4535 / 14.6031 | 0.475765 / 0.697894 / 0.744519
+256         | 55.9869 / 58.8070 / 60.4820 | 1.59056 / 1.97931 / 1.98432
+
+Ordinary synchronous warning output is included; no warning-suppression change.
+The first timing run overlapped compilation and is retained as timing.log;
+timing_idle.log is the post-build repeat above. No discarded failed timing run.
+Same-Values warm timing excludes sidecar update, graph filtering, covariance
+export, source estimation, transport and receiver cost. The approximately 29x
+64-factor local-stage ratio is NOT an ETH1/160-second throughput prediction.
+
+6. Preservation / exact artifacts
+
+Run root:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/glim_sync_compatible_batching_e1_20261011
+Release: private/; instrumented host variant: ubsan/.
+Small logs/XML/commands archived under validation_logs/ beside this report.
+Dense probe outputs remain in the run root with hashes in validation_manifest.json.
+
+Protected manifest: 190/193 identical to original checkpoint. The same three
+intentional GLIM source/CMake differences already recorded by prior E1 remain;
+zero additional protected changes or missing entries. Every prior-candidate and
+baseline binary listed in the prior manifest has its original hash, including:
+- frozen receiver 62124b496ad6f854079218862acb149892aa452d4af908c50bc96067e49c9dbb;
+- frozen GLIM wrapper 9568f7edc063f830333572cd30c764cc8ef2bea1d3608f0675a83a257320b172.
+New implementation files are intentional candidate changes; "protected unchanged"
+does not mean all source files are unchanged. Full binary hashes in manifest.
+
+Source commits (clean worktrees after commits; local only):
+- gtsam_points: 857819676921650510e249018cd82d45c08d7e8d,
+  engineering/e1-sync-compatible-batching-20261011;
+- glim_ros1: fad72d6e11219e42cbbe09658341fff4512769dc,
+  engineering/e1-local-gpu-batching-20261011;
+- cbs unchanged: 7c3a1e66767938e105d46fd072bd853ad5ec50c2.
+Documentation parent: gnssFGO 5df531093db47c22f544e44973fb1ffcdeead4f9;
+documentation HEAD is the commit containing this report and updated E1 ledger.
+Previously pushed preservation branches remain untouched. No new push/promotion.
+
+7. Remaining gate / stop
+
+Kernel validation passed. Production acceptance has NOT passed yet. The existing
+text logs do not serialize GPU point clouds, voxel maps, active factor objects
+and exact Values; they cannot supply a faithful real-graph equivalence fixture.
+Next proposed E1 step: authorize one bounded source capture/paired comparison at
+the SAME real LOCAL factors and Values, preserving the declared gates. Only
+after that, authorize a bounded headless live throughput test with the existing
+queue budget. Do not promise byte-identical live arrival interleaving.
+
+No capture/live experiment, E1b, E2, model adjustment or covariance tuning was
+started here. The selector remains off. Stop at this bounded evidence gate.

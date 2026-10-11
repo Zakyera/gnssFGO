@@ -1,0 +1,10 @@
+In file included from /workspace/cbs_gtsam4.3/src/glim_ros1/test/cbs_local_graph_linearizer_test.cpp:1:
+/workspace/cbs_gtsam4.3/src/glim_ros1/include/glim_ros/cbs_local_graph_linearizer.hpp: In function ‘gtsam::GaussianFactorGraph::shared_ptr glim::linearizeCbsLocalGraphBatched(const gtsam::NonlinearFactorGraph&, const gtsam::Values&)’:
+/workspace/cbs_gtsam4.3/src/glim_ros1/include/glim_ros/cbs_local_graph_linearizer.hpp:53:74: error: invalid use of incomplete type ‘const class gtsam::Pose3’
+   53 |     for (auto key : factors[i]->keys()) (void)values.at<gtsam::Pose3>(key);
+      |                                                                          ^
+In file included from /workspace/cbs_gtsam4.3/src/glim_ros1/include/glim_ros/cbs_local_graph_linearizer.hpp:8,
+                 from /workspace/cbs_gtsam4.3/src/glim_ros1/test/cbs_local_graph_linearizer_test.cpp:1:
+/workspace/cbs_gtsam4.3/src/gtsam_points/include/gtsam_points/factors/integrated_vgicp_factor_gpu.hpp:15:7: note: forward declaration of ‘class gtsam::Pose3’
+   15 | class Pose3;
+      |       ^~~~~

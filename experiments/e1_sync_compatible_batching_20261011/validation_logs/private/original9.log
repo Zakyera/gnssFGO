@@ -1,0 +1,281 @@
+Running main() from /build/googletest-j5yxiC/googletest-1.10.0/googletest/src/gtest_main.cc
+[==========] Running 9 tests from 2 test suites.
+[----------] Global test environment set-up.
+[----------] 5 tests from LocalLinearizerCpu
+[ RUN      ] LocalLinearizerCpu.DenseCovarianceHolesAndValues
+E1_ERROR rows=25 cols=25 max_abs=0 bound=2.19e-10
+E1_ERROR rows=24 cols=24 max_abs=0 bound=1.0436e-12
+E1_ERROR rows=6 cols=6 max_abs=0 bound=1.0109e-12
+E1_ERROR rows=25 cols=25 max_abs=0 bound=2.19e-10
+E1_ERROR rows=24 cols=24 max_abs=0 bound=1.0436e-12
+E1_ERROR rows=6 cols=6 max_abs=0 bound=1.0109e-12
+E1_ERROR rows=25 cols=25 max_abs=0 bound=2.19e-10
+E1_ERROR rows=24 cols=24 max_abs=0 bound=1.0436e-12
+E1_ERROR rows=6 cols=6 max_abs=0 bound=1.0109e-12
+[       OK ] LocalLinearizerCpu.DenseCovarianceHolesAndValues (1 ms)
+[ RUN      ] LocalLinearizerCpu.LocalFilteringAndExactSidecarValues
+E1_ERROR rows=6 cols=6 max_abs=0 bound=1.0218e-12
+[       OK ] LocalLinearizerCpu.LocalFilteringAndExactSidecarValues (0 ms)
+[ RUN      ] LocalLinearizerCpu.FailedCallbackRetainsPublishedCovarianceAndCount
+NonlinearFactorGraph: size: 4
+
+Factor 0: PriorFactor on x0
+  prior mean:  R: [
+	1, 0, 0;
+	0, 1, 0;
+	0, 0, 1
+]
+t: 0 0 0
+  noise model: Gaussian [
+	10, 0, 0, -3, 0, 0;
+	0, 10, 0, 0, 2, 0;
+	0, 0, 10, 0, 0, -1;
+	0, 0, 0, 10, 0, 0;
+	0, 0, 0, 0, 10, 0;
+	0, 0, 0, 0, 0, 10
+]
+
+Factor 1: nullptr
+Factor 2: BetweenFactor(x0,x1)
+  measured:  R: [
+	0.999995, 0.00300099, 0.000996998;
+	-0.00299899, 0.999994, -0.0020015;
+	-0.001003, 0.0019985, 0.999998
+]
+t:    0.010005    0.003987 -0.00200101
+  noise model: Gaussian [
+	10, 0, 0, -3, 0, 0;
+	0, 10, 0, 0, 2, 0;
+	0, 0, 10, 0, 0, -1;
+	0, 0, 0, 10, 0, 0;
+	0, 0, 0, 0, 10, 0;
+	0, 0, 0, 0, 0, 10
+]
+
+Factor 3: BetweenFactor(x1,x2)
+  measured:  R: [
+	0.999995, 0.00300099, 0.000996998;
+	-0.00299899, 0.999994, -0.0020015;
+	-0.001003, 0.0019985, 0.999998
+]
+t:    0.010005    0.003987 -0.00200101
+  noise model: Gaussian [
+	10, 0, 0, -3, 0, 0;
+	0, 10, 0, 0, 2, 0;
+	0, 0, 10, 0, 0, -1;
+	0, 0, 0, 10, 0, 0;
+	0, 0, 0, 0, 10, 0;
+	0, 0, 0, 0, 0, 10
+]
+
+NonlinearFactorGraph: size: 4
+
+Factor 0: PriorFactor on x0
+  prior mean:  R: [
+	1, 0, 0;
+	0, 1, 0;
+	0, 0, 1
+]
+t: 0 0 0
+  noise model: Gaussian [
+	10, 0, 0, -3, 0, 0;
+	0, 10, 0, 0, 2, 0;
+	0, 0, 10, 0, 0, -1;
+	0, 0, 0, 10, 0, 0;
+	0, 0, 0, 0, 10, 0;
+	0, 0, 0, 0, 0, 10
+]
+
+Factor 1: nullptr
+Factor 2: BetweenFactor(x0,x1)
+  measured:  R: [
+	0.999995, 0.00300099, 0.000996998;
+	-0.00299899, 0.999994, -0.0020015;
+	-0.001003, 0.0019985, 0.999998
+]
+t:    0.010005    0.003987 -0.00200101
+  noise model: Gaussian [
+	10, 0, 0, -3, 0, 0;
+	0, 10, 0, 0, 2, 0;
+	0, 0, 10, 0, 0, -1;
+	0, 0, 0, 10, 0, 0;
+	0, 0, 0, 0, 10, 0;
+	0, 0, 0, 0, 0, 10
+]
+
+Factor 3: BetweenFactor(x1,x2)
+  measured:  R: [
+	0.999995, 0.00300099, 0.000996998;
+	-0.00299899, 0.999994, -0.0020015;
+	-0.001003, 0.0019985, 0.999998
+]
+t:    0.010005    0.003987 -0.00200101
+  noise model: Gaussian [
+	10, 0, 0, -3, 0, 0;
+	0, 10, 0, 0, 2, 0;
+	0, 0, 10, 0, 0, -1;
+	0, 0, 0, 10, 0, 0;
+	0, 0, 0, 0, 10, 0;
+	0, 0, 0, 0, 0, 10
+]
+
+E1_ERROR rows=6 cols=6 max_abs=0 bound=0
+[       OK ] LocalLinearizerCpu.FailedCallbackRetainsPublishedCovarianceAndCount (0 ms)
+[ RUN      ] LocalLinearizerCpu.DuplicateReferencesAndReplacement
+E1_ERROR rows=19 cols=19 max_abs=0 bound=3.28e-10
+E1_ERROR rows=18 cols=18 max_abs=0 bound=1.02725e-12
+E1_ERROR rows=6 cols=6 max_abs=0 bound=1.0109e-12
+E1_ERROR rows=19 cols=19 max_abs=0 bound=3.28e-10
+E1_ERROR rows=18 cols=18 max_abs=0 bound=1.02725e-12
+E1_ERROR rows=6 cols=6 max_abs=0 bound=1.0109e-12
+E1_ERROR rows=19 cols=19 max_abs=0 bound=3.28e-10
+E1_ERROR rows=18 cols=18 max_abs=0 bound=1.02725e-12
+E1_ERROR rows=6 cols=6 max_abs=0 bound=1.0109e-12
+[       OK ] LocalLinearizerCpu.DuplicateReferencesAndReplacement (1 ms)
+[ RUN      ] LocalLinearizerCpu.FixedLagActiveKeysAfterMarginalization
+E1_ERROR rows=6 cols=6 max_abs=0 bound=1.0109e-12
+E1_ERROR rows=6 cols=6 max_abs=0 bound=1.0218e-12
+E1_ERROR rows=6 cols=6 max_abs=0 bound=1.0327e-12
+E1_ERROR rows=6 cols=6 max_abs=0 bound=1.0436e-12
+E1_ERROR rows=6 cols=6 max_abs=0 bound=1.0545e-12
+[       OK ] LocalLinearizerCpu.FixedLagActiveKeysAfterMarginalization (0 ms)
+[----------] 5 tests from LocalLinearizerCpu (2 ms total)
+
+[----------] 4 tests from LocalLinearizerGpu
+[ RUN      ] LocalLinearizerGpu.MixedGraphBothOrdersFullCovarianceFreshValues
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+E1_ERROR rows=31 cols=31 max_abs=0 bound=1.04515
+E1_ERROR rows=30 cols=30 max_abs=0 bound=1.10602e-08
+E1_ERROR rows=6 cols=6 max_abs=0 bound=1.88429e-10
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+E1_ERROR rows=31 cols=31 max_abs=0 bound=1.04528
+E1_ERROR rows=30 cols=30 max_abs=0 bound=1.10448e-08
+E1_ERROR rows=6 cols=6 max_abs=0 bound=1.88039e-10
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+E1_ERROR rows=31 cols=31 max_abs=0 bound=1.04515
+E1_ERROR rows=30 cols=30 max_abs=0 bound=1.10602e-08
+E1_ERROR rows=6 cols=6 max_abs=0 bound=1.88429e-10
+[       OK ] LocalLinearizerGpu.MixedGraphBothOrdersFullCovarianceFreshValues (185 ms)
+[ RUN      ] LocalLinearizerGpu.DuplicateRemovalReplacement
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+E1_ERROR rows=25 cols=25 max_abs=0 bound=1.21977
+E1_ERROR rows=24 cols=24 max_abs=0 bound=1.10481e-08
+E1_ERROR rows=6 cols=6 max_abs=0 bound=1.88429e-10
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+E1_ERROR rows=25 cols=25 max_abs=0 bound=0.871453
+E1_ERROR rows=24 cols=24 max_abs=0 bound=1.10549e-08
+E1_ERROR rows=6 cols=6 max_abs=0 bound=2.31969e-10
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+E1_ERROR rows=25 cols=25 max_abs=0 bound=0.871446
+E1_ERROR rows=24 cols=24 max_abs=0 bound=1.10484e-08
+E1_ERROR rows=6 cols=6 max_abs=0 bound=2.31969e-10
+[       OK ] LocalLinearizerGpu.DuplicateRemovalReplacement (9 ms)
+[ RUN      ] LocalLinearizerGpu.CpuFailureDrainsPreparedCaches
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+E1_ERROR rows=25 cols=25 max_abs=0 bound=1.04528
+E1_ERROR rows=24 cols=24 max_abs=0 bound=1.10377e-08
+E1_ERROR rows=6 cols=6 max_abs=0 bound=1.88039e-10
+[       OK ] LocalLinearizerGpu.CpuFailureDrainsPreparedCaches (3 ms)
+[ RUN      ] LocalLinearizerGpu.ErrorEvaluationAfterBatchUsesNewValues
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: performing linearization in sync mode seriously affects the processing speed!!
+warning: computing error in sync mode seriously affects the processing speed!!
+warning: computing error in sync mode seriously affects the processing speed!!
+warning: computing error in sync mode seriously affects the processing speed!!
+warning: computing error in sync mode seriously affects the processing speed!!
+warning: computing error in sync mode seriously affects the processing speed!!
+warning: computing error in sync mode seriously affects the processing speed!!
+warning: computing error in sync mode seriously affects the processing speed!!
+warning: computing error in sync mode seriously affects the processing speed!!
+warning: computing error in sync mode seriously affects the processing speed!!
+warning: computing error in sync mode seriously affects the processing speed!!
+warning: computing error in sync mode seriously affects the processing speed!!
+warning: computing error in sync mode seriously affects the processing speed!!
+warning: computing error in sync mode seriously affects the processing speed!!
+warning: computing error in sync mode seriously affects the processing speed!!
+warning: computing error in sync mode seriously affects the processing speed!!
+warning: computing error in sync mode seriously affects the processing speed!!
+[       OK ] LocalLinearizerGpu.ErrorEvaluationAfterBatchUsesNewValues (8 ms)
+[----------] 4 tests from LocalLinearizerGpu (205 ms total)
+
+[----------] Global test environment tear-down
+[==========] 9 tests from 2 test suites ran. (207 ms total)
+[  PASSED  ] 9 tests.
+
+  YOU HAVE 1 DISABLED TEST
+
