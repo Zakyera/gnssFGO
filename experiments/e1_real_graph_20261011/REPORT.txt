@@ -1,0 +1,159 @@
+E1 — real LOCAL-graph equivalence gate
+Date: 2026-10-11
+Decision: REAL_GRAPH_EQUIVALENCE_PASSED; live throughput acceptance still pending.
+
+1. Finding and boundary
+
+The synchronous-compatible GPU batching candidate passed all six preselected
+real-graph comparisons. Ordinary A, batched B, and ordinary repeat A2 produced
+exactly equal saved augmented Hessians and complete joint covariances. All six
+outgoing full 6x6 Schur-relative covariance comparisons also had zero maximum
+absolute difference. Supplied LOCAL Values and main-smoother endpoint means
+were unchanged. The independent post-run matrix checker passed.
+
+This establishes equivalence on these sampled real graphs, including graphs
+after fixed-lag retirement, not a proof for every possible future graph. The
+production selector remains disabled. This was NOT a full-system throughput,
+trajectory-equivalence or accuracy experiment. No gnssFGO receiver, EKF, GT
+scoring, full-sequence run, automatic retry, E1b or E2 work was performed.
+
+2. Exact experiment
+
+One first-20.0-second ETH1 source-only capture, GrandTour mission
+2024-10-01-11-29-55, bag offset 0, playback 0.10x, fresh isolated ROS port 11401.
+Hesai + shared CPT7; Kimera front stereo + same CPT7. GLIM lag 5s, Kimera 25;
+classic active_window_temporary in both receivers, external factors removed
+before marginalization. Current native-IMU mean alignment, 0.20s horizon,
+one pair/update, full schur_relative_between covariance scale 1, Gaussian,
+health weighting off, source live_revision off, inspectors off. Existing native
+safeguards unchanged; Kimera experimental IMU-support override stays unset.
+
+prepare.py derives the private source harness from the frozen 160s harness:
+new root/port, 20s duration, corresponding minimum rows 170/70, and recorded CPT7
+coverage instead of an absent receiver journal. Source profiles/launch files
+are otherwise unchanged. Original >=90% coverage, bidirectional CBS and tail
+checks retained. Actual loaded libraries/parameters verified before playback.
+
+Only a private copy of cbs_bridge.cpp is instrumented. At eligible LOCAL calls
+10/30/60/100/150/180 it computes A/B/A2 in place with identical real factor
+pointers, slots, keys and sidecar Values. No reconstructed point-cloud factors
+or reset inlier history. The compatibility path uses the existing batch kernels
+while preserving synchronous cache/inlier semantics (preceding E1 report).
+
+The ordinary A linearization remains authoritative for outgoing covariance.
+Other calls retain ordinary processing. Pair means come from the MAIN smoother,
+as in production, while covariance conditioning comes from the LOCAL sidecar.
+The candidate does not replace source estimation, conditioning or covariance
+math. Diagnostic duplication/I/O can change arrival interleaving; do not call
+this event-for-event identical to a separate source run.
+
+3. Predeclared numerical gates, unchanged
+
+Augmented Hessian: maxabs(A-B) <= 1e-8 + 1e-6*maxabs(A).
+Full joint and Schur-relative covariance: <= 1e-10 + 1e-6*maxabs(A).
+Same checks for ordinary repeat A2. Finite matrices, same slots/nulls/key lists,
+exact supplied Values and main endpoint means. Every comparison returned zero
+difference, not merely a value close to these bounds. All six must pass.
+
+Publication | GPU factors | joint dimension | oldest active pose | A/B/A2 result
+10          | 60          | 180             | x0                 | exact
+30          | 180         | 480             | x0                 | exact
+60          | 260         | 750             | x12                | exact
+100         | 328         | 765             | x51                | exact
+150         | 504         | 750             | x102               | exact
+180         | 540         | 765             | x131               | exact
+
+Joint covariance includes ALL supplied variables, not just outgoing endpoints.
+Structure manifests retain each nonlinear factor type and key list. This test
+compares the aggregate augmented Hessian, full covariance and actual outgoing
+pair covariance; it does not independently archive every Gaussian factor block.
+Values are checked in memory, not a serialized full nonlinear/GPU replay fixture.
+
+4. Coverage, source exchange and cleanup
+
+Capture controller completed in 242.050643 wall seconds, including startup,
+0.10x playback, extra diagnostic calculations/I/O, drain and cleanup.
+Recorded CPT7: 1986 samples, 19.850004s span.
+Native GLIM: 191 rows, 18.997596s span, 5.844967m path; maximum gap 0.100990s.
+Native Kimera: 84 rows, 19.599893s span, 5.524415m path. It has a 3.199979s startup
+gap; post-startup maximum gap 0.200001s. Passing span/coverage checks does NOT
+mean uninterrupted Kimera output throughout startup. No ATE is reported.
+Last poses lag final recorded IMU by 0.180840s GLIM / 0.098190s Kimera.
+
+Saved runner accounting: 189 G2K messages, 80 G2K injections, 81 K2G injections;
+last G2K target 82 with tail gap 1. Source lifecycle log scan found 56 committed
+GLIM active-window removal rows. Raw application-message counts in validation
+may include repeated log sites; they are NOT independent factor counts.
+Scoped post-run /proc inspection found no processes with the e1_source run
+identity or its ROS_MASTER_URI. No other user's processes were stopped.
+
+5. Descriptive stage latency, milliseconds
+
+Publication | ordinary linearize A | batch B | ordinary joint query | batch joint query
+10          | 15.205               | 1.226   | 1.674                | 1.472
+30          | 52.300               | 2.118   | 16.978               | 15.805
+60          | 59.929               | 3.182   | 57.552               | 57.210
+100         | 106.260              | 4.283   | 60.072               | 59.371
+150         | 114.004              | 5.646   | 54.254               | 53.755
+180         | 126.867              | 7.256   | 58.024               | 57.224
+
+Joint query here includes Marginals construction and full all-variable joint
+covariance retrieval, not the ordinary production endpoint-only query alone.
+Each is ONE measurement per evolving graph, fixed A/B/A2 order; no statistical
+latency acceptance claim. Ordinary synchronous warning cost is included; batch
+also benefits from the preceding pass. Concurrent sources/diagnostic I/O affect
+timings. The prior alternating-order synthetic benchmark is separate evidence.
+
+The largest sample removes about 120ms from linearization, while elimination/
+full-joint query still takes about 58ms. This supports the targeted optimization;
+it does not accelerate sidecar optimization or prove the 160s queue problem is
+solved. No whole-pipeline speedup, sustainable playback speed or p95 guarantee.
+
+6. Build, regression and preservation
+
+Private Release diagnostic wrapper build and symbol resolution PASS.
+Original focused regression suite rerun against exact private dependency
+libraries: 14/14 PASS (regression.xml/log). No installed build overwritten.
+Previous E1 CPU ASan/UBSan 5/5 and GPU-host UBSan 14/14 remain PRIOR evidence;
+not rerun or claimed as sanitizing this ROS capture. CUDA kernels/dependencies
+remain uninstrumented, GPU ASan unvalidated. No new full-repository suite.
+
+Post-run: all prepared-input hashes preserved; GLIM/Kimera sensor-profile trees
+byte-identical to the retained ETH1 baseline; all prior-candidate/frozen binary
+hashes unchanged. 190/193 protected entries match the pre-engineering checkpoint;
+same three expected E1 source/CMake changes as before, zero new differences.
+Source package worktrees clean. Only gnssFGO experiment documentation/private
+instrumentation archived in this commit. No model or estimator-source edits.
+
+Pinned sources:
+gtsam_points: 857819676921650510e249018cd82d45c08d7e8d
+glim_ros1: fad72d6e11219e42cbbe09658341fff4512769dc
+cbs: 7c3a1e66767938e105d46fd072bd853ad5ec50c2
+cbsms: 91c70b705cf37c5c1868027d14c42f0229dc49ed
+Kimera-VIO: 560ad0fd33c162ff2a0a64a1372f9b61e1d8d8f9
+gnssFGO documentation parent: 38407cb26dc4a0691849025e869d7c85f9a83e06;
+documentation HEAD is the commit containing this report/updated E1 ledger.
+No push or modification of the existing GitHub checkpoint branches.
+
+Private diagnostic wrapper SHA256:
+7b6544a7e807982023170a50db1a5eaed605743e6ea29cd708fa939253c77896
+Reused CBS library SHA256:
+82f85c2a307a9d9a849b2b8f09bb5c1e026ad80a4ef0a633c903d30cca712476
+Reused compatibility CUDA library SHA256:
+756f4555d7bcabfc71c41c90f62b0dc7320ee03f421fb0f3e5b79122e3868270
+
+7. Evidence and next boundary
+
+Run root (large matrices, bags, logs and private build retained, not overwritten):
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/glim_e1_real_graph_20261011/prepared
+This directory: protocol, harness generation/build/controller/checker, private
+instrumentation and 79 byte-identical evidence files (ARCHIVE_MANIFEST.json).
+evidence/validation.json includes matrix hashes and independent check results.
+Raw input bags were identified by path/resolved path/size/mtime and ROS metadata,
+not newly full-file hashed. Small archive is not a complete dataset backup.
+
+Next proposed gate: a separately authorized bounded headless live acceptance
+test using the candidate normally, without A/B/A2 duplicate work, preserving
+existing source settings and receiver queue/publication gates. That is needed
+before accepting an end-to-end improvement. Keep production switch off; stop
+here, without E1b/E2, covariance tuning or another sequence.

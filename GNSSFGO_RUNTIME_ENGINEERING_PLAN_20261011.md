@@ -80,7 +80,7 @@ shared IMU, past means or nonlinear history are statistically independent.
 | ID | Isolated task | Required evidence before acceptance | Status |
 | --- | --- | --- | --- |
 | E0 | Save this plan and push a recoverable checkpoint | Exact-commit manifest; archive hashes; verified Zakyera branch SHAs; original runtime untouched | Completed 2026-10-11 |
-| E1 | GPU-batched GLIM LOCAL covariance reconstruction | Same LOCAL factors and Values; same Gaussian blocks, full 6x6 covariance and means within predeclared arithmetic tolerance; focused tests; measured stage latency | Compatibility continuation passes synthetic kernel gates 2026-10-11; real-graph/live acceptance pending; disabled |
+| E1 | GPU-batched GLIM LOCAL covariance reconstruction | Same LOCAL factors and Values; same Gaussian blocks, full 6x6 covariance and means within predeclared arithmetic tolerance; focused tests; measured stage latency | Synthetic and six real-graph comparisons pass 2026-10-11; separate live throughput acceptance pending; disabled |
 | E2 | Receiver evaluation reuse at identical Values | Correct invalidation on any referenced Values/factor/revision change; identical outputs and decisions for arithmetic-preserving reuse; timing of normal and recovery paths | Not started |
 | E3a | Remaining WNOA motion-factor derivatives | Independent numerical derivative checks; manifold/frame tests; frozen-journal state/cost/covariance checks with predeclared tight tolerances | Not started |
 | E3b | Remaining interpolated pose derivative blocks | Separate patch and independent checks as for E3a; do not redo already validated V/W substitution | Not started |
@@ -231,6 +231,41 @@ documentation/archival/version control only; no estimator implementation or run.
 - Decision: keep selector default-off. Next proposed E1 gate is one bounded
   real-graph capture/comparison at identical LOCAL factors/Values, then a separate
   authorized headless acceptance run. Neither was started here; E2 stays pending.
+
+### E1 real-graph gate — bounded paired diagnostic
+
+- Authorization: user "Proceed" after synthetic E1 handoff, 2026-10-11.
+- Status: real-graph equivalence PASSED. One first-20-second ETH1 source-only CBS-ON capture,
+  0.1x, no receiver. Six selected LOCAL publications compare ordinary/batched
+  linearization and covariance on identical factors/Values; ordinary result
+  remains authoritative. No production selector enabling, E1b/E2 or tuning.
+- Protocol: `experiments/e1_real_graph_20261011/PROTOCOL.txt`.
+- Candidate runtime/instrumentation isolated under a new run root. Existing
+  profiles, source settings, checkpoint and all previous candidate binaries stay
+  unchanged. Stop on comparison failure; no retry or tolerance relaxation.
+- Report: `experiments/e1_real_graph_20261011/REPORT.txt`; archived protocol,
+  private instrumentation/build commands, effective settings and validation.
+- Six samples reached: publications 10/30/60/100/150/180; 60–540 real GPU factors,
+  complete joint dimensions 180–765. Ordinary A / batched B / ordinary A2 have
+  exactly zero saved Hessian, joint-covariance and Schur-relative differences.
+  Sidecar Values and main endpoint means unchanged. Oldest active pose advances
+  x0 to x131, covering retirement from the five-second window.
+- Focused Release regression 14/14 passed again with the exact private libraries.
+  Prior E1 sanitizer results remain prior evidence, not rerun on this live capture.
+- Requested 20 s: IMU 19.850004 s; native GLIM 18.997596 s / 191 rows;
+  native Kimera 19.599893 s / 84 rows. Existing coverage gates pass; Kimera has
+  a 3.199979 s startup gap (post-startup maximum 0.200001 s), not hidden by span.
+  Source CBS injections G2K=80 / K2G=81; 56 GLIM committed removal log rows.
+- Largest graph linearization 126.867 ms ordinary vs 7.256 ms batched; complete
+  joint construction/query still about 58 ms. Six individual measurements only,
+  fixed A/B/A2 order, extra diagnostic work and synchronous warnings included.
+  Not a whole-pipeline speedup or proof that the 160 s queue problem is solved.
+- Post-check: 190/193 original protected entries unchanged; same three prior
+  intentional E1 differences, zero new changes. Frozen binaries/profile bytes
+  unchanged; isolated source processes exited. No receiver or GT scoring ran.
+- Decision: keep production selector off. Next proposed E1 gate is a separately
+  authorized bounded headless live acceptance test using the candidate normally,
+  with existing queue/publication gates. Do not start E1b/E2 or a full run here.
 
 ### Template for subsequent tasks
 

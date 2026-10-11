@@ -1,0 +1,52 @@
+E1 real-graph gate, authorized by user Proceed on 2026-10-11.
+
+One source-only 20.0-second ETH1 capture, mission 2024-10-01-11-29-55,
+bag offset 0, playback .10x, fresh port 11401, headless. No gnssFGO receiver,
+EKF, GT scoring, full/160-second run, retry or tuning. Sources must use the
+current saved ETH1 Hesai/shared-CPT7/front-stereo profiles, GLIM 5s lag,
+Kimera25, classic active_window_temporary, existing native-IMU mean alignment,
+0.20s horizon/one pair per update, full schur_relative_between scale1,
+Gaussian, no health/live_revision, Kimera support override unset.
+
+Reuse previous private source runner/launch/checker with only bounded harness
+changes: new root/port/duration, source-only coverage instead of absent receiver
+journal, duration-appropriate minimum rows (GLIM170/Kimera70). Existing >=90%
+duration coverage and CBS bidirectional/tail checks retained. No estimator model
+or profile changes. Add CPT7 to diagnostic recording to validate actual coverage.
+
+Do not enable production batching. Build a separate private cbs_bridge.cpp
+diagnostic copy from pinned candidate fad72d6 with an in-place callback at six
+eligible LOCAL calls 10,30,60,100,150,180. Reuse original library for unchanged
+wrapper units, E1 gtsam_points 8578196 and unchanged cbs7c3a1e6.
+All unselected calls use the ordinary Marginals constructor. Selected calls
+return the ordinary linear graph; candidate output is comparison-only.
+
+At each sample: SAME factor pointers/slots and exact sidecar Values. Compute
+ordinary A, compatibility-batched B, ordinary A2; compare A/B and A/A2, same
+dimensions/keys/null slots and exact nominal Values/main endpoint means. Compare
+augmented Hessian, full joint covariance over ALL supplied variables, and full
+6x6 Schur-relative covariance for actual outgoing endpoint pairs using main
+smoother poses, as production does. Store matrices, type/key manifest and summary.
+No clone/reconstruction of VGICP factors, which would reset inlier history.
+
+Gates unchanged from prior E1:
+Hessian maxabs <= 1e-8 + 1e-6*maxabs(reference).
+Full joint and relative covariance <= 1e-10 + 1e-6*maxabs(reference).
+Finite matrices, identical structure, exact Values and main means.
+Fail marker on any exception/gate failure; controller stops only its own process
+group. No hidden retry, tolerance adjustment or inference of speed from failures.
+Must reach all six samples and complete source coverage to pass entire gate.
+One failure is enough to reject; matrices/logs of that sample remain retained.
+
+Timing of A/B linearization and marginal/query is descriptive only (one each
+per sample), NOT an end-to-end throughput gate; extra duplicate work disturbs
+arrival timing. This source-only capture cannot certify full-system 160s queues.
+No live acceptance run after this task without a separate decision.
+
+Preflight: GPU, free disk, no active source run on port; hash source manifests and
+baseline binaries; exclusive fresh directories/lock; effective flags/maps before
+playback. Native source settings copied, not guessed. Preserve installed builds.
+Before capture compile private wrapper and run original focused E1 regression
+suite against the same private dependency libraries. After capture recheck hashes,
+actual source CBS exchange/retirement, finite coverage and gate matrices. Update
+saved plan and report. No E1b, E2, covariance modification or scientific ranking.
