@@ -1,0 +1,58 @@
+E1 bounded live acceptance, authorized by user Proceed, 2026-10-11.
+
+ONE first-60-second ETH1 classic CBS-ON co-running GLIM/Kimera/gnssFGO capture,
+offset0, playback0.10x, headless, fresh ROS port11403. No OFF/new sequence/full
+run, automatic source retry, GT scoring, E1b/E2, covariance tuning or model edit.
+Reuse prior synthetic-validated ordinary production-path E1 wrapper (NOT the
+six-sample A/B/A2 diagnostic wrapper). Enable existing experimental LOCAL GPU
+batching only in this private launch. Copy matching private CBS/CUDA libraries;
+no installed build or global/default parameter change.
+
+Frozen source harness: gnssfgo_eth1_vw_jacobian_live160_20261011/prepared.
+Same Hesai/shared CPT7/front stereo, GLIM lag5s/Kimera25, classic
+active_window_temporary, native-IMU mean alignment, LOCAL covariance, main
+smoother mean, 0.20s horizon, one pair/update, full schur_relative_between,
+scale1, Gaussian, health off, source live_revision off. Kimera IMU-support
+override remains unset. Same capped diagnostic load and revision logs.
+
+Same frozen receiver executable62124b496ad6f854079218862acb149892aa452d4af908c50bc96067e49c9dbb:
+source_wnoa, no central IMU factors, independent100ms CPT7 timestamp support
+clock, 59-sample startup, full-history iSAM2, stable-ID replacement, same
+availability/endpoint semantics, Qc [.00375]*3+[.015]*3, priors1e-5/10/3,
+scale1, Gaussian, strict nominal publication gradient<=1e-5/budget20.
+
+Permitted harness differences: new root/run/session/port/duration; minimum
+source row counts550/250 appropriate to60s; one private batching ROS param;
+expected-validator parameter difference for that switch. All existing coverage,
+covariance, lifecycle, event conservation, publication and repeat tolerances
+remain unchanged. Original controller reused with sampled queue>=1000 abort
+enforced during capture (same previously monitored acceptance limit). No queue
+cap increase. Final queue0, sampled p95 output age<1s, all sources cover window.
+Transport max_queue also recorded; >=1000 is failure even between samples.
+Any capture/validation failure stops acceptance, no retry or tolerance relaxation.
+
+Preflight: previous six real-graph comparisons passed, exact candidate/private
+and frozen-receiver hashes, no new protected changes, profiles/launch flags,
+library resolution,14 focused regression tests with the same libraries, healthy
+GPU, free disk, fresh unused port and no other estimator/receiver run. Refuse
+overwrites/duplicate starts. Capture settings/maps before first bag message.
+
+Post-validation: source coverage/native alignment/full36-entry wire covariance,
+temporary source factor lifecycle, sampled diagnostic algebra, exact source
+revision payload/order conservation and receiver accounting; causal support
+bindings, every publication stationary, queue/age gates; ONE deterministic
+saved-journal numerical repeat using existing unit-aware tolerances. Retain
+original/native and fused online/final outputs with honest labels, no GT claims.
+
+Compare per-scan timing with first60s of prior retained160s ON capture, on common
+physical scan stamps; report early/middle/late sections0-20/20-40/40-60. This is
+historical same-profile evidence, not a new randomized matched A/B run: live
+arrival/interleaving/graph sizes may differ. Separately report covariance rebuild,
+sidecar update, total scan time, warnings, source publication age, receiver age,
+queue, convergence and runtime. Do not add overlapping nested timers.
+Desirable margin: p95 source total scan time<800ms against1s wall inter-scan
+budget at0.1x; this is a declared engineering target, not a changed solver gate.
+No universal or160s throughput certification from a60s acceptance.
+
+Update the E1 plan/report, save small evidence and exact hashes, stop. Candidate
+remains opt-in; further deployment/longer run requires a separate decision.

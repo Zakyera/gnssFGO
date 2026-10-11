@@ -80,7 +80,7 @@ shared IMU, past means or nonlinear history are statistically independent.
 | ID | Isolated task | Required evidence before acceptance | Status |
 | --- | --- | --- | --- |
 | E0 | Save this plan and push a recoverable checkpoint | Exact-commit manifest; archive hashes; verified Zakyera branch SHAs; original runtime untouched | Completed 2026-10-11 |
-| E1 | GPU-batched GLIM LOCAL covariance reconstruction | Same LOCAL factors and Values; same Gaussian blocks, full 6x6 covariance and means within predeclared arithmetic tolerance; focused tests; measured stage latency | Synthetic and six real-graph comparisons pass 2026-10-11; separate live throughput acceptance pending; disabled |
+| E1 | GPU-batched GLIM LOCAL covariance reconstruction | Same LOCAL factors and Values; same Gaussian blocks, full 6x6 covariance and means within predeclared arithmetic tolerance; focused tests; measured stage latency | Synthetic/real-graph and live60 correctness gates pass; covariance preparation accelerated; extra scan-headroom target missed, no full-run acceptance; default-off |
 | E2 | Receiver evaluation reuse at identical Values | Correct invalidation on any referenced Values/factor/revision change; identical outputs and decisions for arithmetic-preserving reuse; timing of normal and recovery paths | Not started |
 | E3a | Remaining WNOA motion-factor derivatives | Independent numerical derivative checks; manifold/frame tests; frozen-journal state/cost/covariance checks with predeclared tight tolerances | Not started |
 | E3b | Remaining interpolated pose derivative blocks | Separate patch and independent checks as for E3a; do not redo already validated V/W substitution | Not started |
@@ -266,6 +266,38 @@ documentation/archival/version control only; no estimator implementation or run.
 - Decision: keep production selector off. Next proposed E1 gate is a separately
   authorized bounded headless live acceptance test using the candidate normally,
   with existing queue/publication gates. Do not start E1b/E2 or a full run here.
+
+### E1 live gate — bounded 60-second acceptance
+
+- Authorization: user "Proceed" after real-graph equivalence handoff, 2026-10-11.
+- Status: bounded operating/correctness gates PASSED; extra scan-headroom target
+  NOT MET. One first-60-second ETH1 CBS-ON co-running capture at
+  0.1x, unchanged receiver and source settings except private E1 batching enable.
+- Protocol: `experiments/e1_live60_20261011/PROTOCOL.txt`.
+- Reuse the tested ordinary candidate wrapper, not A/B/A2 instrumentation.
+  Preserve queue/publication/coverage gates and validate one saved-journal repeat.
+  No default enabling, full sequence, E1b/E2 or performance/covariance tuning.
+- Report: `experiments/e1_live60_20261011/REPORT.txt`; exact private inputs,
+  validators, source settings and small evidence archived beside it.
+- 14/14 focused Release tests; 60 s capture completes with native GLIM 591,
+  native Kimera 284 and fused 593 rows. Existing Kimera 3.20 s startup gap reported.
+- Source native alignment/full 36-entry covariance/lifecycle checks pass;
+  34142 source versions conserved, 33247 replacements, 870 active IDs,
+  25 explicitly unsupported before-initialization versions, pending 0.
+- 593/593 nominal publications stationary (max gradient 9.97652e-6).
+  One saved-journal repeat has byte-identical online/final states/trajectories,
+  exact clock/dispatch/slot accounting. No new sanitizer/full-suite claim.
+- Output age p95 .110009 s; transport peak queue 36 (gate 1000), final 0.
+  All 224 protected files unchanged from preflight; prior binaries/profile bytes
+  preserved, no new source changes, owned processes exited.
+- Historical same-stamp first 60 s comparison: LOCAL covariance preparation median
+  162.828 -> 13.392 ms; entire scan median 513.142 -> 462.594 ms, but p95
+  791.005 -> 853.998 ms, missing predeclared desirable 800 ms (20% headroom).
+  Main/sidecar/refinement costs were higher. This is not an identical-workload
+  randomized A/B run and does not identify their cause. No full-run speed claim.
+- Decision: component speedup validated, limited 60 s live gates passed, global
+  tail-delay problem unresolved. Keep default-off/opt-in. Stop for the next
+  engineering decision; do not silently promote or launch a longer run/E2.
 
 ### Template for subsequent tasks
 

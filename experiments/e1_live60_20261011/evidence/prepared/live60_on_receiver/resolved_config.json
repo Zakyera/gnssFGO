@@ -1,0 +1,39 @@
+{
+  "sequence": "ETH1 first60s; E1 private LOCAL GPU batching live acceptance",
+  "source_protocol": "classic",
+  "ros_master_uri": "http://127.0.0.1:11403",
+  "imu_topic": "/boxi/cpt7/imu",
+  "imu_frame": "cpt7_imu",
+  "world_frame": "gnssfgo_world",
+  "support_period_ns": 100000000,
+  "startup_samples": 59,
+  "max_imu_gap_ns": 30000000,
+  "max_queued_events": 200000,
+  "drain_timeout_wall_sec": 300,
+  "ros1_container": "cbsms_ws_gpu",
+  "receiver_container": "ubuntu-jammy-humble-nvidia",
+  "receiver_binary": "/home/yeranis/results/gnssfgo_vw_jacobian_20261011/build/replay",
+  "sources": [
+    {
+      "id": "glim_hesai",
+      "session": "eth1_e1_live60_on_20261011",
+      "kind": "glim",
+      "belief_body_frame": "cpt7_imu",
+      "log_glob": "/workspace/cbs_gtsam4.3/runs/gnssfgo_e1_live60_20261011/prepared/live60_on_source/ros_logs/*/glim_rosnode-*-stdout.log"
+    },
+    {
+      "id": "kimera_front",
+      "session": "eth1_e1_live60_on_20261011",
+      "kind": "kimera",
+      "belief_body_frame": "cpt7_imu",
+      "log_glob": "/workspace/cbs_gtsam4.3/runs/gnssfgo_e1_live60_20261011/prepared/live60_on_source/estimators.log"
+    }
+  ],
+  "receiver_model": "source_wnoa",
+  "receiver_environment": {
+    "LD_LIBRARY_PATH": "/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib",
+    "OMP_NUM_THREADS": "1",
+    "WNOJ_STRICT_PUBLICATION": "1",
+    "WNOJ_INCREMENTAL_PROFILE": "nominal"
+  }
+}

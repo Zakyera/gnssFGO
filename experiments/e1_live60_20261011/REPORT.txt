@@ -1,0 +1,195 @@
+E1 — bounded live acceptance of LOCAL GPU batching
+2026-10-11
+Decision: LIVE60_CORRECTNESS_AND_OPERATING_GATES_PASSED;
+          TARGETED_STAGE_ACCELERATED; EXTRA_SCAN_HEADROOM_TARGET_NOT_MET.
+Do not interpret this as full-sequence or production-default acceptance.
+
+1. Result
+
+The single authorized first-60-second ETH1 CBS-ON capture completed with native
+GLIM, native Kimera and the frozen WNOA receiver co-running at 0.10x. Source,
+covariance, lifecycle, conservation, causal insertion, publication and saved-
+journal replay checks passed. No source retry, tuning or gate relaxation.
+
+On 591 common physical scan stamps against the retained baseline's first 60 s,
+the targeted LOCAL covariance rebuild median fell 162.828 -> 13.392 ms (about 12.2x).
+However, total scan median fell only 513.142 -> 462.594 ms and p95 increased
+791.005 -> 853.998 ms. The predeclared desirable p95 < 800 ms margin was NOT met.
+The mandatory receiver p95-age < 1 s and queue < 1000 gates DID pass.
+
+Thus E1 removes a real local cost but does not establish that all runtime delays
+are solved. Main smoother, sidecar update and receiver refinement took longer
+in this capture than in the historical prefix. Their cause is not established
+by this comparison: scheduling, nonlinear history/workload and host conditions
+are not controlled identical inputs. Do not label those increases a proven
+regression caused by batching, or hide them behind the local speedup.
+
+2. Exact configuration and change scope
+
+Run root:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_e1_live60_20261011
+Case: prepared/live60_on_{source,receiver,control}.
+Dataset: GrandTour ETH1, mission 2024-10-01-11-29-55, offset 0, requested 60 s,
+playback 0.10x, isolated ROS master 11403; headless, no graph inspectors or GT run.
+
+Same ETH1 Hesai/shared CPT7/front-stereo profiles; GLIM 5 s, Kimera 25 states;
+classic active_window_temporary, native-IMU mean alignment, main-smoother mean
+and LOCAL covariance conditioning, horizon 0.20 s, one pair/update, full dense
+schur_relative_between covariance scale 1, Gaussian, health off, source
+live_revision off. Existing source guards unchanged. Kimera's experimental
+IMU-support override remains unset/current, not the historical RIGHT pilot.
+
+Receiver is unchanged: source_wnoa, estimated X/V/W, full-history iSAM2, no
+central raw-IMU/bias/acceleration/GNSS factors, independent 100 ms support clock
+from CPT7 timestamps, 59-sample clock startup, downstream stable-ID replacement.
+Qc=[.00375,.00375,.00375,.015,.015,.015], prior sigmas=1e-5/10/3,
+strict nominal publication gradient <= 1e-5, original budget 20. No Huber/scaling.
+"startup_imu_samples=0" in model summary means no inertial initialization;
+the transport's 59-sample timestamp anchor is still configured and unchanged.
+
+Only this private launch enables glim_cbs_experimental_local_gpu_batching=true.
+It uses the existing, tested ordinary candidate wrapper and matching private
+CBS/CUDA dependencies, NOT the A/B/A2 instrumented diagnostic wrapper. No
+compilation, estimator/receiver code edits, installed-library overwrite or
+production default change. Explicit source launch parameter comparison had
+only the new switch plus an output-path difference; effective maps/flags were
+checked again before playback. Complete source profile trees match baseline.
+
+Private harness differences: root/port/session/duration, source minima 550/250,
+the switch, and its explicit validator expectation. Existing controller gains
+an immediate queue >= 1000 failure check, including transport peak_queue; this
+enforces rather than enlarges the previously monitored gate. No model change.
+
+3. Correctness and accounting
+
+- Focused Release suite with the exact private libraries: 14/14 PASS.
+- Prior E1 synthetic and six same-real-graph matrix tests remain the evidence
+  for numerical equivalence of the batching implementation. No repeated real
+  A/B calculation is added to this live run's critical path.
+- 5986 ordered CPT7 clock samples; 34142 source versions preserved exactly in
+  payload/order per stable ID: 27392 GLIM + 6750 Kimera. No duplicate/stale rows.
+- 871 raw IDs; 870 active admitted IDs; 34117 insertion events including 33247
+  replacements. 25 versions of one Kimera interval are explicitly unsupported
+  before initialization; no extrapolation or hidden loss. Pending at end: 0.
+- Source wire -> inserted external factor: all 36 covariance entries exact for
+  281 Kimera->GLIM and 280 GLIM->Kimera aligned calls. Causal endpoint cutoffs
+  valid; no missing-history/raw-mean fallback. Receiver transport -> factor
+  maximum covariance difference 1.355253e-20, below the unchanged 1e-12 gate.
+- Lifecycle: GLIM 281 tracked/256 removed/25 retained; Kimera 280 tracked/
+  256 removed/24 retained. No recorded Kimera rollback/guard in this run.
+  This checks slots/lifecycle, not zero indirect statistical correlation.
+- Diagnostic factor algebra PASS: 15 GLIM / 14 Kimera samples, original dense
+  covariance whitening/Hessian/gradient checks, no changed tolerance.
+- 593/593 live publications stationary, maximum normalized gradient
+  9.976519339178459e-6. Final graph: 592 WNOA + 870 relative + 3 prior factors;
+  1779 X/V/W Values; zero IMU, bias or acceleration variables/factors.
+- ONE saved-journal repeat: all online/final trajectory and state files byte-
+  identical; maximum p/orientation/v/w difference 0. Clock, covariance-model,
+  dispatch, accounting, unsupported and measurement-event files byte-identical;
+  revision-slot ledger exact. Repeat wall time 64.33456 s. This is repeatability of
+  this captured journal, NOT old-vs-new live source trajectory identity.
+- Prior CPU ASan/UBSan and GPU-host UBSan results remain historical evidence.
+  No new sanitizer/full-repository suite or CUDA device sanitizer run here.
+
+4. Coverage and operating gates
+
+Requested 60 s; recorded clock span 59.850013 s. Capture controller: 648.939971 wall s,
+including startup, 600 s nominal playback, 25 s source drain and cleanup;
+receiver wall time 626.842509 s includes waiting for the paced live stream.
+
+Output                      rows  physical span(s)  path(m)     tail behind IMU(s)
+Original/native GLIM        591   58.999369         25.637634   .179076
+Original/native Kimera ROS  284   59.599654         25.220454   .098438
+Fused ONLINE/as-played      593   59.200000         29.312602   .070013
+Fused FINAL retrospective   593   59.200000         25.662999   .070013
+
+Kimera's existing 3.199979 s startup gap is explicitly retained/reported;
+post-startup max gap .200014 s. GLIM max gap .100990 s, fused max gap .100000 s.
+Coverage gates pass, not a claim of measured continuous Kimera startup motion.
+Paths are unscored coverage diagnostics, not accuracy. No ATE/RPE/GT comparison.
+Do not label the shorter retrospective path as what the live receiver emitted.
+
+Live output age: median .060010 s, p95 .110009 s, maximum .140013 s.
+Sampled queue maximum 17; transport peak between samples 36; final queue 0.
+These pass the unchanged age < 1 s-p95 and peak-queue < 1000 criteria.
+Three explicit memory snapshots (not a full peak-memory profile) end around 50 s:
+last sampled RSS: GLIM 670104 KiB, Kimera 326948 KiB, receiver 107332 KiB;
+corresponding process high-water values 693544/362352/107332 KiB.
+Owned source/master/receiver processes are gone after capture/repeat.
+
+5. Runtime comparison, ms
+
+Historical baseline: first 60 s of
+gnssfgo_eth1_vw_jacobian_live160_20261011/prepared/full160_on_source.
+That previous run later failed its queue gate around 137 s; no new baseline or
+OFF run was launched. Compare identical physical scan stamps, not identical
+nonlinear factor Values/arrival schedules. Early/middle/late detail is in
+engineering_summary.json. Overlapping nested timers MUST NOT be added as
+independent costs. Different categories may have slightly different row counts.
+
+Stage                        baseline median/p95     candidate median/p95
+LOCAL covariance rebuild     162.828 /213.164        13.392 /18.566
+LOCAL sidecar update         164.181 /219.375        209.603 /315.457
+Main smoother                166.181 /367.404        210.002 /483.224
+Entire GLIM scan             513.142 /791.005        462.594 /853.998
+Receiver publication refine   92.654 /224.816        158.437 /269.904
+
+Entire-scan mean 444.545 -> 417.284 ms (about 6.1% lower), max 1098.755 -> 1345.064 ms.
+At 0.1x the 0.1 s physical scan spacing provides about 1000 ms wall budget.
+Candidate p95 leaves about 146 ms (14.6%) headroom, below the requested 20% target;
+some individual scans exceed that budget. Do not claim stable arbitrary length.
+
+Window(s) | common scans | total median baseline/candidate | cov rebuild median B/C
+0-20      |193           |166.785 /90.425                  |93.982 /10.096
+20-40     |200           |537.742 /547.082                 |163.931 /13.547
+40-60     |198           |606.112 /546.867                 |183.902 /15.049
+
+Native GLIM publication age p95 .167380 -> .190435 s. Receiver sampled output
+age p95 .100009 -> .110009 s on the prefix. Successful source acceleration does
+not imply lower receiver latency on every live schedule. Source log warning
+counts are retained but baseline totals cover 143.79 s vs candidate 60 s: they are
+NOT compared as equal-duration warning rates. No warning-suppression patch.
+
+6. Preservation and evidence
+
+All 224 protected inputs/binaries/private-harness hashes checked before and after.
+Of 193 original checkpoint entries, 190 remain byte-identical; the same 3 already
+documented E1 source changes remain, with zero new differences. Prior baseline
+and candidate binaries/old runs unchanged. No model/scientific parameter edits.
+
+Private wrapper SHA256:
+822377b019b3e22f24a3aeace45e1f495235f5e410dc0ca218dd0a285e8e7879
+Private compatibility CUDA library SHA256:
+756f4555d7bcabfc71c41c90f62b0dc7320ee03f421fb0f3e5b79122e3868270
+Private CBS library SHA256:
+82f85c2a307a9d9a849b2b8f09bb5c1e026ad80a4ef0a633c903d30cca712476
+Frozen receiver SHA256:
+62124b496ad6f854079218862acb149892aa452d4af908c50bc96067e49c9dbb
+
+Sources unchanged from preceding E1 report: gtsam_points 8578196,
+glim_ros1 fad72d6, cbs 7c3a1e6, cbsms 91c70b7, Kimera-VIO 560ad0f.
+gnssFGO documentation parent 6d5cb0e544da533c29eee1187cbb1a4d2fe7e2ee;
+final documentation HEAD is the commit containing this report and E1 ledger.
+Local commit only; existing GitHub recovery branches untouched.
+
+83 byte-identical small evidence files retained beside this report, with
+ARCHIVE_MANIFEST.json. Big raw datasets, journals, logs, trajectories, builds
+remain in the run root; this is not a complete dataset backup. Raw bag path/
+resolved path/size/mtime from preceding capture were rechecked; no new full
+raw-bag hash claim. No full posterior-covariance export is claimed for receiver.
+
+Final integrity check: all 83 archive files match their originals; all 224
+protected hashes still match. All 16 archived/current Python scripts parse and
+the shell/env scripts pass bash -n. Source package worktrees are clean. Git
+whitespace checks pass for authored files; three archived ROS parameter dumps
+retain their original blank line at EOF deliberately to preserve exact hashes.
+
+7. Decision and stop
+
+E1 batching is numerically validated and its local speedup is reproduced live.
+This 60 s operating point completed correctly, but the extra 20% scan-headroom
+target failed and end-to-end tail improvement was NOT demonstrated. Keep the
+candidate opt-in; do not change production defaults or certify 160 s/full ETH1.
+The remaining source main/sidecar and receiver refinement costs are visible,
+but their next optimization must remain a separate hypothesis/task. No E1b,
+E2, new sequence, longer retry, tuning or additional experiment started here.
