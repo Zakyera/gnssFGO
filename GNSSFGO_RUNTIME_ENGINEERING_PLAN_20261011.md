@@ -79,7 +79,7 @@ shared IMU, past means or nonlinear history are statistically independent.
 
 | ID | Isolated task | Required evidence before acceptance | Status |
 | --- | --- | --- | --- |
-| E0 | Save this plan and push a recoverable checkpoint | Exact-commit manifest; archive hashes; verified Zakyera branch SHAs; original runtime untouched | In progress |
+| E0 | Save this plan and push a recoverable checkpoint | Exact-commit manifest; archive hashes; verified Zakyera branch SHAs; original runtime untouched | Completed 2026-10-11 |
 | E1 | GPU-batched GLIM LOCAL covariance reconstruction | Same LOCAL factors and Values; same Gaussian blocks, full 6x6 covariance and means within predeclared arithmetic tolerance; focused tests; measured stage latency | Not started |
 | E2 | Receiver evaluation reuse at identical Values | Correct invalidation on any referenced Values/factor/revision change; identical outputs and decisions for arithmetic-preserving reuse; timing of normal and recovery paths | Not started |
 | E3a | Remaining WNOA motion-factor derivatives | Independent numerical derivative checks; manifold/frame tests; frozen-journal state/cost/covariance checks with predeclared tight tolerances | Not started |
@@ -131,11 +131,32 @@ historical revision and marginal-prior semantics; reconsider only separately.
 
 ### E0 — preservation checkpoint
 
-Requested: save the plan and push before optimization changes. Current work is
+Requested: save the plan and push before optimization changes. Completed with
 documentation/archival/version control only; no estimator implementation or run.
-Checkpoint evidence is recorded in `experiments/checkpoints/20261011/README.md`
-and cbsms `docs/GITHUB_CHECKPOINT_20261011.md`. Complete E0 only after remote
-verification; record the verified result here in a follow-up documentation commit.
+
+- Branch `checkpoint/grandtour-engineering-20261011` pushed without force to
+  Zakyera's gnssFGO, cbsms, glim_ros1, Kimera-VIO, glim, Kimera-VIO-ROS, cbs and
+  liorf repositories. All eight remote SHAs checked against local checkpoint refs.
+- Initial preservation commits: gnssFGO `fcbd8d2a50e6684bea7edb226970939fdae3d6fb`,
+  cbsms `f073910917d7ad34bdf61a7bc83582e732b784dd`,
+  glim_ros1 `35b57e6215b810df6bf1c43d055f4e3a5915bf55`,
+  Kimera-VIO `560ad0fd33c162ff2a0a64a1372f9b61e1d8d8f9`.
+  This follow-up documentation commit records completion; the cbsms recovery
+  manifest pins the final gnssFGO checkpoint revision. Unchanged package SHAs
+  are recorded there too. No default/upstream branch was modified.
+- 865 archived files matched their originals; 43 original dirty-file contents
+  preserved; all 193 protected runtime/input hashes still match. Exact pins for
+  25 repositories verified. 221 Python and 30 shell/environment syntax checks
+  passed; changed/new files screened for common credentials and binary/oversized
+  content, and outgoing history checked for blobs above 50 MB (none).
+- HTTPS push authentication was unavailable for gnssFGO; the push succeeded
+  using SSH to the SAME Zakyera fork. No credentials or remotes were changed.
+- Recovery details: `experiments/checkpoints/20261011/README.md` and cbsms
+  `docs/GITHUB_CHECKPOINT_20261011.md`. Data, event journals, binaries and installed
+  runtimes remain local, not a complete GitHub backup of experiment data.
+- Decision: preservation gate passed. E1 is next, but has NOT started. Future
+  candidates must use separate branches/build directories, leaving this recovery
+  branch and frozen inputs intact. Report after E1 before expanding scope.
 
 ### Template for the next task
 
