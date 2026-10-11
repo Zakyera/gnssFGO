@@ -1,0 +1,170 @@
+E1 + corrected E2: combined 60-second live integration — 2026-10-11
+
+Outcome
+PASSED the bounded live integration, correctness and declared timing-margin
+checks. Native GLIM, native Kimera and the WNOA receiver ran concurrently for
+the first60s ETH1 window at0.1x, headless. One capture and one saved-journal
+repeat only. No retry, model/covariance tuning or longer run.
+
+Total GLIM scan p95 was627.810ms, below the predeclared800ms target against
+1000ms paced scan intervals. Receiver output-age p95 was0.090013s, queue peak48
+against1000, finalqueue0. All593 publications were stationary. Replay state/
+trajectory outputs were byte-identical. This establishes this60s operating
+point, NOT sustainable160s/full-history capacity or accuracy improvement.
+
+1. Scope and frozen configuration
+
+Run root:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_e1_e2_live60_20261011
+Case: prepared/live60_on_{source,receiver,control}.
+ETH1 mission2024-10-01-11-29-55, offset0, requested60s, rate0.10,
+fresh ROS master11404, source drain25wallseconds, no visualization/graph export.
+
+The previous E1 live60 private harness/profile/validators were reused. Same
+Hesai/shared CPT7/front stereo, GLIM5s/Kimera25states; classic
+active_window_temporary, native-IMU mean alignment, outgoing corrected main
+smoother means with LOCAL covariance, horizon0.20s, onepair/update, full dense
+schur_relative_between, scale1, Gaussian, health off, source live_revision off.
+Kimera experimental IMU support override remains unset/current. Same capped
+diagnostics and downstream full revision logs. Source settings/flags and loaded
+libraries were checked before playback; source profile trees match reference.
+
+Receiver: source_wnoa X/V/W, no central IMU/bias/acceleration/GNSS factors,
+independent100ms support clock,59sample timestamp anchor, full-history iSAM2QR,
+all stable-ID revision replacements, Qc[.00375,.00375,.00375,.015,.015,.015],
+prior sigmas1e-5/10/3; strict nominal gradient<=1e-5 and budget20 unchanged.
+No altered covariance/loss/support/event/rollback/convergence semantics.
+
+E1 uses the same validated private source libraries and opt-in parameter as
+the earlier live60. E2 uses the corrected audited executable with exact-input
+linearization cache enabled. A four-line private exec wrapper sets the E2
+environment variable; the production transport allowlist and source defaults
+are unchanged. The actual /proc executable hash, E2=1, strict nominal settings,
+runtime library maps and unrestricted0-23 CPU affinity were checked live.
+No processor pinning/governor changes or rebuild. Per-snapshot current CPU
+changed naturally; this is not the audit's single-core microbenchmark.
+
+2. Validation and information conservation
+
+-18/18 focused E1 Release tests passed anew with the exact private libraries.
+ Earlier E2 50/50 Release/sanitizer and E1 sanitizer/real-graph results remain
+ prior evidence. No fresh full-repository, ASan/UBSan or CUDA device suite claim.
+-603 protected files remained unchanged through completion. Source package
+ worktrees unchanged; no working binary, original run or launch default replaced.
+-5986 clock samples;34175 full source versions preserved in exact per-ID order:
+ GLIM27425, Kimera6750. Independent event accounting confirms every version once.
+ 871 raw IDs;870 admitted active IDs;34150 insertions including33280 replacements.
+ 25 versions of one before-initialization Kimera interval explicitly unsupported;
+ no extrapolation, pending, duplicate or stale version. One explicit stream end.
+-All36 wire covariance entries exactly preserved in281K->G and280G->K aligned
+ source updates; causal cutoffs valid, no missing-history/raw-mean fallback.
+ Downstream source covariance difference <=1.3552527156068805e-20, unchanged gate.
+-Source temporary lifecycle: GLIM281tracked/256removed/25remaining;
+ Kimera280tracked/256removed/24remaining. No recorded Kimera rollback/guard.
+ These are lifecycle checks, not proof of statistical independence.
+-Retained factor-algebra/whitening/Hessian checks passed with unchanged limits.
+-593/593 nominal publications stationary; max normalized gradient
+ 9.876626548980014e-6.789 refinement steps,0recovery steps. Final graph:
+ 592WNOA+870relative+3priors=1465factors,1779X/V/W Values.
+-ONE deterministic replay, wall61.234071s: all4 online/final state/trajectory
+ files byte-identical; maximum p/orientation/v/w difference0. All19 products
+ including cache counters compare exactly after excluding ONLY existing timing
+ fields(seconds,update_seconds,wall_unix_ns,summary wall/revision durations).
+ IDs, revisions, slots, clock, unsupported rows, decisions and residuals exact.
+ Real full posterior covariance is not exported; no separate equality claim.
+-Owned source/master/receiver/replay processes exited normally. No extra run.
+
+3. Coverage, not a GT accuracy evaluation
+
+Requested60s; CPT7 clock span59.850013s. Capture wall645.399780s includes startup,
+600s nominal playback, drain and cleanup. Receiver wall625.958421s includes
+waiting for the live stream; it is NOT625s of optimizer computation.
+
+Output                       Rows Span(s)  Path(m)  Tail behind clock(s)
+Original/native GLIM          591 58.99937 25.83990 .17908
+Original/native Kimera ROS    284 59.59965 25.31503 .09844
+Fused ONLINE/as-played        593 59.20000 27.69412 .07001
+Fused FINAL retrospective     593 59.20000 25.80150 .07001
+
+Existing Kimera startup gap3.199979s remains explicitly reported; after startup,
+max gap.200014s. GLIM max gap.100990s, fused.100000s. Coverage gates pass; this
+does not invent Kimera observations during its startup gap. No ATE/RPE/GT run
+was requested/performed. Online and retrospectively revised paths are distinct.
+
+4. Timing and remaining limits
+
+Historical comparisons use591 identical physical scan stamps from:
+ original: gnssfgo_eth1_vw_jacobian_live160_20261011 first60s;
+ E1-only: gnssfgo_e1_live60_20261011;
+ combined: current capture.
+These are different live arrival schedules/Values/workloads, NOT a randomized
+same-input benchmark. Do not attribute every timing difference to E2. The prior
+controlled frozen-journal audit measured ~5.2% mean receiver runtime reduction;
+this live trial validates integration and operating margin instead.
+
+Stage(ms)                 original med/p95   E1-only med/p95 combined med/p95
+LOCAL covariance rebuild   162.828/213.163     13.392/18.566    10.750/13.573
+LOCAL sidecar update       164.181/219.375    209.603/315.457  169.835/229.971
+Main smoother             166.181/367.404    210.002/483.224  164.687/379.158
+Entire GLIM scan           513.142/791.005    462.594/853.998  359.524/627.810
+Receiver publication        92.654/224.816    158.437/269.904   75.942/183.752
+
+Nested timers overlap: do not add these as independent costs. New entire-scan
+mean310.517ms, max1019.767ms; at least one scan exceeds the1000ms paced budget.
+The p95 margin is37.2%, passing the20% target, not a worst-case latency bound.
+Combined scan median/p95 by physical time:
+ 0-20s:48.176/368.534ms;20-40s:420.357/621.494ms;40-60s:423.418/652.295ms.
+Receiver refinement median/p95 grows from25.122/63.095ms in0-20s to
+118.970/211.388ms in40-60s. Full-history growth is still present.
+
+New output age median.060007s,p95.090013s,max.100013s; these are simulated-time
+ages, not wall milliseconds. Sampled queue peak13; transport between-sample
+peak48; final0. The prior E1-only queue peak36 was smaller: not every metric
+improved, although all declared queue/age gates pass.
+
+E2 final calls/hits: WNOA765198/146413;relative1139748/209510; failures0.
+1462 cached entries;4262288 matrix/signature bytes(~4.07MiB), not total memory.
+Three read-only memory snapshots, latest around49s: RSS GLIM652032KiB,
+Kimera334368KiB,receiver107584KiB; corresponding HWM677536/359988/107584KiB.
+These are sampled observations, not whole-run peak-memory profiling.
+
+5. Provenance and preservation
+
+Receiver actual executable:
+/home/yeranis/results/gnssfgo_e1_e2_correctness_audit_20261011/candidate/replay
+SHA256 9d2ef832941c5ff2592da8428cb80104352590bcfea50c187624aaf4e90d60e0
+E1 wrapper SHA256:
+822377b019b3e22f24a3aeace45e1f495235f5e410dc0ca218dd0a285e8e7879
+E1 CUDA library SHA256:
+756f4555d7bcabfc71c41c90f62b0dc7320ee03f421fb0f3e5b79122e3868270
+CBS library SHA256:
+82f85c2a307a9d9a849b2b8f09bb5c1e026ad80a4ef0a633c903d30cca712476
+Input journal SHA256:
+fcdb04fbaae28a17f5b027f1a594329d6704996ee73b24cb33c182c04e0504af
+
+Exact launcher/wrapper/private harness/library hashes in protected_manifest and
+preflight validation. Old603 input files unchanged. Raw bags checked by retained
+resolved path,size,mtime; no new full raw-bag hashing claim. Source SHAs:
+gtsam_points8578196,glim_ros1fad72d6,cbs7c3a1e6,Kimera-VIO560ad0f,cbsms91c70b7.
+Detailed results: engineering_summary.json,final_checks.json,
+repeat_exact_comparison.json,prepared/live60_on_validation.json and archives.
+89 small evidence files archived byte-identically (2,688,334 bytes); all verified
+against their originals.18 Python syntax checks and4 shell/env checks pass.
+Authored Git whitespace checks pass; three raw ROS YAML dumps intentionally
+retain original trailing blank lines to preserve their hashes. Large raw bags,
+journals, logs, trajectories and executables stay local, not in this archive.
+
+A read-only timing preview initially used system python lacking numpy; rerun
+with the existing evo interpreter succeeded. No estimator/validation failure,
+package installation, source retry, tolerance change or hidden discarded run.
+
+Branch engineering/e1-e2-live60-20261011; parent
+65ef74c43c8f85f6ce1033cd50f8ad956128e484. Completion is the local commit containing
+this report; resolve with git log -1 --format=%H --
+experiments/e1_e2_live60_20261011/REPORT.txt. No push requested/performed.
+
+Decision
+Combined E1/E2 bounded integration PASSED, including the declared scan-headroom
+target. Suitable evidence to propose the separate160s capacity gate; not proof
+that the previous late-sequence bottleneck is solved. Keep candidates opt-in,
+default settings unchanged. No160s/full sequence, E1b/E3/E4 or new tuning started.

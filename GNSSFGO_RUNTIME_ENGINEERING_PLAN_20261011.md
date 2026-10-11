@@ -395,6 +395,34 @@ documentation/archival/version control only; no estimator implementation or run.
   above; `git log -1 --format=%H -- experiments/e1_e2_correctness_audit_20261011/REPORT.txt`).
   No push. Stop at E1/E2; no other engineering task started.
 
+### E1/E2 combined live60 integration gate
+
+- Authorization: user "Ok proceed" after the bounded combined-test proposal.
+- Status: PASSED bounded integration, 2026-10-11. One first-60-second ETH1 CBS-ON capture,
+  0.1x, headless. Existing E1 private source libraries plus corrected E2 cache.
+- Protocol: `experiments/e1_e2_live60_20261011/PROTOCOL.txt`.
+- No mathematical patch, tuning, changed affinity, source retry, E1b/E3/E4,
+  default promotion, GT scoring or 160-second run. Retain strict stationarity,
+  lossless revisions, coverage and queue gates; report the 800 ms scan-p95 goal.
+- Parent `65ef74c43c8f85f6ce1033cd50f8ad956128e484`; isolated branch
+  `engineering/e1-e2-live60-20261011`. Previous artifacts remain unchanged.
+- Report: `experiments/e1_e2_live60_20261011/REPORT.txt`. 18/18 focused E1
+  Release tests, 603 protected hashes unchanged; no new estimator/math patch.
+- Source covariance/alignment/lifecycle and all 34175 revision versions pass;
+  33280 replacements, 870 active IDs, 25 explicit pre-init unsupported, 0 pending.
+  593/593 stationary publications, maximum gradient 9.87662655e-6, no recovery.
+- One saved-journal repeat: all online/final X/V/W and trajectories byte-identical,
+  all 19 non-timing products exact (including E2 counters). No retry/tolerance edit.
+- GLIM scan median/p95 359.524/627.810 ms; desirable p95 < 800 ms PASSED.
+  Receiver age p95 .090013 s, queue peak 48 < 1000, final 0. Maximum scan
+  1019.767 ms exceeds one paced interval; not a worst-case or long-run guarantee.
+- Historical E1-only scan p95 853.998 ms. Different live nonlinear workloads/
+  arrivals, not an isolated E2 speedup claim; prior controlled ~5.2% result stands.
+  Source and receiver later-window costs still grow. No 160-second certification.
+- Decision: combined bounded gate passed; longer capacity test is now a separate
+  proposed next step, NOT launched. Opt-in defaults retained, owned processes
+  exited. Local completion commit contains this report/ledger; no push.
+
 ### Template for subsequent tasks
 
 Copy this block under its task ID; do not erase earlier attempts.

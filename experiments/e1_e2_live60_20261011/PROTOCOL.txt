@@ -1,0 +1,54 @@
+E1/E2 combined bounded live integration, authorized 2026-10-11.
+
+ONE first60s ETH1 CBS-ON capture, offset0, rate0.10, headless, private port11404.
+Reuse gnssfgo_e1_live60_20261011/prepared controller, launches, source profile,
+validators and E1 private libraries. No estimator/model edits or rebuild.
+Only additional engineering change: corrected E2 same-Values cache enabled.
+Receiver executable SHA256:
+9d2ef832941c5ff2592da8428cb80104352590bcfea50c187624aaf4e90d60e0.
+Source E1 wrapper/CUDA/CBS bytes identical to the validated E1 live60.
+
+Same ETH1 Hesai/CPT7/front stereo, 5s GLIM/25-state Kimera,
+active_window_temporary classic CBS, native-IMU mean alignment, LOCAL covariance,
+main smoother mean, horizon.20, one pair/update, full dense schur_relative_between,
+scale1, Gaussian, health off, source live_revision off. Kimera experimental
+IMU support override unset. Exact same bounded diagnostic load.
+Receiver source_wnoa, no central IMU/bias/acceleration/GNSS factors, X/V/W,
+full-history iSAM2 QR, independent100ms CPT7 timestamp clock/59sample anchor,
+stable-ID revisions, Qc [.00375]*3+[.015]*3, priors1e-5/10/3, strict nominal
+gradient<=1e-5/budget20 and unchanged rollback/failure. No stale reuse/coalescing.
+
+Production transport environment allowlist stays untouched. A private exec-only
+wrapper sets E2_EXACT_LINEARIZATION_CACHE=1 then execs the exact audited binary.
+Validate /proc executable, argv, environment and loaded libraries during live
+operation; record wrapper AND executable hashes. No CPU affinity/governor change:
+preserve the existing live operating environment, not the audit microbenchmark's
+single-core pinning. Capture affinity and processor snapshots for transparency.
+
+Preflight: no duplicate processes/port; healthy GPU/disk; protected hashes,
+exact source params/flags/profile bytes; 18 E1 focused Release tests; unchanged
+E2 50-test Release/sanitizer and matched exact replay are prior evidence.
+Private harness changes only root/session/port/receiver executable/cache wrapper.
+No automatic retry, overwrites, queue-limit increase or tolerance relaxation.
+
+Acceptance: full source/receiver completion and native window coverage;
+source wire/aligned factor all36 covariance entries unchanged; source temporary
+retirement; source revision payload/order equality; causal support insertion;
+all publication gradients<=1e-5; no stale/duplicate/pending; unsupported explicit.
+Controller aborts queued or peak_queue>=1000. Finalqueue0, p95outputage<1s.
+Desirable total GLIM scan p95<800ms against1000ms pacing budget. Failure of this
+headroom goal is reported even if basic operating gates pass. All gates frozen.
+
+ONE deterministic saved-journal repeat with same binary/E2 setting and unchanged
+numerical_equivalence.py limits (p/v/w1e-7, orientation1e-8), exact identity/event
+products and decisions. Report exact vs numerical equality honestly; prior
+audit showed P/E execution environment can change tiny arithmetic even without
+E2. No affinity-based oracle switch, tolerance relaxation or automatic retries.
+No new source replay if this validation fails.
+
+Compare historical original and E1-only first60s on common physical scan stamps,
+not claim identical nonlinear workloads or a randomized timing A/B. Report
+total/source main/sidecar/covariance stages, receiver normal/recovery refinement,
+early/mid/late, queue/age, cache hits, memory snapshots and native/online/final
+coverage/path. No ATE experiment or claim of160s/sustained universal capacity.
+Finish report and ledger, preserve all previous artifacts; stop for user decision.
