@@ -1,0 +1,203 @@
+ETH1 temporal mean-only ablation — covariance untouched
+======================================================
+Date: 2026-10-09
+Status: first numerical/retained-data gate completed; NOT deployed in Kimera.
+
+Main result
+-----------
+Correcting the measurement mean for the actual receiving interval reduces
+rotational relative error materially on the retained GLIM->Kimera factors.
+It does not eliminate the earliest poor GLIM belief and gives no consistent
+translation improvement. A new native optimization or fused trajectory has NOT
+been run, so this is not evidence of improved Kimera/gnssFGO trajectory ATE.
+
+Every one of the 175 source covariance matrices (6,300 double entries) is copied
+bit-for-bit, including off-diagonal entries. No scaling, covariance transport,
+bridge-noise addition, robustification, health weighting or gate is introduced.
+This intentionally frozen covariance makes this a timing/mean ablation, not a
+statistically complete transported-measurement model.
+
+1. What was run
+---------------
+An isolated numerical C++ adapter and Python scorer using retained data from:
+  ../gnssfgo_eth1_active_window40_prepared_20261008/pilot_on_source
+  ../gnssfgo_eth1_active_window40_prepared_20261008/pilot_on_receiver
+and the prior diagnosis in:
+  ../gnssfgo_eth1_active_window40_off_20261008/insertion_retirement_audit_20261008
+
+The 175 accepted source IDs, receiver endpoint bindings and belief arrival
+times are frozen to that capture. ON is the experimental historical
+active_window_temporary mode, not ordinary persistent classic CBS.
+No GLIM, Kimera, EKF, gnssFGO or ROS playback was launched. The existing ROS
+container was stopped and was not started. This pure numerical helper used
+the host compiler and the workspace's existing Eigen headers; no ROS package
+or production binary was built or changed.
+
+Primary bounded diagnostic: the 21 accepted insertions with original backend
+physical output time <=8 s, before the first marginalization. Also score every
+one of the 175 accepted insertions from the retained 40 s capture. No edge is
+chosen by its error. No trial parameter is selected using ground truth.
+These are approximately 0.2 s relative-measurement errors, NOT ATE, NOT 1 s RPE,
+and not a claim that a new estimator ran for 8 or 40 seconds.
+
+2. Adapter and reuse of existing code
+-------------------------------------
+For sender interval [a,b] and recipient interval [c,d], compute:
+  Z_aligned(c,d) = U(c,a) * Z_native(a,b) * U(b,d).
+No fixed 20 ms shift is applied. Each recorded pair's actual endpoints are used.
+Source IDs and original timestamps remain in the exported provenance; the
+aligned payload explicitly names its receiving interval. This is not an
+on-wire message whose mean silently contradicts its original timestamp fields.
+
+Reuse, unchanged, from /home/yeranis/repos/ethzasl_msf/msf_core/include/msf_core/:
+  msf_cbs_imu_bridge_history.h: nominal history, StateAt, RIGHT fractional steps.
+  msf_cbs_imu_dynamics.h: the same nominal strapdown integration.
+  msf_se3.h: Exp, Log, Between and Compose.
+No Stage-4 covariance function is called.
+
+The bridge is a separate pure nominal IMU history, NOT the actual Kimera
+smoother's historical velocity/bias state. Its initialization is the existing
+pilot recipe at 1727775008675043000 ns, using 68 preceding CPT7 samples:
+  p=0, v=0, q=identity,
+  gyro bias=mean gyro,
+  gravity=-9.81*normalized mean accel,
+  accel bias=mean accel+gravity.
+The numerical initialization exactly matches the retained earlier pilot:
+  gravity = [0.10859265705889642, 0.14752084205541885, 9.8082896182765804]
+  bg = [1.3940221191767383e-05, -0.00010246123351594982,
+        -8.3715798716772999e-05]
+  ba = [-0.00026872380043650723, -0.00036505563446359579,
+        -0.024271630636826913].
+The bridge uses RIGHT support, as that existing bridge pilot did. This does
+NOT switch native Kimera away from the recorded recovered-current IMU path.
+
+Numerical detail caught before scoring real data:
+The old history.Query re-integrates from an arbitrary fractional start. Under
+rotating accelerated motion, its first-order translation is not exactly
+invariant to splitting the propagation interval. An initial synthetic test
+requiring exact composition failed; aligned.log and failed_execution.json
+preserve this. The isolated adapter therefore computes
+  U(x,y) = inverse(history.StateAt(x).pose) * history.StateAt(y).pose,
+using one consistent trajectory. The shared history/helper implementation was
+not modified, and no real-data error was consulted to select this refinement.
+
+3. Causal construction and reference separation
+------------------------------------------------
+The adapter takes only imu.txt and queries.txt. It does not read reference data
+or native future poses. IMU records are checked against the saved receiver
+receipt journal. For EACH of the 175 queries, history is constructed anew from
+only IMU samples received by that belief's recorded arrival. The required
+right-support boundary sample must exist in this prefix; missing history fails
+explicitly with no snapping or guessed-motion fallback.
+
+Each prefix result is checked against full-history construction as a causality
+test: maximum SE(3) log coordinate difference 2.775558e-17. The full-history
+version is a check, not the producer of the exported candidate mean.
+
+Only score.py opens the continuous IE-TC reference. Reference frames are
+enu_origin -> cpt7_imu. Interpolate positions linearly and rotations by SLERP
+with <6 ms reference gaps and no extrapolation. Compare each transform with
+the reference on the SAME receiver physical interval. Translation error is
+the Euclidean relative-translation difference; rotation error is the angle of
+R_ref^-1 R_estimate. No fitted alignment or prism lever arm is used for these
+body-relative transform diagnostics.
+IE-TC shares CPT7 information with the native estimators; it is not independent
+Leica/AP20 prism ground truth. The old partial-prism scores are not used.
+
+4. Results: local relative-belief accuracy, RMS
+------------------------------------------------
+Subset / metric                    Raw mean         Aligned mean
+First <=8 s, 21 factors:
+  Relative translation             16.129561 mm      17.032688 mm
+  Relative rotation                 0.425986 deg      0.269769 deg
+All 175 accepted factors:
+  Relative translation             16.860251 mm      16.763760 mm
+  Relative rotation                 0.433509 deg      0.250984 deg
+
+Rotation RMS decreases about 36.7% in the early section and 42.1% overall.
+Early translation RMS increases about 5.6%; overall it changes by only -0.6%.
+Improved individual edges: early 7/21 translations, 15/21 rotations;
+overall 89/175 translations, 145/175 rotations. Not every edge improves.
+
+For context, native source GLIM means scored on their OWN original intervals
+have rotation RMS 0.267659 deg early and 0.244990 deg overall. Aligned means
+on receiver intervals are close to these values. This supports removal of a
+timing-induced rotational discrepancy, not proof of a perfect bridge or a
+healthy/calibrated source.
+
+5. The first problematic insertion remains problematic
+-------------------------------------------------------
+First factor: GLIM g29->g31 mapped to Kimera x2->x3, original backend update 4
+at physical time 3.951896 s after the first IMU stamp. Covariance unchanged.
+All three entries below are scored on the same Kimera receiving interval:
+
+                                      Translation mm    Rotation deg
+  Raw transmitted GLIM belief           6.778474          0.208035
+  Mean-only aligned GLIM belief         5.873219          0.205249
+  Frozen Kimera estimate BEFORE update  2.157194          0.048680
+
+The transformed GLIM mean is still locally worse than the frozen receiver in
+both components. On GLIM's own source interval its error was already
+5.364668 mm / 0.205530 deg. Timing correction therefore cannot turn that first
+belief into the locally better estimate.
+
+At this frozen prior, GLIM rotation disagreement decreases 0.228494 -> 0.207288
+degrees and its fixed-covariance squared whitened residual decreases
+1785.467 -> 1344.343. These are residuals evaluated at the SAME saved prior,
+not innovations from a newly optimized graph or evidence of a smaller harmful
+state correction. We deliberately do not manufacture an after-update result.
+
+6. Limits and the next native test
+----------------------------------
+The pure-IMU bridge's translation becomes less reliable later in the capture.
+Its left/right bridge translation error RMS against IE-TC is approximately
+0.904/0.906 mm early but 10.062/10.183 mm over all factors, consistent with
+open-loop velocity/bias sensitivity. Do not deploy this as a validated native
+state adapter or claim that negligible net translation change proves correct
+translation alignment: the two bridges' errors can partially cancel.
+
+The retained native logs lack complete historical endpoint velocity/bias
+states. A native-state bridge cannot be faithfully reconstructed by inventing
+those values, using GT, or inserting final smoothed states before availability.
+The short actual Kimera A/B optimization stage remains unexecuted. It needs a
+separately isolated integration of a justified bridge, with identical recorded
+source messages/arrivals, covariance and received-edge accounting, and before/
+after native increment logging. The covariance freeze must remain in force.
+
+This first gate establishes a useful mean correction for much of the rotational
+timing error. It does NOT establish that covariance weighting is correct, that
+native Kimera ATE will improve, or that timing explains the full OFF/ON gap.
+There is no justification here to modify factor retirement, output convention,
+the no-central-IMU WNOA receiver, or source covariance.
+
+7. Validation / reproducibility
+--------------------------------
+Release numerical helper compiled with GCC 13, existing workspace Eigen and
+the protected MSF headers. Focused ASan/UBSan synthetic tests pass; leak
+sanitizer disabled. This is NOT a full ROS build or complete estimator suite.
+Tests cover identity, both offset signs, variable motion, analytic constant
+acceleration and angular integration with fractional boundaries, deterministic
+repeat, missing history, and transactional output on failure.
+
+Two complete 175-query executions produce byte-identical aligned.txt outputs
+(approximately 6.58 s and 6.28 s on this machine, including all-prefix checks).
+All covariance payloads are also checked after JSON serialization/reload.
+All protected input/header hashes remain unchanged. Existing dirty MSF source
+changes were preserved, not reset or committed. No production binary/config
+or frozen recording was overwritten.
+
+Artifacts:
+  PROTOCOL.txt          Explicit frozen constraints and first-gate boundary.
+  manifest.json         Protected input/header SHA-256 and recipe.
+  prepare.py            Receipt/mapping checks; GT-free input export.
+  mean_adapter.cc       Isolated adapter using existing nominal history.
+  run_adapter.py        Bounded helper execution and repeat, not ROS launch.
+  score.py              Separated scorer, not optimizer.
+  validate_artifacts.py Packed covariance and sanitizer/provenance validation.
+  validation.json       Exact compiler commands, hashes, validation results.
+  execution.json        Actual helper invocation/runtime.
+  aligned_payloads.json Full source provenance, aligned mean, frozen covariance.
+  per_edge.csv          All 175 local error/residual/bridge diagnostics.
+  summary.json          Machine-readable statistics and limitations.
+
+MEAN_ONLY_TIMING_ABLATION_COMPLETED_NOT_DEPLOYED

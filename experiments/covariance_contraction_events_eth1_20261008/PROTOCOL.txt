@@ -1,0 +1,36 @@
+Retained ETH1 Kimera covariance-contraction localization, 2026-10-08
+
+Scope: steps 1-2 of the approved investigation only. Read the frozen OFF/ON
+source logs and accepted revision journals. No estimator/optimizer execution,
+model/configuration changes, covariance tuning, new source logging or bag run.
+
+Use the previous covariance-quality audit's matched accepted Kimera intervals
+and common arrival cutoff. Join the original source revisions to the journal by
+endpoint identity, revision, mean and complete covariance. Join source-side
+Schur/direct numerical diagnostics by per-edge invocation order, checking the
+exported covariance traces. Map revisions to backend update IDs and physical
+keyframe timestamps, not wall time. Preserve raw line references.
+
+Inspect covariance evolution versus belief age, backend time, and distance to
+observed endpoint retirement. Report both all accepted intervals and uncensored
+retired intervals. Age in the prior audit is time since FIRST ARRIVAL; physical
+age and update distance are separately labeled. Later OFF data must not leak
+past the matched ON cutoff.
+
+Describe per-update contraction and synchronization across active beliefs.
+Use a 5% root-trace decrease only as a descriptive event marker, never a gate.
+Choose representative events/edges from covariance change (largest, median,
+and early/late controls), not ground-truth error or trajectory ATE.
+
+Record actual retained graph evidence: LOCAL factor count, incoming CBS
+application/merge, observed retirement, numerical jitter/rank/Schur-direct
+agreement, and propagated cross-covariance trace. Counts are not information
+matrices and do not establish causation. Mixed-unit 6D traces are used ONLY to
+validate the same numerical extraction, not compare physical confidence.
+
+If exact factor/prior snapshots are absent, explicitly stop at that limit.
+No new diagnostic capture or source modification is authorized in this phase.
+Hash inputs/code before and after; repeat analysis deterministically. Save a
+compact event-localization plot and a report. Do not claim calibrated truth
+covariance, independent samples, or that marginalization is the cause merely
+because retirement occurs each backend update.

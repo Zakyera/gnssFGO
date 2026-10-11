@@ -1,0 +1,13 @@
+Stopped during the single authorized capture after its frozen live throughput
+gate became irreversibly false. At sensor time 140.62s, monitor.jsonl already
+contained a sampled queue maximum of 1378, exceeding the unchanged <1000 gate.
+Sampled peak output age was 1.530031s; p95 was 0.900029s at that check.
+The failure is the queue maximum gate, not a claim that p95 had exceeded 1s.
+Recent publication convergence rows were stationary. No reported missing
+alignment history at this point. GLIM source lag also varied and reached
+2.419s in a prior snapshot, then 0.949s at this snapshot.
+Stop only this run's owned source/master/receiver processes. Preserve all
+partial artifacts, mark incomplete, and do not launch an automatic retry,
+deterministic validation replay, different speed, or modified method.
+The controller's subsequent source-failed status is a consequence of this
+deliberate throughput-gate stop, not evidence of a spontaneous source crash.

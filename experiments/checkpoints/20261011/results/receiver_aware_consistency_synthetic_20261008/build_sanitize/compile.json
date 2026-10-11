@@ -1,0 +1,24 @@
+{
+  "command": [
+    "c++",
+    "-std=c++17",
+    "-I/source_devel/include",
+    "-I/source_devel/include/gtsam/3rdparty/Eigen",
+    "-O1",
+    "-g1",
+    "-DEIGEN_MALLOC_ALREADY_ALIGNED=1",
+    "-fno-omit-frame-pointer",
+    "-fsanitize=address,undefined",
+    "/experiment/test_receiver_aware.cpp",
+    "-L/source_devel/lib",
+    "-lgtsam",
+    "-lgtest_main",
+    "-lgtest",
+    "-lpthread",
+    "-Wl,-rpath,/source_devel/lib",
+    "-o",
+    "/audit/build_sanitize/test_receiver_aware"
+  ],
+  "returncode": 0,
+  "wall_seconds": 25.097481725999387
+}

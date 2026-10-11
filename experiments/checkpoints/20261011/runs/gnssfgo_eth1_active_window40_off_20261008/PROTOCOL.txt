@@ -1,0 +1,22 @@
+Matched ETH1 40-second CBS-OFF control, authorized 2026-10-08
+==========================================================
+User requests OFF vs ON results for the completed temporary-factor setup.
+Run exactly one fresh 40-second OFF capture with the same sensors, profile
+trees, binaries, logging, 0.10x playback, 25 s drain and Gaussian source_wnoa
+receiver as ../gnssfgo_eth1_active_window40_prepared_20261008/pilot_on.
+OFF disables receiving in both native estimators; publication/revision exports
+remain enabled. GLIM observe_only, Kimera same active_window_temporary flag
+but receiving=false. No injected external CBS factors are permitted in OFF.
+Do not change estimator code, priors, Qc, source covariance or loss functions.
+One exact journal repeat for validation is permitted; no automatic retry.
+Reuse completed ON without rerunning or overwriting it. New private scripts
+are copies of its prepared machinery, adjusted only for OFF/path/port/checks.
+No live graph inspectors. Master 11389, distinct unique source session.
+After validation, score original native GLIM, original native Kimera ROS odom,
+fused online and final for BOTH cases on one common physical/GT mask. State
+partial prism coverage. Never compare a cropped final-120s graph to final40s.
+Freeze hashes before launch, verify effective receiving flags before playback,
+and require zero injected source factors, exact payload accounting, unchanged
+receiver model, strict stationarity, complete native coverage, deterministic
+repeat and no pending events. Stop on numerical/transport/source failures.
+No longer run, new method, tuning, production-default edits or next sequence.

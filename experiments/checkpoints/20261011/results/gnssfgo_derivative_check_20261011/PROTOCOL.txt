@@ -1,0 +1,18 @@
+Bounded derivative investigation only, 2026-10-11
+
+Use the saved ETH1 ON failure state from gnssfgo_publication_cache_20261010.
+No source run, replay, optimizer step, tuning, covariance change, threshold
+change, fixed lag or production edit. Reconstruct only the factors touching
+the previous read-only probe's top-20 coordinates. Verify reconstructed residuals,
+covariances and native gradients against the saved failure evidence first.
+
+Compare existing numerical WNOA/motion/interpolation Jacobians with existing
+analytic/hybrid variants and independent direct factor-residual finite
+differences at 1e-3, 1e-4 and 1e-5. Record factor-wise and aggregated gradient
+effects separately. Test all Jacobian columns of the selected factors at this
+saved state. This is not certification over all states or a solver convergence
+certificate. No automatic adoption of the alternative path.
+
+Stop after this single focused check: identify supported cause/candidate,
+or explicitly report inconclusive. Do not expand into another sequence,
+accuracy study, optimizer redesign, or full-history replay.

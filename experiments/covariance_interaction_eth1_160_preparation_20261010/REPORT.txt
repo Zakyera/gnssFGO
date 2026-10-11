@@ -1,0 +1,72 @@
+Covariance-interaction preparation, ETH1 before160s
+=================================================
+2026-10-10. Preparation only. No new estimator or fusion experiment.
+
+Prepared a two-level diagnostic specification, saved as PROTOCOL.txt and
+capture_contract.json, plus a read-only completed-capture inventory tool.
+The forthcoming comparison must be matched OFF/ON using the corrected native
+mean-alignment code, temporary active-window CBS factors, Gaussian scale1 and
+the frozen no-central-IMU WNOA receiver. Source IMUs remain enabled.
+
+1. GLIM <-> Kimera
+Track full incoming/outgoing covariance, physical interval, actual receiver
+mapping, pre/post disagreement, inserted factor information, receiver local
+relative uncertainty and factor retirement. Follow individual beliefs from
+first publication through later revisions rather than pooling all revisions.
+Separate rotation and rho uncertainty; inspect cross-covariance without dropping
+it. Receiver LOCAL information and received CBS history are not automatically
+independent. Existing mean-only alignment leaves uncertainty unchanged by design.
+
+2. GLIM + Kimera + WNOA in gnssFGO
+Use actual factor residuals and whitened Jacobians at the same graph snapshot.
+Separate directional stiffness Jw^T Jw from pull Jw^T rw. Include initial priors
+separately. Do not rank6D source factors against12D WNOA using covariance trace.
+Perform expensive reconstruction after capture from the exact causal journal,
+check replay equivalence, then analyze predetermined snapshots. Do not activate
+the existing expensive LM/deep-audit path during live acquisition.
+
+Concrete preparation findings
+-----------------------------
+The completed40s capture contains181 GLIM-receiver and179 Kimera-receiver
+mean-alignment/matrix records,21,970 transported source belief versions,
+3,986 clock IMU messages and a STOP event. It has no detailed native receiver
+competition rows. The inventory rechecked finite SPD covariance, causal
+timestamps, stable identities and revision order. Input hashes stayed unchanged.
+This is inventory validation, not covariance calibration or dominance evidence.
+
+GLIM's detailed local-information helper is only called in its persistent
+factor path. The active_window_temporary path requires a small diagnostic-only
+hook. A patch is staged and git apply --check passes. It has NOT been applied,
+built or tested in an estimator. Its default-disabled guard and factor/covariance
+code remain unchanged. Kimera already has the corresponding bounded audit, but
+its different preinjection/audit evaluation points must be verified before
+combining Jacobian and residual records. Additional exact directional data for
+GLIM may be required beyond its existing local covariance/group-norm output.
+
+Proposed bounded sampling uses existing stride20/cap40 selectors per direction,
+with actual sample times/status retained. This is not an exact4s cadence claim.
+Failed/unavailable diagnostics must remain visible. No low-error or low-covariance
+sample selection. Logging overhead can change arrival scheduling despite being
+mathematically passive; a short authorized gate is required before160s.
+
+Readiness
+---------
+Specification and read-only inventory tooling are prepared and checked.
+160-second capture is NOT yet diagnostic-ready. Next work is the small native
+logging hook/evaluation-point verification, then an authorized bounded logging
+gate, then new matched OFF/ON controller copies and a fresh manifest. Existing
+40s controllers/artifacts are protected and must not be edited/reused in place.
+No160s run or source rerun was started. No weights, covariance values, model,
+launch defaults or estimator source were changed. No commit or push.
+
+Validation evidence
+-------------------
+test_inspect_capture.py: four tests for dense covariance preservation, malformed/
+nonfinite/non-SPD inputs, revision identity and causal timestamp handling.
+retained40_inventory.json: completed-data dry check with SHA-256 provenance.
+preparation_validation.json: reruns tests, checks staged patch without applying,
+and verifies all71 protected plus6 acceptance-manifest entries unchanged.
+No new Release/native/sanitizer build is claimed: no estimator was changed.
+Existing dirty source work and other untracked research directories preserved.
+
+PREPARATION_CHECKS_PASS_RUNTIME_GATE_PENDING

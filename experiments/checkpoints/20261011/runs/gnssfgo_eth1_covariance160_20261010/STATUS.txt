@@ -1,0 +1,46 @@
+ETH1 first160s matched OFF/ON, 2026-10-10
+======================================
+User authorization: "ok proceed to the 160".
+Frozen capture protocol: prepared/PROTOCOL.txt.
+Frozen preflight: prepared/preflight/validation.json and protected_manifest.json.
+Only the already-validated private diagnostic library is used; no estimator,
+covariance or motion-model change was made for this duration extension.
+
+Current state: STOPPED. OFF completed and validated; ON stopped at122.99s after
+92 mean-alignment failures. See REPORT.txt and failure_evidence.json.
+No valid160s comparison or accuracy result was produced. pair_failed.txt is
+the stopped controller outcome. Individual status: prepared/full160_MODE_control/.
+Both containers already existed; no new image/environment was created.
+
+Single sequential continuation owner: finish_pair.py (pair_controller.pid and
+flock). It waits for the already-running OFF, validates it once, then launches
+ON once only on success, validates once, evaluates saved outputs and summarizes
+covariance. No automatic retry. Do not start another controller or validation.
+OFF run_case.py controller owns source/master/receiver; ON will use same frozen
+settings/port after OFF exits. Do not attach to old recordings as live data.
+
+Read-only checks before playback:
+ * duration/mode admission and temporal coverage:8 unit tests passed;
+ * static OFF/ON effective launch difference only receiving and GLIM observe
+   versus active-window mode; Kimera backend arguments identical;
+ * native profiles, loaded private GLIM and native Kimera libraries and fuser
+   executable validated against retained artifacts;
+ * old40s and10s files untouched, old10s harness failure NOT rewritten.
+One preflight invocation with system Python lacked NumPy; no estimator was
+started by it. Correct installed evo validation Python passed before freezing.
+
+Read-only analysis/controller scripts fixed before any160s accuracy scoring:
+ evaluate_full160.py SHA25638558b7f4ac7a66661aa7a7c87b8651674fbbd2a611a6567f1bb2392db98c024
+ analyze_covariance.py SHA2567b0f1de96eb293914a962c96487bdadcf107ab72c4995c8be5d0208398a77c86
+ finish_pair.py SHA256cf7bff36103a9480ca71faa9186c040a454cdb0cb1f0fc2e8dae77ad97cb7192
+
+Primary results must be original/native GLIM, original/native Kimera ROS
+odometry, and fused ONLINE/as-played for each mode. Final fused trajectory is
+separate retrospective output. Full savedtravel evaluated against continuous
+IE-TC (shares CPT7; NOT independent prism GT). Common-time1sRPE mask separately
+reported. No11s prism subset masquerading as160s whole-travel accuracy.
+
+Covariance summary is NOT a dominance/calibration claim. Phi/rho units remain
+separate; exact physical intervals and availability ages matched. Full detailed
+fusion-family competition at intermediate optimizer states is not provided by
+trace summaries and must not be claimed from them.

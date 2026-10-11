@@ -1,0 +1,59 @@
+ETH1 mean-only temporal-alignment ablation, 2026-10-09
+===================================================
+User constraint: do not change any covariance. All 36 source/receiver entries,
+scales, correlation entries and weighting remain frozen. No Stage-4 covariance
+transport is run. This is NOT a statistically complete transported measurement.
+
+First gate: isolated retained-data adapter and synthetic tests. No estimator
+rerun, production source edit, fusion run or full sequence. These outputs cannot
+establish new native trajectory ATE or a causal optimizer correction.
+
+Inputs are the exact 175 accepted G->K mappings and wire means from the retained
+40-second active_window_temporary ON run, and its actually received CPT7 IMU
+event stream. This is not the ordinary persistent classic configuration.
+Primary bounded diagnostic section is physical output time <=8 s (before first
+marginalization). Also summarize all 175 frozen edges without rerunning sources.
+No event selection based on error and no GT-based parameter optimization.
+
+Candidate mean: Y = U(c,a) Z(a,b) U(b,d), where [c,d] is the recorded Kimera
+receiver interval. Covariance is copied verbatim. Source identity, recorded
+availability and receiver bindings remain fixed. This is a standalone export,
+not an on-wire message silently relabeled to another source timestamp.
+
+Reuse the existing Stage-3 CbsImuBridgeHistory, se3::Compose, se3::Exp/Log.
+Numerical pre-data test refinement: use StateAt at both bridge endpoints and
+se3::Between to obtain one consistent nominal trajectory. The old Query method
+re-integrates from a fractional start; its first-order translation is not exactly
+partition invariant during rotating accelerated motion. No shared helper is
+modified. Preserve the initial failed synthetic test log; use neither truth nor
+real-data scores to choose this numerical refinement.
+This is the old pure nominal IMU bridge, NOT reconstructed native Kimera state.
+Its fixed historical initialization is at 1727775008675043000 ns: identity
+pose, zero velocity, mean startup gyro as bias, gravity -9.81*normalized mean
+acceleration, accel bias mean acceleration + gravity. Use only preceding IMU
+samples. RIGHT support and exact fractional first/last steps are selected for
+this bridge as in the validated earlier pilot. Native Kimera remains on its
+recorded current packet path; native GLIM and all source profiles are untouched.
+No receiver states, future smoother revisions or GT enter bridge construction.
+This bridge has open-loop velocity/bias limitations, especially later in 40 s;
+do not describe it as a fully validated native-state alignment adapter.
+
+For each query, the required right-support IMU sample must already have been
+received by the belief's recorded arrival. Check the retained receipt journal.
+Compare all queries to initialization using ONLY the corresponding available
+IMU prefix. Refuse missing coverage; no timestamp-snapping fallback.
+
+Tests: identity at equal endpoints; positive and negative offsets; exact
+fractional integration; variable-motion synthetic transport; inverse/composition
+consistency; deterministic repeat; prefix causality; invalid-query rollback.
+Prove packed-double covariance payload equality, and unchanged protected inputs.
+
+Reference is continuous CPT7 IE-TC in cpt7_imu body coordinates, used ONLY in
+the scorer after construction. It shares CPT7 data and is not independent prism
+GT. Report same-interval local transform error, not trajectory ATE or 1 s RPE.
+Compare raw versus aligned means, and the unchanged native pre-update estimate.
+No claim about modified post-update states can be made from a frozen snapshot.
+
+After this gate, report what was established and whether a short native
+receiver A/B requires further instrumentation. Do not silently invent missing
+native endpoint velocities/biases or deploy this approximate bridge as a fix.

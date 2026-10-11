@@ -1,0 +1,179 @@
+GLIM CBS diagnostic-cost correction and bounded ETH1 validation
+2026-10-10
+
+OUTCOME
+The diagnostic-only performance correction is implemented and the single
+100-second ETH1 CBS-ON retest completed at 0.1x. It crossed the previous
+~88.95-second missing-history failure point without any mean-alignment failure.
+No new 160-second run or accuracy experiment was performed.
+
+On 943 identical physical scan timestamps in [0,95) seconds:
+                                      previous ON       corrected ON
+Mean total scan processing, wall ms        884.375            483.616
+95th-percentile scan processing, ms       1264.511            782.792
+Mean post-update callback, ms              577.018            185.139
+Mean native smoother update, ms            174.204            160.781
+95th-percentile publication age, sim s        4.670              0.168
+Maximum publication age, sim s               5.059              0.213
+
+Mean scan processing decreased by about 45.3% (1.83x processing throughput).
+In the difficult [60,80) second section it decreased from 1167.366 to 648.992 ms.
+At 10 Hz LiDAR and 0.1x playback, the average budget is about 1000 wall ms/scan.
+There are still isolated slow scans (maximum 1243 ms in the matched window),
+but they did not accumulate into a backlog. Input workload peaked at 2 rather
+than the previous ON peak of 11. This does not certify 1x or faster playback.
+
+The comparison uses the exact same scan timestamp lists and frozen settings,
+not identical asynchronous source factor-arrival histories. Faster execution
+changes which information is available at an update; native trajectories are
+not claimed to be byte-identical between old and new live source runs.
+
+WHAT CHANGED
+Owner: src/glim_ros1, cbs_bridge.cpp / cbs_bridge.hpp.
+New helper: include/glim_ros/cbs_diagnostic_budget.hpp.
+New focused test: test/cbs_diagnostic_budget_test.cpp; CMake test registration.
+Documentation: src/glim_ros1/docs/CBS_ACTIVE_FACTOR_DIAGNOSTICS.txt.
+
+The old active-factor detail-log switch only controlled PRINTING. The bridge
+still queried factor errors/Hessians for every active CBS edge and its graph
+neighbors, repeatedly triggering synchronous GPU work. The preceding retained
+audit counted 1,143,005 successful neighbor-Hessian queries during partial ON.
+
+The expensive diagnostic body is now gated BEFORE calculateEstimate(),
+factor.error(), and factor.linearize(). Parameters:
+  glim_cbs_active_factor_diagnostics_enable=false
+  glim_cbs_active_factor_diagnostics_stride=20
+  glim_cbs_active_factor_diagnostics_max_updates=40
+When explicitly enabled, only every stride-th eligible update is sampled,
+with a finite maximum number of attempts. Zero/negative maximum disables it.
+Active factor lifetime counters still advance independently of diagnostics.
+A separate timing row measures the diagnostic call, including its fast return.
+
+In the new run: 991 calls, zero expensive diagnostic samples/rows, mean
+diagnostic-call overhead 0.002158 ms (about 2.16 microseconds).
+The existing separate incoming/local covariance competition audit remains ON:
+25 GLIM samples, 24 Kimera samples. Full revision exports remain ON.
+
+WHAT DID NOT CHANGE
+No estimator mathematics, source covariance method or scale, noise, weights,
+priors, sensor profiles, mean alignment, CBS mode, factor horizon/cadence,
+auxiliary smoother, removal logic or fusion parameters were changed.
+Code-scope tests verify all bridge methods except configure,
+onSmootherUpdateFinish and logActiveWindowFactorDiagnostics are unchanged.
+In particular updateSidecar, publishOutgoingBeliefs and onSmootherUpdate are
+byte-identical to the captured pre-edit source text.
+
+The source mode remains the user's current active_window_temporary classic
+CBS protocol, not experimental source-to-source live_revision. The auxiliary
+LOCAL covariance smoother remains enabled as required by that mode.
+The receiver remains the frozen no-central-IMU source_wnoa executable,
+independent 100 ms support clock, full-history iSAM2, stable-ID replacement,
+Qc [.00375,.00375,.00375,.015,.015,.015], original priors and scale 1.
+The existing Kimera legacy rollback guards also remain unchanged.
+
+CAPTURE AND CORRECTNESS
+Mission: 2024-10-01-11-29-55 ETH1, offset 0, duration 100 s, playback 0.1x.
+Same Hesai/CPT7 GLIM and front-stereo/CPT7 Kimera profiles as the prior run.
+Rendering/graph inspectors remain disabled. Port 11396; fresh artifacts only.
+Wall runtime including setup and drain: 1046.456 s.
+
+Coverage (no interpolation of source startup gaps):
+  native GLIM: 991 poses, span 98.999491 s, path 53.675356 m;
+  native Kimera ROS odometry: 484 poses, span 99.599454 s, path 48.658974 m;
+  fused online/as-played: 993 poses, span 99.200000 s, path 56.796637 m;
+  fused final retrospective: 993 poses, same span, path 53.702832 m.
+Kimera retains its known 3.199979 s startup gap; later maximum gap is 0.200043 s.
+This report does not score ATE on partial prism coverage or claim accuracy.
+
+Native alignment and covariance:
+  zero MEAN_ALIGNMENT_UNAVAILABLE, missing-history or raw-fallback events;
+  481 GLIM and 480 Kimera alignment/factor-construction calls checked;
+  all 36 covariance entries exactly match the corresponding source wire belief;
+  causal endpoint cutoffs valid;
+  sampled Hessian/gradient/cost and full-covariance whitening checks pass.
+
+Receiver:
+  58,577 revision versions, all payloads/order conserved from source logs;
+  1,471 distinct source IDs observed, 1,470 represented in the graph;
+  57,082 stable-ID factor replacements;
+  25 versions of ONE initial Kimera edge are explicitly unsupported because
+  both endpoints precede receiver initialization, not because of transport loss;
+  final queue 0; transport's high-water mark 44 (2 s monitor sampled max 14);
+  online output-age median/p95/max 0.070003 / 0.110018 / 0.127024 s;
+  all 993 publications stationary; max gradient 9.970793145e-6 < 1e-5;
+  receiver covariance transformation max absolute numerical difference
+  1.734723476e-18.
+
+One replay of the exact saved journal (no source rerun) reproduced all nine
+checked trajectory/state/covariance/clock/dispatch artifacts byte-for-byte.
+Maximum p/orientation/v/omega differences in both online and final states: 0.
+
+LIFECYCLE CHECKER LIMITATION FOUND AND RESOLVED
+The original read-only checker failed at Kimera edge x433->x434 because it
+counted a scheduled removal before a rollback and its retry as two committed
+removals. Original failure is preserved in validation_logs/failed.txt and
+lifecycle.log. No estimator was retried or patched to resolve this.
+
+BPSAM::update snapshots itself before staging/removing factors, restores that
+snapshot on staged_residual_regression, and retries without the staged CBS
+factor (src/cbs/src/bpsam/bpsam.cpp:3654-3718,4590-4610).
+The supplemental checker now restores its accounting snapshot at the matching
+logged rollback, validating each slot and active-count transition. All five
+transactions reconcile. It does NOT ignore duplicate removals arbitrarily.
+
+Actual counts after rollback accounting:
+  GLIM: 481 queued, 456 removed, 25 remaining.
+  Kimera: 480 attempted registrations, five rolled back, 475 committed;
+          455 committed removals, 20 remaining.
+Five Kimera staged proposals were rejected by the EXISTING guard; that is not
+a new missing-history or transport failure. Do not describe this mode as having
+no internal safeguards, or claim zero inherited CBS information from counts alone.
+These observations are retained for subsequent algorithmic interpretation.
+
+VALIDATION AND ARTIFACTS
+  Isolated Release wrapper build (-O3 -DNDEBUG): passed.
+  Six new budget tests: passed in normal and ASan/UBSan builds.
+  31 existing metadata tests and five existing native mean-bridge tests: passed.
+  Two code-scope checks, shell admission checks, effective ROS/loaded-library
+  checks, source coverage, wire covariance and diagnostic algebra: passed.
+  Supplemental rollback-aware lifecycle check: passed.
+  Final numerical/conservation validation: prepared/perf100_on_validation.json.
+  Matched timing evidence: timing_comparison_verified.json.
+  Initial timing_comparison.json counted GPU warnings only in GLIM stdout;
+  use the verified version, which also counts estimator stderr separately.
+  Warnings have NOT disappeared: new estimator stderr retains 1,872,704
+  synchronous GPU warning lines. Old ON has 4,325,543 over a different-length
+  partial capture. These totals are not a same-window benchmark.
+
+No broad workspace rebuild or new S3E/full-GrandTour run was performed for this
+isolated engineering change. No claim of a full repository test-suite pass.
+Shared catkin binaries and all prior run artifacts were preserved. Owned ROS
+source processes and master stopped after capture. No automatic retry occurred.
+
+REMAINING ENGINEERING OPPORTUNITY
+In the matched window the unchanged sidecar update costs about 125 ms/scan and
+LOCAL marginal reconstruction about 165 ms/scan. The local codebase already
+has batched GPU linearization hooks in gtsam_points::ISAM2Ext, while BPSAM
+inherits generic gtsam::ISAM2 and rebuilds generic gtsam::Marginals.
+Reusing batching at exactly the same Values is a plausible next optimization,
+but requires explicit Jacobian/Hessian/covariance equivalence tests. It was
+not necessary for this 0.1x retest and was NOT implemented. Do not remove the
+sidecar, use stale marginals, or mute warnings and call that equivalent.
+
+PROVENANCE / REUSE
+Run root: this directory. Source and receiver outputs: prepared/perf100_on_*.
+Exact tested wrapper: prepared/private_build/libglim_ros.so
+SHA256: 9568f7edc063f830333572cd30c764cc8ef2bea1d3608f0675a83a257320b172
+Frozen receiver SHA256:
+fb56ffc5c6c9cb575d6129289688caeabb4e3baba32e429b857f3d6a30e50d1f
+glim_ros1 HEAD: 70f52ac6a11cb06c83d7a6695d8833667b769f23 (not changed).
+No commit or push. Pre-existing dirty edits were preserved; new work is uncommitted.
+Do not use an old shared libglim_ros with only the new ROS parameters: older
+binaries ignore these controls. Future runs must use this private build or a
+verified rebuild containing the change, with fresh output directories.
+
+CONCLUSION
+The repeated diagnostic calculations were the main removable throughput
+bottleneck. This bounded test supports retrying the originally intended 160 s
+experiment using the corrected build, but does not itself certify that longer
+window or establish any OFF/ON accuracy conclusion. No further run launched.

@@ -1,0 +1,134 @@
+{
+  "passed": true,
+  "status": "PREPARED_NOT_RUN",
+  "static_launch_resolved": true,
+  "estimator_or_receiver_started": false,
+  "ros_master_started": false,
+  "duration_s": 160,
+  "bag_offset_s": 0,
+  "playback_rate": 0.1,
+  "receiver_changes": {
+    "sequence": [
+      "ETH1 2024-10-01-11-29-55; offset 0; 120s; classic CBS ON; WNOA no central IMU",
+      "ETH1 first160s; CBS ON; active-window temporary; native mean alignment; Gaussian WNOA no central IMU"
+    ],
+    "ros_master_uri": [
+      "http://127.0.0.1:11378",
+      "http://127.0.0.1:11394"
+    ],
+    "sources": [
+      [
+        {
+          "id": "glim_hesai",
+          "session": "eth1_wnoa_bounded120_on_20261007",
+          "kind": "glim",
+          "belief_body_frame": "cpt7_imu",
+          "log_glob": "${SOURCE_RUN}/ros_logs/*/glim_rosnode-*-stdout.log"
+        },
+        {
+          "id": "kimera_front",
+          "session": "eth1_wnoa_bounded120_on_20261007",
+          "kind": "kimera",
+          "belief_body_frame": "cpt7_imu",
+          "log_glob": "${SOURCE_RUN}/estimators.log"
+        }
+      ],
+      [
+        {
+          "id": "glim_hesai",
+          "session": "eth1_covariance160_on_20261010",
+          "kind": "glim",
+          "belief_body_frame": "cpt7_imu",
+          "log_glob": "${SOURCE_RUN}/ros_logs/*/glim_rosnode-*-stdout.log"
+        },
+        {
+          "id": "kimera_front",
+          "session": "eth1_covariance160_on_20261010",
+          "kind": "kimera",
+          "belief_body_frame": "cpt7_imu",
+          "log_glob": "${SOURCE_RUN}/estimators.log"
+        }
+      ]
+    ]
+  },
+  "off_on_difference": "Only source receiving and GLIM observe_only vs active_window_temporary; identical receiver parameters",
+  "source_modes": [
+    "active_window_temporary",
+    "active_window_temporary"
+  ],
+  "containers": {
+    "cbsms_ws_gpu": "true sha256:7ad3854c699fb9a292aa5d42f8f890dfbd5dccb16633e043a93d135221418aaa",
+    "ubuntu-jammy-humble-nvidia": "true sha256:6a664509d183e504230b22edfd747dfe1ca5bca8ae6fc34c76154db8ffd1fc8d"
+  },
+  "source_runtime_hashes": {
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/devel/lib/glim_ros/glim_rosnode": "c0011dad98e5a202bafc604d3e987b0b2bbbd9a1092e0aa0b35a6c9d32286d57",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/devel/lib/kimera_vio_ros/kimera_vio_ros_node": "b2c2a42387239eb6040c46f839c44595248a476b023ce9ae7e40bd9ee0fb474b",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/devel/lib/libglim_ros.so": "3028046dadb210825a41d1c59b819a682aecf2304ff5669bb4fbfac088e565ea",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/build/kimera_vio/libkimera_vio.so": "8ca57e0bbd51ee3af480f1beb1d530c3dac925514a768177f78e9fcd6f75e3d7",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/devel/lib/libkimera_vio_ros.so": "52a9f13b228eb1672c905056336d61a563317119790896b96452e9b94938a342",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/devel/lib/libcbs.so": "86620ce0e03367eb0dbe5a8e11470f16387e51d8d2c63d57f5d9545c4b80a837",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/devel/lib/libgtsam.so.4": "0307b15321abd8953586c19dbc189fa0c4d9fe244b05ca105bfdc7a66e846616",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/devel/lib/libgtsam_unstable.so.4": "0bc02153e8aeb3bca349ed7f37e05168075d37322c0086b1db41a6e7a582e704",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_covariance160_20261010/prepared/private_build/libglim_ros.so": "c462265c22b32ed1173a5d8892331f11cd8dd430cc9d808c305819ae664b3624"
+  },
+  "bags": {
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/datasets/GrandTour/2024-10-01-11-29-55_hesai.bag": {
+      "bytes": 2959109048,
+      "sha256": "9573b4f377e3220f564512dc9b9027db4a1dfe8861a308584a542ed0a505f5f6"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/datasets/GrandTour/2024-10-01-11-29-55_cpt7_imu.bag": {
+      "bytes": 2415538,
+      "sha256": "21dd8b7462694030746a901fa0e73580748a14233d1baaf93d10145100cb1a07"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/datasets/GrandTour/2024-10-01-11-29-55_alphasense.bag": {
+      "bytes": 6327990354,
+      "sha256": "36b847f93c1931acf8427bf1db887be716ebb8b2901ee8ad4ec53e892295f993"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/datasets/GrandTour/2024-10-01-11-29-55_ap20_prism_position.bag": {
+      "bytes": 225886,
+      "sha256": "837d2097f365b683159f4de95b51dff5dd70adc0137d423ccef25d43ceaa44c2"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/datasets/GrandTour/2024-10-01-11-29-55_cpt7_ie_tc.bag": {
+      "bytes": 38584392,
+      "sha256": "28815a4a300624766e3ffe0e1cc0f150ac60e09e395381ca25c3e6d7e04e18e3"
+    }
+  },
+  "git": {
+    "/home/yeranis/repos/gnssFGO": {
+      "head": "5817540ca741c3b99fbe765c0f72a015835e0b20",
+      "status": "?? experiments/covariance_contraction_events_eth1_20261008/\n?? experiments/covariance_interaction_eth1_160_preparation_20261010/\n?? experiments/covariance_quality_eth1_20261008/\n?? experiments/kimera_scale2_eth1_20261008/\n",
+      "diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/cbs": {
+      "head": "2e10934fd506a23d10d7e9838659904e8e3630f1",
+      "status": "",
+      "diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/cbsms": {
+      "head": "fad524d19d8abb3a2f78af475d6a630e61d6fc86",
+      "status": "",
+      "diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/glim": {
+      "head": "e817b335377191b34ff822d4acbe6a2da3934fb4",
+      "status": "",
+      "diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/glim_ros1": {
+      "head": "70f52ac6a11cb06c83d7a6695d8833667b769f23",
+      "status": " M CMakeLists.txt\n M include/glim_ros/cbs_bridge.hpp\n M src/glim_ros/cbs_bridge.cpp\n M src/glim_ros/glim_ros.cpp\n?? include/glim_ros/cbs_native_imu_mean_bridge.hpp\n?? test/cbs_native_imu_mean_bridge_test.cpp\n?? test/data/\n",
+      "diff_sha256": "2401b2ff5ec581bd65b5ad0c3d412f074f4e9adfdc16b76bbbfa0174d8e327f3"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/Kimera-VIO": {
+      "head": "c3900956278aacc824225d0dbab674409132bc28",
+      "status": " M CMakeLists.txt\n M include/kimera-vio/backend/VioBackend.h\n M include/kimera-vio/backend/VioBackendModule.h\n M src/backend/VioBackend.cpp\n M src/backend/VioBackendModule.cpp\n M src/pipeline/Pipeline.cpp\n?? include/kimera-vio/imu-frontend/CbsNativeImuMeanBridge.h\n?? tests/testCbsNativeImuMeanBridge.cpp\n",
+      "diff_sha256": "de55c68321a5f179b2b99a8f6104c626758f923f1780633f88ef9192ef823249"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/Kimera-VIO-ROS": {
+      "head": "91f36d58bf6d4ffc026cfb8b9b8f4e13a0cf090d",
+      "status": "",
+      "diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "runtime_limit": "Static preflight only. Effective live flags, removals, output coverage and receiver convergence remain to be checked after launch."
+}

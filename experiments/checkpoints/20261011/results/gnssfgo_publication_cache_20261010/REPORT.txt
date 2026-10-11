@@ -1,0 +1,240 @@
+Publication-cache engineering checkpoint (started 2026-10-10)
+===========================================================
+
+STATUS: bounded checkpoint completed on 2026-10-11. Cache-only behavior
+preservation validated; original numerical stop remains. NOT a successful
+160-second experiment and NOT a production/live-throughput certification.
+
+Scope and preservation
+----------------------
+This is a private implementation of the agreed caching-only improvement in the
+experimental source_wnoa full-history publication refinement. No fixed lag,
+source rerun, CBS change, covariance scaling, prior/Qc change, convergence-limit
+change, altered iteration budget, source-factor ordering change or ATE scoring.
+No production executable, launcher, or tracked repository file was replaced.
+
+Input: existing ETH1 ON journal, already captured during the incomplete 160 s
+attempt, from:
+ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_covariance160_validated_20261010/prepared/full160_on_receiver/events.csv
+SHA-256: 2188562923a420b341d798a1bdf570e23f6868c456626e6630befb182462c766
+
+Frozen receiver executable:
+ /home/yeranis/results/gnssfgo_eth1_local_prediction_20261007/build/wnoa/replay
+SHA-256: fb56ffc5c6c9cb575d6129289688caeabb4e3baba32e429b857f3d6a30e50d1f
+
+Pinned Docker image:
+ sha256:6a664509d183e504230b22edfd747dfe1ca5bca8ae6fc34c76154db8ffd1fc8d
+Read-only filesystem, network disabled, original capture/runtime/repository
+read-only mounted; only this private output directory and container /tmp writable.
+
+Current model stays pose/world velocity/body angular-rate WNOA; no central IMU
+factors; 100 ms independent uniform_imu clock with 59-timestamp startup; Gaussian
+source scale 1; downstream stable-ID replacement; full-history iSAM2 QR.
+Strict fresh-gradient publication threshold remains 1e-5 and budget 20.
+
+Implementation
+--------------
+build/FullPublicationRefinement.h is copied from the frozen WNOA build. Only its
+private-polish evaluation branch is changed. All candidate solver updates, fresh
+QR rebuilds, decisions, criteria and commit/rollback behavior are unchanged.
+
+build/CachedGaussianEvaluation.h owns Values snapshots and copies the immutable
+factor-slot list. It caches residuals and fresh-at-that-Values linearizations.
+Cache lifetime ends inside one unchanged refinement graph; there is no cross-
+revision, cross-support, global, or stale-iSAM2-Jacobian cache. Factor-pointer and
+activation checks reject mismatches. Gaussian/constrained checks remain explicit.
+
+The old inner pass linearizes the same anchor twice to calculate predicted cost
+fields that are then discarded, and the same seed twice for two predictions.
+The new branch calculates cumulative actual cost from cached residuals, and
+calculates both local predictions from one fresh seed linearization. Actual
+and predicted summation/traversal orders are preserved. Each candidate gradient
+still uses its own current Values. The outer ordinary refinement is untouched.
+
+In each inner pass: six explicit full-graph linearizations outside solver calls
+become three (one seed, two candidate gradients). Residual evaluations at fixed
+anchor/seed are also reused. Solver-internal work is not counted by this figure.
+There are no analytic-derivative substitutions or changes to finite-difference
+step sizes in the optimizer.
+
+build/FailureProbe.h is a read-only diagnostic called only after an invalid
+publication decision and after the publication timer/log are finalized. It
+exports simultaneous graph Values, factor keys/types/noise/residual diagnostics,
+and central differences of whitened residuals for the 20 largest native-gradient
+coordinates at seven fixed steps from 1e-3 to 1e-7. It feeds nothing back to the
+optimizer and does not authorize publication. This is not a full independent
+stationarity certificate or a serialized, stand-alone restorable graph.
+
+Validation
+----------
+Release build passes. 31 focused Release tests and the same 31 ASan/UBSan tests
+pass. This covers new cache tests plus existing stable-cost, transactional QR,
+stationary-consensus and bounded-refinement checks. New tests include dense
+Pose3 covariance, shared keys, null factor slots, the actual WNOA motion and
+interpolated source factors, exact cost/gradient equality, repeated evaluation,
+owned Values, changed-factor rejection, robust-noise and nonfinite rejection.
+
+Two development-only test errors were corrected: nullptr needed an explicitly
+typed factor shared pointer; NAN's float type needed a double quiet_NaN in a
+double-valued GTSAM Values entry. Initial failed logs are retained. Neither
+error affected a receiver run. Existing abstract GPInterpolatorBase empty-
+return warnings are unchanged; the exercised WNOA overrides passed sanitizers.
+Pinned third-party shared libraries were not themselves rebuilt with sanitizers.
+
+167 protected artifacts and 12 frozen helper/test hashes match before and after
+replay. All original output files and the input journal remain unchanged.
+Exact commands/logs are command_*.json and logs/*.log. Protocol: PROTOCOL.txt.
+provenance_pre_replay.json records the executable, inputs and source identities.
+
+Replay comparison, runtime and numerical diagnosis
+--------------------------------------------------
+The frozen executable was run once, then the cache-only executable once, on the
+identical saved journal, with the same pinned runtime and single-thread setting.
+Both intentionally preserve the original strict-publication failure at support
+1272, physical timestamp 1727775135783475000 (127.780 s after the bag-window start
+1727775008003475000). Each child exits 1 there. The harness reports that expected
+stop as a successful reproduction test, NOT successful sequence completion.
+
+Original capture versus new frozen replay: every timing-independent field in
+all 16 output files matches. Frozen replay versus cached replay: same result.
+Only measured execution times / wall-clock timestamps differ. Specifically:
+ - online_trajectory.tum and online_states.csv are byte-identical;
+ - all 1272 published rows (initial state plus 1271 successful supports) match;
+ - p, q, world velocity and body angular-rate rows match exactly;
+ - publication_steps.csv is byte-identical, including costs, gradients, QR
+   disagreement, candidate steps and every accept/reject decision;
+ - 75121 dispatched source versions match: 1880 insertions, 73241 replacements;
+ - factor slots, source identities, revisions, corrections and support clock
+   match; source/model covariance-accounting files match;
+ - every convergence field except seconds matches. The failed support is not
+   appended to the online trajectory. Final retrospective trajectory.tum is
+   EMPTY; states.csv has only its header. These are not scored or presented as
+   completed results.
+
+Online state SHA-256:
+ 1d5fe96f2f7803c9c90c4f30d8719d8fcbf82c4f2c4771ddf53eb67c8bde7a6c
+Online trajectory SHA-256:
+ bdfe7acdb5c45ae6ae6a4f4cc7b26818c702295ebd9d0ba70257b96594336ec5
+
+This does not claim a separately extracted full posterior covariance comparison:
+the failed original run did not retain such a matrix. Measurement payloads,
+covariance inputs, solver updates and timing-independent recorded outputs are
+preserved; the cache tests establish exact cost/gradient arithmetic equivalence.
+
+Measured wall seconds in publication refinement (not source processing):
+
+Work measured                         Frozen       Cached        Reduction
+All 1272 refinements                   425.166      406.648         4.36%
+16 updates with private polish         87.437       67.956        22.28%
+Other 1256 refinements                 337.728      338.692        -0.29%
+The failed support alone               17.242       12.026        30.25%
+
+Elapsed section      Frozen mean/update    Cached mean/update   Supports
+115-120 s                  0.964 s               0.888 s            50
+120-125 s                  1.591 s               1.388 s            50
+125-127.8 s                1.318 s               1.113 s            28
+
+At the failed support, 15 inner passes remove 45 redundant explicit graph
+linearizations: 99 -> 54 outside solver updates/rebuilds. This is a control-flow
+count corroborated by the cache unit test, NOT a sampled CPU-time profile.
+The 20 candidate updates and 16 fresh QR rebuilds remain unchanged.
+
+Whole command wall time: 511.188 s frozen, 493.396 s cached. The cached command
+also includes the read-only failure export/probe; these whole-command figures
+are not a pure microbenchmark. The publication timers above exclude the probe,
+log writing, normal source replacements and other bookkeeping. One sequential
+run per variant was used, not a repeated statistical performance study. The
+almost unchanged non-polish time is a useful internal control.
+
+The remaining 120-125 s refinement cost is 69.410 wall seconds for 50 supports.
+At 0.1x playback those supports allow only about 50 wall seconds for EVERYTHING.
+Thus this optimization alone is insufficient for that section's playback budget,
+even before ordinary revision updates (another measured 5.771 s in the labelled
+arrival-time interval) and other work. This is replay evidence, not a new live
+transport/queue validation. No claim of solving the live delay is made.
+
+Numerical stop: unchanged
+-------------------------
+Both runs use 20 attempts, accept four, and retain:
+ objective              12295403.192055644
+ normalized gradient    1.4269950970074356e-5
+ required threshold     1e-5
+The rejected candidate sequence, including its smallest gradient, is unchanged.
+Caching accelerates the same calculations; it does not repair stationarity.
+
+The post-decision diagnostic contains 3819 simultaneous Values (1273 X/V/W
+support triples) and 3155 factors (1272 WNOA, 1880 source, three initial priors).
+Unlike the original incomplete capture, actual simultaneous Values are retained
+here, not merely a collection of past online current-state rows. However, the
+factor dump is keys/types/covariances/residuals, not full factor serialization;
+reconstructing a complete runnable graph still requires the journal/code.
+
+The largest native-gradient coordinate is v1236, column 2 (world z velocity),
+about 3.6 seconds behind the failed support, not a very old trajectory state.
+Its factor contributions are:
+  six source factors combined      +3446.6265642825692
+  two WNOA factors combined        -3446.6276605748017
+  residual gradient                   -0.0010962922324324609
+  Hessian diagonal                      5902.1156099580321
+
+Large opposing contributions are normal near a least-squares optimum; they do
+not by themselves prove bad weighting or an invalid physical model. Here their
+small remainder is sensitive to numerical derivative/evaluation differences.
+
+Independent central differences of WHITENED residuals give these normalized
+gradients for the same coordinate and unchanged state:
+  perturbation step 1e-3       1.12610e-5
+                    1e-4       1.13883e-5
+                    3e-5       1.20002e-5
+                    1e-5       1.04229e-5
+                    3e-6       3.43334e-5
+                    1e-6       7.14689e-5
+                    1e-7       3.30415e-4
+These are velocity perturbations in m/s for this particular coordinate. Steps
+for angular-rate/pose coordinates have their own units; this is not Qc tuning.
+
+Other coordinates can cross the acceptance threshold depending on evaluation:
+ - v1235 x: native 1.13333e-5; independent steps 1e-3/1e-4 give
+   6.95860e-7 / 1.04312e-6;
+ - v1234 y: native 5.30940e-6; independent steps 1e-3/1e-4 give
+   1.69109e-5 / 1.80447e-5.
+The second example is important: the independent check does not simply certify
+convergence that the native check missed. Across the selected 20 coordinates,
+the maximum remains ABOVE 1e-5 for every tested step; it is about 1.5-1.8e-5
+at steps 1e-3 through 1e-5 and grows for smaller steps.
+
+Interpretation: there is demonstrated derivative/evaluation sensitivity at the
+threshold scale, including strong cancellation in J^T r. The dominant native
+coordinates cluster around v1233-v1236, i.e. recent support states. This does
+not identify a unique faulty routine, certify an exact derivative, measure a
+full condition number, or justify relaxing the convergence threshold. The
+top-20 selection is not a complete independent gradient audit. Truncation and
+roundoff remain possible in these independent finite differences as well.
+
+The next decision should distinguish two issues:
+ 1. Caching is a validated, modest engineering saving on this fixed journal.
+ 2. Numerical derivative/stationarity reliability and remaining full-history
+    refinement cost still require work before a longer live experiment.
+The present evidence supports checking the existing WNOA/interpolation
+derivative path next, not blindly switching its analytic branch or treating
+fixed-lag marginalization as a cure for this demonstrated numerical issue.
+No such derivative change or fixed-lag implementation was made here.
+
+Machine-readable evidence: comparison.json, provenance_after.json,
+cached/failure_probe/{summary.txt,simultaneous_values.csv,factor_probe.txt,
+gradient_step_sensitivity.csv,native_gradient_contributions.csv}.
+
+Repository and deployment status
+--------------------------------
+Repository HEAD: 5817540ca741c3b99fbe765c0f72a015835e0b20.
+Existing four untracked experiment directories are preserved. No commit or push.
+Private cached receiver SHA-256:
+ 89ed85fdd292f95917a421d0c413433b9aeba24e820a772a7e6f9049b7b11f4a
+All private files present in the pre-replay manifest remain unchanged. The sole
+later build-file addition is the sanitizer test executable, built before the
+two sequential replay runs. A strict initial whole-directory equality check
+flagged that expected addition; per-file verification confirms no mutation.
+Private candidate is not promoted into production or a live launcher. No evidence
+from this checkpoint alone establishes fixed-lag safety or 160-second completion.
+
+Stop here for discussion. No further experiment or automatic retry is scheduled.

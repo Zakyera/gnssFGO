@@ -1,0 +1,154 @@
+ETH1 private V/W-Jacobian candidate: live validation, 2026-10-11
+=============================================================
+
+Result: LIVE_THROUGHPUT_GATE_FAILED. NOT a completed 160-second run.
+
+The candidate passed the previous stopping region without a convergence
+failure, but this new live capture crossed the unchanged queue limit.
+We deliberately stopped the single authorized attempt. Neither estimator
+crashed spontaneously. No tuning, fallback, automatic retry, second source
+run, or deterministic validation replay was performed after the gate failed.
+
+1. What ran
+-----------
+New original/native GLIM and original/native Kimera ran concurrently with
+the WNOA gnssFGO receiver, not an offline fusion of completed source outputs.
+ETH1 2024-10-01-11-29-55, offset0, requested160s, rate0.10x, headless.
+
+Sources retained the saved Hesai/front-stereo/shared-CPT7 profile, GLIM 5s
+lag, Kimera 25 states, classic active_window_temporary CBS, native IMU mean
+alignment, 0.20s horizon, one pair/update, full schur_relative_between
+covariance at scale1, Gaussian factors and existing guards. This is NOT the
+experimental source-to-source live_revision protocol. Source diagnostics
+were unchanged from the previous diagnostic-cost-fixed validation harness.
+
+Receiver remained no-central-IMU source_wnoa, independent100ms timestamp
+support, full-history iSAM2, downstream stable-ID revision replacement,
+unchanged Qc/priors/covariance scale/nominal publication requirements.
+No fixed-lag, Huber, visualization, weighting, covariance or model changes.
+
+Only executable selection changed to the already tested private candidate:
+ /home/yeranis/results/gnssfgo_vw_jacobian_20261011/build/replay
+ SHA256 62124b496ad6f854079218862acb149892aa452d4af908c50bc96067e49c9dbb
+Original receiver remains untouched:
+ /home/yeranis/results/gnssfgo_eth1_local_prediction_20261007/build/wnoa/replay
+ SHA256 fb56ffc5c6c9cb575d6129289688caeabb4e3baba32e429b857f3d6a30e50d1f
+
+The derivative candidate changes only the interpolated relative factor's
+velocity/angular-rate Jacobian blocks; residual/pose derivatives/model are
+unchanged. Its previously validated publication cache is retained.
+The private GLIM diagnostic-cost wrapper was reused without rebuilding.
+
+2. Preflight and ownership
+-------------------------
+Static resolved parameters and Kimera arguments matched the prior harness
+apart from output paths. Actual process flags and mapped libraries passed
+effective_mode_check.json before bag playback. Fresh ROS port11399/session.
+193 protected artifact hashes still match after capture. Production defaults,
+source estimators and all original results remain unchanged.
+
+An idle-container GPU access failure was fixed before launch by restarting
+only cbsms_ws_gpu. Host GPU was healthy; CUDA then reported one usable device.
+No driver reset, package install, host reboot or estimator rebuild occurred.
+
+3. Why this attempt stopped
+--------------------------
+Existing gate: maximum sampled queue <1000, overall p95 output age <1s,
+and final queue0. We did NOT change these after seeing data.
+
+First recorded queue violation: sensor elapsed137.100030s, queue1032.
+Peak sampled queue:1378 at138.310030s.
+Transport's finer-grained internal peak:1489.
+Overall sampled output age: median0.070012s, p95 0.900029s, max1.530031s.
+Thus the queue criterion failed; the overall p95 criterion did NOT fail.
+The 130-144s subsection's p95 was1.427531s (distinct from whole-capture p95).
+
+We observed the gate failure and sent SIGINT only to this run's verified
+source process group. Sensor capture ended at143.790032s. The source coverage
+validator then correctly rejected truncated input, and the controller wrote
+"source failed". Those messages are CONSEQUENCES of the deliberate stop,
+not independent spontaneous source failures. See STOP_REASON.txt.
+
+Receiver backlog recovered before final shutdown and drained to zero. Its
+captured partial graph completed with pending_at_end=0. Both containers were
+verified idle afterward. This was transient overload, not a persistent
+deadlock, out-of-memory event or the old strict-convergence failure.
+
+4. Numerical and accounting findings on the captured portion ONLY
+----------------------------------------------------------------
+1433 online publications, all stationary at the unchanged1e-5 threshold.
+Maximum logged gradient:9.804066065458235e-6.
+Refinement attempts: median1,p95 3,max13 (budget remains20).
+85210 source versions exported and journaled with exact payload/order:
+  67960 GLIM versions;17250 Kimera versions.
+  85185 dispatched =2126 initial factor insertions +83059 replacements.
+  25 explicitly unsupported before initialization, none silently lost.
+Final stable IDs:1425 GLIM +701 Kimera.
+Reported vs effective final source covariance: maximum difference0.
+Actual factor covariance comparison: maximum absolute error8.0231e-17.
+No missing alignment-history errors were found in the monitored source logs.
+
+These are partial-run checks, NOT full postvalidation. Native wire matrix,
+lifecycle and complete diagnostic validation and the deterministic repeat
+were not certified after the capture gate failed.
+
+5. Timing evidence: both source and receiver need headroom
+---------------------------------------------------------
+Wall cost at0.10x: each100ms sensor interval provides about1s of wall time.
+The following rows use retained phase timings; they do not attribute all CPU
+contention or prove a single root cause.
+
+Physical section       GLIM total scan mean/p95     Receiver refinement mean/p95
+0-120s                 0.542 /0.960 wall s           0.212 /0.518 wall s
+120-130s               1.059 /1.425 wall s           0.686 /1.817 wall s
+130-end                0.901 /1.478 wall s           0.762 /1.464 wall s
+
+GLIM's120-130s mean breakdown:
+pre-callback0.302s; smoother0.385s; post-callback0.369s.
+GLIM publication age in130-end: median1.248s,p95 2.472s,max2.556s.
+Receiver refinement is only the recorded publication-refinement phase; it
+excludes other receiver work. A subsecond mean alone does not establish
+adequate throughput. Expensive callbacks/revisions and refinement can burst.
+No Rerun or factor-graph visualization ran, so visualization is not the cause.
+
+The earlier tested analytic blocks improved numerical behavior, but did not
+by themselves certify the complete live system's160s throughput. These logs
+are sufficient for a bounded phase-cost review without another source run;
+they do not justify switching to fixed-lag or changing covariance/Qc.
+
+6. Retained trajectories (NOT160-second or GT-scored results)
+----------------------------------------------------------
+Role                         Rows   Physical span    Raw path length
+Original/native GLIM          1431   142.999471s       95.202546m
+Original/native Kimera ROS     704   143.599170s      105.081010m
+Fused online/as-played        1433   143.200000s      305.122402m
+Fused final retrospective     1433   143.200000s       96.496490m
+
+Kimera includes its retained3.199979s startup output gap; no fabricated poses.
+Online and retrospective paths are explicitly different: the online path
+concatenates successive current estimates, not one final revised solution.
+Its substantially longer path must not be hidden by presenting the final
+trajectory as live output. Stationarity/throughput checks do not establish
+online trajectory accuracy or smoothness. No ATE/RPE or OFF/ON ranking was
+computed from this incomplete attempt.
+
+Exact paths, relative to this report directory:
+ prepared/full160_on_source/odom_imu.txt
+ prepared/full160_on_source/kimera_odometry.csv
+ prepared/full160_on_receiver/receiver/online_trajectory.tum
+ prepared/full160_on_receiver/receiver/trajectory.tum
+ prepared/full160_on_control/monitor.jsonl
+ prepared/full160_on_receiver/transport_complete.json
+ partial_validation.json (full statistics and preservation checks)
+ prepared/preflight/validation.json; prepared/protected_manifest.json
+ prepared/full160_on_source/effective_mode_check.json
+
+7. Completion boundary
+----------------------
+No full160s success claim. No new OFF run. No source retry, tuning, model
+change, covariance change, fixed-lag implementation or broad forensic campaign.
+No commits/pushes. gnssFGO HEAD remains5817540ca741c3b99fbe765c0f72a015835e0b20;
+its four pre-existing untracked experiment directories are preserved.
+The candidate stays isolated, not promoted to production defaults.
+
+LIVE_THROUGHPUT_GATE_FAILED

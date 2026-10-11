@@ -1,0 +1,145 @@
+{
+  "scope": "All recorded pre-injection observations in retained bounded120 classic ON source logs",
+  "method": "Shadow calculation min(1,3/s) at ORIGINAL GAUSSIAN pre-update priors only",
+  "limitations": [
+    "No source optimization or downstream fusion performed",
+    "Not a forecast of a Huber run; state, later means and later covariances would change",
+    "Not post-optimization weights, GT correctness, or calibrated consistency/NIS",
+    "Rows are pre-injection observations, not independently verified successful factor commits",
+    "No first-30-second or same-clock grouping inferred from backend key indices",
+    "GLIM logged numerical precision is limited; these summaries are approximate"
+  ],
+  "huber_k": 3.0,
+  "directions": {
+    "K2G": {
+      "log": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_live_wnoa_20261007/bounded120_on_source/ros_logs/90a41e20-c222-11f1-b8d0-4a68a713ecf0/glim_rosnode-1-stdout.log",
+      "valid_rows": 581,
+      "invalid_rows": [],
+      "unique_receiver_edges": 581,
+      "actions": {
+        "persistent_odom_applied": 581
+      },
+      "base_whitened_norm": {
+        "count": 581,
+        "minimum": 9.73554,
+        "median": 128.972,
+        "mean": 135.01267993115317,
+        "p95": 260.049,
+        "maximum": 507.131
+      },
+      "hypothetical_weight": {
+        "count": 581,
+        "minimum": 0.005915631266871874,
+        "median": 0.02326086282293831,
+        "mean": 0.0372904163480142,
+        "p95": 0.12857436741411232,
+        "maximum": 0.3081493168329646
+      },
+      "fraction_downweighted": 1.0,
+      "fraction_below_0_1": 0.9259896729776248,
+      "fraction_below_0_01": 0.03614457831325301,
+      "rotation_residual_rad": {
+        "count": 581,
+        "minimum": 0.000250411,
+        "median": 0.012415,
+        "mean": 0.012356338366609295,
+        "p95": 0.0226223,
+        "maximum": 0.0536376
+      },
+      "rho_residual": {
+        "count": 581,
+        "minimum": 0.00197874,
+        "median": 0.0174223,
+        "mean": 0.019645362409638555,
+        "p95": 0.040649,
+        "maximum": 0.0688463
+      }
+    },
+    "G2K": {
+      "log": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_live_wnoa_20261007/bounded120_on_source/ros_logs/90a41e20-c222-11f1-b8d0-4a68a713ecf0/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log",
+      "valid_rows": 580,
+      "invalid_rows": [],
+      "unique_receiver_edges": 580,
+      "actions": {
+        "persistent_odom_applied": 580
+      },
+      "base_whitened_norm": {
+        "count": 580,
+        "minimum": 7.433581464799241,
+        "median": 179.95431012786665,
+        "mean": 194.72824788764981,
+        "p95": 430.8924285079367,
+        "maximum": 749.4019417958024
+      },
+      "hypothetical_weight": {
+        "count": 580,
+        "minimum": 0.0040031921892423415,
+        "median": 0.016671091594525088,
+        "mean": 0.0349326280399964,
+        "p95": 0.14138063677389834,
+        "maximum": 0.40357397227784614
+      },
+      "fraction_downweighted": 1.0,
+      "fraction_below_0_1": 0.9275862068965517,
+      "fraction_below_0_01": 0.16206896551724137,
+      "rotation_residual_rad": {
+        "count": 580,
+        "minimum": 0.00017956701009990672,
+        "median": 0.008482530088304949,
+        "mean": 0.008712233989302433,
+        "p95": 0.0164268030623715,
+        "maximum": 0.03442255466262779
+      },
+      "rho_residual": {
+        "count": 580,
+        "minimum": 0.0012246867229613163,
+        "median": 0.015120257087001765,
+        "mean": 0.016796823985656843,
+        "p95": 0.03564437704009447,
+        "maximum": 0.07713733438556893
+      }
+    }
+  },
+  "receiver_status": "CLOSED_OPTIONAL_NOT_PROMOTED",
+  "source_runs": 0,
+  "source_heads": {
+    "glim": "e817b335377191b34ff822d4acbe6a2da3934fb4",
+    "glim_ros1": "70f52ac6a11cb06c83d7a6695d8833667b769f23",
+    "Kimera-VIO": "c3900956278aacc824225d0dbab674409132bc28",
+    "Kimera-VIO-ROS": "91f36d58bf6d4ffc026cfb8b9b8f4e13a0cf090d",
+    "cbs": "2e10934fd506a23d10d7e9838659904e8e3630f1",
+    "cbsms": "fad524d19d8abb3a2f78af475d6a630e61d6fc86"
+  },
+  "protected_hashes": {
+    "/home/yeranis/repos/gnssFGO_robust_fusion_20261007/experiments/huber_off_on30_20261007/prepare.py": "d0acf419e22daea9612dc33ba674ed2debe0c6948f328f3d9f09df16b5587f11",
+    "/home/yeranis/repos/gnssFGO_robust_fusion_20261007/experiments/huber_off_on30_20261007/score.py": "c635748b87ae6701ec7fc8ca0bac8e4dec5011af081baaad2e20a138a8c202cb",
+    "/home/yeranis/repos/gnssFGO_robust_fusion_20261007/experiments/huber_off_on30_20261007/weights.py": "c5e9fe7b0fa613e0fdc2bda1837d0100a24aa828be5ec82cbd1412faaa344024",
+    "/home/yeranis/repos/gnssFGO_robust_fusion_20261007/experiments/huber_off_on30_20261007/REPORT.txt": "441b00dc55602a6b64ba95fce1561e8e9e16e64798e89c8f5b4e0aecf174900b",
+    "/home/yeranis/repos/gnssFGO_robust_fusion_20261007/experiments/huber_off_on30_20261007/revalidate_repeat.py": "5dbf0265b2bfcb9fbe97314386f53c6a540dd97693a68c62c2337a8bba0230af",
+    "/home/yeranis/repos/gnssFGO_robust_fusion_20261007/experiments/huber_off_on30_20261007/run_case_validated.py": "4743e8b566365b2e0e1557f7a48dff0d44576e7db399a7a3ac7828e268ba597d",
+    "/home/yeranis/repos/gnssFGO_robust_fusion_20261007/experiments/huber_off_on30_20261007/protocol.json": "e970c66b9bfdacf48b23f70b2967e1f8cfcee9dd1d70bea08276137581f37123",
+    "/home/yeranis/repos/gnssFGO_robust_fusion_20261007/experiments/huber_off_on30_20261007/freeze_evaluation.py": "7f8d43ea0e8d2cf2c3c8151d3f32147b1869acea50ad5ef87b6456cb300bffad",
+    "/home/yeranis/repos/gnssFGO_robust_fusion_20261007/experiments/huber_off_on30_20261007/step_validation.py": "0c9e950abaad898b1e7b30f90a1622401d99ac96668a3db71c7a948aefe2c5bf",
+    "/home/yeranis/repos/gnssFGO_robust_fusion_20261007/experiments/huber_off_on30_20261007/run_case.py": "7f1394b3604b41ff71e88fcba37f7671596a8d2f2983d4e4a24f5baf4d259d23",
+    "/home/yeranis/repos/gnssFGO_robust_fusion_20261007/experiments/huber_off_on30_20261007/compare.py": "1b9eb1b1c264085f056f60f9a173480262d869219f4094a89578f86e094bf662",
+    "/home/yeranis/repos/gnssFGO_robust_fusion_20261007/experiments/huber_off_on30_20261007/test_step_validation.py": "3007852a844023967c162483fc90614466623ee5696dfdd9548951b2700bcad3",
+    "/home/yeranis/repos/gnssFGO_robust_fusion_20261007/experiments/huber_off_on30_20261007/validate_final.py": "212951e5576add2e32e693ff29bee7b8257d77b1406339b60ab312252755a64f",
+    "/home/yeranis/results/gnssfgo_eth1_huber_off_on30_20261007/metrics.json": "5004e0d0cb739c30ec59c1ce84fa46af5f8c47afd5392a02e0e761aeaa614867",
+    "/home/yeranis/results/gnssfgo_eth1_huber_off_on30_20261007/comparison.json": "f2ea2ff6cef0b7c868edde5c4a8c3f1fafb69afa28113e8a96e58dd89b42c985",
+    "/home/yeranis/results/gnssfgo_eth1_huber_off_on30_20261007/weight_statistics.json": "8068ba50b96e90994156b96090f89eedaf641fd1eab3a4f0bbaee5430531d84e",
+    "/home/yeranis/results/gnssfgo_eth1_huber_off_on30_20261007/final_validation.json": "83ee47873846e43a56358536944712c9cf883d2e8561595023af7a3140ce282b",
+    "/home/yeranis/results/gnssfgo_eth1_huber_off_on30_20261007/validator_correction.json": "00dedcbe237a50d18ed83237a193132dc1079126f5682cde216ab6af7c60590a",
+    "/home/yeranis/results/gnssfgo_eth1_huber_off_on30_20261007/repeat_validator_correction.json": "a55a0525e9794c9a9b8e8e23f833124af5737d0d84b5e95f929574be56ed0fca",
+    "/home/yeranis/results/gnssfgo_eth1_local_prediction_20261007/build/wnoa/replay": "fb56ffc5c6c9cb575d6129289688caeabb4e3baba32e429b857f3d6a30e50d1f",
+    "/home/yeranis/results/gnssfgo_eth1_huber_early_stop_20261007/build_release/replay": "d6399a9dfcda9f36c37bba464e2ca7e1edd069b187a95eea12d981c2d4a307f1",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/glim_ros1/src/glim_ros/cbs_bridge.cpp": "7189efab979b203cb38f3425124ac6e0b771d1ffcaa602ab3e329bb5814c03c7",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/Kimera-VIO/src/backend/VioBackend.cpp": "8235693fcd84567c9567083e3e1e792e0e8f48f33ed0b3aab17f181cec1f9bf5",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/cbs/src/bpsam/bpsam.cpp": "b4cab7f67f43cdaadc68ac876500671beb07c9292d4e430e67b5113dfd19dd91",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/cbs/include/cbs/bpsam/bpsam.h": "184c1fca6c5b269b3a4c9f322c7e8e1f6e919618e9367afd9ba94d6e83ba27f9",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/devel/include/gtsam/config.h": "462f1612b7d5d57467f59e5e118dd80af3a029243a7b60ffa5f03731754441dc",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/devel/include/gtsam/linear/LossFunctions.h": "d39fdcf5abf812cc75fc6087d9ebceba38471125967fc3fa96405449e19e2cb2",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/devel/lib/libgtsam.so.4.3a1": "0307b15321abd8953586c19dbc189fa0c4d9fe244b05ca105bfdc7a66e846616",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_live_wnoa_20261007/bounded120_on_source/ros_logs/90a41e20-c222-11f1-b8d0-4a68a713ecf0/glim_rosnode-1-stdout.log": "02e304cc18a88d41324874d75de20c774e3d120888568ac9e3b18fd62d9ad19c",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_live_wnoa_20261007/bounded120_on_source/ros_logs/90a41e20-c222-11f1-b8d0-4a68a713ecf0/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log": "f02f883dbac464d7bab07bba0f32a8f60c7b38c91a226be56ff261a989aaf643"
+  }
+}

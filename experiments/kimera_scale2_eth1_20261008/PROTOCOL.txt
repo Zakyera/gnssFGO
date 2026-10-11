@@ -1,0 +1,47 @@
+ETH1 matched 120-second Kimera covariance x2 sensitivity test — 2026-10-08
+
+Authorization: user approved the proposed receiver-only, matched OFF/ON test.
+Exactly two new primary cases: OFF x2 and ON x2. The existing x1 cases remain
+the references. Deterministic repeats are validation, not additional settings.
+
+Use the frozen Gaussian source_wnoa executable, SHA-256
+fb56ffc5c6c9cb575d6129289688caeabb4e3baba32e429b857f3d6a30e50d1f.
+Inputs: gnssfgo_eth1_wnoa_mechanism_20261007/inputs/{off,on}_events.csv.
+Both are cut at arrival 1727775127854656555 ns, 119.851181555 s from first IMU.
+
+The only intervention is Sigma_K_used = 2 * Sigma_K_reported, for every
+kimera_front version, all 36 entries, including off-diagonal correlations.
+This halves each Kimera factor's information at a fixed linearization.
+It does not halve the final trajectory response. GLIM covariance is unchanged.
+Implement as separately named derived receiver input journals. Original raw
+source logs and journals are immutable. The unmodified receiver's 'reported'
+covariance columns consequently contain the derived input, NOT an assertion
+that the native source reported twice its actual uncertainty. The preparation
+manifest and original journals retain that distinction and provenance.
+
+Unchanged: all means, timestamps, arrival order, source/session/BeliefIDs,
+revisions, stable-ID replacement, independent 100 ms support clock, 59-sample
+timestamp startup, full-history iSAM2, strict nominal publication gradient
+<=1e-5, initial priors, WNOA Qc [.00375]*3+[.015]*3, no central IMU factors,
+full Gaussian 6D factors, no additive model noise, no Huber/gating/health rules.
+Classic CBS source exchange is NOT rerun or altered. Source IMUs stay as saved.
+No GLIM/Kimera launch, bag playback, production code edit, or default change.
+
+Validation: original hashes preserved; alpha=1 journal transform is byte identity;
+all non-Kimera records byte identity; every Kimera non-covariance field identity;
+scaled matrices finite/symmetric/SPD and exactly twice the parsed input;
+same source IDs/counts/dispatch/support/model/prior configuration as x1;
+all publications stationary with the original threshold; final source-factor
+covariances equal expected scaled matrices; exact deterministic replay of
+state, trajectory, covariance, support and causal-accounting outputs.
+Stop on an estimator/validation failure; do not tune or retry the model.
+
+Score with unchanged prism ATE and IE-TC 1-second RPE scripts, lever arm,
+SE(3) no-scale alignment and frozen common grid/mask (1161 times, 626 prism
+matches covering 62.1 s, 1151 RPE pairs). Reuse native metrics only after hashes
+are verified. Report both causal as-played and final retrospective fusion.
+Offline journal replay is not a new live co-running run. Shared CPT7 reference
+and limited prism coverage remain qualifications. Report all metrics, not only
+the one improving. No parameter selection/adoption or further sweep afterward.
+
+Artifacts: /home/yeranis/results/gnssfgo_eth1_wnoa_kimera_scale2_20261008

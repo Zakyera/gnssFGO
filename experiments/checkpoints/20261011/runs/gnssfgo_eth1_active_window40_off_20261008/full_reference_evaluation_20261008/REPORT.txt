@@ -1,0 +1,134 @@
+ETH1 40-second OFF / active-window-temporary ON: complete-output ATE
+=================================================================
+Date: 2026-10-08. Evaluation only. No source estimator or receiver rerun.
+
+Correction
+----------
+The earlier comparison's prism ATE evaluated only 11.2 seconds (3.571568 to
+14.771568 s after the first IMU timestamp). It does NOT establish whole-run
+accuracy or which estimator was healthier over the 40-second capture.
+The earlier numbers remain preserved, but must be labelled partial-prism ATE.
+
+This evaluation includes EVERY original saved pose in each trajectory. There
+is no selection by error or by prism availability. A separate identical-time
+comparison checks sampling/coverage sensitivity without bridging startup gaps.
+
+Reference and conventions
+-------------------------
+GrandTour mission: 2024-10-01-11-29-55 (ETH1), bag offset 0, requested 40 s.
+Reference: 2024-10-01-11-29-55_cpt7_ie_tc.bag
+Topic: /boxi/inertial_explorer/tc/odometry
+Frame: enu_origin; child: cpt7_imu.
+There are 8000 reference samples during the first 40 s, with maximum gap
+0.005000114 s. Every saved estimator pose has valid bracketing reference.
+This is the dataset's CPT7 Inertial Explorer tightly coupled GNSS/INS reference.
+It shares CPT7 measurements with the native estimators; it is NOT independent
+Leica/AP20 prism ground truth. These ATE values are a different reference
+comparison from the previous prism ATE and must never be silently mixed.
+
+Reference position interpolation is linear, orientation is SLERP; no
+extrapolation; maximum permitted reference interval 0.05 s. Both estimated and
+reference CPT7 poses are converted to the same physical prism point using the
+unchanged evaluation lever arm. A single rigid SE(3), scale=1 Kabsch alignment
+is fitted over each complete evaluated path. No per-section alignment.
+Position ATE RMSE is sqrt(mean(||aligned_estimate-reference||^2)).
+
+Entire saved output: 100% reference coverage, no dropped trajectory rows
+---------------------------------------------------------------------
+Times are relative to first IMU = 1727775008.003475 s (not wall clock).
+OFF and ON have identical counts and timestamp spans for each output type.
+
+Output                  Poses   First s    Last s     Timestamp span s
+Original GLIM             391   0.671568  39.671448    38.999880
+Original Kimera ROS       184   0.151921  39.751698    39.599778
+gnssFGO online            393   0.580000  39.780000    39.200000
+gnssFGO final             393   0.580000  39.780000    39.200000
+
+Kimera has a 3.199979 s output gap between 0.351920 and 3.551899 s. Its two
+initial saved poses ARE included. No synthetic poses are inserted across that
+gap, and no estimator can be scored before its first or after its last output.
+Thus these are complete saved-output results from a 40 s capture, NOT a claim
+that every estimator published a continuous trajectory for exactly 40.000 s.
+
+Complete saved-output position ATE (metres) vs continuous IE-TC reference
+---------------------------------------------------------------------
+Output                         CBS OFF          CBS ON (temporary mode)
+Original GLIM                   0.042514491      0.031301081
+Original Kimera ROS             0.066351910      0.095619841
+gnssFGO online/as-played         0.034895965      0.117311959
+gnssFGO final retrospective      0.030773993      0.106726596
+
+Full saved CPT7 polyline path lengths (metres)
+---------------------------------------------
+Output                         CBS OFF          CBS ON
+Original GLIM                  14.054654093     14.379875164
+Original Kimera ROS            13.537002716     14.046356406
+gnssFGO online/as-played        15.187514605     18.375378513
+gnssFGO final retrospective     13.900946601     14.896844775
+These are sampled estimator polylines, not GT distance or a guarantee of motion
+between missing poses. Reference and prism-point paths are in summary.json.
+
+Matched timestamp check over the whole shared continuous travelled section
+-------------------------------------------------------------------------
+361 identical 10 Hz timestamps, 3.571568 to 39.571568 s, duration 36.000000 s.
+All 361 timestamps have IE-TC reference (NOT only 113 prism matches).
+All original source trajectories are interpolated only across gaps <=0.5 s.
+Kimera's startup gap is excluded equally from ALL eight matched trajectories.
+
+Output                         CBS OFF ATE      CBS ON ATE (metres)
+Original GLIM                   0.032450221      0.031620406
+Original Kimera ROS             0.065681942      0.094612161
+gnssFGO online/as-played         0.034329647      0.118046380
+gnssFGO final retrospective      0.029674375      0.107335160
+
+The two tables serve different purposes: complete-output scores include every
+saved pose at its original sampling rate; identical-time scores control for
+startup coverage and sampling density. Both establish lower OFF position ATE
+for native GLIM than native Kimera on this retained full-window reference.
+The apparent magnitude of GLIM's OFF->ON gain is sensitive to including startup
+and original sampling: 0.04251->0.03130 full vs 0.03245->0.03162 matched. Do not
+claim a universal estimator-health ordering or infer a mechanism from ATE alone.
+ON Kimera and fusion are worse in both complete-output and shared-time scores.
+
+Scope / estimator identities
+---------------------------
+OFF source: ../pilot_off_source
+ON source: ../../gnssfgo_eth1_active_window40_prepared_20261008/pilot_on_source
+GLIM is each source's odom_imu.txt; Kimera is original kimera_odometry.csv,
+not a reconstructed belief chain or single-source gnssFGO control.
+Fusion online_trajectory.tum is recorded live as-played output; trajectory.tum
+is the final retrospectively revised graph. They are reported separately.
+ON uses the specifically authorized historical active_window_temporary source
+receiver mode, not the ordinary persistent classic CBS receiver. The Gaussian
+no-central-IMU WNOA receiver, profiles, covariances and parameters were unchanged.
+
+Validation / reproducibility
+---------------------------
+evaluate.py reuses retained reference loaders, lever arm, interpolation and
+Kabsch implementations. summary.json records every input path and SHA-256,
+full/common metrics, alignment transforms, timestamps and coverage.
+14 frozen evaluation input hashes were checked before AND after evaluation:
+no mismatch. Every native/fused saved row is scored; no unmatched reference
+pose; eight identical common time masks. Synthetic rigid alignment, rejection
+of extrapolation and rejection of oversized reference gaps passed.
+verify_evo.py independently aligns/scores all 16 full/common products using
+evo. All passed; maximum RMSE discrepancy = 5.742628594873622e-14 m.
+The exported *_prism.tum files are position-APE audit products: positions are
+at the prism point; their orientation fields retain CPT7 orientation and must
+not be reused as full prism-frame poses for rotational/RPE evaluation.
+Per-pose errors and sampled references are retained. No old evaluation or
+source artifact was overwritten; no estimator code or configuration changed.
+
+Reproduce evaluation only in a NEW output directory (scripts refuse overwrites):
+Container cbsms_ws_gpu, Noetic + /workspace/cbs_gtsam4.3/devel environment:
+  python3 evaluate.py
+Host /home/yeranis/.local/share/pipx/venvs/evo/bin/python:
+  verify_evo.py
+
+Reporting rule for this comparison
+----------------------------------
+Label the reference, actual evaluated time span, pose coverage and trajectory
+role in every summary. Complete-output ATE is NOT partial-prism ATE. A capture
+duration alone must never be used as the evaluation duration. No GT is filled
+across missing sections, no hidden cropping, and no retrospective output is
+called online. This report completes evaluation only, not another experiment.

@@ -1,0 +1,240 @@
+ETH1 40-second active-window CBS pilot — completed 2026-10-08
+==========================================================
+
+Outcome
+-------
+One authorized 40 s CBS-ON source experiment completed with concurrent native
+GLIM, native Kimera and the frozen Gaussian, no-central-IMU WNOA receiver.
+No new OFF/persistent-ON run, full sequence, tuning or estimator modification.
+The historical active_window_temporary mode actually inserts and retires
+external factors in both sources. The receiver's exact captured-journal replay
+is byte-identical for all nine checked products, including online and final
+states/trajectories. Frozen configuration/payload/causality checks pass via the
+explicit supplementary validation documented below.
+
+Important finding: Kimera's strong late-window covariance contraction under
+persistent CBS is largely absent in this temporary-factor pilot. However its
+revised relative means do not thereby become uniformly more accurate. Do not
+promote this mode as a validated accuracy improvement or production default.
+
+Scope and effective settings
+----------------------------
+See PROTOCOL.txt for the frozen pre-run specification (its PREPARED_NOT_RUN
+status is deliberately retained as historical provenance, superseded by this
+completion report).
+
+GrandTour ETH1 mission 2024-10-01-11-29-55, bag offset 0, requested 40 s,
+playback 0.10x, 25 wall-second drain; owned master 11388. Capture/controller
+elapsed 446.372 s. Headless; genuine source graph inspectors were not recorded.
+No assertion of real-time capacity. No full sequence or automatic source retry.
+
+GLIM: Hesai /boxi/hesai/points, CPT7 /boxi/cpt7/imu, 5 s lag.
+Kimera: ETH1 front AlphaSense stereo, same CPT7, 25-state window, retained
+current/native packet convention (experimental RIGHT override unset).
+Classic bidirectional source CBS, NOT live_revision; 0.20 s horizon,
+one pair/update, stride 1, delay 0; full schur_relative_between covariance,
+scales 1.0. Diagnostic current-smoother revisions exported downstream.
+Actual effective ROS parameters and Kimera process argv checked before playback:
+pilot_on_source/effective_mode_check.json.
+
+Only intended source-setting change: both receivers active_window_temporary.
+Kimera temporary-linear/delta-only mode remains false. These are nonlinear
+external factors present through their active lifetime, then removed before
+endpoint marginalization. This is not the delta-only historical mode.
+
+The historical mode also forces relinearization/full solve and contains legacy
+pre/post/active residual guards and duplicate-edge handling. No new guard was
+added and none was retuned. No pre-guard drop, post-guard rollback, active-guard
+rollback or active duplicate-skip marker occurred in this pilot. Forced solve
+behavior still differs from persistent mode: this is not a lifetime-only
+controlled ablation even with zero guard activations.
+
+Frozen gnssFGO: source_wnoa, full-history iSAM2, independent 100 ms support
+clock, CPT7 timestamps only (59-sample clock startup); zero central IMU factors,
+zero bias/acceleration variables. Native source IMUs are still enabled.
+WNOA Qc diagonal .00375/.00375/.00375/.015/.015/.015; initial identity pose
+sigma1e-5, zero velocity sigma10, zero angular-rate sigma3. Gaussian full dense
+source covariances at scale1, no additions/gating/robust loss/health weights/GNSS.
+Real arrival dispatch, historical physical endpoints, stable-ID replacement.
+Source-side retirement does NOT remove factors from the downstream full-history
+receiver. Its model was not changed.
+
+Executable:
+/home/yeranis/results/gnssfgo_eth1_local_prediction_20261007/build/wnoa/replay
+SHA256 fb56ffc5c6c9cb575d6129289688caeabb4e3baba32e429b857f3d6a30e50d1f
+All data/configuration/runtime identities are in protected_manifest.json.
+
+Factor lifecycle and exact conservation
+--------------------------------------
+Native receiver     Inserted/tracked   Removed   Still active at stop
+GLIM               181                156       25
+Kimera             175                156       19
+
+check_lifecycle.py verifies each Kimera edge/slot on insertion and removal and
+every logged total_active; GLIM queued -> tracked -> removed phases and counts
+also reconcile, with no pending staged insertion. Remaining factors at the
+end are expected: the experiment stops before their endpoints leave the window.
+Detailed identities and source log lines: lifecycle_supplement.json.
+
+Transport captured 3,986 clock samples and 21,970 belief versions for 571 IDs.
+Source-to-receiver means, all covariance entries, version ordering and IDs are
+exactly conserved. No stale or duplicate versions and no pending events at end.
+570 IDs accepted: 389 GLIM and 181 Kimera. One Kimera edge precedes receiver
+initialization: all its 25 versions are explicitly unsupported, not lost.
+21,945 insertions = 570 first factors + 21,375 factor replacements.
+570 final relative factors + 392 WNOA + 3 initial priors = 965 active factors.
+393 support states, 1,179 values. Every publication stationary, largest
+gradient 9.84579512003105e-6 <= frozen 1e-5 threshold.
+Maximum source covariance difference at receiver 5.421010862427522e-20.
+
+Online output age vs available sensor clock, from controller sampling:
+median .060003 s; p95 .096101953 s; max .110005 s.
+Maximum sampled pending queue 3; transport high-water mark 44 (different
+sampling/statistic), final queue 0. This is at 0.10x playback only.
+
+Validation-label issue (not hidden)
+-----------------------------------
+The frozen validate_case.py ran once, including the authorized journal repeat.
+It passed configuration, covariance conservation, accounting, causality,
+stationarity, throughput and all nine exact-repeat comparisons, then failed
+its final Kimera removal-label assertion: it expected remove_committed.
+
+Code inspection establishes the normal Kimera BPSAM path logs remove_scheduled
+and erases its tracking entry while passing the real removeFactorIndices into
+the solver. The later bookkeeping commit skips that already-erased entry and
+does not emit a second removal log. Thus the assertion selected the wrong log
+path; it was not evidence of a numerical estimator failure.
+
+No frozen file was edited. check_lifecycle.py independently reconciles all
+tracked slots/removals. validate_completed_capture.py is an isolated copy with
+the correct label, requiring the independent reconciliation and rechecking all
+original criteria. It REUSES the completed repeat read-only: no additional
+solver/source rerun. It passed. pilot_on_validation.json explicitly names this
+validation authority; pilot_on_validation_supplement.json retains the result.
+validation_label_mismatch.txt records exact source lines and the failed assertion.
+
+The first scoring invocation stopped before scoring because the original
+checker had not written pilot_on_validation.json. Its empty output directory
+was retained as pilot_evaluation_prevalidation_empty. The supplementary result
+was then supplied under the expected filename with explicit provenance, and
+unchanged scoring completed. No scientific failure was tuned away or retried.
+
+Metrics — four original requested products, one common mask
+---------------------------------------------------------
+                                  ATE m     1 s t-RPE m   1 s r-RPE deg
+Original/native GLIM              .038015   .036865       .511611
+Original/native Kimera ROS odom    .054424   .052516       .742362
+gnssFGO online/as-played           .050626   .077232      1.870690
+gnssFGO final retrospective        .037418   .046782       .536685
+
+ATE: existing AP20 prism evaluator, CPT7-to-prism lever arm unchanged,
+SE3 Kabsch alignment without scale. NOT full-40-second GT: only 113 matched
+poses across 11.2 s; GT-overlap reference path 3.603104 m.
+1 s RPE: existing IE-TC 6DoF relative evaluator, no global alignment,
+351 valid pairs for every curve. IE-TC shares CPT7 and is not independent
+inertial evidence; its covariance is not supplied here.
+
+Shared sampled trajectory interval: 1727775011.5750432 to 1727775047.5750432
+(36.0 s), 361 samples at 0.1 s. The candidates begin earlier, but Kimera's
+startup has a 3.199979 s output gap; the .5 s interpolation-gap rule excludes
+that portion rather than inventing poses. All sources continue to window end.
+Mask identities and exact references: pilot_common_evaluation/validated_mask.json,
+the *_prism.json / *_rpe.json files, and pilot_evaluation/commands.json.
+
+                                  Full path m  Eval path m  GT-overlap path m
+Original/native GLIM              14.379875    14.145096     3.817950
+Original/native Kimera ROS odom    14.046356    13.673155     3.660998
+gnssFGO online/as-played           18.375379    17.812470     4.424882
+gnssFGO final retrospective        14.896845    14.396290     3.757883
+
+Full paths use original, unresampled output. Evaluation and overlap paths use
+the common-mask evaluator and prism-frame convention, so their sampling/frame
+are not interchangeable with raw full path. Native GLIM:391 poses/38.999880 s;
+native Kimera:184 poses/39.599778 s; each fused curve:393 poses/39.2 s.
+Never label final retrospective fusion as the live/as-played trajectory.
+
+Covariance experiment — same physical edges in existing first-40 s histories
+---------------------------------------------------------------------------
+Read-only comparisons use the saved old full_off and bounded120_on source
+histories, clipped causally at the new final clock timestamp. No old estimator
+was rerun. OFF is a valid prefix of an aborted longer run, not a completed full
+baseline. No cropped final-120-second fusion trajectory is used as a fair
+final-40-second control; it would contain future information.
+
+Matched source plus exact physical endpoint nanoseconds, not merely IDs.
+Kimera:157 edges fully retired in all three histories; each has25 versions.
+Retirement is checked against backend update times and exact last raw payload.
+
+Below is sqrt(trace of 3x3 marginal), NOT covariance trace or per-axis sigma.
+Median per-edge ratio of last value to value six revision steps earlier:
+
+Mode                  Rotation ratio     Rho ratio
+CBS-OFF               .988758            1.074434
+Persistent CBS-ON     .662364             .696571
+Temporary CBS-ON      .976138            1.058029
+
+In persistent ON the late six steps reduce this uncertainty measure by about
+34% rotation /30% rho. In temporary ON the medians are -2.4% /+5.8%, much closer
+to OFF. Last-single-step ratios: OFF .998741/1.002421; persistent .894290/.919317;
+temporary .996021/1.015106. This is the main covariance signal of this pilot.
+
+Median final marginal COVARIANCE TRACE (actual variance units):
+Mode                  Rotation rad^2          Rho m^2
+CBS-OFF               1.9283153e-8             6.3950723e-7
+Persistent CBS-ON     4.3031706e-9             5.6771673e-7
+Temporary CBS-ON      2.5566237e-8             2.4082397e-6
+
+No covariance floor/scale was added: these are what the source actually sent.
+They remain finite in these records. This is not a calibration proof.
+
+Against the same IE-TC relative intervals, final-revision Log-error RMS:
+Mode                  Rotation rad           Rho m
+CBS-OFF               .00381803               .00334753
+Persistent CBS-ON     .00374191               .00739150
+Temporary CBS-ON      .00438189               .05269499
+
+Temporary rho RMS includes a large .545765 m maximum error; its median is
+.00874331 m. Hence removing the contraction does NOT establish better relative
+means. These are short-interval belief errors, not trajectory ATE/1 s RPE.
+Both covariance and mean effects must be retained in interpreting the result.
+
+Additional matched-at-cut data (not necessarily fully retired):360 GLIM edges,
+172 Kimera edges with >=2 s availability. GLIM median sqrt(trace) last/age2:
+OFF about1/1; persistent .999989/.999985; temporary1.016491/1.016069.
+Per-source first/age2/last distributions and reference discrepancies, matched
+counts, clipping rules and file hashes: covariance_comparison.json,
+covariance_input_hashes.json, compare_covariance.py.
+
+What this establishes / does not establish
+----------------------------------------
+Operational compatibility: supported for this bounded pilot, with explicit
+slot removal, preserved downstream payloads, causal stationary receiver and
+deterministic replay. The late covariance-contraction behavior changes strongly
+in the expected direction under the historical temporary mode.
+
+Not established: a pure lifetime-only causal attribution, calibrated source
+uncertainty, complete removal of indirect CBS information from marginal priors,
+better general accuracy, independent sources, or performance on another window.
+Means/linearizations/native factor history can retain indirect effects even
+after explicit external factors are removed. Forced relinearization/full solve
+is an additional implementation difference. Do not silently make it default.
+
+Changes / retained artifacts / stopping point
+--------------------------------------------
+All preparation/controller/verification/analysis files are isolated in this run
+directory. Original shared sources, configurations, binaries and old artifacts
+unchanged. No commits or pushes. gnssFGO HEAD unchanged:
+5817540ca741c3b99fbe765c0f72a015835e0b20
+Source HEADs are frozen in preflight/validation.json. Checked source repositories
+have no tracked modifications; gnssFGO retains its three pre-existing untracked
+audit directories. No claim of a fully empty global worktree.
+
+Raw native source records: pilot_on_source/.
+Live receiver journal/output: pilot_on_receiver/.
+One deterministic repeat: pilot_on_repeat/.
+Four native/fused trajectory products and metrics: pilot_evaluation/ and
+pilot_common_evaluation/.
+Protected pre-run files left unchanged; complete.json records successful capture.
+The owned run has finished. No follow-up experiment was launched.
+
+PILOT_COMPLETED_WITH_DOCUMENTED_VALIDATION_SUPPLEMENT

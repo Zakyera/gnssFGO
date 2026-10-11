@@ -1,0 +1,40 @@
+Authorized bounded source-Huber experiment — corrected dependency build
+======================================================================
+This is a fresh explicitly authorized attempt following the preserved startup
+failure in source_huber_eth1_30s_20261008. Never overwrite that failure or its
+OpenCV3.4 binary. Only the isolated Kimera build dependency selection changes:
+explicit system OpenCV4.2, matching retained Kimera and its ROS wrapper. The
+four isolated source/launch commits remain unchanged.
+
+Before data: verify direct OpenCV dependencies and loaded libraries, then start
+the actual nodes without sensor data in Gaussian and Huber modes. Verify sensor
+subscriptions and effective selectors, and cleanly stop owned processes.
+
+After preflight: first30 seconds ETH1, offset0, 0.10x, same frozen Hesai/CPT7/
+front-stereo profiles. Current/unset native Kimera IMU support. Classic CBS,
+not live_revision. Diagnostics equal in all cases. Fresh ROS port11389.
+Cases, strictly in order and after each predecessor validates:
+  off_gaussian: receive disabled; both source loss selectors Gaussian.
+  on_gaussian: classic bidirectional receive; both selectors Gaussian.
+  on_huber: classic bidirectional receive; both selectors 6D block Huber k3.
+
+Unchanged: means, full native covariance, scales1, covariance extraction,
+matching, lag, source optimizer schedules, IMU/vision/scan factors. No tuning.
+Source-side Huber is experimental, not promoted. OFF+Huber is only a no-op test.
+
+Receiver exact existing fb56ffc5c6c9cb575d6129289688caeabb4e3baba32e429b857f3d6a30e50d1f:
+Gaussian no-central-IMU WNOA, independent100ms support, original Qc/priors,
+stable-ID replacement, strict nominal publication. No receiver Huber.
+Primary outputs: native GLIM, native Kimera ROS odometry, fused online/as-played,
+fused final retrospective. Existing common-mask prism/IE-TC evaluators only.
+Report limited GT coverage. No inference that Huber downweight implies GT error.
+
+Validation: protected hashes and profiles; actual loaded binaries; source loss
+logs at construction/pre/linearization/post; finite full covariances; exact
+source-export to receiver-journal conservation; unique active belief IDs;
+source/receiver completion and throughput; strict receiver stationarity;
+byte-identical deterministic journal replay. Focused 8 Release +8 ASan/UBSan
+test cases remain the previous passing tests (not full-estimator sanitization).
+
+Stop on an actual runtime/engineering gate failure. No automatic source retry,
+120s extension, weighting changes, model edits, production promotion or push.

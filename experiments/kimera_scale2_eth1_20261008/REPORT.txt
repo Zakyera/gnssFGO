@@ -1,0 +1,176 @@
+ETH1: receiver-only Kimera covariance x2 sensitivity
+2026-10-08
+
+Status: COMPLETE. Primary runs, evaluation and exact deterministic repeats passed.
+This is an isolated experiment, not a change to the production configuration.
+
+Result
+======
+Downweighting Kimera improves fused ATE in both CBS modes on this window.
+It does not eliminate the CBS-ON versus CBS-OFF loss. Final 1-second translation
+RPE worsens in both modes. Thus it is a mixed sensitivity result, not evidence
+that a universal Kimera covariance multiplier has been calibrated.
+
+Scope and implementation
+========================
+Exactly two new primary receiver runs, CBS-OFF and CBS-ON, using the retained
+matched ETH1 event streams. Neither native estimator was rerun. The original
+GLIM/Kimera exchange remained classic CBS, Gaussian, with its original settings.
+No estimator executable, source code, launch profile, default, or raw log changed.
+
+Only Kimera's FULL covariance was multiplied by 2 at the downstream receiver
+input, for ALL 14,250 Kimera versions per mode. All 36 entries, including cross
+terms, were scaled. Every relative mean, physical endpoint, availability time,
+event position, source/session/BeliefID and revision number was retained.
+Every GLIM/clock/end record is byte-identical to the original journal.
+
+Sigma_K_used = 2 Sigma_K_reported; information_K_used = 0.5 information_K_reported.
+Whitened residual/Jacobian scale is 1/sqrt(2) at a fixed state. The resulting
+nonlinear trajectory response need not be halved. This is uniform Gaussian
+weighting, not Huber, residual gating, additive model noise or health weighting.
+
+The transform produced new *.events journals. It did not overwrite source CSVs.
+The unchanged receiver calls its input covariance 'reported' in its output CSV:
+in these derived runs that column therefore contains the already scaled input,
+NOT what native Kimera originally reported. Use the raw journals and manifest
+to distinguish original source covariance from experimental effective covariance.
+
+Frozen model
+============
+source_wnoa, full-history iSAM2, no central IMU factors, no bias/acceleration states.
+State: Pose3, world velocity, body angular velocity. Independent 100 ms support
+clock; 59-sample timestamp-only startup. WNOA Qc [.00375,.00375,.00375,.015,.015,.015].
+Initial pose sigma 1e-5, velocity sigma 10 m/s, angular-rate sigma 3 rad/s.
+Full 6D source factors; stable-ID replacement. Strict nominal publication
+stationarity <=1e-5. GLIM covariance x1. No additional receiver model noise.
+The source estimators still use their original IMUs. Removing central IMU
+factors is not a claim that all source information is statistically independent.
+
+Source capture: ETH1 2024-10-01-11-29-55, original 0.1x live capture, offset 0.
+Both input journals end at arrival 1727775127854656555 ns, 119.851181555 seconds
+after first IMU. These new runs are OFFLINE causal journal replays, not new live
+co-running experiments. 'Online/as-played' below means their causal publication
+sequence; 'final' means the retrospectively revised graph after all arrivals.
+
+Matched evaluation
+==================
+Unchanged score_grandtour_prism.py and score_grandtour_relative_pose.py.
+SE(3) no-scale alignment, CPT7-to-prism lever arm unchanged.
+Exactly the original 1,161 common physical timestamps spanning 116 seconds.
+Identical timestamp-by-timestamp prism mask: 626 matches, 62.1 seconds across
+five segments. Identical 1,151 one-second IE-TC RPE interval pairs.
+ATE therefore does NOT cover every second of the 120-second capture.
+IE-TC uses CPT7 too and is not a fully independent inertial reference.
+
+All primary products (t-RPE m, r-RPE degrees; path is common-grid body path m)
+============================================================================
+Output                    Mode  Kimera scale   ATE        t-RPE      r-RPE      Path
+Original GLIM ROS          OFF   unchanged      0.028295   0.029414   0.358208   72.736668
+Original GLIM ROS          ON    unchanged      0.038209   0.041163   0.468800   75.479675
+Original Kimera ROS        OFF   unchanged      0.541048   0.045950   0.541480   69.720803
+Original Kimera ROS        ON    unchanged      0.382791   0.033533   0.588966   71.266913
+Fused causal as-played     OFF   x1 reference   0.050385   0.031364   1.261076   74.452353
+Fused causal as-played     OFF   x2 new         0.041862   0.030781   1.282003   74.198182
+Fused causal as-played     ON    x1 reference   0.117749   0.052404   1.793091   77.561919
+Fused causal as-played     ON    x2 new         0.089111   0.051654   1.768466   77.708542
+Fused final retrospective OFF   x1 reference   0.045295   0.016425   0.311870   71.741407
+Fused final retrospective OFF   x2 new         0.036868   0.017739   0.319410   71.801431
+Fused final retrospective ON    x1 reference   0.116862   0.027224   0.430579   72.906873
+Fused final retrospective ON    x2 new         0.084607   0.028438   0.430755   72.868303
+
+Original/native metrics and x1 references are reused from the hash-verified
+prior matched audit, not regenerated native runs or single-source receiver graphs.
+
+Interpretation
+==============
+1. Kimera's weighting materially affects global fitted trajectory shape here.
+   Halving its information improves final ATE from 4.53 to 3.69 cm OFF (-18.61%)
+   and 11.69 to 8.46 cm ON (-27.60%). Causal as-played ATE improves too,
+   OFF -16.92% and ON -24.32%, not just retrospective.
+2. This is not a uniform accuracy improvement: final translation RPE worsens
+   from 16.43 to 17.74 mm OFF (+8.00%) and 27.22 to 28.44 mm ON (+4.46%). Final rotation RPE
+   worsens modestly OFF and is effectively unchanged ON.
+3. At the SAME x2 setting, ON remains worse than OFF in ATE and both RPEs.
+   Do not compare modified ON only against unmodified OFF and call that matched.
+4. This does not prove Kimera's relative means are generally wrong, that its
+   uncertainty is calibrated by x2, or that source dependence has been corrected.
+   ATE and short relative error measure different properties. One interval is
+   insufficient to choose a universal multiplier or a new production baseline.
+5. No x4/x10 sweep, source-side modification or other sequence was run. Gaussian
+   scale x1 remains the saved baseline. Stop after this authorized comparison.
+
+Same-time trajectory response
+=============================
+Over all 1,193 physical supports, x2 minus x1 in the unchanged initial gauge
+(without fitting away a common SE(3) displacement):
+Product        Mode  Position median/RMS/max m    Orientation RMS deg  Velocity RMS m/s
+Causal         OFF   0.029009 / 0.041872 / 0.104646   0.185490            0.022319
+Causal         ON    0.025167 / 0.082704 / 0.290468   0.489979            0.052754
+Retrospective  OFF   0.028319 / 0.041203 / 0.089357   0.164142            0.010220
+Retrospective  ON    0.023628 / 0.082242 / 0.289990   0.482360            0.024821
+These are estimate changes, not truth errors or gauge-removed shape differences.
+Full median/RMS/p95/max position, orientation, velocity and angular-rate responses
+are in comparison.json. The new x2 raw full-support body path lengths are OFF
+75.110434 m causal / 72.074139 m final, ON 79.342153 m causal / 73.322369 m final.
+Common-grid and GT-overlap paths are separately identified in metrics.json.
+
+Validation
+==========
+All transformed source covariances finite, symmetric, strictly positive definite.
+Max symmetry error 0; minimum eigenvalue over input matrices OFF 2.011844397e-10,
+ON 2.167566471e-10 (rotation/translation mixed units, not a scalar confidence).
+The x1 journal transform is byte identity. Kimera x2 is exact in parsed doubles.
+
+Both cases: 1,193 support states; 1,192 WNOA factors; 3 initial priors;
+1,189 active GLIM factors and 581 active Kimera factors; 2,965 total factors.
+OFF 70,729 versions, 68,934 replacements, 25 explicit startup-unsupported versions.
+ON  70,762 versions, 68,967 replacements, 25 explicit startup-unsupported versions.
+No pending, duplicate or stale versions. Support clock, dispatch, accounting,
+unsupported list and motion covariance logs byte-identical to respective x1.
+Final effective covariances exactly equal expected x1 GLIM / x2 Kimera matrices.
+All-version factor-construction covariance max differences: OFF 1.626303259e-19,
+ON 1.084202172e-19. All publications stationary, maximum normalized gradients:
+OFF 9.950914831e-6; ON 9.972371579e-6 (unchanged limit 1e-5).
+Primary receiver wall time OFF 412.670 s, ON 438.051 s, concurrent diagnostic
+runs with all-snapshot logging. These timings do not establish real-time capacity.
+Exact deterministic repeats passed in BOTH modes. Eleven saved trajectory,
+state, source-covariance, clock and accounting files match byte-for-byte per
+mode. Additionally 2,405 OFF and 2,415 ON snapshot state/ledger/factor-payload
+files match exactly. This includes historical-state revisions, not only the
+current pose. No posterior marginal covariance calibration claim is made.
+Repeated runs also meet every publication stationarity threshold, with identical
+maximum gradients. Repeat wall time OFF 415.664 s and ON 441.295 s.
+All 156 experiment-protected hashes and all 205 historical audit-protected
+hashes rechecked unchanged. Evaluation masks and RPE interval identities pass.
+
+Artifacts and provenance
+========================
+New artifacts:
+  /home/yeranis/results/gnssfgo_eth1_wnoa_kimera_scale2_20261008
+  manifest.json; off/on_validation.json; off/on_determinism.json;
+  metrics.json; comparison.json; evaluation/;
+  off_x2/ and on_x2/ (states, causal/final trajectories and graph snapshots).
+Frozen references:
+  /home/yeranis/results/gnssfgo_eth1_wnoa_mechanism_20261007
+  /home/yeranis/repos/gnssFGO/GNSSFGO_ETH1_LIVE_WNOA_OFF_ON_20261007.md
+Exact executable:
+  /home/yeranis/results/gnssfgo_eth1_local_prediction_20261007/build/wnoa/replay
+SHA-256: fb56ffc5c6c9cb575d6129289688caeabb4e3baba32e429b857f3d6a30e50d1f
+Raw clipped OFF journal SHA-256:
+  61211dae64debc0513a1f614ec4d3281951692830824d7ea0cd98d836e2a4b42
+Raw clipped ON journal SHA-256:
+  4536c09a55938e6939519afbaf4e1acde5ef1b3dabf263b870e3550a10c56798
+Derived OFF x2 journal SHA-256:
+  c2561a8f2d260e3724e2897e633de935eb97afd70a7b606373351a32652c439c
+Derived ON x2 journal SHA-256:
+  e7595215692d0f4282a365b3cb401fef4457d89e01e9880b9aff3b28ba635378
+Evaluation image (existing local Noetic image, network disabled):
+  sha256:7ad3854c699fb9a292aa5d42f8f890dfbd5dccb16633e043a93d135221418aaa
+Receiver environment and exact argv retained in *_command.json.
+No receiver rebuild or solver edit, so no new estimator build/sanitizer claim.
+Repository HEAD before and after: 5817540ca741c3b99fbe765c0f72a015835e0b20.
+No commit/push or tracked production edit. The new experiment scripts, frozen
+protocol and this report are retained in experiments/kimera_scale2_eth1_20261008/.
+
+Conclusion: ATE_BENEFIT_WITH_LOCAL_ACCURACY_TRADEOFF.
+The CBS-ON versus CBS-OFF fusion gap persists. The experiment is not promoted.

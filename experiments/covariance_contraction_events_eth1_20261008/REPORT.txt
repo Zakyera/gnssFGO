@@ -1,0 +1,315 @@
+ETH1 Kimera late covariance contraction: retained-log localization
+2026-10-08
+
+Conclusion
+==========
+The late CBS-ON confidence increase is strongly organized by a belief's
+position in the fixed-lag window. It is not merely one difficult section of
+ETH1: at the SAME backend update, older beliefs typically contract faster in
+ON, while the reverse is typical in OFF. The largest synchronized late
+rotational contraction coincides with the first retirement of a pose that had
+received a GLIM->Kimera factor.
+
+The code gives a concrete candidate mechanism: explicit received CBS factors
+are excluded from Kimera's LOCAL covariance graph, but a fixed-lag prior
+formed from a CBS-influenced graph is retained. Information can therefore
+enter that covariance graph through the prior when its original external
+factor is no longer explicitly identifiable. This is a provenance hypothesis
+supported by code and timing, NOT a quantitatively isolated cause.
+
+Important counterevidence: ON/OFF differences and synchronous contraction
+also occur BEFORE the first marginalization. Changing visual constraints and
+linearization already matter. We cannot attribute all contraction to the
+prior, call the Schur complement defective, or conclude that information was
+counted twice from these logs alone.
+
+Scope / unchanged baseline
+==========================
+Only approved steps 1-2 were performed. No GLIM, Kimera, gnssFGO, optimizer,
+bag playback, full-sequence run or new instrumentation was executed. No
+covariance, factor, lag, timing, source policy or weighting was changed.
+The Gaussian scale-1 GLIM + Kimera + WNOA receiver with no central IMU remains
+unchanged; native source estimators still use IMU. No new ATE/RPE is reported.
+
+Inputs and identity
+===================
+Run root:
+ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_live_wnoa_20261007
+OFF logs: full_off_source/estimators.log and its Kimera stdout log.
+ON logs: bounded120_on_source/estimators.log and its Kimera stdout log.
+Also read the respective kimera_odometry.csv, saved launch and profile.
+The failed full OFF run is used ONLY for its already validated matched prefix;
+this is not certification of the failed full run.
+
+Exact accepted payloads/cutoff come from:
+ /home/yeranis/results/gnssfgo_eth1_wnoa_mechanism_20261007/inputs/{off,on}_events.csv
+Common first IMU: 1727775008003475000 ns.
+Common arrival cutoff: 1727775127854656555 ns (119.851181555 s later).
+Matched accepted Kimera physical intervals: 581 per mode.
+Matched accepted source versions: 14,225 per mode.
+Every version matched its original source log by endpoint indices, revision,
+six mean coordinates and ALL 36 covariance entries exactly. Physical endpoint
+nanoseconds agree within 256 ns of the source's double-second text round trip.
+Every source covariance-query invocation is paired by per-edge call order and
+checked against the exported covariance traces. There are no missing calls in
+that join. Backend update ID gives physical time through native odometry's
+header.seq/header.stamp; wall-clock logging time is not physical belief age.
+
+The existing audit's 571 edges reaching age 2 s in both modes reproduce its
+late ratios exactly. Here age 2 s means time since first ARRIVAL, not the
+endpoint timestamp. Update-age and physical-age are separately recorded.
+For window-position checks, the SAME 556 fully retired intervals in both
+modes have exactly 25 retained versions each: first + 24 revisions. The 25
+remaining accepted intervals are right-censored and excluded from this cohort.
+Median physical endpoint age at last valid revision: 4.799972795 s.
+
+1. Numerical extraction: no evidence of this being an arithmetic failure
+=======================================================================
+All 14,225 accepted Kimera queries in each mode report:
+ - schur_relative_between;
+ - status ok;
+ - endpoint Jacobian solve rank 6 and condition estimate 1;
+ - zero jitter uses.
+All covariance queries in these stdout logs use tmp_marginals (LOCAL graph),
+not a fallback to the main iSAM2 marginal route.
+
+Retained Schur-versus-direct covariance difference (Frobenius norm):
+                         OFF                   ON
+maximum absolute         1.810e-16              2.601e-17
+maximum / covariance     3.684e-10              3.799e-12
+trace
+
+These checks already ran inside the captured source and are independently
+joined to its exported payloads here. They compare arithmetic on the SAME
+joint endpoint information/Jacobians; they do not independently validate the
+graph composition, information independence, or physical calibration.
+Full endpoint cross-covariance is included. Its propagated trace is strongly
+negative in representative cases, as expected for correlated endpoints.
+It is not being omitted or replaced by two independent pose marginals.
+Mixed-unit full 6D traces are used here only for same-calculation numerical
+checks, never as a scalar physical confidence or source weighting measure.
+
+2. The late confidence gain is tied to window age
+================================================
+Uncertainty below means sqrt(trace of the rotation/rho 3x3 marginal), not the
+trace itself, a per-axis sigma, or a confidence interval.
+
+Same 556 completed physical intervals, median per-edge ratios:
+
+                                          OFF           ON
+Last valid rotation sigma / previous      0.997812      0.894218
+Last valid rho sigma / previous           1.001910      0.909800
+Rotation sigma / six updates earlier      0.978863      0.660784
+Rho sigma / six updates earlier           1.026670      0.643838
+
+Thus the last valid ON revision alone reduces rotational uncertainty by
+10.58% and rho uncertainty by 9.02%, typically. OFF is almost unchanged.
+555/556 ON beliefs lose >5% rotational uncertainty at that last step; OFF
+0/556 do. The corresponding rho fractions are 84.53% ON and 0.90% OFF.
+The 5% cutoff is a descriptive reporting marker only, never a filter gate.
+
+This is not just a final-step jump. Over the last six backend intervals
+(about 1.2 s), ON loses 33.92% rotation and 35.62% rho uncertainty. Median
+last-step share of positive late log-contraction is only 15.80% rotation and
+12.05% rho. The process builds gradually and accelerates near the window edge.
+
+Within-update check, holding physical backend time fixed:
+For every update with >=10 eligible late beliefs, correlate their update age
+with their one-step uncertainty ratio. Negative means older beliefs contract
+faster at the SAME update. Across 562 updates:
+
+                         OFF                  ON
+rotation median rank     +1.000               -1.000
+rho median rank          +0.877               -0.952
+negative fraction rot     9.43%                95.20%
+negative fraction rho    24.73%                82.74%
+
+These are descriptive within-window statistics, not independent-trial
+p-values. This controls the simple explanation that all older beliefs happen
+to be in a different motion section. It does not separate their different
+visual track histories from marginal-prior influence.
+
+3. Exact early event timeline
+============================
+Times are seconds after the first IMU timestamp, not wall-clock runtime.
+
+Update   Time (s)   Retained evidence
+4        3.951896   First applied G->K factor: receiver x2->x3.
+22       7.551877   Already a synchronous ON contraction before retirement.
+26       8.351873   First observed pose retirement: x0.
+27       8.551872   x1 retires; it is not an endpoint of the first CBS factor.
+28       8.751871   x2 retires, first CBS-connected endpoint to leave window.
+
+The source uses update IDs as fixed-lag timestamps (25-state setting), not
+physical seconds. A startup frame gap means first retirement is at 8.35 s,
+not an assumed exactly 5 s. After update 26, all 558 updates through 583 have
+an observed pose retirement. Consequently, simply correlating all later
+changes with 'a marginalization happened' cannot establish causation.
+
+At update 28, on the same 15 physical late intervals (x3->x4 through
+x17->x18), median rotational uncertainty changes:
+ OFF: +0.84% (slightly LESS confidence)
+ ON:  -13.86% (MORE confidence); 14/15 drop by >5%.
+This is the largest synchronized late-rotation contraction in the matched
+ON capture under the predefined >=10-late-edge reporting criterion.
+Rho does NOT show the same sudden drop there: OFF +1.37%, ON +1.25%.
+Do not claim update 28 explains the entire translational pattern.
+
+Numerical factor-count context for LOCAL covariance graph:
+ update26 OFF975 / ON1099; update27 OFF808 / ON906;
+ update28 OFF761 / ON863 (changes -47 / -43).
+Fewer factors at update28 does not imply less information: a new dense prior
+and changed factor Jacobians cannot be measured by factor count alone.
+
+Counterexample to a marginalization-only explanation:
+At update22, BEFORE any observed pose retirement, ON late rotation sigma
+already falls 6.07% and rho sigma 7.32%; OFF falls 1.10% and 0.79%.
+LOCAL graph counts are 955 ON / 944 OFF; the preceding count changes are
++16 ON / +2 OFF. Visual/native graph composition and/or linearization have
+already diverged. This record lacks factor matrices to separate them.
+
+Further synchronized ON rho events selected solely by covariance:
+ update312 at65.551560s: median late rho ratio0.801848;
+ update549 at112.951289s: ratio0.801805.
+At both, LOCAL factor count decreases by7, not an exploding factor count.
+These are locations for investigation, not proof of a shared single cause.
+
+4. What the existing source code explains, and what it cannot prove
+=================================================================
+Code paths under /home/yeranis/repos/V4RL/cbs_gtsam4.3/src:
+
+ Kimera-VIO/src/backend/VioBackend.cpp:
+  4902+: new states receive cur_id as marginalization timestamp.
+  4937+: updateSmoother performs optimization/marginalization.
+  3459+: refreshCbsOutgoingBeliefs builds LOCAL covariance graph.
+  3625+: later audit revisions use the same getOdometryBeliefs path.
+  3570+: retirement logger checks actual smoother valueExists, not an assumed
+         age threshold. This is the source of the retirement observations.
+
+ cbs/include/cbs/bpsam/incremental_fixed_lag_bpsam_smoother.h:
+  125: findKeysBefore(current_timestamp - smootherLag_).
+  368-378: marginalizeLeaves on the optimized BPSAM graph.
+  Saved detailed stage/marginal diagnostics were disabled in this capture.
+
+ cbs/src/bpsam/bpsam.cpp:
+  3091: pruneTrackedCbsFactors clears obsolete bookkeeping; it is not a
+        decomposition that removes CBS information from a marginal prior.
+  4771+: LOCAL removes tracked explicit CBS slots and anchor-belief factors.
+  4819+: builds MarginalsWithGraph at calculateEstimate() values.
+  2456+: jointMarginalInformation uses this temporary LOCAL graph.
+  2553+: getOdometryBeliefs forms the current between mean and extracts the
+         full joint-endpoint relative covariance.
+
+ cbs/include/cbs/utils/relative_pose_covariance.h:279 onward:
+  complete joint information, relative-pose Jacobians, change of variables,
+  Schur elimination and direct joint-covariance cross-check.
+
+The important distinction:
+ Before elimination, a received CBS factor is an explicit tracked object,
+ so LOCAL can exclude it.
+ After elimination, its influence can be mixed with native factors in the
+ marginal prior. Removing remaining explicit CBS factors does not undo that
+ prior. LOCAL at this point is not certified native-information-only.
+
+At a fixed linearization, elimination of old variables z into retained y
+forms Lambda_prior = H_yy - H_yz H_zz^-1 H_zy. If H contains CBS information,
+the resulting prior can contain it too; the contribution is not removed by
+subtracting the original measurement covariance or dropping visible slots.
+This algebra describes the code's possible information path, not a new model.
+
+Even BEFORE elimination, LOCAL is evaluated at the CBS-influenced estimate,
+and its visual factors/track histories may differ from OFF. OFF vs ON therefore
+does not hold either the full native graph or the linearization fixed.
+
+The numerical checks rule against an ordinary solve/rank/jitter failure on
+these payloads. The source log records 580 persistent G->K applications on
+580 distinct receiver endpoint pairs (no repeated receiver edge among those
+applications). This does not rule out unrelated native-factor duplication or
+historical information correlation; actual full snapshots are needed for that.
+The downstream receiver's stable-ID replacement was already verified and is
+not reinterpreted here as accumulating multiple factors per revision.
+
+5. Representative beliefs, selected without error/ATE targeting
+===============================================================
+Among completed ON intervals first published at update >=40, select strongest,
+median and weakest late rotational contraction. Store full matched OFF/ON
+evolution and raw line references in presentation/representative_edges.json.
+
+Edge          first/last/retire update   ON rot sigma ratio   ON rho sigma ratio
+x48->x49      49 / 73 / 74               0.35836              0.20574
+x467->x468    468 / 492 / 493             0.49105              0.44104
+x136->x137    137 / 161 / 162             0.68903              1.15848
+
+Ratios compare last available vs the age-2-s version. The last example is a
+useful counterexample: rotational uncertainty contracts while rho uncertainty
+grows. The effect is not a universal isotropic covariance multiplier.
+Reference discrepancies in this artifact use the previous unchanged IE-TC
+helper. IE-TC shares CPT7 and lacks joint relative-reference covariance. These
+are not calibrated true-error/NEES observations or evidence of an exact scale
+correction. No new calibration claim is made.
+
+6. Retained-data limit and precise next test (NOT RUN)
+====================================================
+The saved launch explicitly disables cbs_active_factor_diagnostic_enable,
+cbs_active_factor_detail_diagnostic_enable, relative covariance matrix dump,
+kimera_factor_graph_audit_enable, and the bad-update snapshot directory is
+empty. Persistent covariance sidecar and source live_revision are OFF.
+There is no retained source graph/prior matrix stream for these exact updates.
+Receiver graph snapshots are not substitutes for source Kimera snapshots.
+
+Therefore STOP here, as agreed, and review the evidence before new logging.
+If authorized next, one normal-start 20-30 s matched OFF/ON source diagnostic
+can cover the first CBS exchange, updates21-22, updates26-30, and the completed
+x48->x49 lifetime. Reuse existing targeted stage-capture infrastructure after
+checking it captures the covariance-extraction graph as well as the optimizer
+stages. Do not silently activate an expensive shadow estimator or change lag.
+First verify the new capture reproduces the window-age contraction pattern;
+matching source keys alone is not proof of reproducing the historical graph.
+
+Required snapshots: before update, after optimize/before elimination, after
+elimination, and exact LOCAL covariance query; factor IDs/types/keys, values,
+linearization anchors, incoming factors, deleted slots, marginal prior matrix,
+joint endpoint blocks. Use diagnostic copies at a common linearization and
+preserve gauge. Compare the local-only elimination with full-graph elimination
+followed by explicit-CBS filtering. Account separately for already inherited
+prior information; dropping visible factors cannot certify historical
+independence. No fusion rerun, ATE optimization or production fix is needed
+to test this mechanism.
+
+7. Artifacts and validation
+===========================
+Canonical results for THIS audit:
+ /home/yeranis/results/gnssfgo_eth1_covariance_contraction_events_20261008/final/
+  summary.json, edges.json, steps.json, updates.json
+  inputs_before.json, inputs_after.json, validation.json
+  presentation/detail.json, representative_edges.json
+  presentation/window_age_and_onset.png
+The top-level JSON files are the initial exploratory parser pass; final/ and
+repeat/ use the final expanded checks. verified/ is an empty aborted analysis
+directory (the failed full OFF capture lacks run_metadata.txt). No source run
+was retried; the parser was corrected to record available provenance files.
+
+Scripts: PROTOCOL.txt, analyze.py, summarize.py, verify.py in this directory.
+Reproduction uses /home/yeranis/.local/share/pipx/venvs/evo/bin/python with
+PYTHONDONTWRITEBYTECODE=1; analyze.py requires a fresh --out directory.
+verify.py compares final/ and repeat/, rehashes all protected files, checks
+root-trace changes independently against retained source numeric diagnostics,
+and verifies within-update ranks with SciPy.
+
+224 protected files unchanged. Ten result/manifest/plot files reproduce
+byte-identically. 54,576 independent per-step source-diagnostic ratio checks
+agree within 4.441e-16; independent SciPy rank checks agree exactly. See:
+ /home/yeranis/results/gnssfgo_eth1_covariance_contraction_events_20261008/validation_final.json
+Repository HEADs (unchanged):
+ gnssFGO: 5817540ca741c3b99fbe765c0f72a015835e0b20
+ cbs: 2e10934fd506a23d10d7e9838659904e8e3630f1
+ Kimera-VIO: c3900956278aacc824225d0dbab674409132bc28
+No estimator build or
+sanitizer run was necessary or claimed; estimator code was not modified.
+No commit/push. gnssFGO tracked worktree remains unchanged; this audit directory
+and the preceding two audit directories are untracked research artifacts.
+
+Assessment: WINDOW_AGE_DEPENDENT_CONFIDENCE_GAIN_LOCALIZED.
+Marginal-prior CBS provenance is the strongest specific structural lead for
+the late boundary pattern, but it has NOT been isolated as its sole cause.
+No corrective change is proposed for adoption on this evidence alone.

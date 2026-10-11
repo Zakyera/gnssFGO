@@ -1,0 +1,64 @@
+--------------------------------------------------------------------------------
+Node [/kimera_vio_ros/kimera_vio_ros_node]
+Publications: 
+ * /kimera/cbs/odom_belief_out [liorf/pose_odom_belief_array]
+ * /kimera_vio_ros/bow_query [pose_graph_tools_msgs/BowQueries]
+ * /kimera_vio_ros/odometry [nav_msgs/Odometry]
+ * /kimera_vio_ros/optimized_odometry [nav_msgs/Odometry]
+ * /kimera_vio_ros/optimized_trajectory [nav_msgs/Path]
+ * /kimera_vio_ros/pose_graph [pose_graph_tools_msgs/PoseGraph]
+ * /kimera_vio_ros/pose_graph_incremental [pose_graph_tools_msgs/PoseGraph]
+ * /kimera_vio_ros/vlc_frames [pose_graph_tools_msgs/VLCFrames]
+ * /rosout [rosgraph_msgs/Log]
+ * /tf [tf2_msgs/TFMessage]
+ * /tf_static [tf2_msgs/TFMessage]
+
+Subscriptions: 
+ * /boxi/cpt7/imu [sensor_msgs/Imu]
+ * /clock [rosgraph_msgs/Clock]
+ * /grandtour/front_left/image_raw [sensor_msgs/Image]
+ * /grandtour/front_right/image_raw [sensor_msgs/Image]
+ * /kimera_vio_ros/reinit_flag [std_msgs/Bool]
+ * /kimera_vio_ros/reinit_pose [geometry_msgs/PoseStamped]
+ * /tf [tf2_msgs/TFMessage]
+ * /tf_static [tf2_msgs/TFMessage]
+
+Services: 
+ * /kimera_vio_ros/kimera_vio_ros_node/get_loggers
+ * /kimera_vio_ros/kimera_vio_ros_node/restart_kimera_vio
+ * /kimera_vio_ros/kimera_vio_ros_node/set_logger_level
+ * /kimera_vio_ros/vlc_frame_query
+
+
+contacting node http://127.0.0.1:41313/ ...
+Pid: 4976
+Connections:
+ * topic: /rosout
+    * to: /rosout
+    * direction: outbound (57823 - 127.0.0.1:59348) [12]
+    * transport: TCPROS
+ * topic: /tf
+    * to: /kimera_vio_ros/kimera_vio_ros_node
+    * direction: outbound
+    * transport: INTRAPROCESS
+ * topic: /tf_static
+    * to: /kimera_vio_ros/kimera_vio_ros_node
+    * direction: outbound
+    * transport: INTRAPROCESS
+ * topic: /tf
+    * to: /kimera_vio_ros/kimera_vio_ros_node (http://127.0.0.1:41313/)
+    * direction: inbound
+    * transport: INTRAPROCESS
+ * topic: /tf_static
+    * to: /kimera_vio_ros/kimera_vio_ros_node (http://127.0.0.1:41313/)
+    * direction: inbound
+    * transport: INTRAPROCESS
+ * topic: /grandtour/front_left/image_raw
+    * to: /newer_college_cam1_compressed_bridge (http://127.0.0.1:35289/)
+    * direction: inbound (37898 - 127.0.0.1:43879) [17]
+    * transport: TCPROS
+ * topic: /grandtour/front_right/image_raw
+    * to: /newer_college_cam0_compressed_bridge (http://127.0.0.1:40425/)
+    * direction: inbound (43708 - 127.0.0.1:39715) [16]
+    * transport: TCPROS
+

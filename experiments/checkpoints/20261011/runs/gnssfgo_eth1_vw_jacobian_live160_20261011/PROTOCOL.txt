@@ -1,0 +1,52 @@
+ETH1 160-second live CBS-ON engineering validation, 2026-10-11
+==========================================================
+Authorization: user Proceed after the bounded derivative candidate validation.
+One new live co-running GLIM + Kimera + gnssFGO CBS-ON capture, no source retry.
+No new OFF capture, performance tuning, fixed-lag change, or scientific ranking.
+
+Frozen source harness: gnssfgo_eth1_covariance160_validated_20261010/prepared.
+Keep its current classic source-to-source active_window_temporary protocol,
+native IMU mean alignment, Hesai/shared CPT7/front stereo, GLIM 5s lag,
+Kimera 25 states, horizon 0.20s, one pair/update, covariance scale 1,
+Gaussian full schur_relative_between, no health weighting, no live_revision.
+Do not confuse temporary source-factor removal with downstream stable-ID
+revision replacement. Existing guards and source IMU support remain unchanged.
+Keep corrected private GLIM wrapper SHA256
+9568f7edc063f830333572cd30c764cc8ef2bea1d3608f0675a83a257320b172.
+
+Only receiver executable changes to isolated previously tested candidate:
+/home/yeranis/results/gnssfgo_vw_jacobian_20261011/build/replay
+SHA256 62124b496ad6f854079218862acb149892aa452d4af908c50bc96067e49c9dbb.
+Original receiver, source libraries, production settings and old artifacts
+remain protected. No rebuild. Candidate residual and pose derivatives are
+unchanged; only interpolated relative factor velocity/angular-rate Jacobian
+blocks use the existing gnssFGO analytic interpolator; includes tested cache.
+
+Receiver: source_wnoa, no central IMU factor, independent 100ms support clock
+using CPT7 timestamps (59 startup samples), full-history iSAM2, stable-ID
+replacement, availability chronology, strict nominal publication gradient
+threshold 1e-5 and unchanged budget 20. Qc rotation .00375 x3, translation
+.015 x3; initial sigma pose 1e-5, velocity 10, angular rate 3. No Huber/GNSS.
+
+ETH1 mission 2024-10-01-11-29-55, offset 0, duration 160s, playback 0.10x.
+Headless; no Rerun/graph inspector. Existing revision and capped diagnostics
+retained (40 samples, stride20); legacy expensive GLIM factor audit disabled.
+Fresh port 11399 and distinct run/session; no overwrites or duplicate launch.
+
+Validation: exact effective settings/maps before playback; complete source
+and receiver markers; full duration coverage (explicit startup gaps); no
+alignment history errors; exact source-version conservation and covariance
+preservation; stationary publication; existing queue<1000 and p95 output
+age<1s gates with final queue0; native wire/lifecycle/diagnostic algebra tests;
+one saved-journal deterministic numerical repeat using existing thresholds.
+No reduced threshold, increased budget or retry after failure. Stop and record
+the exact evidence if any capture/validation gate fails.
+
+Preflight GPU: host driver 580.178.04 healthy, idle cbsms_ws_gpu initially had
+NVML Unknown Error. Scoped restart of this idle container restored nvidia-smi
+and CUDA cuInit=0/cuDeviceGetCount=0/one device. No host driver/package edits.
+
+This run establishes engineering completeness/throughput, not improved ATE or
+calibrated covariance. Native GLIM and native Kimera ROS odometry must never
+be relabeled as source-only receiver graphs. Fused online and retrospective
+outputs remain explicitly distinct. Stop after this single run's validation.

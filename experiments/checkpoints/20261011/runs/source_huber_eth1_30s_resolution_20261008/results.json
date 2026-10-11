@@ -1,0 +1,411 @@
+{
+  "common_mask": {
+    "candidate_times": 290,
+    "common_times": 261,
+    "start": 1727775011.5750432,
+    "end": 1727775037.5750432,
+    "max_estimate_interpolation_gap_s": 0.5,
+    "sample_period_s": 0.1,
+    "timestamps_sha256": "421553edfcc366b9549362d3723c7efb2045ee2f0607cbe62371651dfb5ac4fb",
+    "note": "Offline scoring resampling with existing evaluator linear position / quaternion SLERP; not an estimator or causal-output change. Original full-path lengths retained separately.",
+    "matched_prism_poses": 113,
+    "matched_prism_coverage_s": 11.199999809265137
+  },
+  "raw_interval": {
+    "start": 1727775008.675043,
+    "end": 1727775037.674745,
+    "duration": 28.999701976776123,
+    "note": "Same physical interval, existing evaluator association and gap rules; prism coverage is partial, not full-window ground truth."
+  },
+  "cases": {
+    "off_gaussian": {
+      "metrics": {
+        "native_glim": {
+          "ATE_rmse_m": 0.03871889272547554,
+          "t_RPE_1s_rmse_m": 0.03678160056571529,
+          "r_RPE_1s_rmse_deg": 0.5056363103804218,
+          "full_raw_body_path_m": 9.000879118548687,
+          "common_grid_body_path_m": 8.941851554570194,
+          "common_grid_prism_path_m": 8.843906586161374,
+          "GT_overlap_prism_estimate_path_m": 3.952057330165735,
+          "GT_overlap_prism_reference_path_m": 3.6031038768903474,
+          "GT_coverage_s": 11.199999809265137,
+          "ATE_poses": 113,
+          "RPE_pairs": 251,
+          "raw_rows": 291,
+          "raw_start": 1727775008.675043,
+          "raw_end": 1727775037.674745,
+          "raw_trajectory_sha256": "fa01b960271e56b14d32e1997aaf10dca13d47a3e20544311737b6e0a6fb34a2"
+        },
+        "native_kimera": {
+          "ATE_rmse_m": 0.029065298666107246,
+          "t_RPE_1s_rmse_m": 0.02595545448988498,
+          "r_RPE_1s_rmse_deg": 0.6154465887763638,
+          "full_raw_body_path_m": 8.452772579795285,
+          "common_grid_body_path_m": 8.367685002190186,
+          "common_grid_prism_path_m": 8.229175793220612,
+          "GT_overlap_prism_estimate_path_m": 3.4829212702026697,
+          "GT_overlap_prism_reference_path_m": 3.6031038768903474,
+          "GT_coverage_s": 11.199999809265137,
+          "ATE_poses": 113,
+          "RPE_pairs": 251,
+          "raw_rows": 134,
+          "raw_start": 1727775008.1553955,
+          "raw_end": 1727775037.7552333,
+          "raw_trajectory_sha256": "c95b792ad4def9a14ba4eb2fd81c970d7707de5f07f3c94306e844edf2f3bd41"
+        },
+        "fused_online": {
+          "ATE_rmse_m": 0.028049954596042453,
+          "t_RPE_1s_rmse_m": 0.03118086418036564,
+          "r_RPE_1s_rmse_deg": 1.3216551607691247,
+          "full_raw_body_path_m": 10.01742153028803,
+          "common_grid_body_path_m": 9.62534483634762,
+          "common_grid_prism_path_m": 9.576507589192278,
+          "GT_overlap_prism_estimate_path_m": 4.212058784490873,
+          "GT_overlap_prism_reference_path_m": 3.6031038768903474,
+          "GT_coverage_s": 11.199999809265137,
+          "ATE_poses": 113,
+          "RPE_pairs": 251,
+          "raw_rows": 293,
+          "raw_start": 1727775008.583475,
+          "raw_end": 1727775037.7834752,
+          "raw_trajectory_sha256": "803e3ca720fc1edf34ec0cfa2b06663e92f3472c0fa1cd467e37155574234d28"
+        },
+        "fused_final": {
+          "ATE_rmse_m": 0.022889868331254486,
+          "t_RPE_1s_rmse_m": 0.01686787166972635,
+          "r_RPE_1s_rmse_deg": 0.4463151238492654,
+          "full_raw_body_path_m": 8.77603718015462,
+          "common_grid_body_path_m": 8.665917630963406,
+          "common_grid_prism_path_m": 8.569083936182267,
+          "GT_overlap_prism_estimate_path_m": 3.713152926906987,
+          "GT_overlap_prism_reference_path_m": 3.6031038768903474,
+          "GT_coverage_s": 11.199999809265137,
+          "ATE_poses": 113,
+          "RPE_pairs": 251,
+          "raw_rows": 293,
+          "raw_start": 1727775008.583475,
+          "raw_end": 1727775037.7834752,
+          "raw_trajectory_sha256": "2d204eecb330cbc3808099392344dd1470a21100d4b38b48dec7688ce3762b33"
+        }
+      },
+      "versions": 15884,
+      "replacements": 15439,
+      "active_source_ids": 420,
+      "imu_samples": 2986,
+      "unsupported": 25,
+      "max_publication_gradient": 9.764752786877877e-06,
+      "live_output_age_s": {
+        "median": 0.040006,
+        "p95": 0.1,
+        "max": 0.100004
+      },
+      "transport": {
+        "imu": 2986,
+        "duplicate_imu": 0,
+        "imu_clock_lag_events": 2905,
+        "max_imu_clock_lag_ns": 1038458,
+        "belief_clock_lag_events": 0,
+        "max_belief_clock_lag_ns": 0,
+        "beliefs": 15884,
+        "duplicates": 0,
+        "published_poses": 293,
+        "max_queue": 48,
+        "sources": {
+          "glim_hesai": 12884,
+          "kimera_front": 3000
+        },
+        "queued": 0,
+        "last_ros_ns": 1727775037853481000,
+        "last_imu_ns": 1727775037853481000,
+        "last_published_ns": 1727775037783475000,
+        "output_age_seconds": 0.070006
+      },
+      "original_exact_repeat_passed": true
+    },
+    "on_gaussian": {
+      "metrics": {
+        "native_glim": {
+          "ATE_rmse_m": 0.06386405804996101,
+          "t_RPE_1s_rmse_m": 0.05093648007586158,
+          "r_RPE_1s_rmse_deg": 0.6353051399792704,
+          "full_raw_body_path_m": 9.27474977089044,
+          "common_grid_body_path_m": 9.210588715108575,
+          "common_grid_prism_path_m": 9.078912883948298,
+          "GT_overlap_prism_estimate_path_m": 3.8894108574468262,
+          "GT_overlap_prism_reference_path_m": 3.6031038768903474,
+          "GT_coverage_s": 11.199999809265137,
+          "ATE_poses": 113,
+          "RPE_pairs": 251,
+          "raw_rows": 291,
+          "raw_start": 1727775008.675043,
+          "raw_end": 1727775037.674745,
+          "raw_trajectory_sha256": "6e75c78cb116d539de5ee9ec7b97deba046344435480982f8145c5ddfdffec2a"
+        },
+        "native_kimera": {
+          "ATE_rmse_m": 0.05625564727085852,
+          "t_RPE_1s_rmse_m": 0.04601481237294275,
+          "r_RPE_1s_rmse_deg": 0.7808418768678258,
+          "full_raw_body_path_m": 8.745067238120258,
+          "common_grid_body_path_m": 8.64227212105013,
+          "common_grid_prism_path_m": 8.494782130308646,
+          "GT_overlap_prism_estimate_path_m": 3.652179976403313,
+          "GT_overlap_prism_reference_path_m": 3.6031038768903474,
+          "GT_coverage_s": 11.199999809265137,
+          "ATE_poses": 113,
+          "RPE_pairs": 251,
+          "raw_rows": 134,
+          "raw_start": 1727775008.1553955,
+          "raw_end": 1727775037.7552333,
+          "raw_trajectory_sha256": "f9f50a30a7252bf2a3cc375fccf0c7bb8bdd91fb11104c8fa9b0b0a572fa3442"
+        },
+        "fused_online": {
+          "ATE_rmse_m": 0.08125255463081757,
+          "t_RPE_1s_rmse_m": 0.07262435618729783,
+          "r_RPE_1s_rmse_deg": 1.8712523644556227,
+          "full_raw_body_path_m": 11.699701967557957,
+          "common_grid_body_path_m": 11.099477156994734,
+          "common_grid_prism_path_m": 11.3428182384739,
+          "GT_overlap_prism_estimate_path_m": 4.462730075339019,
+          "GT_overlap_prism_reference_path_m": 3.6031038768903474,
+          "GT_coverage_s": 11.199999809265137,
+          "ATE_poses": 113,
+          "RPE_pairs": 251,
+          "raw_rows": 293,
+          "raw_start": 1727775008.583475,
+          "raw_end": 1727775037.7834752,
+          "raw_trajectory_sha256": "5ba3dbc2785959eab2b020919b94e9e7e72979559f38d3c96aa4e645964f332a"
+        },
+        "fused_final": {
+          "ATE_rmse_m": 0.0638062268807361,
+          "t_RPE_1s_rmse_m": 0.03733991308720661,
+          "r_RPE_1s_rmse_deg": 0.6304039141996669,
+          "full_raw_body_path_m": 9.231234325801038,
+          "common_grid_body_path_m": 9.05260827175461,
+          "common_grid_prism_path_m": 8.925867212309342,
+          "GT_overlap_prism_estimate_path_m": 3.8112315257567673,
+          "GT_overlap_prism_reference_path_m": 3.6031038768903474,
+          "GT_coverage_s": 11.199999809265137,
+          "ATE_poses": 113,
+          "RPE_pairs": 251,
+          "raw_rows": 293,
+          "raw_start": 1727775008.583475,
+          "raw_end": 1727775037.7834752,
+          "raw_trajectory_sha256": "f870103d9c2499fa22e3856aa656284ecece5bf0800b3f4970083e4f545ee7ef"
+        }
+      },
+      "versions": 15884,
+      "replacements": 15439,
+      "active_source_ids": 420,
+      "imu_samples": 2986,
+      "unsupported": 25,
+      "max_publication_gradient": 9.59366134369314e-06,
+      "live_output_age_s": {
+        "median": 0.060003,
+        "p95": 0.10000479999999999,
+        "max": 0.100024407
+      },
+      "transport": {
+        "imu": 2986,
+        "duplicate_imu": 0,
+        "imu_clock_lag_events": 2904,
+        "max_imu_clock_lag_ns": 1057289,
+        "belief_clock_lag_events": 0,
+        "max_belief_clock_lag_ns": 0,
+        "beliefs": 15884,
+        "duplicates": 0,
+        "published_poses": 293,
+        "max_queue": 48,
+        "sources": {
+          "glim_hesai": 12884,
+          "kimera_front": 3000
+        },
+        "queued": 0,
+        "last_ros_ns": 1727775037853481000,
+        "last_imu_ns": 1727775037853481000,
+        "last_published_ns": 1727775037783475000,
+        "output_age_seconds": 0.070006
+      },
+      "original_exact_repeat_passed": true
+    },
+    "on_huber": {
+      "metrics": {
+        "native_glim": {
+          "ATE_rmse_m": 0.054475188698753216,
+          "t_RPE_1s_rmse_m": 0.04197450141159325,
+          "r_RPE_1s_rmse_deg": 0.5496473545384413,
+          "full_raw_body_path_m": 8.95595246742299,
+          "common_grid_body_path_m": 8.898220420796289,
+          "common_grid_prism_path_m": 8.807302608011247,
+          "GT_overlap_prism_estimate_path_m": 3.9328626135087044,
+          "GT_overlap_prism_reference_path_m": 3.6031038768903474,
+          "GT_coverage_s": 11.199999809265137,
+          "ATE_poses": 113,
+          "RPE_pairs": 251,
+          "raw_rows": 291,
+          "raw_start": 1727775008.675043,
+          "raw_end": 1727775037.674745,
+          "raw_trajectory_sha256": "afdbeaf14b833f9011e5a22d23766afcb92779e667b77f12c0c20b78b57b3654"
+        },
+        "native_kimera": {
+          "ATE_rmse_m": 0.09696355351542416,
+          "t_RPE_1s_rmse_m": 0.041604431781790005,
+          "r_RPE_1s_rmse_deg": 0.6506244589944137,
+          "full_raw_body_path_m": 8.443305774018778,
+          "common_grid_body_path_m": 8.357233535402436,
+          "common_grid_prism_path_m": 8.193422896627677,
+          "GT_overlap_prism_estimate_path_m": 3.5804932232327715,
+          "GT_overlap_prism_reference_path_m": 3.6031038768903474,
+          "GT_coverage_s": 11.199999809265137,
+          "ATE_poses": 113,
+          "RPE_pairs": 251,
+          "raw_rows": 134,
+          "raw_start": 1727775008.1553955,
+          "raw_end": 1727775037.7552333,
+          "raw_trajectory_sha256": "8be0809acea7b94d9725ba061ae73071d39a87bd856fa11e037e250ae1844d3f"
+        },
+        "fused_online": {
+          "ATE_rmse_m": 0.05227676470521937,
+          "t_RPE_1s_rmse_m": 0.038650602886181995,
+          "r_RPE_1s_rmse_deg": 1.453642017233881,
+          "full_raw_body_path_m": 10.058425966406158,
+          "common_grid_body_path_m": 9.682429862162154,
+          "common_grid_prism_path_m": 9.704742628545976,
+          "GT_overlap_prism_estimate_path_m": 4.281826736006421,
+          "GT_overlap_prism_reference_path_m": 3.6031038768903474,
+          "GT_coverage_s": 11.199999809265137,
+          "ATE_poses": 113,
+          "RPE_pairs": 251,
+          "raw_rows": 293,
+          "raw_start": 1727775008.583475,
+          "raw_end": 1727775037.7834752,
+          "raw_trajectory_sha256": "499ac32bac674f488be82a553155e08b8021ede0e5886a62bc84a7c001989553"
+        },
+        "fused_final": {
+          "ATE_rmse_m": 0.044828508860182976,
+          "t_RPE_1s_rmse_m": 0.029704585732026025,
+          "r_RPE_1s_rmse_deg": 0.5014501366716462,
+          "full_raw_body_path_m": 8.852700494911291,
+          "common_grid_body_path_m": 8.750058114234655,
+          "common_grid_prism_path_m": 8.633836189897838,
+          "GT_overlap_prism_estimate_path_m": 3.838809206806719,
+          "GT_overlap_prism_reference_path_m": 3.6031038768903474,
+          "GT_coverage_s": 11.199999809265137,
+          "ATE_poses": 113,
+          "RPE_pairs": 251,
+          "raw_rows": 293,
+          "raw_start": 1727775008.583475,
+          "raw_end": 1727775037.7834752,
+          "raw_trajectory_sha256": "368d1b12aa48e2e393d10904894b9ebf177d537a9ca809ec790f4398cc9024c4"
+        }
+      },
+      "versions": 15883,
+      "replacements": 15438,
+      "active_source_ids": 420,
+      "imu_samples": 2986,
+      "unsupported": 25,
+      "max_publication_gradient": 9.866211411839281e-06,
+      "live_output_age_s": {
+        "median": 0.060004,
+        "p95": 0.100005,
+        "max": 0.110006
+      },
+      "transport": {
+        "imu": 2986,
+        "duplicate_imu": 0,
+        "imu_clock_lag_events": 2912,
+        "max_imu_clock_lag_ns": 1145887,
+        "belief_clock_lag_events": 0,
+        "max_belief_clock_lag_ns": 0,
+        "beliefs": 15883,
+        "duplicates": 0,
+        "published_poses": 293,
+        "max_queue": 39,
+        "sources": {
+          "glim_hesai": 12883,
+          "kimera_front": 3000
+        },
+        "queued": 0,
+        "last_ros_ns": 1727775037853481000,
+        "last_imu_ns": 1727775037853481000,
+        "last_published_ns": 1727775037783475000,
+        "output_age_seconds": 0.070006
+      },
+      "original_exact_repeat_passed": false
+    }
+  },
+  "GT_conventions": {
+    "ATE": "AP20 prism position; CPT7-to-prism lever arm; SE3 Kabsch no scale",
+    "RPE": "1 s relative SE3 vs IE-TC in prism frame; no global alignment",
+    "priors": "GT is not used in estimation"
+  },
+  "huber_change_vs_on_gaussian_percent": {
+    "native_glim": {
+      "ATE_rmse_m": -14.701335364349788,
+      "t_RPE_1s_rmse_m": -17.59442083732705,
+      "r_RPE_1s_rmse_deg": -13.4829360020012
+    },
+    "native_kimera": {
+      "ATE_rmse_m": 72.36234621666702,
+      "t_RPE_1s_rmse_m": -9.584697543493837,
+      "r_RPE_1s_rmse_deg": -16.676541273087253
+    },
+    "fused_online": {
+      "ATE_rmse_m": -35.6613894261587,
+      "t_RPE_1s_rmse_m": -46.78010943532181,
+      "r_RPE_1s_rmse_deg": -22.317158024980298
+    },
+    "fused_final": {
+      "ATE_rmse_m": -29.74273663920839,
+      "t_RPE_1s_rmse_m": -20.448165846954257,
+      "r_RPE_1s_rmse_deg": -20.45573871344609
+    }
+  },
+  "native_kimera_initial_times_and_gaps": {
+    "off_gaussian": {
+      "first_timestamps": [
+        1727775008.1553955,
+        1727775008.3553946,
+        1727775011.5553737,
+        1727775011.7553723,
+        1727775011.9553714
+      ],
+      "first_deltas_s": [
+        0.19999909400939941,
+        3.199979066848755,
+        0.1999986171722412,
+        0.19999909400939941
+      ]
+    },
+    "on_gaussian": {
+      "first_timestamps": [
+        1727775008.1553955,
+        1727775008.3553946,
+        1727775011.5553737,
+        1727775011.7553723,
+        1727775011.9553714
+      ],
+      "first_deltas_s": [
+        0.19999909400939941,
+        3.199979066848755,
+        0.1999986171722412,
+        0.19999909400939941
+      ]
+    },
+    "on_huber": {
+      "first_timestamps": [
+        1727775008.1553955,
+        1727775008.3553946,
+        1727775011.5553737,
+        1727775011.7553723,
+        1727775011.9553714
+      ],
+      "first_deltas_s": [
+        0.19999909400939941,
+        3.199979066848755,
+        0.1999986171722412,
+        0.19999909400939941
+      ]
+    }
+  }
+}

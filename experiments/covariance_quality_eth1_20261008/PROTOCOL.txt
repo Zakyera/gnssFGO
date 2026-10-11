@@ -1,0 +1,42 @@
+ETH1 Gaussian source-WNOA covariance-quality audit, 2026-10-08
+
+Scope fixed before analysis: retained matched 119.851181555 s ETH1 OFF/ON
+journals from gnssfgo_eth1_wnoa_mechanism_20261007. No estimator, optimizer,
+bag playback, covariance modification, scale fitting, robust loss or new run.
+The production model remains Gaussian GLIM + Kimera + WNOA, no central IMU.
+
+Use the final accepted physical interval sets, verified against actual graph
+payloads and stable source/session/index IDs. Compare first publication,
+latest available by ages 1 s and 2 s, and latest at the common arrival cutoff.
+Age-qualified cohorts must be available in BOTH modes. Never count revisions
+as independent measurements. Last observed is not certified finalization.
+
+Reuse the audited exact-endpoint IE-TC interpolation and SE(3) residual
+Log(Z^-1 T_reference), [phi,rho]. Reference shares CPT7 and lacks joint relative
+uncertainty; all discrepancies/whitening are descriptive, NOT calibrated NIS,
+NEES, coverage probabilities, absolute calibration or proof of source fault.
+
+Checks:
+1. Uncertainty ranking: root block trace vs error norm, Spearman correlation,
+   five equal-count uncertainty bins, within-10-second-block rank correlation,
+   and rank correlation adjusted for reference translation/rotation magnitude.
+   Positive correlation is the expected direction for informative uncertainty.
+   500 resamples of contiguous 10 s blocks give descriptive sensitivity bands,
+   not independent-sample significance or generalization certification.
+2. Directionality: each 3x3 marginal's ordered eigenvectors, projected error
+   and standard deviation, anisotropy, normalized discrepancy contribution.
+   Full 6x6 whitening also retained, including cross blocks. No mixed-unit
+   full-6D eigenvector interpretation; block-only diagnostics do not modify R.
+3. Revision evolution: paired first->2 s and first->cutoff changes, contraction
+   with improving/worsening discrepancy. Compare uncertainty/error ratios and
+   normalized discrepancy. Also describe consecutive revisions within each ID,
+   aggregated per ID, not falsely independent observations.
+4. Existing largest OFF/ON publication corrections: inspect updated versions
+   and their covariance/error changes; do not attribute simultaneous graph
+   corrections uniquely to covariance or recompute optimization.
+
+Validation: exact journals/hashes, graph payload identity, stable IDs and
+ordering, all-version finite/symmetric/SPD covariance, reconcile selected-age
+metrics with prior audit, independent SE(3)/whitening/ranking checks, repeat
+analysis deterministically, before/after protected hashes and tracked diff.
+Output only new analysis artifacts and a report. Stop for discussion.

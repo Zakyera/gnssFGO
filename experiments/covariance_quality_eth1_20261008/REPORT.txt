@@ -1,0 +1,299 @@
+ETH1 Gaussian GLIM + Kimera + WNOA covariance-quality audit
+2026-10-08
+
+Result
+======
+The most specific new finding is a late-revision confidence gain in Kimera
+CBS-ON that is not matched by a similar reduction of relative-reference
+discrepancy. After age 2 s, median reported rotation root-sum uncertainty falls
+51.0% and translation root-sum uncertainty falls 47.3%, while discrepancy falls
+only 0.6% and 5.4%, respectively, on the SAME 571 physical beliefs.
+
+This is a concrete lead for examining covariance provenance/accumulation in
+later source revisions. It is not proof of a Schur-complement bug, a calibrated
+overconfidence factor, a reason to disable revisions, or authorization to tune.
+The original Gaussian scale-1, no-central-IMU WNOA implementation is unchanged.
+
+1. Scope and identity
+=====================
+Only the existing matched ETH1 journals were analysed. No GLIM, Kimera,
+receiver optimizer, live capture, bag playback, weighting sweep or evaluator
+rerun was performed. All native/fused trajectories and their metrics remain
+exactly as previously reported. This is not another OFF/ON experiment.
+
+Mission: GrandTour ETH1, 2024-10-01-11-29-55.
+First IMU timestamp: 1727775008003475000 ns.
+Common last arrival: 1727775127854656555 ns (119.851181555 s later).
+Gaussian receiver: GLIM + Kimera + WNOA, independent 100 ms support clock,
+stable-ID revision replacement, full-history iSAM2, original Qc/priors,
+source covariance scale 1, no central IMU factors, no added model noise.
+Source-to-source CBS remains the saved classic Gaussian protocol.
+The native source estimators still use their own CPT7 IMU input.
+
+Matched accepted physical intervals: 1,189 GLIM and 581 Kimera.
+Input versions: OFF 70,729; ON 70,762. Accepted versions: 70,704 / 70,737.
+The 25 startup-unsupported versions per mode are excluded from belief-quality
+statistics, but included in the all-input numerical covariance health check.
+Stable source/session/index identity and exact physical endpoints are checked
+against the final active graph ledger. Final means and all 36 covariance
+entries match the journal's latest version exactly. Revisions are not counted
+as independent measurements in population statistics.
+
+Source journals:
+  /home/yeranis/results/gnssfgo_eth1_wnoa_mechanism_20261007/inputs/off_events.csv
+    SHA-256 61211dae64debc0513a1f614ec4d3281951692830824d7ea0cd98d836e2a4b42
+  /home/yeranis/results/gnssfgo_eth1_wnoa_mechanism_20261007/inputs/on_events.csv
+    SHA-256 4536c09a55938e6939519afbaf4e1acde5ef1b3dabf263b870e3550a10c56798
+
+2. Meaning and limits of the measurements
+========================================
+The existing audited helper is reused, unchanged:
+  /home/yeranis/results/gnssfgo_eth1_covariance_audit_20260930/covariance_age_reference.py
+  reference cache: sibling ie_tc.npz
+
+Reference: /boxi/inertial_explorer/tc/odometry, cpt7_imu frame. Interpolate at
+the exact belief endpoint timestamps with the existing 50 ms bracket gate.
+Residual: e = Log(Z_source^-1 T_reference_relative), ordering [phi,rho].
+rho is the SE(3) tangent translation, not a substituted Cartesian residual.
+Every accepted interval is evaluable. No trajectory alignment is fitted here.
+
+Reported channel uncertainty below is sqrt(trace(Sigma_channel)): a root-sum
+variance, NOT a per-axis standard deviation, covariance trace, or 95% radius.
+Errors are norms of the corresponding reference-discrepancy coordinates.
+
+IE-TC shares CPT7 data and lacks joint relative-reference covariance. These
+are descriptive discrepancies, not true-error observations with known noise.
+Whitened values are NOT calibrated NIS/NEES/chi-square coverage or proof that
+all discrepancy belongs to GLIM/Kimera. Constant reference/systematic errors
+can create an error floor while internally computed covariance contracts.
+Individual posterior covariance contraction does not require the realised
+error of every estimate to decrease. The aggregate pattern warrants scrutiny,
+but does not identify its cause on its own.
+
+3. Does uncertainty rank better and worse beliefs?
+=================================================
+Latest version at common cutoff; one observation per physical interval.
+Positive Spearman correlation means larger reported uncertainty tends to
+accompany larger discrepancy. Near zero means weak ranking on this sample.
+
+Source/mode       rho rank   phi rank   rho within-10s   rho motion-adjusted
+GLIM OFF           0.121      0.107       0.067           0.074
+GLIM ON            0.125      0.187      -0.082          -0.051
+Kimera OFF         0.718      0.123       0.374           0.542
+Kimera ON          0.212      0.133       0.336           0.428
+
+Within-10s pools centered, within-block percentile ranks. Motion-adjusted is
+correlation of residual ranks after regressing out reference translation and
+rotation magnitudes; it is descriptive, not a calibrated or causal model.
+Five hundred resamples of contiguous 10 s blocks give the following descriptive
+95% ranges for the GLOBAL rho ranking: GLIM OFF [-0.145,0.338], GLIM ON
+[-0.099,0.363], Kimera OFF [0.493,0.837], Kimera ON [-0.024,0.479]. There are
+only 12 time blocks. No independent-edge p-value/generalization claim is made.
+
+Key qualification: Kimera ON has a much weaker GLOBAL uncertainty ranking,
+but it has not lost ALL local information. The within-block correlations
+0.374 OFF / 0.336 ON are fairly similar; motion adjustment also retains a
+positive ON relationship. Do not call Kimera ON covariance random/useless.
+
+Median rho discrepancy (mm) in five increasing-uncertainty quintiles:
+                 Q1       Q2       Q3       Q4       Q5
+GLIM OFF         5.035    5.057    5.402    6.663    5.681
+GLIM ON         13.514   13.626   14.215   16.656   17.173
+Kimera OFF       1.104    2.316    3.176    4.104    7.565
+Kimera ON        3.119    3.971    4.863    4.543    4.075
+
+Quintiles are within each source/mode; equal quintile numbers are not equal
+absolute uncertainty thresholds or necessarily the same physical intervals.
+GLIM ON's increasing medians coexist with weak individual ranking because
+within-bin spread is large. Kimera OFF has a useful uncertainty ordering;
+Kimera ON does not have the same monotonic global curve.
+
+At first / age 1 s / age 2 s / cutoff, rho Spearman correlation is:
+GLIM OFF    0.164 / 0.126 / 0.124 / 0.121
+GLIM ON     0.009 / 0.130 / 0.132 / 0.125
+Kimera OFF  0.770 / 0.776 / 0.777 / 0.718
+Kimera ON   0.455 / 0.342 / 0.335 / 0.212
+Age-1 and age-2 cohorts exclude endpoints too young in either mode.
+These age-wise coefficients are not from identical endpoint counts; the
+separate paired late-revision check below removes that ambiguity.
+
+4. Covariance magnitude and directional check
+=============================================
+Cutoff medians, copied only after reconciling our computation against the
+existing audit to <=2.23e-16 in its displayed numerical units:
+
+                 rho uncertainty   rho discrepancy   phi uncertainty  phi discrepancy
+                    mm                 mm                deg              deg
+GLIM OFF           1.471              5.461             0.006831         0.109674
+GLIM ON            1.303             15.332             0.005078         0.208108
+Kimera OFF         1.190              2.894             0.008103         0.109148
+Kimera ON          0.846              4.025             0.003754         0.108484
+
+For each 3x3 marginal C=U diag(lambda) U^T, project discrepancy onto each
+column of U and divide by sqrt(lambda). Eigen-directions are ordered smallest
+to largest variance PER belief; these are not fixed global axes. The median
+absolute projected/standard-deviation ratios are:
+
+                 rho directions 1 / 2 / 3      phi directions 1 / 2 / 3
+GLIM OFF         2.95 / 3.08 / 2.47            12.61 / 15.93 / 7.87
+GLIM ON          9.46 / 7.98 / 7.03            22.19 / 26.42 / 28.02
+Kimera OFF       1.94 / 1.86 / 1.69            15.35 / 12.34 / 6.26
+Kimera ON        4.15 / 4.27 / 3.18            18.40 / 20.68 / 19.56
+
+The discrepancy/declared-uncertainty mismatch is not restricted to one tiny
+eigenvalue or a single direction. Rotation is especially difficult to certify
+because the reference attitude is not an exact independent truth signal.
+No mixed-unit 6D principal direction is interpreted as a physical direction.
+
+Full dense whitening preserves rotation-translation coupling. Median ratio
+of dense e^T Sigma^-1 e to the sum of separate marginal channel energies:
+GLIM OFF 1.050, GLIM ON 0.991, Kimera OFF 1.139, Kimera ON 1.032.
+Individual ratios vary (Kimera OFF maximum 3.965). The calculation is a
+diagnostic decomposition only; no block-diagonal factor was used or proposed.
+
+All 141,491 input matrices are finite, symmetric and positive definite.
+Maximum symmetry error: 0. Minimum eigenvalues: OFF 2.011844397e-10,
+ON 2.167566471e-10. These mixed-unit minima are numerical-health checks, not
+scalar confidence measures. There is no zero/negative covariance failure here.
+
+5. Revision evolution: the strongest new lead
+============================================
+For the SAME 1,169 GLIM / 571 Kimera intervals that reach age 2 s in both modes,
+compare their version at age 2 s with their latest available version at cutoff.
+Last observed does not certify finalization, and its exact age varies.
+Numbers below are medians of PER-INTERVAL ratios, not ratios of medians.
+
+                   rho uncertainty ratio  rho discrepancy ratio  phi uncertainty ratio  phi discrepancy ratio
+GLIM OFF                   1.0000                1.0000                 1.0000                1.0000
+GLIM ON                    1.0000                0.9997                 1.0000                0.9999
+Kimera OFF                 1.0136                0.9822                 0.9121                1.0006
+Kimera ON                  0.5271                0.9460                 0.4898                0.9936
+
+For Kimera ON, the corresponding median covariance-TRACE ratios are about
+0.278 rho and 0.240 phi (square of the root-sum ratios, approximately 72%/76%
+trace reductions). This is NOT a claim of 3.6x/4.2x uniform full-factor precision:
+full matrices, directions, cross blocks and Jacobians can change too.
+
+Kimera ON's discrepancy divided by reported root-sum uncertainty increases
+by median factors 1.703 (rho) and 2.011 (phi) AFTER age 2 s. On 86.9% of the
+571 intervals, rotational uncertainty decreases by at least 5% without even a
+5% reduction in rotational discrepancy. The corresponding rho fraction is
+43.4%. The 5% marker is merely descriptive material-change reporting, not a
+gate, fit or new production parameter.
+
+Earlier revisions are useful: first-to-age-2 Kimera ON median per-edge
+discrepancy ratios are 0.557 rho and 0.623 phi. Mean improvements occur before
+the extra late confidence gain. For first-to-cutoff, 79.5% of Kimera ON rho
+intervals and 86.7% of phi intervals improve over their own first publication.
+Do NOT revert to first-publication beliefs or disable stable-ID replacement.
+
+The extra age-2-to-cutoff table is a descriptive refinement of the prespecified
+first/1 s/2 s/cutoff audit, motivated by the initial age-wise result. It selects
+no new estimator setting and uses no additional measurements or source runs.
+
+6. Relation to existing receiver corrections
+===========================================
+Actual graph inspection (unchanged code): covariance is supplied when a
+Gaussian source factor is constructed. A newer stable-ID revision removes
+the old factor and installs one revised mean + covariance factor. iSAM2
+relinearization changes residuals/Jacobians; it does not independently
+re-estimate each source measurement covariance on every solver iteration.
+No repeated-revision factor accumulation is present in the validated ledger.
+
+Exact construction/replacement:
+  /home/yeranis/results/gnssfgo_eth1_local_prediction_20261007/build/wnoa/DiagnosticReplay.cpp:1615-1664
+Relative residual/Jacobians:
+  sibling SourceWnoaModel.h:93-129
+
+The previously identified largest same-time current-state corrections are
+OFF 9.182 cm at elapsed 82.28 s and ON 12.985 cm at elapsed 50.28 s. Each
+publication includes 1 new + 48 revised GLIM and 1 new + 24 revised Kimera IDs.
+Among those Kimera revisions, the median rho uncertainty/error ratios are:
+  OFF 0.900 / 0.685
+  ON  0.874 / 0.648
+Here the relative means generally improve more than uncertainty contracts.
+Thus the single largest correction is NOT evidence that every covariance
+contraction is harmful. Multiple means/covariances change together and the
+whole graph rebalances; this audit does not assign causal percentages.
+
+Reuse, rather than rerun, the earlier factor-interaction result:
+  GNSSFGO_ETH1_LIVE_WNOA_OFF_ON_20261007.md, section 5.
+At its frozen final ON solution, position-shape sensitivity to source log
+precision is roughly 0.0508 m GLIM / 0.0503 m Kimera versus 0.00189 m WNOA.
+Those are local derivatives, not percentages of authority. They provide no
+evidence that WNOA overwhelms source influence on final trajectory shape.
+The separately completed x2 experiment establishes weighting sensitivity,
+not the validity of an absolute covariance calibration.
+
+7. Interpretation and boundary
+===============================
+Established here:
+- Kimera OFF rho uncertainty has useful ranking information on this window.
+- Its global ranking is weaker ON, but local/motion-adjusted information remains.
+- GLIM trace and both sources' phi trace are weak rankings on this reference.
+- Kimera ON continues gaining substantial declared confidence after most of
+  its observed relative-mean improvement has occurred; GLIM does not show the
+  same late pattern.
+- No numerical covariance corruption or receiver duplication was found.
+
+Not established:
+- Exact true-error covariance, a valid universal scale, or complete cause of ON loss.
+- Whether late confidence gain comes from genuinely informative native data,
+  explicit CBS factors, information retained in a marginal prior, linearization,
+  unmodelled errors, source/reference dependence, or a combination.
+- Whether one change would generalize beyond this ETH1 window.
+
+The source covariances are conditional graph-derived uncertainties. The classic
+runbook notes different provenance: GLIM uses its direct smoother; Kimera LOCAL
+removes tracked explicit CBS factors/anchors but does not certify removal of
+past CBS information retained in a marginalization prior. Receiver stable-ID
+replacement prevents stacking versions of one belief, but does not remove
+cross-edge or cross-source shared information.
+
+For discussion, the most focused next question is WHY Kimera ON's covariance
+continues contracting after age 2 s with little further mean improvement.
+Trace the actual covariance-graph/prior contributions for those SAME IDs if
+authorized. This report does not initiate that investigation or propose
+covariance clamping, freezing old covariances, Huber, health weighting, changing
+lag, dropping revisions, or another estimator run.
+
+8. Validation and reproduction
+==============================
+- Final active payloads are exact latest input means + all 36 covariance values.
+- Stable-ID, revision, arrival and endpoint mapping independently match final ledgers.
+- 14,070 selected source/mode/age records reproduce prior audit values to 2.23e-16.
+- 100 synthetic SE(3)/dense-whitening/marginal-eigendecomposition checks pass:
+  maximum right-perturbation error 6.64e-17; whitening difference 1.53e-20.
+- Positive/negative rank tests and independent scipy.stats.spearmanr check pass.
+- Exact repeated analysis matches summaries, selected records, late-revision
+  summaries and both rendered plots byte-for-byte (final_validation.json).
+- All 225 protected input/configuration/source/reference hashes unchanged.
+- Source scripts parse; git diff --check passes; tracked worktree diff unchanged.
+- Analysis runtime about 14.2 seconds per deterministic repeat. No estimator
+  build/sanitizer/trajectory test is claimed because no estimator changed.
+- No commit or push. HEAD: 5817540ca741c3b99fbe765c0f72a015835e0b20.
+  Pre-existing untracked kimera_scale2_eth1_20261008 is untouched. This audit's
+  new experiment directory is intentionally untracked pending user review.
+
+Artifacts:
+  /home/yeranis/results/gnssfgo_eth1_covariance_quality_20261008/
+    summary.json; selected_records.json; inputs_before/after.json;
+    validation.json; final_validation.json; repeat/;
+    presentation/late_revisions.json;
+    presentation/uncertainty_ranking.png;
+    presentation/revision_evolution.png.
+
+Scripts and fixed protocol:
+  /home/yeranis/repos/gnssFGO/experiments/covariance_quality_eth1_20261008/
+    PROTOCOL.txt; analyze.py; summarize.py; verify.py; REPORT.txt.
+
+Reproduce analyze.py with --out a NEW directory (refuses overwrite), then
+summarize.py --root that directory. Use the existing interpreter
+  /home/yeranis/.local/share/pipx/venvs/evo/bin/python
+with PYTHONDONTWRITEBYTECODE=1, OPENBLAS_NUM_THREADS=1, OMP_NUM_THREADS=1.
+verify.py checks the retained primary/repeat artifacts and refuses overwriting
+its final-validation file. No package install, container, network or model run
+was necessary. Both static scientific plots were visually inspected.
+
+Conclusion: COVARIANCE_QUALITY_LIMITATIONS_WITH_LATE_KIMERA_ON_CONFIDENCE_GAIN.
+Stop for discussion; Gaussian scale-1 GLIM + Kimera + WNOA remains unchanged.

@@ -1,0 +1,23 @@
+ETH1 GLIM CBS diagnostic-cost retest, 2026-10-10
+
+Exactly one new 100 s CBS-ON engineering capture at 0.1x, bag offset 0.
+Same sources, profiles, native mean alignment, active_window_temporary,
+Gaussian covariance scale 1, full revisions and capped competition audit as
+the interrupted covariance160 capture. Same frozen no-central-IMU WNOA receiver.
+Only GLIM expensive active-factor diagnostics now explicitly disabled before
+factor error/linearize queries. Lifecycle counters continue. New timing records.
+Use isolated private libglim_ros, never overwrite the old/shared libraries.
+
+Purpose: cross the earlier ~89 s missing-history failure point and measure
+actual throughput after eliminating diagnostic-only repeated GPU queries.
+Not an ATE experiment; do not score short/partial GT or claim full160 validation.
+No changing covariance, source settings, alignment, retries or fuser parameters.
+No automatic retries. Keep failure evidence. Stop owned processes on failure.
+
+Validate effective parameters and loaded libraries before playback; after
+capture validate full source coverage, no alignment failures, exact wire-to-factor
+covariance retention, lifecycle removal, all source revisions conserved, strict
+stationarity, empty queues, and deterministic saved-journal replay.
+Compare physical-time-matched timing rows with the retained ON/OFF runs;
+asynchronous source trajectories are not expected to be byte-identical when
+execution timing changes. Mathematical code paths remain unchanged.

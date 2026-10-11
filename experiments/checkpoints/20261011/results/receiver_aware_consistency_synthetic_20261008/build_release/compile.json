@@ -1,0 +1,21 @@
+{
+  "command": [
+    "c++",
+    "-std=c++17",
+    "-I/source_devel/include",
+    "-I/source_devel/include/gtsam/3rdparty/Eigen",
+    "-O2",
+    "-DNDEBUG",
+    "/experiment/test_receiver_aware.cpp",
+    "-L/source_devel/lib",
+    "-lgtsam",
+    "-lgtest_main",
+    "-lgtest",
+    "-lpthread",
+    "-Wl,-rpath,/source_devel/lib",
+    "-o",
+    "/audit/build_release/test_receiver_aware"
+  ],
+  "returncode": 1,
+  "wall_seconds": 6.61336275100075
+}

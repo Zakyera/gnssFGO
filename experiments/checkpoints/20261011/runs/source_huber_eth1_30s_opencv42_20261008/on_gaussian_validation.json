@@ -1,0 +1,429 @@
+{
+  "tag": "on_gaussian",
+  "passed": true,
+  "native_fatal_log_matches": [],
+  "parameter_path_differences": {
+    "resolved_glim_params.yaml": {
+      "config_path": [
+        "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_live_wnoa_20261007/smoke_on_source/glim_config",
+        "/workspace/cbs_gtsam4.3/runs/source_huber_eth1_30s_opencv42_20261008/on_gaussian_source/glim_config"
+      ],
+      "glim_factor_graph_inspector_recording_id": [
+        "smoke_on_source",
+        "on_gaussian_source"
+      ],
+      "glim_cbs_source_loss": [
+        null,
+        "gaussian"
+      ]
+    },
+    "resolved_kimera_params.yaml": {
+      "params_folder_path": [
+        "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_live_wnoa_20261007/smoke_on_source/kimera_profile",
+        "/workspace/cbs_gtsam4.3/runs/source_huber_eth1_30s_opencv42_20261008/on_gaussian_source/kimera_profile"
+      ],
+      "rerun_recording_id": [
+        "smoke_on_source",
+        "on_gaussian_source"
+      ]
+    }
+  },
+  "source_metadata": {
+    "dataset": "GrandTour",
+    "mission": "2024-10-01-11-29-55",
+    "mode": "cbs_on",
+    "direction": "bidirectional",
+    "kimera_mode": "stereo_shared_cpt7",
+    "bag_start_sec": "0.0",
+    "seed_clock_secs": "1727775007",
+    "sensor_window_sec": "30",
+    "bag_rate": "0.10",
+    "glim_factor_graph_stride": "1",
+    "kimera_factor_graph_stride": "5",
+    "max_horizon_pairs_per_update": "1",
+    "odom_publish_stride": "1",
+    "cbs_belief_receive_start_delay_sec": "0.0",
+    "glim_publish_cbs_beliefs": "true",
+    "kimera_publish_cbs_beliefs": "true",
+    "glim_receive_cbs_beliefs": "true",
+    "kimera_receive_cbs_beliefs": "true",
+    "glim_cbs_mode": "inject_persistent",
+    "glim_sensor_pair": "hesai+cpt7_imu",
+    "kimera_sensor_pair": "alphasense_front_stereo+cpt7_imu",
+    "glim_body_frame": "cpt7_imu",
+    "kimera_body_frame": "cpt7_imu",
+    "kimera_calibration_overlay": "/workspace/cbs_gtsam4.3/src/cbsms/config/grandtour_kimera/eth1_mono_shared_cpt7",
+    "external_frame_transform": "native_shared_cpt7",
+    "cbs_horizon_sec": "0.20",
+    "kimera_belief_timestamp_tolerance_sec": "0.05",
+    "kimera_min_intra_keyframe_time_sec": "0.19",
+    "kimera_receiver_audit_max_samples": "0",
+    "kimera_receiver_audit_stride": "1",
+    "glim_receiver_audit_max_samples": "0",
+    "glim_receiver_audit_stride": "1",
+    "cbs_covariance": "schur_relative_between",
+    "cbs_protocol": "classic",
+    "diagnostic_node_output": "log",
+    "cbs_factor_mode": "persistent",
+    "glim_rows": "291",
+    "glim_rows_source": "glim_cbs_odometry",
+    "kimera_rows": "134",
+    "kimera_duration_sec": "29.599837952",
+    "min_estimator_coverage_ratio": "0.90",
+    "ekf_rows": "0",
+    "presentation_enable": "false",
+    "rerun_recording_id": "on_gaussian_source",
+    "g2k_messages": "289",
+    "g2k_injected": "130",
+    "k2g_injected": "131",
+    "g2k_applied_max_target": "132",
+    "g2k_applied_tail_gap": "1"
+  },
+  "source_loss_records": {
+    "glim": {
+      "created": 131,
+      "states": 11002,
+      "phases": {
+        "pre": 131,
+        "linearize": 5075,
+        "post_fresh": 5796
+      }
+    },
+    "kimera": {
+      "created": 130,
+      "states": 6136,
+      "phases": {
+        "pre": 130,
+        "linearize": 3056,
+        "post_fresh": 2950
+      }
+    }
+  },
+  "unsupported": [
+    {
+      "source": "kimera_front",
+      "session": "eth1_source_huber_opencv42_on_gaussian_20261008",
+      "ordinal": "0",
+      "revision": "0",
+      "from_timestamp_ns": "1727775008155395500",
+      "to_timestamp_ns": "1727775008355394600",
+      "reason": "before_initialization"
+    },
+    {
+      "source": "kimera_front",
+      "session": "eth1_source_huber_opencv42_on_gaussian_20261008",
+      "ordinal": "0",
+      "revision": "1",
+      "from_timestamp_ns": "1727775008155395500",
+      "to_timestamp_ns": "1727775008355394600",
+      "reason": "before_initialization"
+    },
+    {
+      "source": "kimera_front",
+      "session": "eth1_source_huber_opencv42_on_gaussian_20261008",
+      "ordinal": "0",
+      "revision": "2",
+      "from_timestamp_ns": "1727775008155395500",
+      "to_timestamp_ns": "1727775008355394600",
+      "reason": "before_initialization"
+    },
+    {
+      "source": "kimera_front",
+      "session": "eth1_source_huber_opencv42_on_gaussian_20261008",
+      "ordinal": "0",
+      "revision": "3",
+      "from_timestamp_ns": "1727775008155395500",
+      "to_timestamp_ns": "1727775008355394600",
+      "reason": "before_initialization"
+    },
+    {
+      "source": "kimera_front",
+      "session": "eth1_source_huber_opencv42_on_gaussian_20261008",
+      "ordinal": "0",
+      "revision": "4",
+      "from_timestamp_ns": "1727775008155395500",
+      "to_timestamp_ns": "1727775008355394600",
+      "reason": "before_initialization"
+    },
+    {
+      "source": "kimera_front",
+      "session": "eth1_source_huber_opencv42_on_gaussian_20261008",
+      "ordinal": "0",
+      "revision": "5",
+      "from_timestamp_ns": "1727775008155395500",
+      "to_timestamp_ns": "1727775008355394600",
+      "reason": "before_initialization"
+    },
+    {
+      "source": "kimera_front",
+      "session": "eth1_source_huber_opencv42_on_gaussian_20261008",
+      "ordinal": "0",
+      "revision": "6",
+      "from_timestamp_ns": "1727775008155395500",
+      "to_timestamp_ns": "1727775008355394600",
+      "reason": "before_initialization"
+    },
+    {
+      "source": "kimera_front",
+      "session": "eth1_source_huber_opencv42_on_gaussian_20261008",
+      "ordinal": "0",
+      "revision": "7",
+      "from_timestamp_ns": "1727775008155395500",
+      "to_timestamp_ns": "1727775008355394600",
+      "reason": "before_initialization"
+    },
+    {
+      "source": "kimera_front",
+      "session": "eth1_source_huber_opencv42_on_gaussian_20261008",
+      "ordinal": "0",
+      "revision": "8",
+      "from_timestamp_ns": "1727775008155395500",
+      "to_timestamp_ns": "1727775008355394600",
+      "reason": "before_initialization"
+    },
+    {
+      "source": "kimera_front",
+      "session": "eth1_source_huber_opencv42_on_gaussian_20261008",
+      "ordinal": "0",
+      "revision": "9",
+      "from_timestamp_ns": "1727775008155395500",
+      "to_timestamp_ns": "1727775008355394600",
+      "reason": "before_initialization"
+    },
+    {
+      "source": "kimera_front",
+      "session": "eth1_source_huber_opencv42_on_gaussian_20261008",
+      "ordinal": "0",
+      "revision": "10",
+      "from_timestamp_ns": "1727775008155395500",
+      "to_timestamp_ns": "1727775008355394600",
+      "reason": "before_initialization"
+    },
+    {
+      "source": "kimera_front",
+      "session": "eth1_source_huber_opencv42_on_gaussian_20261008",
+      "ordinal": "0",
+      "revision": "11",
+      "from_timestamp_ns": "1727775008155395500",
+      "to_timestamp_ns": "1727775008355394600",
+      "reason": "before_initialization"
+    },
+    {
+      "source": "kimera_front",
+      "session": "eth1_source_huber_opencv42_on_gaussian_20261008",
+      "ordinal": "0",
+      "revision": "12",
+      "from_timestamp_ns": "1727775008155395500",
+      "to_timestamp_ns": "1727775008355394600",
+      "reason": "before_initialization"
+    },
+    {
+      "source": "kimera_front",
+      "session": "eth1_source_huber_opencv42_on_gaussian_20261008",
+      "ordinal": "0",
+      "revision": "13",
+      "from_timestamp_ns": "1727775008155395500",
+      "to_timestamp_ns": "1727775008355394600",
+      "reason": "before_initialization"
+    },
+    {
+      "source": "kimera_front",
+      "session": "eth1_source_huber_opencv42_on_gaussian_20261008",
+      "ordinal": "0",
+      "revision": "14",
+      "from_timestamp_ns": "1727775008155395500",
+      "to_timestamp_ns": "1727775008355394600",
+      "reason": "before_initialization"
+    },
+    {
+      "source": "kimera_front",
+      "session": "eth1_source_huber_opencv42_on_gaussian_20261008",
+      "ordinal": "0",
+      "revision": "15",
+      "from_timestamp_ns": "1727775008155395500",
+      "to_timestamp_ns": "1727775008355394600",
+      "reason": "before_initialization"
+    },
+    {
+      "source": "kimera_front",
+      "session": "eth1_source_huber_opencv42_on_gaussian_20261008",
+      "ordinal": "0",
+      "revision": "16",
+      "from_timestamp_ns": "1727775008155395500",
+      "to_timestamp_ns": "1727775008355394600",
+      "reason": "before_initialization"
+    },
+    {
+      "source": "kimera_front",
+      "session": "eth1_source_huber_opencv42_on_gaussian_20261008",
+      "ordinal": "0",
+      "revision": "17",
+      "from_timestamp_ns": "1727775008155395500",
+      "to_timestamp_ns": "1727775008355394600",
+      "reason": "before_initialization"
+    },
+    {
+      "source": "kimera_front",
+      "session": "eth1_source_huber_opencv42_on_gaussian_20261008",
+      "ordinal": "0",
+      "revision": "18",
+      "from_timestamp_ns": "1727775008155395500",
+      "to_timestamp_ns": "1727775008355394600",
+      "reason": "before_initialization"
+    },
+    {
+      "source": "kimera_front",
+      "session": "eth1_source_huber_opencv42_on_gaussian_20261008",
+      "ordinal": "0",
+      "revision": "19",
+      "from_timestamp_ns": "1727775008155395500",
+      "to_timestamp_ns": "1727775008355394600",
+      "reason": "before_initialization"
+    },
+    {
+      "source": "kimera_front",
+      "session": "eth1_source_huber_opencv42_on_gaussian_20261008",
+      "ordinal": "0",
+      "revision": "20",
+      "from_timestamp_ns": "1727775008155395500",
+      "to_timestamp_ns": "1727775008355394600",
+      "reason": "before_initialization"
+    },
+    {
+      "source": "kimera_front",
+      "session": "eth1_source_huber_opencv42_on_gaussian_20261008",
+      "ordinal": "0",
+      "revision": "21",
+      "from_timestamp_ns": "1727775008155395500",
+      "to_timestamp_ns": "1727775008355394600",
+      "reason": "before_initialization"
+    },
+    {
+      "source": "kimera_front",
+      "session": "eth1_source_huber_opencv42_on_gaussian_20261008",
+      "ordinal": "0",
+      "revision": "22",
+      "from_timestamp_ns": "1727775008155395500",
+      "to_timestamp_ns": "1727775008355394600",
+      "reason": "before_initialization"
+    },
+    {
+      "source": "kimera_front",
+      "session": "eth1_source_huber_opencv42_on_gaussian_20261008",
+      "ordinal": "0",
+      "revision": "23",
+      "from_timestamp_ns": "1727775008155395500",
+      "to_timestamp_ns": "1727775008355394600",
+      "reason": "before_initialization"
+    },
+    {
+      "source": "kimera_front",
+      "session": "eth1_source_huber_opencv42_on_gaussian_20261008",
+      "ordinal": "0",
+      "revision": "24",
+      "from_timestamp_ns": "1727775008155395500",
+      "to_timestamp_ns": "1727775008355394600",
+      "reason": "before_initialization"
+    }
+  ],
+  "max_publication_gradient": 9.59366134369314e-06,
+  "live_output_age_s": {
+    "median": 0.060003,
+    "p95": 0.10000479999999999,
+    "max": 0.100024407
+  },
+  "maximum_observed_queue": 4,
+  "imu_samples": 2986,
+  "revision_payloads_conserved": true,
+  "raw_source_ids": 421,
+  "versions": 15884,
+  "active_source_ids": 420,
+  "replacements": 15439,
+  "summary": {
+    "receiver_model": "source_wnoa",
+    "support_policy": "uniform_imu",
+    "kimera_channel": "full",
+    "kimera_covariance": "full",
+    "selected_rows_validated": false,
+    "kimera_blockdiag_validated": false,
+    "maximum_removed_kimera_cross_covariance": 0,
+    "streaming": true,
+    "pending_at_end": 0,
+    "support_period_ns": 100000000,
+    "initial_timestamp_ns": 1727775008583475000,
+    "imu_availability": "event-stream adapter receipt timestamp",
+    "queued_arrival_events": 131,
+    "maximum_support_wait_seconds": 0.013318629,
+    "mode": "source_wnoa_sources",
+    "imu_support": "timestamp_clock_only",
+    "motion_prior": "WNOA_estimated_velocity",
+    "audit_use_imu": false,
+    "audit_qc_variance": null,
+    "audit_startup_sample_limit": 0,
+    "timeline": "record",
+    "solver": "isam2",
+    "smoother": "ISAM2",
+    "lag_seconds": null,
+    "support_states": 293,
+    "glim_beliefs_loaded": 0,
+    "kimera_beliefs_loaded": 0,
+    "beliefs_accepted": 420,
+    "revision_messages_loaded": 15884,
+    "revision_insertions": 15859,
+    "revision_removals": 15439,
+    "revision_duplicates": 0,
+    "revision_stale": 0,
+    "maximum_factor_covariance_abs_difference": 3.3881317890172014e-20,
+    "source_model_noise": {},
+    "revision_update_seconds": 8.86798599400001,
+    "glim_beliefs_accepted": 0,
+    "kimera_beliefs_accepted": 0,
+    "beliefs_skipped_no_support": 25,
+    "factor_kinds": {
+      "exact": 0,
+      "single_first": 0,
+      "single_second": 0,
+      "same_support": 0,
+      "double": 420
+    },
+    "startup_imu_samples": 0,
+    "duration_seconds": 29.200000000000003,
+    "path_length_m": 9.23123432580104,
+    "maximum_active_values": 879,
+    "wall_seconds": 326.179424727,
+    "experimental_qc_diagonal": [
+      0.00375,
+      0.00375,
+      0.00375,
+      0.015,
+      0.015,
+      0.015
+    ],
+    "gravity": null,
+    "initial_accelerometer_bias": null,
+    "initial_gyroscope_bias": null,
+    "source_wnoa_initial_sigmas": {
+      "pose_rad_m": 1e-05,
+      "velocity_m_s": 10,
+      "omega_rad_s": 3
+    },
+    "imu_factor_count": 0,
+    "bias_variable_count": 0,
+    "wnoa_factor_count": 292,
+    "acceleration_variable_count": 0,
+    "initial_prior_count": 3,
+    "relative_factor_count": 420,
+    "active_factor_count": 715
+  },
+  "exact_repeat_sha256": {
+    "trajectory.tum": "f870103d9c2499fa22e3856aa656284ecece5bf0800b3f4970083e4f545ee7ef",
+    "states.csv": "ec531b8490434817d4137c661e7b4d19891fd979d3676639d110b69230f8b2a5",
+    "online_trajectory.tum": "5ba3dbc2785959eab2b020919b94e9e7e72979559f38d3c96aa4e645964f332a",
+    "online_states.csv": "c9bf818f21bb4c742fc4fdb9536165a7920b4720e3b77a4279f3e9ce01fe46a6",
+    "support_clock.csv": "a1963555274b79094a041e2a63c18d21ecb85245e69e88014f9ca73a76fce6a3",
+    "source_model_covariance.csv": "257ef0eb015b8ebbc3d7237021c2bc7c44449c4d3c4df6897fe55e9127e5eea8",
+    "model_covariance.csv": "05bfc45e99db2b165e754ddd31b18686245bff3d8a2b66971eef9fca94f41be0",
+    "causal_dispatch.csv": "f25e5586c5f916074bdec2c45a4b37d6b6940bcc0b9d59c347859bfe4ecdaa82",
+    "measurement_events.csv": "c5deb168667e759f59f9daba8f422154394d0c2b70699c3edc90806fc1e3c333"
+  }
+}

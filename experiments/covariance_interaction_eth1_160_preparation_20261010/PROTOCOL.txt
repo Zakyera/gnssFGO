@@ -1,0 +1,275 @@
+ETH1 160-second covariance-interaction preparation
+2026-10-10
+=================================================
+
+Status: PREPARED_DIAGNOSTIC_SPECIFICATION; NOT YET CLEARED FOR 160-SECOND CAPTURE.
+No new source run, fusion replay or optimization was launched by this preparation.
+No estimator source, covariance, Qc, prior, launch default or frozen artifact was
+modified. The included GLIM patch is STAGED ONLY, not applied or built.
+
+Purpose
+-------
+Understand two different levels before changing any weights:
+  1. GLIM -> Kimera and Kimera -> GLIM: incoming covariance and relative mean,
+     receiver's native constraints, actual factor insertion and retirement,
+     then evolution of the outgoing belief covariance.
+  2. GLIM + Kimera -> gnssFGO: separate their relative-factor information from
+     the WNOA motion prior at the SAME receiver state/linearization point.
+
+Keep all receivers Gaussian at scale 1. No tuning, floors, covariance bridges,
+health weighting, robust losses or accuracy-selected sampling in this task.
+The central receiver has NO IMU measurement factors. Native sources still use
+their IMUs. WNOA, not WNOJ, is the central motion model. Initial priors are an
+additional factor family and must not be hidden inside WNOA or a source.
+
+Baseline and comparison contract
+-------------------------------
+Use the completed native mean-alignment experimental configuration:
+ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_native_mean_alignment_20261010/gpu_restored
+Read its parent REPORT.txt, completion.json and protected/acceptance manifests.
+The older canonical runbook's persistent-lifetime/Combined-IMU/WNOJ defaults
+are NOT this experiment. The selected source lifetime is active_window_temporary,
+source protocol classic (not live_revision), mean alignment enabled for ON,
+downstream full-current-smoother revisions with stable-ID replacement.
+Kimera's saved native IMU convention remains current; no new RIGHT override.
+
+For an eventual 160 s comparison, generate matched fresh OFF and ON captures
+from the same source binaries, ETH1 profiles, offset 0, rate .10 and diagnostic
+settings. No source policy may change after examining results. The earlier OFF
+capture is useful for preparation, not a newly matched 160 s control. Effective
+flags, file hashes and loaded shared-library paths must be checked again.
+Use a new private controller/session/port/root. The existing controller accepts
+only gate/pilot durations and must NOT be repurposed by editing completed files.
+capture_contract.json is a specification, not an executable launch config.
+
+What is already saved and reusable
+---------------------------------
+Completed 40 s capture has:
+ - original native odometry and actual exchanged wire messages in cbs.bag;
+ - full native outgoing means, all 36 covariance entries and later revisions;
+ - native source/receiver endpoint mapping, raw/adapted means and covariance;
+ - exact wire -> adapter -> factor covariance checks (181 G-receiver,179 K);
+ - actual insertion/slot/removal lifecycle and pre/post pose-merge diagnostics;
+ - full receiver event journal, receipts, dispatch and replacement ledger;
+ - source covariance diagnostics, final belief residuals, publication objective
+   and convergence history, online and final full states/trajectories;
+ - live timing/queue diagnostics and deterministic saved-journal validation.
+
+Reuse validate_native_bidirectional.py, check_lifecycle.py,
+validate_numerical_case.py and evaluate_full40.py as REFERENCES; make bounded
+160-specific copies only in a fresh run root. Do not write into this capture.
+No existing saved source graph can be invented from its final trajectory.
+
+Specific gaps found before the next run
+--------------------------------------
+1. GLIM detailed receiver-local audit exists but logReceiverLocalCompetition
+   is called only in appendPersistentFactor (cbs_bridge.cpp:2718), NOT in
+   appendActiveWindowTemporaryFactor (starts around3030). Enabling the launch
+   parameter alone is therefore insufficient for the currently selected mode.
+   glim_active_window_audit_hook.patch stages its existing capped helper just
+   before queuing an accepted active-window factor, after the duplicate guard.
+   It keeps max_samples=0 as the no-op default. Apply/build/validate separately
+   before launch; a syntactic patch check is not runtime verification.
+
+2. Kimera has an existing passive audit at factor construction:
+   VioBackend.cpp:218/224 -> BPSAM params -> bpsam.cpp:3949 onward ->
+   logCovarianceExchangeAudit around984. It records incoming matrices, factor
+   H_from/H_to, endpoint Hessian/gradient and local/global factor groups.
+   Its preinjection pose arguments and audit_values can be different snapshots;
+   audit their equality before combining the manually evaluated Jacobians with
+   the logged factor residual/Hessian. Use each actual GTSAM factor's own
+   unwhitenedError/linearize at one explicit Values for numerical comparisons.
+   The retained 40 s run left this detailed audit disabled.
+
+3. GLIM's reusable helper gives a local-only joint-endpoint relative covariance
+   and grouped touching-factor Hessian norms, NOT full competing graph matrices.
+   Its raw trace ratio/generalized comparison is NOT yet a calibrated influence
+   score, especially with a nonzero residual and the mean-only bridge. Retain
+   matrices and evaluate on the same endpoint tangent before interpreting them.
+   If exact native directional competition is needed, the bounded gate must
+   also export the actual incoming factor's whitened residual/Jacobian and
+   explicit local endpoint information at that SAME Values. Do not equate a
+   sum of factor Frobenius norms with the norm of a summed Hessian.
+
+4. Fusion's saved final residuals do not describe every optimization iteration.
+   Its existing SnapshotAudit.h has lightweight all-publication recording,
+   but WNOJ_AUDIT_INDICES/DEEP also run additional LM/refinement/marginal checks
+   on copies. Do NOT turn those on during live acquisition just to get plots.
+   The live transport environment already restricts diagnostic variables.
+   Reuse the existing offline reconstruction/interaction code after capture.
+   Change diagnostic file routing only; preserve graph/payload/cost probes.
+
+Capture A: every belief, minimal continuous logging
+-------------------------------------------------
+Keep wire bag, native logs, revisions, events, receipts and slot lifetimes.
+For each layer distinguish:
+ - sender/session/BeliefID and revision; source and receiver endpoint IDs/times;
+ - publication, observed availability, insertion/update and retirement times;
+ - raw mean, temporally adapted mean, full source covariance, inserted covariance;
+ - extraction graph (GLIM direct vs Kimera LOCAL), rank/jitter/fallback status;
+ - available active-pose window and whether the belief is still jointly valid.
+
+Do not confuse source classic wire publications with the downstream rolling
+smoother revision stream. They need not have the same number of messages or
+covariance payload at the same wall time. Join exact identities AND versions.
+One revised belief replaces one factor, not another independent observation.
+
+Covariance summaries, separately per stream/layer/direction and 10 s time bin:
+ - trace(Sigma_phi_phi) [rad^2] and trace(Sigma_rho_rho) [m^2];
+ - per-axis standard deviations and 3x3 marginal eigenvalues;
+ - minimum/full spectrum as numerical health only, symmetry and finite checks;
+ - full rotation/rho cross block and dimensionless block-normalized coupling;
+ - first, fixed physical ages 1/2/3/4 s, last jointly valid versions per ID;
+ - contraction ratios on matched IDs/endpoints with censored tails separate.
+Never average every revision as an independent belief or mix rad^2 with m^2
+in a single confidence score. rho is the existing SE(3) log coordinate, not
+automatically Cartesian position error. Retain full 6x6 covariance in whitening.
+
+Compare OFF/ON on identical physical relative intervals and matched revision
+age, not source row number or nearest unrelated edge. Record unmatched counts.
+Do not pick only low-covariance or high-error samples.
+
+Capture B: bounded source-receiver competition
+---------------------------------------------
+Proposed existing environment selectors, NOT applied by this preparation:
+ CBSMS_GLIM_RECEIVER_AUDIT_MAX_SAMPLES=40
+ CBSMS_GLIM_RECEIVER_AUDIT_STRIDE=20
+ CBSMS_KIMERA_RECEIVER_AUDIT_MAX_SAMPLES=40
+ CBSMS_KIMERA_RECEIVER_AUDIT_STRIDE=20
+They select first then every20th distinct candidate in each implementation;
+actual accepted/constructed semantics and missing samples must be logged.
+Nominally roughly every4s at5Hz, but do not assume exact physical spacing.
+GLIM's helper caps successful samples; unavailable attempts may still cost time.
+An 8-10 s headless gate must demonstrate bounded overhead before the160s run.
+
+For each selected accepted factor:
+ - actual pre-update local relative transform and incoming aligned transform;
+ - pre/post raw rotation/rho residual and squared whitened residual;
+ - incoming full Sigma, actual whitened J, H=Jw^T Jw, g=Jw^T rw;
+ - receiver local relative covariance from JOINT endpoints, including cross
+   covariance; explicit CBS excluded, retained marginal prior labeled separately;
+ - factor categories native geometric/visual, native IMU, prior, external CBS;
+ - post-update movement and outgoing covariance, tied to backend update ID;
+ - tracked insertion slot, last valid update, removal before marginalization.
+OFF has no received source factor: missing incoming-factor rows there are
+expected, not a diagnostic failure. Both sources still export beliefs in OFF.
+For ON, zero detailed rows in either direction is a failed diagnostic gate.
+
+Do not assume LOCAL/excluding explicit CBS makes historical priors independent.
+active_window_temporary removal bookkeeping is not a matrix-level proof of
+erasing all past cross-source effects. A source graph can also change through
+linearization, track selection and its native constraints without prior leakage.
+
+Analysis C: gnssFGO factor-family competition after capture
+---------------------------------------------------------
+Keep live rendering and full source graph inspectors off. Analyze the recorded
+causal journal afterward, never substitute this replay for the live trajectory.
+First require exact event/covariance/slot accounting, original model hashes and
+same-journal state equivalence to the captured run. Existing tolerances are
+p<=1e-7 m, orientation<=1e-8 rad, v/omega<=1e-7 in their units; unchanged strict
+stationarity <=1e-5. Record byte equality when obtained, not when merely assumed.
+
+At the first source update, first both-source update, predetermined elapsed
+times10,20,40,80,120,155s and final drain, reconstruct the EXACT factors, actual
+interpolation support keys and values. Resolve requested times to first support
+at/after the time; record both requested and actual times/arrivals. If unavailable,
+report missing rather than silently choosing an accuracy-based replacement.
+Use existing WNOA and relative-factor classes from the frozen build, not a
+new residual/interpolator. Verify factor payload covariance, residual and total
+cost against the original before reporting Jacobian-based quantities.
+
+Reuse (path routing/requests require adaptation in a new diagnostic directory):
+ /home/yeranis/results/gnssfgo_eth1_local_prediction_20261007/build/wnoa/SnapshotAudit.h
+ /home/yeranis/repos/gnssFGO/experiments/checkpoints/20261007/results/gnssfgo_eth1_wnoa_mechanism_20261007/interaction.cpp
+ /home/yeranis/repos/gnssFGO/experiments/checkpoints/20261007/results/gnssfgo_eth1_wnoa_prediction_audit_20261007/audit.cpp
+The existing interaction code already calls the actual factor unwhitenedError,
+WhitenSystem, and compares half squared whitened norm to factor.error.
+No offline graph analysis was executed in this preparation.
+
+At one common Values per snapshot, by family GLIM, Kimera, WNOA, initial priors:
+ - count, residual dimension, sum cost and cost/dimension;
+ - rw, Jw, Hs=sum(Jw^T Jw), gs=sum(Jw^T rw);
+ - per-support rotation/translation/velocity/angular-rate curvature blocks;
+ - pairwise gradient angles on shared blocks (label undefined zero gradients);
+ - curvature in fixed shared directions d: d^T Hs d / d^T Htotal d;
+ - optionally a fixed-linearization response -Htotal^-1 gs with the SAME gauge
+   priors/rank handling, explicitly not a new optimized trajectory or causal
+   attribution of total error. Do not silently pseudoinvert a singular system.
+Combine repeated support-key Jacobian blocks before forming a factor Hessian.
+Verify Htotal=sum Hs and gtotal=sum gs; compare stationarity/cost diagnostics.
+
+WNOA covariance is 12D and includes pose/rate units and time powers; it cannot
+be ranked against a source's6D covariance trace. Directional quantities must
+use the same variables, coordinates and scaling. If comparing Hessian spectra,
+use one common normalization D from Htotal for ALL families, not a different
+normalization per source. Information curvature is resistance to motion;
+gradient is directional pull. Neither alone equals trajectory accuracy.
+At a converged solution family gradients can be large and cancel; the sum
+being near zero is not evidence that no factor matters. A low final residual
+can indicate the graph followed a strong bad factor, not that it was correct.
+
+Before/after an update is not the same as every internal iSAM2 relinearization.
+If pre-update per-family diagnostics are unavailable in the frozen recorder,
+mark them missing or add an OFFLINE-only diagnostic observer and validate it.
+Do not claim final post-fit residuals are pre-fit innovations or use them as
+calibrated NIS. Source and receiver share information; nominal chi-square
+exceedances, if shown, are descriptive, not a calibration/gating test.
+
+Mean alignment caveat stays visible
+----------------------------------
+The validated adapter changes only Z using nominal IMU bridges. It deliberately
+leaves Sigma unchanged: no bridge uncertainty, coordinate covariance transport
+or source/bridge cross-correlations have been introduced. Log endpoint offsets
+and mean-bridge magnitude alongside standardized disagreement. This can identify
+where the approximation matters; it cannot quantify missing uncertainty from
+these logs alone. This task does NOT authorize fixing/scaling that covariance.
+
+Accuracy and reporting
+----------------------
+Primary comparison remains native GLIM, native Kimera ROS odometry and fused
+ONLINE output, OFF vs ON, over the entire saved travel. Final fusion is separate,
+retrospective. No source-only gnssFGO control masquerades as native output.
+Use continuous IE-TC reference where needed to cover the requested160s, after
+verifying actual coverage; record it shares CPT7 and is not independent prism
+GT. Independent prism results may be supplementary with their actual coverage.
+Keep full-output ATE separate from common-mask1s RPE; report duration, gaps,
+path, matching fraction and alignment convention. Do not fill missing poses.
+No new scores are calculated by this preparation.
+
+Questions this audit will answer (not predetermined conclusions)
+---------------------------------------------------------------
+ - Do reported covariances contract after CBS, in which directions and ages?
+ - Does a contraction coincide with smaller error on the SAME physical belief?
+ - Is a confident incoming belief actually moving the receiver toward it?
+ - Does contraction propagate into downstream rolling revisions?
+ - At equal information sets, does Kimera/GLIM change its directional influence
+   relative to WNOA, or mainly its residual/mean? Are gradients opposing?
+ - Are missing alignment uncertainty, source correlation, window age or delayed
+   arrivals confounding any apparent covariance-only explanation?
+These require covariance, means, topology and optimizer state together.
+
+Acceptance before starting160s
+-----------------------------
+1. Apply/build the isolated GLIM logging hook; verify actual Kimera evaluation
+   points and complete only the missing diagnostic matrix fields, if required.
+2. Authorize then run ONE bounded diagnostic gate. Verify nonzero rows in both
+   directions, exact36-entry covariance preservation, causal endpoints, source
+   lifecycle, all native trajectories, fuser stationarity, bounded queues and
+   no extra diagnostic optimizer in live code. No automatic retries/tuning.
+3. Compare source diagnostic overhead against the recorded headless operating
+   point; logging is mathematically passive but may alter wall-time/arrivals.
+4. Freeze matched OFF/ON preparation (including loaded binary hashes) in a NEW
+   directory. Only then request/receive authorization to launch160s.
+No frozen40s artifact, failed run, or existing manifest is overwritten.
+
+Local preparation checks
+------------------------
+inspect_capture.py reads completed artifacts only and writes a new JSON. It
+fails on missing/ambiguous logs, changed inputs, malformed/nonfinite covariance,
+missing revision sequence, changed stable endpoint identity or noncausal times.
+It explicitly distinguishes transported payloads from accepted active factors.
+test_inspect_capture.py tests dense matrix preservation, invalid matrices,
+revision identity and timing negatives. No optimizer is imported.
+retained40_inventory.json is a dry check on the completed40s data, not a new run.
+Do not call this packet fully instrumented or runtime-certified until the
+missing native diagnostics and bounded gate above have actually passed.

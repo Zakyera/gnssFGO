@@ -1,0 +1,33 @@
+Native mean-only timing correction: gated implementation and validation
+=====================================================================
+Authorized scope: resolve remaining native receiver mean/timestamp integration.
+No covariance edits, tuning, source revision protocol change, new sequence,
+full ETH1, or estimator-output substitution. Existing artifacts are read-only.
+
+Gate 1: default-disabled Kimera native adapter using the actual interpolated
+frontend IMU packet intervals and pre-update active pose/velocity/bias states.
+Use native ImuFrontend/GTSAM preintegration, not open-loop experiment history.
+For source [a,b] and recipient [c,d]: U(c,a) Z(a,b) U(b,d).
+Each U is computed on one prior-anchored nominal trajectory. The raw source
+payload and original source timestamps remain available for provenance.
+All 36 covariance entries remain unmodified. This remains an intentionally
+incomplete statistical model: no bridge uncertainty/correlations are added.
+Missing history cannot fall back to an unaligned measurement.
+
+Gate 2: focused Release and ASan/UBSan tests; short 8-second native Kimera
+no-CBS/raw-CBS/aligned-CBS controls with identical recorded GLIM wire messages
+and raw camera/IMU inputs. No new GLIM or central fuser in this isolation gate.
+Use the exact retained ETH1 stereo/current-IMU/25-state profile and existing
+active_window_temporary receiver lifetime, scales 1, no new robust loss/gates.
+Native Kimera odometry remains the incremental output; do not replace it with
+final smoother states. Inspect exact mapping, covariance, causal cutoff, native
+state changes, and coverage. Reference is continuous IE-TC, not 11 s prism.
+
+Only after this gate succeeds, integrate/validate the reverse direction using
+GLIM's own native IMU and state machinery, followed by matched 40-second native
+GLIM/Kimera/no-central-IMU-WNOA validation. Do not claim these later gates ran
+merely because code compiled or isolated mean errors improved.
+
+Defaults remain disabled. Preserve the protected WNOA binary and Qc/priors.
+Fail and report numerical, timing, covariance-conservation or coverage blockers;
+do not tune parameters to complete the run. Keep failed artifacts.

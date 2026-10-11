@@ -1,0 +1,162 @@
+GLIM CBS-ON latency diagnosis — retained ETH1 160 s attempt
+========================================================
+Read-only diagnosis, 2026-10-10. No source/fuser rerun, profiling attachment,
+estimator change, covariance change, or setting change. Only this analysis
+script, its JSON output and this report are new. Original REPORT.txt and
+captures remain unchanged.
+
+Conclusion
+----------
+GLIM really fell behind, but the measured extra time is overwhelmingly in
+CBS callbacks, not in its main native smoother update. The callbacks contain
+an uncapped active-factor influence diagnostic and an auxiliary LOCAL smoother
+and covariance rebuild. These perform synchronous GPU factor work on the
+odometry thread. Slow processing then causes input backpressure and eventually
+beliefs too old for Kimera's active alignment history.
+
+This is stronger evidence than the earlier warning-count hypothesis. It does
+not provide a CPU/GPU profiler's exact division between kernels, synchronization,
+allocation, disk writes, or contention. No counterfactual speedup was measured.
+
+Matched timing evidence
+-----------------------
+analyze.py parses the existing GLIM_ODOM_IMU_TIMING_ROW and nested
+GLIM_CBS_TIMING_ROW timers according to their source-code definitions.
+Window: physical stamp minus first IMU stamp1727775008.003475 in [0,115)s.
+1143 ordinary scan updates in EACH case; timestamp-list hashes exactly match.
+These are wall milliseconds, not simulated milliseconds:
+
+Stage                              OFF mean ms    ON mean ms
+Pre-smoother CBS callback                0.058       129.219
+Main native smoother update           157.379       172.008
+Post-smoother CBS callback              21.101       633.604
+Complete scan update                  181.762       937.432
+
+Pre+post callbacks explain98.15% of the measured increase in complete scan
+time. Native smoother cost increases about15ms, versus756ms total increase.
+This does not claim that CBS correction has no effect on native optimization.
+
+Nested ON callback timers, same physical selection (1138–1139 available rows;
+a few nested records absent, explicitly counted in JSON):
+ * auxiliary sidecar update:119.560ms mean;
+ * LOCAL covariance-graph rebuild:172.635ms mean;
+ * actual outgoing belief marginal query after rebuilding:2.523ms mean;
+ * ROS publish call:.00554ms mean;
+ * unbracketed post-callback work:438.020ms mean, median450.620ms.
+
+The438ms is a DIFFERENCE of enclosing timer minus measured temporary-update,
+odometry-publication, outgoing+revision, and scalar spans. It includes active
+factor diagnostics, pending-slot bookkeeping and pose-merge finalization; it
+is NOT a dedicated timer proving438ms exactly in one function. Code structure,
+actual diagnostic counts and synchronous warnings strongly localize the major
+work there to logActiveWindowFactorDiagnostics(). OFF residual is.00434ms.
+
+Across the partial ON capture there are26349 active-edge diagnostic rows and
+1143005 successful neighboring-factor Hessian queries, excluding each tracked
+factor's own Hessian. The newly capped incoming-competition audit has only28
+distinct samples. Its40-sample cap is NOT a cap on the older active-window
+diagnostics. These are different paths.
+
+Exact code paths (workspace prefix /home/yeranis/repos/V4RL/cbs_gtsam4.3)
+------------------------------------------------------------------------
+src/glim/src/glim/odometry/odometry_estimation_imu.cpp:
+  insert_frame(), around430–450 and496: pre callback -> update_smoother ->
+  post callback, all synchronous in scan processing, with separate timers.
+
+src/glim_ros1/src/glim_ros/cbs_bridge.cpp:
+  1247–1250: onSmootherUpdate calls updateSidecar before receiving factors.
+  3215–3224: sidecar_->update(new_factors,new_values,new_stamps).
+  673–680: ActiveWindowTemporary requires this sidecar, even with configured
+    outgoing_marginal_source=direct; OFF ObserveOnly does not require it.
+  1475–1487: onSmootherUpdateFinish publishes odometry, then unconditionally
+    calls logActiveWindowFactorDiagnostics before outgoing beliefs.
+  2251–2256: diagnostic returns only if wrong mode or no active external edges.
+  2279 onward: for EACH active external edge, examines touching graph factors.
+  2392–2395: evaluates their errors and pose-Hessian norms.
+  458–459: helper calls factor.linearize(values).
+  2335: active_factor_detail_log_enable only gates detailed ROW PRINTING.
+    It does not guard the expensive errors/Hessians or summary calculation.
+  2787 onward: separate new incoming-competition audit is capped/strided.
+  3309–3316: temporary mode selects sidecar LOCAL covariance smoother.
+  1515 onward: downstream full current-smoother revision queries are separate.
+
+src/cbs/src/bpsam/bpsam.cpp:
+  setMarginalizationGraph(),4721 onward;4830:
+  creates MarginalsWithGraph(factors,values), i.e. rebuilds a marginal graph.
+
+src/gtsam_points/src/gtsam_points/factors/integrated_vgicp_factor_gpu.cpp:
+  error(),166 onward and linearize(),185 onward: without a prepared batched
+  result, direct factor queries fall back to synchronous GPU evaluation and
+  print the corresponding warning.
+src/gtsam_points/src/gtsam_points/factors/integrated_vgicp_derivatives.cu:
+  linearize(),80–92 and compute_error(),95–109: device allocations, issue work,
+  sync_stream(), fetch result. Thus warnings represent actual expensive work,
+  not just noisy text. The ordinary ISAM2Ext path has GPU linearization hooks;
+  direct diagnostic factor queries bypass that batched preparation.
+
+IMPORTANT: the auxiliary LOCAL path is part of the current explicitly selected
+temporary-factor mode. Do not disable it casually as a 'logging fix': changing
+the covariance provenance would violate the frozen measurement semantics.
+The unconditional diagnostic is a distinct, much clearer performance target.
+It already exists in the retained pre-instrumentation cbs_bridge.cpp under
+runs/gnssfgo_eth1_covariance_logging_20261010/prepared/before/; it was not added
+by the newest capped40-sample audit. Its previous presence does not make its
+cost acceptable for live playback.
+
+How the backlog developed
+-------------------------
+Hesai scan interval is approximately.1 simulated seconds; playback is.1x,
+so one scan arrives approximately every1 wall second. Mean processing time:
+
+Physical section      OFF ms/scan  ON ms/scan  ON mean publication age(s)
+0–20s                    72.869     404.446       .115
+20–40s                  192.563     890.283       .146
+40–60s                  191.910     964.523       .306
+60–80s                  261.813    1167.366      2.757
+80–100s                 176.135    1045.288      4.704
+100–115s                194.711    1199.562      6.678
+
+The ON workload crosses sustained playback capacity. These sections group by
+physical scan timestamps, NOT wall/receiver time. Publication occurs partway
+through the post callback, before its expensive diagnostics/outgoing work.
+
+GLIM input preprocessing is not the culprit: full available capture means
+6.191ms OFF vs5.782ms ON. The ON input callback instead spends527.300ms average
+waiting for odometry workload; p951376.938ms. OFF has effectively zero wait.
+GlimROS::insert_frame(),src/glim_ros1/src/glim_ros/glim_ros.cpp:299–305, explicitly
+sleeps while odometry_estimation->workload()>10. Logged workload peaks11 ON vs1
+OFF. This is backpressure from the slower odometry consumer, not evidence of
+expensive point preprocessing. These input statistics have unequal total run
+lengths; unlike the primary table they are not matched-window averages.
+
+First failed belief829->831:
+ source endpoint1727775091.774600029;
+ GLIM export clock1727775096.7806983 (already5.006098s old);
+ Kimera evaluation epoch1727775096.954911 (another.174213s later);
+ age there5.180310965s, no active native alignment anchor, drop_old_unmatched.
+The.174s includes receiving/scheduling; it is NOT a measured network latency.
+This directly rules out transport as the main origin of this belief's5s age.
+Source stdout export row140480; Kimera estimators.log failure row2972379.
+
+What follows / boundaries
+------------------------
+The engineering target is redundant synchronous CBS-side computation, before
+changing rates, lag, covariance, or mathematical factors. A future authorized
+fix should make expensive influence diagnostics genuinely optional/capped and
+measure cost of the required sidecar/marginal calculation without altering its
+covariance result. Merely suppressing warnings will not eliminate GPU work.
+Do not promise a speedup or output equivalence until an isolated validation.
+No fix or new experiment was performed in this diagnosis.
+
+gnssFGO was not crashed or queue-blocked in the stopped capture; rendering and
+graph inspectors were already disabled. System-wide CPU/GPU utilization was
+not recorded at sufficient granularity to exclude all secondary contention.
+This report establishes the main timed software paths, not every hardware cause.
+
+Reproducibility
+---------------
+Run analyze.py with the existing evo Python; JSON is timing_summary.json.
+Includes log hashes, counts, timing distributions, matching physical timestamp
+hashes and protected bridge source hashes. Current cbs_bridge.cpp/.hpp both
+match the run's protected manifest. Original data and scientific settings were
+not modified. No new ATE or covariance-weight conclusion is drawn.

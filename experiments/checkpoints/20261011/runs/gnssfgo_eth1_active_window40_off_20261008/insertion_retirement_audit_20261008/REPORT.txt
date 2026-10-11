@@ -1,0 +1,272 @@
+ETH1 temporary-CBS 40 s: GLIM -> Kimera insertion / retirement diagnosis
+======================================================================
+2026-10-08. Retained-data analysis only. No estimator execution or changes.
+
+Conclusion
+----------
+The earliest native Kimera OFF/ON divergence is at backend update 4, physical
+time 3.951896 s, the update containing the first accepted GLIM factor. All
+retained pre-insertion smoother poses are identical between OFF and ON.
+The first marginalization is at 8.351873 s; the first CBS factor retirement is
+at 8.751871 s. Neither can explain the onset at 3.951896 s.
+
+On the first factor's exact receiver interval, GLIM's transmitted rotation is
+less accurate against IE-TC than Kimera's pre-update rotation. After the update,
+Kimera agrees more closely with GLIM but has a larger rotation error against
+the reference. The targeted historical edge's translation nevertheless improves.
+The newly published native increment gets worse in BOTH translation and rotation.
+
+There is also an approximately 20 ms physical endpoint mismatch in all 175
+accepted factors: the classic receiver matches nearby Kimera timestamps and
+uses the sender transform unchanged. This passes the configured 50 ms tolerance,
+but does not make the physical intervals identical. Comparing against the actual
+receiver interval substantially increases the aggregate rotational discrepancy.
+
+These findings identify concrete mechanisms worth separating; they do NOT prove
+that one factor or the timing mismatch accounts for the entire ATE difference.
+Many insertions improve their targeted historical edges. No isolated within-run
+counterfactual removing only CBS was recorded. This audit does not diagnose the
+reverse Kimera -> GLIM direction or claim why GLIM's global ATE improves.
+
+1. Scope, estimator identity and reference
+-----------------------------------------
+OFF root:
+  /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_active_window40_off_20261008
+ON root:
+  /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_active_window40_prepared_20261008
+
+Sources are pilot_off_source and pilot_on_source respectively. ON is the
+specifically requested historical active_window_temporary receiver mode, NOT
+ordinary persistent classic CBS. Source-to-source messages remain classic
+first-publication beliefs; no live_revision protocol is introduced.
+Kimera and GLIM retain their own native IMU use. "No central IMU" describes
+the downstream Gaussian WNOA gnssFGO receiver, not the native estimators.
+
+The reference is the retained GrandTour ETH1 CPT7 IE-TC GNSS/INS trajectory:
+  src/datasets/GrandTour/2024-10-01-11-29-55_cpt7_ie_tc.bag
+  /boxi/inertial_explorer/tc/odometry; enu_origin -> cpt7_imu.
+It covers this capture, with approximately 5 ms sample spacing. It shares CPT7
+measurements with the sources and is NOT independent Leica/AP20 prism truth.
+The earlier approximately 11.2 s prism score is not used for this diagnosis.
+
+Each diagnostic relative error uses the reference at the exact two physical
+timestamps being tested. Reference position is linearly interpolated and
+orientation uses SLERP, with no extrapolation and no bracketing gap >=6 ms.
+Local comparisons are between CPT7 body-relative transforms, without fitting
+a global alignment or applying a prism lever arm. Translation error is the
+Euclidean difference between the relative translations; rotation error is the
+angle of R_reference^-1 R_estimate. These are not absolute ATE measurements.
+
+For context only, previously verified complete-saved-output position ATE against
+the continuous IE-TC reference (each trajectory's own complete sampling) is:
+                              OFF m          ON m
+  Original GLIM               0.042514491    0.031301081
+  Original Kimera ROS         0.066351910    0.095619841
+  gnssFGO online/as-played     0.034895965    0.117311959
+  gnssFGO final retrospective  0.030773993    0.106726596
+All saved poses are covered, but estimator output spans are 39.0/39.6/39.2 s
+inside the 40 s capture. Kimera has a 3.2 s startup output gap, not synthesized.
+On the identical 361-timestamp, 36 s common mask, GLIM's ATE gain is only
+0.032450221 -> 0.031620406 m. Kimera worsens 0.065681942 -> 0.094612161 m.
+Thus the magnitude of GLIM's improvement is sensitive to startup/sampling.
+The full coverage and independent evo verification are retained in:
+  ../full_reference_evaluation_20261008/REPORT.txt
+No ATE was recomputed in this insertion analysis.
+
+2. First-event timeline
+-----------------------
+Times below are physical Kimera output times relative to first IMU stamp
+1727775008.003475 s, not the wall-clock time at which the solver completed.
+
+  Updates 1, 2, 3: all retained OFF/ON smoother pose matrices exactly identical.
+  Update 4,  3.951896 s: first accepted GLIM factor; first native divergence.
+  Update 26, 8.351873 s: first fixed-lag marginalization.
+  Update 28, 8.751871 s: first external factor retirement.
+
+At update 4, native OFF/ON poses differ by approximately 3.126 mm and 0.114981
+degrees. The wire belief was available at bag record time 3.885661 s.
+
+3. Exact first factor and before/after comparison
+-------------------------------------------------
+Sender: GLIM g29 -> g31. Receiver: Kimera x2 -> x3. Factor slot: 635.
+Sender physical interval:   [3.571646, 3.771670] s.
+Receiver physical interval: [3.551899, 3.751897] s.
+Offsets: +19.747 ms, +19.773 ms. No factors are removed at this update.
+
+Targeted x2 -> x3 error, always scored on the RECEIVER interval:
+                                      Translation mm    Rotation deg
+  Transmitted GLIM belief                 6.778474          0.208035
+  Kimera before update                    2.157194          0.048680
+  Kimera after ON update                  1.323695          0.094686
+  Kimera after matched OFF update         1.805970          0.050525
+
+The ON update improves targeted-edge translation but worsens rotation. The
+rotation residual relative to GLIM shrinks 0.228494 -> 0.120035 degrees while
+rotation error relative to IE-TC grows 0.048680 -> 0.094686 degrees.
+
+GLIM is already less accurate on its OWN source interval here: 5.364668 mm and
+0.205530 degrees. Therefore timestamp mismatch is not the whole first-event
+explanation. A perfect reference transform from the sender interval differs
+from the receiver's reference transform by 3.793458 mm and 0.091522 degrees.
+
+The NEW native output increment at this update is x3 -> x4, not x2 -> x3:
+                                      Translation mm    Rotation deg
+  OFF newest increment                    1.192153          0.093921
+  ON newest increment                     3.406107          0.207380
+This is also the first native interval with ON degradation exceeding 1 mm
+translation or 0.05 degrees rotation. These thresholds are reporting aids only;
+all interval rows are retained, and no gate was applied to any estimator.
+
+The first transmitted covariance has sqrt(trace(C_phi_phi)) = 0.008832286 deg
+and sqrt(trace(C_rho_rho)) = 2.269269 mm. These aggregate tangent-space values
+are NOT one-axis standard deviations, not uncertainty on global ATE, and not
+the complete innovation covariance. The full dense 6x6 matrix is retained in
+early_event_trace.json and matches the receiver's logged factor covariance.
+Its reference-whitened squared residual is retained as a diagnostic only; this
+audit does not claim a formal calibrated NIS test against independent truth.
+
+4. Timestamp mapping over all 175 accepted insertions
+----------------------------------------------------
+Median endpoint offsets: +19.673586 ms start, +19.673109 ms end.
+Maximum endpoint offset: +20.665407 ms; all are within the 50 ms match tolerance.
+The code checks duration compatibility, constructs receiver keys, then reuses
+Pose3::Expmap(relative_mu). It does not interpolate the mean onto those keys'
+physical timestamps. Equal duration and nearby endpoints are not equal motion.
+
+GLIM wire belief relative errors, RMS across the same 175 factors:
+                                        Translation mm    Rotation deg
+  On its own physical sender interval      16.791786          0.244990
+  On the applied receiver interval         16.860251          0.433509
+  Reference-only interval discrepancy        3.216883          0.330100
+
+The reference-only comparison measures interval mismatch, not estimator error.
+These contributions are correlated; their RMS values must not be subtracted or
+added as independent variance components. This is evidence that timing mismatch
+matters especially for rotation in this run, not proof of a universal effect,
+an identified clock offset, or a proposed GT-based correction. No retiming was
+performed. The matching behavior is permitted by the frozen classic protocol;
+this audit does not establish that it is a new regression.
+
+5. Whole-capture insertion evidence, including contrary evidence
+---------------------------------------------------------------
+175 accepted factors, 156 retired, 19 remaining.
+Targeted historical-edge ON errors before -> after their full backend updates:
+  Translation RMS: 16.735234 -> 12.930807 mm.
+  Rotation RMS:     0.322528 ->  0.213969 degrees.
+  Translation improves for 113/175; increases for 62/175.
+  Rotation improves for 134/175; increases for 41/175.
+The sender belief is more accurate than the ON pre-update receiver estimate on
+the SAME receiver interval for 68/175 translations and 53/175 rotations.
+
+These are full-update results, not isolated single-factor interventions.
+It would be false to say that every GLIM insertion harms Kimera. The older
+targeted edges frequently improve while the stream of new native increments
+has worse error, which is precisely why ATE alone does not reveal the mechanism.
+
+Across 182 normal consecutive native Kimera intervals (approximately 0.2 s;
+the startup gap is not bridged), relative error RMS is:
+                            OFF             ON
+  Translation mm            5.625113       16.035837
+  Rotation deg              0.227369        0.314246
+For the 26 normal intervals BEFORE any external factor retirement:
+  Translation mm            1.724340        8.178263
+  Rotation deg              0.151012        0.252472
+These are local increment diagnostics, NOT 1-second RPE and NOT whole-path ATE.
+
+6. Native output semantics and first retirement
+-----------------------------------------------
+Both runs use --no_incremental_pose=false. Kimera's original ROS odometry
+appends the latest relative increment from the current optimized snapshot:
+
+  O_u = O_(u-1) * inverse(X_(u-1)^u) * X_u^u.
+
+O is the published increment-chain trajectory; X is the current smoother state.
+Earlier O outputs are not retrospectively rewritten when older X states change.
+The logged same-snapshot increments reproduce native increments with maximum
+SE(3) log coordinate discrepancy 1.695936e-11. This is a checked code/output
+relationship, not a substitution of a reconstructed path for native odometry.
+It explains why correcting x2 -> x3 need not repair the already-published past
+while the same optimization also changes the newly appended x3 -> x4.
+It does not by itself quantify its share of the accumulated ATE loss.
+
+At first retirement u28, x2 -> x3 is removed; x2 is no longer available in the
+post-update snapshot. We therefore compare only 24 adjacent edges present in
+BOTH snapshots, not a stale retired state. ON translation RMS changes
+4.591111 -> 5.330731 mm; rotation RMS changes 0.163579 -> 0.162505 degrees.
+The corresponding OFF values are 1.513420 -> 1.492053 mm and
+0.156748 -> 0.156689 degrees. A new CBS factor and native visual/IMU factors
+also enter this update. These numbers cannot isolate a removal-only effect.
+The onset predates retirement; later retirement effects remain unquantified.
+
+7. Code and log evidence
+------------------------
+Paths below are in /home/yeranis/repos/V4RL/cbs_gtsam4.3/.
+
+src/Kimera-VIO/src/backend/VioBackend.cpp:
+  2464 onward: source/receiver endpoint match decision logging.
+  2765 onward: receiver keys and interval duration compatibility.
+  2879-2884: unchanged sender Expmap(relative_mu) and full covariance.
+  3570-3680: full-precision same-snapshot revision logging, used here to recover
+             endpoint poses, NOT to change the classic source exchange.
+  5053-5070: receiver pre/post diagnostics.
+  5391-5416: current and preceding smoother poses; latest increment and chain.
+  1991-1992: choice of increment output versus smoother-state output.
+
+src/cbs/src/bpsam/bpsam.cpp:
+  423-478: pre-injection Log(Z^-1 predicted) diagnostics.
+  629-670: post-solve diagnostics.
+  3790-3838: pre-update calculateEstimate values used by diagnostics.
+  3936-3947: Gaussian covariance and BetweenFactor with received measurement.
+
+src/cbs/include/cbs/bpsam/incremental_fixed_lag_bpsam_smoother.h:
+  127-134: find marginalizable keys.
+  157-195: active-window external-factor removal scheduling.
+  328-330: removal bookkeeping.
+  368-379: marginalizeLeaves.
+
+ON pilot_on_source/estimators.log: line 4017 records first g29->g31 / x2->x3
+match and its timestamp offsets.
+ON pilot_on_source/ros_logs/29219e16-c32c-11f1-884c-8e1618078f9f/
+kimera_vio_ros-kimera_vio_ros_node-4-stdout.log:
+  lines 35-42: first pre residual, covariance, insertion and post residual.
+  line 2379: first retirement of x2->x3, slot 635.
+
+8. Validation, artifacts and limits
+-----------------------------------
+extract.py reads the retained ROS bag, not a regenerated estimator product.
+It extracted 389 actual GLIM wire beliefs, 184 native Kimera ROS output stamps,
+and 8021 bracketing IE-TC reference poses. Each of 175 accepted mappings has one
+matching revision-0 wire mean and its full 36-entry covariance.
+
+analyze.py and verify_trace.py reuse retained project SE(3) and log parsers.
+  - Wire covariance vs logged factor matrix: maximum difference <1e-15.
+  - Reconstructed pre residual checks: maximum discrepancy 2.467124e-14.
+  - Reconstructed post residual checks: maximum discrepancy 2.541023e-14.
+  - All accepted wire arrivals precede the corresponding output record time.
+  - Pre-first-insertion snapshot matrices exactly equal OFF/ON.
+  - Expmap/Logmap diagnostic roundtrip test passes.
+  - All audited input hashes remain unchanged.
+
+Files in this directory:
+  summary.json                     Aggregate results and input SHA-256.
+  trace_validation.json            Independent timeline/identity consistency.
+  extraction_provenance.json       ROS bag and original reference SHA-256.
+  accepted_insertions.csv          Every accepted factor, mapping and errors.
+  native_relative_intervals.csv    Every normal native output increment.
+  native_off_on_pose_differences.csv  First divergence and all native differences.
+  retirement_surviving_edges.csv   Every retirement update's surviving edges.
+  early_event_trace.json           Early exact matrices and full covariances.
+  wire_beliefs.json / reference.npz  Retained-data extraction for reproducibility.
+
+The same backend update includes native visual/IMU factors, nonlinear solving,
+and this mode's relinearization behavior. The logs do not furnish an isolated
+CBS-factor-only causal intervention. Reference uncertainty and shared CPT7
+information also limit statistical calibration claims. No source settings,
+covariance, timing, fusion, or historical artifacts were modified. No source or
+fusion run was launched. New files are confined to this diagnosis directory.
+
+Bottom line: insertion-time local rotation disagreement is already present
+before any marginalization/retirement; approximate endpoint matching adds a
+measurable interval inconsistency; native increment output and historical-edge
+correction are not interchangeable. Do not start covariance tuning from this
+evidence or claim that the whole OFF/ON accuracy gap is now explained.

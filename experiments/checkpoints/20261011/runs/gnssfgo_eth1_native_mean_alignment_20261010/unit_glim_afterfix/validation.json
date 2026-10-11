@@ -1,0 +1,52 @@
+[
+  {
+    "label": "release",
+    "passed": true,
+    "command": [
+      "g++",
+      "-std=c++17",
+      "-g",
+      "-I/workspace/cbs_gtsam4.3/src/glim_ros1/include",
+      "-I/workspace/cbs_gtsam4.3/src/glim/include",
+      "-I/workspace/cbs_gtsam4.3/devel/include",
+      "-I/workspace/cbs_gtsam4.3/devel/include/gtsam/3rdparty/Eigen",
+      "/workspace/cbs_gtsam4.3/src/glim_ros1/test/cbs_native_imu_mean_bridge_test.cpp",
+      "-L/workspace/cbs_gtsam4.3/devel",
+      "-L/workspace/cbs_gtsam4.3/devel/lib",
+      "-lglim",
+      "-lgtsam",
+      "-lgtest",
+      "-lgtest_main",
+      "-lpthread",
+      "-O2",
+      "-o",
+      "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_native_mean_alignment_20261010/unit_glim_afterfix/release"
+    ]
+  },
+  {
+    "label": "asan_ubsan",
+    "passed": true,
+    "command": [
+      "g++",
+      "-std=c++17",
+      "-g",
+      "-I/workspace/cbs_gtsam4.3/src/glim_ros1/include",
+      "-I/workspace/cbs_gtsam4.3/src/glim/include",
+      "-I/workspace/cbs_gtsam4.3/devel/include",
+      "-I/workspace/cbs_gtsam4.3/devel/include/gtsam/3rdparty/Eigen",
+      "/workspace/cbs_gtsam4.3/src/glim_ros1/test/cbs_native_imu_mean_bridge_test.cpp",
+      "-L/workspace/cbs_gtsam4.3/devel",
+      "-L/workspace/cbs_gtsam4.3/devel/lib",
+      "-lglim",
+      "-lgtsam",
+      "-lgtest",
+      "-lgtest_main",
+      "-lpthread",
+      "-O1",
+      "-fsanitize=address,undefined",
+      "-fno-omit-frame-pointer",
+      "-o",
+      "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_native_mean_alignment_20261010/unit_glim_afterfix/asan_ubsan"
+    ]
+  }
+]

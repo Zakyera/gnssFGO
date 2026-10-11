@@ -1,0 +1,189 @@
+ETH1 160-second validation of the GLIM diagnostic-cost correction
+2026-10-10
+
+RESULT: FULL 160-SECOND VALIDATION DID NOT PASS.
+The GLIM correction improved the observed source throughput and the previous
+missing-history failure did not recur. A separate gnssFGO receiver throughput
+and strict-publication convergence failure prevented completion. No settings
+were tuned, no estimator was retried, and no partial ON score is compared with
+the completed 160-second OFF result.
+
+1. Scope and preserved configuration
+-----------------------------------
+One new live CBS-ON attempt: ETH1 mission2024-10-01-11-29-55, offset0,
+requested160s, playback0.10x, planned25s drain, private ROS master11398.
+Original native GLIM and Kimera and the WNOA fuser ran concurrently.
+Same Hesai/CPT7 GLIM, front-stereo/CPT7 Kimera, GLIM5s/Kimera25-state profiles.
+Current experimental source mode: classic active_window_temporary CBS with
+native IMU mean alignment; NOT source-to-source live_revision or the older
+persistent-factor protocol. Full schur_relative_between covariance at scale1,
+Gaussian factors, existing legacy source guards, unchanged0.20s horizon/cadence.
+Kimera's saved native IMU packet path remains current. No new RIGHT override.
+Full downstream revisions and capped source competition diagnostics remain on;
+rendering/graph inspectors and legacy expensive GLIM active-factor queries off.
+
+Receiver unchanged: source_wnoa, NO central IMU measurement factors, independent
+100ms support clock, full-history iSAM2, stable-ID replacement, existing Qc
+[.00375,.00375,.00375,.015,.015,.015] and priors, scale1, strict nominal
+publication. No additional noise, robust loss, covariance edits or threshold
+relaxation. Source IMUs still operate normally; receiver IMU input is clock-only.
+
+Exact tested private GLIM library copied, not rebuilt:
+ prepared/private_build/libglim_ros.so
+ SHA256 9568f7edc063f830333572cd30c764cc8ef2bea1d3608f0675a83a257320b172
+Frozen receiver SHA256:
+ fb56ffc5c6c9cb575d6129289688caeabb4e3baba32e429b857f3d6a30e50d1f
+Effective parameters, actual loaded libraries and flags were checked before
+playback. Static resolved parameters equal the successful100s test except for
+output paths. No estimator implementation was edited in this validation turn.
+
+The completed OFF control was reused from:
+ ../gnssfgo_eth1_covariance160_20261010/prepared/full160_off_*
+Its prior validation passed, including nine byte-identical saved-journal files.
+Its native outputs were additionally protected before any proposed scoring.
+OFF used the older wrapper hash: in observe_only, the diagnostic function
+returns before the changed expensive body in both wrappers. This reuse is not
+a claim of identical wrapper binaries or identical live scheduling. See the
+fresh preflight record and PROTOCOL.txt. OFF was not rerun.
+
+2. GLIM correction: observed evidence
+-------------------------------------
+Same1143 physical scan timestamps over[0,115)s, previous partialON vs correctedON:
+                                             previousON       correctedON
+Mean total scan processing, wall ms              937.432           517.860
+95th-percentile total scan processing, ms        1393.958           892.829
+Mean native smoother update, ms                   172.008           170.842
+Mean post-update callback, ms                     633.604           205.094
+95th-percentile publication age, simulated s         7.271             0.177
+
+Processing cost decreased44.8%; native smoother cost stayed approximately the
+same while callback cost fell. Publication statistics use1139 retained rows
+for oldON and1143 for newON; scan-processing lists match exactly. Asynchronous
+source factor histories are not asserted identical between the captures.
+
+Across the new partial capture: zero MEAN_ALIGNMENT_UNAVAILABLE events in the
+GLIM or Kimera logs; zero expensive active-factor diagnostic samples. Diagnostic
+guard-call mean overhead0.002251ms.32 GLIM competition-audit samples retained.
+All observed publication-age p95/max:0.339/1.570simulatedseconds. GLIM developed
+some additional lag late in the capture, but did not repeat the old >5s missing
+native-anchor failure. Its workload peak reached11 late; do not claim universal
+throughput or that all source costs disappeared. GPU synchronization warnings
+still exist (2,857,586 estimator-stderr lines across this partial capture).
+
+This supports the diagnostic-cost correction in the OBSERVED interval. It does
+not certify the unobserved last30s, 1x playback, or arbitrary sequence length.
+
+3. New receiver bottleneck and failure chronology
+------------------------------------------------
+Receiver refinement was comparable in OFF/ON through100s: mean0.205/0.211wall
+seconds per support. Then ON's strict publication refinement became slower:
+
+Physical section       OFF mean wall s       ON mean wall s      ON maximum
+100-115s                       .450                 .506                 .790
+115-120s                       .462                1.070                6.186
+120-125s                       .506                1.802               13.247
+
+At0.1x, each100ms support interval supplies about1wallsecond for ALL receiver
+work. Refinement alone exceeded this average in the120-125s section, before
+counting source-factor replacement work. This directly identifies receiver
+refinement as a contributor to the backlog; it does not yet identify which
+factor/mean/covariance or numerical conditioning caused the extra work.
+
+First monitor sample exceeding the unchanged queue-validation limit:
+ input elapsed120.910027s; queued1050events; output age1.830027s.
+Queue subsequently grew; maximum observed in transport4096events, maximum
+sampled output age6.580029s. These exceed the existing operational validation
+gate (monitor maxqueue<1000; p95 output age<1s). No limits were increased.
+
+The owned source process group was deliberately interrupted at approximately
+130.28sensorseconds after continued backlog growth. Receiver was allowed to
+drain already captured input. During that drain it independently hit the
+frozen strict-publication stop while processing this earlier physical support:
+
+ support index:                 1272
+ physical timestamp:            1727775135783475000ns
+ elapsed since first IMU:       127.780000s
+ status:                        budget_exhausted
+ allowed/attempted passes:      20 / 20
+ accepted passes:               4
+ refinement wall time:          17.336845s
+ normalized gradient retained:  1.4269950970074356e-5
+ required maximum:              1.0e-5
+
+Exact evidence:
+ prepared/full160_on_receiver/receiver/publication_convergence.csv:1273
+ prepared/full160_on_receiver/receiver/publication_steps.csv
+ prepared/full160_on_receiver/receiver.log
+The log says:
+ STOP: frozen publication validity criterion failed; diagnostic snapshot retained
+
+This was NOT an OOM, GPU crash, or a repetition of the old GLIM history error.
+It is a demonstrated failure to meet the unchanged numerical publication
+criterion within its existing budget. Being only1.43x above the gradient limit
+does not justify publishing it or silently relaxing that limit. Nor does this
+alone establish physical trajectory divergence, invalid covariances, or that
+WNOA is the wrong model. Those causes are not established by this validation.
+
+Code path (unchanged frozen build):
+ /home/yeranis/results/gnssfgo_eth1_local_prediction_20261007/build/wnoa/FullPublicationRefinement.h
+ numerical_audit::Refine, default20passes/tolerance1e-5; includes guarded full
+ relinearization and existing private QR-rebuild/polish paths.
+ /home/yeranis/results/gnssfgo_eth1_local_prediction_20261007/build/wnoa/DiagnosticReplay.cpp
+ RefinePublication around999 checks stationary plusgradient<=1e-5;
+ RequireValidPublication at1022 throws on failure.
+The failed support is absent from online_trajectory.tum. The guard prevented
+publishing an unvalidated pose. trajectory.tum/states.csv left by the failure
+are DIAGNOSTIC SNAPSHOTS, not a valid final retrospective160s result.
+
+4. Partial data retained, not full-run performance results
+---------------------------------------------------------
+Raw clock:13029samples spanning130.280029s.
+Native GLIM:1292 saved poses spanning129.099316s; path81.700740m.
+Native Kimera ROS odometry:636 poses spanning129.999249s; path78.883130m.
+Fused online:1272 published poses spanning127.100000s; path98.634965m.
+All Kimera timestamps reported here are its physical header stamps; they equal
+the recorded %time field for all636rows, verified explicitly.
+
+76413 exported revision payloads and their per-ID order are exactly conserved
+in the saved event journal (1913 stable IDs). This is capture conservation,
+NOT successful consumption of the complete journal by the failed receiver.
+Recorded graph dispatches75121;25 initial versions unsupported before receiver
+initialization. Final transport snapshot still reports1454queued; no end-drain
+or complete-graph success is claimed. See partial_journal_validation.json.
+
+Source 'IMU stream truncated' / 'insufficient estimator output' / 'source failed'
+messages are consequences of the controlled interruption, not the original
+cause. Transport Broken pipe follows the receiver's strict-publication exit.
+The requested160s source and receiver completion markers are absent.
+
+No new ATE/RPE, deterministic repeat, full covariance/lifecycle certification,
+or full160 OFF/ON comparison was run after this failure. In particular no
+partial ON trajectory was scored against complete OFF. The prepared evaluator
+would use full-window IE-TC (shared CPT7, not independent prism GT), but it was
+NOT executed. Native/fused diagnostic snapshots are not substituted for valid
+completed trajectories.
+
+5. Preservation and status
+--------------------------
+167 protected existing inputs/artifacts/harness files checked unchanged.
+Preflight and the existing two code-scope tests passed. The exact private build
+retains its earlier100s Release,6 normal+6 ASan/UBSan focused budget tests,
+31 metadata and5 native-bridge tests; these are historical build evidence,
+not new full-suite passes in this attempt.
+No source/fuser tuning, solver budget changes, covariance edits, retries,
+full-bag runs, or additional experiments. All owned source/master/receiver
+processes were verified exited. No files from prior captures were overwritten.
+No commits or pushes. Existing dirty worktrees preserved.
+glim_ros1 HEAD:70f52ac6a11cb06c83d7a6695d8833667b769f23
+gnssFGO HEAD:5817540ca741c3b99fbe765c0f72a015835e0b20
+
+Machine-readable evidence: failure_evidence.json; partial_journal_validation.json.
+The old failed capture, successful100s test and complete160s OFF remain intact.
+
+Conclusion: the GLIM diagnostic correction has clear observed throughput
+benefit and eliminated the previously observed history failure in this attempt.
+The complete160s live system is NOT validated: receiver refinement/backlog and
+the strict publication failure are the remaining blocker. Stop for discussion;
+do not retune or alter the receiver on the basis of this report alone.
+
+FULL160_VALIDATION_FAILED_RECEIVER_PUBLICATION_BUDGET

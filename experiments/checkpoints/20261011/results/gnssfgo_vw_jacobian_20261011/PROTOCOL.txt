@@ -1,0 +1,22 @@
+Authorized derivative-only candidate, 2026-10-11
+
+Private copied cached receiver; no production deployment. Only source-factor
+interpolation velocity and angular-rate Jacobians use the existing analytic
+gnssFGO implementation. Pose Jacobians, factor residuals, WNOA motion factors,
+all covariances, Qc, priors, full-history solver, support grid, event order,
+strict publication threshold and iteration budget remain unchanged.
+
+Gate 1: Release and focused ASan/UBSan derivative/non-regression tests. Check
+exact residual/pose-Jacobian preservation against frozen native implementation,
+direct residual differences on synthetic states and saved failure reconstruction,
+shared and arbitrary endpoint support, dense covariance and determinism.
+Existing cache/refinement transactional tests remain included.
+
+Gate 2: one candidate replay of the identical saved ETH1 ON journal, no source
+runs. Compare to retained cache-only output. Stop at the first strict failure;
+do not change settings or retry. No ATE scoring or new sequence. If complete,
+verify conservation and stationarity before describing it as successful. Offline
+as-played and final retrospective outputs are distinct; this is not live.
+
+No fixed lag, covariance adjustment, threshold relaxation or optimizer redesign.
+Do not change the implementation in response to replay results. Stop and report.

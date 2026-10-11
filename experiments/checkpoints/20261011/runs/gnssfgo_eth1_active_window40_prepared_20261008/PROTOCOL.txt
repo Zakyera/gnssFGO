@@ -1,0 +1,147 @@
+ETH1 40-second active-window CBS experiment — preparation, 2026-10-08
+==================================================================
+
+Status: PREPARED, NOT RUN. This is one bounded CBS-ON case, not a new
+production default, a full sequence, a covariance tuning campaign, or a
+request to resume an older automation. The user asked to prepare the run.
+Do not launch until execution is requested. No automatic retry on failure.
+
+Question
+--------
+Does the retained active_window_temporary mode operate correctly with the
+current GrandTour source profiles and no-central-IMU WNOA receiver? Retain
+the evidence needed to compare late covariance contraction with persistent
+CBS. Do not assume this mode will improve accuracy or eliminate dependence.
+
+Exactly one new case
+--------------------
+ETH1 / GrandTour mission 2024-10-01-11-29-55. Bag offset 0.0 seconds,
+duration 40.0 seconds, playback 0.10x, source drain 25 wall seconds.
+Run tag pilot_on. Concurrent native GLIM, native Kimera and gnssFGO;
+the receiver starts before bag playback. Approximately 6 min 40 s of bag
+playback plus startup, drain and separate validation; not real-time capacity.
+Fresh ROS master on 11388, distinct source/receiver/control directories.
+No OFF, persistent-ON, source-only fuser, longer run or new sequence launched.
+
+Native sensors and calibration remain the retained ETH1 profile:
+ - GLIM: Hesai /boxi/hesai/points and CPT7 /boxi/cpt7/imu, 5-second lag.
+ - Kimera: front AlphaSense stereo, same CPT7, 25-state window.
+ - Common belief body frame cpt7_imu. Full saved extrinsics/intrinsics.
+ - Native Kimera's recovered current IMU packet path (override unset),
+   NOT the earlier experimental RIGHT override. Native IMUs stay enabled.
+
+Source CBS: classic publication, not live_revision; bidirectional receive;
+0.20 s horizon, one pair/update, stride 1, no receive-start delay; unchanged
+duration/endpoint matching and schur_relative_between full 6x6 covariance.
+Covariance scales 1.0; no new health weights, Huber, NIS gate or tuning.
+Full current-smoother revision diagnostics remain enabled for gnssFGO.
+
+The intended setting change is source receiver lifetime:
+ - GLIM glim_cbs_mode=active_window_temporary
+ - Kimera --cbs_odom_factor_mode=active_window_temporary
+ - --cbs_use_temporary_cbs_linear_factors=false (NOT delta-only mode)
+External nonlinear factors remain while both endpoints are active, then
+their slots are removed before the endpoint marginalization update.
+Source transport remains classic; this is an experimental LIFETIME variant
+of that baseline, not an unchanged persistent classic configuration.
+
+Important implementation qualifications, frozen rather than modified:
+ - Kimera's legacy active-window code has a pre-residual threshold 2.0
+   (existing mixed SE(3) residual norm, not a chi-square threshold), a
+   post-update residual guard max(1.25*pre + 0.25, 0.5), active-factor
+   residual checks, rollback/retry paths and forced relinearization/solve.
+ - It also skips duplicate receiver edges while active. Therefore this is
+   the HISTORICAL MODE AS IMPLEMENTED, not a clean lifetime-only ablation.
+ - Count all guard drops/rollbacks, replacements/skips and retiring slots.
+   If they trigger, report them; do not suppress them or retune to finish.
+ - Removal of explicit external factors before marginalization is not proof
+   of erasing their indirect influence on means, native linearizations or
+   frontend history, nor proof of calibrated or independent covariance.
+
+gnssFGO frozen unchanged
+-----------------------
+Exact retained WNOA executable:
+/home/yeranis/results/gnssfgo_eth1_local_prediction_20261007/build/wnoa/replay
+SHA256 fb56ffc5c6c9cb575d6129289688caeabb4e3baba32e429b857f3d6a30e50d1f
+source_wnoa, full-history iSAM2, independent 100 ms support clock. Raw CPT7
+timestamps drive the existing 59-sample startup/clock ONLY; no central IMU
+measurement factors, acceleration/bias variables or gravity initialization.
+Qc diagonal [0.00375,0.00375,0.00375,0.015,0.015,0.015]. Initial identity
+pose sigma 1e-5, zero velocity sigma 10, zero body angular rate sigma 3.
+Source scales 1, Gaussian, no added uncertainty, robust loss, health weighting
+or GNSS. Strict nominal stationary-publication threshold remains 1e-5.
+Asynchronous arrivals with true physical endpoints and existing interpolation.
+Stable-ID downstream revision replacement, NOT source-to-source live_revision.
+The source retirement policy does NOT instruct gnssFGO to delete its factors.
+
+Isolation / existing machinery
+-----------------------------
+source_runner.sh is a private copy of the existing GrandTour runner.
+active_window.launch is a private copy of the existing launch with Kimera's
+factor-mode flag changed; GLIM's mode is selected by the private runner.
+The shared runner/launch, production defaults, profiles, C++ code and binaries
+remain untouched. Private postchecks recognize active-window lifecycle labels.
+GLIM dumps to this case's own source/glim_dump instead of touching /tmp/dump.
+run_case.py reuses the existing owned-process controller, limited to pilot/on
+40 seconds, no retries, unique output dirs and controller lock. The usual
+transport code and receiver launcher are reused without changes.
+Rerun and source/fusion graph inspectors remain disabled for headless capture;
+native trajectories, CBS bag, full revisions and lifecycle logs are retained.
+Do not label trajectory-only reconstructions genuine source graph snapshots.
+
+Preflight / validation
+----------------------
+check_prepared.py --freeze performs syntax/XML checks, resolves launch params
+and node arguments WITHOUT starting ROS or any estimator, verifies frozen
+receiver/profile hashes and compiled-in mode strings, hashes data/binaries,
+records current repo state, and saves isolated_changes.diff. No full build,
+sanitizer, synthetic optimization or estimator test is implied.
+verify_effective.py checks actual source parameters and Kimera process argv
+after startup but BEFORE playback. Stop if the modes or frozen settings differ.
+
+After capture, validate_case.py pilot_on checks unchanged profiles, expected
+mode differences, exact source-to-receiver mean/covariance/version conservation,
+causal endpoint support, no duplicate revision accumulation, full receiver
+accounting, stationarity, pending=0, throughput p95 output age<1 s and max
+observed queue<1000, and exact journal-repeat outputs. It requires real
+active-window insertions/removals in BOTH sources and records legacy guards.
+Lifecycle counts establish removal activity, not a matrix-level proof that
+every marginal prior is independent of CBS. Investigate missing or inconsistent
+slot accounting before making a covariance-mechanism claim.
+Check native temporal coverage against 40 s and startup delay, not just markers.
+Stop on numerical/source/transport/coverage failure. Preserve failed artifacts.
+
+Saved comparisons / outputs after execution
+------------------------------------------
+Primary outputs: original/native GLIM; original/native Kimera ROS odometry;
+fused online/as-played; fused final retrospective. NEVER substitute a
+GLIM-only/Kimera-only fuser for a native estimator.
+Use the existing no-scale AP20 prism ATE (lever arm unchanged) and IE-TC 1 s
+translation/rotation RPE, full/evaluation/GT-overlap path lengths and explicit
+partial GT coverage. score_cases.py pilot then score_common.py pilot reuse
+the current evaluator for these FOUR new products on one shared mask.
+
+Existing persistent OFF/ON source data are under:
+../gnssfgo_eth1_live_wnoa_20261007/{full_off_source,bounded120_on_source}
+Use only matching first-40-second physical intervals for read-only source
+covariance/error comparisons. Retained OFF is a valid PREFIX of an aborted
+full run, not a completed full-sequence baseline. Existing final 120-second
+fusion cropped to 40 seconds contains FUTURE information and is NOT a fair
+matched final-40 comparator. Do not silently use it as one. A final-40 control
+would require an explicitly identified same-information-set journal replay.
+
+Focus covariance analysis on identical physical source intervals and revision
+ages, separating rotation/rho traces and sqrt(trace) clearly. Retain first,
+age-2 s, last-six-revision and last-valid values, guard decisions and retirement
+times. Check means/errors as well as covariance. No ATE-based parameter choice.
+
+Commands for a later execution request (not executed during preparation)
+-----------------------------------------------------------------------
+Host, from this directory:
+ python3 run_case.py pilot on
+ /home/yeranis/.local/share/pipx/venvs/evo/bin/python validate_case.py pilot_on
+Then in cbsms_ws_gpu with the established Noetic environment:
+ python3 /workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_active_window40_prepared_20261008/score_cases.py pilot
+ python3 /workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_active_window40_prepared_20261008/score_common.py pilot
+
+PREPARED_NOT_RUN

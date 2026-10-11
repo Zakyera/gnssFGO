@@ -1,0 +1,37 @@
+{
+  "action": "cached",
+  "commands": [
+    {
+      "command": [
+        "/audit/build/replay",
+        "--receiver-model",
+        "source_wnoa",
+        "--mode",
+        "sources",
+        "--timeline",
+        "record",
+        "--solver",
+        "isam2",
+        "--support-policy",
+        "uniform_imu",
+        "--support-period-ns",
+        "100000000",
+        "--receiver-startup-samples",
+        "59",
+        "--event-stream",
+        "/captured/events.csv",
+        "--out",
+        "/audit/cached"
+      ],
+      "returncode": 1,
+      "seconds": 493.39553255999635
+    }
+  ],
+  "environment": {
+    "LD_LIBRARY_PATH": "/runtime/lib",
+    "OMP_NUM_THREADS": "1",
+    "WNOJ_INCREMENTAL_PROFILE": "nominal",
+    "WNOJ_STRICT_PUBLICATION": "1",
+    "CACHE_FAILURE_PROBE_DIR": "/audit/cached/failure_probe"
+  }
+}

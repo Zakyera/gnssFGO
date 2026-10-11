@@ -1,0 +1,166 @@
+ETH1 isolated interpolation velocity/angular-rate Jacobian candidate
+2026-10-11
+
+Scope
+=====
+One derivative-only candidate and one offline replay of the saved ETH1 ON
+journal. This is not a new GLIM/Kimera run or a live throughput experiment.
+No production deployment, covariance adjustment, Qc/prior change, fixed lag,
+threshold relaxation, iteration-budget change or source protocol change.
+
+Implementation
+==============
+Private build/SourceWnoaModel.h adds a second GPWNOAInterpolator instance with
+the existing library analytic flag. During source-factor linearization, only
+its velocity and angular-rate blocks (H2,H3,H5,H6) are requested. The existing
+numeric instance still computes pose derivatives H1/H4 and returns the pose
+used by the residual. No analytic pose derivative or analytic returned pose is
+substituted. Without a Jacobian request, evaluation remains the original path.
+Exact support endpoints remain unchanged. Shared endpoint keys still sum their
+contributions through the existing relative-factor chain rule.
+
+GPWNOAPrior motion factors and their derivatives are unchanged. Prediction,
+stable-ID replacement, graph topology, event chronology and solver policy are
+unchanged. This inherits the previously validated private evaluation cache;
+comparison uses its retained cache-only replay, not a newly rerun baseline.
+
+Build and tests
+===============
+41 Release tests and the same 41 focused ASan/UBSan tests passed. Ten new tests
+cover exact residual/pose-derivative equality against a namespaced copy of the
+frozen implementation; both exact/interpolated endpoint combinations; same,
+adjacent and disjoint support intervals; boundaries and near-boundaries;
+dense measurement covariance; repeated calls and changed states; translations
+up to 1000 m; and the 27 source factors in the saved failure reconstruction.
+All 31 existing cache/refinement/transactional focused tests remain included.
+
+The 27 saved source factors preserve residuals, pose-Jacobian blocks and noise
+objects exactly at the same reconstructed Values. Maximum whitened velocity/
+angular-rate Jacobian discrepancy against direct five-point residual differences
+at h=1e-3 is 1.29308e-8. Reconstruction retains the prior audit's quaternion-CSV
+roundtrip limitation; it is not the original binary simultaneous state.
+
+Release test build/run: 53.379 / 0.114 s wall.
+Sanitizer build/run: 120.096 / 0.214 s wall.
+Receiver build: 40.730 s wall after correcting an isolated include packaging
+error. SnapshotAudit.h had included the frozen model beside the candidate; an
+unchanged private copy resolved its local include to the candidate. The failed
+build log and command are retained with the packaging_failure label. No model
+change followed that compiler error. Third-party shared libraries were not
+rebuilt with sanitizers. Existing GPInterpolatorBase empty-return warnings remain.
+
+Frozen replay contract
+======================
+Same journal SHA256:
+2188562923a420b341d798a1bdf570e23f6868c456626e6630befb182462c766
+Same pinned runtime/container:
+sha256:6a664509d183e504230b22edfd747dfe1ca5bca8ae6fc34c76154db8ffd1fc8d
+No network; repository, runtime, original journal and preceding artifacts are
+read-only mounts. Only this private output directory and /tmp are writable.
+
+source_wnoa; no central IMU factors; independent 100 ms timestamp support clock;
+59-timestamp startup; full-history iSAM2; record/availability chronology;
+source covariance scale 1 and Gaussian factors. Strict publication gradient
+threshold 1e-5 and budget 20 remain unchanged. No failure probe is enabled in
+this replay. The original failure remains available in the preceding audit.
+
+Replay result
+=============
+PASS for the available frozen journal. Candidate exited 0 after 353.477 s wall.
+No replay retry or setting change was made. There were no failed publications.
+
+IMPORTANT COVERAGE LIMIT: although its parent directory says full160, the
+saved input journal ends at 1727775138283695238 ns, approximately 130.2802 s
+after the requested window start. The last physical support is at 130.2800 s.
+The support-to-support span is 129.7000 s (startup support is at 0.5800 s).
+This result is NOT completion of the originally requested 160 s capture.
+
+At the original failed support 1272 / elapsed 127.780 s:
+Metric                     Prior cache-only        VW derivative candidate
+Status                     budget_exhausted        stationary
+Attempted / accepted       20 / 4                  4 / 4
+Normalized gradient        1.426995097e-5           2.326414682e-6
+Required threshold         1e-5                    1e-5
+Objective after            12295403.192055644      12295403.192055667
+Refinement wall seconds    12.0255                 0.9773
+
+This is a convergence/engineering improvement without a changed objective,
+not an ATE improvement or a source-covariance fix. It resolves the observed
+stopping failure on this retained journal; it is not a universal convergence
+certificate or proof that every remaining delay has the same cause.
+
+The candidate publishes 1298 as-played state rows and retains 1298 final
+retrospective rows. All 1297 support refinements and the final check pass;
+maximum normalized gradient 9.998602455e-6; final gradient 1.773951276e-6.
+online_trajectory.tum is the offline causal as-played output; trajectory.tum
+is the final retrospective result. Neither is a new live co-running capture.
+
+Preservation and source accounting
+==================================
+Every journal version is accounted for exactly by identity:
+  76413 received = 76388 dispatched + 25 before-initialization unsupported.
+  76388 dispatched = 1912 insertions + 74476 replacements.
+  1912 final stable IDs = 1279 GLIM + 633 Kimera.
+  Zero duplicate/stale versions; zero pending at end.
+  All 13029 IMU timestamp events and one explicit end marker are accounted for.
+These IMU events drive only the support clock; central IMU factors remain zero.
+Final graph: 1297 WNOA factors + 1912 source factors + three priors = 3212.
+No bias or acceleration variables were added.
+
+All final 1912 reported/effective full 6x6 covariances match the latest matching
+input version exactly in the logged matrices. Maximum actual factor covariance
+reconstruction difference is 4.85723e-16. Same scale 1, no covariance tuning.
+The first 75121 dispatch rows match the previous run exactly. Revision identity,
+slot replacement, support clock, unsupported events and model-covariance rows
+also match over their common prefix. Timing and state-correction values are
+allowed to change; they are not falsely described as byte-identical.
+
+Across the 1272 common published physical timestamps, candidate minus prior:
+Quantity                   RMS                     Maximum
+Position (m)               1.90052e-6              1.58027e-5
+Velocity (m/s)             2.51814e-8              2.39972e-7
+Orientation (rad)          3.35562e-8              2.81084e-7
+Body angular rate (rad/s)  8.99428e-10             2.90218e-8
+The largest position change is about 0.016 mm. The first changed refinement
+attempt/accept decision is at support 1168 (4/3 attempts/accepts becomes 3/3).
+No independent full posterior covariance comparison was performed or claimed.
+
+Runtime
+=======
+Same 1272 attempted support refinements:
+  cached baseline 406.648 s -> candidate 262.089 s, a 35.55% reduction.
+Elapsed 120-125 s, 50 supports:
+  cached baseline 69.410 s -> candidate 30.032 s;
+  mean refinement 1.388 s -> 0.601 s/support.
+Candidate whole journal: 278.700 s publication refinement, 66.685 s revision
+updates, 353.477 s command wall time. These are one-run timings, not a repeated
+performance study. Prior baseline timings come from the retained preceding
+run. No visualization or source load is included. Better receiver throughput
+here does not certify live queue latency or the missing last 30 seconds.
+
+Final validation and deployment status
+=====================================
+FINAL_VALIDATION.json passes conservation, finite state rows, strict stationarity,
+covariance preservation, and pre/post provenance equality. All 167 protected
+artifacts, 12 helper hashes, original outputs, journal, private build files and
+repository status remain unchanged across replay. Existing four untracked
+experiment directories were preserved. No tracked repository edit or commit.
+HEAD: 5817540ca741c3b99fbe765c0f72a015835e0b20.
+Candidate executable SHA256:
+62124b496ad6f854079218862acb149892aa452d4af908c50bc96067e49c9dbb
+Frozen production executable remains unchanged; no live launcher uses this
+candidate. Commands and compiler failures are retained in command_*.json and
+logs/. Raw comparison is comparison.json. Build/source hashes are retained in
+provenance_pre_replay.json and provenance_after.json.
+
+Repeated derivative evaluation is tested. A second complete replay was not run:
+the bounded protocol authorized one candidate replay. No new OFF/ON comparison,
+accuracy scoring, new recording, fixed-lag implementation or automatic follow-up
+was performed. The diagnostic candidate remains isolated for review.
+
+Decision
+========
+DERIVATIVE_CANDIDATE_VALIDATED_ON_AVAILABLE_JOURNAL.
+The specific earlier stop is resolved without relaxing acceptance or changing
+covariance/model semantics. Keep the candidate and stop here; a full 160-second
+or live-throughput claim requires separate authorized validation.

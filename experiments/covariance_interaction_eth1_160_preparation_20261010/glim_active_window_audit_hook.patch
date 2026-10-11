@@ -1,0 +1,15 @@
+--- a/src/glim_ros/cbs_bridge.cpp
++++ b/src/glim_ros/cbs_bridge.cpp
+@@ -3052,6 +3052,12 @@
+     return false;
+   }
+ 
++  // Reuse the existing passive, capped receiver audit in this lifetime mode.
++  // Must precede queuing the candidate: it must not enter the local-only graph.
++  // The helper is a no-op when its existing max-samples parameter is zero.
++  logReceiverLocalCompetition(
++      matched, smoother, new_values, *new_factors, covariance);
++
+   const size_t new_factor_index = new_factors->size();
+   new_factors->push_back(factor);
+   capturePoseMergeDiagnostic(

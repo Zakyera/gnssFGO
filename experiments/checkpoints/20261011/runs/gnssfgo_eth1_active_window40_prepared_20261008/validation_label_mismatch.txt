@@ -1,0 +1,24 @@
+The frozen validate_case.py ran once. All checks through its nine byte-identical
+journal-repeat comparisons passed, then it stopped at line 174:
+AssertionError: ('missing active-window lifecycle evidence', 'kimera_removed')
+
+Cause: it expected active_window_remove_committed in Kimera's log. The actual
+normal BPSAM path logs active_window_remove_scheduled and erases tracking at
+bpsam.cpp:4174-4207. removeFactorIndices is still passed into the solver. The
+later commitActiveWindowTemporaryCbsOdomFactorRemovals method finds no tracking
+entry and deliberately emits no duplicate commit log (bpsam.cpp:3595).
+incremental_fixed_lag_bpsam_smoother.h:169-182 prepares removal indices,
+229-241 updates the solver, 328-331 commits bookkeeping, 375-378 marginalizes.
+
+check_lifecycle.py checks every tracked Kimera edge/slot against its scheduled
+removal and every total_active count, plus GLIM queued -> slot-tracked -> removed
+identities/counts. Its first draft counted a GLIM queued factor as already
+tracked; the source logs distinguish these phases, and the supplement now does
+too. All 156 removals reconcile independently in each source.
+
+validate_completed_capture.py is an isolated read-only copy, preserving all
+frozen checks, with the correct Kimera label and independent lifecycle check.
+It reuses the already-completed exact replay; it cannot relaunch it. No frozen
+script, estimator, parameter, executable or existing result was changed.
+The original validator is NOT reported as passing. The completed capture is
+certified only if the supplementary validator passes and is reported explicitly.

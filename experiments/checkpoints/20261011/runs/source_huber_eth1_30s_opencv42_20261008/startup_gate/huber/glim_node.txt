@@ -1,0 +1,35 @@
+--------------------------------------------------------------------------------
+Node [/glim_rosnode]
+Publications: 
+ * /glim/cbs/odometry [nav_msgs/Odometry]
+ * /kimera/cbs/odom_belief_in [liorf/pose_odom_belief_array]
+ * /rosout [rosgraph_msgs/Log]
+
+Subscriptions: 
+ * /boxi/cpt7/imu [sensor_msgs/Imu]
+ * /boxi/hesai/points [sensor_msgs/PointCloud2]
+ * /clock [rosgraph_msgs/Clock]
+ * /glim_rosnode [sensor_msgs/Image]
+ * /kimera/cbs/odom_belief_out [liorf/pose_odom_belief_array]
+
+Services: 
+ * /glim_rosnode/get_loggers
+ * /glim_rosnode/set_logger_level
+
+
+contacting node http://127.0.0.1:37159/ ...
+Pid: 5106
+Connections:
+ * topic: /rosout
+    * to: /rosout
+    * direction: outbound (58535 - 127.0.0.1:59236) [50]
+    * transport: TCPROS
+ * topic: /kimera/cbs/odom_belief_in
+    * to: /kimera_vio_ros/kimera_vio_ros_node
+    * direction: outbound (58535 - 127.0.0.1:59226) [49]
+    * transport: TCPROS
+ * topic: /kimera/cbs/odom_belief_out
+    * to: /kimera_vio_ros/kimera_vio_ros_node (http://127.0.0.1:33471/)
+    * direction: inbound (60340 - 127.0.0.1:57665) [48]
+    * transport: TCPROS
+

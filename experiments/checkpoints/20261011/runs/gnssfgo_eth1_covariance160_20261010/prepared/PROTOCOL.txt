@@ -1,0 +1,59 @@
+ETH1 matched first160s covariance-interaction capture, authorized 2026-10-10
+=======================================================================
+OFF first, validate, then ON once. No automatic source retries. New artifacts
+only. Short logging gate and previous40s results are immutable references.
+
+Model/settings unchanged from the independently validated10s gate:
+ * native GLIM Hesai+CPT7,5s lag; native Kimera front stereo+CPT7,25states;
+   exact retained ETH1 source profiles, native current Kimera IMU convention.
+ * Source protocol classic, both publishers ON. OFF receive=false/observe_only;
+   ON receive=true, bidirectional active_window_temporary, native nominal IMU
+   mean alignment. No live_revision source exchange. Horizon.20s,onepair/update.
+ * Native full schur_relative_between covariance unmodified, scale1, Gaussian,
+   no health weighting. GLIM direct extraction; Kimera LOCAL,no sidecar.
+ * Frozen WNOA fuser full-history iSAM2, NO central IMU factors. Independent
+   100ms support clock,59 clock startup samples, downstream stable-ID replacing
+   revisions. Qc [.00375,.00375,.00375,.015,.015,.015], initialsigmas1e-5/10/3.
+ * Same private GLIM diagnostic-only library as10s,capped40samples,stride20
+   bothsources. No expensive graph snapshots, Rerun, offline refinement during
+   live capture. Fuser strict nominal publication checks unchanged.
+ * Bag offset0,duration160s,rate.10,drain25s. ROSmaster11394 owned percase.
+
+First run source and fuser concurrently. Capture original/native trajectories,
+wire beliefs, raw+adapted means/covariances, native current-smoother revisions,
+real source-factor lifecycles, capped actual whitened factor H/g diagnostics,
+receiver causal journal/receipts/replacement ledger/publication convergence.
+Logging can affect wall-time and hence observed arrival; quantify, do not assume
+zero overhead from mathematical passivity. No covariance/model edits authorized.
+
+Tested harness-only changes vs10s:
+ admission checks accept exactly160 in both OFF/ON; output coverage uses physical
+ header stamps (notreceipt), span>=158s,start<=1.5s afterfirstclock,tail<=.5s,
+ fullIMUspan>=159.7s,post5soutputholes<=1s. Report startupgap, never fill it.
+ Native count sanity GLIM>=1400/Kimera>=600. Fixed stale metadata labels.
+ Original10s successfulcapture had a bad100row postcheck; preserve its failed.txt,
+ its independentvalidation and alloldmanifests. No such waiver in this new run.
+
+Validation before interpreting accuracy or startingON:
+ genuine source/controller/receiver completion, no duplicate invocation;
+ frozenhashes/effectiveflags/profilebytes, allnative revision payloads conserved;
+ wire->adapted->inserted all36coventries exact; diagnostic H/g/r/cost algebra;
+ active-window real slot tracking/removal; covariances finite/symmetric/SPD;
+ finalqueue/pending0, stableID insert/replace accounting; strictstationarity1e-5;
+ liveoutputagep95<1s,observedqueue<1000 (report actual transport peak also);
+ one deterministic immutable-journal repeat eachcase, existing tight unit-aware
+ tolerances, report byteequality ifobtained. No source rerun afterfailure.
+
+Evaluation (only after both validate): native GLIM, native Kimera ROSodometry,
+ fused ONLINE/asplayed primary; final retrospective fusion separately. Entire
+ savedtravel scored against continuousIE-TC GNSS/INS covers160s but sharesCPT7,
+ NOT independentAP20prismGT. Use unchanged evaluator/bodylever/no-scale alignment.
+ Report all-outputATE and paths,common100ms matched OFF/ONmask1sRPE+ATE,
+ coverage/startupgaps. Never report11s prism as160s accuracy. No tuningafterATE.
+
+Interaction followup uses frozen preparation protocol, not trace-as-weight:
+ separatephi/rho traces and age-matched intervals; current means/residuals,
+ information curvature vs gradient pull. Mean-only alignment deliberately
+ leavesSigma unchanged: missing bridge uncertainty remains an explicit caveat.
+ Full offline graph-family analysis, if still needed, must reuse frozen factor
+ classes and compare common tangent/support blocks; not change live estimator.

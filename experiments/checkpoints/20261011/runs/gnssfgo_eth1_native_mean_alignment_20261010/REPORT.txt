@@ -1,0 +1,415 @@
+Native CBS mean/timestamp alignment — implementation and validation status
+========================================================================
+Date: 2026-10-10
+Current status: NATIVE_MEAN_ALIGNMENT_40S_VALIDATED
+Earlier GPU-blocked status and evidence are retained below as historical.
+
+Latest outcome: the fresh 40-second mean-aligned CBS-ON capture completed and
+passed validation. The OFF and raw-mean ON controls are retained older captures,
+not new source reruns. See section 11 for complete saved-output metrics, exact
+coverage and limitations. All failed gates remain in separate directories.
+
+1. Scope and unchanged settings
+------------------------------
+Only the received relative MEAN is adapted to the actual receiver endpoint
+times. For sender [a,b], receiver [c,d]:
+
+    Z_receiver = U(c,a) * Z_sender * U(b,d).
+
+U is a nominal IMU bridge, using the receiver's existing native integrator,
+available IMU history, and pre-update active pose/velocity/bias. No reference
+trajectory or final/future smoother pose supplies an adapter state.
+
+No covariance formula, scale, robust kernel, source weighting or gating was
+added/changed. Every incoming 6x6 covariance is passed unchanged through the
+new adapter. Kimera's 20-factor native gate verifies all 36 entries exactly
+against the wire and actual BPSAM factor construction. The subsequent recovered
+40 s bidirectional run passes all 181 GLIM and 179 Kimera runtime covariance
+checks. Section 9 retains the earlier short-run exact-repeat failure; sections
+10-11 document the authorized numerical criterion and successful final replay.
+
+Important statistical limitation: keeping covariance frozen is intentional,
+as requested. The adapter does not transform/add uncertainty for the bridge
+or account for bridge/source correlations. This is a mean-only correction,
+not a claim of a fully calibrated new measurement distribution. New source
+estimates can naturally change later exported marginals; that is not covariance
+scaling and does not imply that ON and OFF payloads will have identical values.
+
+Both new switches default FALSE:
+  Kimera gflag: cbs_experimental_native_imu_mean_alignment
+  GLIM ROS parameter: glim_cbs_experimental_native_imu_mean_alignment
+
+Shared production launch files/defaults are unchanged. Private launch copies
+enable the switches. The private runner explicitly selects the new Kimera
+build library; the installed devel Kimera core library was not replaced.
+GLIM ROS library/node and dependent Kimera ROS targets were rebuilt.
+
+The ETH1 profile remains front stereo/shared CPT7, Kimera 25 states, GLIM Hesai
+5-second lag, classic source CBS, 0.20-second horizon, one pair/update,
+schur_relative_between, scales 1. Both receivers retain the selected historical
+active_window_temporary mode and its existing guards/removal logic. It is NOT
+the persistent source mode or live_revision protocol. Native output conventions
+are unchanged. Kimera still publishes its incremental odometry chain.
+
+Native IMU conventions are preserved: Kimera's exact current frontend packet
+intervals (including interpolated image boundaries), and GLIM's existing native
+integration. No ALL_RIGHT override was newly applied to Kimera.
+
+The central receiver remains no-central-IMU WNOA, 100 ms independent clock,
+stable-ID replacement, full-history iSAM2, unchanged Qc/priors/Gaussian factors.
+Protected executable SHA256:
+fb56ffc5c6c9cb575d6129289688caeabb4e3baba32e429b857f3d6a30e50d1f
+
+2. Native implementation
+------------------------
+Kimera:
+  src/Kimera-VIO/include/kimera-vio/imu-frontend/CbsNativeImuMeanBridge.h
+  Pipeline::spinOnce caches the actual frontend IMU packet via VioBackendModule.
+  VioBackend::cacheCbsNativeImuPacket is a no-op with the flag disabled.
+  VioBackend.cpp's received-belief path uses exact receiver nanosecond timestamps,
+  selects active pre-update x/v/b anchors, clips fractional IMU intervals and
+  calls native ImuFrontend preintegration/predict. Missing history cannot fall
+  back to an unaligned measurement; it follows the existing retry mechanism.
+  KIMERA_CBS_MEAN_ALIGNMENT_ROW retains source/receiver timestamps and raw/aligned
+  means, with the unchanged covariance, for validation.
+
+GLIM:
+  src/glim_ros1/include/glim_ros/cbs_native_imu_mean_bridge.hpp
+  GlimROS::insert_imu caches the same time-shifted/scaled native sample passed
+  to odometry. GlimCbsBridge::buildExternalFactor adapts the mean using active
+  native x/v/b and native IMUIntegration. Missing history rejects construction;
+  it never silently inserts a raw mean. No GLIM retry policy was added.
+
+The GLIM gate exposed an implementation mistake in the first adapter version:
+latestPoseStamp() was the previous completed scan, and even the newest scan
+pose is stamped at scan START. A camera endpoint later than that pose can
+already be available in the received IMU data. The final implementation uses
+native_imu_mean_bridge_->availableUntil(), bounded by actual received samples.
+It still rejects endpoints beyond that bound and never extrapolates the last
+IMU sample. Active optimized anchors remain pre-update. The final correction
+has focused unit validation and passes the recovered native GPU gates,
+including the 40 s case documented in section 11.
+
+3. Successful Kimera isolation gate
+-----------------------------------
+Three native 8-second captures: native8_no_cbs, native8_raw, native8_aligned.
+Raw/aligned replay exactly the same previously recorded GLIM wire messages;
+GLIM was not rerun for this isolation test. No fuser was used here.
+
+All three received identical serialized raw sensor/wire input streams:
+  81 left images, 81 right images, 786 IMU samples.
+The sample count is verified against exact source-bag prefixes, not an assumed
+800 samples: the playback window begins before the first IMU message.
+Each produced 24 native poses, spanning 7.599955753 s. There is a retained
+3.199979 s startup gap, not continuous 8-second pose coverage.
+
+Raw and aligned cases applied the same 20 matched external factors.
+All 36 wire covariance entries equal the adapter and factor input exactly.
+All 20 aligned events had native history and valid causal endpoint bounds.
+First three native poses are exactly equal across the three controls; first
+external update is update 4.
+Reconstructed pre-update residual maximum discrepancy: 3.56e-15.
+Native incremental output versus corresponding smoother increment maximum
+SE(3) Log-coordinate discrepancy: 2.27e-14 across the controls.
+
+Secondary short-window observations against continuous IE-TC (NOT independent
+GT; it shares CPT7 measurements), with no parameter selection from these values:
+  Incoming 20 means scored on receiver intervals:
+    raw rotation RMS .426109 deg -> aligned .268772 deg;
+    raw translation RMS .016237 m -> aligned .017207 m.
+  Native Kimera consecutive-interval errors (22 intervals, NOT 1-second RPE):
+    no CBS:  translation RMS .001730 m, rotation RMS .161918 deg
+    raw CBS: translation RMS .008633 m, rotation RMS .269895 deg
+    aligned: translation RMS .005575 m, rotation RMS .219677 deg.
+These do not establish a full-sequence performance result or eliminate source
+belief errors. Native_gate_analysis.json contains full evidence.
+
+4. Builds/tests and unsuccessful gates
+--------------------------------------
+Release builds succeeded: Kimera core, Kimera ROS, GLIM ROS library/node.
+Focused tests: 4 Kimera tests and 5 GLIM tests cover fractional endpoints,
+native preintegration parity, nonzero bias, composition/inverse, offset signs,
+causal bounds, missing history, transactional history append and determinism.
+Tests are registered in repository CMake files; GLIM tests now have a local
+synthetic config fixture rather than a dependency on the retained dataset run.
+
+Focused Release and ASan/UBSan runs passed on native helper tests. Production
+libraries linked by those tests are NOT fully sanitizer-instrumented. A later
+ASan launch of the portable-fixture binary emitted DEADLYSIGNAL before any
+test output. One explicit verbose diagnostic of the same binary completed all
+five tests successfully, with the failed log preserved. Cause of that startup
+failure is not established; do not describe this as a clean full-project
+sanitizer campaign. No complete repository test suite was run.
+
+Preserved gate attempts:
+  matched/: copied controller rejected 8 s before any source playback because
+    its old guard accepted only 40 s. Not an estimator result.
+  live/: completed the 8 s sensor capture, but adapter's scan-time bound rejected
+    all K->G factors. Also exposed copied 40 s minimum-row checks. Invalid.
+  validated_launch/: allowed the current scan timestamp, but that was still
+    insufficient for camera endpoints within the scan. G2K=20; K2G=0. Invalid.
+  arrival_boundary/: contains final received-IMU availability code. GLIM failed
+    before its first output with cudaErrorNoDevice and "GPU points/covs not
+    allocated". Source validation reported GLIM=0, Kimera=24. Invalid.
+No failed artifact was overwritten, no covariance was tuned, no partial run
+was accepted, and no 40-second run was started.
+
+5. Earlier GPU blocker and original remaining-work plan
+------------------------------------------------------
+At the final gate:
+  Container nvidia-smi: "Failed to initialize NVML: Unknown Error".
+  Host nvidia-smi: cannot communicate with the NVIDIA driver.
+This is a host GPU/driver availability blocker, not evidence of bad fusion
+accuracy or insufficient GPU throughput. No driver reset, restart, package
+installation, CPU-estimator substitution or further source retry was attempted.
+Owned ROS source/master and WNOA test processes have exited.
+
+After GPU access is restored:
+  1. Check host AND container GPU/CUDA availability BEFORE any source launch.
+  2. Make a FRESH private gate directory; never overwrite arrival_boundary.
+     Resolve paths/manifests to it. Recheck effective flags/library maps.
+  3. Run the 8 s bidirectional gate. Require actual GLIM and Kimera aligned
+     factor records, unchanged wire->factor covariance, no missing-history
+     rejection/fallback, valid causal boundaries, source coverage and receiver
+     conservation/stationarity/repeat. Do not relax these algorithmic gates.
+  4. Only then run the authorized 40 s case with the same settings. Verify
+     active-window slot removal, source/fuser accounting and deterministic
+     receiver replay. Frozen OFF/raw-mean ON controls already exist.
+  5. Evaluate original native GLIM, native Kimera, fused ONLINE and fused FINAL
+     separately over their complete saved travel using continuous IE-TC; also
+     report the identical common mask. Never present the short prism overlap
+     as a 40 s result. evaluate_full40.py is prepared but has NOT run.
+
+At that earlier stopping point native GLIM integration, full bidirectional
+lifecycle and the 40 s experiment remained unvalidated. The later short-gate
+result is in section 9; the 40 s experiment still has NOT run. Covariance
+consistency beyond the mean-only scope remains deliberately untouched.
+Accuracy improvements are not acceptance criteria.
+
+6. Provenance
+--------------
+No commits or pushes made. Existing unrelated worktree changes preserved.
+final_provenance.json records exact repository HEADs, dirty status and changed
+file hashes. Seventy protected artifact/runtime/profile entries from the final
+preflight still match. Shared launch files and Kimera-VIO-ROS source are clean.
+Do not promote this experimental adapter to the canonical default yet.
+
+7. Resume preflight after user reported GPU restored (2026-10-10)
+----------------------------------------------------------------
+No source or receiver experiment was launched. The sandboxed nvidia-smi
+could not communicate with the driver, so the host check was repeated with
+approved outside-sandbox access. That check returned exit 18:
+  Failed to initialize NVML: Driver/library version mismatch
+  NVML library version: 580.178
+/proc/driver/nvidia/version reports the loaded kernel module as 580.173.02.
+The existing cbsms_ws_gpu container still returns exit 255:
+  Failed to initialize NVML: Unknown Error
+Thus the GPU restoration is not yet verified: a concrete host driver/library
+mismatch remains. No driver reset, installation, reboot or container restart
+was performed. All experiment artifacts and estimator settings are unchanged.
+
+8. Subsequent GPU recovery and fresh gate (2026-10-10)
+----------------------------------------------------
+After the user requested direct repair, read-only package history identified
+an unattended-upgrade at 06:08 installing NVIDIA 580.178.04 over 580.173.02.
+At this later check the running kernel module already reported 580.178.04,
+matching the installed library; outside-sandbox host nvidia-smi succeeded.
+This task did not perform a host reboot, driver unload or package change.
+Both existing experiment containers were stopped. Starting those two existing
+containers restored experiment access. In cbsms_ws_gpu, nvidia-smi succeeded
+and CUDA cuInit=0 / cuDeviceGetCount=0 reported one device. The earlier driver
+mismatch and CUDA failures remain real historical observations, not successful
+experiment results. The sandbox-only GPU probe is not a sufficient host check.
+
+A new gpu_restored/ directory preserves the same implementation and settings,
+with isolated output paths/session names. Its static preparation checks passed.
+The fresh 8-second gate was launched only after those checks; validation and
+any later 40-second outcome are recorded separately below when available.
+
+9. Fresh short-gate outcome after GPU recovery
+---------------------------------------------
+gpu_restored/gate_on_control/complete.json records successful 8 s source/live
+receiver capture in 125.3144 wall seconds. Native GLIM and Kimera actually ran
+and generated poses; there was no CUDA failure. No model/source code was
+changed in this resume. Paths and source-session labels alone were changed in
+the private harness. No covariance/weighting/solver setting was changed.
+
+gpu_restored/gate_on_native_validation.json PASSED:
+  GLIM native alignment + factor construction: 21 calls.
+  Kimera native alignment + factor construction: 20 calls.
+  All 36 incoming covariance entries match factor construction exactly in both.
+  Both adapters obey causal endpoint bounds; no missing-history/raw fallback.
+  The recorded wire contains 69 GLIM and 22 Kimera source edge IDs.
+This passes the short native bidirectional mean/covariance gate, not the full
+40 s lifecycle/accuracy validation.
+
+The unmodified capture validator passed its checks before the exact-repeat
+assertion: protected hashes, effective source profiles/settings, source-revision
+payload/order conservation, frozen WNOA Qc/priors, no central IMU factors,
+causal replacement accounting, stationarity and throughput. It then FAILED at
+byte identity for trajectory.tum. No overall validation pass marker was written.
+No second replay/retry or relaxed acceptance threshold was used.
+
+Read-only comparison of those two retained outputs is saved in
+gpu_restored/repeat_failure_audit.json:
+  Same 73 physical support timestamps, 2,451 revisions, 90 active source IDs,
+  2,338 replacements, 23 unsupported startup revisions and zero pending events.
+  support_clock.csv, causal_dispatch.csv, source_model_covariance.csv and
+  model_covariance.csv are byte-identical. measurement_events.csv is also
+  identical but header-only, so it supplies no independent residual evidence.
+  Final trajectory max position difference: 1.85048e-10 m.
+  Final trajectory max orientation difference: 2.61142e-11 rad.
+  Online trajectory max position difference: 2.44841e-10 m.
+  Online trajectory max orientation difference: 5.31209e-11 rad.
+  Max final velocity component difference: 1.22603e-9 m/s.
+  All 73 publications are stationary in both, max gradient 9.857804e-6.
+These are numerically tiny discrepancies, not evidence of material trajectory
+drift. Their precise numerical cause is NOT established. They still fail the
+predeclared byte-identity requirement, so the 40 s run remains unstarted.
+
+Remaining work: resolve/characterize exact receiver-repeat reproducibility
+without changing scientific settings or silently weakening acceptance, then
+complete the 40 s lifecycle/coverage/comparison if the gate is satisfied.
+The GPU is no longer the blocker. Original failed gates and provenance remain
+untouched; final_provenance.json describes the earlier GPU-blocked checkpoint,
+not this later recovered run. No commits, pushes, driver edits or tuning.
+
+10. Authorized numerical-repeatability follow-up
+------------------------------------------------
+The user approved checking repeatability and then the 40 s experiment, without
+changing the optimizer. repeatability_protocol.txt froze explicit numerical
+limits before the three repeats and before the longer source run:
+  max position norm difference <=1e-7 m; orientation angle <=1e-8 rad;
+  max velocity norm difference <=1e-7 m/s; angular-rate norm <=1e-7 rad/s.
+Factor identities, timestamps, slot replacement order, source/unsupported-event
+accounting and covariance diagnostic files remain exact requirements. The
+existing <=1e-5 stationarity requirement is unchanged. The comparator rejects
+out-of-limit and nonfinite synthetic differences. This is a validation-only
+change, not an optimizer tolerance or uncertainty change.
+
+Two regular-file and one FIFO repeats ran with the same frozen executable,
+Humble shell setup and environment as the live launcher. All three and all
+pairwise comparisons passed; see gpu_restored/repeatability/validation.json.
+The repeats reproduced the same tiny differences from the earlier live capture:
+  final max position 1.85048e-10 m, online max position 2.44841e-10 m.
+They demonstrate bounded numerical equivalence on this journal, not proof of
+the exact floating-point cause. No byte-identity claim is made for live versus
+repeat, and the original failed strict validator remains unchanged.
+
+The new validate_numerical_case.py preserves the remaining old validation
+checks and passed gate_on. The documented criterion/evaluation script hashes
+are in acceptance_manifest.json, frozen before starting pilot_on. Protected
+source/controller/fuser artifacts remain checked against the original manifest.
+The authorized fresh 40 s aligned CBS-ON run was then started. Its completion,
+validation and performance are established in the following section.
+
+11. Completed 40-second validation and comparison
+------------------------------------------------
+Capture root: gpu_restored/pilot_on_{source,receiver,control}.
+Mission: ETH1 2024-10-01-11-29-55, first 40 s, 0.10x playback.
+Native GLIM, native Kimera and the no-central-IMU WNOA receiver co-ran live.
+Capture wall time: 446.337 s, including setup/drain. No follow-up tuning.
+
+Native checks (pilot_on_native_validation.json):
+  181 GLIM aligned factor constructions, 179 Kimera aligned constructions.
+  All 36 covariance entries equal wire -> adapter -> factor exactly, both ways.
+  Causal endpoint cutoffs valid; no missing-history/raw-mean fallback.
+  Wire source IDs: 389 GLIM, 182 Kimera. These are not all necessarily applied
+  to the other source: existing matching/startup/lifetime logic is unchanged.
+
+Actual slot lifecycle (lifecycle_supplement.json):
+  GLIM: 181 queued/tracked, 156 removed, 25 remain at end.
+  Kimera: 179 tracked, 156 removed, 23 remain at end.
+  Scheduled/committed removal slots and active totals reconcile exactly.
+  No logged legacy guard drop/rollback in this capture.
+  This verifies removal bookkeeping, NOT a matrix-level proof that all indirect
+  effects of older CBS information vanish from future marginal priors.
+
+Receiver checks (pilot_on_validation.json):
+  3,986 clock IMU messages; no central IMU, bias or acceleration factors/states.
+  21,970 complete source revision payloads conserved in observed order.
+  571 raw source IDs, 570 active IDs, 21,375 replacements.
+  25 unsupported revisions explicitly accounted for; zero pending/stale/duplicate.
+  393 support publications, all stationary; max gradient 9.990283710e-6.
+  Output age: median .060008 s, p95 .1000028 s, max .100032733 s (sensor time).
+  Transport queue peak 43, final queue 0. Sampled monitor queue max 3 is a
+  different, lower-frequency statistic and is not the actual queue peak.
+  WNOA executable/Qc/priors, Gaussian covariance policy and 100 ms clock frozen.
+
+The 40 s saved-journal repeat passed the predeclared numerical criterion AND
+was actually byte-identical for final/online trajectories and complete state
+rows: max p/v/orientation/omega difference = 0. Covariance diagnostics, event
+dispatch, slot ledger and accounting also match exactly. This does not erase
+the tiny non-byte-identical result from the earlier 8 s capture.
+
+Evaluation: existing continuous IE-TC GNSS/INS reference, same physical prism
+lever arm on estimate/reference, SE(3) no-scale Kabsch ATE, unchanged scorer.
+Reference shares CPT7 data with the sources; it is NOT independent prism GT.
+EVERY saved pose is scored, each with a valid reference match. No 11 s prism-only
+subsection is presented as the 40 s experiment. No startup gaps are filled.
+
+Full saved-output ATE [m], corresponding CPT7 polyline path [m]:
+                         OFF retained       Raw ON retained    Aligned ON new
+  Original/native GLIM    .042514 /14.054654  .031301 /14.379875  .042446 /14.076681
+  Original/native Kimera  .066352 /13.537003  .095620 /14.046356  .064086 /13.729853
+  Fused ONLINE            .034896 /15.187515  .117312 /18.375379  .059491 /15.426332
+  Fused FINAL             .030774 /13.900947  .106727 /14.896845  .051269 /14.018163
+FINAL is retrospective, never labelled online. Native Kimera is ROS odometry,
+not optimizer state_ or a Kimera-only gnssFGO receiver control.
+
+Saved coverage is the same in all three captures:
+  GLIM: 391 poses, span 38.999880 s, max gap .100990 s.
+  Kimera: 184 poses, span 39.599778 s, max gap 3.199979 s at startup.
+  Fusion: 393 poses, span 39.200000 s, max gap .100000 s.
+100% reference matching means all SAVED poses, not continuous Kimera coverage
+through its startup gap. Full path is the saved-pose polyline, not an invented
+continuous path through missing data.
+
+Identical-mask comparison: 361 timestamps over the retained 36-second section,
+after startup, with 351 common 1-second relative intervals. t-RPE [m] / r-RPE
+[deg], no replacement of the full-saved-output ATE above:
+                         OFF retained       Raw ON retained    Aligned ON new
+  Original/native GLIM    .030498 /.472414   .036865 /.511611   .024677 /.446084
+  Original/native Kimera  .022954 /.622496   .052516 /.742362   .026220 /.687299
+  Fused ONLINE            .029561 /1.388847  .077232 /1.870690  .041159 /1.520661
+  Fused FINAL             .016194 /.436657   .046782 /.536685   .020650 /.447505
+
+Common-mask ATE [m], same 361 timestamps:
+                         OFF retained       Raw ON retained    Aligned ON new
+  Original/native GLIM    .032450            .031620            .031915
+  Original/native Kimera  .065682            .094612            .062873
+  Fused ONLINE            .034330            .118046            .054860
+  Fused FINAL             .029674            .107335            .046063
+
+Full evaluation artifact: gpu_restored/full40_evaluation/summary.json, with
+all timestamp/coverage/path metrics and input hashes; reference/estimate TUM
+pairs and per-pose errors retained beside it. Old OFF/raw-ON ATE values reproduce
+their retained results to the required 1e-12 tolerance; controls were not changed.
+
+Interpretation and remaining limits:
+  Timing alignment now has native bidirectional, removal-lifecycle, causal
+  transport and replay validation on this bounded ETH1 window. Compared with
+  retained raw ON, Kimera and fusion errors decrease; GLIM full-output ATE
+  increases while its common-mask relative errors improve. No setting was
+  selected after observing these results.
+  Aligned ON fusion remains worse than OFF on both ATE and 1 s RPE. The timing
+  correction does not establish a solution to covariance calibration, shared
+  information/double counting, or universally beneficial CBS exchange.
+  Keeping covariance unchanged is intentional and leaves the previously noted
+  mean-bridge uncertainty/correlation approximation unresolved.
+  OFF/raw-ON are retained earlier source captures, not new matched-binary runs.
+  Arrival scheduling/source numeric variability and the intervening driver
+  update are not separately isolated. Do not attribute every metric delta
+  exclusively to one cause or generalize this first-40 s result to full ETH1.
+  Both adapters remain default-disabled; this is a validated experimental
+  configuration, not a silent production/default change.
+
+Provenance: gpu_restored/completion.json contains current repository HEADs,
+dirty-file hashes, metrics and validation references. All 71 protected entries
+and six predeclared acceptance/evaluator entries still match. The earlier
+final_provenance.json remains the historical GPU-blocked checkpoint. No source
+code, covariance, fuser executable, Qc, priors, protocol or weighting changed
+during this resume. No commits/pushes made. Owned experiment processes exited.
+
+Stop boundary: requested bounded validation/comparison completed. No new
+sequence, full ETH1 run, covariance modification or follow-up method executed.

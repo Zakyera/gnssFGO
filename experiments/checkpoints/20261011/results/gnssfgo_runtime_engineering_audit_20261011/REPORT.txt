@@ -1,0 +1,461 @@
+ETH1 LIVE CBS / WNOA RUNTIME ENGINEERING AUDIT
+2026-10-11 — code inspection and retained-log analysis only
+
+BOTTOM LINE
+
+The user's concern is justified for the present implementation. The receiver
+has a real history-length scaling problem, and GLIM has substantial avoidable
+work around its otherwise bounded smoother. This is not evidence that WNOA,
+CBS, or GTSAM are inherently unusable. Our current live application still
+contains expensive numerical-validation and diagnostic infrastructure in its
+critical path.
+
+The strongest findings are:
+  1. EVERY recorded receiver refinement step relinearized ALL current variables.
+     This is not merely the usual cost of retaining an iSAM2 history.
+  2. GLIM's auxiliary LOCAL-covariance path consumed about 59.45% of measured
+     scan time, before counting its other CBS work. It uses generic operations
+     on GPU factors without the batching path already present in gtsam_points.
+  3. The latest run emitted 3,349,694 synchronous-GPU warnings. Their text alone
+     occupies 294,501,252 bytes. The live Kimera transport scans that mixed log.
+  4. Existing derivative/cache optimizations helped but left the primary
+     full-history behavior intact. Increasing sequence duration is not the
+     right next performance experiment.
+
+Recommendation: first make two isolated, model-preserving engineering changes
+testable: GPU-batched LOCAL covariance construction in GLIM, and an efficient
+current-Values evaluation/derivative path in the receiver. Then address selective
+incremental publication with the existing convergence certificate retained.
+Do not simply remove the certificate, lower weights, drop revisions, or enable
+fixed lag and call it equivalent.
+
+1. SCOPE AND EXACT SYSTEM
+
+No source estimator, receiver replay, optimization, build, or accuracy evaluation
+was run for this audit. No estimator code/configuration was changed. The only
+new files are this report and read-only saved-artifact analysis scripts/results
+in this directory. No commits or pushes.
+
+Primary capture:
+ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_vw_jacobian_live160_20261011
+Its prepared/full160_on_source and prepared/full160_on_receiver directories
+contain the source logs and streaming receiver outputs inspected here.
+
+This is the latest requested-160-second ETH1 CBS-ON capture, NOT a completed
+160-second experiment. It stopped deliberately after 143.790032 s of IMU-clock
+coverage, because a sampled receiver queue crossed the frozen <1000-event gate.
+First sampled crossing: 137.100030 s, 1032 events. Internal peak: 1489.
+It drained to zero. There is no evidence here of a spontaneous crash, deadlock,
+or out-of-memory kill. The overall sampled output-delay p95 was 0.900029 s;
+late [130,144) p95 was 1.427531 s. Do not conflate a queue-limit failure with
+proven permanent inability to catch up, or claim inevitable failure at a
+specific future time.
+
+Frozen receiver executable:
+ /home/yeranis/results/gnssfgo_vw_jacobian_20261011/build/replay
+ SHA256 62124b496ad6f854079218862acb149892aa452d4af908c50bc96067e49c9dbb
+Its actual translation unit is build/DiagnosticReplay.cpp, NOT the older
+default gnssFGO CMake replay target. It inherits publication refinement from
+the preceding private publication-cache build. Runtime GTSAM/gnssFGO libraries
+are pinned under results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime.
+
+Current algorithm: source_wnoa, X/Pose3 + world V + body W at independent 100 ms
+supports; full-history iSAM2 QR; source relative factors with stable-ID revision
+replacement; Gaussian full covariance, scale one. No central IMU measurement,
+bias, acceleration, or GNSS factors. CPT7 timestamps supply the support clock.
+Qc, priors, initialization, source profiles, timing and covariance stay frozen.
+The source CBS mode is classic active_window_temporary, not source-to-source
+live_revision. The auxiliary local covariance smoother is intentional in this
+mode. Do not substitute the older persistent-CBS/Combined-IMU/WNOJ baseline.
+
+At the end: 1433 support states, 4299 variable keys, 1432 WNOA factors,
+2126 source factors, three initial priors: 3561 live factors total.
+All 1433 recorded publication checks passed stationarity; maximum normalized
+gradient 9.804066065e-6 against 1e-5. This establishes numerical checks, NOT
+physical accuracy or smoothness. Native output, online fusion, and final
+retrospective fusion remain different products.
+
+2. WHAT THE SAVED TIMINGS ACTUALLY SHOW
+
+Means below are WALL seconds, grouped by physical sequence time. GLIM columns
+are nested measured stages, not independent costs to add on top of scan total.
+Receiver refinement is only part of receiver execution, excluding other work.
+
+Physical     GLIM      Auxiliary   LOCAL covariance  Receiver publication
+window       scan      smoother    reconstruction    refinement
+  0–20 s     0.2071    0.0266      0.0912            0.0319
+ 20–40 s     0.5558    0.1692      0.1684            0.0984
+ 40–60 s     0.5641    0.1343      0.1847            0.1649
+ 60–80 s     0.7048    0.2104      0.1900            0.2348
+ 80–100 s    0.5424    0.0963      0.2303            0.2942
+100–120 s    0.6647    0.1229      0.3000            0.4401
+120–130 s    1.0587    0.2861      0.3440            0.6861
+130–144 s    0.9006    0.1867      0.3544            0.7615
+
+At 10 Hz support/LiDAR and 0.1x playback, roughly one wall second is available
+per 100 ms physical interval. Both GLIM and the receiver are consuming most
+of their respective late-run budgets; tail costs exceed them. They run in
+separate processes, so summing their means is NOT end-to-end latency. Shared
+CPU/GPU/resource contention can also affect these wall times.
+
+Whole capture GLIM mean: 0.6125 s/scan. Stage fractions:
+ pre-update callback 25.77%; native smoother 34.06%; post-update callback 39.65%.
+Auxiliary smoother alone: 0.1439 s, 23.50% of scan time.
+LOCAL covariance reconstruction: 0.2202 s, 35.95%.
+Their combined fraction: 59.45%.
+All outgoing-belief/revision work: 0.2423 s, INCLUDING the LOCAL reconstruction.
+Thus the remaining outgoing work is approximately 0.0221 s/scan on average;
+it would be incorrect to blame the revision loop alone for the entire callback.
+
+Receiver refinement totals 427.126 wall seconds. Its per-publication
+median/p95/max is 0.2187/0.7461/3.6322 s. Direct iSAM2 source-factor
+insert/replace calls total another 95.338 s, excluding construction, validation,
+pose queries and logging surrounding each call. Receiver wall elapsed is
+1468.061 s INCLUDING waiting for playback; it is not optimizer CPU time.
+
+Only 17 publication checks enter recovery. Those checks, including their normal
+work, total 27.022 s; other checks total 400.104 s. Rare recovery is relevant to
+latency spikes but is NOT the main cumulative cost in this capture.
+
+Kimera backend spinOnce mean/p95/max: 0.06635/0.09081/0.1269 s per keyframe.
+Outgoing CBS generation, included within that work, averages 0.04850 s.
+This does not measure all frontend work, but provides no reason to prioritize
+Kimera's optimizer over the much larger measured GLIM/receiver costs.
+
+3. RECEIVER: WHY FULL HISTORY CURRENTLY BECOMES EXPENSIVE
+
+Code path:
+  DiagnosticReplay.cpp:932  ReplaceFactor -> individual isam2.update()
+  DiagnosticReplay.cpp:1786 full estimate obtained for new-support prediction
+  DiagnosticReplay.cpp:1901 RefinePublication before publishing each support
+  DiagnosticReplay.cpp:999  calls numerical_audit::Refine
+  results/gnssfgo_publication_cache_20261010/build/FullPublicationRefinement.h:27
+
+Refine performs full current-objective and normalized-gradient evaluations.
+When not yet stationary it copies the continuing ISAM2 instance, then requests:
+  force_relinearize = true
+  forceFullSolve = true
+and verifies cost, gradient, factor identities, and the transactional decision.
+
+CRUCIAL RUNTIME DETAIL:
+ baseline/runtime/include/gtsam/nonlinear/ISAM2-impl.h:386
+implements forceFullSolve by calling CheckRelinearizationFull(delta, 0.0).
+It is not merely a request to return a complete pose estimate. In this runtime
+it bypasses the ordinary 0.01 threshold for nonzero deltas.
+
+This is confirmed by the retained publication_steps.csv, not inferred from
+the flag name: all 2191 non-recovery refinement rows report exactly
+  relinearized = 3 * (support index + 1).
+That is the ENTIRE current X/V/W state set in every such step.
+
+Additionally, NormalizedGradient in
+ online_fgo/include/offline_process/BoundedISAM2Refinement.h:30
+calls graph.linearize(values) across the complete nonlinear graph at the
+current Values. It does not reuse iSAM2's cached linearization. The check is
+mathematically meaningful: stale linearizations cannot certify stationarity at
+the current state. But its present implementation repeats expensive work.
+
+Recovery can rebuild the complete QR graph with the same factor slots:
+ online_fgo/include/offline_process/TransactionalISAM2Rebuild.h:44.
+Each normal attempt also copies solver state for rollback. These operations
+are safety mechanisms, not factors or extra measurements.
+
+Why it exists: the retained 20261006 full-relinearization audit showed that
+ordinary nominal incremental output was not adequately converged. Only 14/150
+short OFF/ON checks originally passed; full refinement made all 150 pass.
+The earlier discrepancy included velocity errors against same-information
+converged references. We must not undo that correction merely for speed.
+
+Nevertheless, a diagnostic full-relinearization strategy is now on every
+live publication's critical path. This is OUR wrapper policy; it is not a
+fundamental requirement imposed by WNOA or ordinary iSAM2. The upstream-style
+GraphTimeCentric::optimize (online_fgo/src/graph/GraphTimeCentric.cpp:570)
+uses a different solver wrapper. Returning to that file alone would not fix
+the actual private executable we are running.
+
+Scaling: at fixed factor/state density, a full fresh graph evaluation grows
+at least linearly with support count. Repeating it at each support makes that
+component's cumulative work approximately quadratic in sequence length, even
+before copying, QR fill-in and multiple attempts. This is NOT a claim that all
+iSAM2 updates are inherently quadratic or that dense cubic elimination occurs.
+There is no constant-time/memory guarantee in the current full-history design.
+
+4. RECEIVER: EXPENSIVE DERIVATIVES REMAIN
+
+DiagnosticReplay.cpp:1792 constructs GPWNOAPrior(..., true, true).
+In online_fgo/include/factor/motion/GPWNOAPrior.h:90, useAutoDiff=true actually
+selects numericalDerivative11, not automatic differentiation. All six argument
+blocks are differentiated numerically: two poses, two velocities, two angular
+rates. That is 24 scalar input directions, requiring at least 48 perturbed
+residual evaluations per complete motion-factor Jacobian, plus base work.
+
+The latest SourceWnoaModel.h:56–97 optimization replaces only interpolation
+velocity/angular-rate blocks with validated analytic expressions. The two pose
+blocks at each interpolated endpoint remain numerical. With both endpoints
+interpolated (all 2126 final source factors), that still entails at least 48
+perturbed interpolation evaluations per source-factor Jacobian.
+
+At the final graph size, one complete Jacobian sweep therefore entails over
+170,000 such perturbed motion/interpolation evaluations, before other work.
+This is a structural operation count, NOT a measured CPU percentage.
+
+The previous candidate reduced retained-journal refinement time from 406.648
+to 262.089 s (~35.55%). That evidence supports derivative work as a real lever,
+but it is a different frozen replay and does not quantify the next improvement.
+The motion-factor numerical derivatives were deliberately left untouched.
+
+There are existing analytic branches to reuse, not a need to invent a WNOA
+model. However, globally switching their flags is NOT already validated. Pose
+derivatives, tangent conventions, mixed world/body velocities and large
+rotations require separate checks. Preserve the existing residual and full
+covariance; start with the already-understood V/W derivative blocks in the
+motion prior, then validate remaining pose blocks independently.
+
+5. GLIM: BOUNDED WINDOW, EXPENSIVE AUXILIARY COMPUTATION
+
+GLIM's retained active scan count is at most 50, consistent with its 5 s lag.
+It is not optimizing every historical scan. The supporting keyframe map grew
+from an average 2.63 keyframes in the first 20 s to 12.78 in the last section;
+configured maximum is 15. New factors per scan grew from 11.58 to 32.02, and
+retained point counts also increased. Fixed lag does not imply identical
+per-update cost: geometry, keyframe occupancy and relinearization change work.
+These observations explain plausible bounded growth; they do not isolate the
+exact cause of each slow frame.
+
+Actual source code:
+ src/glim_ros1/src/glim_ros/cbs_bridge.cpp:676 creates the sidecar when
+ active_window_temporary is selected, even if outgoing source is 'direct'.
+ :1264 / :3249 updateSidecar runs a SECOND fixed-lag smoother on local factors.
+ :3344 calls sidecar->setMarginalizationGraph(LOCAL) before ordinary beliefs.
+ src/cbs/src/bpsam/bpsam.cpp:4721 copies/selects its current factors and Values;
+ :4827 constructs a fresh MarginalsWithGraph from that nonlinear graph.
+ src/cbs/include/cbs/bpsam/bpsam.h:534 delegates to generic gtsam::Marginals.
+ BPSAM inherits generic gtsam::ISAM2 (:41), not gtsam_points::ISAM2Ext.
+
+These generic calls can invoke GPU registration factors one by one without
+the batched precomputation already used by GLIM's native optimizer. The GPU
+factor explicitly prints a warning and takes its synchronous fallback when
+precomputed results are absent:
+ src/gtsam_points/src/gtsam_points/factors/integrated_vgicp_factor_gpu.cpp:172,195.
+
+Existing reusable implementation:
+ src/gtsam_points/src/gtsam_points/optimizers/isam2_ext.cpp:87–142
+collects affected GPU factors, calls the linearization hook, and reuses results.
+ src/gtsam_points/include/gtsam_points/optimizers/linearization_hook.hpp:31
+exposes the batching abstraction. GTSAM's installed Marginals.h:75 also accepts
+a GaussianFactorGraph, allowing covariance computation from an explicitly
+prepared linearization rather than blindly relinearizing nonlinear GPU factors.
+
+Recommended implementation target is a GPU-aware LOCAL linearization path,
+reusing these facilities at EXACTLY the same Values, with identical factor
+membership, tangent coordinates, ordering/factorization policy and covariance
+query. This is an engineering candidate, not a demonstrated speedup yet.
+Batch caches in GPU factor objects are mutable and consumed; thread ownership,
+correct evaluation point and cache lifetime must be explicit.
+
+Do NOT remove the sidecar or substitute main-smoother covariance. Ordinary
+source-to-source LOCAL covariance and downstream current-smoother revision
+covariance have different conditioning paths in this mode. Reusing a matrix
+across those paths would change the algorithm, not just make it faster.
+Likewise, copying the main solver's old linear factors at a different Values
+would not be an equivalent LOCAL covariance rebuild.
+
+The revision loop (:1514) computes means and full joint covariance for each
+active stable ID; only then tests whether payload changed. This is bounded
+by the active window. Mean equality alone cannot safely skip covariance work.
+One shared per-update covariance workspace may help, but the measured first
+target is the LOCAL nonlinear reconstruction, not changing Schur mathematics.
+
+6. MARGINALIZATION: WHAT IS AND IS NOT IMPLICATED
+
+Fusion performs no fixed-lag marginalization at all. Therefore fusion
+marginalization cannot be the cause of this queue failure.
+
+GLIM and Kimera do marginalize. Their actual elimination costs are included
+inside their smoother-update timers. GLIM's field named 'marginalize' measures
+only retiring stored frames AFTER the smoother update:
+ src/glim/src/glim/odometry/odometry_estimation_imu.cpp:440.
+Its ~0.0013 ms value does NOT prove mathematical marginalization is free.
+Do not use it to dismiss marginalization or identify it as the main bottleneck.
+The retained timings do not isolate elimination from native optimization.
+
+Similarly, 'LOCAL covariance marginal construction' is a query/reconstruction
+cost; it is not synonymous with retiring states from a fixed-lag estimator.
+
+7. TRANSPORT, LOGGING AND REPEATED BOOKKEEPING
+
+85,210 source versions were exported: 67,960 GLIM, 17,250 Kimera.
+85,185 reached graph processing: 2126 first insertions and 83,059 replacements.
+25 explicitly unsupported initial Kimera versions precede receiver support.
+All retained payloads/order were conserved; no silent queue drops were found.
+These revisions are NOT 85,185 simultaneously active factors. Replacement
+keeps one factor per stable ID, but still invokes iSAM2 separately per version.
+
+Specific redundant/diagnostic work:
+ - DiagnosticReplay.cpp:947 scans every factor slot to report ActiveFactorCount
+   after each revision (:1693). Maintain an exact transactional counter instead.
+ - :1786 materializes all Values just to initialize the next X/V/W state.
+   Query the three required keys; do not discard history needed by the solver.
+ - Before/after pose queries and per-revision correction logging can trigger
+   additional estimate/back-substitution work. Measure and separate required
+   product output from optional diagnostic observation, preserving live behavior.
+ - :1755 flushes stream_progress on every input event. Adapter writes a text
+   journal plus JSON receipt, and sends a text FIFO. Mean and 36 covariance
+   entries are formatted, parsed, checked and reformatted across stages.
+ - tools/grandtour_live_receiver_ros1.py:160 reads source diagnostic logs.
+   Kimera is read from estimators.log, so its parser scans unrelated GLIM GPU
+   warnings. 294.50 MB of 331.88 MB in that log are those warning lines (~88.7%).
+   Each warning also uses std::endl in the source, implying a stream flush.
+ - :183–212 appends to and republishes an ever-growing ROS Path. Even without
+   Rerun, historical path storage grows. Delivery/serialization cost depends on
+   subscribers, so its actual cost here is not established.
+ - DiagnosticReplay.cpp:1052,1067,1748 retains all source revision objects and
+   raw IMU samples in memory, although the source_wnoa receiver uses IMU only
+   as a timestamp clock. Scheduled entries/ledgers retain object pointers;
+   reclamation needs lifetime-aware changes, not an unsafe container erase.
+ - Kimera's revision logger loops the entire historical keyframe timestamp map
+   to discover still-active poses (VioBackend.cpp:3661). Maintain an active-key
+   view instead. Its current measured cost is not the first priority.
+
+A dedicated structured diagnostic-revision transport would avoid scraping
+mixed console logs while leaving classic source-to-source CBS unchanged.
+Preserve source/session/BeliefID/revision, all 36 covariance entries, physical
+endpoints, receiver receipt time, ordering and lossless journal. This is a
+transport migration requiring conservation/causality tests, not an instruction
+to turn on source-to-source live_revision.
+
+Logging warnings less often is reasonable hygiene, but cannot substitute for
+fixing synchronous GPU work. Log byte volume is not proof of disk saturation;
+there is no CPU/GPU kernel or disk-service profile in the saved capture.
+
+8. ALREADY FIXED VS STILL OPEN
+
+Already validated in preceding work:
+ - GLIM's expensive active-factor diagnostics are gated BEFORE evaluating
+   neighbors. Current capture: zero expensive samples, ~2.43 microseconds
+   mean fast-return cost. Do not propose this same fix again.
+ - Publication recovery caches reuse same-Values evaluations in the rare inner
+   polish branch. FullPublicationRefinement.h:98–123 uses that cache.
+   The common outer refinement/gradient path still does full fresh work.
+ - Interpolation V/W Jacobians have the validated analytic substitution.
+   WNOA motion-factor Jacobians and interpolation pose blocks remain numerical.
+
+Not established:
+ - Exact percentages of time in CUDA kernels versus synchronization, formatting,
+   QR factorization, Jacobians, state copies, or thread contention.
+ - That fixed lag, more threads, reduced cadence, or coalescing versions would
+   preserve the current online result and numerical guarantees.
+ - Sustainable 1x, 0.3x, or even arbitrarily long 0.1x throughput.
+
+The receiver explicitly caps TBB parallelism at one (DiagnosticReplay.cpp:2195)
+and OMP_NUM_THREADS=1. It is already an optimized Release build. Parallelism
+may eventually help, but unbounded threads can compete with GLIM/Kimera, and
+GPU factor caches are mutable. More threads do not cure increasing global work.
+
+9. RANKED ENGINEERING PLAN — NOT IMPLEMENTED BY THIS AUDIT
+
+A. Highest immediate source-side opportunity, unchanged statistical model:
+   GPU-batched LOCAL covariance construction. Start at setMarginalizationGraph,
+   reusing gtsam_points hooks and an explicitly prepared Gaussian graph.
+   Preserve its separate Values/conditioning; then consider GPU-aware auxiliary
+   smoother update. Potential is substantial because these paths account for
+   ~59% of scan time, but no specific speedup is promised.
+
+B. Highest receiver priority before a longer run:
+   Treat publication refinement as a numerical solver component, not incidental
+   diagnostics. First extend same-Values evaluation reuse to the common path
+   and validate the remaining derivative kernels. Keep gradient threshold,
+   cost/rollback decisions, priors, factors and covariances unchanged.
+   The existing recovery cache alone cannot remove normal-path global work.
+
+C. Structural receiver improvement, requiring numerical equivalence tests:
+   Make relinearization selective again. Use ordinary incremental work first,
+   identify factors/keys needing fresh linearization, and keep full verification
+   and full refinement as a fallback. A global current-Values certificate must
+   not be replaced by a cached-zero-gradient claim. Exact dirty-factor caching
+   must invalidate on any referenced Values change, factor replacement or
+   activation change. Small-but-nonzero changes cannot be ignored without a
+   proven error bound. If most states change, exact reuse may remain limited.
+   Prior nominal incremental tests failed; this is not a one-flag revert.
+
+D. Straightforward supporting improvements:
+   Constant-time factor accounting, targeted state queries, bounded runtime
+   bookkeeping, persistent/buffered diagnostic streams, structured revision
+   transport, and decoupled historical visualization. Keep lossless archival
+   evidence and explicit failure semantics. These remove waste but are unlikely
+   to solve the main scaling issue alone.
+
+E. Later, only with explicit algorithmic authorization:
+   Batch all distinct already-available revisions for a publication into one
+   update/remove transaction instead of one solve per belief. Retain receipt
+   history and stable-ID accounting. Different nonlinear update order can change
+   the trajectory, so batching is not automatically equivalent. Coalescing away
+   intermediate versions or reducing revision cadence changes event semantics
+   and is NOT included in the safe first steps.
+
+Fixed lag is a separate design decision, not the first patch. It can bound
+graph size, but must retain both interpolation brackets for every admissible
+late revision and handle source finalization/retirement. Already-marginalized
+factors cannot simply be replaced in the old stable-ID ledger. Marginal priors
+also freeze/eliminate information and can fill in. It would not fix GLIM's
+auxiliary GPU path or the mixed-log transport. If indefinite bounded-resource
+operation is a requirement, a validated finite-lag/submapping policy eventually
+deserves explicit treatment; full history cannot offer that guarantee.
+
+10. BOUNDED VALIDATION PLAN, WITHOUT ANOTHER BLIND SEQUENCE RUN
+
+After authorization, preserve the existing executable as the numerical oracle.
+Use separate candidate builds and the already captured immutable event journal.
+Change ONE engineering component at a time, not covariance or source behavior.
+
+Receiver checks: same factors/IDs/revisions/timestamps/noise, exact factor-slot
+conservation, no missing/duplicate versions, unchanged publication stationarity
+and transactional failures. Compare online and final X/V/W independently at
+common physical times. For arithmetic-preserving caches require identical
+outputs/decisions; for derivative/solver changes predeclare tight numerical
+tolerances against the existing reference and independent finite differences.
+Measure full-graph visits, Jacobian evaluations, factorization/copy time,
+per-update latency tails, queue age and memory over retained short/medium/late
+prefixes. Do not select success from ATE.
+
+GLIM checks: same graph membership, LOCAL Values, Gaussian blocks, full dense
+relative covariance and mean before/after batching; compare GPU-batched and
+existing synchronous paths on identical saved factor/Values fixtures. Current
+text logs are NOT a complete serialized GPU graph. If complete fixtures are
+missing, one bounded instrumented capture may be needed AFTER authorization.
+Do not claim a snapshot can be reconstructed from covariance CSVs alone.
+
+Only after these pass should one bounded live test check causality/throughput.
+Live source outputs need not be byte-identical after a speed change, because
+changed arrival timing can change which CBS factors enter each source update.
+Do not treat that as proof the mathematical kernel changed; compare frozen
+inputs first. Do not extend duration just to rediscover the same global-cost
+growth. Define an explicit latency budget with margin, not just an average
+under one second or a bigger queue.
+
+11. EVIDENCE, LIMITS AND FINAL ASSESSMENT
+
+New read-only evidence beside this report:
+ analyze_saved.py -> saved_timing_analysis.json
+ analyze_supplement.py -> saved_supplement.json
+Both parse already recorded data; neither invokes an estimator/optimizer.
+All 193 files in the capture's protected_manifest.json still match their
+recorded SHA-256 hashes. No frozen artifact was overwritten. Pre-existing
+gnssFGO worktree entries were preserved; no claim of a clean worktree or new
+Release/sanitizer/estimator test-suite run is made for this read-only audit.
+
+Key historical reports retained and consulted:
+ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/glim_cbs_diagnostic_budget_20261010/REPORT.txt
+ /home/yeranis/results/gnssfgo_publication_cache_20261010/REPORT.txt
+ /home/yeranis/results/gnssfgo_vw_jacobian_20261011/REPORT.txt
+ /home/yeranis/repos/gnssFGO/GNSSFGO_SOURCE_WNOJ_FULL_RELINEARIZATION_20261006.md
+ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_vw_jacobian_live160_20261011/REPORT.txt
+
+Assessment: the next step should be engineering the existing model, not changing
+its uncertainty or launching a longer sequence. We have enough evidence to
+identify concrete work: recover GPU batching in the auxiliary GLIM covariance
+path; remove repeated/numerical evaluation waste; then restore selective
+incremental solving under validated publication checks. Simply saying 'GTSAM
+is slow' or 'marginalization is the problem' would misidentify the current code.
+
+No implementation or further experiment started. Stop here for discussion.

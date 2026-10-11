@@ -1,0 +1,138 @@
+ETH1 WNOA receiver: bounded derivative check
+Date: 2026-10-11
+
+Conclusion
+==========
+The saved-state check localizes a concrete numerical weakness to the velocity
+and angular-rate derivatives of the interpolated source factors. The existing
+closed-form derivatives agree substantially better with independent direct
+factor-residual differences. This justifies a narrow derivative-only candidate,
+not a blanket switch of all Jacobians and not a claim that convergence is fixed.
+
+No estimator, replay or optimizer was run. No production code, covariance,
+threshold, lag, prior, support clock or measurement model was changed.
+
+Scope and provenance
+====================
+Prior evidence: /home/yeranis/results/gnssfgo_publication_cache_20261010
+Saved failure: cached/failure_probe, support 1272, timestamp
+1727775135783475000 ns (127.780 s from the run window start).
+Prior normalized gradient: 1.4269950970074356e-5; requirement: <=1e-5.
+
+This check selected all 39 factors touching the prior probe's top 20 gradient
+coordinates, before evaluating alternatives: 12 WNOA and 27 source factors.
+It checked every Jacobian column of these factors, not just those coordinates.
+The 3819 saved X/V/W values cover 1273 supports. Original source means and full
+covariances were recovered by source/session/endpoint/revision identity from
+the existing event journal, using the saved dispatch and replacement records.
+
+Journal: /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_covariance160_validated_20261010/prepared/full160_on_receiver/events.csv
+SHA256: 2188562923a420b341d798a1bdf570e23f6868c456626e6630befb182462c766
+Input hashes and selected factors: selection.json. Input recheck:
+analysis.json inputs_unchanged=true.
+
+Reconstruction limits
+=====================
+Maximum saved-to-reconstructed unwhitened residual difference: 2.838224447e-14.
+Maximum covariance difference: 0.
+Maximum native-to-alternative residual difference at the reconstructed state: 0.
+
+The saved pose CSV uses quaternion serialization. It is not a bit-exact binary
+snapshot of the original rotation matrices. The native normalized gradients
+therefore did NOT reproduce bit-identically: maximum selected-coordinate
+difference from the original probe was 1.741044310e-5. Do not interpret this as
+an exact reproduction of the original failing gradient. All derivative-method
+comparisons below use the SAME reconstructed values. The sensitivity to this
+tiny residual roundtrip is relevant evidence, but not proof of a unique cause.
+
+Method
+======
+Native factors use the frozen SourceWnoaModel.h and existing numerical branches.
+Alternatives use the existing GPWNOAInterpolator and GPWNOAPrior analytic/hybrid
+branches. No new factor residual or covariance formula was introduced.
+Independent reference: five-point central differences of the directly whitened
+factor residual, at steps 1e-3, 1e-4 and 1e-5 in local coordinates. These are
+diagnostic perturbations, not changes to the optimizer or its step settings.
+J^T r and diagonal J^T J were summed factorwise for the selected coordinates.
+
+Maximum absolute whitened-Jacobian discrepancies, reference step 1e-3:
+Family / block             Native numeric       Existing analytic/hybrid
+WNOA / pose                8.06688e-7            6.35797e-6
+WNOA / velocity            6.13946e-9            7.68787e-11
+WNOA / angular rate        3.81470e-9            4.46079e-11
+Source / pose              1.42685e-6            1.34619e-6
+Source / velocity          8.75847e-7            1.11983e-8
+Source / angular rate      7.97590e-7            1.29308e-8
+
+For both source velocity and angular-rate blocks, the existing analytic path
+was closer in all 108/108 blocks at BOTH 1e-3 and 1e-4 reference steps. Its
+maximum discrepancy at 1e-3 was about 78x and 62x smaller, respectively.
+At 1e-5 the reference itself becomes noisy and this uniform advantage disappears;
+all step results are retained in jacobians.csv and analysis.json.
+
+Pose derivatives do not justify a blanket flag change: the worst WNOA pose
+discrepancy is larger with the analytic/hybrid branch, although its relative
+size is only 3.55e-9. This is not sufficient to declare that branch incorrect.
+It also contains a numerical derivative of the inverse right Jacobian.
+
+Gradient relevance, not a convergence certificate
+=================================================
+Of the summed absolute native-to-alternative gradient changes across the 20
+selected coordinates, 99.923% arises from source factors and 0.077% from WNOA.
+This is NOT their information weight, objective share or estimation-error share.
+
+Example normalized gradients at the reconstructed state:
+Coordinate    Native          Alternative     Direct five-point, h=1e-3
+v1235 x       1.29279e-5       6.85018e-7      7.26393e-7
+v1236 z       1.21197e-5       1.12341e-5      1.11505e-5
+v1234 y       1.30205e-5       1.67960e-5      1.68806e-5
+
+The alternative still exceeds the 1e-5 threshold. No optimizer step was taken,
+and only selected coordinates were tested: neither successful convergence nor
+the cause of all remaining runtime is established. Do not accept this state.
+
+Mechanism and code
+==================
+Frozen /home/yeranis/results/gnssfgo_publication_cache_20261010/build/SourceWnoaModel.h:
+  lines 52-87 select numeric interpolation and endpoint derivatives;
+  lines 104-124 chain them through the source relative-pose residual.
+/home/yeranis/repos/gnssFGO/online_fgo/include/model/gp_interpolator/GPWNOAInterpolator.h:
+  lines 91-122 numerically differentiate interpolated Pose3 outputs at 1e-5;
+  lines 143-199 contain existing analytic/hybrid derivatives.
+/home/yeranis/repos/gnssFGO/online_fgo/include/factor/motion/GPWNOAPrior.h:
+  lines 90-122 select the numerical motion-factor derivative path.
+Pinned runtime include/gtsam/base/numericalDerivative.h, lines 110-151:
+  differences local coordinates of nearly equal perturbed outputs.
+
+With endpoints fixed, interpolation's tangent argument is linear in endpoint
+twists; existing velocity/angular-rate derivatives can follow its chain rule
+without differencing interpolated world poses. Small differencing errors can
+matter when whitened J^T r contributions almost cancel. This mechanism is
+consistent with the evidence, not proof that every stopping failure has it.
+
+Validation, preservation and stopping point
+==========================================
+One isolated Release diagnostic built and exited successfully in the pinned
+container; build 15.406 s, execution 0.115 s wall. Commands: command.json.
+Container: sha256:6a664509d183e504230b22edfd747dfe1ca5bca8ae6fc34c76154db8ffd1fc8d
+No network; production source and prior artifacts mounted read-only.
+No new sanitizer suite was run for this read-only diagnostic.
+Repository HEAD: 5817540ca741c3b99fbe765c0f72a015835e0b20 (unchanged).
+No tracked repository edits; the four pre-existing untracked experiment
+directories remain untouched. No commit, push, rerun or production promotion.
+Frozen receiver SHA256 remains:
+fb56ffc5c6c9cb575d6129289688caeabb4e3baba32e429b857f3d6a30e50d1f
+Diagnostic check.cpp SHA256:
+ddffc47b7ce45bc715a7f44e2d8decb8cc5dda2e4cf2dbaf1fd85faedbd3341c
+
+Recommended next action, NOT executed
+====================================
+Test an isolated velocity/angular-rate interpolation-Jacobian substitution
+using the existing closed-form implementation, leaving pose Jacobians and all
+filter/graph mathematics unchanged. Require focused derivative tests, then one
+bounded frozen-journal check with the unchanged convergence requirement. Do not
+introduce fixed lag, relax the threshold, tune covariance or start a new source
+run to address this finding. Stop that check if it cannot validate the narrow
+candidate; do not broaden into an optimizer redesign.
+
+Status: DERIVATIVE_WEAKNESS_LOCALIZED; CONVERGENCE_FIX_NOT_YET_VALIDATED.

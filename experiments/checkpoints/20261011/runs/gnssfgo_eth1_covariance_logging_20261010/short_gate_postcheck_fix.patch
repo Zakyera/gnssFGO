@@ -1,0 +1,9 @@
+--- a/source_runner.sh
++++ b/source_runner.sh
+@@ -504,3 +504,3 @@
+-# Eight-second gate contains GLIM warm-up and Kimera's known startup gap;
+-# retain full-duration checks for the 40-second case, and verify time span below.
+-if [[ "${duration_sec}" == 8.0 ]]; then
++# The10s diagnostic gate includes source warm-up. Also require the separate
++# timestamp-span/tail checks in validation_v2/coverage.py; do not use counts alone.
++if [[ "${duration_sec}" == 10.0 ]]; then

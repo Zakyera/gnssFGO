@@ -1,0 +1,39 @@
+{
+  "sequence": "ETH1 2024-10-01-11-29-55; offset 0; 8 s GATE; native mean-only alignment; CBS ON active_window_temporary; Gaussian WNOA no central IMU",
+  "source_protocol": "classic",
+  "ros_master_uri": "http://127.0.0.1:11392",
+  "imu_topic": "/boxi/cpt7/imu",
+  "imu_frame": "cpt7_imu",
+  "world_frame": "gnssfgo_world",
+  "support_period_ns": 100000000,
+  "startup_samples": 59,
+  "max_imu_gap_ns": 30000000,
+  "max_queued_events": 200000,
+  "drain_timeout_wall_sec": 300,
+  "ros1_container": "cbsms_ws_gpu",
+  "receiver_container": "ubuntu-jammy-humble-nvidia",
+  "receiver_binary": "/home/yeranis/results/gnssfgo_eth1_local_prediction_20261007/build/wnoa/replay",
+  "sources": [
+    {
+      "id": "glim_hesai",
+      "session": "eth1_native_mean40_20261010",
+      "kind": "glim",
+      "belief_body_frame": "cpt7_imu",
+      "log_glob": "${SOURCE_RUN}/ros_logs/*/glim_rosnode-*-stdout.log"
+    },
+    {
+      "id": "kimera_front",
+      "session": "eth1_native_mean40_20261010",
+      "kind": "kimera",
+      "belief_body_frame": "cpt7_imu",
+      "log_glob": "${SOURCE_RUN}/estimators.log"
+    }
+  ],
+  "receiver_model": "source_wnoa",
+  "receiver_environment": {
+    "LD_LIBRARY_PATH": "/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib",
+    "OMP_NUM_THREADS": "1",
+    "WNOJ_STRICT_PUBLICATION": "1",
+    "WNOJ_INCREMENTAL_PROFILE": "nominal"
+  }
+}

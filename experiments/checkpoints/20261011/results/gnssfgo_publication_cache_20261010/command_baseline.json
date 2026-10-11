@@ -1,0 +1,36 @@
+{
+  "action": "baseline",
+  "commands": [
+    {
+      "command": [
+        "/frozen/build/wnoa/replay",
+        "--receiver-model",
+        "source_wnoa",
+        "--mode",
+        "sources",
+        "--timeline",
+        "record",
+        "--solver",
+        "isam2",
+        "--support-policy",
+        "uniform_imu",
+        "--support-period-ns",
+        "100000000",
+        "--receiver-startup-samples",
+        "59",
+        "--event-stream",
+        "/captured/events.csv",
+        "--out",
+        "/audit/baseline"
+      ],
+      "returncode": 1,
+      "seconds": 511.1875916890058
+    }
+  ],
+  "environment": {
+    "LD_LIBRARY_PATH": "/runtime/lib",
+    "OMP_NUM_THREADS": "1",
+    "WNOJ_INCREMENTAL_PROFILE": "nominal",
+    "WNOJ_STRICT_PUBLICATION": "1"
+  }
+}

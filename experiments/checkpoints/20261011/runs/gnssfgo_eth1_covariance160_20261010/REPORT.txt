@@ -1,0 +1,139 @@
+ETH1 first160s matched OFF/ON attempt — 2026-10-10
+================================================
+
+RESULT: OFF completed and fully validated. ON was stopped at122.99s after a
+source mean-alignment availability failure. NO valid160s OFF/ON accuracy or
+covariance-interaction comparison is claimed. No settings were tuned/retried.
+
+1. Frozen setup
+---------------
+See prepared/PROTOCOL.txt and prepared/preflight/validation.json.
+First160s ETH1 mission2024-10-01-11-29-55,offset0,rate0.10,25s planneddrain.
+Retained Hesai+CPT7 GLIM and front-stereo+CPT7 Kimera profiles and binaries;
+GLIM5s/Kimera25state windows; native Kimera current IMU convention unchanged.
+Classic source CBS, NOT live_revision; active_window_temporary ON with native
+IMU mean-only temporal alignment. OFF receiving disabled; both publishers ON.
+Full schur_relative_between covariances, scale1, Gaussian, no new gating/health.
+Capped private source diagnostics40samples/stride20. No Rerun or graphinspectors.
+Live concurrent frozen WNOA fuser: independent100ms clock, stable-ID revision
+replacement, full-history iSAM2, NO central IMU factors, unchangedQc/priors.
+Mean alignment deliberately does NOT alter covariance or add bridge uncertainty.
+
+Harness-only preparation fixed the previous10s launcher completion-check bug
+in fresh copies, tested8 positive/negative cases, and verified effectiveOFF/ON
+parameters before playback. No completed40s/10s artifacts were changed.
+
+2. CBS-OFF success
+-----------------
+Artifacts: prepared/full160_off_{source,receiver,control}/.
+Validation: prepared/full160_off_validation.json and *_validation_logs/.
+
+Native GLIM:1591poses,158.999623s savedspan,109.828508m polyline path;
+final pose0.178844s behind finalIMU, largestgap0.100990s.
+Native Kimera ROSodometry:784poses,159.599086s savedspan,103.947100m path;
+final pose0.099028s behind finalIMU. Known startupgap3.199979s is retained and
+reported, not filled. Largest post-startupgap0.200043s.
+ClockIMU:15986samples,159.850035s span. No centralIMU measurement factors.
+
+1593fuser support states;95108 belief versions fully conserved from native
+logs to journal;2370 active source IDs;92713 stable-ID replacements.
+25 early versions of one Kimera edge were unsupported before initialization;
+explicitly accounted, not hidden. Zero pending/duplicate/stale versions at end.
+OFF injected0 G2K and0 K2G factors as required.
+Every transported covariance passed finite/symmetry/SPD checks; source and
+inserted covariance preservation passed the unchanged numeric tolerance.
+Maximum normalized publication gradient9.952960018550298e-6, below1e-5.
+Live output age(simulatedseconds):median.070035,p95.130058,max.250035.
+Actual transport peakqueue82, final0 (2s controller snapshots peaked63).
+Live receiver wall1626.53s; revision updates113.52s; publication refinement
+535.98s. Components are not a claim of all-inclusive CPU cost.
+
+One saved-journal deterministic validation (NOT another source run) completed:
+trajectory.tum,states.csv,online_trajectory.tum,online_states.csv,
+support_clock.csv,source_model_covariance.csv,model_covariance.csv,
+causal_dispatch.csv,measurement_events.csv ALL BYTE-IDENTICAL to livecapture.
+Full slot/identity/covariance accounting and unit-aware state tolerances passed.
+Only then did the sequential controller start ON.
+
+3. CBS-ON failure: exact evidence
+--------------------------------
+Artifacts: prepared/full160_on_{source,receiver,control}/.
+Machine-readable evidence: failure_evidence.json.
+
+First observed alignment failure at Kimera backend update429:
+ receiver timestamp1727775096.954911s =88.951436s afterfirstIMU;
+ GLIM edge829->831, physical interval
+ [1727775091.574867010,1727775091.774600029]s;
+ edge endpoint age5.180310965s;
+ logged retry-age limit5.000000000s.
+
+Source log: prepared/full160_on_source/estimators.log:2972379
+ KIMERA_CBS_MEAN_ALIGNMENT_UNAVAILABLE,429,829,831,
+ CBS mean bridge: no active native anchor
+Next line2972380:
+ CBS_ODOM_RETRY_ROW_G2K,p:g:829->p:g:831,...,
+ 5.180310965,5.000000000,mean_alignment,drop_old_unmatched
+
+There are92 such alignment failures for92 unique senderedges, all followed
+by drop_old_unmatched decisions. This is NOT merely a diagnostic label on
+successfully inserted factors: these external beliefs were not injected.
+
+Exact code path (existing, unchanged):
+ /home/yeranis/repos/V4RL/cbs_gtsam4.3/src/Kimera-VIO/src/backend/VioBackend.cpp
+ collectExternalBeliefFactors(), mean-bridge lambda around2910–2931:
+ searches backward for an anchor no later than the earlier bridge endpoint,
+ requiring its pose,velocity,bias ALL present in the current state_.
+ No such anchor -> runtime_error at2931.
+ Catch at2950–2965 logs unavailability and invokes
+ shouldRetryExternalOdometryBelief() (around2381); this run records age>5s
+ and drop_old_unmatched. It does not silently inject a raw unaligned mean.
+
+The missing anchor is consistent with the delayed GLIM information falling
+outside Kimera's usable active history. At the stopped end, GLIM's saved final
+pose is7.419378s behind the finalIMU; Kimera's is only.038808s behind it.
+The source log also contains many timestamp-match rejections; this report
+does not equate them with the92 separately proven mean-alignment failures.
+
+4. Stop and limits
+------------------
+ON was explicitly stopped when the repeated failures were detected, around
+123simulatedseconds. Source/controller completion checks correctly reject this
+truncated run. Their resulting 'source failed'/'IMU stream truncated' messages
+are consequences of the controlled stop, NOT the original cause.
+All owned playback/source/master/fuser processes were verified exited.
+No automatic retry, profile change, covariance change or method fix was made.
+
+PartialON has12300IMU samples spanning122.990027s; nativeGLIM1150savedposes
+span114.899081s, nativeKimera600poses span122.799299s. It is not a160s result.
+The partial fuser has1225supportstates,68683versions,0pending, and all logged
+publication gradients below1e-5 (maximum9.956619773427198e-6).
+Thus a healthy current fuser clock/empty transport queue did NOT establish
+that each source's physical estimates were current. This is the important
+operational distinction exposed by this run. It was not a WNOA solver crash.
+
+What is established: source lag, unavailable active native anchors, and dropped
+G2K beliefs. What is NOT established: why GLIM accumulated that lag.
+The heavy diagnostic path is a plausible contributor, not a proven sole cause:
+OFF mainlog130152818bytes/1147076 sync-linearization warnings over160s;
+partialON mainlog400043531bytes/3306225 warnings over123s. Incoming-factor
+diagnostics execute only when beliefs are received, despite matched audit flags.
+These warning counts alone do not measure processing time or isolate logging
+from the cost of normal CBS factor handling/native optimization.
+
+No partial ON ATE is presented against full OFF. evaluate_full160.py and
+analyze_covariance.py did NOT run: the fail-closed pair controller stopped
+before comparison. The intended whole-travel reference remains continuous
+IE-TC GNSS/INS (sharesCPT7, NOT independent prismGT), not an11s prism subset.
+
+5. Provenance/non-regression
+---------------------------
+Frozen hashes, repositoryHEADs/dirty-state fingerprints, bags, profiles,
+runtime libraries and private launch files are retained in preflight and
+protected_manifest.json. final_protected_validation.json checks them again.
+No commit or push was made. All old artifacts and both new captures retained.
+
+Next decision requires discussion: isolate the source-side latency/diagnostic
+cost before another160s matched run. Do not compensate by tuning covariance,
+changing the lag, or accepting raw unaligned factors on this evidence alone.
+
+MATCHED_COMPARISON_BLOCKED_BY_ON_SOURCE_ALIGNMENT_AVAILABILITY

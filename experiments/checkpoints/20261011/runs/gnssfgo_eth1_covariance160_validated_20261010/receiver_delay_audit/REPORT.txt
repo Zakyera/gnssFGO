@@ -1,0 +1,218 @@
+ETH1 receiver delay: saved-log and code investigation, 2026-10-10
+================================================================
+
+Conclusion
+----------
+The latest delay was predominantly the experimental receiver's full-history
+publication refinement, not an explosion in incoming belief count and not
+Rerun rendering. The earlier GLIM diagnostic overhead was a separate problem;
+its correction worked over the observed interval. The new receiver failure has
+TWO parts: excessive work per publication and a numerical stationarity failure.
+Faster evaluation can address the first without necessarily resolving the second.
+
+No source estimator, optimizer replay, or new experiment was run for this audit.
+No fusion/source code, settings, covariance, iteration limit or tolerance changed.
+Only analyze.py, evidence.json and this report were added in this new directory.
+167 previously protected inputs/artifacts still match their saved SHA-256 values.
+
+1. What delayed the run
+-----------------------
+The preceding GLIM correction reduced mean scan processing 937.432 -> 517.860 ms
+on the same 1143 timestamps. The principal improvement was in the post-update
+callback (633.604 -> 205.094 ms); native smoother time stayed ~171 ms. The earlier
+missing-history alignment failure did not recur. This is observed-interval
+evidence, not certification of the unobserved end of the requested 160 s.
+
+The corrected ON capture then encountered the following receiver costs:
+
+Sensor section   OFF publication       ON publication        OFF/ON versions
+                 total / mean wall s  total / mean wall s    inserted/replaced
+100-115 s        67.516 / .450         75.878 / .506          9176 / 9142
+115-120 s        23.119 / .462         53.478 / 1.070         3041 / 2896
+120-125 s        25.279 / .506         90.079 / 1.802         3054 / 3006
+125-127.8 s      15.973 / .570         36.658 / 1.309         1661 / 1467
+
+For 120-125 s the measured ordinary revision-update totals were only 4.875 s
+OFF and 6.147 s ON. Thus this was not chiefly a new avalanche of revision
+messages: ON had slightly fewer versions in that interval, but much more
+publication-refinement work. The normal replacement timer does not include
+factor construction, pose queries, logging or waiting; these are not a complete
+CPU profile. Publication totals are binned by physical support time; revision
+totals by observed arrival time. They compare the same labelled sections, not
+perfectly coincident exclusive CPU-time partitions.
+
+At 0.10x playback each 100 ms support supplies 1 wall second for ALL processing.
+The 50 supports in 120-125 s supply about 50 wall seconds; publication refinement
+alone consumed 90.079 seconds. That is enough to demonstrate overload regardless
+of the untimed work. It also excludes publication-log writing itself.
+
+First recorded queue-gate breach: input elapsed 120.910027 s, 1050 queued events,
+output age 1.830027 sensor seconds. Peak transport queue was 4096; maximum
+sampled output age was 6.580029 sensor seconds. The 1000-event limit is a
+validation gate, NOT the adapter's 200000-event overflow limit. This was not a
+queue overflow, OOM, GPU crash, or visualization failure.
+
+2. Why publication refinement becomes so expensive
+-------------------------------------------------
+This is our experimental numerical-publication wrapper around GTSAM, not just
+the normal cost of adding a factor to gnssFGO/iSAM2.
+
+Exact retained translation unit:
+ /home/yeranis/results/gnssfgo_eth1_local_prediction_20261007/build/wnoa/DiagnosticReplay.cpp
+ RefinePublication: lines 996-1018; invoked every support at line 1896.
+ RequireValidPublication: lines 1021-1022; gate at line 1914.
+ Ordinary stable-ID replacement: lines 930-943 and 1663-1667.
+
+Retained FullPublicationRefinement.h in the same directory:
+ - lines 31-33: whole-graph error plus freshly linearized normalized gradient;
+ - lines 40-64: copy ISAM2, forced update/full solve, estimate, full error and
+   freshly linearized gradient, factor-slot checks and state-step calculation;
+ - lines 69-81: on rejection, independently rebuild the full-history QR system;
+ - lines 97-123: private polish repeats an incremental candidate AND a fresh
+   full QR rebuild, four GaussianCostChange calls, two normalized gradients,
+   two objective evaluations and consistency checks for each remaining pass.
+
+Repository helpers under /home/yeranis/repos/gnssFGO/online_fgo/include/offline_process/:
+ - BoundedISAM2Refinement.h:30-46: NormalizedGradient linearizes the ENTIRE graph
+   at the supplied current Values; it does not reuse iSAM2's cached Jacobians.
+ - StableGaussianCost.h:46-73: every GaussianCostChange call again linearizes
+   the entire graph at its before-Values, then evaluates both residual sets.
+ - TransactionalISAM2Rebuild.h:19-50: a rebuild bulk-loads the entire unchanged
+   factor graph into a fresh QR solver while preserving factor slots/keys.
+ - StationaryQRConsensus.h:18-26: CumulativeCostWithLocalPrediction discards the
+   cumulative argument's predicted-cost fields and substitutes the local ones.
+
+The first multi-pass private polish ON appeared at support 1168, elapsed
+117.38 s (2.524 wall s). Earlier ON QR recovery first appeared at 56.78 s, but
+was short. In 120-125 s, 13/50 ON supports needed QR recovery, with 47 rebuilds;
+OFF had 1/50 and one rebuild. OFF never entered multi-pass private polish in
+its entire retained completed 160 s capture.
+
+At failed support 1272 there were 1273 support states / 3819 X,V,W keys and
+3155 active factors (1272 WNOA, 1880 source IDs, three priors). Every ordinary
+attempt logged 3819 relinearized variables. These are keys, not 3819 poses.
+The factor graph was growing normally; 75121 processed revision records did
+NOT mean 75121 simultaneously active source factors.
+
+The failure's logged branches imply the following operation counts:
+ 20 ISAM2 candidate copies/updates;
+ 16 fresh full-history QR rebuilds;
+ 37 NormalizedGradient calls;
+ 62 GaussianCostChange calls;
+ therefore 99 explicit full-graph linearizations OUTSIDE solver updates.
+These are control-flow counts, NOT measured wall-time attribution to QR/copy/J.
+The 15 inner-polish passes each invoke four cost comparisons and two gradients.
+
+Another multiplier: current WNOA uses numerical derivatives. The historical
+name useAutoDiff=true is NOT automatic differentiation. GPWNOAPrior.h:90-122
+and GPWNOAInterpolator.h:92-122 use finite differences with step 1e-5.
+SourceWnoaModel.h:64-65 selects this interpolator; DiagnosticReplay.cpp:1790
+selects this prior. Full six-block prior linearization invokes the underlying
+residual 55 times (24 central-difference directions, six baseline evaluations,
+one returned residual), based on the pinned runtime's numericalDerivative11.
+Repeated whole-graph differentiation is consequently substantial work.
+
+3. Why it stopped, distinct from why it was slow
+----------------------------------------------
+At elapsed 127.78 s, support 1272 took 17.336845 wall seconds and exhausted
+20 attempts, with only four accepted. Retained normalized gradient:
+ 1.4269950970074356e-5; unchanged publication limit: 1e-5.
+The failed support was correctly withheld from online_trajectory.tum.
+
+Gradient fell 1.380954 -> .00362226 -> .000276748 -> 2.42536e-5 -> 1.42700e-5
+over initialization and the first four accepted refinement steps. Later
+candidates oscillated above threshold; NONE of the logged trial gradients
+passed it (smallest 1.13731e-5). The first rejected step had computed actual
+cost change +2.219e-8 but predicted change -2.008e-8, on total objective
+~12,295,403. This is an extremely flat regime at aggregate-cost precision.
+Residual-wise stable cost comparison is already present; simply adding it is
+not a new fix. Its arithmetic bound deliberately does not bound errors in
+SE(3) residual evaluation, interpolation, whitening or numerical Jacobians.
+
+For all 15 final private passes the recorded incremental/fresh-QR disagreement
+was zero and their gradients matched, yet neither passed stationarity. Thus
+rebuilding QR repeatedly did not resolve this instance. It is consistent with
+a numerical derivative/evaluation/conditioning limit, but this audit does NOT
+prove which of those is responsible. Nor does it prove covariance corruption,
+physical divergence, or that the WNOA model is invalid.
+
+The source group was deliberately interrupted near input 130.28 s after backlog
+growth. The receiver then reached its own earlier physical failure while
+draining captured input. Broken pipe and truncated-source messages were
+secondary consequences, not the first bottleneck.
+
+4. Applicable engineering work, in priority order (NOT implemented)
+------------------------------------------------------------------
+A. Remove redundant exact-point evaluation in the publication wrapper.
+   This is the lowest-risk first candidate. Cache immutable Values snapshots,
+   residuals and linearizations keyed by BOTH exact Values and factor identity/
+   revision; preserve factor traversal/reduction order and all acceptance tests.
+   In private polish, the anchor is fixed. We currently linearize that same
+   anchor twice per pass solely to calculate predicted quantities subsequently
+   discarded by CumulativeCostWithLocalPrediction. Split actual cost change
+   from local predicted change. Reuse one seed linearization for both candidate
+   predictions. This could remove 45 of the 60 cost-comparison linearizations
+   in the failure's 15 inner passes (30 discarded anchor predictions plus
+   15 duplicate seed linearizations), before considering other reuse.
+   This count is an identified opportunity, not a measured speedup.
+   Never replace a fresh-at-current-Values gradient with stale iSAM2 Jacobians.
+
+B. Reuse the existing gnssFGO WNOA derivative infrastructure, only after tests.
+   The library has an analytic/hybrid branch; even that branch contains a
+   numerical derivative of the inverse right Jacobian. Do NOT blindly flip
+   useAutoDiff=false. Verify it against independent derivatives of the exact
+   current residual at real difficult snapshots and nontrivial synthetic states,
+   including near-zero rotation and shared endpoint keys. An earlier full-WNOJ
+   analytic branch failed a test; that does not prove WNOA fails, but rules out
+   treating an existing branch as automatically certified. Validated derivative
+   reuse/correction could improve both cost and gradient reliability without
+   changing the physical model or its uncertainty. No claim of such success yet.
+
+C. Reduce nonessential bookkeeping/IO after the numerical path is understood.
+   Reuse one full estimate where multiple same-point calculateEstimate calls
+   are made; maintain exact active-factor counters rather than repeatedly
+   scanning the graph; buffer progress-file writes with crash-safe flushing.
+   Keep source revision export intact. The multi-million-line GPU warning
+   stream is another source-side IO candidate, but it cannot explain the
+   receiver's demonstrated refinement time by itself. None is the primary
+   demonstrated failure fix, and component-level timing is still needed.
+
+Not a semantics-preserving quick fix: skipping strict convergence checks,
+raising iteration/gradient limits, slowing playback and calling it solved,
+dropping/coalescing revisions, batching replacements across publication
+boundaries, shortening graph history, changing support cadence, modifying
+covariance/Qc or priors. Some are separate design choices; none is authorized
+or justified as the first correction here. Faster code alone would still
+exhaust 20 iterations at the same nonstationary point if arithmetic is unchanged.
+
+5. Smallest useful next validation, subject to authorization
+-----------------------------------------------------------
+Use the saved journal, not another live source capture. Reconstruct the same
+prefix once to selected pre-refinement checkpoints near 114 s, 117.38 s,
+122.48 s and the failed 127.78 s. Profile copies, derivatives, QR, gradient,
+cost checks and IO separately. Compare a caching-only implementation with the
+frozen implementation on the identical graph/Values: residuals, Jacobians,
+cost deltas, gradients, accept/reject decisions, factor IDs, covariance payloads
+and published outputs must be identical where arithmetic/order is preserved.
+Keep the existing failure if the numerical criterion still fails; do not hide
+it. Diagnose derivatives/stationarity at the failed fixed graph separately.
+Only then decide whether a longer live validation is worthwhile.
+
+Important retained-artifact correction: this failed run does NOT contain a
+restorable full graph/Values snapshot. trajectory.tum is empty; states.csv
+contains only its header; no snapshot_* directories exist. The earlier report's
+phrase 'diagnostic snapshots' and the exception's 'snapshot retained' are too
+strong for those files. Timing/step logs, the input journal and online state rows
+are retained, but online rows are not a simultaneous full-history solution.
+SnapshotAudit::Selected is gated by explicit audit environment selection, not
+automatically by AUDIT_FAILED_PUBLICATION. A future diagnostic build should
+save a lightweight failure checkpoint before throwing. Existing artifacts are
+left untouched; this correction is explicit rather than silently rewriting them.
+
+Evidence: evidence.json (saved-log calculations and input hashes), analyze.py
+(no optimizer invocation), parent failure_evidence.json and REPORT.txt, plus
+the source files cited above. No new accuracy result, deterministic replay,
+speedup benchmark, completion claim, commit or push is made.
+
+Assessment: concrete redundant computation identified; receiver throughput
+and numerical publication failure remain separate unvalidated work items.

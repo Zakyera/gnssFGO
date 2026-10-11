@@ -1,0 +1,145 @@
+Matched ETH1 40-second CBS-OFF vs temporary CBS-ON — 2026-10-08
+=============================================================
+
+Result
+------
+In this bounded experiment, temporary-factor CBS-ON improves native GLIM's
+partial-prism ATE slightly, but worsens its 1 s RPE. Native Kimera and both
+fused trajectory products are worse under ON for all three reported metrics.
+This is a short-window result, not a conclusion about all ETH1 or other data.
+Reducing late covariance contraction is not sufficient to improve accuracy.
+No follow-up tuning, method changes or additional experiment was performed.
+
+Exact cases
+-----------
+OFF: one NEW 40-second live co-running capture in this directory, pilot_off.
+ON: the already-completed 40-second live co-running temporary-factor capture:
+../gnssfgo_eth1_active_window40_prepared_20261008/pilot_on_*.
+ON was not rerun or overwritten. A longer OFF final graph was NOT cropped:
+both final graphs contain only their respective 40-second experiment data.
+
+Same ETH1 mission 2024-10-01-11-29-55, bag offset0, requested40s, 0.10x,
+25 wall-second drain; native GLIM Hesai+CPT7 with5s lag; native Kimera front
+AlphaSense stereo+CPT7,25 states. Profile trees and runtime hashes match.
+Recovered native Kimera current IMU packet setting remains unchanged.
+
+OFF disables source belief reception in both estimators; both continue to
+publish and export revisions. GLIM observe_only; Kimera retains the same
+active_window_temporary flag as ON but receives no external beliefs.
+Zero G->K or K->G factors were injected in OFF. ON uses the historical
+active_window_temporary receiver mode in both sources, not persistent CBS and
+not delta-only temporary-linear mode. Source publication remains classic,
+not live_revision; downstream current-smoother stable-ID replacement unchanged.
+One pair/update, nominal0.20s horizon, stride1, delay0, covariance scale1,
+full schur_relative_between covariance, no health or robust weighting.
+
+Same frozen Gaussian source_wnoa receiver: independent100ms support clock,
+full-history iSAM2, WNOA Qc [.00375,.00375,.00375,.015,.015,.015], same priors,
+strict nominal stationary publication, zero central IMU measurement factors.
+The common IMU still runs INSIDE the two source estimators; receiver consumes
+its timestamps for its clock, not inertial constraints.
+Same exact executable SHA256:
+fb56ffc5c6c9cb575d6129289688caeabb4e3baba32e429b857f3d6a30e50d1f
+No gate, covariance scaling/additions, robust loss, health weights or GNSS.
+
+Primary comparison on ONE common mask
+------------------------------------
+Mode  Original trajectory                 ATE m     t-RPE(1s) m  r-RPE(1s) deg
+OFF   Native GLIM                         .043425   .030498      .472414
+ON    Native GLIM                         .038015   .036865      .511611
+OFF   Native Kimera ROS odometry           .029065   .022954      .622496
+ON    Native Kimera ROS odometry           .054424   .052516      .742362
+OFF   Fused online/as-played               .026953   .029561     1.388847
+ON    Fused online/as-played               .050626   .077232     1.870690
+OFF   Fused final retrospective            .022790   .016194      .436657
+ON    Fused final retrospective            .037418   .046782      .536685
+
+Online/as-played is the actual output produced during the concurrent run.
+Final retrospective is the final revised graph after the window/drain.
+They are different products; the final one must not be called online.
+Native GLIM is source odom_imu.txt, native Kimera is its actual ROS odometry
+export. Neither is a source-only gnssFGO diagnostic graph.
+
+Mode  Trajectory              Full path m   Evaluation path m   GT-overlap path m
+OFF   Native GLIM             14.054654     13.894593           3.871355
+ON    Native GLIM             14.379875     14.145096           3.817950
+OFF   Native Kimera           13.537003     13.263205           3.482921
+ON    Native Kimera           14.046356     13.673155           3.660998
+OFF   Fusion online           15.187515     14.750165           4.135454
+ON    Fusion online           18.375379     17.812470           4.424882
+OFF   Fusion final            13.900947     13.653808           3.708134
+ON    Fusion final            14.896845     14.396290           3.757883
+
+Coverage and evaluation limits
+------------------------------
+All eight curves resampled with the unchanged evaluator interpolation onto one
+common 0.1s grid; max permissible estimate gap .5s. 361 timestamps across36s:
+1727775011.5750432 to1727775047.5750432. The startup output gap is excluded,
+not filled by invented poses. Each case has391 native GLIM,184 native Kimera,
+393 online and393 final fused poses before common-mask scoring.
+Raw clock samples/payloads identical:3986 each; same receiver initial timestamp.
+
+ATE uses existing AP20 prism evaluation, CPT7/prism lever arm and independent
+SE3 no-scale alignment per trajectory. Available prism GT covers only11.2s,
+113 common poses and3.603104m reference path. Thus ATE is NOT full40s truth.
+The same prism mask and coverage were verified for every curve.
+1s relative errors use existing IE-TC6DoF reference/evaluator;351 valid pairs
+for every curve. IE-TC shares CPT7, so it is not an independent inertial
+reference. No new scoring/alignment convention was introduced.
+Full path is original unresampled output; evaluation/GT-overlap paths use the
+existing evaluator's prism-frame/sampling convention.
+
+Mask SHA256:
+59362eb6bcd4a3159b20ef04a864752e34f2d6d713307a1d84aa233d0017c76a
+It also matches the previous ON-only common mask, so ON scores are unchanged.
+
+Validation and reproducibility
+------------------------------
+Both sources and receiver completed successfully in OFF (445.360s controller
+wall time), no automatic source retry. OFF flags were resolved statically and
+verified against actual ROS parameters and Kimera process argv before playback.
+Only intended receive/mode flags and output/session/port identifiers differ.
+Private OFF runner/config copies were used; no production/default/source edit.
+
+For EACH case:21970 captured belief versions,571 source IDs,570 accepted IDs,
+21375 replacements, zero duplicate/stale/pending versions. Source mean and
+all36 covariance entries conserved. One pre-initialization Kimera edge with25
+versions is explicitly unsupported in each; not missing transport data.
+Final active IDs:389 GLIM+181 Kimera. Receiver has393 supports,392 WNOA factors,
+570 relative factors,3priors; no central IMU/bias/acceleration variables.
+Both exact saved-journal repeats match nine output products byte-for-byte.
+The repeat is a verification, not a substituted offline source experiment.
+
+Largest publication gradient: OFF9.871368262364324e-6, ON9.84579512003105e-6,
+both below frozen1e-5. Output age median/p95/max seconds:
+OFF .060003/.090005/.100028; ON .060003/.096102/.110005.
+OFF sampled maximum queue7, transport high-water43, final0; ON sampled3,
+transport high-water44, final0. Different queue statistics are not conflated.
+This proves the tested0.10x operating point, not1x real-time capacity.
+
+OFF validate_case.py passed directly. ON's earlier verifier had a removal-label
+mismatch; it passed the documented independent slot-accounting and supplementary
+validator. That original issue is preserved, not relabeled as an original pass:
+../gnssfgo_eth1_active_window40_prepared_20261008/validation_label_mismatch.txt.
+ON had156 removals per source; OFF none, as expected.
+
+Reproduction/artifacts
+----------------------
+PROTOCOL.txt, source.env, pilot_off.json, source_runner.sh, active_window.launch,
+run_case.py, verify_effective.py, check_prepared.py, validate_case.py;
+protected_manifest.json and preflight/* hold exact frozen settings/provenance.
+pilot_off_source/: original sources, profiles, logs, odometry, CBS recording.
+pilot_off_receiver/: live event journal and receiver results.
+pilot_off_repeat/: one deterministic journal repeat.
+pilot_off_validation.json: machine-readable validation.
+score_off_on.py: bounded comparison wrapper calling existing scoring tools.
+comparison/summary.json: exact metrics, paths, validation and masks.
+comparison/commands.json: actual evaluation commands.
+comparison/input_hashes.json: protected source trajectory/journal identities.
+comparison/common_grid/: eight equal-mask TUMs and prism/RPE results.
+The ON original files and previous reports remain untouched.
+
+No commits/pushes, no new sequence or longer experiment. Current shared source
+code/defaults unchanged; source HEADs recorded in preflight/validation.json.
+
+MATCHED_40S_COMPARISON_COMPLETE

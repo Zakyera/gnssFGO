@@ -1,0 +1,16 @@
+All three 30-second captures completed. Both Gaussian cases passed validation.
+The source-Huber case passed every assertion preceding the deterministic-repeat
+file comparison in the frozen validate_case.py, then failed at line175:
+    assert a==(repeat/name).read_bytes(),name
+    AssertionError: trajectory.tum
+Both live capture and repeat exited successfully. No estimator retry occurred.
+
+Read-only comparison of retained outputs (repeat_difference.json): maximum
+position difference2.214010526765275e-9 m online and1.3466730457705083e-9 m final.
+Support clock, model covariance diagnostics, dispatch, measurement records and
+source accounting are byte-identical. This is a failed exact reproducibility
+gate, not evidence of meaningful trajectory instability. The cause of this
+numerical variation is not yet localized. No criteria were relaxed.
+
+No scoring, subsequent experiment, tuning, promotion or source/fuser method
+change followed the blocker. All owned container processes stopped.

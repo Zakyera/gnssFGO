@@ -1,0 +1,54 @@
+{
+  "status": "PREPARATION_ONLY_NOT_AUTHORIZED_TO_LAUNCH",
+  "sequence": "ETH1 2024-10-01-11-29-55",
+  "proposed_window": {"start_seconds": 0, "duration_seconds": 160, "playback_rate": 0.1},
+  "cases": ["CBS_OFF", "CBS_ON"],
+  "baseline": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_native_mean_alignment_20261010/gpu_restored",
+  "frozen": {
+    "source_protocol": "classic",
+    "source_factor_lifetime_on": "active_window_temporary",
+    "native_mean_alignment_on": true,
+    "native_kimera_imu_support": "current",
+    "glim_lag_seconds": 5,
+    "kimera_window_states": 25,
+    "relative_horizon_seconds": 0.2,
+    "maximum_pairs_per_update": 1,
+    "source_covariance": "schur_relative_between_dense_6x6",
+    "all_covariance_scales": 1,
+    "loss": "Gaussian",
+    "receiver_model": "source_wnoa",
+    "central_imu_factors": false,
+    "support_period_ns": 100000000,
+    "startup_clock_samples": 59,
+    "qc_diagonal": [0.00375, 0.00375, 0.00375, 0.015, 0.015, 0.015],
+    "receiver_revision_policy": "stable_id_replace",
+    "receiver_solver": "full_history_iSAM2_strict_nominal",
+    "receiver_binary_sha256": "fb56ffc5c6c9cb575d6129289688caeabb4e3baba32e429b857f3d6a30e50d1f"
+  },
+  "proposed_source_audit_environment_NOT_APPLIED": {
+    "CBSMS_GLIM_RECEIVER_AUDIT_MAX_SAMPLES": "40",
+    "CBSMS_GLIM_RECEIVER_AUDIT_STRIDE": "20",
+    "CBSMS_KIMERA_RECEIVER_AUDIT_MAX_SAMPLES": "40",
+    "CBSMS_KIMERA_RECEIVER_AUDIT_STRIDE": "20",
+    "CBSMS_FACTOR_GRAPH_ENABLE": "false",
+    "CBSMS_PRESENTATION_ENABLE": "false",
+    "CBSMS_EXPORT_ENDPOINT_AUDIT_ENABLE": "true",
+    "KIMERA_CBS_REVISION_AUDIT": "1"
+  },
+  "live_forbidden_diagnostic_environment": ["AUDIT_RECORD_ALL", "WNOJ_AUDIT_INDICES", "WNOJ_AUDIT_DEEP"],
+  "diagnostic_samples": {
+    "source_rule": "distinct accepted edge ordinals 0,20,40,...; at most 40 successful samples per direction; save actual times and unavailable attempts",
+    "fusion_requested_seconds_after_first_clock_imu": [10, 20, 40, 80, 120, 155],
+    "fusion_extra_snapshots": ["first support incorporating any source factor", "first support incorporating both source families", "final after drain"],
+    "source_revision_age_bins_seconds": [0, 1, 2, 3, 4],
+    "comparison_time_bins_seconds": 10
+  },
+  "before_160_required": [
+    "Implement and compile the disabled-by-default GLIM active-window diagnostic hook; do not change factor construction or covariance",
+    "Verify Kimera audit preinjection state matches the values used for the logged factor Jacobian; label any different evaluation points separately",
+    "Bounded authorized logging gate demonstrates samples in BOTH directions, unchanged covariance, removal lifecycle and acceptable throughput",
+    "Extend the private controller to 160 seconds with new directories/session/port and freeze a NEW manifest; never edit the completed 40-second capture",
+    "Configure matched OFF and ON binaries/profiles and preserve the frozen model and evaluation contract",
+    "Validate saved-journal reconstruction before interpreting fusion family information"
+  ]
+}

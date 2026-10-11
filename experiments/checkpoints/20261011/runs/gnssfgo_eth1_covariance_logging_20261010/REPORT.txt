@@ -1,0 +1,263 @@
+ETH1 covariance-interaction logging gate preparation — 2026-10-10
+================================================================
+
+CURRENT STATUS: CAPTURE_INDEPENDENTLY_VALIDATED_WITH_HARNESS_POSTCHECK_FAILURE.
+The authorized10s CBS-ON capture and one saved-journal numerical replay are done.
+The160s experiment was NOT started. No new accuracy results were calculated.
+
+Completed short gate — renewed authorization, 2026-10-10
+-------------------------------------------------------
+Run directory: gate_ready/
+Primary aggregate: gate_ready/completion_review.json
+Additional all-revision covariance check: gate_ready/journal_covariance_validation.json
+
+Native GLIM, native Kimera and the unchanged no-central-IMU WNOA receiver ran
+concurrently at0.10x, with rendering disabled. Neither estimator was rerun.
+No estimation source code, covariance, Qc, prior or source policy was modified
+during this run. The private logging library was actually loaded, as recorded
+in gate_on_source/effective_mode_check.json. All99 protected manifest entries
+matched after capture, including the earlier frozen40s artifacts/runtime.
+
+IMPORTANT HARNESS FAILURE, NOT HIDDEN
+-----------------------------------
+The earlier duration guard was corrected, so the full requested10s playback
+ran this time. A SECOND inherited post-run guard still required100 GLIM poses,
+with a short-run exception only for8s. It rejected the valid91-pose10s output.
+This was another preparation oversight: the initial preflight tested the
+duration admission guard but not the output-count branch. The source runner
+therefore did not write run_metadata.txt or complete.marker, and the controller
+retained failed.txt. Those missing/failed original statuses have NOT been
+rewritten into successful ones.
+
+Read-only independent review established actual data completion from rosbag's
+Done, orderly estimator shutdown, saved native timestamps/tails, effective
+settings, wire messages and the receiver's genuine complete.marker. The receiver
+drained all captured events after the controller sent STOP. Its post-check
+failure was not a crash, overload or early playback termination.
+
+Validation scripts in validation_v2 explicitly consume capture_review.json
+instead of inventing source/controller completion markers. The small metadata
+subset needed for validation is explicitly reconstructed from the protected
+configuration and effective checks, not represented as an original run log.
+The original validators/preflight/failed evidence remain unchanged. The BPSAM
+matrix reader was also corrected to use Kimera's node stdout log (spdlog),
+not estimators.log (the separate glog revision stream).
+
+A minimal short-run post-check correction is STAGED ONLY in
+short_gate_postcheck_fix.patch; `git apply --check --unidiff-zero` passed.
+No failed artifact or frozen launcher was patched in place; no further run
+was launched. A future matched160s launcher must test BOTH duration admission
+and duration-appropriate output/coverage checks before any launch.
+
+Actual recorded output coverage — NO ATE/GT CLAIM
+------------------------------------------------
+                         rows   timestamp span   largest gap   path length
+native GLIM                91       8.999313s        0.100497s     1.320454m
+native Kimera ROS          34       9.599945s        3.199979s     1.137186m
+fused ONLINE               93       9.200000s        0.100000s     1.733411m
+fused FINAL retrospective  93       9.200000s        0.100000s     1.299806m
+
+986 clock-only IMU messages span9.850002s. Native initialization removes part
+of the nominal10s window. Kimera retains its known3.199979s startup gap; the
+timestamp span is NOT a claim of continuously sampled coverage through that
+gap. Tail gaps to final IMU: GLIM0.179121s, Kimera0.098137s, fusion0.070002s.
+No GT scoring was needed for this instrumentation gate, and none was computed.
+
+Covariance / diagnostic validation
+---------------------------------
+ -31 Kimera->GLIM and30 GLIM->Kimera adapted factor constructions: all36 source
+  covariance entries exactly preserved through wire, mean adapter and factor.
+ -Two predetermined sparse samples in EACH direction. Actual factor whitening,
+  Hessian and gradient independently reconstructed using full6x6 covariance;
+  maximum normalized algebra discrepancy1.1791387741261183e-15.
+ -Kimera manual-preinjection and actual-Values residuals agree exactly in both
+  samples. GLIM Jw^T Jw / Jw^T rw agree with actual factor linearization.
+ -Two successful GLIM local joint-endpoint covariance extractions; four Kimera
+  full/local joint-endpoint diagnostics; no unavailable extraction status.
+ -Every one of3673 transported covariance versions passed finite/symmetric/SPD
+  checks; stable endpoint identity, version sequence and causal times passed.
+ -Sampled incoming covariance traces/costs are saved in diagnostics_validation;
+  they are NOT calibrated uncertainty or a factor-dominance ranking.
+
+Source lifetime validation
+-------------------------
+GLIM:31 factors queued/tracked,6 removed before their window exit,25 remaining.
+Kimera:30 tracked,6 removed through real removeFactorIndices updates,24 remaining.
+No logged guard drop/rollback in this gate. Actual slot identities/counts were
+checked, not inferred from a trajectory. This does NOT establish mathematical
+erasure of all historical indirect CBS effects from marginal priors.
+
+Fusion accounting / stationarity / repeatability
+------------------------------------------------
+ -GLIM:89 stable IDs,3173 versions; Kimera:32 IDs,500 versions.
+ -All3673 versions retained exactly and in source-version order.
+ -120 IDs inserted,3528 replacements,25 explicitly unsupported early versions
+  of one Kimera ID before initialization. Zero pending/duplicate/stale versions.
+ -Source covariance->factor diagnostic max absolute difference3.38813e-21
+  (floating-point symmetry handling), no covariance scaling or added noise.
+ -All93 support publications stationary; max gradient8.187702470637186e-6,
+  below the unchanged1e-5 criterion.
+ -One offline replay of this exact causal journal: online/final TUM, online/final
+  state rows, support clock, model/source covariance diagnostics and dispatch
+  files BYTE-IDENTICAL. Maximum p/orientation/v/omega difference0.
+  This is replay validation of the live recording, not a second live run.
+
+Short-gate throughput / observer limits
+--------------------------------------
+Simulation-time output age: median0.070002s, p950.090001s, max0.100001s.
+Transport's true accumulated queue peak38 events, final0. The controller's2s
+snapshots happened to see queued=0; do not misreport that as a true zero peak.
+Receiver wall runtime125.760405s includes waiting for playback/drain; revision
+update accumulation1.835348s is not total solver cost. Source logs total about
+16.5MB. GLIM logs explicitly warn that synchronous diagnostic linearization
+and error queries add cost. No sustained backlog occurred in this short gate.
+
+The prior40s no-detailed-audit capture had median age~0.060008s,p95~0.100003s,
+max~0.100033s and peak queue43. Different durations/information sets mean this
+is contextual evidence only, NOT a controlled measurement of logging overhead.
+No claim of160s,1x capacity or zero observer effect is made.
+
+Validation/provenance and next boundary
+--------------------------------------
+Three dense algebra/parser unit tests passed; all final git diff --check
+checks passed. Dirty source trees remain as recorded (pre-existing native mean
+alignment plus the earlier explicitly scoped logging additions); no commit or
+push was made. Repository HEADs/diff hashes and artifact hashes are in
+completion_review.json. No processes owned by this run/replay remain running.
+
+The short DATA/DIAGNOSTIC gate is independently validated. The launcher itself
+is NOT certified successful: its erroneous post-check is preserved above.
+Before160s, prepare fresh matched OFF/ON controllers with tested completion
+checks and the same logging/binaries/profiles. Source covariance/model settings
+stay frozen. Full GLIM/Kimera/WNOA/prior matrix competition remains a separate
+same-Values OFFLINE analysis after capture, not an already obtained result.
+No160s run, OFF capture, new sequence, tuning or weighting change is authorized
+or started by this completion.
+
+----- Original preparation record (historical, before this completed gate) -----
+
+Scope
+-----
+Implements the diagnostic preparation in:
+ /home/yeranis/repos/gnssFGO/experiments/covariance_interaction_eth1_160_preparation_20261010/PROTOCOL.txt
+No covariance, Qc, prior, robust loss, source protocol, lifetime policy, mean
+adapter, source sensor profile, or receiver model was changed.
+
+What changed
+------------
+Only the GLIM ROS wrapper's passive receiver audit and call sites changed in
+the estimator source. Existing uncommitted native-mean-alignment changes were
+preserved. logging_only.diff records THIS task's changes relative to its exact
+before/ copies, not an older Git HEAD.
+
+The active_window_temporary path now invokes its existing capped local-graph
+audit after the duplicate-edge guard and before inserting the incoming factor.
+The helper additionally logs the actual Gaussian BetweenFactor's measurement,
+endpoint poses, covariance, unwhitened/whitened residuals, Jacobians, full12x12
+Hessian, gradient and cost at one explicit audit Values. Max-samples0 remains
+the default and returns before inspecting any graph. No new factor is created
+in the estimation graph and no estimation correction is applied by the helper.
+
+Private build completed successfully using the existing Release compile/link
+flags and unchanged dependencies. Only cbs_bridge.cpp and glim_ros.cpp were
+recompiled, then linked into a private libglim_ros.so. Shared catkin libraries
+and the frozen receiver executable were NOT replaced.
+Build commands/logs: prepared/private_build/
+Library SHA256: c462265c22b32ed1173a5d8892331f11cd8dd430cc9d808c305819ae664b3624
+The identical library is copied into gate_ready/private_build/.
+
+Kimera code was not changed. Inspection of bpsam.cpp found:
+ - existing endpoints use calculateEstimate for the preinjection pose pair;
+ - newly supplied endpoint pairs use newThetaCopy;
+ - audit Values starts from calculateEstimate and inserts missing new values;
+ - active CBS slot pointers are excluded from its local-only audit graph.
+The gate validator will check the manual residual against the factor's own
+unwhitenedError and independently reconstruct its Hessian/gradient using the
+logged Jacobians and full covariance. Static inspection is not a substitute
+for that numerical runtime check. Local-only does not prove independence from
+all historic cross-source effects or inherited marginal information.
+
+Failed startup — exact cause and extent
+--------------------------------------
+The first controller invocation used prepared/run_case.py gate on, requesting
+10 seconds. I missed an inherited shell guard in source_runner.sh: it allowed
+only8.0 or40.0 seconds. The runner exited before creating its source directory,
+starting GLIM/Kimera, or playing any bag. Its source.log says:
+ "Prepared 8-second gate or 40-second bidirectional ON case only."
+The controller recorded failed.txt: "source failed".
+
+The receiver transport had been started first, but recorded zero IMUs, zero
+beliefs and zero published poses. On controller shutdown it stopped without
+initializing an estimate. This is a preparation error, NOT estimator overload
+or an algorithmic/covariance failure. The failed directory remains intact.
+Owned-process checks in both containers found no remaining controller source,
+master, transport, or receiver for this attempt. No automatic retry was made.
+
+Corrected preparation, NOT launched
+----------------------------------
+Fresh directory: gate_ready/
+The source runner now accepts ONLY10.0 seconds, ON, bidirectional, offset0.
+New preflight executes that shell guard in isolation:10.0 passes;8.0,40.0 and
+160.0 are rejected. It does not source/run the estimator launcher to do so.
+The fresh controller itself accepts only `gate on`; it cannot launch160s.
+The private loaded GLIM library path and the unchanged Kimera library path
+are asserted at runtime before any bag playback.
+
+Frozen gate settings
+--------------------
+ETH1 2024-10-01-11-29-55, offset0,10s,.10x,25s post-playback drain.
+Same saved Hesai/shared-CPT7/front-stereo profile as the validated40s run.
+Classic bidirectional CBS; source live_revision=false; active_window_temporary;
+native mean-only alignment=true; Gaussian source covariance scale1; unchanged
+schur_relative_between covariance paths; no health weighting.
+Sparse receiver audit cap40, stride20 in each direction; no graph inspectors
+or Rerun rendering. Full outgoing revisions and wire messages remain recorded.
+gnssFGO: frozen source_wnoa executable, no central IMU factors, no bias or
+acceleration variables, independent100ms clock,59 startup samples, unchanged
+Qc[.00375,.00375,.00375,.015,.015,.015] and priors, stable-ID replacement,
+full-history iSAM2, scale1, strict nominal publication checks. No heavy
+snapshot/extra-optimization audit is enabled during live acquisition.
+
+Validation completed
+--------------------
+ - Isolated Release library build: PASS.
+ - Source equality outside helper/call sites/include and private signature:
+   PASS (gate_ready/static_changes_validation.json).
+ - Three read-only validator unit tests: PASS, including dense cross-block
+   covariance, gradient-sign rejection and non-SPD rejection.
+ - Corrected static resolved launch, GPU/container availability, binary hashes,
+   copied profiles, frozen40s protected/acceptance artifacts, private output
+   paths and tested duration guard: PASS (gate_ready/preflight/validation.json).
+ - git diff --check: PASS. Worktree is NOT clean: preserved prior edits plus
+   the explicitly documented diagnostic source changes. No commit/push made.
+
+Validation still REQUIRED before160s
+-----------------------------------
+1. One actual short source/receiver gate in gate_ready (requires renewed go-ahead
+   after the failed startup; no launch is pending or scheduled).
+2. validate_native_bidirectional.py under Noetic: wire->adapted->factor equality
+   of all36 covariance entries and causal endpoint cutoffs.
+3. validate_diagnostics.py: nonzero usable samples in both directions,
+   consistent Values, full-covariance whitening, Jw^T Jw and Jw^T rw checks,
+   successful local joint-endpoint covariance extraction.
+4. check_lifecycle.py: actual slot tracking/removal in both source graphs.
+5. validate_numerical_case.py: all revisions conserved, causal insertion,
+   source/fusion settings, strict stationarity, throughput and one same-journal
+   offline replay validation. That replay is NOT a new source experiment and
+   is NOT labeled live.
+6. Actual diagnostic overhead and native output coverage. No claim about these
+   can be made from a gate that never played data.
+
+Important interpretation limits
+-------------------------------
+These diagnostics distinguish reported uncertainty from actual curvature and
+directional pull. Rotation/rho covariance blocks must be summarized separately;
+do not rank factors by mixed radian/metre trace. The WNOA12D covariance cannot
+be directly ranked against GLIM/Kimera6D traces. GLIM's local-group Frobenius
+norm summaries are not complete grouped information matrices. Fusion-family
+Hessian/gradient comparison remains an AFTER-capture same-Values analysis,
+not an enabled live diagnostic or a result of this task.
+
+The mean-only alignment still intentionally leaves covariance untouched;
+bridge uncertainty and source correlations are not solved by this logging.
+No factor-dominance, ATE or160-second readiness conclusion is certified yet.

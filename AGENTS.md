@@ -1,5 +1,13 @@
 # GrandTour/Newer College CBS and gnssFGO work
 
+For the current incremental runtime engineering work, first read and update
+`GNSSFGO_RUNTIME_ENGINEERING_PLAN_20261011.md`. Identify its task ID before
+editing, and record evidence/status after each task. Do one hypothesis per patch;
+do not silently execute the whole plan. Recovery sources/build instructions are
+in `experiments/checkpoints/20261011/README.md`. This latest snapshot uses classic
+`active_window_temporary` sources and source-driven WNOA without central IMU
+factors; the older baseline descriptions below are distinct configurations.
+
 Before running or interpreting CBS-ON GLIM/Kimera source experiments, read
 `/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/cbsms/docs/CLASSIC_CBS_ON_RUNBOOK_20260925.md`.
 It is the current operational reference for the shared classic CBS protocol

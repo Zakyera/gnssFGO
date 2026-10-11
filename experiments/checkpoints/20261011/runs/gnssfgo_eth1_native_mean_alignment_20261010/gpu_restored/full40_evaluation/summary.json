@@ -1,0 +1,1091 @@
+{
+  "passed": true,
+  "reference": "Continuous IE-TC GNSS/INS, shares CPT7; NOT independent prism GT",
+  "old_controls": "Frozen OFF and raw-mean ON; NOT rerun or retuned. New ON changes only mean alignment.",
+  "inputs_sha256": {
+    "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_active_window40_off_20261008/pilot_off_source/odom_imu.txt": "aa3e9a17c8188587fa493efb4149cb0bf0b2388557d4c589248e1d427787db10",
+    "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_active_window40_off_20261008/pilot_off_source/kimera_odometry.csv": "c1286094ca4ab2cfa4da063808b2d73cccd7e476257bf0dddd6b611499075fa9",
+    "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_active_window40_off_20261008/pilot_off_receiver/receiver/online_trajectory.tum": "6a0ab3f9da001a115df6ada3ce85918b5b24c62b919dd60974d303a5094a95c8",
+    "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_active_window40_off_20261008/pilot_off_receiver/receiver/trajectory.tum": "077dc17e3304d06d8524484072669c2278212914b3e6843c503b7eee81db3b9d",
+    "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_active_window40_prepared_20261008/pilot_on_source/odom_imu.txt": "3672166f25051ebca56af672691421f8b1ca8a24301a2f091a296cc713ba22b4",
+    "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_active_window40_prepared_20261008/pilot_on_source/kimera_odometry.csv": "1badc9d39adfc2e57448fb83b2887e0cd178406bdb48a5de9bb0373f7f3262a9",
+    "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_active_window40_prepared_20261008/pilot_on_receiver/receiver/online_trajectory.tum": "94adaf027b45dd94f560c79a741ab2c01d7788b7e66204862e99275e24968d29",
+    "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_active_window40_prepared_20261008/pilot_on_receiver/receiver/trajectory.tum": "f68d34b5f830e7ba9e1bb06f55d7783aac392abb0c8587e32a182e9ac13d7ded",
+    "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_native_mean_alignment_20261010/gpu_restored/pilot_on_source/odom_imu.txt": "66f652a8a00a1d450cd33359793f7c4548e3825977e7f55b69ec73bcf23f8cd0",
+    "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_native_mean_alignment_20261010/gpu_restored/pilot_on_source/kimera_odometry.csv": "a67d9b3e39915daa10b7ef437eeaee44cba45784ef0d29a91e4719b51f6616b8",
+    "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_native_mean_alignment_20261010/gpu_restored/pilot_on_receiver/receiver/online_trajectory.tum": "110452016a4a3d591eb9065c7c528f2b902782dfaaf4a2599542ea49288b6092",
+    "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_native_mean_alignment_20261010/gpu_restored/pilot_on_receiver/receiver/trajectory.tum": "14c577fb02d0aa27079dce69e2ee17f4f163de163d4b3063f983783cbf026859"
+  },
+  "results": {
+    "off_native_glim": {
+      "full": {
+        "rows": 391,
+        "reference_matched_rows": 391,
+        "reference_coverage_percent": 100,
+        "start_timestamp": 1727775008.675043,
+        "end_timestamp": 1727775047.674923,
+        "start_offset_s": 0.6715681552886963,
+        "end_offset_s": 39.67144799232483,
+        "timestamp_span_s": 38.99987983703613,
+        "max_pose_gap_s": 0.10099005699157715,
+        "ATE_RMSE_m": 0.04251449137196668,
+        "ATE_median_m": 0.023009962597292707,
+        "ATE_max_m": 0.11644253186456988,
+        "full_CPT7_polyline_path_m": 14.05465409292451,
+        "evaluation_prism_polyline_path_m": 13.990760617500161,
+        "matched_reference_prism_polyline_path_m": 13.62454388100714,
+        "alignment_rotation": [
+          [
+            -0.18621696912125152,
+            -0.982399548045122,
+            -0.014641325487683363
+          ],
+          [
+            0.9823148307350389,
+            -0.1864555422934201,
+            0.017085200205437412
+          ],
+          [
+            -0.019514449243783177,
+            -0.011200836969083694,
+            0.9997468317138616
+          ]
+        ],
+        "alignment_translation": [
+          0.06006718884018891,
+          0.0007052637878112722,
+          -0.07853347776933603
+        ],
+        "scale": 1.0,
+        "timestamps_sha256": "11fbca70a57cab3aa83dff820b4f7f8ccd4246ea3a0f5447377c75e0b6cf4697"
+      },
+      "common": {
+        "rows": 361,
+        "reference_matched_rows": 361,
+        "reference_coverage_percent": 100,
+        "start_timestamp": 1727775011.5750432,
+        "end_timestamp": 1727775047.5750432,
+        "start_offset_s": 3.571568250656128,
+        "end_offset_s": 39.57156825065613,
+        "timestamp_span_s": 36.0,
+        "max_pose_gap_s": 0.10000014305114746,
+        "ATE_RMSE_m": 0.03245022061666147,
+        "ATE_median_m": 0.02524406612443989,
+        "ATE_max_m": 0.11524833440642626,
+        "full_CPT7_polyline_path_m": 13.960582863631391,
+        "evaluation_prism_polyline_path_m": 13.894593318081544,
+        "matched_reference_prism_polyline_path_m": 13.549169518087082,
+        "alignment_rotation": [
+          [
+            -0.1871663239089795,
+            -0.98213109090447,
+            -0.01967962075839222
+          ],
+          [
+            0.9819292319237519,
+            -0.18762369466384518,
+            0.024745357025486858
+          ],
+          [
+            -0.027995547646534946,
+            -0.014692497387563341,
+            0.9995000649487159
+          ]
+        ],
+        "alignment_translation": [
+          0.06574383374265969,
+          -0.004421161066046675,
+          -0.10195558647694136
+        ],
+        "scale": 1.0,
+        "timestamps_sha256": "59362eb6bcd4a3159b20ef04a864752e34f2d6d713307a1d84aa233d0017c76a"
+      },
+      "common_RPE_1s": {
+        "pairs": 351,
+        "translation_RMSE_m": 0.030497526710816854,
+        "rotation_RMSE_deg": 0.47241364578735995
+      }
+    },
+    "off_native_kimera": {
+      "full": {
+        "rows": 184,
+        "reference_matched_rows": 184,
+        "reference_coverage_percent": 100,
+        "start_timestamp": 1727775008.1553955,
+        "end_timestamp": 1727775047.7551734,
+        "start_offset_s": 0.15192055702209473,
+        "end_offset_s": 39.75169849395752,
+        "timestamp_span_s": 39.599777936935425,
+        "max_pose_gap_s": 3.199979066848755,
+        "ATE_RMSE_m": 0.0663519099403622,
+        "ATE_median_m": 0.05507307047202306,
+        "ATE_max_m": 0.11930394987071126,
+        "full_CPT7_polyline_path_m": 13.537002716110695,
+        "evaluation_prism_polyline_path_m": 13.442888812787118,
+        "matched_reference_prism_polyline_path_m": 13.563882993650914,
+        "alignment_rotation": [
+          [
+            0.8866613125679603,
+            0.4622674122127265,
+            -0.011855648502311272
+          ],
+          [
+            0.4613752525343562,
+            -0.8860903589243732,
+            -0.044460681170389066
+          ],
+          [
+            -0.031057899866545058,
+            0.03395166310249069,
+            -0.9989407847457503
+          ]
+        ],
+        "alignment_translation": [
+          0.08713008151328072,
+          -0.04743922051746671,
+          0.012599408241438084
+        ],
+        "scale": 1.0,
+        "timestamps_sha256": "3e73ff1bd3ce4d6a96c10ebf4133744549a58ac7e3a372b082b9a753e5ba9344"
+      },
+      "common": {
+        "rows": 361,
+        "reference_matched_rows": 361,
+        "reference_coverage_percent": 100,
+        "start_timestamp": 1727775011.5750432,
+        "end_timestamp": 1727775047.5750432,
+        "start_offset_s": 3.571568250656128,
+        "end_offset_s": 39.57156825065613,
+        "timestamp_span_s": 36.0,
+        "max_pose_gap_s": 0.10000014305114746,
+        "ATE_RMSE_m": 0.0656819422931367,
+        "ATE_median_m": 0.05410019513572372,
+        "ATE_max_m": 0.1192675166745588,
+        "full_CPT7_polyline_path_m": 13.386488968661006,
+        "evaluation_prism_polyline_path_m": 13.263205034162844,
+        "matched_reference_prism_polyline_path_m": 13.549169518087082,
+        "alignment_rotation": [
+          [
+            0.8865233487903126,
+            0.4625347912440242,
+            -0.011743889409249614
+          ],
+          [
+            0.46159508669324745,
+            -0.8858925240254966,
+            -0.04609134209794144
+          ],
+          [
+            -0.031722673126064777,
+            0.03544012929692879,
+            -0.9988681941303139
+          ]
+        ],
+        "alignment_translation": [
+          0.08819560249704095,
+          -0.048403806785168674,
+          0.0126884012880316
+        ],
+        "scale": 1.0,
+        "timestamps_sha256": "59362eb6bcd4a3159b20ef04a864752e34f2d6d713307a1d84aa233d0017c76a"
+      },
+      "common_RPE_1s": {
+        "pairs": 351,
+        "translation_RMSE_m": 0.02295401433050659,
+        "rotation_RMSE_deg": 0.6224963922293014
+      }
+    },
+    "off_fused_online": {
+      "full": {
+        "rows": 393,
+        "reference_matched_rows": 393,
+        "reference_coverage_percent": 100,
+        "start_timestamp": 1727775008.583475,
+        "end_timestamp": 1727775047.7834752,
+        "start_offset_s": 0.5800001621246338,
+        "end_offset_s": 39.78000020980835,
+        "timestamp_span_s": 39.200000047683716,
+        "max_pose_gap_s": 0.10000014305114746,
+        "ATE_RMSE_m": 0.03489596525242448,
+        "ATE_median_m": 0.03016655371767161,
+        "ATE_max_m": 0.0901676780989177,
+        "full_CPT7_polyline_path_m": 15.18751460474885,
+        "evaluation_prism_polyline_path_m": 15.269674137950528,
+        "matched_reference_prism_polyline_path_m": 13.68982004829903,
+        "alignment_rotation": [
+          [
+            0.8870539834528449,
+            0.4616609816330256,
+            -0.002090090445673626
+          ],
+          [
+            0.4616017232171318,
+            -0.8869973181804731,
+            -0.012633553087873894
+          ],
+          [
+            -0.007686323140128126,
+            0.010241854240359366,
+            -0.9999180090678961
+          ]
+        ],
+        "alignment_translation": [
+          -0.0304599743120324,
+          -0.023846332422947703,
+          0.0020403941056197916
+        ],
+        "scale": 1.0,
+        "timestamps_sha256": "564d18b8856fadbda4ebb66ee79dee37d8be5fc2447a0f06dd748b6630bbcee2"
+      },
+      "common": {
+        "rows": 361,
+        "reference_matched_rows": 361,
+        "reference_coverage_percent": 100,
+        "start_timestamp": 1727775011.5750432,
+        "end_timestamp": 1727775047.5750432,
+        "start_offset_s": 3.571568250656128,
+        "end_offset_s": 39.57156825065613,
+        "timestamp_span_s": 36.0,
+        "max_pose_gap_s": 0.10000014305114746,
+        "ATE_RMSE_m": 0.03432964727755476,
+        "ATE_median_m": 0.027715809112111627,
+        "ATE_max_m": 0.08450775206267118,
+        "full_CPT7_polyline_path_m": 14.71516046044209,
+        "evaluation_prism_polyline_path_m": 14.750165267473218,
+        "matched_reference_prism_polyline_path_m": 13.549169518087082,
+        "alignment_rotation": [
+          [
+            0.8864657787019846,
+            0.4627905279351085,
+            -0.0018304217622043817
+          ],
+          [
+            0.46270952822409595,
+            -0.8863723916428604,
+            -0.015616524067471937
+          ],
+          [
+            -0.008849614732776928,
+            0.012996560578049099,
+            -0.9998763792250632
+          ]
+        ],
+        "alignment_translation": [
+          -0.0324063860002326,
+          -0.030056344081623304,
+          0.0020294432037936128
+        ],
+        "scale": 1.0,
+        "timestamps_sha256": "59362eb6bcd4a3159b20ef04a864752e34f2d6d713307a1d84aa233d0017c76a"
+      },
+      "common_RPE_1s": {
+        "pairs": 351,
+        "translation_RMSE_m": 0.0295610945661842,
+        "rotation_RMSE_deg": 1.3888472254556083
+      }
+    },
+    "off_fused_final": {
+      "full": {
+        "rows": 393,
+        "reference_matched_rows": 393,
+        "reference_coverage_percent": 100,
+        "start_timestamp": 1727775008.583475,
+        "end_timestamp": 1727775047.7834752,
+        "start_offset_s": 0.5800001621246338,
+        "end_offset_s": 39.78000020980835,
+        "timestamp_span_s": 39.200000047683716,
+        "max_pose_gap_s": 0.10000014305114746,
+        "ATE_RMSE_m": 0.030773993310801787,
+        "ATE_median_m": 0.028205249358660704,
+        "ATE_max_m": 0.06761701298227724,
+        "full_CPT7_polyline_path_m": 13.90094660056911,
+        "evaluation_prism_polyline_path_m": 13.849245310643864,
+        "matched_reference_prism_polyline_path_m": 13.68982004829903,
+        "alignment_rotation": [
+          [
+            0.8868770215529314,
+            0.46200362929017513,
+            -0.0013398373438376493
+          ],
+          [
+            0.4619479714411145,
+            -0.8868085136993771,
+            -0.013218612322851597
+          ],
+          [
+            -0.007295226030825136,
+            0.011104348382906859,
+            -0.999911732666514
+          ]
+        ],
+        "alignment_translation": [
+          -0.030391862337550535,
+          -0.024445957824312525,
+          -0.0019247853378140112
+        ],
+        "scale": 1.0,
+        "timestamps_sha256": "564d18b8856fadbda4ebb66ee79dee37d8be5fc2447a0f06dd748b6630bbcee2"
+      },
+      "common": {
+        "rows": 361,
+        "reference_matched_rows": 361,
+        "reference_coverage_percent": 100,
+        "start_timestamp": 1727775011.5750432,
+        "end_timestamp": 1727775047.5750432,
+        "start_offset_s": 3.571568250656128,
+        "end_offset_s": 39.57156825065613,
+        "timestamp_span_s": 36.0,
+        "max_pose_gap_s": 0.10000014305114746,
+        "ATE_RMSE_m": 0.02967437456674869,
+        "ATE_median_m": 0.024712163586602,
+        "ATE_max_m": 0.07008321329464934,
+        "full_CPT7_polyline_path_m": 13.723002316174135,
+        "evaluation_prism_polyline_path_m": 13.653808414305479,
+        "matched_reference_prism_polyline_path_m": 13.549169518087082,
+        "alignment_rotation": [
+          [
+            0.8861141555302874,
+            0.4634664705531396,
+            -0.000730781678028869
+          ],
+          [
+            0.46338812907537186,
+            -0.8859912662754982,
+            -0.017056316002165367
+          ],
+          [
+            -0.008552496762450401,
+            0.014775207496172171,
+            -0.9998542634017085
+          ]
+        ],
+        "alignment_translation": [
+          -0.032707186032395974,
+          -0.03263716223368596,
+          -0.0033980504197928807
+        ],
+        "scale": 1.0,
+        "timestamps_sha256": "59362eb6bcd4a3159b20ef04a864752e34f2d6d713307a1d84aa233d0017c76a"
+      },
+      "common_RPE_1s": {
+        "pairs": 351,
+        "translation_RMSE_m": 0.016193781426493692,
+        "rotation_RMSE_deg": 0.4366565522999068
+      }
+    },
+    "raw_on_native_glim": {
+      "full": {
+        "rows": 391,
+        "reference_matched_rows": 391,
+        "reference_coverage_percent": 100,
+        "start_timestamp": 1727775008.675043,
+        "end_timestamp": 1727775047.674923,
+        "start_offset_s": 0.6715681552886963,
+        "end_offset_s": 39.67144799232483,
+        "timestamp_span_s": 38.99987983703613,
+        "max_pose_gap_s": 0.10099005699157715,
+        "ATE_RMSE_m": 0.031301080844029244,
+        "ATE_median_m": 0.025092052599820655,
+        "ATE_max_m": 0.09740704846427715,
+        "full_CPT7_polyline_path_m": 14.379875164017868,
+        "evaluation_prism_polyline_path_m": 14.248813181535834,
+        "matched_reference_prism_polyline_path_m": 13.62454388100714,
+        "alignment_rotation": [
+          [
+            -0.18518586773539283,
+            -0.9826888320259838,
+            -0.0053715735588400065
+          ],
+          [
+            0.9824294291069491,
+            -0.18526054261323144,
+            0.022604162785771265
+          ],
+          [
+            -0.023207998959072385,
+            -0.0010912204449019247,
+            0.9997300625780223
+          ]
+        ],
+        "alignment_translation": [
+          0.024164695530117353,
+          -0.016383371410626762,
+          -0.0023741404437240543
+        ],
+        "scale": 1.0,
+        "timestamps_sha256": "11fbca70a57cab3aa83dff820b4f7f8ccd4246ea3a0f5447377c75e0b6cf4697"
+      },
+      "common": {
+        "rows": 361,
+        "reference_matched_rows": 361,
+        "reference_coverage_percent": 100,
+        "start_timestamp": 1727775011.5750432,
+        "end_timestamp": 1727775047.5750432,
+        "start_offset_s": 3.571568250656128,
+        "end_offset_s": 39.57156825065613,
+        "timestamp_span_s": 36.0,
+        "max_pose_gap_s": 0.10000014305114746,
+        "ATE_RMSE_m": 0.031620405911296404,
+        "ATE_median_m": 0.026018318110930472,
+        "ATE_max_m": 0.09619240746280538,
+        "full_CPT7_polyline_path_m": 14.27742939140196,
+        "evaluation_prism_polyline_path_m": 14.145096378602279,
+        "matched_reference_prism_polyline_path_m": 13.549169518087082,
+        "alignment_rotation": [
+          [
+            -0.1861413876216177,
+            -0.982504949720778,
+            -0.0059504275870636
+          ],
+          [
+            0.9821894262058213,
+            -0.18623257764671408,
+            0.024927055031425782
+          ],
+          [
+            -0.025599118417977212,
+            -0.0012044904445472904,
+            0.999671563234141
+          ]
+        ],
+        "alignment_translation": [
+          0.026110611283735707,
+          -0.02128511986726697,
+          -0.004404459200750818
+        ],
+        "scale": 1.0,
+        "timestamps_sha256": "59362eb6bcd4a3159b20ef04a864752e34f2d6d713307a1d84aa233d0017c76a"
+      },
+      "common_RPE_1s": {
+        "pairs": 351,
+        "translation_RMSE_m": 0.03686540963353247,
+        "rotation_RMSE_deg": 0.5116107268929525
+      }
+    },
+    "raw_on_native_kimera": {
+      "full": {
+        "rows": 184,
+        "reference_matched_rows": 184,
+        "reference_coverage_percent": 100,
+        "start_timestamp": 1727775008.1553955,
+        "end_timestamp": 1727775047.7551734,
+        "start_offset_s": 0.15192055702209473,
+        "end_offset_s": 39.75169849395752,
+        "timestamp_span_s": 39.599777936935425,
+        "max_pose_gap_s": 3.199979066848755,
+        "ATE_RMSE_m": 0.09561984096954809,
+        "ATE_median_m": 0.0874575695254509,
+        "ATE_max_m": 0.21733334229257287,
+        "full_CPT7_polyline_path_m": 14.046356406477935,
+        "evaluation_prism_polyline_path_m": 13.859288183213248,
+        "matched_reference_prism_polyline_path_m": 13.563882993650914,
+        "alignment_rotation": [
+          [
+            0.9058314909081013,
+            0.4236270590894839,
+            -0.0030699977852503
+          ],
+          [
+            0.4236380970398119,
+            -0.9058029058872408,
+            0.007201279241834446
+          ],
+          [
+            0.00026984383195305384,
+            -0.007823713531736193,
+            -0.9999693578759697
+          ]
+        ],
+        "alignment_translation": [
+          0.007925713768256681,
+          0.04950712410506272,
+          -0.030149610484881573
+        ],
+        "scale": 1.0,
+        "timestamps_sha256": "3e73ff1bd3ce4d6a96c10ebf4133744549a58ac7e3a372b082b9a753e5ba9344"
+      },
+      "common": {
+        "rows": 361,
+        "reference_matched_rows": 361,
+        "reference_coverage_percent": 100,
+        "start_timestamp": 1727775011.5750432,
+        "end_timestamp": 1727775047.5750432,
+        "start_offset_s": 3.571568250656128,
+        "end_offset_s": 39.57156825065613,
+        "timestamp_span_s": 36.0,
+        "max_pose_gap_s": 0.10000014305114746,
+        "ATE_RMSE_m": 0.09461216095851492,
+        "ATE_median_m": 0.08841492196487111,
+        "ATE_max_m": 0.19840676092819245,
+        "full_CPT7_polyline_path_m": 13.889901356343481,
+        "evaluation_prism_polyline_path_m": 13.673154914838625,
+        "matched_reference_prism_polyline_path_m": 13.549169518087082,
+        "alignment_rotation": [
+          [
+            0.9061691935602941,
+            0.42290621575652865,
+            -0.00277944540834249
+          ],
+          [
+            0.4229152280834779,
+            -0.906144388635422,
+            0.0067124361923820985
+          ],
+          [
+            0.0003201521283394404,
+            -0.0072580726800905715,
+            -0.9999736085935393
+          ]
+        ],
+        "alignment_translation": [
+          0.007593869168880829,
+          0.05432159373347392,
+          -0.0315318496930323
+        ],
+        "scale": 1.0,
+        "timestamps_sha256": "59362eb6bcd4a3159b20ef04a864752e34f2d6d713307a1d84aa233d0017c76a"
+      },
+      "common_RPE_1s": {
+        "pairs": 351,
+        "translation_RMSE_m": 0.052516025645710125,
+        "rotation_RMSE_deg": 0.7423623334764525
+      }
+    },
+    "raw_on_fused_online": {
+      "full": {
+        "rows": 393,
+        "reference_matched_rows": 393,
+        "reference_coverage_percent": 100,
+        "start_timestamp": 1727775008.583475,
+        "end_timestamp": 1727775047.7834752,
+        "start_offset_s": 0.5800001621246338,
+        "end_offset_s": 39.78000020980835,
+        "timestamp_span_s": 39.200000047683716,
+        "max_pose_gap_s": 0.10000014305114746,
+        "ATE_RMSE_m": 0.11731195905364714,
+        "ATE_median_m": 0.09523949096213195,
+        "ATE_max_m": 0.31862977080814925,
+        "full_CPT7_polyline_path_m": 18.375378512621086,
+        "evaluation_prism_polyline_path_m": 18.73885706433095,
+        "matched_reference_prism_polyline_path_m": 13.68982004829903,
+        "alignment_rotation": [
+          [
+            0.9004469230650755,
+            0.4346984307658,
+            -0.015251656709642583
+          ],
+          [
+            0.43495540082624606,
+            -0.9001151642531372,
+            0.02462702526954791
+          ],
+          [
+            -0.003022918245230377,
+            -0.02880911958561691,
+            -0.9995803602482314
+          ]
+        ],
+        "alignment_translation": [
+          0.050992165755776586,
+          0.012236023491975528,
+          -0.009216682155877065
+        ],
+        "scale": 1.0,
+        "timestamps_sha256": "564d18b8856fadbda4ebb66ee79dee37d8be5fc2447a0f06dd748b6630bbcee2"
+      },
+      "common": {
+        "rows": 361,
+        "reference_matched_rows": 361,
+        "reference_coverage_percent": 100,
+        "start_timestamp": 1727775011.5750432,
+        "end_timestamp": 1727775047.5750432,
+        "start_offset_s": 3.571568250656128,
+        "end_offset_s": 39.57156825065613,
+        "timestamp_span_s": 36.0,
+        "max_pose_gap_s": 0.10000014305114746,
+        "ATE_RMSE_m": 0.11804638039421997,
+        "ATE_median_m": 0.1004966742296229,
+        "ATE_max_m": 0.31869347762729144,
+        "full_CPT7_polyline_path_m": 17.512595645146835,
+        "evaluation_prism_polyline_path_m": 17.812470049042787,
+        "matched_reference_prism_polyline_path_m": 13.549169518087082,
+        "alignment_rotation": [
+          [
+            0.9006806584307868,
+            0.43423213889721995,
+            -0.014724166442631414
+          ],
+          [
+            0.4344683348412997,
+            -0.9004014646745967,
+            0.022681896571253246
+          ],
+          [
+            -0.003408452568677278,
+            -0.026826329614511507,
+            -0.9996342983764113
+          ]
+        ],
+        "alignment_translation": [
+          0.05499771446760837,
+          0.015680437624064625,
+          -0.011172642820040823
+        ],
+        "scale": 1.0,
+        "timestamps_sha256": "59362eb6bcd4a3159b20ef04a864752e34f2d6d713307a1d84aa233d0017c76a"
+      },
+      "common_RPE_1s": {
+        "pairs": 351,
+        "translation_RMSE_m": 0.07723181326355527,
+        "rotation_RMSE_deg": 1.870689824757768
+      }
+    },
+    "raw_on_fused_final": {
+      "full": {
+        "rows": 393,
+        "reference_matched_rows": 393,
+        "reference_coverage_percent": 100,
+        "start_timestamp": 1727775008.583475,
+        "end_timestamp": 1727775047.7834752,
+        "start_offset_s": 0.5800001621246338,
+        "end_offset_s": 39.78000020980835,
+        "timestamp_span_s": 39.200000047683716,
+        "max_pose_gap_s": 0.10000014305114746,
+        "ATE_RMSE_m": 0.10672659570747568,
+        "ATE_median_m": 0.07687951089430993,
+        "ATE_max_m": 0.26653823052615355,
+        "full_CPT7_polyline_path_m": 14.896844774997142,
+        "evaluation_prism_polyline_path_m": 14.731429904440283,
+        "matched_reference_prism_polyline_path_m": 13.68982004829903,
+        "alignment_rotation": [
+          [
+            0.9036371531738072,
+            0.4280581335250991,
+            -0.014357218635462882
+          ],
+          [
+            0.42828087567090106,
+            -0.9033984381182127,
+            0.021136545132554196
+          ],
+          [
+            -0.003922618832388675,
+            -0.025248689640905625,
+            -0.999673505066986
+          ]
+        ],
+        "alignment_translation": [
+          0.06604577693016855,
+          0.020535777806850147,
+          -0.009846901039317735
+        ],
+        "scale": 1.0,
+        "timestamps_sha256": "564d18b8856fadbda4ebb66ee79dee37d8be5fc2447a0f06dd748b6630bbcee2"
+      },
+      "common": {
+        "rows": 361,
+        "reference_matched_rows": 361,
+        "reference_coverage_percent": 100,
+        "start_timestamp": 1727775011.5750432,
+        "end_timestamp": 1727775047.5750432,
+        "start_offset_s": 3.571568250656128,
+        "end_offset_s": 39.57156825065613,
+        "timestamp_span_s": 36.0,
+        "max_pose_gap_s": 0.10000014305114746,
+        "ATE_RMSE_m": 0.10733515964313362,
+        "ATE_median_m": 0.08209055554610518,
+        "ATE_max_m": 0.25584773285354767,
+        "full_CPT7_polyline_path_m": 14.56787581161185,
+        "evaluation_prism_polyline_path_m": 14.396290213806129,
+        "matched_reference_prism_polyline_path_m": 13.549169518087082,
+        "alignment_rotation": [
+          [
+            0.9039158089828591,
+            0.42748620336691223,
+            -0.013847606356578612
+          ],
+          [
+            0.42769029155063215,
+            -0.903713563313597,
+            0.019565530822770405
+          ],
+          [
+            -0.004150275195583364,
+            -0.023608079421767014,
+            -0.9997126756232595
+          ]
+        ],
+        "alignment_translation": [
+          0.07109980856498677,
+          0.024446065467232908,
+          -0.011877049960384523
+        ],
+        "scale": 1.0,
+        "timestamps_sha256": "59362eb6bcd4a3159b20ef04a864752e34f2d6d713307a1d84aa233d0017c76a"
+      },
+      "common_RPE_1s": {
+        "pairs": 351,
+        "translation_RMSE_m": 0.04678194891470569,
+        "rotation_RMSE_deg": 0.5366852156479366
+      }
+    },
+    "aligned_on_native_glim": {
+      "full": {
+        "rows": 391,
+        "reference_matched_rows": 391,
+        "reference_coverage_percent": 100,
+        "start_timestamp": 1727775008.675043,
+        "end_timestamp": 1727775047.674923,
+        "start_offset_s": 0.6715681552886963,
+        "end_offset_s": 39.67144799232483,
+        "timestamp_span_s": 38.99987983703613,
+        "max_pose_gap_s": 0.10099005699157715,
+        "ATE_RMSE_m": 0.042446136307800156,
+        "ATE_median_m": 0.024885571055966605,
+        "ATE_max_m": 0.10979242027301866,
+        "full_CPT7_polyline_path_m": 14.076680936971021,
+        "evaluation_prism_polyline_path_m": 13.99994013821993,
+        "matched_reference_prism_polyline_path_m": 13.62454388100714,
+        "alignment_rotation": [
+          [
+            -0.18598859240131682,
+            -0.9824311736979158,
+            -0.015402351869522032
+          ],
+          [
+            0.9823901917341837,
+            -0.1862195273694428,
+            0.015224940419426014
+          ],
+          [
+            -0.017825674771257766,
+            -0.01229945416825412,
+            0.9997654568678156
+          ]
+        ],
+        "alignment_translation": [
+          0.06008941567604076,
+          0.0029256729644473456,
+          -0.08396032709801668
+        ],
+        "scale": 1.0,
+        "timestamps_sha256": "11fbca70a57cab3aa83dff820b4f7f8ccd4246ea3a0f5447377c75e0b6cf4697"
+      },
+      "common": {
+        "rows": 361,
+        "reference_matched_rows": 361,
+        "reference_coverage_percent": 100,
+        "start_timestamp": 1727775011.5750432,
+        "end_timestamp": 1727775047.5750432,
+        "start_offset_s": 3.571568250656128,
+        "end_offset_s": 39.57156825065613,
+        "timestamp_span_s": 36.0,
+        "max_pose_gap_s": 0.10000014305114746,
+        "ATE_RMSE_m": 0.031915127404744253,
+        "ATE_median_m": 0.02677549585150129,
+        "ATE_max_m": 0.09381344199434707,
+        "full_CPT7_polyline_path_m": 13.968211835806075,
+        "evaluation_prism_polyline_path_m": 13.887729339420504,
+        "matched_reference_prism_polyline_path_m": 13.549169518087082,
+        "alignment_rotation": [
+          [
+            -0.18695488051422096,
+            -0.9821523848616283,
+            -0.020604988777725153
+          ],
+          [
+            0.9820123715929611,
+            -0.18741072063115802,
+            0.022998344089946277
+          ],
+          [
+            -0.026449474291239977,
+            -0.01593470122489915,
+            0.9995231416063313
+          ]
+        ],
+        "alignment_translation": [
+          0.06569115010678139,
+          -0.0022835292632513993,
+          -0.10824804426625903
+        ],
+        "scale": 1.0,
+        "timestamps_sha256": "59362eb6bcd4a3159b20ef04a864752e34f2d6d713307a1d84aa233d0017c76a"
+      },
+      "common_RPE_1s": {
+        "pairs": 351,
+        "translation_RMSE_m": 0.02467721693317908,
+        "rotation_RMSE_deg": 0.44608361769858085
+      }
+    },
+    "aligned_on_native_kimera": {
+      "full": {
+        "rows": 184,
+        "reference_matched_rows": 184,
+        "reference_coverage_percent": 100,
+        "start_timestamp": 1727775008.1553955,
+        "end_timestamp": 1727775047.7551734,
+        "start_offset_s": 0.15192055702209473,
+        "end_offset_s": 39.75169849395752,
+        "timestamp_span_s": 39.599777936935425,
+        "max_pose_gap_s": 3.199979066848755,
+        "ATE_RMSE_m": 0.0640855271760259,
+        "ATE_median_m": 0.0474510766474016,
+        "ATE_max_m": 0.16267909922110302,
+        "full_CPT7_polyline_path_m": 13.729852889730493,
+        "evaluation_prism_polyline_path_m": 13.588830271942943,
+        "matched_reference_prism_polyline_path_m": 13.563882993650914,
+        "alignment_rotation": [
+          [
+            0.8906180440679689,
+            0.45442351224545735,
+            0.017284996356632387
+          ],
+          [
+            0.454578478446096,
+            -0.8885842958983292,
+            -0.06145206275222284
+          ],
+          [
+            -0.01256608587343,
+            0.062587703276071,
+            -0.9979603563691538
+          ]
+        ],
+        "alignment_translation": [
+          0.032643671027911214,
+          -0.06250964313252622,
+          -0.03981003685212925
+        ],
+        "scale": 1.0,
+        "timestamps_sha256": "3e73ff1bd3ce4d6a96c10ebf4133744549a58ac7e3a372b082b9a753e5ba9344"
+      },
+      "common": {
+        "rows": 361,
+        "reference_matched_rows": 361,
+        "reference_coverage_percent": 100,
+        "start_timestamp": 1727775011.5750432,
+        "end_timestamp": 1727775047.5750432,
+        "start_offset_s": 3.571568250656128,
+        "end_offset_s": 39.57156825065613,
+        "timestamp_span_s": 36.0,
+        "max_pose_gap_s": 0.10000014305114746,
+        "ATE_RMSE_m": 0.0628726295817186,
+        "ATE_median_m": 0.046990730109761236,
+        "ATE_max_m": 0.15840901979399205,
+        "full_CPT7_polyline_path_m": 13.582612609474015,
+        "evaluation_prism_polyline_path_m": 13.415379846559587,
+        "matched_reference_prism_polyline_path_m": 13.549169518087082,
+        "alignment_rotation": [
+          [
+            0.8904803610678209,
+            0.45466794869901284,
+            0.017938310353989573
+          ],
+          [
+            0.45484267481676727,
+            -0.8883323825620018,
+            -0.06311671139441691
+          ],
+          [
+            -0.012761963722431074,
+            0.06436330101501578,
+            -0.99784492671176
+          ]
+        ],
+        "alignment_translation": [
+          0.03284467007132008,
+          -0.0636034061641054,
+          -0.042545274854520615
+        ],
+        "scale": 1.0,
+        "timestamps_sha256": "59362eb6bcd4a3159b20ef04a864752e34f2d6d713307a1d84aa233d0017c76a"
+      },
+      "common_RPE_1s": {
+        "pairs": 351,
+        "translation_RMSE_m": 0.026219902028848056,
+        "rotation_RMSE_deg": 0.6872987489764785
+      }
+    },
+    "aligned_on_fused_online": {
+      "full": {
+        "rows": 393,
+        "reference_matched_rows": 393,
+        "reference_coverage_percent": 100,
+        "start_timestamp": 1727775008.583475,
+        "end_timestamp": 1727775047.7834752,
+        "start_offset_s": 0.5800001621246338,
+        "end_offset_s": 39.78000020980835,
+        "timestamp_span_s": 39.200000047683716,
+        "max_pose_gap_s": 0.10000014305114746,
+        "ATE_RMSE_m": 0.05949057494247318,
+        "ATE_median_m": 0.045670138635032845,
+        "ATE_max_m": 0.12348078591912763,
+        "full_CPT7_polyline_path_m": 15.426332385244446,
+        "evaluation_prism_polyline_path_m": 15.529952263115034,
+        "matched_reference_prism_polyline_path_m": 13.68982004829903,
+        "alignment_rotation": [
+          [
+            0.8873663529852603,
+            0.4610642012786914,
+            0.0008705681371431462
+          ],
+          [
+            0.46106231034518824,
+            -0.8873530729197002,
+            -0.005105874961315093
+          ],
+          [
+            -0.0015816348491876908,
+            0.00493216779984465,
+            -0.9999865859860306
+          ]
+        ],
+        "alignment_translation": [
+          0.06141380127805185,
+          -0.015141620787627236,
+          -0.05859366686034956
+        ],
+        "scale": 1.0,
+        "timestamps_sha256": "564d18b8856fadbda4ebb66ee79dee37d8be5fc2447a0f06dd748b6630bbcee2"
+      },
+      "common": {
+        "rows": 361,
+        "reference_matched_rows": 361,
+        "reference_coverage_percent": 100,
+        "start_timestamp": 1727775011.5750432,
+        "end_timestamp": 1727775047.5750432,
+        "start_offset_s": 3.571568250656128,
+        "end_offset_s": 39.57156825065613,
+        "timestamp_span_s": 36.0,
+        "max_pose_gap_s": 0.10000014305114746,
+        "ATE_RMSE_m": 0.05485989474138521,
+        "ATE_median_m": 0.04381637158941862,
+        "ATE_max_m": 0.12077917593937698,
+        "full_CPT7_polyline_path_m": 14.974227067236319,
+        "evaluation_prism_polyline_path_m": 15.034293031403156,
+        "matched_reference_prism_polyline_path_m": 13.549169518087082,
+        "alignment_rotation": [
+          [
+            0.8864603873820371,
+            0.4627770124946004,
+            0.005041657372433533
+          ],
+          [
+            0.4627994865307235,
+            -0.8863476561203892,
+            -0.014299222244248566
+          ],
+          [
+            -0.0021486901561712513,
+            0.015008970533124333,
+            -0.9998850503603641
+          ]
+        ],
+        "alignment_translation": [
+          0.06759289654595912,
+          -0.024488658843452693,
+          -0.07671030218769578
+        ],
+        "scale": 1.0,
+        "timestamps_sha256": "59362eb6bcd4a3159b20ef04a864752e34f2d6d713307a1d84aa233d0017c76a"
+      },
+      "common_RPE_1s": {
+        "pairs": 351,
+        "translation_RMSE_m": 0.04115883873509282,
+        "rotation_RMSE_deg": 1.5206610304666581
+      }
+    },
+    "aligned_on_fused_final": {
+      "full": {
+        "rows": 393,
+        "reference_matched_rows": 393,
+        "reference_coverage_percent": 100,
+        "start_timestamp": 1727775008.583475,
+        "end_timestamp": 1727775047.7834752,
+        "start_offset_s": 0.5800001621246338,
+        "end_offset_s": 39.78000020980835,
+        "timestamp_span_s": 39.200000047683716,
+        "max_pose_gap_s": 0.10000014305114746,
+        "ATE_RMSE_m": 0.05126924080812358,
+        "ATE_median_m": 0.03374393174186127,
+        "ATE_max_m": 0.11249084965344229,
+        "full_CPT7_polyline_path_m": 14.018162530875399,
+        "evaluation_prism_polyline_path_m": 13.953416925774633,
+        "matched_reference_prism_polyline_path_m": 13.68982004829903,
+        "alignment_rotation": [
+          [
+            0.888124473204488,
+            0.4596022720673435,
+            0.0008195155807753374
+          ],
+          [
+            0.4596028360057661,
+            -0.8881212205427212,
+            -0.0024353145924155273
+          ],
+          [
+            -0.00039144694202108976,
+            0.0025395141745516714,
+            -0.9999966988130756
+          ]
+        ],
+        "alignment_translation": [
+          0.06652496216823156,
+          -0.006195358732424577,
+          -0.05858122990631606
+        ],
+        "scale": 1.0,
+        "timestamps_sha256": "564d18b8856fadbda4ebb66ee79dee37d8be5fc2447a0f06dd748b6630bbcee2"
+      },
+      "common": {
+        "rows": 361,
+        "reference_matched_rows": 361,
+        "reference_coverage_percent": 100,
+        "start_timestamp": 1727775011.5750432,
+        "end_timestamp": 1727775047.5750432,
+        "start_offset_s": 3.571568250656128,
+        "end_offset_s": 39.57156825065613,
+        "timestamp_span_s": 36.0,
+        "max_pose_gap_s": 0.10000014305114746,
+        "ATE_RMSE_m": 0.04606269448711521,
+        "ATE_median_m": 0.03537089602366913,
+        "ATE_max_m": 0.10430569573942884,
+        "full_CPT7_polyline_path_m": 13.832525722551383,
+        "evaluation_prism_polyline_path_m": 13.75339598880596,
+        "matched_reference_prism_polyline_path_m": 13.549169518087082,
+        "alignment_rotation": [
+          [
+            0.8873856092353503,
+            0.46100406748627587,
+            0.004693642840591206
+          ],
+          [
+            0.4610274219167229,
+            -0.8873230184234862,
+            -0.0105630117227076
+          ],
+          [
+            -0.0007048140363581923,
+            0.011537362651110716,
+            -0.9999331940185957
+          ]
+        ],
+        "alignment_translation": [
+          0.0723261450883741,
+          -0.013737780289775486,
+          -0.07565882223811304
+        ],
+        "scale": 1.0,
+        "timestamps_sha256": "59362eb6bcd4a3159b20ef04a864752e34f2d6d713307a1d84aa233d0017c76a"
+      },
+      "common_RPE_1s": {
+        "pairs": 351,
+        "translation_RMSE_m": 0.020650255399985336,
+        "rotation_RMSE_deg": 0.4475045641489258
+      }
+    }
+  },
+  "full_coverage": "All original saved poses over 38.5+ seconds scored; startup gaps not filled.",
+  "common_mask": "361 identical timestamps, retained 36-second mask after startup; 1s RPE uses 351 intervals."
+}

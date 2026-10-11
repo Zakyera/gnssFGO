@@ -1,0 +1,24 @@
+{
+  "command": [
+    "c++",
+    "-std=c++17",
+    "-I/source_devel/include",
+    "-I/source_devel/include/gtsam/3rdparty/Eigen",
+    "-O1",
+    "-g1",
+    "-DEIGEN_MALLOC_ALREADY_ALIGNED=1",
+    "-fno-omit-frame-pointer",
+    "-fsanitize=address,undefined",
+    "/experiment/test_source_noise.cpp",
+    "-L/source_devel/lib",
+    "-lgtsam",
+    "-lgtest_main",
+    "-lgtest",
+    "-lpthread",
+    "-Wl,-rpath,/source_devel/lib",
+    "-o",
+    "/audit/build_sanitize/test_source_noise"
+  ],
+  "returncode": 0,
+  "wall_seconds": 21.27211476499997
+}
