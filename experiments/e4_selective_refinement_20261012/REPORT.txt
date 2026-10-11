@@ -1,0 +1,160 @@
+E4: guarded selective refinement — 2026-10-12
+Status: E4_NOT_ACCEPTED. Kept disabled; no working/live receiver changed.
+
+Authorization and scope
+User authorized one isolated selective-refinement prototype on the saved160
+ETH1 CBS-ON journal. No new GLIM/Kimera capture, no CBS-OFF/ATE campaign,
+fixed-lag experiment, source modification, covariance/Qc/prior change or tuning.
+Reprioritized E4 before E3 by explicit proposal; E3/E1b remain untouched.
+
+Implementation
+Private candidate root:
+/home/yeranis/results/gnssfgo_e4_selective_refinement_20261012
+Base executable9d2ef832941c5ff2592da8428cb80104352590bcfea50c187624aaf4e90d60e0.
+Candidate a9bad7448eb15e3388f872c3c167d43f8ce41c7380a46197ecd32ca00cac1d1d.
+Same exact-input E2 cache, pinned GTSAM runtime, source_wnoa model and factors.
+Actual candidate DiagnosticReplay.cpp changes only the refinement include/call
+and adds one per-publication diagnostic record. Production files/defaults stay
+unchanged. E4_SELECTIVE_REFINEMENT is disabled unless its exact value is1.
+
+Fresh current-Values J^T r / sqrt(diag(J^T J)) uses the frozen formula. Select
+keys exceeding the unchanged1e-5 threshold; expand once across incident factors.
+The pinned GTSAM gatherRelinearizeKeys removes noRelinKeys AFTER its zero-threshold
+forceFullSolve selection. Thus nonselected linearization points are retained,
+but nonselected estimated states can still move in the coupled linear solve.
+This is selective relinearization, NOT fixing the remaining state variables.
+
+One private trial per nonstationary publication. Publish only when the fresh
+GLOBAL gradient passes and the objective is finite/non-increasing or satisfies
+the existing stable stationary descent test. Same factor-slot objects required.
+Otherwise discard the trial and invoke unchanged full reference refinement
+from the original pre-trial solver with19 remaining attempts. Total budget20.
+Empty/all-key selection goes straight to the full reference with20 attempts;
+already-stationary state remains unchanged. No unverified intermediate output.
+
+Diagnostics retain selected-key and actual relinearization counts, time spent
+on fresh certificate, selection, solver copy/update and the complete fallback.
+The fallback time includes its own global verification; it is not pure solve
+time. One global certificate remains an O(history) cost; this candidate cannot
+establish constant-time/memory full-history operation.
+
+Tests
+Release63/63 and ASan/UBSan63/63 passed: original50 receiver-focused tests plus
+13 E4 checks. One existing disabled microbenchmark is not a correctness test.
+Full dependency/GPU/ROS test coverage is not claimed; dependency libraries are
+not instrumented, leak checks disabled consistently with previous harness.
+Tests cover current-vs-cached gradient, one-hop selection, actual subset
+relinearization, disabled equivalence, convergence, exact rejected-trial and
+exception rollback, budget exhaustion, stable factor-slot replacement,
+independent synthetic dense covariance and deterministic repeated solution.
+
+Retained setup failures: first build used a GTSAM FastSet initializer unsupported
+by the pinned version; fixed only the test constructor. The first Release run
+had5 new assertion failures because GTSAM scalar Equals uses abs(a-b)<tol and
+therefore always fails at tol0. Replaced with bitwise double comparison and a
+one-bit-negative regression test. No numerical tolerance relaxed. The test build
+also routes the older FullHistoryPublicationRefinement header name to the actual
+private reference so translation units do not mix different inline definitions.
+No estimator candidate change was made in response to these test assertions.
+
+Replay, correctness and performance
+Protocol thresholds were saved before executing either real journal.
+Same-build disabled reference completed all160s in480.213941s. Its1593-row online
+and final trajectories/states, objectives and exact accounting reproduce the
+frozen capture byte-for-byte where compared. All publication checks pass.
+
+The enabled candidate was intentionally stopped on observed prefix equivalence
+failure, not an optimizer crash. SIGTERM targeted the verified receiver PID1686
+only; driver records returncode-15. It completed1301 publication checks through
+bag130.68s and1302 online state rows (including initial state). Wall398.286534s
+is for that PARTIAL run and must NOT be compared to the full reference wall
+time as a speedup. No final revised trajectory or full160 candidate result.
+
+Predeclared bounds and observed maximum common ONLINE state differences:
+                         max difference                 bound
+position                 8.12548718e-5m (0.081255mm)      1e-7m       FAIL
+orientation              1.34761674e-6rad                 1e-8rad     FAIL
+velocity                 7.61395675e-7m/s                 1e-7m/s     FAIL
+body angular rate        5.61190721e-8rad/s                1e-7rad/s   PASS
+
+All1301 completed candidate publications pass the ORIGINAL gradient<=1e-5;
+maximum9.94880763e-6, maximum6 attempts (budget20). Matched objective relative
+difference max2.62378896e-10 passes1e-8. These are small numerical differences,
+NOT evidence of physically divergent trajectories. A stationary solution at
+the existing tolerance is not a guarantee of the much tighter state equivalence.
+We did not relax those predeclared bounds or claim numerical equivalence.
+
+Observed live prefix trigger: max position difference approximately36.5um in
+the1256-row check. By the time its exact process was resolved/stopped, the last
+completed publication was130.68s and max difference81.3um. Post-stop analysis
+finds earliest orientation-bound violation at index10/bag1.58s (1.19042017e-8rad);
+first position violation index904/bag90.98s (1.04936308e-7m), first velocity
+violation index1173/bag117.88s. These first violations were discovered after
+the stop, not caught online at their original timestamps. No failure was waived.
+
+Prefix conservation, not full-run conservation:77351 complete causal-dispatch
+rows and1302 support-clock rows exactly match the reference prefix.77350 complete
+revision-ledger rows match IDs/revisions/slots/counts exactly (1932 inserts,
+75418 replacements). SIGTERM leaves incomplete trailing records in the dispatch
+and revision files; raw artifacts are preserved, and those two trailing fragments
+are explicitly excluded, not repaired. Differing buffered log lengths do NOT
+justify claiming an end-of-stream exactly-once or drain check for the candidate.
+
+Selective outcomes over1301 completed checks:
+24 initially stationary;51 selected all keys (direct reference);169 selective
+accepted;1057 selective rejected then full reference fallback. Of1277 initially
+nonstationary checks,1108 (86.7659%) require full fallback; only13.2341% finish
+selectively. All1057 rejected trials fail stationarity; NONE increased raw cost.
+Rejected-trial gradient median4.39793e-5,p95.00101053,max.0164286, versus1e-5.
+Thus the shortcut generally improves objective but does not finish convergence.
+
+Matched publication-refinement timing in seconds (reference -> candidate):
+bag interval       median                    p95
+0-40               .041902 -> .061782         .112071 -> .162874
+40-80              .134336 -> .205830         .249116 -> .348552
+80-120             .221365 -> .370498         .422017 -> .597360
+120-130.68 ONLY     .569096 -> .735058         .850450 ->1.037559
+whole matched      .143425 -> .207599         .551359 -> .716284
+
+Total matched refinement238.870445 ->333.505879s (+39.6179%, not a gain).
+This is one sequential pair, unrestricted common affinity0-23, no frequency
+lock or repeated performance distribution. It is not live capacity evidence.
+Candidate component sums: fresh selective certificate76.084154s, selection
+.198968s, solver-copy/update12.233983s, full fallback235.548399s. The remainder
+includes objective checks/logging/other wrapper work. Fallback includes its own
+verification and must not be counted a second time. The added selective trial
+usually sits IN FRONT OF the original expensive work instead of replacing it.
+
+In120-130.68s the selected-key median fraction is5.7681%; GTSAM-reported trial
+relinearized fraction median6.0056%; trial copy/update median14.0205ms, selective
+fresh verification median93.3385ms, fallback median575.1283ms. GTSAM's reported
+relinearized count can include involved variables, not just explicitly selected
+linearization points. The real local optimization became cheap, but generally
+did not satisfy the retained global certificate. The fallback/global work remains.
+
+No deterministic full-journal candidate repeat after gate failure. Synthetic
+repeatability passed; a complete real candidate repeat was not run. No full
+candidate performance acceptance, GT/ATE comparison or longer/live experiment.
+Actual full posterior covariance is not exported by this runner; synthetic
+posterior checks must not be represented as a full real-posterior comparison.
+
+Preservation, decision and commits
+655 protected originals unchanged. Frozen executable, input journal, source
+profiles, prior reports and working implementation unchanged. Builds/source
+and small evidence archived with byte-identical manifest; large raw journals,
+trajectories and binaries stay local. All owned build/replay processes exited.
+
+Decision: E4_NOT_ACCEPTED. Default remains unchanged; do not promote this
+prototype, loosen thresholds, add selective passes or start fixed lag under
+this authorization. One gradient-guided trial plus fallback did NOT solve the
+runtime problem. This does not prove every possible selective method fails,
+does not show WNOA invalid, and does not establish a new source-covariance bug.
+It does provide direct evidence that cheap LOCAL steps alone are insufficient
+under the current strict global publication rule. Further structural changes
+require a new explicit decision, not another automatic trial.
+
+Branch engineering/e4-selective-refinement-20261012;
+parent b59948c5dbb72d63f4b1b9d970f66df1e1ea0dbd. The local completion commit
+contains this report, protocol, candidate source, evidence and ledger; resolve
+with git log -1 --format=%H -- experiments/e4_selective_refinement_20261012/REPORT.txt.
+No push. No E3/E1b/fixed-lag/source experiment or production change performed.

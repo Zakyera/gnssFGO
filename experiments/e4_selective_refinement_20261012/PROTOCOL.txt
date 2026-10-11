@@ -1,0 +1,52 @@
+E4 guarded selective publication refinement — 2026-10-12
+
+Scope: one isolated candidate; no source run, fixed lag, derivative changes,
+covariance tuning, event coalescing, changes to source protocol or defaults.
+Parent b59948c5dbb72d63f4b1b9d970f66df1e1ea0dbd.
+Frozen reference executable:
+/home/yeranis/results/gnssfgo_e1_e2_correctness_audit_20261011/candidate/replay
+SHA256 9d2ef832941c5ff2592da8428cb80104352590bcfea50c187624aaf4e90d60e0.
+Input:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_e1_e2_live160_20261011/prepared/live160_on_receiver/events.csv
+Private outputs: /home/yeranis/results/gnssfgo_e4_selective_refinement_20261012
+
+Candidate: fresh normalized gradient using exactly the existing formula selects
+keys with any coordinate exceeding1e-5; add one factor-neighbour layer, not a
+transitive closure. One private trial uses forceFullSolve with noRelinKeys equal
+to the complement; this pinned GTSAM explicitly removes noRelinKeys after its
+zero-threshold selection. Variables are NOT held constant in the linear solve.
+Accept only if current-Values global gradient<=1e-5 and the existing finite,
+non-increasing objective or stable stationary descent condition holds. All factor
+slots must retain identical objects. Any rejected/exceptional trial is discarded.
+Reference full-refinement fallback starts at the ORIGINAL pre-trial solver with
+remaining iteration budget. Total maximum20 attempts. Initial already-stationary
+publication stays untouched. Empty/all-key selections go directly to reference.
+No fallback failure waiver, no asynchronous uncertified publishing.
+
+Default-off experimental switch; disabled path calls unmodified reference.
+Keep E2 exact input memoization enabled and all original runtime environment.
+Instrument selected-key counts, actual relinearized counts, fresh verification,
+copy/update time, fallback time and branch. Instrumentation is not free.
+
+Before real replay: tests for selection/neighbour closure, actual selective
+relinearization, current rather than cached gradient, factor replacement,
+stationary no-op, covariance/dense reference, rejected/exception rollback,
+budget conservation and repeatability. Existing focused50 plus new tests in
+Release and ASan/UBSan. Do not claim dependency instrumentation/full ROS suite.
+
+Frozen160 reference and enabled candidate replay once each, same binary except
+switch, same environment/affinity (original unrestricted), no concurrent workloads.
+Disabled build must reproduce frozen trajectory/state products within existing
+p/v/w1e-7 and orientation1e-8 bounds; exact identity/accounting required.
+Candidate uses those SAME state bounds at common timestamps, objective difference
+<=1e-8*max(1,abs(reference objective)), and every output gradient<=1e-5.
+Synthetic posterior covariance bound max abs1e-8 +1e-6*max abs reference.
+Real full posterior not exported; explicitly retain that limitation.
+No GT-based selection or tolerance relaxation. If correctness fails stop; no
+parameter sweep/retry. Only if it passes run one deterministic candidate repeat.
+Report timing in0-40,40-80,80-120,120-160s plus total, fresh-gradient and fallback
+cost, selected/relinearized fraction, memory. Exact source/event payloads unchanged.
+Promotion performance gate: >=20% lower total replay wall time AND late p95
+refinement, with <50% fallback among nonstationary publications. Single paired
+timing is preliminary evidence, not a live throughput claim. If mostly fallback
+or no material gain stop this candidate, do not start another method.

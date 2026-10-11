@@ -84,7 +84,7 @@ shared IMU, past means or nonlinear history are statistically independent.
 | E2 | Receiver evaluation reuse at identical Values | Correct invalidation on any referenced Values/factor/revision change; identical outputs and decisions for arithmetic-preserving reuse; timing of normal and recovery paths | Re-audit: 50/50 Release and sanitizer, matched replay exact; isolated redundant whitening fixed. Same-executable/core mean ~5.2% shorter on frozen60; full/live capacity uncertified; default-off |
 | E3a | Remaining WNOA motion-factor derivatives | Independent numerical derivative checks; manifold/frame tests; frozen-journal state/cost/covariance checks with predeclared tight tolerances | Not started |
 | E3b | Remaining interpolated pose derivative blocks | Separate patch and independent checks as for E3a; do not redo already validated V/W substitution | Not started |
-| E4 | Selective incremental publication refinement | Same factors/events and fresh current-Values stationarity certificate; reference full refinement fallback; short/medium/late replay comparisons | Not started; higher risk |
+| E4 | Selective incremental publication refinement | Same factors/events and fresh current-Values stationarity certificate; reference full refinement fallback; short/medium/late replay comparisons | Tested 2026-10-12; NOT ACCEPTED: strict state bounds failed,86.8% fallback,matched refinement~40% slower; stopped at130.68s |
 | E5 | Transport/logging/bookkeeping efficiency | One subchange per test; lossless ordered revision delivery and auditability; same factor accounting; no silent dropped/coalesced versions | Not started |
 
 E1 first reuses existing gtsam_points batching around LOCAL graph preparation;
@@ -503,6 +503,42 @@ documentation/archival/version control only; no estimator implementation or run.
 - Headroom still fails: full/late GLIMscan p951045/1130ms, target800ms.
   Every ordinary receiver refinement relinearizes all retained X/V/W states.
   No promotion, tuning, longer capture, E1b/E3/E4 or follow-up change performed.
+
+### E4 — guarded selective refinement, saved160 only
+
+- Authorization: user "ok proceed" after the explicit selective-refinement
+  proposal, 2026-10-12. Reprioritized ahead of E3; E3/E1b remain unstarted.
+- Status: COMPLETED, NOT ACCEPTED. One hypothesis: gradient-selected variables plus their
+  one-factor neighbours can reach the unchanged global stationarity certificate
+  more cheaply than unconditional full relinearization.
+- One selective trial per publication, on a private solver copy. Accept only
+  finite non-increasing/stable-descent objective and fresh gradient <=1e-5.
+  Otherwise discard it and invoke unchanged reference full refinement on the
+  original solver with the remaining budget (20 total attempts, not 20+1).
+- No model, source, covariance, priors, revision, event-order, lag, publication
+  tolerance or working-binary changes. No new source capture or ATE tuning.
+- Protocol: experiments/e4_selective_refinement_20261012/PROTOCOL.txt.
+- Isolated branch engineering/e4-selective-refinement-20261012, parent
+  b59948c5dbb72d63f4b1b9d970f66df1e1ea0dbd. Preserve saved160 and old binaries.
+- Report: experiments/e4_selective_refinement_20261012/REPORT.txt.
+- Candidate a9bad7448eb15e3388f872c3c167d43f8ce41c7380a46197ecd32ca00cac1d1d;
+  default-off, old working executable unchanged.63/63 Release and63/63 ASan/
+  UBSan focused tests pass (50 existing+13 new); dependency/GPU suite not claimed.
+- Same-build disabled full160 reproduces frozen online/final states/trajectories
+  byte-identically. Enabled run stopped on observed prefix-equivalence failure
+  at130.68s, not a crash.1301/1301 completed outputs stationary; state max deltas
+  p8.12549e-5m,q1.34762e-6rad,v7.61396e-7m/s,w5.61191e-8rad/s.
+  Small numerical differences, not physical instability; frozen bounds not waived.
+- Earliest posthoc orientation bound failure at1.58s, position at90.98s.
+  Current prefix check triggered stop later; no full160 candidate/final result
+  or deterministic real repeat. Preserved partial/trailing records explicitly.
+- 169 selective successes;1057 nonstationary trial rejections;51 all-key direct
+  fallbacks;24 initial stationary.86.7659% nonstationary checks require fallback.
+  Matched refinement238.870->333.506s (+39.6%);120-130.68s p95 .850->1.038s.
+  One paired timing only. Local trial cheap, global verification/fallback costly.
+- 655 protected files unchanged; no source rerun/tuning/default promotion/push.
+  Completion commit contains report/evidence. STOP; do not expand to another
+  selective policy or fixed lag without a new user decision.
 
 ### Template for subsequent tasks
 
