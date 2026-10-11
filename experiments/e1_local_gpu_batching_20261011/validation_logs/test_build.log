@@ -1,0 +1,45 @@
+/workspace/cbs_gtsam4.3/src/glim_ros1/test/cbs_local_graph_linearizer_test.cpp: In member function ‘virtual void {anonymous}::LocalLinearizerGpu_DuplicateRemovalReplacement_Test::TestBody()’:
+/workspace/cbs_gtsam4.3/src/glim_ros1/test/cbs_local_graph_linearizer_test.cpp:207:47: error: ‘class gtsam::NonlinearFactorGraph’ has no member named ‘pop_back’; did you mean ‘push_back’?
+  207 |   g.push_back(g.back()); compare(g,v,true); g.pop_back();
+      |                                               ^~~~~~~~
+      |                                               push_back
+/workspace/cbs_gtsam4.3/src/glim_ros1/test/cbs_local_graph_linearizer_test.cpp: In constructor ‘{anonymous}::ThrowPrior::ThrowPrior()’:
+/workspace/cbs_gtsam4.3/src/glim_ros1/test/cbs_local_graph_linearizer_test.cpp:214:40: error: no matching function for call to ‘gtsam::Pose3::Pose3(int)’
+  214 |   ThrowPrior() : PriorFactor<Pose3>(X(0), Pose3(), denseNoise()) {}
+      |                                        ^
+In file included from /workspace/cbs_gtsam4.3/devel/include/aria_common/logging.h:8,
+                 from /workspace/cbs_gtsam4.3/devel/include/aria_common/benchmark.h:11,
+                 from /workspace/cbs_gtsam4.3/src/cbs/include/cbs/bpsam/bpsam.h:3,
+                 from /workspace/cbs_gtsam4.3/src/glim_ros1/test/cbs_local_graph_linearizer_test.cpp:2:
+/workspace/cbs_gtsam4.3/devel/include/gtsam/geometry/Pose3.h:76:3: note: candidate: ‘gtsam::Pose3::Pose3(const Matrix&)’
+   76 |   Pose3(const Matrix &T) : Base(Matrix4(T)) {}
+      |   ^~~~~
+/workspace/cbs_gtsam4.3/devel/include/gtsam/geometry/Pose3.h:76:23: note:   no known conversion for argument 1 from ‘int’ to ‘const Matrix&’ {aka ‘const Eigen::Matrix<double, -1, -1>&’}
+   76 |   Pose3(const Matrix &T) : Base(Matrix4(T)) {}
+      |         ~~~~~~~~~~~~~~^
+/workspace/cbs_gtsam4.3/devel/include/gtsam/geometry/Pose3.h:73:12: note: candidate: ‘gtsam::Pose3::Pose3(const gtsam::Pose2&)’
+   73 |   explicit Pose3(const Pose2& pose2);
+      |            ^~~~~
+/workspace/cbs_gtsam4.3/devel/include/gtsam/geometry/Pose3.h:73:31: note:   no known conversion for argument 1 from ‘int’ to ‘const gtsam::Pose2&’
+   73 |   explicit Pose3(const Pose2& pose2);
+      |                  ~~~~~~~~~~~~~^~~~~
+/workspace/cbs_gtsam4.3/devel/include/gtsam/geometry/Pose3.h:69:3: note: candidate: ‘gtsam::Pose3::Pose3(const gtsam::Rot3&, const Point3&)’
+   69 |   Pose3(const Rot3& R, const Point3& t)
+      |   ^~~~~
+/workspace/cbs_gtsam4.3/devel/include/gtsam/geometry/Pose3.h:69:3: note:   candidate expects 2 arguments, 1 provided
+/workspace/cbs_gtsam4.3/devel/include/gtsam/geometry/Pose3.h:66:3: note: candidate: ‘gtsam::Pose3::Pose3(const Base&)’
+   66 |   Pose3(const Base& other) : Base(other) {}
+      |   ^~~~~
+/workspace/cbs_gtsam4.3/devel/include/gtsam/geometry/Pose3.h:66:21: note:   no known conversion for argument 1 from ‘int’ to ‘const Base&’ {aka ‘const gtsam::ExtendedPose3<1, gtsam::Pose3>&’}
+   66 |   Pose3(const Base& other) : Base(other) {}
+      |         ~~~~~~~~~~~~^~~~~
+/workspace/cbs_gtsam4.3/devel/include/gtsam/geometry/Pose3.h:62:3: note: candidate: ‘gtsam::Pose3::Pose3(const gtsam::Pose3&)’
+   62 |   Pose3(const Pose3& pose) = default;
+      |   ^~~~~
+/workspace/cbs_gtsam4.3/devel/include/gtsam/geometry/Pose3.h:62:22: note:   no known conversion for argument 1 from ‘int’ to ‘const gtsam::Pose3&’
+   62 |   Pose3(const Pose3& pose) = default;
+      |         ~~~~~~~~~~~~~^~~~
+/workspace/cbs_gtsam4.3/devel/include/gtsam/geometry/Pose3.h:59:3: note: candidate: ‘gtsam::Pose3::Pose3()’
+   59 |   Pose3() : Base() {}
+      |   ^~~~~
+/workspace/cbs_gtsam4.3/devel/include/gtsam/geometry/Pose3.h:59:3: note:   candidate expects 0 arguments, 1 provided

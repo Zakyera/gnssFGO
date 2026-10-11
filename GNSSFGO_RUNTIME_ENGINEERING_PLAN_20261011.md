@@ -80,7 +80,7 @@ shared IMU, past means or nonlinear history are statistically independent.
 | ID | Isolated task | Required evidence before acceptance | Status |
 | --- | --- | --- | --- |
 | E0 | Save this plan and push a recoverable checkpoint | Exact-commit manifest; archive hashes; verified Zakyera branch SHAs; original runtime untouched | Completed 2026-10-11 |
-| E1 | GPU-batched GLIM LOCAL covariance reconstruction | Same LOCAL factors and Values; same Gaussian blocks, full 6x6 covariance and means within predeclared arithmetic tolerance; focused tests; measured stage latency | Not started |
+| E1 | GPU-batched GLIM LOCAL covariance reconstruction | Same LOCAL factors and Values; same Gaussian blocks, full 6x6 covariance and means within predeclared arithmetic tolerance; focused tests; measured stage latency | Prototype not accepted 2026-10-11: strict joint-covariance gate fails; disabled |
 | E2 | Receiver evaluation reuse at identical Values | Correct invalidation on any referenced Values/factor/revision change; identical outputs and decisions for arithmetic-preserving reuse; timing of normal and recovery paths | Not started |
 | E3a | Remaining WNOA motion-factor derivatives | Independent numerical derivative checks; manifold/frame tests; frozen-journal state/cost/covariance checks with predeclared tight tolerances | Not started |
 | E3b | Remaining interpolated pose derivative blocks | Separate patch and independent checks as for E3a; do not redo already validated V/W substitution | Not started |
@@ -158,7 +158,44 @@ documentation/archival/version control only; no estimator implementation or run.
   candidates must use separate branches/build directories, leaving this recovery
   branch and frozen inputs intact. Report after E1 before expanding scope.
 
-### Template for the next task
+### E1 — GPU-batched LOCAL covariance reconstruction
+
+- Authorization: user "ok proceed" after E0 checkpoint handoff, 2026-10-11.
+- Status: prototype implemented/tested, NOT ACCEPTED. Only E1; no E1b,
+  receiver change, new fusion or long run. Do not enable its experimental switch.
+- Candidate branch: `engineering/e1-local-gpu-batching-20261011` in cbs,
+  glim_ros1 and gnssFGO. Checkpoint branches remain intact.
+- Protocol and predeclared tolerances:
+  `experiments/e1_local_gpu_batching_20261011/PROTOCOL.txt`.
+- Hypothesis: batch the same LOCAL GPU linearizations before the unchanged
+  marginal elimination; keep filtered graph/Values and sidecar unchanged.
+- Report: `experiments/e1_local_gpu_batching_20261011/REPORT.txt`; exact logs,
+  build commands, binary hashes and preservation check are archived beside it.
+- cbs `7c3a1e66767938e105d46fd072bd853ad5ec50c2`; glim_ros1
+  `d53c2a9821d332d19dd89890de08d5b4e97fd706`. gtsam_points unchanged.
+  Default-off selector; original installed and frozen private binaries untouched.
+- Private Release library build passed; focused tests 8/9 passed. GPU full-joint
+  covariance max difference 2.37628e-5 exceeds the predeclared 1.10310e-8 bound,
+  reproducibly 5/5 times. Extracted full 6x6 relative covariance passes its gate;
+  that does NOT override the failed joint-covariance test. Tolerances unchanged.
+- Caught and corrected a stale GPU error-cache hazard introduced by the new
+  batching prototype. Native batched store_linearized also compacts inliers,
+  unlike the old synchronous path; exact numerical cause needs further isolation.
+- Focused CPU ASan/UBSan 5/5 passed with matching Eigen allocation ABI. GPU ASan
+  attempt blocked by CUDA allocation failure, not marked passed. No full suite
+  or live validation after the numerical rejection.
+- Synthetic 64-GPU-factor median linearization+marginal/query time: 13.6125 ms
+  old vs 0.462739 ms batch. NOT an ETH1 or whole-pipeline speedup. No recorded
+  real active graph was reconstructed; complete GPU fixtures are not in text logs.
+- Preservation: 190/193 protected entries unchanged, three expected GLIM source/
+  CMake changes; no unexpected changes or missing inputs. All baseline binaries
+  unchanged. No launch/profile enabled the candidate.
+- Decision: keep disabled and retain the checkpoint. Next E1-only proposal:
+  preserve ordinary GPU inlier/cache semantics in a scoped batching compatibility
+  path, then rerun the same strict fixture before any bounded real capture.
+  Do not begin E2/E1b or treat this as the runtime-delay problem solved.
+
+### Template for subsequent tasks
 
 Copy this block under its task ID; do not erase earlier attempts.
 

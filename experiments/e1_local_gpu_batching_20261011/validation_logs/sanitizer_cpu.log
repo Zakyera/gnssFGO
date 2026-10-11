@@ -1,0 +1,81 @@
+==3953==AddressSanitizer: libc interceptors initialized
+|| `[0x10007fff8000, 0x7fffffffffff]` || HighMem    ||
+|| `[0x02008fff7000, 0x10007fff7fff]` || HighShadow ||
+|| `[0x00008fff7000, 0x02008fff6fff]` || ShadowGap  ||
+|| `[0x00007fff8000, 0x00008fff6fff]` || LowShadow  ||
+|| `[0x000000000000, 0x00007fff7fff]` || LowMem     ||
+MemToShadow(shadow): 0x00008fff7000 0x000091ff6dff 0x004091ff6e00 0x02008fff6fff
+redzone=16
+max_redzone=2048
+quarantine_size_mb=256M
+thread_local_quarantine_size_kb=1024K
+malloc_context_size=30
+SHADOW_SCALE: 3
+SHADOW_GRANULARITY: 8
+SHADOW_OFFSET: 0x7fff8000
+==3953==Installed the sigaction for signal 11
+==3953==Installed the sigaction for signal 7
+==3953==Installed the sigaction for signal 8
+==3953==T0: stack [0x7ffd16bb4000,0x7ffd173b4000) size 0x800000; local=0x7ffd173b2154
+==3953==AddressSanitizer Init done
+Running main() from /build/googletest-j5yxiC/googletest-1.10.0/googletest/src/gtest_main.cc
+Note: Google Test filter = LocalLinearizerCpu.*
+[==========] Running 5 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 5 tests from LocalLinearizerCpu
+[ RUN      ] LocalLinearizerCpu.DenseCovarianceHolesAndValues
+==3953==unpoisoning: 0x7ffd173b1000 140
+==3953==poisoning: 0x7ffd173b1000 140
+==3953==unpoisoning: 0x7ffd173b1000 140
+==3953==poisoning: 0x7ffd173b1000 140
+==3953==unpoisoning: 0x7ffd173b1000 140
+==3953==poisoning: 0x7ffd173b1000 140
+==3953==unpoisoning: 0x7ffd173b1000 140
+==3953==poisoning: 0x7ffd173b1000 140
+==3953==unpoisoning: 0x7ffd173b0820 120
+==3953==poisoning: 0x7ffd173b0820 120
+=================================================================
+==3953==ERROR: AddressSanitizer: attempting free on address which was not malloc()-ed: 0x6060000006f0 in thread T0
+    #0 0x7adc404e440f in __interceptor_free ../../../../src/libsanitizer/asan/asan_malloc_linux.cc:122
+    #1 0x7adc3f58b79f in gtsam::NoiseModelFactor::linearize(gtsam::Values const&) const (/workspace/cbs_gtsam4.3/devel/lib/libgtsam.so.4+0x58b79f)
+    #2 0x7adc3f58df22 in gtsam::NonlinearFactorGraph::linearize(gtsam::Values const&) const (/workspace/cbs_gtsam4.3/devel/lib/libgtsam.so.4+0x58df22)
+    #3 0x57c52294e742 in compare /workspace/cbs_gtsam4.3/src/glim_ros1/test/cbs_local_graph_linearizer_test.cpp:77
+    #4 0x57c522958598 in TestBody /workspace/cbs_gtsam4.3/src/glim_ros1/test/cbs_local_graph_linearizer_test.cpp:95
+    #5 0x57c5230f8540 in void testing::internal::HandleSehExceptionsInMethodIfSupported<testing::Test, void>(testing::Test*, void (testing::Test::*)(), char const*) googletest/src/gtest.cc:2433
+    #6 0x57c5230f8540 in void testing::internal::HandleExceptionsInMethodIfSupported<testing::Test, void>(testing::Test*, void (testing::Test::*)(), char const*) googletest/src/gtest.cc:2469
+    #7 0x57c5230ec0e5 in testing::Test::Run() googletest/src/gtest.cc:2508
+    #8 0x57c5230ec0e5 in testing::Test::Run() googletest/src/gtest.cc:2498
+    #9 0x57c5230ec244 in testing::TestInfo::Run() googletest/src/gtest.cc:2684
+    #10 0x57c5230ec244 in testing::TestInfo::Run() googletest/src/gtest.cc:2657
+    #11 0x57c5230ec32c in testing::TestSuite::Run() googletest/src/gtest.cc:2816
+    #12 0x57c5230ec32c in testing::TestSuite::Run() googletest/src/gtest.cc:2795
+    #13 0x57c5230ec84b in testing::internal::UnitTestImpl::RunAllTests() googletest/src/gtest.cc:5338
+    #14 0x57c5230f8ab0 in bool testing::internal::HandleSehExceptionsInMethodIfSupported<testing::internal::UnitTestImpl, bool>(testing::internal::UnitTestImpl*, bool (testing::internal::UnitTestImpl::*)(), char const*) googletest/src/gtest.cc:2433
+    #15 0x57c5230f8ab0 in bool testing::internal::HandleExceptionsInMethodIfSupported<testing::internal::UnitTestImpl, bool>(testing::internal::UnitTestImpl*, bool (testing::internal::UnitTestImpl::*)(), char const*) googletest/src/gtest.cc:2469
+    #16 0x57c5230eca7b in testing::UnitTest::Run() googletest/src/gtest.cc:4925
+    #17 0x57c5228cdfe3 in main (/workspace/cbs_gtsam4.3/runs/glim_local_gpu_batching_e1_20261011/private/sanitize_attempt1+0xdd4fe3)
+    #18 0x7adc3e0ef082 in __libc_start_main (/usr/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #19 0x57c5228ce40d in _start (/workspace/cbs_gtsam4.3/runs/glim_local_gpu_batching_e1_20261011/private/sanitize_attempt1+0xdd540d)
+
+0x6060000006f0 is located 16 bytes inside of 64-byte region [0x6060000006e0,0x606000000720)
+allocated by thread T0 here:
+    #0 0x7adc404e4808 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cc:144
+    #1 0x57c522ef7016 in Eigen::internal::handmade_aligned_malloc(unsigned long, unsigned long) /workspace/cbs_gtsam4.3/devel/include/gtsam/3rdparty/Eigen/Eigen/src/Core/util/Memory.h:105
+    #2 0x57c522ef7016 in Eigen::internal::aligned_malloc(unsigned long) /workspace/cbs_gtsam4.3/devel/include/gtsam/3rdparty/Eigen/Eigen/src/Core/util/Memory.h:188
+    #3 0x57c522ef7016 in void* Eigen::internal::conditional_aligned_malloc<true>(unsigned long) /workspace/cbs_gtsam4.3/devel/include/gtsam/3rdparty/Eigen/Eigen/src/Core/util/Memory.h:241
+    #4 0x57c522ef7016 in double* Eigen::internal::conditional_aligned_new_auto<double, true>(unsigned long) /workspace/cbs_gtsam4.3/devel/include/gtsam/3rdparty/Eigen/Eigen/src/Core/util/Memory.h:404
+    #5 0x57c522ef7016 in Eigen::DenseStorage<double, -1, -1, 1, 0>::resize(long, long, long) /workspace/cbs_gtsam4.3/devel/include/gtsam/3rdparty/Eigen/Eigen/src/Core/DenseStorage.h:639
+    #6 0x57c522ef7016 in Eigen::PlainObjectBase<Eigen::Matrix<double, -1, 1, 0, -1, 1> >::resize(long, long) /workspace/cbs_gtsam4.3/devel/include/gtsam/3rdparty/Eigen/Eigen/src/Core/PlainObjectBase.h:285
+    #7 0x57c522ef7016 in void Eigen::PlainObjectBase<Eigen::Matrix<double, -1, 1, 0, -1, 1> >::resizeLike<Eigen::CwiseUnaryOp<Eigen::internal::scalar_opposite_op<double>, Eigen::Matrix<double, 6, 1, 0, 6, 1> const> >(Eigen::EigenBase<Eigen::CwiseUnaryOp<Eigen::internal::scalar_opposite_op<double>, Eigen::Matrix<double, 6, 1, 0, 6, 1> const> > const&) /workspace/cbs_gtsam4.3/devel/include/gtsam/3rdparty/Eigen/Eigen/src/Core/PlainObjectBase.h:367
+    #8 0x57c522ef7016 in Eigen::PlainObjectBase<Eigen::Matrix<double, -1, 1, 0, -1, 1> >::PlainObjectBase<Eigen::CwiseUnaryOp<Eigen::internal::scalar_opposite_op<double>, Eigen::Matrix<double, 6, 1, 0, 6, 1> const> >(Eigen::DenseBase<Eigen::CwiseUnaryOp<Eigen::internal::scalar_opposite_op<double>, Eigen::Matrix<double, 6, 1, 0, 6, 1> const> > const&) /workspace/cbs_gtsam4.3/devel/include/gtsam/3rdparty/Eigen/Eigen/src/Core/PlainObjectBase.h:593
+    #9 0x57c522ef7016 in Eigen::Matrix<double, -1, 1, 0, -1, 1>::Matrix<Eigen::CwiseUnaryOp<Eigen::internal::scalar_opposite_op<double>, Eigen::Matrix<double, 6, 1, 0, 6, 1> const> >(Eigen::EigenBase<Eigen::CwiseUnaryOp<Eigen::internal::scalar_opposite_op<double>, Eigen::Matrix<double, 6, 1, 0, 6, 1> const> > const&) /workspace/cbs_gtsam4.3/devel/include/gtsam/3rdparty/Eigen/Eigen/src/Core/Matrix.h:423
+    #10 0x57c522ef7016 in gtsam::ExtendedPriorFactor<gtsam::Pose3>::evaluateError(gtsam::Pose3 const&, Eigen::Matrix<double, -1, -1, 0, -1, -1>*) const /workspace/cbs_gtsam4.3/devel/include/gtsam/nonlinear/ExtendedPriorFactor.h:153
+    #11 0x57c522a2bce3 in gtsam::NoiseModelFactorT<Eigen::Matrix<double, -1, 1, 0, -1, 1>, gtsam::Pose3>::evaluateError(gtsam::Pose3 const&, Eigen::Matrix<double, -1, -1, 0, -1, -1>&) const /workspace/cbs_gtsam4.3/devel/include/gtsam/nonlinear/NoiseModelFactorN.h:364
+    #12 0x57c522a2bce3 in Eigen::Matrix<double, -1, 1, 0, -1, 1> gtsam::NoiseModelFactorT<Eigen::Matrix<double, -1, 1, 0, -1, 1>, gtsam::Pose3>::unwhitenedError<0ul>(gtsam::index_sequence<0ul>, gtsam::Values const&, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > >*) const /workspace/cbs_gtsam4.3/devel/include/gtsam/nonlinear/NoiseModelFactorN.h:424
+    #13 0x57c522a2bce3 in gtsam::NoiseModelFactorT<Eigen::Matrix<double, -1, 1, 0, -1, 1>, gtsam::Pose3>::unwhitenedError(gtsam::Values const&, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > >*) const /workspace/cbs_gtsam4.3/devel/include/gtsam/nonlinear/NoiseModelFactorN.h:323
+    #14 0x7adc3f58b684 in gtsam::NoiseModelFactor::linearize(gtsam::Values const&) const (/workspace/cbs_gtsam4.3/devel/lib/libgtsam.so.4+0x58b684)
+    #15 0x254968fdbe2bdeff  (<unknown module>)
+    #16 0x7adc3f58df22 in gtsam::NonlinearFactorGraph::linearize(gtsam::Values const&) const (/workspace/cbs_gtsam4.3/devel/lib/libgtsam.so.4+0x58df22)
+
+SUMMARY: AddressSanitizer: bad-free ../../../../src/libsanitizer/asan/asan_malloc_linux.cc:122 in __interceptor_free
+==3953==ABORTING

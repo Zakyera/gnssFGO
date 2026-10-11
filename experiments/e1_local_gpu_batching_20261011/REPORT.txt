@@ -1,0 +1,176 @@
+E1 — GLIM LOCAL covariance GPU batching: prototype NOT ACCEPTED
+2026-10-11
+
+Decision
+========
+The isolated candidate builds and batching is promising, but it does NOT pass
+the predeclared numerical equivalence gate. Keep it disabled. No live experiment,
+source estimator run, receiver replay, covariance tuning or E2 task was started.
+This is a completed E1 investigation, not a completed runtime improvement.
+
+Scope and implementation
+========================
+The original main-smoother relative mean, auxiliary LOCAL smoother, active-key
+filter, tracked-CBS/anchor filtering, covariance extraction and GTSAM marginal
+elimination are retained. No change to the sidecar's own update() (E1b), Q/R,
+source protocol, receiver model, alignment, revision handling or publish gates.
+
+cbs gains a per-call optional linearizer after filtering and calculateEstimate.
+Without it the old nonlinear Marginals constructor remains the path. With it,
+Gaussian slots/keys are checked before using GTSAM's Gaussian Marginals
+constructor. Failure leaves the prior marginal object and factor count intact.
+The fixed-lag wrapper passes exactly its existing activeLocalKeys().
+
+GLIM gains a default-false private parameter:
+  glim_cbs_experimental_local_gpu_batching
+It affects only ActiveWindowTemporary LOCAL marginal reconstruction. No launch,
+saved profile or default setting enables it. Its helper reuses gtsam_points'
+existing LinearizationHook and returns linear factors in original slots; it
+does not use the hook's grouped/reordered calc_linear_factors output. Duplicate
+factor pointers and CPU-only graphs fall back to the original graph.linearize.
+
+Files/functions:
+  cbs/include/cbs/bpsam/bpsam.h: MarginalizationLinearizer, MarginalsWithGraph
+  cbs/src/bpsam/bpsam.cpp: BPSAM::setMarginalizationGraph
+  cbs/include/cbs/bpsam/incremental_fixed_lag_bpsam_smoother.h:
+    IncrementalFixedLagBpsamSmoother::setMarginalizationGraph
+  glim_ros1/include/glim_ros/cbs_local_graph_linearizer.hpp:
+    linearizeCbsLocalGraphBatched
+  glim_ros1/src/glim_ros/cbs_bridge.cpp: configure, publishOutgoingBeliefs
+  glim_ros1/test/cbs_local_graph_linearizer_test.cpp
+  glim_ros1/test/build_local_gpu_fixture.py
+
+What the tests caught
+=====================
+1. Cache hazard in the NEW prototype, caught before any estimator used it.
+   Native GPU store_linearized() populates both a linearization result and an
+   error result. Consuming only the linearization leaves an old error which a
+   subsequent error(new_values) can return. Initial regression discrepancy:
+   expected 8973.5511764860894; actual 8973.9751266814019.
+   Fix: consume the prepared error at the SAME Values too; consume prepared GPU
+   results before a CPU factor can throw. Both regressions now pass.
+   This is not evidence that our old, nonbatched LOCAL implementation had this
+   newly introduced cache hazard, nor a claim of fixing a historical trajectory.
+
+2. Strict full-joint covariance gate still FAILS, reproducibly (5/5 repetitions).
+   Fixture: 5 poses, CPU prior/dense between factors, holes and 12 real GPU VGICP
+   factors, deterministic synthetic 864-point clouds; changed Values, both
+   execution orders, followed by return to the original Values.
+
+   Max absolute coefficient differences in the failing comparison:
+     augmented Gaussian Hessian (31x31): 0.09375
+       allowed 1.04528                    PASS
+     joint pose covariance (30x30):      2.37628e-5
+       allowed 1.10310e-8                 FAIL
+     full Schur-relative covariance (6x6): 1.44329e-10
+       allowed 1.88039e-10                PASS
+
+   Gates are abs+relative bounds specified in PROTOCOL.txt BEFORE results.
+   We did not loosen them, replace joint covariance by trace, or omit the failed
+   comparison. Passing the extracted 6x6 block does not override the joint gate.
+   These are matrix-coefficient differences, not position/ATE errors.
+
+   Concrete code distinction in unchanged gtsam_points:
+     factors/integrated_vgicp_derivatives.cu: synchronous linearize() resets
+       inliers, reduces and returns, without update_inliers().
+     factors/integrated_vgicp_factor_gpu.cpp: batched store_linearized() calls
+       derivatives->update_inliers(...).
+     factors/integrated_vgicp_derivatives_inliers.cu: update_inliers() compacts
+       source indices and changes the next reduction's input length/order.
+   Thus native batching is not a cache-state-transparent substitute for ordinary
+   linearization. Floating-point reduction differences amplified by marginal
+   inversion are a plausible explanation of the observed discrepancy. This
+   contribution has NOT yet been isolated with an inlier-preserving batch path;
+   do not claim a fully proven sole numerical cause or change production policy.
+
+Validation and limits
+=====================
+Release: private libcbs.so and libglim_ros.so compiled/linked successfully using
+the existing Noetic/CUDA workspace ABI. All three GLIM wrapper translation units
+including the modified class header were rebuilt. Unrelated existing object
+files/dependencies were reused. This is NOT a clean rebuild of the entire stack.
+No installed/devel libraries were overwritten.
+
+Focused Release suite: 9 tests, 8 pass, 1 fails as above. Covered:
+ - dense CPU covariance, holes, changed Values and exact same-state fallback;
+ - LOCAL tracked-external exclusion and active-key filtering at exact Values;
+ - unchanged nominal Values; failed callback retains covariance/count; FULL path;
+ - duplicate factor references, removal/replacement;
+ - fixed-lag wrapper after actual synthetic marginalization, five updates;
+ - real GPU mixed graphs, both execution orders, joint and relative covariance;
+ - draining caches after a CPU exception; fresh error evaluation after batching.
+All CPU matrix differences reported by the Release tests were zero.
+
+Initial retained test logs also contain two test-code compatibility errors and
+one underconstrained removal fixture. Corrected the fixture to remove a redundant
+factor rather than the chain's only anchor connection; no production model or
+threshold was altered to make it pass. red_tests.log retains the pre-fix results.
+
+ASan/UBSan: final CPU subset 5/5 PASS, no reported memory/UB finding. Leak detection
+disabled. Test/helper/header code is instrumented; Release CBS/GTSAM/CUDA shared
+libraries are not. Initial mixed-ABI sanitizer run hit Eigen's ASan-dependent
+allocation convention (bad-free across DSOs). Rebuilt with the existing project's
+EIGEN_MALLOC_ALREADY_ALIGNED=1 convention and non-PIE executable. The full GPU
+sanitizer attempt then stopped on cudaErrorMemoryAllocation before GPU tests.
+GPU sanitizer validation is BLOCKED, not passed; no claim of full-stack ASan.
+All initial failures are retained. No full ROS/CBS regression or live run was
+attempted after the numerical acceptance gate failed.
+
+Synthetic timing only
+=====================
+GPU: RTX 5070 Ti Laptop, driver 580.178.04. 16 poses, 864 points per cloud,
+CPU chain/prior and 8/64/256 GPU factors. Three warmups, 25 alternating-order
+samples; linearization + Gaussian Marginals construction + one covariance query.
+Primary timings taken after compilation finished (timing_idle.log). Units ms:
+
+GPU factors    old median/p95/max             batch median/p95/max
+8              2.33772 / 2.63689 / 2.89762    0.141333 / 0.177566 / 0.178790
+64            13.61250 /14.85380 /14.97330    0.462739 / 0.869905 / 0.972786
+256           54.98390 /57.37120 /60.57020    1.613500 / 1.978590 / 1.987040
+
+These warm-state microbenchmarks include ordinary synchronous warning logging
+to a file and exclude sidecar update, graph filtering, real pointcloud load,
+transport and the rest of GLIM/fusion. They do not prove an ETH1 speedup, solve
+the queue delay, or justify deploying a numerically unaccepted candidate.
+Earlier under-build-load timings are retained separately, not primary results.
+
+Preservation, commits and reproducibility
+=======================================
+Branch in cbs, glim_ros1 and gnssFGO:
+  engineering/e1-local-gpu-batching-20261011
+Checkpoint branches/GitHub checkpoint remain unchanged.
+
+cbs candidate:       7c3a1e66767938e105d46fd072bd853ad5ec50c2
+glim_ros1 candidate: d53c2a9821d332d19dd89890de08d5b4e97fd706
+gtsam_points:        068980ce5a3afb1fa12300d2fbc13d26172f093c (UNMODIFIED)
+The gnssFGO commit containing this report records documentation/validation only.
+
+Local artifacts:
+  /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/glim_local_gpu_batching_e1_20261011/private
+Small logs, XML and exact compile/link commands are archived in validation_logs/.
+validation_manifest.json records binary/log hashes, source commits and the full
+protected-manifest comparison. 190/193 protected entries unchanged; the three
+intentional differences are GLIM cbs_bridge.cpp, cbs_bridge.hpp and CMakeLists.txt.
+No unexpected change or missing artifact. CBS source edits are separately pinned
+by their commit; they were not entries in that particular protected manifest.
+
+Frozen receiver SHA256 unchanged:
+  62124b496ad6f854079218862acb149892aa452d4af908c50bc96067e49c9dbb
+Frozen private source-wrapper SHA256 unchanged:
+  9568f7edc063f830333572cd30c764cc8ef2bea1d3608f0675a83a257320b172
+Candidate binaries remain private; default switch false; no production profile
+or dependency manifest promoted to this candidate. Build script supports named
+attempts and preserves logs. Requires the existing workspace ABI/build objects;
+it is not a standalone clean build recipe for a new machine.
+
+Next bounded decision
+=====================
+Do not move to E2/E1b or launch ETH1 with this switch. The next E1-only task would
+be a narrowly scoped compatibility path preserving ordinary GPU inlier/cache
+semantics while reusing the existing batching kernels. First repeat this same
+strict failing fixture; only on success capture a bounded real LOCAL graph and
+validate identical factors/Values and stage timing. Any dependency change needs
+its own candidate branch and private build. Do not fix this by tuning covariance,
+changing correspondence thresholds, relaxing gates, or choosing favorable ATE.
+
+E1_PROTOTYPE_NOT_ACCEPTED

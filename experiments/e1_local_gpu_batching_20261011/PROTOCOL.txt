@@ -1,0 +1,54 @@
+E1: isolated GLIM LOCAL covariance GPU batching, 2026-10-11
+
+Single hypothesis: reuse gtsam_points LinearizationHook on the exact filtered
+LOCAL graph at the exact sidecar calculateEstimate() Values, then construct
+the same Marginals from explicitly prepared Gaussian factors in original slots.
+No auxiliary smoother update change, covariance formula change, Q/R, source CBS,
+alignment, revision protocol, receiver model, solver threshold or timing change.
+
+Baseline: checkpoint/grandtour-engineering-20261011.
+cbs 2e10934fd506a23d10d7e9838659904e8e3630f1
+glim_ros1 35b57e6215b810df6bf1c43d055f4e3a5915bf55
+gtsam_points 068980ce5a3afb1fa12300d2fbc13d26172f093c
+Receiver reference remains SHA256
+62124b496ad6f854079218862acb149892aa452d4af908c50bc96067e49c9dbb.
+
+Implementation scope:
+ - Optional per-call marginalization linearizer, no GPU dependency in cbs.
+ - Existing gtsam_points batching at the GLIM call site; explicit default-off
+   experimental selector so baseline launches and Kimera retain the old path.
+ - No changes to installed/devel binaries. Compile private libraries/tests
+   inside the existing Noetic CUDA container in a new output directory.
+
+Predeclared numerical gates (before candidate results):
+ - Exactly identical original factor slots/keys and LOCAL Values.
+ - Nominal pose means unchanged; no optimization update in marginal construction.
+ - CPU Gaussian blocks and marginal/relative covariance: abs error <= 1e-12
+   plus 1e-12 times the maximum absolute reference coefficient.
+ - GPU Gaussian augmented Hessians: abs error <= 1e-8 + 1e-6 times maximum
+   absolute reference coefficient (native VGICP accumulates in float).
+ - GPU full joint and dense 6x6 relative covariance: abs error <= 1e-10 +
+   1e-6 times maximum absolute reference coefficient.
+ - No new missing/duplicate factors, unchanged pruning and active-key filtering.
+ - Failure must not replace the published marginal object or mutate nominal
+   Values. Drain prepared GPU caches before CPU linearization can throw.
+ - Repeat at changed Values and graph membership; compare both execution orders.
+
+Focused tests: CPU fallback; holes and mixed CPU/GPU graph; LOCAL filtering;
+joint covariance and full relative covariance; state/key preservation; duplicate
+factor references; successive Values; factor removal/replacement; failure; FULL
+and default path unchanged. Use independent gtsam::Marginals baseline.
+Run focused Release and ASan/UBSan host-code tests, plus actual GPU tests when
+CUDA is available. Sanitizer coverage of uninstrumented CUDA libraries must be
+stated. No claim of testing every source-estimator function.
+
+Benchmark identical fixture graphs/Values, warm up first, alternate baseline
+and candidate order; report median/p95/max linearization+marginal and preparation
+times and dimensions. Do not infer end-to-end ETH1 speed from this microbenchmark.
+No ATE selection, no uncertainty adjustment, no long source run.
+
+Current saved text logs do not serialize complete GPU factors. First validate
+the implementation on deterministic real GPU factor fixtures. If a live graph
+capture is needed for full acceptance, scope it explicitly and report the gap;
+do not silently claim the former live 160 s input graph was reconstructed.
+Stop after E1 reporting and ledger update, do not start E2.
