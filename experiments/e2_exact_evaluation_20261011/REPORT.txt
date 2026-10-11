@@ -1,0 +1,275 @@
+E2 — exact same-input receiver linearization reuse
+=================================================
+
+Decision
+--------
+CORRECTNESS_PASSED_PERFORMANCE_NOT_CERTIFIED. E2 is complete as a bounded
+experiment. Keep the candidate default-off and do not replace the working
+receiver. Exact reuse is numerically valid on the tested journals and saves
+derivative calls, but timing variability prevents a reliable adopted speedup.
+It does not solve growing full-history work or certify live queue headroom.
+
+Scope and preservation
+----------------------
+Authorized 2026-10-11 after the E1 live60 handoff. This is an isolated runtime
+engineering experiment, not a new fusion model or accuracy experiment. No
+GLIM/Kimera, ROS, bag playback, CBS-OFF/ON source run, tuning or long live run
+was launched. Only already-recorded immutable receiver event journals were used.
+The original receiver and all frozen source profiles/artifacts remain unchanged.
+
+Repository branch: engineering/e2-exact-evaluation-20261011.
+Parent: e6e51d388e42736c421e747b19f467f5709323eb.
+The E2 commit containing this report is the completion commit; resolve it with
+git log -1 --format=%H -- experiments/e2_exact_evaluation_20261011/REPORT.txt.
+No push or default enabling is part of this task.
+
+Protocol: PROTOCOL.txt. Original executable:
+/home/yeranis/results/gnssfgo_vw_jacobian_20261011/build/replay
+SHA256 62124b496ad6f854079218862acb149892aa452d4af908c50bc96067e49c9dbb.
+Private build and full local evidence:
+/home/yeranis/results/gnssfgo_e2_exact_evaluation_20261011.
+Candidate executable SHA256:
+d05fd1917195ec47c903534715ae8f6a831d5b01aee5eefcd2673f24cff3a1b2.
+This private experimental implementation is NOT the older default CMake target.
+
+Frozen model: source-driven WNOA, pose X/world velocity V/body angular rate W,
+full-history iSAM2 QR, independent 100 ms supports, 59-sample timestamp startup,
+no central IMU measurement/bias/acceleration/GNSS factors, Gaussian scale 1,
+Qc [0.00375,0.00375,0.00375,0.015,0.015,0.015], priors 1e-5/10/3, stable-ID
+replacement of every admitted revision, same endpoints/arrival order/covariances.
+The normalized-gradient publication threshold remains 1e-5, with budget 20.
+Classic active_window_temporary source exchange is already in the recorded data;
+downstream revision replacement is separate from source-to-source live_revision.
+
+What was investigated
+---------------------
+The actual normal path in FullPublicationRefinement.h evaluates graph error and
+NormalizedGradient at the current Values, forces full relinearization/solve, and
+evaluates the resulting Values again. An earlier Gaussian evaluation cache is
+used in recovery/stable-cost handling, not as a general normal-path cache.
+The retained live60 has 649 accepted ordinary refinement steps and no recovery
+or stable-cost steps. The retained partial143 has 2209 step rows, including 18
+recovery rows and two local-prediction rows; 51 rows have nonzero stable-cost
+diagnostics. Optimizing only that rare branch would miss the ordinary workload.
+
+The observing-only wrapper executes EVERY original factor linearization. It
+compares each call with the immediately preceding successful call to that SAME
+factor object using bit-identical referenced Values, not a numerical tolerance.
+Keys, stored pose rotation matrix/translation, V/W and active flag are included.
+The pinned GTSAM uses matrix rotation storage, not GTSAM_USE_QUATERNIONS.
+
+Observed live60 opportunity (probe_analysis.json):
+                         calls       exact repeats   repeated compute time
+WNOA                     672252      101119          1.635834496 s
+Relative beliefs        1005275      144663          3.941261197 s
+Total compute time: 38.233637366 s; exact-repeat fraction of this time: 14.5869%.
+Signature construction alone: 0.899732391 s. Probe process wall: 67.005318 s.
+The predeclared >=5% opportunity gate passed. This is an opportunity measurement,
+NOT a speedup. Even ideal zero-overhead reuse can only remove the repeated work;
+5.577096 s is about 8.3% of this instrumented whole replay, not 14.6% of it.
+
+Candidate and its limits
+------------------------
+ExactLinearizationMemo.h wraps the existing WNOA/relative factor classes. It
+does not replace any error function, derivative, whitening or solver policy.
+E2_EXACT_LINEARIZATION_CACHE=1 is required; default is off. The implementation
+keeps only the last successful finite Gaussian linearization per factor object.
+
+- Every referenced state bit must match. One-bit V/W/translation changes and
+  tiny pose rotations miss; unrelated Values may change without invalidating.
+- New factor versions and clones start empty. The receiver constructs a new
+  immutable factor object for replacement, so mean/noise/endpoint revisions do
+  not share cache entries. This is NOT a generic in-place mutable-factor cache.
+- A cache hit returns a CLONE, never the stored Gaussian object; a caller cannot
+  poison the cache by mutating its returned matrix.
+- A miss clears the old entry before calling the unchanged implementation.
+  Exceptions clear the entry and rethrow. Inactive factors bypass caching.
+- A per-factor mutex prevents concurrent different-Values calls returning a
+  mismatched entry. Diagnostic counters are atomic.
+- Full current-Values gradient checks, forced relinearization, transactional
+  rejection and all publication criteria remain unchanged.
+
+Costs are real: signatures/locking/accounting on all calls, Gaussian cloning on
+hits AND successful misses, plus finite checks/materialization of a weighted
+augmented Jacobian on misses. GTSAM's augmentedJacobian() returns a dense weighted
+matrix by value. The candidate calls it for validation and byte accounting.
+This code inspection identifies extra work; no per-operation time attribution
+was measured, so it does not prove which individual overhead dominates.
+The cache still visits the full graph; it does not fix history-size growth.
+
+Focused validation
+------------------
+Observing probe: 19/19 Release tests pass and saved60 numerical results match.
+Candidate: 47/47 Release tests pass; 47/47 ASan/UBSan tests pass.
+Six new memo tests cover exact invalidation, caller mutation, clone/new-noise
+invalidation, default-off and exception recovery, real dense interpolated
+factors, null slots, concurrent Values, nonlinear refinement and transactional
+rejection. Gaussian matrices/Hessians, costs, gradient and a full 36-dimensional
+synthetic joint covariance are exactly equal to the unwrapped reference.
+Existing cache/refinement/twist/transactional/consensus/bounded tests are retained.
+
+These are focused tests, not a claim that the entire ROS repository test suite
+or all dependency libraries were sanitizer-instrumented. ASan/UBSan instrument
+the test translation units and changed header; pinned libraries are reused.
+Leak detection is disabled to match this test environment.
+
+Setup failures are retained, not erased:
+1. Broad ROS include enumeration shadowed libc headers. The corrected build uses
+   the exact include list of the successful frozen reference command.
+2. A new test used push_back(nullptr), unsupported by GTSAM's template overload;
+   corrected to explicit NonlinearFactor::shared_ptr().
+3. 46/47 tests initially passed; an unchanged twist test used two old /prior and
+   /diagnostic absolute fixture mounts absent from the existing container.
+   A private mechanical copy maps them to the SAME hashed local fixtures.
+   No assertion, numerical tolerance, original test or runtime setting changed.
+The corresponding failure logs and corrected commands remain archived.
+
+Frozen replay results
+---------------------
+All planned replay checks and the single reversed-order saved60 timing repeat
+completed successfully. The candidate executable and its 11 private source/test/
+binary files are unchanged between pre-replay and final provenance checks.
+
+The first saved60 comparison already passes exact equality for all 18 retained
+output products (only explicit wall-time fields excluded). Online/final X/V/W,
+trajectories, costs/gradients, decisions, dispatch, revisions/slots, residuals,
+source covariance and unsupported accounting are identical. There are 593
+supports, 34142 source versions, 33247 replacements, 870 admitted IDs and 25
+explicitly unsupported pre-initialization versions. Maximum publication gradient
+is 9.976519339178459e-6. Dense source-to-factor logging difference remains
+1.3552527156068805e-20, identical to the reference (not newly rescaled).
+
+The partial143 comparison also passes all 18 exact-output checks. It contains
+1433 supports, 85210 source versions, 83059 replacements, 2126 admitted IDs and
+the same 25 unsupported pre-initialization versions. Maximum publication gradient
+is 9.804066065458235e-6; maximum source-to-factor covariance logging difference is
+8.023096076392733e-17, unchanged from the reference. No pending, duplicate or stale
+versions remain. Both journals validate causal insertion and required-support
+availability, along with complete version accounting. Recovery decisions in the
+longer journal match too; they were not exercised by saved60 alone.
+
+Exact-reuse calls (candidate counters include calls from iSAM2 and checks):
+Journal       WNOA calls / hits          Relative calls / hits
+saved60       672252 / 101119            1005275 / 144663
+partial143    5200355 / 1308695           7744620 / 1928655
+Thus the longer journal hits 25.17% WNOA and 24.90% relative calls, versus about
+15%/14% for saved60. The number of visited factors is NOT reduced: on a hit the
+original derivative calculation is skipped, but checking and Gaussian copying
+remain. No cache exceptions occur in either full replay.
+
+Retained cache matrix+signature storage at end/peak:
+saved60: 1462 entries, 4262288 bytes (~4.065 MiB).
+partial143: 3558 entries, 10375440 bytes (~9.895 MiB).
+These exclude container/object/allocator overhead and transient returned copies.
+Process peak RSS is recorded separately in each command JSON; it includes the
+whole receiver, not only this cache. Full-history storage still grows.
+
+Real-journal full receiver posterior covariance is not exported by this runner.
+We therefore do NOT claim a separately measured real full-history posterior
+covariance comparison. Exact factor outputs/state/decision evidence and the
+independent full synthetic joint-covariance test are the available checks.
+
+The partial143 journal comes from the older requested 160 s source capture that
+stopped at 143.790032 s. Replaying it here does NOT complete that source run or
+demonstrate longer live throughput. No accuracy metrics are recomputed when the
+same-input trajectories are byte-identical; no new OFF/ON conclusion is drawn.
+
+Measured runtime, including the unfavorable first result
+------------------------------------------------------
+Whole receiver process wall time (seconds); NOT live queue throughput:
+Journal / order                  reference       candidate       change
+saved60, reference then candidate   65.999870      105.756883      +60.24%
+partial143, reference then candidate
+                                  517.575545      387.957090      -25.04%
+saved60 repeat, candidate then reference
+                                   59.572364       56.528542       -5.11%
+
+The short repeat is numerically identical to the first pair and the old retained
+replay, including identical cache-hit counts. The first candidate took almost
+1.87x its repeated time with the SAME binary/data. Do not discard that first
+sample, average these different workloads into a headline speedup, or claim the
+first slowdown proves caching intrinsically fails. Conversely, the single 25%
+longer-journal improvement is not a certified universal gain. CPU user+system
+times track wall times (saved60 candidate 105.441 vs repeated 56.408 s); this is
+not just waiting in the controller. Scheduling/core placement/frequency/shared
+machine effects were not controlled or logged sufficiently to identify the
+cause. No other owned heavy experiment was launched concurrently; a container
+process snapshot showed the reference alone using ~100% of one CPU.
+
+The reverse-order pair suggests a modest possible benefit (~5.1% total time),
+not elimination of the bottleneck. In that pair late publication p95 slightly
+WORSENS (131.594 -> 132.954 ms), despite a lower median. The observed larger
+long-journal hit rate is real and deterministic; its precise speed benefit is
+not isolated by this small uncontrolled timing sample. No extra timing retries
+or post-result cache edits were made.
+
+Publication refinement latency: median / p95 / maximum, milliseconds.
+These exclude source execution and transport; do not add them to whole wall time.
+
+Journal/mode        All                       Early 0–20 s
+saved60 reference   74.911 /135.052 /342.016    19.724 / 44.848 / 93.645
+saved60 candidate  117.479 /229.342 /381.306    32.826 / 75.135 /122.840
+partial reference  227.550 /653.090 /2989.062   42.449 /115.478 /130.750
+partial candidate  160.012 /549.259 /2230.167   20.671 / 55.406 / 76.415
+repeat reference    69.378 /126.586 /219.272    18.564 / 39.923 / 69.816
+repeat candidate    62.323 /124.510 /200.993    17.197 / 36.635 / 61.395
+
+Journal/mode        Middle 20–40 s             Late 40 s onward
+saved60 reference   75.304 /127.638 /163.702   115.938 /180.218 /342.016
+saved60 candidate  118.201 /193.173 /233.685   184.844 /256.936 /381.306
+partial reference  137.552 /245.408 /268.080   286.871 /734.798 /2989.062
+partial candidate   66.879 /122.106 /131.494   205.435 /606.599 /2230.167
+repeat reference    70.472 /117.005 /139.912   108.856 /131.594 /219.272
+repeat candidate    63.197 /104.213 /125.590   101.756 /132.954 /200.993
+
+Times are relative to the first publication, not the bag epoch. The long late
+group contains 1033 publications; each early/middle group contains 200. The short
+late group contains 193. Both short cases have no recovery publications.
+
+Long-journal normal/recovery grouping:
+Group                         N      reference med/p95/max ms
+No recovery step              1416   225.644 / 556.981 /2989.062
+At least one recovery step      17  1001.626 /2440.514 /2806.470
+Group                                candidate med/p95/max ms
+No recovery step                     158.166 / 509.939 /2230.167
+At least one recovery step           832.394 /1829.680 /1999.156
+Whole publication totals are 389.433 -> 286.098 s without recovery and
+22.056 -> 16.571 s with recovery. Group by (phase,index) in publication_steps.csv
+where recovery=1. These are whole Refine() times, not separately instrumented
+recovery-branch timings; normal work also occurs in a recovery publication.
+
+Process peak RSS (MiB), reference -> candidate:
+saved60 first: 119.465 -> 125.086
+partial143:    500.805 -> 513.902
+saved60 repeat:119.391 -> 125.426
+No new live queue-age measurement exists in E2. This is offline causal replay
+with recorded availability timestamps, not a co-running capacity test.
+
+Integrity and archival checks
+-----------------------------
+273/273 protected originals match preflight hashes, including the reference
+executable, retained journals/results and protected source/runtime inputs.
+11/11 private candidate files match their pre-replay identities. Corrected test
+fixtures retain the original hashes. Both real journals and the repeat conserve
+all versions, finish with no pending events, and retain all nominal publication
+decisions. The final provenance file records hashes for every replay output,
+including large files not copied to Git. No source setting, covariance, mean,
+endpoint binding, factor replacement policy or mathematical tolerance changed.
+
+ARCHIVE_MANIFEST.json records 84 byte-identical small evidence files (3058213
+bytes): commands, failures, test XML, private code, comparisons, summaries and
+publication/cache diagnostics. Full journals, binaries and large numerical
+outputs remain local; this Git archive is not a complete data/runtime backup.
+
+Recovery and next-task boundary
+-------------------------------
+The candidate remains isolated/default-off and the original executable remains
+available at the path/hash above. No existing receiver executable, launch or
+profile is replaced. Do not automatically proceed to E1b, E3, E4 or a live run.
+Any further engineering hypothesis requires a separate decision and validation.
+The ordered plan's next unstarted mathematical-kernel task is E3a (remaining
+WNOA derivatives). It attacks calculations that must still be performed rather
+than relying on exact repeats. It needs its own derivative/reference gates; it
+is NOT authorized or implemented by this E2 report. A performance adoption of
+E2 would instead need a separately agreed controlled timing check. Neither is
+silently launched here.

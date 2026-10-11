@@ -1,0 +1,56 @@
+E2: exact same-input receiver linearization reuse, 2026-10-11.
+Authorization: user "ok proceed" after E2 frozen-data proposal.
+
+No GLIM/Kimera/ROS/live run. No tuning, changed model, factor retirement,
+revision coalescing, derivative formula, solver policy or tolerance change.
+Reference executable remains SHA256
+62124b496ad6f854079218862acb149892aa452d4af908c50bc96067e49c9dbb.
+Build a private copy with original include precedence and exact dependencies.
+Source-driven WNOA X/V/W, no central IMU, independent 100 ms support clock,
+59-sample timestamp startup, full-history iSAM2, scale 1, Gaussian loss,
+Qc/priors unchanged, strict publication threshold 1e-5 / budget 20.
+
+Phase 1: read the actual normal/refinement path and count existing stable-cost
+branches from retained logs. Then run ONE observing-only build on the complete
+retained E1 live60 journal. Compare its numerical outputs with the retained
+validated replay. A per-factor exact-input probe observes WNOA and relative
+factor linearize calls including calls made internally by iSAM2. It still
+executes EVERY original calculation. Match keys, native Pose3 rotation storage,
+translation and V/W doubles bit-for-bit; never tolerance-based Values equality.
+Only compare with the preceding linearization of that same factor object;
+replacement constructs a new object. Separate residual-only evaluations from
+linearization: they are NOT automatically the same computation.
+
+If exact repeats account for less than 5% of measured factor-linearization
+time, stop without a caching implementation or further replay campaign. Report
+the opportunity honestly. Instrumentation timing is not an end-to-end speedup.
+
+If worthwhile: an isolated opt-in memoizing factor wrapper may reuse ONLY the
+last successful Gaussian linearization at bit-identical referenced Values and
+the same immutable factor version. Keep error/residual-only computation and all
+solver/convergence decisions unchanged. Changes to referenced Values invalidate;
+new/replaced/cloned factors start empty. No cross-factor or stale-state cache.
+Returned Gaussian factors must not expose the stored entry to caller mutation.
+Prove memoization cannot survive an exception with a mismatched key/result pair.
+
+Focused Release and ASan/UBSan checks: repeated inputs, one-bit-small pose/V/W
+changes, irrelevant Values changes, dense covariance, real WNOA and interpolated
+factors, stable-ID replacement/new noise, null slots, clone behavior, concurrent
+access if supported, failure/rollback, and existing refinement/cache regressions.
+Compare full Gaussian Jacobian/Hessian blocks, costs/gradient and relevant full
+synthetic joint covariance exactly. Keep old tests unchanged.
+
+Frozen replay: compare reference and candidate on retained live60 and the
+retained partial live160 (143.79 s, NOT a new 160 s source run) journals.
+Require byte-identical online/final X/V/W states and trajectories, non-timing
+convergence/step decisions, accounting/slots/dispatch/covariance/residual output.
+No missing/duplicate/stale versions, unchanged before-init unsupported entries.
+Any failure stops acceptance; do not relax tolerances or automatically retry.
+Time baseline/candidate on identical full journals, split reported publication
+latencies into early/middle/late physical-time ranges. One timing repeat per
+configuration may check deterministic output and noise if correctness passes.
+Keep probe overhead separate from non-instrumented benchmark timings. Record
+cache storage/visits/hits and remaining full-history growth limits.
+
+Save report, exact patch/build/input hashes, tests, conservation and performance.
+Update E2 ledger, keep default disabled, local commit, stop. No E3/E4/live test.

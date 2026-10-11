@@ -81,7 +81,7 @@ shared IMU, past means or nonlinear history are statistically independent.
 | --- | --- | --- | --- |
 | E0 | Save this plan and push a recoverable checkpoint | Exact-commit manifest; archive hashes; verified Zakyera branch SHAs; original runtime untouched | Completed 2026-10-11 |
 | E1 | GPU-batched GLIM LOCAL covariance reconstruction | Same LOCAL factors and Values; same Gaussian blocks, full 6x6 covariance and means within predeclared arithmetic tolerance; focused tests; measured stage latency | Synthetic/real-graph and live60 correctness gates pass; covariance preparation accelerated; extra scan-headroom target missed, no full-run acceptance; default-off |
-| E2 | Receiver evaluation reuse at identical Values | Correct invalidation on any referenced Values/factor/revision change; identical outputs and decisions for arithmetic-preserving reuse; timing of normal and recovery paths | Not started |
+| E2 | Receiver evaluation reuse at identical Values | Correct invalidation on any referenced Values/factor/revision change; identical outputs and decisions for arithmetic-preserving reuse; timing of normal and recovery paths | Bounded experiment completed 2026-10-11; exact correctness passed, runtime benefit not certified due to mixed/variable timing; default-off, not promoted |
 | E3a | Remaining WNOA motion-factor derivatives | Independent numerical derivative checks; manifold/frame tests; frozen-journal state/cost/covariance checks with predeclared tight tolerances | Not started |
 | E3b | Remaining interpolated pose derivative blocks | Separate patch and independent checks as for E3a; do not redo already validated V/W substitution | Not started |
 | E4 | Selective incremental publication refinement | Same factors/events and fresh current-Values stationarity certificate; reference full refinement fallback; short/medium/late replay comparisons | Not started; higher risk |
@@ -298,6 +298,57 @@ documentation/archival/version control only; no estimator implementation or run.
 - Decision: component speedup validated, limited 60 s live gates passed, global
   tail-delay problem unresolved. Keep default-off/opt-in. Stop for the next
   engineering decision; do not silently promote or launch a longer run/E2.
+
+### E2 — exact receiver evaluation reuse
+
+- Authorization: user "ok proceed" after the E2 proposal, 2026-10-11.
+- Status: completed bounded experiment. Correctness PASSED; performance NOT
+  CERTIFIED. No new source/live capture and no working-receiver replacement.
+- Protocol: `experiments/e2_exact_evaluation_20261011/PROTOCOL.txt`.
+- Preserve E1 and the checkpoint; isolated private receiver build only. No
+  covariance/Qc/priors/event-order changes or relaxed convergence/rollback gates.
+- Report: `experiments/e2_exact_evaluation_20261011/REPORT.txt`; 84 small evidence
+  files archived byte-identically, with commands/tests/failure records and hashes.
+- Branch `engineering/e2-exact-evaluation-20261011`; parent
+  `e6e51d388e42736c421e747b19f467f5709323eb`. The completion commit contains this
+  ledger/report; obtain its exact SHA with `git log -1 --format=%H --
+  experiments/e2_exact_evaluation_20261011/REPORT.txt`. Local only, no push.
+- Observing-only live60 probe: 14.5869% of measured linearization time repeated
+  at exact same inputs, passing the predeclared 5% opportunity gate. This is
+  NOT an end-to-end speedup; ideal removable probe work is about 5.58 of 67 s.
+- Opt-in same-factor/bit-identical X/V/W memoization, immutable revision objects,
+  clone-on-return, fresh clone/replacement entries and exception invalidation.
+  No error/Jacobian/whitening/solver/publication formula or threshold change.
+- 19/19 probe Release tests; 47/47 candidate Release and 47/47 ASan/UBSan tests.
+  Exact Gaussian/Hessian/cost/gradient and full synthetic joint covariance;
+  invalidation, dense interpolation, mutation, concurrency and rollback covered.
+  Dependency libraries are not sanitizer-instrumented; not a full ROS suite.
+  Build include-list and fixture-path setup failures retained and corrected
+  without changing original tests/assertions or numerical tolerances.
+- Retained 60 s and partial143.79 s journals match all 18 reference products
+  exactly after excluding only timing fields, including online/final states,
+  covariances exported by this runner, residuals, decisions and revision ledger.
+  Real full-history posterior covariance is not exported; do not claim it was
+  separately measured. Recovery decisions match on the longer journal.
+- 34142/85210 source versions conserved, 33247/83059 replacements,
+  870/2126 active IDs; 25 before-init versions explicitly unsupported in each.
+  No stale/duplicate/pending versions; max gradients 9.97652e-6 / 9.80407e-6.
+- Timing reference -> candidate: saved60 66.00 -> 105.76 s; partial143
+  517.58 -> 387.96 s; reverse-order saved60 repeat 59.57 -> 56.53 s.
+  Numerical outputs/hit counts remain exact across the repeat. The 1.87x change
+  between candidate timings prevents a reliable headline speedup. Core placement/
+  frequency/shared-machine effects were not controlled sufficiently to attribute
+  the variation. Do not hide the unfavorable first sample or promote the 25% one.
+- Reuse removes ~15% of short-journal and ~25% of long-journal derivative calls,
+  but retains full-graph visits/checks/copies. Cache payload grows 4.07 -> 9.90 MiB;
+  long-journal process RSS 500.81 -> 513.90 MiB. Short-repeat late p95 slightly
+  worsens, 131.59 -> 132.95 ms, despite a lower median. No live queue test.
+- 273/273 protected originals and all 11 frozen candidate build files unchanged.
+  Candidate executable SHA256
+  `d05fd1917195ec47c903534715ae8f6a831d5b01aee5eefcd2673f24cff3a1b2`.
+- Decision: retain mathematically validated prototype, default-off; runtime
+  acceptance and full-sequence capacity remain unproven. No retries/retuning or
+  further candidate edits after benchmarking. E3a/E3b/E4/E1b are NOT started.
 
 ### Template for subsequent tasks
 
