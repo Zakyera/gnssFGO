@@ -20,8 +20,10 @@ performance hypotheses into one acceptance experiment.
 passed the retained-input validation; processing headroom still failed. E4 was
 rejected and remains disabled. E1b.1 completed the remaining LOCAL update audit:
 main/LOCAL consume 55.37%/33.44% of late matched scan wall time; LOCAL states are
-bounded. E1b.2 subphase instrumentation is proposed, not implemented. Receiver
-and source code remain frozen. The original checkpoint evidence below is
+bounded. E1b.2 private timing instrumentation passed focused Release/UBSan,
+profiler ASan/UBSan and exact original-library fixture checks. It is NOT an
+optimization or live acceptance; a bounded real-source profile is still pending.
+Working receiver/source libraries remain frozen. The original checkpoint evidence below is
 historical and is not the latest run's status.
 
 The detailed read-only audit is archived at
@@ -98,7 +100,8 @@ shared IMU, past means or nonlinear history are statistically independent.
 | E1 | GPU-batched GLIM LOCAL covariance reconstruction | Same LOCAL factors and Values; same Gaussian blocks, full 6x6 covariance and means within predeclared arithmetic tolerance; focused tests; measured stage latency | Re-audit 18/18 tests and zero matrix differences; component acceleration repeats. Earlier live60 headroom target missed; no full-run acceptance; default-off |
 | E2 | Receiver evaluation reuse at identical Values | Correct invalidation on any referenced Values/factor/revision change; identical outputs and decisions for arithmetic-preserving reuse; timing of normal and recovery paths | Re-audit: 50/50 Release and sanitizer, matched replay exact; isolated redundant whitening fixed. Same-executable/core mean ~5.2% shorter on frozen60; full/live capacity uncertified; default-off |
 | E1b.1 | Diagnose remaining GLIM LOCAL smoother update cost | Trace actual call chain and GPU evaluation semantics; inspect retained early/late timing; distinguish measured cost from missing instrumentation; specify one next patch | Completed 2026-10-12; report/evidence saved, no estimator change. LOCAL subphase costs not yet separated |
-| E1b.2 | Instrument LOCAL update subphases | Opt-in timing only; no extra factor/solver evaluations; scope/cache/exception tests; disjoint accounting; measured overhead before bounded profiling | Proposed only; do not replace the solver or launch another long run |
+| E1b.2 | Instrument LOCAL update subphases | Opt-in timing only; no extra factor/solver evaluations; scope/cache/exception tests; disjoint accounting; measured overhead before bounded profiling | Private implementation/tests passed 2026-10-12: 29 Release +29 UBSan +8 profiler ASan/UBSan; original-library fixture exact; no source capture or solver replacement |
+| E1b.3 | Bounded LOCAL subphase profile | Frozen source settings; explicit profiler overhead/coverage; separate nested/worker/outer wall costs; select one measured dominant subphase | Proposed only; separately authorized short capture, no automatic full160 run |
 | E3a | Remaining WNOA motion-factor derivatives | Independent numerical derivative checks; manifold/frame tests; frozen-journal state/cost/covariance checks with predeclared tight tolerances | Not started |
 | E3b | Remaining interpolated pose derivative blocks | Separate patch and independent checks as for E3a; do not redo already validated V/W substitution | Not started |
 | E4 | Selective incremental publication refinement | Same factors/events and fresh current-Values stationarity certificate; reference full refinement fallback; short/medium/late replay comparisons | Tested 2026-10-12; NOT ACCEPTED: strict state bounds failed,86.8% fallback,matched refinement~40% slower; stopped at130.68s |
@@ -595,6 +598,38 @@ documentation/archival/version control only; no estimator implementation or run.
   report/scripts/evidence/ledger. No estimator edits, runs, upgrades or push.
 - Decision: next E1b.2 is one instrumentation-only patch/profiling proposal
   specified in REPORT section6. No automatic implementation/capture here.
+
+### E1b.2 — isolated LOCAL update instrumentation
+
+- Authorization: user "Proceed" after E1b.1; 2026-10-12.
+- Parent 75e315974f86b158bb0b50962000e0ffbf4fafdb; branch
+  engineering/e1b-local-profile-20261012.
+- Status: PRIVATE IMPLEMENTATION/TESTS PASSED; not a performance optimization
+  or live acceptance. Default-OFF scoped timing in private source overlays/builds;
+  owning source checkouts and working libraries unchanged. No source capture.
+- Protocol: experiments/e1b_local_profile_20261012/PROTOCOL.txt.
+- No optimizer upgrade, semantic change, source/fusion run, tuning or automatic
+  next acceleration patch. Report test limits and measured instrumentation cost.
+- Report: `experiments/e1b_local_profile_20261012/REPORT.txt`; `validation.json`
+  and `evidence/` retain commands, XML, source/build identities and overlay diffs.
+- Measures existing backup/BaseSAM/estimate/marginalization/cleanup and GTSAM
+  phases plus GPU sync/cache/warning work. No extra solver/factor evaluation.
+  Pinned GTSAM internal TBB is disabled; worker utility tests do not establish
+  parallel GTSAM execution. Do not change that flag on this evidence.
+- 29 focused Release tests and29 UBSan pass;8 focused profiler ASan/UBSan pass.
+  One preexisting timing benchmark remains disabled, not counted as passed.
+  Original-library vs candidate/repeat:4,716 state/covariance numbers exact;
+  counted factor calls unchanged. Shared GPU matrix/cache/inlier fixtures pass.
+- Synthetic RAM timing overhead median1.12us/update (~2.3% paired); file-output
+  fixture adds4.53–5.84us vs bracketing OFF medians (~10–13%). Not a live GLIM
+  overhead bound. JSON output excluded from measured root, included in outer
+  fixture timing; record this limitation during any future source capture.
+- 635 protected files,492 shared relink inputs and six clean pinned source repos
+  unchanged. Private same-version host relink only; no production installation.
+  Missing test -ltbb link fixed in retained release_2; no math/test tolerance fix.
+- Decision: stop here. E1b.3 proposes one short frozen source profile (first40s),
+  explicitly not a reproduction of the late120–160s tail. Pick one acceleration
+  only after measured attribution. Commit locally; no push.
 
 ### Template for subsequent tasks
 

@@ -1,0 +1,32 @@
+--- glim_ros1/src/glim_ros/cbs_bridge.cpp
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/e1b_local_profile_20261012/overlay/cbs_bridge.cpp
+@@ -1,3 +1,4 @@
++#include "RuntimeProfile.h"
+ #include <glim_ros/cbs_bridge.hpp>
+ #include <glim_ros/cbs_local_graph_linearizer.hpp>
+ #include <glim_ros/dcreg_edge_metadata.hpp>
+@@ -1515,6 +1516,7 @@
+   const auto outgoing_start = TimingClock::now();
+   publishOutgoingBeliefs(stamp, smoother);
+   if (export_endpoint_audit_enable_ || live_revision_enable_) {
++    e1b::Session profile(stamp.toSec(),e1b::Context::Revision);
+     const size_t update_index =
+         has_last_pose_key_ ? poseIndex(last_pose_key_) : 0u;
+     const double record_stamp = ros::Time::now().toSec();
+@@ -3257,6 +3259,8 @@
+     return;
+   }
+   try {
++    e1b::Session profile(new_stamps.empty()?0.0:new_stamps.rbegin()->second,e1b::Context::Local);
++    e1b::Scope local_total(e1b::Stage::LocalTotal);
+     sidecar_->update(new_factors, new_values, new_stamps);
+   } catch (const std::exception& e) {
+     ROS_WARN_STREAM_THROTTLE(
+@@ -3338,6 +3342,7 @@
+     return;
+   }
+ 
++  e1b::Session profile(stamp.toSec(),e1b::Context::Covariance);
+   std::vector<cbs::BPSAM::CbsOdometryBelief> outgoing;
+   double set_marginalization_graph_ms = 0.0;
+   double get_odometry_beliefs_ms = 0.0;

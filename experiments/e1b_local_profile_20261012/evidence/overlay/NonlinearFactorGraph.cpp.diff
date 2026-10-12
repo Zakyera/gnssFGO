@@ -1,0 +1,31 @@
+--- gtsam/gtsam/nonlinear/NonlinearFactorGraph.cpp
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/e1b_local_profile_20261012/overlay/NonlinearFactorGraph.cpp
+@@ -1,3 +1,4 @@
++#include "RuntimeProfile.h"
+ /* ----------------------------------------------------------------------------
+ 
+  * GTSAM Copyright 2010, Georgia Tech Research Corporation,
+@@ -245,6 +246,7 @@
+   const NonlinearFactorGraph& nonlinearGraph_;
+   const Values& linearizationPoint_;
+   GaussianFactorGraph& result_;
++  e1b::Token profile_token_=e1b::capture();
+ public:
+   // Create functor with constant parameters
+   _LinearizeOneFactor(const NonlinearFactorGraph& graph,
+@@ -253,6 +255,7 @@
+   }
+   // Operator that linearizes a given range of the factors
+   void operator()(const tbb::blocked_range<size_t>& blocked_range) const {
++    e1b::Attach profile_attach(profile_token_);
+     for (size_t i = blocked_range.begin(); i != blocked_range.end(); ++i) {
+       if (nonlinearGraph_[i] && nonlinearGraph_[i]->sendable())
+         result_[i] = nonlinearGraph_[i]->linearize(linearizationPoint_);
+@@ -269,6 +272,7 @@
+ GaussianFactorGraph::shared_ptr NonlinearFactorGraph::linearize(const Values& linearizationPoint) const
+ {
+   gttic(NonlinearFactorGraph_linearize);
++  e1b::Scope profile(e1b::Stage::FactorGraphLinearize);
+ 
+   // create an empty linear FG
+   GaussianFactorGraph::shared_ptr linearFG = std::make_shared<GaussianFactorGraph>();

@@ -1,0 +1,47 @@
+--- gtsam_points/src/gtsam_points/factors/integrated_vgicp_factor_gpu.cpp
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/e1b_local_profile_20261012/overlay/integrated_vgicp_factor_gpu.cpp
+@@ -1,3 +1,4 @@
++#include "RuntimeProfile.h"
+ // SPDX-License-Identifier: MIT
+ // Copyright (c) 2021  Kenji Koide (k.koide@aist.go.jp)
+ 
+@@ -164,12 +165,16 @@
+ }
+ 
+ double IntegratedVGICPFactorGPU::error(const gtsam::Values& values) const {
++  e1b::Scope profile(e1b::Stage::GpuError);
+   double err;
+   if (evaluation_result) {
++    e1b::metric(e1b::Metric::GpuErrorHits,1);
+     err = evaluation_result.value();
+     evaluation_result = {};
+   } else {
+-    std::cerr << "warning: computing error in sync mode seriously affects the processing speed!!" << std::endl;
++    e1b::Scope sync(e1b::Stage::GpuSyncError);
++    { e1b::Scope warning(e1b::Stage::GpuWarning);
++    std::cerr << "warning: computing error in sync mode seriously affects the processing speed!!" << std::endl; }
+ 
+     if (!linearized) {
+       linearize(values);
+@@ -183,16 +188,20 @@
+ }
+ 
+ gtsam::GaussianFactor::shared_ptr IntegratedVGICPFactorGPU::linearize(const gtsam::Values& values) const {
++  e1b::Scope profile(e1b::Stage::GpuLinearize);
+   linearized = true;
+   linearization_point = calc_delta(values);
+ 
+   LinearizedSystem6 l;
+ 
+   if (linearization_result) {
++    e1b::metric(e1b::Metric::GpuLinearizeHits,1);
+     l = *linearization_result;
+     linearization_result.reset();
+   } else {
+-    std::cerr << "warning: performing linearization in sync mode seriously affects the processing speed!!" << std::endl;
++    e1b::Scope sync(e1b::Stage::GpuSyncLinearize);
++    { e1b::Scope warning(e1b::Stage::GpuWarning);
++    std::cerr << "warning: performing linearization in sync mode seriously affects the processing speed!!" << std::endl; }
+     l = derivatives->linearize(linearization_point);
+   }
+ 

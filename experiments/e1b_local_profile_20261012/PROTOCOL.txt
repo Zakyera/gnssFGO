@@ -1,0 +1,44 @@
+E1b.2 isolated measurement instrumentation — 2026-10-12
+
+User authorization: Proceed after the completed E1b.1 audit.
+Parent75e315974f86b158bb0b50962000e0ffbf4fafdb.
+Question: can we safely attribute existing LOCAL update work, without adding
+factor evaluations, changing solver decisions, or perturbing shared GPU caches?
+
+Scope this turn: isolated source-overlay instrumentation, private builds,
+unit/deterministic solver/GPU fixture checks and instrumentation overhead.
+No bag playback, source/fusion experiment, new mathematical acceleration,
+solver/library upgrade, production installation or default change. Request a
+separate bounded real-source capture after passing these checks. No auto retry
+of a failed experiment; build/test defects may be corrected and retained.
+
+Create overlays from exact pinned source bytes, refusing drift; record diffs,
+source hashes and compile commands. Do not modify workspace build/devel outputs.
+Profiler default disabled. Enabled mode must never invoke extra error(),
+linearize(), calculateEstimate(), marginals or GPU synchronization. Record
+existing method calls and already-available state/result counts only. Metadata
+traversal is separately timed. No altered warning/log behavior in this patch.
+One aggregate record per instrumented context/update, with scan timestamp;
+separate main/local/covariance/revision contexts, inclusive/exclusive nesting
+and exception-safe restoration. Worker-time totals are separate from owner
+wall time. Sink serialization/flush happens outside the recorded root scope.
+Shared profiler state must be truly shared across DSOs, not duplicate header TLS.
+
+Tests: disabled path, nested phases, exception restoration, thread/context/DSO
+isolation, deterministic same-input state/covariance and factor-call counts,
+existing E1 shared-cache/inlier/exception fixtures, Release plus focused
+ASan/UBSan. Preserve prior tolerances; timing differences excluded explicitly.
+Measure overhead on matched synthetic inputs; no live performance claim.
+
+Use existing container cbsms_ws_gpu and existing build commands/dependencies.
+No dependency installation. A private profile support library is permitted;
+core solver mathematics remains unchanged. The same pinned GTSAM version is
+privately relinked with timers at existing phase boundaries; this is not a
+GTSAM upgrade or installation. Inner elimination vs reordering is not separated.
+Do not mislabel the remaining recalculation time as measured QR cost.
+
+Keep all frozen semantics from the engineering plan: current temporary classic
+CBS, LOCAL covariance/main means, source revision diagnostics, WNOA receiver,
+Qc/priors/scales, no central IMU, clock and strict publication safeguards.
+Deliver report, evidence, repeatable private build/test scripts and ledger.
+Commit locally; no push. Stop before E1b.3 or any optimization/capture.

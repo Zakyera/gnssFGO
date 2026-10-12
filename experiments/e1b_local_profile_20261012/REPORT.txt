@@ -1,0 +1,190 @@
+E1b.2 — private LOCAL timing instrumentation and validation
+2026-10-12
+
+Decision: PRIVATE INSTRUMENTATION TESTS PASS. READY FOR BOUNDED PROFILING.
+This is measurement infrastructure, NOT a GLIM speed fix or a live acceptance.
+No dataset, source estimator, receiver or bag playback was started.
+
+1. Scope and preservation
+
+Followed GNSSFGO_RUNTIME_ENGINEERING_PLAN_20261011.md, E1b.2, after E1b.1.
+Parent:75e315974f86b158bb0b50962000e0ffbf4fafdb.
+Branch:engineering/e1b-local-profile-20261012.
+The completion commit contains this report, scripts, small evidence and ledger.
+Resolve its exact hash with git log -1 --format=%H --
+experiments/e1b_local_profile_20261012/REPORT.txt. No push this step.
+
+Authored source overlays are confined to the private run root:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/e1b_local_profile_20261012
+Container path:/workspace/cbs_gtsam4.3/runs/e1b_local_profile_20261012
+No owning source checkout, build/devel library or frozen artifact was replaced.
+No optimizer replacement, dependency upgrade, covariance/Qc/lag/initialization
+change, warning suppression, reduced revisions, parallel solver or new gating.
+All existing source CBS and downstream WNOA/revision semantics remain frozen.
+
+2. What is measured
+
+One shared libe1b_profile.so owns thread-local context across the private DSOs.
+Without CBS_E1B_PROFILE_PATH, logging/timing is disabled. Test-only in-memory
+records can explicitly enable it. Output uses exclusive creation: no overwrite.
+Opt-in sessions surround existing calls, not new solver/factor evaluations:
+
+Context MAIN: native GLIM update_smoother body, including existing empty updates.
+Context LOCAL: GlimCbsBridge::updateSidecar -> existing sidecar_->update.
+Context COVARIANCE: outgoing-belief construction after endpoint request building.
+Context REVISION: existing diagnostic revision-export block.
+
+LOCAL scopes: fixed-lag preparation, BPSAM preparation/backup, BaseSAM::update,
+post-update estimate/guards, marginalization and cleanup. Existing GTSAM timing
+sites distinguish updateDelta, recalculate, batch/incremental recalculate,
+affected-factor linearization and marginalizeLeaves. Recalculate is NOT a pure
+QR timer: inner ordering/elimination are not separately resolved.
+
+GPU-factor scopes distinguish error, linearize, cached-hit counts, synchronous
+fallback and its existing warning/flush. No additional CUDA synchronization;
+these are HOST elapsed durations, not GPU kernel timings. Warnings and shared
+factor-cache consumption/inlier behavior are preserved.
+
+Each stage stores calls/inclusive_ns/exclusive_ns/exception-unwind count.
+Exclusive owner durations partition the session root exactly; root-exclusive
+time represents unassigned work and instrumentation between scopes. Do not sum
+nested inclusive durations. Metadata traversal has its own timer and records
+active keys, allocated/non-null factor slots, retiring keys, variables
+relinearized/re-eliminated and cliques from existing Values/results. Full factor
+type histograms were not added; GPU calls are identified by their exact method.
+Counts are sums within a session; repeated updates need that interpretation.
+
+JSON schema1 context numbers:0 OTHER,1 MAIN,2 LOCAL,3 COVARIANCE,4 REVISION.
+Metric array order is the enum in RuntimeProfile.h. One row per context/update,
+not per factor, tagged by the available physical stamp. An empty-stamp main
+update is tagged0 and cannot be guessed into a physical scan. Revision/context
+rows are not estimator output timestamps or receipt/availability timestamps.
+Legacy outer per-scan timing must still be retained for total-cost accounting.
+Record serialization/fflush runs AFTER the measured root; thus root excludes
+file-output cost. Error messages invalidate a future profile; never silently
+accept a missing/truncated profile. I/O failure does not overwrite prior data.
+
+3. Threading and build boundary
+
+The pinned local GTSAM config has GTSAM_USE_TBB UNDEFINED. Its graph
+linearization/error paths are currently serial; we did NOT change that flag.
+Generic worker-token attachment was unit-tested on real std::threads; the
+conditional GTSAM TBB linearization hook is dormant in this build. Do not claim
+TBB branch coverage from the test historically named ProfileCrossDsoAndTbbCalls:
+here it proves cross-DSO GPU attribution/equality, not parallel execution.
+This candidate is only validated for the pinned build, not a future TBB-enabled
+GTSAM (whose parallel error path would also need context propagation/validation).
+
+Private Release and UBSan builds relink selected changed host objects with the
+existing unchanged objects/dependencies, using captured CMake/E1 commands.
+This is NOT a clean rebuild of the entire ROS workspace. Build inputs, source
+heads/hashes, overlay diffs, full commands and candidate hashes are retained.
+Release build release_2 and sanitizer build ubsan_1 are complete.
+Representative Release hashes:
+libe1b_profile.so b4a3336fd20a3e131125c9d9c8675b7bfdc8049f9cccf8a99f35dd0361c81ee2
+libgtsam.so.4.3a1 7fb16b8d369bbe45a9918a3d74889370100b2ab29b1e3ced96b3bdf61f4abd41
+libcbs.so 622591f0c32dac529e8a841243cef576e1b058aae9732266c08d6bfd48bb2f72
+Other candidate identities are in validation.json, not inferred from names.
+
+4. Correctness evidence
+
+Release:29 executed tests pass; UBSan:the same29 pass. One pre-existing
+DISABLED_Timing benchmark remains disabled and is NOT counted as passed.
+Eight additional focused profiler ASan+UBSan tests pass, including leak checks.
+Sanitizers cover changed host units/focused profiler code, not all untouched
+dependencies or CUDA device code. No claim of a complete workspace test suite.
+
+-8 profiler tests:disabled path,nesting/exclusive accounting,idempotent stop,
+ single evaluation/return,exception restoration,nested context,independent
+ worker merging,same-thread attachment and worker exception restoration.
+-1 solver fixture:35 fixed-lag Pose3 updates spanning marginalization, identical
+ state/covariance values and counted factor evaluations, profiling OFF vs ON.
+ Synthetic lag0.6s is a unit-test fixture, NOT a production lag change.
+-20 E1 CPU/GPU tests:all18 previous cache/covariance/inlier/exception cases plus
+ two instrumentation tests. The shared GPU Hessian comparison remains exact.
+ No new error/linearize call or GPU-cache consumption was introduced by timers.
+
+Original-library oracle:the same deterministic fixture loaded the preexisting
+E1 libcbs/GPU libraries and original devel GTSAM. ldd logs prove the distinction.
+4,716 emitted state/covariance numbers match exactly between original libraries,
+private libraries with profiling disabled/enabled, and repeated private run.
+Counted relative-factor linearizations217,error calls0 in this pose fixture.
+These counts are NOT whole-GLIM call counts; GPU tests separately exercise error.
+Canonical numerical fingerprint SHA256:
+f156d2b49e28f9d56f1ac6305c0a1ee1c7a0ef64d658c36ff6107d023b4e3d12
+
+Sink checks:35 valid JSON rows, exact owner/worker accounting, disabled output,
+existing-file refusal without byte changes. Extended I/O fixture:8,750 valid
+rows, no aborted session, exact exclusive-root accounting throughout.
+
+5. Instrumentation overhead — synthetic, not live
+
+Matched 25 alternating OFF/ON pairs,350 fixture updates per sample, RAM records:
+OFF median48.455us/update; ON49.633us/update.
+Median paired overhead1.122us,ratio1.022806 (~2.3%). Includes fixture setup,
+estimate/covariance queries and equality comparison, not only smoother.update.
+
+Separate file-output test,25 samples each,350 updates/sample:
+OFF before43.802us/update; ON49.639us; OFF after45.113us.
+Increment against the two bracketing medians4.526–5.837us (~10–13%). Includes
+timer collection,JSON serialization and fflush to local page cache, NOT fsync.
+Native fixture logging is unchanged in both arms. Values are small-workload
+observations, not a throughput guarantee or a confidence interval.
+
+The first RAM overhead run overlapped the tail of the sanitizer build; the
+subsequent I/O test ran after that build/tests completed. No representative
+GLIM-factor workload overhead is measured yet. Real overhead depends on the
+number of evaluated factors/warnings and filesystem/contention; cannot assume
+either the2.3% fraction or5us increment for a real scan. Future capture needs
+legacy outer timing, profile-row conservation and explicit perturbation limits.
+
+6. Failures/corrections retained, not scientific failures hidden
+
+release_1 compiled the private libraries, then its test executable failed to
+link because the synthetic test directly uses tbb::global_control. Added only
+the missing -ltbb TEST link flag; release_2 passed. No solver change to pass it.
+Host archive verification initially tried to read container-only Boost paths;
+fixed by checking those hashes inside their owning container. XML aggregation
+initially counted the preexisting disabled benchmark; fixed to report executed
+and disabled separately. A >1MB fixture log exceeded the small-archive rule;
+retained it locally with SHA256 instead of copying it to Git. No test tolerance
+was relaxed, no original data changed, and no failed source run was retried.
+
+7. Integrity and reproducibility
+
+All635 files in the prior live160 protected manifest are unchanged.
+All492 shared relink inputs match for each build, checked inside the container.
+All six pinned owning source repositories remain clean at their original HEADs.
+Seven overlay input file hashes unchanged; candidate artifact hashes verified.
+validation.json records exact evidence hashes and local-only large evidence.
+Small commands/logs/XML/diffs are under evidence/; objects/libraries remain in
+the private run root, not Git. No new experiment trajectory or metric exists.
+The existing build container was started for tests only; post-test process
+inspection showed just its original idle 'tail -f /dev/null' process.
+
+Entry points (do not overwrite an existing attempt):
+-prepare.py:host,verify pinned sources and create a NEW private overlay root.
+-build.py --variant release --attempt 2:inside existing build container.
+-build.py --variant ubsan --attempt 1:inside existing build container.
+-test.py release_2 / test.py ubsan_1:focused tests,refuse existing output tags.
+-validate_extra.py:original-library oracle,repeat,sink,RAM overhead,ASan/UBSan.
+-check_overhead.py:additional I/O overhead fixture.
+-check_protected.py:container input hash validation.
+-verify_and_archive.py:host verification/small evidence collection; only resumes
+ identical partial evidence copies,never overwrites conflicting evidence.
+These are pinned local build recipes, not a portable clean-machine installer.
+
+8. Next step and stop
+
+Request one bounded profile with the same frozen ETH1 source settings, proposed
+first40s, before changing any implementation. Preserve/document concurrent
+workload, existing outer scan timers and all original per-factor operations.
+Check context/row counts,exceptions/sink errors,metadata cost,and timed overhead.
+Then identify ONE dominant measured component:GPU fallback,backup,estimate,
+relinearization/recalculation,marginalization,or other work. Choose an equivalent
+optimization only after seeing those measurements.
+
+A short capture cannot reproduce the prior120–160s tail or prove long-run
+headroom. No automatic full160 replay, model change, lag change, GPU upgrade,
+rollback removal, factor dropping or second speculative optimization.
+E1b.2 implementation/tests complete; real-source phase costs remain unknown.

@@ -1,0 +1,58 @@
+--- cbs/include/cbs/bpsam/incremental_fixed_lag_bpsam_smoother.h
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/e1b_local_profile_20261012/overlay/include/cbs/bpsam/incremental_fixed_lag_bpsam_smoother.h
+@@ -1,3 +1,4 @@
++#include "RuntimeProfile.h"
+ #pragma once
+ 
+ #include <cbs/bpsam/bpsam.h>
+@@ -117,6 +118,7 @@
+           gtsam::FixedLagSmoother::KeyTimestampMap(),
+       const gtsam::FactorIndices& factorsToRemove =
+           gtsam::FactorIndices()) override {
++    e1b::Scope profile_bookkeeping(e1b::Stage::Prepare);
+     const bool debug = ISDEBUG("IncrementalFixedLagBpsamSmoother update");
+ 
+     updateKeyTimestampMap(timestamps);
+@@ -224,6 +226,7 @@
+       }
+     }
+ 
++    profile_bookkeeping.stop();
+     if (shadow_acceptance_force_full_solve_) {
+       cbs::BPSAM::UpdateParams update_params;
+       update_params.removeFactorIndices = factors_to_remove;
+@@ -366,6 +369,7 @@
+       }
+     }
+     if (!marginalizableKeys.empty()) {
++      e1b::Scope profile_marginal(e1b::Stage::Marginalize);
+       if (capture_bad_update_stages_once_ && bad_update_stage_audit_) {
+         bad_update_stage_audit_->keys_to_marginalize = marginalizableKeys;
+       }
+@@ -410,6 +414,7 @@
+       }
+     }
+ 
++    e1b::Scope profile_cleanup(e1b::Stage::Cleanup);
+     eraseKeyTimestampMap(marginalizableKeys);
+     isam_.pruneTrackedCbsFactors();
+ 
+@@ -421,6 +426,18 @@
+ 
+     if (debug) {
+       isam_.printStats();
++    }
++    profile_cleanup.stop();
++    if (e1b::active()) {
++      e1b::Scope metadata(e1b::Stage::Metadata);
++      e1b::metric(e1b::Metric::ActiveKeys,isam_.getLinearizationPoint().size());
++      e1b::metric(e1b::Metric::FactorSlots,isam_.getFactorsUnsafe().size());
++      size_t nonnull=0; for(const auto& factor:isam_.getFactorsUnsafe()) nonnull+=bool(factor);
++      e1b::metric(e1b::Metric::NonNullFactors,nonnull);
++      e1b::metric(e1b::Metric::RetiringKeys,marginalizableKeys.size());
++      e1b::metric(e1b::Metric::RelinKeys,isamResult_.variablesRelinearized);
++      e1b::metric(e1b::Metric::ReeliminatedKeys,isamResult_.variablesReeliminated);
++      e1b::metric(e1b::Metric::Cliques,isamResult_.cliques);
+     }
+     return result;
+   }

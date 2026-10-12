@@ -1,0 +1,51 @@
+--- cbs/src/bpsam/bpsam.cpp
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/e1b_local_profile_20261012/overlay/bpsam.cpp
+@@ -1,3 +1,4 @@
++#include "RuntimeProfile.h"
+ #include "cbs/bpsam/bpsam.h"
+ 
+ #include <aria_common/benchmark.h>
+@@ -3629,6 +3630,8 @@
+ ISAM2Result BPSAM::update(const NonlinearFactorGraph& newFactors,
+                           const Values& newTheta,
+                           const UpdateParams& update_params) {
++  e1b::Scope profile_bpsam(e1b::Stage::Bpsam);
++  e1b::Scope profile_prepare(e1b::Stage::Prepare);
+   NonlinearFactorGraph newFactorsCopy = newFactors;
+ 
+   Values newThetaCopy(newTheta);
+@@ -3654,7 +3657,7 @@
+ 
+   std::unique_ptr<BPSAM> active_window_update_backup;
+   if (active_window_mode) {
+-    active_window_update_backup = std::make_unique<BPSAM>(*this);
++    active_window_update_backup = e1b::measure(e1b::Stage::Backup, [&] { return std::make_unique<BPSAM>(*this); });
+   }
+   const auto restore_active_window_backup = [&](const std::string& reason) {
+     if (!active_window_update_backup) {
+@@ -4290,12 +4293,13 @@
+   ISAM2UpdateParams current_update_params = isam2_update_params;
+   bool current_update_has_temporary_delta = use_temporary_delta_solve;
+ 
++  profile_prepare.stop();
+   // optimize and retry after removing dangling robot keys
+   // TODO(mike): check graph connectivity rather than this workaround
+   while (true) {
+     try {
+-      result = BaseSAM::update(
+-          current_new_factors, current_new_theta, current_update_params);
++      result = e1b::measure(e1b::Stage::BaseUpdate, [&] { return BaseSAM::update(
++          current_new_factors, current_new_theta, current_update_params); });
+       if (current_update_has_temporary_delta) {
+         updateDeltaWithTemporaryFactors(temporaryDeltaBeliefFactors,
+                                         temporaryDeltaBeliefDiagnostics,
+@@ -4560,7 +4564,8 @@
+     }
+   }
+   if (active_window_mode) {
+-    const Values post_update_values = this->calculateEstimate();
++    e1b::Scope profile_post(e1b::Stage::PostUpdate);
++    const Values post_update_values = e1b::measure(e1b::Stage::Estimate, [&] { return this->calculateEstimate(); });
+     for (const auto& [odom_key, staged] : staged_active_window_odom) {
+       const CbsOdomBelief& odom_belief = staged.belief;
+       if (registered_cbs_odometry_keys.find(odom_key) ==

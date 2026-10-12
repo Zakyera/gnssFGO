@@ -1,0 +1,63 @@
+--- gtsam/gtsam/nonlinear/ISAM2.cpp
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/e1b_local_profile_20261012/overlay/ISAM2.cpp
+@@ -1,3 +1,4 @@
++#include "RuntimeProfile.h"
+ /* ----------------------------------------------------------------------------
+ 
+  * GTSAM Copyright 2010, Georgia Tech Research Corporation,
+@@ -76,6 +77,7 @@
+     const ISAM2UpdateParams& updateParams, const FastList<Key>& affectedKeys,
+     const KeySet& relinKeys) {
+   gttic(relinearizeAffectedFactors);
++  e1b::Scope profile(e1b::Stage::IsamAffected);
+   FactorIndexSet candidates =
+       UpdateImpl::GetAffectedFactors(affectedKeys, variableIndex_);
+ 
+@@ -126,6 +128,7 @@
+ void ISAM2::recalculate(const ISAM2UpdateParams& updateParams,
+                         const KeySet& relinKeys, ISAM2Result* result) {
+   gttic(recalculate);
++  e1b::Scope profile(e1b::Stage::IsamRecalculate);
+   UpdateImpl::LogRecalculateKeys(*result);
+ 
+   if (!result->markedKeys.empty() || !result->observedKeys.empty()) {
+@@ -188,6 +191,7 @@
+ void ISAM2::recalculateBatch(const ISAM2UpdateParams& updateParams,
+                              KeySet* affectedKeysSet, ISAM2Result* result) {
+   gttic(recalculateBatch);
++  e1b::Scope profile(e1b::Stage::IsamBatch);
+ 
+   gttic(add_keys);
+ 
+@@ -278,6 +282,7 @@
+                                    KeySet* affectedKeysSet, Cliques* orphans,
+                                    ISAM2Result* result) {
+   gttic(recalculateIncremental);
++  e1b::Scope profile(e1b::Stage::IsamIncremental);
+   const bool debug = ISDEBUG("ISAM2 recalculate");
+ 
+   // 2. Add the new factors \Factors' into the resulting factor graph
+@@ -445,6 +450,7 @@
+                           const Values& newTheta,
+                           const ISAM2UpdateParams& updateParams) {
+   gttic(ISAM2_update);
++  e1b::Scope profile(e1b::Stage::IsamUpdate);
+   this->update_count_ += 1;
+   UpdateImpl::LogStartingUpdate(newFactors, *this);
+   ISAM2Result result(params_.enableDetailedResults);
+@@ -536,6 +542,7 @@
+     const FastList<Key>& leafKeysList,
+     FactorIndices* marginalFactorsIndices,
+     FactorIndices* deletedFactorsIndices) {
++  e1b::Scope profile(e1b::Stage::IsamMarginalize);
+   // Convert to ordered set
+   KeySet leafKeys(leafKeysList.begin(), leafKeysList.end());
+ 
+@@ -772,6 +779,7 @@
+ // Marked const but actually changes mutable delta
+ void ISAM2::updateDelta(bool forceFullSolve) const {
+   gttic(updateDelta);
++  e1b::Scope profile(e1b::Stage::IsamDelta);
+   if (std::holds_alternative<ISAM2GaussNewtonParams>(params_.optimizationParams)) {
+     // If using Gauss-Newton, update with wildfireThreshold
+     const ISAM2GaussNewtonParams& gaussNewtonParams =
