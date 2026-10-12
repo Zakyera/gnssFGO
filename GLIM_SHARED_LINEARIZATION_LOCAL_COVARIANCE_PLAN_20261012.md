@@ -13,7 +13,9 @@ S4c reduces matched query median37.285→11.196ms with byte-identical saved
 outputs. S4d's separately authorized first40s private provider integration now
 passes:389 exact provider-to-wire covariances,zero independent LOCAL updates,
 and complete-scan median206.942→167.421ms/p95437.376→312.422ms. Defaults remain
-unchanged; no long-run or covariance-accuracy certification.**
+unchanged; no long-run or covariance-accuracy certification. The user subsequently
+authorized S5: one frozen first160s candidate capacity validation at0.10x.
+It is in progress, not yet accepted.**
 See [S1 feasibility findings](GLIM_SHARED_LINEARIZATION_FEASIBILITY_S1_20261012.md)
 for the actual MAIN implementation and exact lifecycle hooks.
 
@@ -199,6 +201,7 @@ its result, and obtain the next decision. Do not start a campaign automatically.
 | S2 | Default-off Gaussian information backend and synthetic/dense-reference tests in a private build | Complete: 26/26 Release including actual MAIN cache fixture; 25/25 UBSan and ASan+UBSan; dense-oracle and twelve-retirement gates pass. No live hooks or authoritative covariance change. See experiments/shared_linearization_s2_20261012/REPORT.md |
 | S3 | Shadow validation on retained exact inputs where sufficient; at most one authorized 40 s capture if MAIN snapshots are missing | Passed: one ETH1 first40s capture, 783 updates, 313 retirements, 20 independent covariance checks (joint relative error max6.01e-15); 44/44 Release and ASan/UBSan,18 existing tests, exact receiver repeat. Old LOCAL authoritative. See experiments/shared_linearization_s3_capture_20261012/REPORT.md |
 | S4 | Candidate-only LOCAL covariance timing with identical retained inputs, then one separately authorized matched 40 s live check | S4a/b/c and bounded S4d passed. Independent LOCAL disabled only in private candidate;389 exact transmitted covariances,47 Release/47 sanitizer+18 regressions,source lifecycle and receiver repeat pass. Overall first40s scan timing improved; no default promotion or longer-run certification |
+| S5 | One separately authorized first160s CBS-ON capacity validation using the exact S4d build | In progress. No estimator rebuild/change; original correctness and800ms p95 headroom gates retained. Protocol: experiments/shared_linearization_s5_live160_20261012/PROTOCOL.md |
 
 S4a's same-input timing identified95.94% of query cost in dense rank inspection,
 including unused eigenvectors. S4b now requests EigenvaluesOnly in a private

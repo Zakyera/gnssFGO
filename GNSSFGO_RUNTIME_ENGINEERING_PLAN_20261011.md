@@ -149,6 +149,7 @@ shared IMU, past means or nonlinear history are statistically independent.
 | S4b | Eigenvalues-only rank inspection in private Gaussian backend | Same rank decisions, unchanged equations/covariances, focused boundary/sanitizer tests, matched saved-input timing | Complete:31/31 Release and ASan/UBSan;130 rank cases agree; saved outputs byte-identical. Query156.711→38.045ms median,4.12× faster; still no provider promotion. See experiments/shared_linearization_s4_eigenvalues_20261012/REPORT.md |
 | S4c | Conservative fast rank certificate with original eigensolver fallback | Unchanged covariance and rank decisions, bounded error certificate, adversarial tests and matched timing on saved equations | Complete:40/40 Release and ASan/UBSan; saved outputs byte-identical; query37.285→11.196ms median vs S4b,3.33×. All20 checkpoints certify. Private only; no live run. See experiments/shared_linearization_s4_certificate_20261012/REPORT.md |
 | S4d | Private ordinary-publication provider; disable independent LOCAL in one matched first40s capture | Same extraction/helper and lifecycle tests; exact provider-to-wire covariance; frozen source/receiver gates; complete-scan latency | Passed:47 Release/47 ASan+UBSan,18 regressions;389 exact wire covariances,zero LOCAL updates/provider GPU calls. Complete-scan median206.942→167.421ms,p95437.376→312.422ms; exact receiver repeat. Private/default-off; no long-run certification |
+| S5 | Frozen private provider first160s capacity validation | Same S4d binaries/settings, complete source coverage, native history/wire checks, strict receiver publication and exact journal repeat; early/middle/late timing | In progress, explicitly authorized 2026-10-12; one CBS-ON capture at0.10x, no model edit or automatic retry |
 
 E1 first reuses existing gtsam_points batching around LOCAL graph preparation;
 it retains the auxiliary smoother and its conditioning. GPU-aware sidecar update,
@@ -191,6 +192,19 @@ its own explicit algorithmic decision. Fixed lag may bound resources but brings
 historical revision and marginal-prior semantics; reconsider only separately.
 
 ## Execution ledger
+
+### S5 — frozen provider first160s validation
+
+- Authorization: user "Proceed" after the proposed single 160-second ETH1
+  CBS-ON validation. Parent 8d862639dc66de6f434d37cf6526bcedd3ccceaf;
+  branch engineering/shared-native-live160-20261012.
+- Status: preparation in progress. Reuse exact S4d release_2 source libraries
+  and E2 WNOA receiver; only duration and fresh run identities change. No build,
+  covariance-policy change, tuning, source retry, default promotion or push.
+- Protocol: experiments/shared_linearization_s5_live160_20261012/PROTOCOL.md.
+- Preserve strict gates. Report every 10-second timing bin, remaining MAIN
+  work, native history/retirement, source delays, receiver backlog and coverage.
+  Accuracy is not the acceptance criterion; no new OFF run or method follows.
 
 ### S4d — private ordinary-publication provider integration
 
