@@ -19,8 +19,11 @@ performance hypotheses into one acceptance experiment.
 **Current status (2026-10-12):** E1b.3c completed and validated the first40s
 profile after the private startup and admission fixes. LOCAL synchronous GPU
 linearization accounts for 96.405% of its measured exclusive wall time;
-143,950/143,950 calls took fallback. E1b.4 now has a concrete batching proposal,
-with implementation not started. The earlier E1/E2 live160 remains functionally
+143,950/143,950 calls took fallback. E1b.4a now has an isolated default-off
+implementation with its synthetic correctness gate passed (32 Release, 30
+UBSan, 10 CPU ASan/UBSan checks and no-data startup). The user requested a report
+before timing: the benchmark has NOT run and no speed/live acceptance is claimed.
+The earlier E1/E2 live160 remains functionally
 validated but misses runtime headroom; E4 was rejected and remains disabled.
 MAIN and receiver full-history costs also remain. Working source/receiver
 mathematics and protected libraries remain frozen. The original checkpoint
@@ -102,7 +105,7 @@ shared IMU, past means or nonlinear history are statistically independent.
 | E1b.1 | Diagnose remaining GLIM LOCAL smoother update cost | Trace actual call chain and GPU evaluation semantics; inspect retained early/late timing; distinguish measured cost from missing instrumentation; specify one next patch | Completed 2026-10-12; report/evidence saved, no estimator change. LOCAL subphase costs not yet separated |
 | E1b.2 | Instrument LOCAL update subphases | Opt-in timing only; no extra factor/solver evaluations; scope/cache/exception tests; disjoint accounting; measured overhead before bounded profiling | Private implementation/tests passed 2026-10-12: 29 Release +29 UBSan +8 profiler ASan/UBSan; original-library fixture exact; no source capture or solver replacement |
 | E1b.3 | Bounded LOCAL subphase profile | Frozen source settings; explicit profiler overhead/coverage; separate nested/worker/outer wall costs; select one measured dominant subphase | E1b.3c validated first40s: 96.405% of LOCAL exclusive wall in synchronous GPU linearization; first40s limits retained |
-| E1b.4 | Batch LOCAL update linearizations at exact solver Values | Keep solver decisions and ordered Gaussian blocks; reuse E1 synchronous-compatible kernels; same-input repeated-solver and covariance checks before bounded live timing | Proposal prepared; E1b.4a first covers graph-linearize boundary for new/full-window requests; no implementation/run |
+| E1b.4 | Batch LOCAL update linearizations at exact solver Values | Keep solver decisions and ordered Gaussian blocks; reuse E1 synchronous-compatible kernels; same-input repeated-solver and covariance checks before bounded live timing | E1b.4a correctness gate passed; timing NOT RUN at user's report-before-timing boundary; no live run or promotion |
 | E3a | Remaining WNOA motion-factor derivatives | Independent numerical derivative checks; manifold/frame tests; frozen-journal state/cost/covariance checks with predeclared tight tolerances | Not started |
 | E3b | Remaining interpolated pose derivative blocks | Separate patch and independent checks as for E3a; do not redo already validated V/W substitution | Not started |
 | E4 | Selective incremental publication refinement | Same factors/events and fresh current-Values stationarity certificate; reference full refinement fallback; short/medium/late replay comparisons | Tested 2026-10-12; NOT ACCEPTED: strict state bounds failed,86.8% fallback,matched refinement~40% slower; stopped at130.68s |
@@ -762,6 +765,40 @@ documentation/archival/version control only; no estimator implementation or run.
 - Next implementation step is E1b.4a isolated patch/fixtures. Real source
   equivalence needs complete GPU fixtures or a bounded capture; saved receiver
   journals alone are insufficient. No automatic full160 run or push.
+
+### E1b.4a — scoped LOCAL graph batching implementation
+
+- Authorization: user "ok proceed and implement the plan and report once you do
+  one by one", 2026-10-12. First implementation/fixture step only.
+- Status: CORRECTNESS GATE PASSED; TIMING NOT RUN. Parent `db40f27`; branch
+  `engineering/e1b4a-local-update-batching-20261012`.
+- Protocol: `experiments/e1b4a_local_update_batching_20261012/PROTOCOL.txt`.
+- Preserve the E1b.4 design and numerical/performance gates. Private sources and
+  build products only; scoped graph-linearize dispatch for LOCAL new/full-window
+  requests, default disabled. Existing direct incremental/marginalization calls
+  and source/receiver settings remain unchanged. No live capture or push.
+- Complete focused implementation, deterministic/exception/equivalence tests,
+  supported sanitizer checks and matched fixture timing, then report before
+  extending to another solver path or starting a real-source capture.
+- User subsequently requested "report me before the timing test". Stop after
+  correctness and reporting; do not interpret ordinary test elapsed times as a
+  performance result. Performance gate remains frozen and untested.
+- Implementation/test commit `440fba99e9ce4d59dec03758b9d06f55927b2470`.
+  Report: `experiments/e1b4a_local_update_batching_20261012/REPORT.md`.
+  Private root `runs/e1b4a_local_update_batching_20261012`; production sources,
+  default selector and protected runtimes are untouched. New TLS dispatch is
+  scoped only to LOCAL graph-linearize requests; direct individual loops remain.
+- 32 focused Release tests, 30 host UBSan tests and ten supported CPU ASan/UBSan
+  tests passed. Historical 4,716-number CPU fingerprint exact. Independent
+  repeated fixed-lag fixtures through removal/marginalization have zero p/v/bias
+  and covariance difference; max orientation difference 1.39e-17 rad. Same keys,
+  slots and tested solver decisions. Synthetic heavy-workload correctness only,
+  not its timing. No full-workspace or CUDA-device sanitizer certification.
+- Selector-enabled no-data GLIM startup/expected subscriptions/clean shutdown
+  passed; six real mapped library paths verified. All 670 baseline hashes and
+  additional build inputs unchanged; six pinned source repos clean. No source
+  playback, receiver run, covariance/model changes, push or benchmark. Candidate
+  not promoted pending timing and later real-source gates.
 
 ### Template for subsequent tasks
 
