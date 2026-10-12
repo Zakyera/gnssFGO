@@ -16,15 +16,15 @@ performance hypotheses into one acceptance experiment.
 
 ## Baseline and evidence
 
-**Current status (2026-10-12):** the later E1/E2 live160 capture completed and
-passed the retained-input validation; processing headroom still failed. E4 was
-rejected and remains disabled. E1b.1 completed the remaining LOCAL update audit:
-main/LOCAL consume 55.37%/33.44% of late matched scan wall time; LOCAL states are
-bounded. E1b.2 private timing instrumentation passed focused Release/UBSan,
-profiler ASan/UBSan and exact original-library fixture checks. It is NOT an
-optimization or live acceptance; a bounded real-source profile is still pending.
-Working receiver/source libraries remain frozen. The original checkpoint evidence below is
-historical and is not the latest run's status.
+**Current status (2026-10-12):** E1b.3c completed and validated the first40s
+profile after the private startup and admission fixes. LOCAL synchronous GPU
+linearization accounts for 96.405% of its measured exclusive wall time;
+143,950/143,950 calls took fallback. E1b.4 now has a concrete batching proposal,
+with implementation not started. The earlier E1/E2 live160 remains functionally
+validated but misses runtime headroom; E4 was rejected and remains disabled.
+MAIN and receiver full-history costs also remain. Working source/receiver
+mathematics and protected libraries remain frozen. The original checkpoint
+evidence below is historical and is not the latest run's status.
 
 The detailed read-only audit is archived at
 `experiments/checkpoints/20261011/results/gnssfgo_runtime_engineering_audit_20261011/REPORT.txt`.
@@ -101,7 +101,8 @@ shared IMU, past means or nonlinear history are statistically independent.
 | E2 | Receiver evaluation reuse at identical Values | Correct invalidation on any referenced Values/factor/revision change; identical outputs and decisions for arithmetic-preserving reuse; timing of normal and recovery paths | Re-audit: 50/50 Release and sanitizer, matched replay exact; isolated redundant whitening fixed. Same-executable/core mean ~5.2% shorter on frozen60; full/live capacity uncertified; default-off |
 | E1b.1 | Diagnose remaining GLIM LOCAL smoother update cost | Trace actual call chain and GPU evaluation semantics; inspect retained early/late timing; distinguish measured cost from missing instrumentation; specify one next patch | Completed 2026-10-12; report/evidence saved, no estimator change. LOCAL subphase costs not yet separated |
 | E1b.2 | Instrument LOCAL update subphases | Opt-in timing only; no extra factor/solver evaluations; scope/cache/exception tests; disjoint accounting; measured overhead before bounded profiling | Private implementation/tests passed 2026-10-12: 29 Release +29 UBSan +8 profiler ASan/UBSan; original-library fixture exact; no source capture or solver replacement |
-| E1b.3 | Bounded LOCAL subphase profile | Frozen source settings; explicit profiler overhead/coverage; separate nested/worker/outer wall costs; select one measured dominant subphase | Proposed only; separately authorized short capture, no automatic full160 run |
+| E1b.3 | Bounded LOCAL subphase profile | Frozen source settings; explicit profiler overhead/coverage; separate nested/worker/outer wall costs; select one measured dominant subphase | E1b.3c validated first40s: 96.405% of LOCAL exclusive wall in synchronous GPU linearization; first40s limits retained |
+| E1b.4 | Batch LOCAL update linearizations at exact solver Values | Keep solver decisions and ordered Gaussian blocks; reuse E1 synchronous-compatible kernels; same-input repeated-solver and covariance checks before bounded live timing | Proposal prepared; E1b.4a first covers graph-linearize boundary for new/full-window requests; no implementation/run |
 | E3a | Remaining WNOA motion-factor derivatives | Independent numerical derivative checks; manifold/frame tests; frozen-journal state/cost/covariance checks with predeclared tight tolerances | Not started |
 | E3b | Remaining interpolated pose derivative blocks | Separate patch and independent checks as for E3a; do not redo already validated V/W substitution | Not started |
 | E4 | Selective incremental publication refinement | Same factors/events and fresh current-Values stationarity certificate; reference full refinement fallback; short/medium/late replay comparisons | Tested 2026-10-12; NOT ACCEPTED: strict state bounds failed,86.8% fallback,matched refinement~40% slower; stopped at130.68s |
@@ -736,6 +737,31 @@ documentation/archival/version control only; no estimator implementation or run.
 - Full report `experiments/e1b_profile40_mapguard_20261012/REPORT.md`; parser
   and JSON analysis alongside it. Post-run670 protected hashes match, six
   source repos clean, owned processes stopped. No speed patch or push.
+
+### E1b.4 — concrete LOCAL update batching proposal
+
+- Authorization: user asks to prepare a suggested solution preserving the
+  mathematics and algorithm reasoning, 2026-10-12. Preparation only.
+- Status: PROPOSAL READY; no implementation, build or experiment.
+- Parent `11a99e8ac6529bef907bf6265ef4b737dc835958`; documentation branch
+  `engineering/e1b4-local-batch-proposal-20261012`.
+- Proposal: `experiments/e1b_local_update_batch_proposal_20261012/PROPOSAL.md`.
+- First patch would scope an optional graph-linearization callback to LOCAL's
+  update and reuse E1's synchronous-compatible VGICP batching at the exact
+  Values supplied by iSAM2. Cover new/full-window graph calls first; retain
+  direct incremental/marginalization calls until residual timing justifies an
+  extension. Preserve default path, graph ordering, cache/inlier semantics,
+  fixed-lag decisions and all source/receiver mathematics.
+- Concrete code boundaries, recursion/fallback/exception handling, shared-factor
+  risks, build/ABI discipline and numerical/performance gates are documented.
+  Existing CUDA batching still synchronizes; no single-kernel claim or promised
+  whole-system speedup. No new cross-update memoization or factor dropping.
+- Validation for this preparation: code-path inspection against pinned source
+  and E1/E1b evidence; documentation diff checks only. Prior tests are not
+  represented as new tests of this proposed integration.
+- Next implementation step is E1b.4a isolated patch/fixtures. Real source
+  equivalence needs complete GPU fixtures or a bounded capture; saved receiver
+  journals alone are insufficient. No automatic full160 run or push.
 
 ### Template for subsequent tasks
 
