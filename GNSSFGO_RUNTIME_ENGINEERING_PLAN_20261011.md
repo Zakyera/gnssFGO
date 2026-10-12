@@ -197,6 +197,9 @@ historical revision and marginal-prior semantics; reconsider only separately.
   `comparison.json`. Separate live captures are not identical-input histories;
   fixed-rate playback wall duration did not improve and no accuracy claim made.
   Stop here: no longer run,MAIN extension or receiver change in this task.
+- Timing harness/report/evidence commit:
+  `575bcf3308723039ed98acbc15787df3e1bf3942`; subsequent documentation checkpoint
+  records this identity. No push.
 
 ### E1b.4a real-input diagnostic — sampled gate passed
 

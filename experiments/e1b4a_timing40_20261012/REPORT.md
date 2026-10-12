@@ -18,6 +18,9 @@ diagnostics remained enabled to match the retained E1b.3c baseline.
 - Task branch: `engineering/e1b4a-local-update-batching-20261012`.
 - Parent: `64be474f7a84d272fbbcddef0b577f81877dbff4`; this task adds only
   protocol/harness/analysis/evidence, not estimator implementation changes.
+- Timing harness/report/evidence commit:
+  `575bcf3308723039ed98acbc15787df3e1bf3942`; the following documentation
+  checkpoint records that identity. No push.
 - Candidate: sibling `e1b4a_local_update_batching_20261012/release_2`.
   GLIM wrapper SHA256 `83592aba553adbc2879f27b5f2cf3551826ab497a58201ba0101543934f49dec`;
   GTSAM SHA256 `369f45866a82c40170ad7cfa83b4bc6b7f8a6f4ae22db34115daee926529bb37`.
