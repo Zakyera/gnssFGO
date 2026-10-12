@@ -1,0 +1,123 @@
+Running main() from /build/googletest-j5yxiC/googletest-1.10.0/googletest/src/gtest_main.cc
+[==========] Running 31 tests from 2 test suites.
+[----------] Global test environment set-up.
+[----------] 6 tests from EigenvaluesOnlyRank
+[ RUN      ] EigenvaluesOnlyRank.DiagonalStrictThresholdAndAdjacentRepresentableValues
+[       OK ] EigenvaluesOnlyRank.DiagonalStrictThresholdAndAdjacentRepresentableValues (33 ms)
+[ RUN      ] EigenvaluesOnlyRank.InvalidInputsPreserveFailureReason
+[       OK ] EigenvaluesOnlyRank.InvalidInputsPreserveFailureReason (0 ms)
+[ RUN      ] EigenvaluesOnlyRank.SingularAndIndefinitePreserveRejection
+[       OK ] EigenvaluesOnlyRank.SingularAndIndefinitePreserveRejection (29 ms)
+[ RUN      ] EigenvaluesOnlyRank.RotatedThresholdNeighborhoodPreservesDecision
+[       OK ] EigenvaluesOnlyRank.RotatedThresholdNeighborhoodPreservesDecision (400 ms)
+[ RUN      ] EigenvaluesOnlyRank.RepresentativeLargeDenseSystems
+[       OK ] EigenvaluesOnlyRank.RepresentativeLargeDenseSystems (10374 ms)
+[ RUN      ] EigenvaluesOnlyRank.SymmetryBoundaryUnchanged
+[       OK ] EigenvaluesOnlyRank.SymmetryBoundaryUnchanged (0 ms)
+[----------] 6 tests from EigenvaluesOnlyRank (10836 ms total)
+
+[----------] 25 tests from NativeGaussian
+[ RUN      ] NativeGaussian.DisabledByDefault
+[       OK ] NativeGaussian.DisabledByDefault (0 ms)
+[ RUN      ] NativeGaussian.CopyThroughAndCovariance
+NUMERIC augmented_native_including_eta_constant abs=3.2065569280901918e-15 relative=6.9936479096480062e-17
+CONDITION 58.679649467836434
+NUMERIC endpoint_joint_covariance abs=3.2521368433051523e-15 relative=1.3630747128582614e-15
+[       OK ] NativeGaussian.CopyThroughAndCovariance (5 ms)
+[ RUN      ] NativeGaussian.NativeOnlyHistoryExcludesExternalEvenAfterRetirement
+NUMERIC augmented_native_including_eta_constant abs=4.2620173570557315e-15 relative=1.3720230796314832e-16
+CONDITION 48.189999436100514
+[       OK ] NativeGaussian.NativeOnlyHistoryExcludesExternalEvenAfterRetirement (2 ms)
+[ RUN      ] NativeGaussian.MultipleRetirementsVersionsAndNonincidentNoDoubleCount
+NUMERIC augmented_native_including_eta_constant abs=4.2620173570557315e-15 relative=1.3720230796314832e-16
+CONDITION 48.189999436100514
+NUMERIC augmented_native_including_eta_constant abs=5.5922478109174797e-15 relative=2.5899014238920781e-16
+CONDITION 54.648687137990827
+NUMERIC augmented_native_including_eta_constant abs=3.0735752882206605e-15 relative=2.8295330680673073e-16
+CONDITION 30.060826815595405
+NUMERIC retired_joint_covariance abs=4.4671529686582938e-15 relative=8.3052001376689447e-16
+[       OK ] NativeGaussian.MultipleRetirementsVersionsAndNonincidentNoDoubleCount (8 ms)
+[ RUN      ] NativeGaussian.RemovalSlotReuseAndNoResurrection
+NUMERIC augmented_native_including_eta_constant abs=2.357584937199871e-15 relative=4.9387595463098115e-17
+CONDITION 69.538158292242827
+[       OK ] NativeGaussian.RemovalSlotReuseAndNoResurrection (2 ms)
+[ RUN      ] NativeGaussian.StaleVersionsAndUndeclaredMutationRejected
+[       OK ] NativeGaussian.StaleVersionsAndUndeclaredMutationRejected (1 ms)
+[ RUN      ] NativeGaussian.MissingDuplicateAndInvalidDimensionsRejected
+[       OK ] NativeGaussian.MissingDuplicateAndInvalidDimensionsRejected (0 ms)
+[ RUN      ] NativeGaussian.NonfiniteRejected
+[       OK ] NativeGaussian.NonfiniteRejected (0 ms)
+[ RUN      ] NativeGaussian.PriorChartAndFixedKeyGuards
+[       OK ] NativeGaussian.PriorChartAndFixedKeyGuards (1 ms)
+[ RUN      ] NativeGaussian.NewPriorMustBeFixed
+[       OK ] NativeGaussian.NewPriorMustBeFixed (0 ms)
+[ RUN      ] NativeGaussian.RefreshAllowedOnlyOutsidePrior
+[       OK ] NativeGaussian.RefreshAllowedOnlyOutsidePrior (1 ms)
+[ RUN      ] NativeGaussian.TransactionRollbackAndReset
+NUMERIC augmented_native_including_eta_constant abs=3.2065569280901918e-15 relative=6.9936479096480062e-17
+CONDITION 58.679649467836434
+[       OK ] NativeGaussian.TransactionRollbackAndReset (2 ms)
+[ RUN      ] NativeGaussian.UnknownRemovalAndSkippedEpoch
+[       OK ] NativeGaussian.UnknownRemovalAndSkippedEpoch (1 ms)
+[ RUN      ] NativeGaussian.UnderconstrainedCovarianceFailsWithoutAnchor
+[       OK ] NativeGaussian.UnderconstrainedCovarianceFailsWithoutAnchor (0 ms)
+[ RUN      ] NativeGaussian.ConstantTermSurvivesCompleteComponentElimination
+NUMERIC augmented_native_including_eta_constant abs=2.634953026054921e-16 relative=1.612050390981769e-17
+CONDITION 2.3874329126219855
+[       OK ] NativeGaussian.ConstantTermSurvivesCompleteComponentElimination (3 ms)
+[ RUN      ] NativeGaussian.NonzeroDeltaTransportAndRelativeFiniteDifference
+NUMERIC current_chart_covariance abs=8.1789174807806476e-10 relative=3.1631751563246431e-10
+NUMERIC relative_schur_vs_numeric_propagation abs=3.2144826786976198e-10 relative=1.4929245216783903e-10
+NUMERIC reversed_endpoint_order abs=0 relative=0
+[       OK ] NativeGaussian.NonzeroDeltaTransportAndRelativeFiniteDifference (2 ms)
+[ RUN      ] NativeGaussian.RepeatedRunIsExact
+[       OK ] NativeGaussian.RepeatedRunIsExact (2 ms)
+[ RUN      ] NativeGaussian.MixedHessianAndWeightedJacobianNotWhitenedTwice
+NUMERIC augmented_native_including_eta_constant abs=4.9260660501984055e-15 relative=1.4955808256993571e-16
+CONDITION 115.25845122430904
+[       OK ] NativeGaussian.MixedHessianAndWeightedJacobianNotWhitenedTwice (2 ms)
+[ RUN      ] NativeGaussian.DeepCopyProtectsAgainstInPlaceCacheMutation
+[       OK ] NativeGaussian.DeepCopyProtectsAgainstInPlaceCacheMutation (0 ms)
+[ RUN      ] NativeGaussian.FailureContainedAndOutputPreserved
+[       OK ] NativeGaussian.FailureContainedAndOutputPreserved (2 ms)
+[ RUN      ] NativeGaussian.ConstrainedFactorsRejected
+[       OK ] NativeGaussian.ConstrainedFactorsRejected (0 ms)
+[ RUN      ] NativeGaussian.AllKeysRetiredQueryFailsSafely
+NUMERIC all_eliminated_constant abs=0 relative=0
+[       OK ] NativeGaussian.AllKeysRetiredQueryFailsSafely (1 ms)
+[ RUN      ] NativeGaussian.GaussianEliminationFailureRollsBack
+[       OK ] NativeGaussian.GaussianEliminationFailureRollsBack (1 ms)
+[ RUN      ] NativeGaussian.ChangedNativeEquationsCanChangeCovariance
+[       OK ] NativeGaussian.ChangedNativeEquationsCanChangeCovariance (2 ms)
+[ RUN      ] NativeGaussian.TwelveRetirementsKeepBoundedHistory
+NUMERIC augmented_native_including_eta_constant abs=4.2620173570557315e-15 relative=1.3720230796314832e-16
+CONDITION 48.189999436100514
+NUMERIC augmented_native_including_eta_constant abs=7.6869700122569764e-15 relative=3.7762016057932464e-16
+CONDITION 51.000910328179508
+NUMERIC augmented_native_including_eta_constant abs=4.8195139752660845e-15 relative=2.9762481830179883e-16
+CONDITION 51.818258756690859
+NUMERIC augmented_native_including_eta_constant abs=5.7201439998761606e-15 relative=3.6512486177100379e-16
+CONDITION 62.510157765793565
+NUMERIC augmented_native_including_eta_constant abs=4.2326813132021905e-15 relative=2.8026810852840676e-16
+CONDITION 72.806528584518077
+NUMERIC augmented_native_including_eta_constant abs=5.5545232828585459e-15 relative=3.5992657996519816e-16
+CONDITION 94.556288169036137
+NUMERIC augmented_native_including_eta_constant abs=5.104878771996781e-15 relative=3.2815466228914593e-16
+CONDITION 108.81878658657214
+NUMERIC augmented_native_including_eta_constant abs=5.2811252372864257e-15 relative=3.2486615298981921e-16
+CONDITION 115.54085370435092
+NUMERIC augmented_native_including_eta_constant abs=5.0189808649013206e-15 relative=3.0729859946910089e-16
+CONDITION 134.6714794864651
+NUMERIC augmented_native_including_eta_constant abs=6.6790955362707981e-15 relative=4.1277819005756461e-16
+CONDITION 149.49450385230901
+NUMERIC augmented_native_including_eta_constant abs=1.3611979321866729e-14 relative=8.4655953505835685e-16
+CONDITION 154.9269376408198
+NUMERIC augmented_native_including_eta_constant abs=7.9948029099082846e-15 relative=4.8475403086485109e-16
+CONDITION 153.94597909732371
+BOUND retained_values=6 active_factors=1 absorbed=26 admitted=27
+[       OK ] NativeGaussian.TwelveRetirementsKeepBoundedHistory (141 ms)
+[----------] 25 tests from NativeGaussian (179 ms total)
+
+[----------] Global test environment tear-down
+[==========] 31 tests from 2 test suites ran. (11015 ms total)
+[  PASSED  ] 31 tests.

@@ -7,8 +7,9 @@ nonlinear LOCAL smoother. Preserve the validated E1b.4a implementation as the
 reference and rollback path. **S0/S1 preservation and feasibility, B0's unchanged
 timing reference and S2's isolated Gaussian backend are complete. S3's private
 lifecycle, synthetic and real-data first40s shadow gates now pass. The
-authoritative LOCAL provider remains unchanged. S4a saved-equation cost attribution
-is complete; no candidate publication or S4 live run has started.**
+authoritative LOCAL provider remains unchanged. S4a cost attribution and S4b's
+isolated eigenvalues-only timing gate are complete; no candidate publication or
+S4 live run has started.**
 See [S1 feasibility findings](GLIM_SHARED_LINEARIZATION_FEASIBILITY_S1_20261012.md)
 for the actual MAIN implementation and exact lifecycle hooks.
 
@@ -195,12 +196,18 @@ its result, and obtain the next decision. Do not start a campaign automatically.
 | S3 | Shadow validation on retained exact inputs where sufficient; at most one authorized 40 s capture if MAIN snapshots are missing | Passed: one ETH1 first40s capture, 783 updates, 313 retirements, 20 independent covariance checks (joint relative error max6.01e-15); 44/44 Release and ASan/UBSan,18 existing tests, exact receiver repeat. Old LOCAL authoritative. See experiments/shared_linearization_s3_capture_20261012/REPORT.md |
 | S4 | Candidate-only LOCAL covariance timing with identical retained inputs, then one separately authorized matched 40 s live check | Disable the second nonlinear LOCAL solver only in the candidate; validate factor conservation, publication, covariance and end-to-end runtime; report expected covariance/trajectory differences from the old definition |
 
-S4a's same-input timing is complete. The unchanged query costs160.274ms median;
-95.94% of query time is dense rank inspection, which computes unused eigenvectors.
-History stage/commit totals0.535s for783 updates. No provider promotion or live
-candidate run is justified yet. The next proposed isolated patch is
-EigenvaluesOnly with the same rank rejection policy, tested on the saved inputs.
-See [cost attribution](experiments/shared_linearization_s4_timing_20261012/REPORT.md).
+S4a's same-input timing identified95.94% of query cost in dense rank inspection,
+including unused eigenvectors. S4b now requests EigenvaluesOnly in a private
+one-line patch, keeping the exact rank threshold and every other numerical step.
+Matched query median156.711→38.045ms (4.12×); all saved query outputs byte-identical;
+31/31 Release and focused ASan/UBSan tests,130 rank fixtures pass. History stage /
+commit totals0.515s per783 updates. The dense rank check still takes83.9% of the
+candidate query. The observed389-request cadence projects13.178s of query cost;
+this is not measured all-request/live throughput and does not yet justify a
+speed promotion over B0's preserved independent LOCAL. No provider/default or
+publication change. Stop for the next decision rather than deleting a safety
+check or changing covariance. See [S4a attribution](experiments/shared_linearization_s4_timing_20261012/REPORT.md)
+and [S4b result](experiments/shared_linearization_s4_eigenvalues_20261012/REPORT.md).
 
 S3 is complete on the bounded real-data window. Its saved native equations,
 charts and lifecycle journal now support the next same-input timing gate without

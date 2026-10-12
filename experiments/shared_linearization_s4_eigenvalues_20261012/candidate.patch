@@ -1,0 +1,11 @@
+--- S2/NativeGaussianHistory.cpp
++++ S4b/candidate.cpp
+@@ -23,7 +23,7 @@
+ void positiveDefinite(const gtsam::Matrix& h) {
+   finiteSymmetric(h);
+   require(h.rows() > 0, "empty native information");
+-  Eigen::SelfAdjointEigenSolver<gtsam::Matrix> eigen(h);
++  Eigen::SelfAdjointEigenSolver<gtsam::Matrix> eigen(h, Eigen::EigenvaluesOnly);
+   require(eigen.info() == Eigen::Success, "eigenvalue failure");
+   // Explicit rejection only: never regularize an unobservable covariance query.
+   require(eigen.eigenvalues().minCoeff() >

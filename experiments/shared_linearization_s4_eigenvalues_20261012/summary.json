@@ -1,0 +1,453 @@
+{
+  "passed": true,
+  "tests": {
+    "release": {
+      "tests": 31,
+      "failures": 0,
+      "errors": 0,
+      "disabled": 0
+    },
+    "asan": {
+      "tests": 31,
+      "failures": 0,
+      "errors": 0,
+      "disabled": 0
+    }
+  },
+  "variants": {
+    "original": {
+      "stage": {
+        "n": 2349,
+        "mean": 0.6356045044699872,
+        "median": 0.6779470000000001,
+        "p95": 0.9125631999999999,
+        "max": 1.657991,
+        "total": 1493.034981
+      },
+      "commit": {
+        "n": 2349,
+        "mean": 0.033876851426138783,
+        "median": 0.033652999999999995,
+        "p95": 0.05759199999999999,
+        "max": 0.491,
+        "total": 79.576724
+      },
+      "query": {
+        "n": 60,
+        "mean": 138.64257275,
+        "median": 156.711064,
+        "p95": 164.4586629,
+        "max": 165.753104,
+        "total": 8318.554365
+      },
+      "per_pass_seconds": {
+        "1": {
+          "stage": 0.488454731,
+          "commit": 0.025737133,
+          "query": 2.733445128
+        },
+        "2": {
+          "stage": 0.498414859,
+          "commit": 0.026647269,
+          "query": 2.7694077520000002
+        },
+        "3": {
+          "stage": 0.506165391,
+          "commit": 0.027192322,
+          "query": 2.815701485
+        }
+      },
+      "per_pass_wall_seconds": {
+        "1": 3.524044871,
+        "2": 3.58766877,
+        "3": 3.644148919
+      },
+      "epoch_bins": {
+        "early": {
+          "n": 15,
+          "mean": 85.60276893333334,
+          "median": 91.273151,
+          "p95": 161.39592190000002,
+          "max": 161.633532,
+          "total": 1284.041534
+        },
+        "middle": {
+          "n": 30,
+          "mean": 155.71122166666666,
+          "median": 157.32408600000002,
+          "p95": 163.7564031,
+          "max": 164.458293,
+          "total": 4671.33665
+        },
+        "late": {
+          "n": 15,
+          "mean": 157.54507873333333,
+          "median": 158.683977,
+          "p95": 165.535999,
+          "max": 165.753104,
+          "total": 2363.1761810000003
+        }
+      },
+      "max_errors": {
+        "max_information_relative_error": 1.6942822922309972e-17,
+        "max_covariance_relative_error": 3.729200613673675e-15
+      },
+      "conservation": {
+        "epoch": 783,
+        "queries": 20,
+        "retirements": 313,
+        "admitted": 5321,
+        "absorbed": 4513,
+        "removed": 0,
+        "active": 808
+      }
+    },
+    "candidate": {
+      "stage": {
+        "n": 2349,
+        "mean": 0.624337312899106,
+        "median": 0.666264,
+        "p95": 0.8775189999999997,
+        "max": 2.273438,
+        "total": 1466.568348
+      },
+      "commit": {
+        "n": 2349,
+        "mean": 0.033331588761174966,
+        "median": 0.03326,
+        "p95": 0.057639999999999976,
+        "max": 0.410835,
+        "total": 78.295902
+      },
+      "query": {
+        "n": 60,
+        "mean": 33.87708505,
+        "median": 38.0451975,
+        "p95": 39.833582500000006,
+        "max": 41.540328,
+        "total": 2032.625103
+      },
+      "per_pass_seconds": {
+        "1": {
+          "stage": 0.491371194,
+          "commit": 0.026226797,
+          "query": 0.683347467
+        },
+        "2": {
+          "stage": 0.494998068,
+          "commit": 0.026141701,
+          "query": 0.677296859
+        },
+        "3": {
+          "stage": 0.480199086,
+          "commit": 0.025927404,
+          "query": 0.671980777
+        }
+      },
+      "per_pass_wall_seconds": {
+        "1": 1.479648742,
+        "2": 1.47999679,
+        "3": 1.453288785
+      },
+      "epoch_bins": {
+        "early": {
+          "n": 15,
+          "mean": 21.6426922,
+          "median": 22.966882000000002,
+          "p95": 40.651654199999996,
+          "max": 41.540328,
+          "total": 324.640383
+        },
+        "middle": {
+          "n": 30,
+          "mean": 38.087177833333335,
+          "median": 38.4648605,
+          "p95": 39.70339245,
+          "max": 39.811651000000005,
+          "total": 1142.615335
+        },
+        "late": {
+          "n": 15,
+          "mean": 37.69129233333334,
+          "median": 37.89289,
+          "p95": 39.1598654,
+          "max": 39.349298,
+          "total": 565.369385
+        }
+      },
+      "max_errors": {
+        "max_information_relative_error": 1.6942822922309972e-17,
+        "max_covariance_relative_error": 3.729200613673675e-15
+      },
+      "conservation": {
+        "epoch": 783,
+        "queries": 20,
+        "retirements": 313,
+        "admitted": 5321,
+        "absorbed": 4513,
+        "removed": 0,
+        "active": 808
+      }
+    }
+  },
+  "profile": {
+    "original": {
+      "query.assemble_dense_hessian_s": {
+        "n": 20,
+        "mean": 2.7612923,
+        "median": 3.0979415,
+        "p95": 3.26422115,
+        "max": 3.295878,
+        "total": 55.225846000000004
+      },
+      "query.clone_graph_s": {
+        "n": 20,
+        "mean": 0.10034755,
+        "median": 0.11599899999999999,
+        "p95": 0.1275374,
+        "max": 0.142612,
+        "total": 2.006951
+      },
+      "query.dense_rank_check_s": {
+        "n": 20,
+        "mean": 131.98248255000001,
+        "median": 149.98432400000002,
+        "p95": 153.8554,
+        "max": 155.107994,
+        "total": 2639.649651
+      },
+      "query.endpoint_rank_check_s": {
+        "n": 20,
+        "mean": 0.0092124,
+        "median": 0.008961,
+        "p95": 0.01060585,
+        "max": 0.010716999999999999,
+        "total": 0.184248
+      },
+      "query.extract_and_transport_s": {
+        "n": 20,
+        "mean": 0.00645,
+        "median": 0.0062775,
+        "p95": 0.0075547999999999995,
+        "max": 0.007873999999999999,
+        "total": 0.129
+      },
+      "query.joint_marginal_s": {
+        "n": 20,
+        "mean": 1.67974515,
+        "median": 1.7744415,
+        "p95": 3.1738283000000007,
+        "max": 3.816566,
+        "total": 33.594903
+      },
+      "query.relative_covariance_helper_s": {
+        "n": 20,
+        "mean": 0.034131350000000005,
+        "median": 0.0325015,
+        "p95": 0.037417550000000015,
+        "max": 0.050671,
+        "total": 0.682627
+      },
+      "query.sparse_elimination_s": {
+        "n": 20,
+        "mean": 0.8565050000000001,
+        "median": 0.820212,
+        "p95": 1.2618021500000005,
+        "max": 1.787554,
+        "total": 17.1301
+      },
+      "query_total_s": {
+        "n": 20,
+        "mean": 137.6928572,
+        "median": 157.0287625,
+        "p95": 160.0530358,
+        "max": 161.705196,
+        "total": 2753.857144
+      },
+      "recorded_s": {
+        "n": 20,
+        "mean": 141.8680786,
+        "median": 159.6556685,
+        "p95": 171.20424645,
+        "max": 174.710382,
+        "total": 2837.361572
+      }
+    },
+    "candidate": {
+      "query.assemble_dense_hessian_s": {
+        "n": 20,
+        "mean": 2.84731435,
+        "median": 3.1514185,
+        "p95": 3.3538927500000004,
+        "max": 3.59686,
+        "total": 56.946287
+      },
+      "query.clone_graph_s": {
+        "n": 20,
+        "mean": 0.1039443,
+        "median": 0.1112495,
+        "p95": 0.1395351,
+        "max": 0.154053,
+        "total": 2.0788860000000002
+      },
+      "query.dense_rank_check_s": {
+        "n": 20,
+        "mean": 29.3360877,
+        "median": 33.351423,
+        "p95": 33.675668449999996,
+        "max": 33.793381999999994,
+        "total": 586.721754
+      },
+      "query.endpoint_rank_check_s": {
+        "n": 20,
+        "mean": 0.0060404,
+        "median": 0.005658,
+        "p95": 0.006790300000000001,
+        "max": 0.008354,
+        "total": 0.120808
+      },
+      "query.extract_and_transport_s": {
+        "n": 20,
+        "mean": 0.0063342500000000005,
+        "median": 0.006137,
+        "p95": 0.007217000000000002,
+        "max": 0.010010000000000002,
+        "total": 0.126685
+      },
+      "query.joint_marginal_s": {
+        "n": 20,
+        "mean": 1.6543599500000001,
+        "median": 1.714869,
+        "p95": 2.904120700000001,
+        "max": 3.821948,
+        "total": 33.087199
+      },
+      "query.relative_covariance_helper_s": {
+        "n": 20,
+        "mean": 0.034575550000000004,
+        "median": 0.0321165,
+        "p95": 0.038613950000000015,
+        "max": 0.065232,
+        "total": 0.691511
+      },
+      "query.sparse_elimination_s": {
+        "n": 20,
+        "mean": 0.7726321,
+        "median": 0.71492,
+        "p95": 1.2282094000000003,
+        "max": 1.571946,
+        "total": 15.452641999999999
+      },
+      "query_total_s": {
+        "n": 20,
+        "mean": 34.97449285,
+        "median": 39.5677015,
+        "p95": 41.1150027,
+        "max": 41.96101,
+        "total": 699.489857
+      },
+      "recorded_s": {
+        "n": 20,
+        "mean": 141.8680786,
+        "median": 159.6556685,
+        "p95": 171.20424645,
+        "max": 174.710382,
+        "total": 2837.361572
+      }
+    }
+  },
+  "identities": {
+    "release": {
+      "passed": true,
+      "phase": "release",
+      "outputs": {
+        "pose_original": "19411716205b3f44c89227d6eefbfa30bfdb59a457d4771a0084769f12c2b3e9",
+        "pose_candidate": "19411716205b3f44c89227d6eefbfa30bfdb59a457d4771a0084769f12c2b3e9",
+        "imu_original": "2663e1c908e594b7962bedff8584d2987e28c51c02835294a47e2b1e89e92bac",
+        "imu_candidate": "2663e1c908e594b7962bedff8584d2987e28c51c02835294a47e2b1e89e92bac",
+        "real_original": "3652c745b2f0005c4dbaf230dbcd5b26ecb89d2fd2cecc85bff8afd7d20841bd",
+        "real_candidate": "3652c745b2f0005c4dbaf230dbcd5b26ecb89d2fd2cecc85bff8afd7d20841bd"
+      },
+      "real_journal_sha256": "25ab6edd4d33e55c6993abbaf63982b9711e2f634709d02a2b834460e258de1f"
+    },
+    "asan": {
+      "passed": true,
+      "phase": "asan",
+      "outputs": {
+        "pose_original": "19411716205b3f44c89227d6eefbfa30bfdb59a457d4771a0084769f12c2b3e9",
+        "pose_candidate": "19411716205b3f44c89227d6eefbfa30bfdb59a457d4771a0084769f12c2b3e9",
+        "imu_original": "2663e1c908e594b7962bedff8584d2987e28c51c02835294a47e2b1e89e92bac",
+        "imu_candidate": "2663e1c908e594b7962bedff8584d2987e28c51c02835294a47e2b1e89e92bac"
+      },
+      "real_journal_sha256": "25ab6edd4d33e55c6993abbaf63982b9711e2f634709d02a2b834460e258de1f"
+    },
+    "timing": {
+      "passed": true,
+      "phase": "timing",
+      "outputs": {
+        "warmup_original": "3652c745b2f0005c4dbaf230dbcd5b26ecb89d2fd2cecc85bff8afd7d20841bd",
+        "warmup_candidate": "3652c745b2f0005c4dbaf230dbcd5b26ecb89d2fd2cecc85bff8afd7d20841bd",
+        "measured1_candidate": "3652c745b2f0005c4dbaf230dbcd5b26ecb89d2fd2cecc85bff8afd7d20841bd",
+        "measured1_original": "3652c745b2f0005c4dbaf230dbcd5b26ecb89d2fd2cecc85bff8afd7d20841bd",
+        "measured2_original": "3652c745b2f0005c4dbaf230dbcd5b26ecb89d2fd2cecc85bff8afd7d20841bd",
+        "measured2_candidate": "3652c745b2f0005c4dbaf230dbcd5b26ecb89d2fd2cecc85bff8afd7d20841bd",
+        "measured3_candidate": "3652c745b2f0005c4dbaf230dbcd5b26ecb89d2fd2cecc85bff8afd7d20841bd",
+        "measured3_original": "3652c745b2f0005c4dbaf230dbcd5b26ecb89d2fd2cecc85bff8afd7d20841bd",
+        "profile_original": "3652c745b2f0005c4dbaf230dbcd5b26ecb89d2fd2cecc85bff8afd7d20841bd",
+        "profile_candidate": "3652c745b2f0005c4dbaf230dbcd5b26ecb89d2fd2cecc85bff8afd7d20841bd"
+      },
+      "real_journal_sha256": "25ab6edd4d33e55c6993abbaf63982b9711e2f634709d02a2b834460e258de1f"
+    }
+  },
+  "query_speedup_median": 4.119076106780626,
+  "query_reduction_fraction": 0.755651641641943,
+  "paired_query_speedup": {
+    "1": 4.000080866620085,
+    "2": 4.0889127347924115,
+    "3": 4.190151833762947
+  },
+  "repeatable_query_improvement": true,
+  "projected_389_queries_seconds": {
+    "original": 53.93196079975,
+    "candidate": 13.17818608445
+  },
+  "projection_limit": "20 saved checkpoints times389 observed direct LOCAL requests; not measured at every request, not live or end-to-end.",
+  "integrity": {
+    "protected_s3_files": 716,
+    "s4a_identity_pins": 7,
+    "new_input_pins": 11,
+    "baseline": {
+      "protected_files": 680,
+      "S1_pins": 19,
+      "source_repositories": {
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/cbs": {
+          "head": "7c3a1e66767938e105d46fd072bd853ad5ec50c2",
+          "status": ""
+        },
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/glim": {
+          "head": "e817b335377191b34ff822d4acbe6a2da3934fb4",
+          "status": ""
+        },
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/glim_ros1": {
+          "head": "fad72d6e11219e42cbbe09658341fff4512769dc",
+          "status": ""
+        },
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/gtsam": {
+          "head": "150157b0a686c4411372c3f4455258d9c291219d",
+          "status": ""
+        },
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/gtsam_points": {
+          "head": "857819676921650510e249018cd82d45c08d7e8d",
+          "status": ""
+        },
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/Kimera-VIO": {
+          "head": "560ad0fd33c162ff2a0a64a1372f9b61e1d8d8f9",
+          "status": ""
+        }
+      },
+      "main_cpu_library_sha256": "a1fac7bede8bf7dafef2f3ae3d7206fd539b0285479d8a6cb739f8da22b0f593",
+      "failures": []
+    },
+    "one_line_only": true
+  }
+}

@@ -145,7 +145,8 @@ shared IMU, past means or nonlinear history are statistically independent.
 | B0 | Fresh unchanged first40s overall timing reference | Preserved E1b.4a build/settings; original functional gates and exact saved-journal repeat; report MAIN, LOCAL, covariance and complete-scan timing | Passed: LOCAL median/p95 10.965/15.385 ms; complete-scan 206.942/437.376 ms; functional gates and exact receiver repeat pass. MAIN remains dominant |
 | S2 | Private default-off native Gaussian history prototype | Synthetic same-chart dense oracle, native-only retirement, tangent transport, lifecycle/rollback and focused sanitizers | Passed: 26/26 Release; 25/25 UBSan and ASan+UBSan. Twelve retirements, dense oracle, zero extra native evaluations in actual MAIN cache fixture. No live integration, publication or run |
 | S3 | Private default-off MAIN lifecycle and native-admission observer | Actual fallback-wrapper update/retirement/reset fixtures; no added native evaluations; unchanged MAIN; same-chart shadow oracle before promotion | Real-data shadow gate passed: one ETH1 first40s capture;783 updates,313 retirements,20 covariance checks, max joint relative difference6.01e-15.44/44 Release twice and ASan/UBSan;18 regressions;receiver repeat exact. LOCAL authoritative. See experiments/shared_linearization_s3_capture_20261012/REPORT.md |
-| S4a | Saved native equation cost attribution only | Original/instrumented covariance equivalence, isolated stage/query timings and query-cadence audit | Complete: dense rank check95.94% of query cost; original query median160.274ms. Not a faster provider; proposed EigenvaluesOnly patch not implemented. See experiments/shared_linearization_s4_timing_20261012/REPORT.md |
+| S4a | Saved native equation cost attribution only | Original/instrumented covariance equivalence, isolated stage/query timings and query-cadence audit | Complete: dense rank check95.94% of query cost; original query median160.274ms. Cost attribution only; follow-up optimization is S4b. See experiments/shared_linearization_s4_timing_20261012/REPORT.md |
+| S4b | Eigenvalues-only rank inspection in private Gaussian backend | Same rank decisions, unchanged equations/covariances, focused boundary/sanitizer tests, matched saved-input timing | Complete:31/31 Release and ASan/UBSan;130 rank cases agree; saved outputs byte-identical. Query156.711→38.045ms median,4.12× faster; still no provider promotion. See experiments/shared_linearization_s4_eigenvalues_20261012/REPORT.md |
 
 E1 first reuses existing gtsam_points batching around LOCAL graph preparation;
 it retains the auxiliary smoother and its conditioning. GPU-aware sidecar update,
@@ -188,6 +189,31 @@ its own explicit algorithmic decision. Fixed lag may bound resources but brings
 historical revision and marginal-prior semantics; reconsider only separately.
 
 ## Execution ledger
+
+### S4b — eigenvalues-only rank inspection
+
+- Authorization: user "Ok proceed" after S4a's proposed isolated rank-check patch.
+- Parent: 9c7c89001bf4cc9bfdab3c9d26214e4ac3766804; branch
+  engineering/shared-native-eigenvalues-only-20261012.
+- Status: ACCEPTED PRIVATE OPTIMIZATION; NOT A PROVIDER PROMOTION. Protocol:
+  experiments/shared_linearization_s4_eigenvalues_20261012/PROTOCOL.md.
+- Preserve original S2/S3/S4a and all production/source files. Change only the
+  private rank helper's Eigen solver option to EigenvaluesOnly. Keep every rank,
+  finite/symmetry, lifecycle and covariance check. No new sensor/fusion run,
+  default change, covariance publication, threshold relaxation or push.
+- Result:31/31 Release and31/31 focused ASan/UBSan tests;130 rank-decision cases
+  agree. Pose/mixed fixtures and all12 real-journal outputs byte-identical.
+  Every real pass preserves783 updates,313 retirements and20 covariance queries.
+- Three paired measured replays: full-query median156.711→38.045ms,4.12× faster;
+  p95164.459→39.834ms. Same rank threshold. Dense rank check still83.9% of query
+  cost. Candidate history stage/commit total0.515s per783 updates.
+- Cadence projection only:389 requests × sampled query mean =13.178s, not an
+  all-request/live measurement and not yet better than preserved B0 LOCAL.
+  No second nonlinear optimization or GPU factor evaluation in this candidate.
+- All716 S3 protected files,680 baseline files,19 S1 pins,7 S4a identities and
+  six source HEAD/clean-status checks pass. No source or fusion rerun.
+- Full evidence/report: experiments/shared_linearization_s4_eigenvalues_20261012/REPORT.md.
+  Completion commit is the local commit containing this ledger/report; stop here.
 
 ### S4a — isolated saved equation cost attribution
 

@@ -1,0 +1,71 @@
+[
+  {
+    "name": "unit",
+    "command": [
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_eigenvalues_20261012/asan/tests",
+      "--gtest_output=xml:/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_eigenvalues_20261012/asan_results/unit.xml"
+    ],
+    "returncode": 0,
+    "seconds": 11.04444748899914
+  },
+  {
+    "name": "pose_original",
+    "command": [
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/asan_nopie/original",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s3_capture_20261012/release_1/fixture.bin",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_eigenvalues_20261012/asan_results/pose_original.bin"
+    ],
+    "returncode": 0,
+    "seconds": 0.02677061800022784
+  },
+  {
+    "name": "pose_candidate",
+    "command": [
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_eigenvalues_20261012/asan/candidate",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s3_capture_20261012/release_1/fixture.bin",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_eigenvalues_20261012/asan_results/pose_candidate.bin"
+    ],
+    "returncode": 0,
+    "seconds": 0.025670229000752443
+  },
+  {
+    "name": "imu_original",
+    "command": [
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/asan_nopie/original",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s3_capture_20261012/mixed_fixture/imu.bin",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_eigenvalues_20261012/asan_results/imu_original.bin"
+    ],
+    "returncode": 0,
+    "seconds": 0.031281540999771096
+  },
+  {
+    "name": "imu_candidate",
+    "command": [
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_eigenvalues_20261012/asan/candidate",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s3_capture_20261012/mixed_fixture/imu.bin",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_eigenvalues_20261012/asan_results/imu_candidate.bin"
+    ],
+    "returncode": 0,
+    "seconds": 0.02843482599928393
+  },
+  {
+    "name": "bad_magic",
+    "command": [
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_eigenvalues_20261012/asan/candidate",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_eigenvalues_20261012/asan_results/bad_magic.input",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_eigenvalues_20261012/asan_results/bad_magic.bin"
+    ],
+    "returncode": 1,
+    "seconds": 0.010890131999985897
+  },
+  {
+    "name": "truncated",
+    "command": [
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_eigenvalues_20261012/asan/candidate",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_eigenvalues_20261012/asan_results/truncated.input",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_eigenvalues_20261012/asan_results/truncated.bin"
+    ],
+    "returncode": 1,
+    "seconds": 0.024453326001093956
+  }
+]
