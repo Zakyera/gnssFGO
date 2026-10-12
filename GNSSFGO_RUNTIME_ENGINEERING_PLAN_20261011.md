@@ -148,6 +148,7 @@ shared IMU, past means or nonlinear history are statistically independent.
 | S4a | Saved native equation cost attribution only | Original/instrumented covariance equivalence, isolated stage/query timings and query-cadence audit | Complete: dense rank check95.94% of query cost; original query median160.274ms. Cost attribution only; follow-up optimization is S4b. See experiments/shared_linearization_s4_timing_20261012/REPORT.md |
 | S4b | Eigenvalues-only rank inspection in private Gaussian backend | Same rank decisions, unchanged equations/covariances, focused boundary/sanitizer tests, matched saved-input timing | Complete:31/31 Release and ASan/UBSan;130 rank cases agree; saved outputs byte-identical. Query156.711→38.045ms median,4.12× faster; still no provider promotion. See experiments/shared_linearization_s4_eigenvalues_20261012/REPORT.md |
 | S4c | Conservative fast rank certificate with original eigensolver fallback | Unchanged covariance and rank decisions, bounded error certificate, adversarial tests and matched timing on saved equations | Complete:40/40 Release and ASan/UBSan; saved outputs byte-identical; query37.285→11.196ms median vs S4b,3.33×. All20 checkpoints certify. Private only; no live run. See experiments/shared_linearization_s4_certificate_20261012/REPORT.md |
+| S4d | Private ordinary-publication provider; disable independent LOCAL in one matched first40s capture | Same extraction/helper and lifecycle tests; exact provider-to-wire covariance; frozen source/receiver gates; complete-scan latency | Passed:47 Release/47 ASan+UBSan,18 regressions;389 exact wire covariances,zero LOCAL updates/provider GPU calls. Complete-scan median206.942→167.421ms,p95437.376→312.422ms; exact receiver repeat. Private/default-off; no long-run certification |
 
 E1 first reuses existing gtsam_points batching around LOCAL graph preparation;
 it retains the auxiliary smoother and its conditioning. GPU-aware sidecar update,
@@ -190,6 +191,37 @@ its own explicit algorithmic decision. Fixed lag may bound resources but brings
 historical revision and marginal-prior semantics; reconsider only separately.
 
 ## Execution ledger
+
+### S4d — private ordinary-publication provider integration
+
+- Completed, authorized by user "Proceed" after S4c. Parent
+  c22a7aad39320f737ef0b368eb56191765dcee29; branch
+  engineering/shared-native-provider40-20261012.
+- One private candidate replaces the ordinary outgoing LOCAL covariance route
+  with S4c native Gaussian history and skips the independent LOCAL optimizer.
+  Defaults and diagnostic revision covariance (currently MAIN) remain unchanged.
+- Focused adapter/lifecycle tests and no-data launch admission precede one
+  ETH1 first40s CBS-ON 0.10x capture. Compare complete-scan timing with preserved
+  B0, not just query speed. No full sequence, tuning, production promotion or push.
+- Protocol: experiments/shared_linearization_s4_provider_20261012/PROTOCOL.md.
+- Result: BOUNDED PRIVATE INTEGRATION PASSED.47/47 Release and non-PIE
+  ASan/UBSan,18 existing regressions; original MAIN control exact. No-data
+  startup and effective-library/parameter admission pass. Initial compile-type
+  mistake and sanitizer PIE startup failure retained; no failed sensor attempt.
+- One complete ETH1 first40s capture:391 scans,389 ordinary provider queries,
+  all full6x6 wire covariances exact; zero LOCAL updates/provider GPU calls.
+  Native transport, temporary-factor lifecycle and numerical checks pass;
+  all nine saved receiver repeat files byte-identical.21970 versions conserved,
+  393 publications, queue max46/end0, gradient max9.921e-6<1e-5.
+- Observed complete-scan mean183.525→140.044ms, median206.942→167.421ms,
+  p95437.376→312.422ms. This is overall GLIM timing, not just a query projection.
+  Coupled MAIN workload also changed; do not attribute the entire gain directly
+  to deleted LOCAL. New query mean12.913ms,p9533.259ms; native history cost is
+  included in MAIN, not separately measured. No longer-run or accuracy claim.
+- Integrity:680 baseline/19 S1 pins,716 S3 paths,7/8/10 S4a/b/c pins and six
+  source HEAD/status checks pass. No global provider promotion or push.
+- Report: experiments/shared_linearization_s4_provider_20261012/REPORT.md.
+  Completion commit is the local commit containing this report and both plans.
 
 ### S4c — conservative rank certificate
 

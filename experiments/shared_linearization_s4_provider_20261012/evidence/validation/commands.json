@@ -1,0 +1,48 @@
+[
+  [
+    "native",
+    [
+      "docker",
+      "exec",
+      "cbsms_ws_gpu",
+      "bash",
+      "-lc",
+      "source /opt/ros/noetic/setup.bash && source /workspace/cbs_gtsam4.3/devel/setup.bash && python3 /workspace/cbs_gtsam4.3/runs/gnssfgo_shared_linearization_s4_provider_20261012/validate_native.py --capture /workspace/cbs_gtsam4.3/runs/gnssfgo_shared_linearization_s4_provider_20261012 --out /workspace/cbs_gtsam4.3/runs/gnssfgo_shared_linearization_s4_provider_20261012/prepared/profile40_on_native_validation.json"
+    ]
+  ],
+  [
+    "lifecycle",
+    [
+      "/home/yeranis/.local/share/pipx/venvs/evo/bin/python",
+      "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_shared_linearization_s4_provider_20261012/validate_lifecycle.py",
+      "profile40_on"
+    ]
+  ],
+  [
+    "diagnostics",
+    [
+      "/home/yeranis/.local/share/pipx/venvs/evo/bin/python",
+      "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_shared_linearization_s4_provider_20261012/validate_diagnostics.py",
+      "profile40_on"
+    ]
+  ],
+  [
+    "provider",
+    [
+      "docker",
+      "exec",
+      "cbsms_ws_gpu",
+      "bash",
+      "-lc",
+      "source /opt/ros/noetic/setup.bash && source /workspace/cbs_gtsam4.3/devel/setup.bash && python3 /workspace/cbs_gtsam4.3/runs/gnssfgo_shared_linearization_s4_provider_20261012/validate_provider.py /workspace/cbs_gtsam4.3/runs/gnssfgo_shared_linearization_s4_provider_20261012 /workspace/cbs_gtsam4.3/runs/gnssfgo_shared_linearization_s4_provider_20261012/prepared/profile40_on_provider_validation.json"
+    ]
+  ],
+  [
+    "numerical",
+    [
+      "/home/yeranis/.local/share/pipx/venvs/evo/bin/python",
+      "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_shared_linearization_s4_provider_20261012/prepared/validate_numerical_case.py",
+      "profile40_on"
+    ]
+  ]
+]

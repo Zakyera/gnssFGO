@@ -7,10 +7,13 @@ nonlinear LOCAL smoother. Preserve the validated E1b.4a implementation as the
 reference and rollback path. **S0/S1 preservation and feasibility, B0's unchanged
 timing reference and S2's isolated Gaussian backend are complete. S3's private
 lifecycle, synthetic and real-data first40s shadow gates now pass. The
-authoritative LOCAL provider remains unchanged. S4a cost attribution, S4b's
+default authoritative LOCAL provider remains unchanged. S4a cost attribution, S4b's
 eigenvalues-only gate and S4c's conservative rank-certificate gate are complete.
 S4c reduces matched query median37.285→11.196ms with byte-identical saved
-outputs; no candidate publication or S4 live run has started.**
+outputs. S4d's separately authorized first40s private provider integration now
+passes:389 exact provider-to-wire covariances,zero independent LOCAL updates,
+and complete-scan median206.942→167.421ms/p95437.376→312.422ms. Defaults remain
+unchanged; no long-run or covariance-accuracy certification.**
 See [S1 feasibility findings](GLIM_SHARED_LINEARIZATION_FEASIBILITY_S1_20261012.md)
 for the actual MAIN implementation and exact lifecycle hooks.
 
@@ -195,7 +198,7 @@ its result, and obtain the next decision. Do not start a campaign automatically.
 | B0 | Fresh unchanged overall-timing reference before candidate implementation, as requested by the user | Completed and validated: same ETH1 first40s at0.10x, E1b.4a/E2 builds; functional checks and byte-identical receiver repeat pass. See experiments/shared_linearization_b0_20261012/REPORT.md |
 | S2 | Default-off Gaussian information backend and synthetic/dense-reference tests in a private build | Complete: 26/26 Release including actual MAIN cache fixture; 25/25 UBSan and ASan+UBSan; dense-oracle and twelve-retirement gates pass. No live hooks or authoritative covariance change. See experiments/shared_linearization_s2_20261012/REPORT.md |
 | S3 | Shadow validation on retained exact inputs where sufficient; at most one authorized 40 s capture if MAIN snapshots are missing | Passed: one ETH1 first40s capture, 783 updates, 313 retirements, 20 independent covariance checks (joint relative error max6.01e-15); 44/44 Release and ASan/UBSan,18 existing tests, exact receiver repeat. Old LOCAL authoritative. See experiments/shared_linearization_s3_capture_20261012/REPORT.md |
-| S4 | Candidate-only LOCAL covariance timing with identical retained inputs, then one separately authorized matched 40 s live check | Disable the second nonlinear LOCAL solver only in the candidate; validate factor conservation, publication, covariance and end-to-end runtime; report expected covariance/trajectory differences from the old definition |
+| S4 | Candidate-only LOCAL covariance timing with identical retained inputs, then one separately authorized matched 40 s live check | S4a/b/c and bounded S4d passed. Independent LOCAL disabled only in private candidate;389 exact transmitted covariances,47 Release/47 sanitizer+18 regressions,source lifecycle and receiver repeat pass. Overall first40s scan timing improved; no default promotion or longer-run certification |
 
 S4a's same-input timing identified95.94% of query cost in dense rank inspection,
 including unused eigenvectors. S4b now requests EigenvaluesOnly in a private
@@ -220,6 +223,20 @@ query work plus0.510s history, not a measured live/all-request result. This is
 promising enough for a separately authorized matched40s integration test, not
 proof of overall GLIM speedup or a production/provider promotion. No new source
 run occurred. See [S4c result](experiments/shared_linearization_s4_certificate_20261012/REPORT.md).
+
+S4d then completed one separately authorized candidate-only first40s capture.
+It replaces the **ordinary first-publication LOCAL covariance route only**;
+existing later diagnostic revisions still use MAIN covariance, unchanged.
+The second nonlinear LOCAL optimizer is absent. All389 transmitted full6x6
+matrices exactly match the new provider, with no provider GPU reevaluation.
+47/47 Release,47/47 non-PIE ASan/UBSan and18 existing tests pass; the nine saved
+receiver repeat artifacts are exact. Complete-scan mean183.525→140.044ms,
+median206.942→167.421ms,p95437.376→312.422ms. MAIN's coupled workload changed
+too, so this is an observed overall speedup, not a pure same-input attribution
+of all savings to LOCAL deletion. Query p95 itself is heavier than B0; native
+history cost is inside MAIN and not separately timed. No accuracy, long-tail
+or real-time claim. See [S4d report](experiments/shared_linearization_s4_provider_20261012/REPORT.md).
+Stop for the next decision; original sources, profiles and defaults remain intact.
 
 S3 is complete on the bounded real-data window. Its saved native equations,
 charts and lifecycle journal now support the next same-input timing gate without
