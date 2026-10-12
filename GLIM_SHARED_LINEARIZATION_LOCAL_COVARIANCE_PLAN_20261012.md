@@ -4,8 +4,10 @@
 
 Plan the supervisor's proposal as an isolated alternative to the independent
 nonlinear LOCAL smoother. Preserve the validated E1b.4a implementation as the
-reference and rollback path. **Only planning and preservation are completed;
-implementation and experiments have not started.**
+reference and rollback path. **Planning, preservation and the S1 read-only audit
+are completed; candidate implementation and experiments have not started.**
+See [S1 feasibility findings](GLIM_SHARED_LINEARIZATION_FEASIBILITY_S1_20261012.md)
+for the actual MAIN implementation and exact lifecycle hooks.
 
 The proposed architecture performs one nonlinear optimization in MAIN, retains
 the individual native factors' Gaussian equations, and uses those equations in
@@ -115,8 +117,13 @@ Concrete source anchors:
   `updateSidecar` around 3255, outgoing mean/covariance extraction around 3615.
 - `runs/e1b_local_profile_20261012/overlay/integrated_vgicp_factor_gpu.cpp`:
   `linearize` around 190 and the Hessian return around 211.
-- `src/gtsam/gtsam/nonlinear/ISAM2.cpp`: cached versus fresh factor equations
-  around 75–118; marginalization relinearization around 669.
+- `src/gtsam_points/src/gtsam_points/optimizers/isam2_ext.cpp`: actual MAIN
+  cached/fresh equations around 77–143 and factor retirement/fixed separator
+  handling around 699–754. Ordinary `gtsam::ISAM2` is the LOCAL path, not MAIN.
+- `src/gtsam_points/src/gtsam_points/optimizers/incremental_fixed_lag_smoother_ext.cpp`:
+  missing pre-retirement observation point between the update at 95 and
+  marginalization at 105. Existing forwarded `getLinearFactors()` and
+  `getLinearizationPoint()` expose the required cache and chart.
 - `src/gtsam/gtsam/nonlinear/Marginals.cpp`: Gaussian-graph constructor around
   56; it eliminates a supplied linear graph rather than optimizing nonlinear
   states.
@@ -179,13 +186,13 @@ its result, and obtain the next decision. Do not start a campaign automatically.
 | Stage | Bounded work | Acceptance / stop condition |
 | --- | --- | --- |
 | S0 | Save baseline and this plan | Local checkpoint, integrity record and clean committed documentation; completed in this task |
-| S1 | Read-only feasibility audit of MAIN equations, charts, factor lifetimes and retirement hooks | Name the exact insertion/relinearization/retirement capture points, cached/fresh coverage, coordinate policy and minimal patch surface; stop if native provenance or a coherent Gaussian system cannot be established |
+| S1 | Read-only feasibility audit of MAIN equations, charts, factor lifetimes and retirement hooks | Completed: feasible with lifecycle hooks, native provenance and explicit chart/reset checks; no numerical or runtime certification. See S1 report |
 | B0 | Fresh unchanged overall-timing reference before candidate implementation, as requested by the user | Propose the same ETH1 first 40 s, 0.10x, E1b.4a build and existing functional/timing checks; requires separate run authorization, no new method |
 | S2 | Default-off Gaussian information backend and synthetic/dense-reference tests in a private build | Pass the tests below; do not change authoritative outgoing covariance or disable current LOCAL yet |
 | S3 | Shadow validation on retained exact inputs where sufficient; at most one authorized 40 s capture if MAIN snapshots are missing | Existing LOCAL remains authoritative; compare candidate against a same-chart native Gaussian oracle through multiple retirements; no candidate CBS publication |
 | S4 | Candidate-only LOCAL covariance timing with identical retained inputs, then one separately authorized matched 40 s live check | Disable the second nonlinear LOCAL solver only in the candidate; validate factor conservation, publication, covariance and end-to-end runtime; report expected covariance/trajectory differences from the old definition |
 
-S1 is the next technical step; B0 precedes any candidate implementation. The
+B0 is the next step after completed S1 and precedes candidate implementation. The
 already completed timing capture remains the reference if another capture is
 not authorized. S3 shadow runtime is not the candidate performance result,
 because both paths run together. Reuse one suitable capture rather than creating

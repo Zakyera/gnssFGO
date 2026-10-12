@@ -19,8 +19,11 @@ performance hypotheses into one acceptance experiment.
 **Planning boundary (2026-10-12):** Task S0 preserves the completed E1b.4a
 checkpoint and plans the supervisor's native-equation reuse proposal in
 `GLIM_SHARED_LINEARIZATION_LOCAL_COVARIANCE_PLAN_20261012.md`.
-Planning/checkpoint work is complete; all 677 protected hashes and six source
-HEAD/status checks passed. No candidate implementation or new run is authorized
+Planning/checkpoint work and S1 read-only feasibility are complete; all 677
+protected hashes and six source HEAD/status checks passed. S1 identifies the
+actual MAIN `gtsam_points::ISAM2Ext` cache and required lifecycle hooks; see
+`GLIM_SHARED_LINEARIZATION_FEASIBILITY_S1_20261012.md`.
+No candidate implementation or new run is authorized
 by this entry. Unlike E1/E1b, this proposal would change the
 LOCAL linearization policy; it must not be called arithmetic-equivalent to the
 independent LOCAL smoother. All frozen semantics below still govern the current
@@ -138,6 +141,7 @@ shared IMU, past means or nonlinear history are statistically independent.
 | E4 | Selective incremental publication refinement | Same factors/events and fresh current-Values stationarity certificate; reference full refinement fallback; short/medium/late replay comparisons | Tested 2026-10-12; NOT ACCEPTED: strict state bounds failed,86.8% fallback,matched refinement~40% slower; stopped at130.68s |
 | E5 | Transport/logging/bookkeeping efficiency | One subchange per test; lossless ordered revision delivery and auditability; same factor accounting; no silent dropped/coalesced versions | Not started |
 | S0 | Preserve E1b.4a and plan native Gaussian-equation reuse | Recoverable local checkpoint; saved staged plan; distinguish native information from MAIN conditioning and mixed marginal priors | Completed 2026-10-12; all 677 hashes and six source HEAD/status checks passed; no implementation/run/push |
+| S1 | Read-only feasibility of MAIN native-equation reuse | Exact capture/retirement hooks, factor provenance, coherent reference charts and minimal isolated patch surface | Complete: feasible with lifecycle hooks; 677 hashes and six source repositories unchanged; no numerical certification, implementation or run |
 
 E1 first reuses existing gtsam_points batching around LOCAL graph preparation;
 it retains the auxiliary smoother and its conditioning. GPU-aware sidecar update,
@@ -180,6 +184,29 @@ its own explicit algorithmic decision. Fixed lag may bound resources but brings
 historical revision and marginal-prior semantics; reconsider only separately.
 
 ## Execution ledger
+
+### S1 — MAIN native-equation reuse feasibility
+
+- Authorization: user "ok proceed" to the saved next stage; read-only audit
+  only. Parent `a84436b6429abd68810ea5f1c86c181c0fb2b78a`; same planning branch.
+- Result: `FEASIBLE_WITH_LIFECYCLE_HOOKS`, not numerical or speed acceptance.
+  Actual MAIN is `gtsam_points::ISAM2Ext` inside the fallback smoother, not the
+  ordinary LOCAL ISAM2. Existing forwarded Gaussian-cache/reference getters
+  suffice; add pre-retirement capture and transactional commit/reset handling
+  in a future private prototype, not a second nonlinear solver or GPU kernel.
+- Native admission before CBS insertion, exact-once independent Gaussian prior,
+  fixed-separator chart assertions and endpoint covariance transport are the
+  required information/coordinate boundaries. MAIN fallback can otherwise hide
+  a history reset across its extra update; observer errors must not trigger it.
+- Report: `GLIM_SHARED_LINEARIZATION_FEASIBILITY_S1_20261012.md`.
+  Evidence: `experiments/shared_linearization_s1_20261012/INTEGRITY.json`.
+  All 677 inherited hashes and six source HEAD/status checks pass. Additional
+  hashes pin 19 inspected source/build/library records. The CPU library was
+  absent from the inherited manifest; only its current hash is newly pinned.
+- No estimator/build/configuration change, test run, experiment, tuning,
+  automatic follow-up, push or default promotion. Current LOCAL stays intact.
+- Next: B0 fresh unchanged first40s overall-timing reference if authorized,
+  then S2 isolated Gaussian helper and dense-reference tests. No run started.
 
 ### S0 — shared-native-linearization proposal and preservation
 
