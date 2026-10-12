@@ -890,6 +890,8 @@ documentation/archival/version control only; no estimator implementation or run.
 - Report: experiments/e1b4a_snapshot_checker_20261012/REPORT.txt. Next: separately
   integrate bounded real-input observer, then observer-free throughput only
   after equivalence passes. No speed result is inferred from checker runtime.
+- Implementation/validation commit: a3846056bc081fc5af040a47c15993b55154328c;
+  subsequent documentation-only entry records this hash. Not pushed.
 - No automatic live capture, next optimization, parameter change or push.
 
 ### Template for subsequent tasks
