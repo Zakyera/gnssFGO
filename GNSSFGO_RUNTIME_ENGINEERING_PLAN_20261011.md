@@ -142,6 +142,7 @@ shared IMU, past means or nonlinear history are statistically independent.
 | E5 | Transport/logging/bookkeeping efficiency | One subchange per test; lossless ordered revision delivery and auditability; same factor accounting; no silent dropped/coalesced versions | Not started |
 | S0 | Preserve E1b.4a and plan native Gaussian-equation reuse | Recoverable local checkpoint; saved staged plan; distinguish native information from MAIN conditioning and mixed marginal priors | Completed 2026-10-12; all 677 hashes and six source HEAD/status checks passed; no implementation/run/push |
 | S1 | Read-only feasibility of MAIN native-equation reuse | Exact capture/retirement hooks, factor provenance, coherent reference charts and minimal isolated patch surface | Complete: feasible with lifecycle hooks; 677 hashes and six source repositories unchanged; no numerical certification, implementation or run |
+| B0 | Fresh unchanged first40s overall timing reference | Preserved E1b.4a build/settings; original functional gates and exact saved-journal repeat; report MAIN, LOCAL, covariance and complete-scan timing | Passed: LOCAL median/p95 10.965/15.385 ms; complete-scan 206.942/437.376 ms; functional gates and exact receiver repeat pass. MAIN remains dominant; S2 not started |
 
 E1 first reuses existing gtsam_points batching around LOCAL graph preparation;
 it retains the auxiliary smoother and its conditioning. GPU-aware sidecar update,
@@ -184,6 +185,30 @@ its own explicit algorithmic decision. Fixed lag may bound resources but brings
 historical revision and marginal-prior semantics; reconsider only separately.
 
 ## Execution ledger
+
+### B0 — fresh unchanged ETH1 first40s reference
+
+- Authorization: user "proceed" after completed S1; parent `6bcc1d9b37c1ff245ae361a032cff30b82002796`.
+  One CBS-ON capture only, same preserved E1b.4a/E2 binaries and profile settings.
+  Fresh root `runs/gnssfgo_shared_linearization_b0_20261012`, port11418 and session.
+  Existing stopped containers restarted without rebuild/reconfiguration.
+- Passed all retained functional checks, 18 Release regressions and the one
+  saved-journal receiver repeat. Nine compared files byte-identical; state
+  differences zero. 21970 versions =570IDs+21375replacements+25unsupported;
+  393 strict publications, max gradient9.747059774e-6; no pending/duplicate/stale.
+- LOCAL median/p95 10.965/15.385ms versus unbatched117.148/218.181ms.
+  Complete-scan median/p95 206.942/437.376ms, late p95469.574ms;800ms gate passes.
+  Previous batched p95 was385.682ms. Identical settings do not imply identical
+  live solver history; more evaluations occurred. No new code regression claim.
+- MAIN50.719s,185378synchronous calls;LOCAL3.415s,155556batched hits/zero
+  synchronous fallback;covariance4.164s. Remaining MAIN cost is not solved.
+  Queue max43,final0;output-age p950.090005s;controller445.37s.
+- Report and evidence: `experiments/shared_linearization_b0_20261012/REPORT.md`.
+  All680run hashes,inherited677hashes,19S1pins and six clean source HEADs pass.
+  All owned processes exited; containers idle. Original/native GLIM, native
+  Kimera, online fusion and final fusion remain distinct in coverage reporting.
+- No source/model change, new covariance backend, GT scoring, tuning, retry,
+  full160 run, push or default promotion. Stop here; S2 is the next decision.
 
 ### S1 — MAIN native-equation reuse feasibility
 
