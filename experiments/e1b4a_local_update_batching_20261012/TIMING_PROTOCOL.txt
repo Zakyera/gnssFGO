@@ -1,0 +1,40 @@
+E1b.4a synthetic timing continuation, 2026-10-12.
+User authorization: "ok proceed to the timing test".
+Parent: 2a3823c7387baeb48b38db4a8e19bfd96c4f8d79.
+
+No code/build/model change. Execute the retained disabled benchmark once:
+docker exec cbsms_ws_gpu python3
+ /workspace/cbs_gtsam4.3/runs/e1b4a_local_update_batching_20261012/authoring/run_tests.py
+ release_2 --test-attempt 3 --tag timing1 --benchmark
+
+Frozen executable SHA256:
+223232f359c3580886a2ff75f91daf26548289c51b0115366678b0878babfa5f
+Check original correctness gate, source/binary provenance and protected hashes
+before and after execution. Refuse existing timing1 output. No automatic retry.
+
+Same executable, sequential independent solver/factor histories, CPU affinity2,
+OMP_NUM_THREADS=1. For each workload (0 or64 new GPU factors/update), warm both
+modes, then six paired repetitions alternating execution order. Each history
+has40 updates, .65s lag, .1s supports, factor replacement and marginalization.
+No new dataset, ROS playback, GLIM/Kimera receiver run, profiler file sink, or
+extra intermediate covariance evaluations. Complete covariance checked at end;
+all update states/linearization points/keys/slots/solver decisions compared.
+
+Primary timing includes ALL40 updates across all6 runs: median and p95 of240
+samples per mode/workload. Percentile: linear interpolation at (n-1)*p.
+Also report per-repetition median/p95 and their paired ratios, means and totals.
+Optional steady-window descriptions (updates8..39) cannot replace this gate.
+Time scope: entry to exit of solver.update including profiler/dispatch scopes;
+input preparation, calculateEstimate/snapshotting and final covariance checks
+are outside. This is NOT complete frame/whole-estimator/live wall time.
+
+Unchanged gate: GPU-heavy candidate median AND p95 <=80% of ordinary, with all
+existing numerical/decision checks passing. Report CPU-only fallback overhead
+against paired repeat variability; do not invent a new relaxed acceptance gate.
+Record GPU call/cache-hit/synchronous counts and dispatch batches, including
+remaining direct-loop work. Desktop GPU load/clocks not pinned: document limits,
+do not terminate unrelated applications or change power/GPU settings.
+
+Do not select best repetitions or rerun on performance failure. Preserve logs,
+report, update plan and local commit. Default remains off; no push, live trial,
+MAIN/direct-loop extension, further optimization or model change in this task.

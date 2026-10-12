@@ -21,8 +21,11 @@ profile after the private startup and admission fixes. LOCAL synchronous GPU
 linearization accounts for 96.405% of its measured exclusive wall time;
 143,950/143,950 calls took fallback. E1b.4a now has an isolated default-off
 implementation with its synthetic correctness gate passed (32 Release, 30
-UBSan, 10 CPU ASan/UBSan checks and no-data startup). The user requested a report
-before timing: the benchmark has NOT run and no speed/live acceptance is claimed.
+UBSan, 10 CPU ASan/UBSan checks and no-data startup). The subsequently authorized
+E1b.4a synthetic timing gate PASSED: GPU-heavy median112.310->4.30792ms and
+p95115.43625->4.66825ms, with unchanged tested states/covariances/decisions.
+This is a small-cloud synthetic LOCAL-update result, NOT whole-GLIM or live
+capacity acceptance. The default remains off pending real-source gates.
 The earlier E1/E2 live160 remains functionally
 validated but misses runtime headroom; E4 was rejected and remains disabled.
 MAIN and receiver full-history costs also remain. Working source/receiver
@@ -105,7 +108,7 @@ shared IMU, past means or nonlinear history are statistically independent.
 | E1b.1 | Diagnose remaining GLIM LOCAL smoother update cost | Trace actual call chain and GPU evaluation semantics; inspect retained early/late timing; distinguish measured cost from missing instrumentation; specify one next patch | Completed 2026-10-12; report/evidence saved, no estimator change. LOCAL subphase costs not yet separated |
 | E1b.2 | Instrument LOCAL update subphases | Opt-in timing only; no extra factor/solver evaluations; scope/cache/exception tests; disjoint accounting; measured overhead before bounded profiling | Private implementation/tests passed 2026-10-12: 29 Release +29 UBSan +8 profiler ASan/UBSan; original-library fixture exact; no source capture or solver replacement |
 | E1b.3 | Bounded LOCAL subphase profile | Frozen source settings; explicit profiler overhead/coverage; separate nested/worker/outer wall costs; select one measured dominant subphase | E1b.3c validated first40s: 96.405% of LOCAL exclusive wall in synchronous GPU linearization; first40s limits retained |
-| E1b.4 | Batch LOCAL update linearizations at exact solver Values | Keep solver decisions and ordered Gaussian blocks; reuse E1 synchronous-compatible kernels; same-input repeated-solver and covariance checks before bounded live timing | E1b.4a correctness gate passed; timing NOT RUN at user's report-before-timing boundary; no live run or promotion |
+| E1b.4 | Batch LOCAL update linearizations at exact solver Values | Keep solver decisions and ordered Gaussian blocks; reuse E1 synchronous-compatible kernels; same-input repeated-solver and covariance checks before bounded live timing | E1b.4a correctness + synthetic timing gates PASSED; median112.310->4.30792ms, p95115.43625->4.66825ms. Default-off, real-source gate pending; no live run or promotion |
 | E3a | Remaining WNOA motion-factor derivatives | Independent numerical derivative checks; manifold/frame tests; frozen-journal state/cost/covariance checks with predeclared tight tolerances | Not started |
 | E3b | Remaining interpolated pose derivative blocks | Separate patch and independent checks as for E3a; do not redo already validated V/W substitution | Not started |
 | E4 | Selective incremental publication refinement | Same factors/events and fresh current-Values stationarity certificate; reference full refinement fallback; short/medium/late replay comparisons | Tested 2026-10-12; NOT ACCEPTED: strict state bounds failed,86.8% fallback,matched refinement~40% slower; stopped at130.68s |
@@ -799,6 +802,40 @@ documentation/archival/version control only; no estimator implementation or run.
   additional build inputs unchanged; six pinned source repos clean. No source
   playback, receiver run, covariance/model changes, push or benchmark. Candidate
   not promoted pending timing and later real-source gates.
+
+### E1b.4a timing — frozen synthetic benchmark
+
+- Date/authorization: 2026-10-12, user "ok proceed to the timing test".
+- Status: SYNTHETIC TIMING GATE PASSED; continuation of E1b.4a, no new
+  implementation hypothesis. No live acceptance or promotion.
+- Parent `2a3823c7387baeb48b38db4a8e19bfd96c4f8d79`. Use the already validated
+  `release_2/test_solver_3` unchanged, no rebuild or source experiment.
+- Protocol: `experiments/e1b4a_local_update_batching_20261012/TIMING_PROTOCOL.txt`.
+- CPU-only and 64-new-GPU-factor fixtures; six alternating paired repetitions,
+  all 40 updates included. Existing numerical and <=80% median/p95 timing gates
+  unchanged. CPU fallback and repeatability reported separately.
+- Container was stopped at entry; inspected command is only `tail -f /dev/null`.
+  Restarted the existing container without starting any sensor/estimator node.
+- Benchmark ran exactly once (31.281s wall), 960 measured updates,12 paired
+  histories and24 dense matrix comparisons, all passed. GPU-heavy median/p95
+  112.310/115.43625ms ordinary vs4.30792/4.66825ms batched (26.07x/24.73x).
+  Every GPU paired repetition passes the unchanged <=80% gate independently.
+- GPU linearize calls111,822 in both modes; synchronous fallback111,822->384,
+  prepared-result consumptions0->111,438. Remaining64/run occur at update1.
+  No factor calls removed. Active keys and slots agree; no direct-loop extension.
+- Max p/v/bias/full and relative covariance differences0; orientation3.71e-18rad.
+  CPU median+0.20%, p95+3.68% (0.31/6.59microseconds), within observed paired
+  repeat variation, not proof of zero overhead. All protected hashes and six
+  source HEADs/clean states preserved before/after.
+- Limits: 864-point synthetic cloud,21 active keys,472 factor slots; forced
+  full-window relinearization fixture. Update-scope time only, not entire frame.
+  CPU/GPU clocks unlocked, desktop GPU load present. No live throughput claim.
+- Report: `experiments/e1b4a_local_update_batching_20261012/TIMING_REPORT.md`;
+  raw evidence `runs/e1b4a_local_update_batching_20261012/release_2/timing1/`.
+  Two preflight metadata-check issues were corrected/preserved before execution;
+  no benchmark retry or source/binary/runner change.
+- Stop here; real-source equivalence/throughput is a separate authorization.
+  No MAIN optimization, further implementation, live run or push.
 
 ### Template for subsequent tasks
 

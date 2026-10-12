@@ -1,5 +1,9 @@
 # E1b.4a — implementation and correctness report, before timing
 
+Historical pre-timing report. The subsequently authorized benchmark is recorded
+separately in [TIMING_REPORT.md](TIMING_REPORT.md); statements below describe the
+earlier stopping point and are not the current timing status.
+
 **Status: synthetic correctness gate passed; timing NOT RUN.** The user requested
 a report before the timing test. Work stops at this boundary. No speedup,
 real-time capacity, or live-sequence equivalence is claimed.

@@ -1,0 +1,485 @@
+{
+  "passed_numerical_checks": true,
+  "all_samples_accounted": true,
+  "timing_rows": 960,
+  "paired_histories": 12,
+  "matrix_comparisons": 24,
+  "state_maxima": {
+    "position": 0.0,
+    "orientation_rad": 3.70537e-18,
+    "velocity": 0.0,
+    "bias": 0.0,
+    "covariance": 0.0
+  },
+  "matrix_max_abs": 0.0,
+  "workloads": {
+    "0": {
+      "ordinary": {
+        "timing_ms": {
+          "n": 240,
+          "mean": 0.1490078625,
+          "median": 0.15642,
+          "p95": 0.17917374999999996,
+          "minimum": 0.036617,
+          "maximum": 0.189048,
+          "total": 35.761887
+        },
+        "totals": {
+          "gpu_calls": 0,
+          "sync_calls": 0,
+          "cache_hits": 0
+        },
+        "active_key_range": [
+          3,
+          21
+        ],
+        "factor_slot_range": [
+          3,
+          24
+        ],
+        "batch_totals": {
+          "requests": 0,
+          "batched_graphs": 0,
+          "prepared_factors": 0
+        },
+        "rounds": [
+          {
+            "n": 40,
+            "mean": 0.15142285,
+            "median": 0.1655165,
+            "p95": 0.1737036,
+            "minimum": 0.064328,
+            "maximum": 0.182004,
+            "total": 6.056914
+          },
+          {
+            "n": 40,
+            "mean": 0.1529477,
+            "median": 0.1652365,
+            "p95": 0.18290199999999998,
+            "minimum": 0.036617,
+            "maximum": 0.189048,
+            "total": 6.117908
+          },
+          {
+            "n": 40,
+            "mean": 0.147577075,
+            "median": 0.1554595,
+            "p95": 0.17766565,
+            "minimum": 0.044687,
+            "maximum": 0.17991,
+            "total": 5.903083
+          },
+          {
+            "n": 40,
+            "mean": 0.14532185,
+            "median": 0.150502,
+            "p95": 0.178302,
+            "minimum": 0.040094,
+            "maximum": 0.181536,
+            "total": 5.812874
+          },
+          {
+            "n": 40,
+            "mean": 0.148132575,
+            "median": 0.15499800000000002,
+            "p95": 0.17805944999999998,
+            "minimum": 0.046882,
+            "maximum": 0.186101,
+            "total": 5.925303
+          },
+          {
+            "n": 40,
+            "mean": 0.148645125,
+            "median": 0.153752,
+            "p95": 0.17484239999999998,
+            "minimum": 0.03867,
+            "maximum": 0.182165,
+            "total": 5.945805
+          }
+        ]
+      },
+      "batched": {
+        "timing_ms": {
+          "n": 240,
+          "mean": 0.1520243625,
+          "median": 0.15672750000000002,
+          "p95": 0.1857604,
+          "minimum": 0.036452,
+          "maximum": 0.199621,
+          "total": 36.485847
+        },
+        "totals": {
+          "gpu_calls": 0,
+          "sync_calls": 0,
+          "cache_hits": 0
+        },
+        "active_key_range": [
+          3,
+          21
+        ],
+        "factor_slot_range": [
+          3,
+          24
+        ],
+        "batch_totals": {
+          "requests": 468,
+          "batched_graphs": 0,
+          "prepared_factors": 0
+        },
+        "rounds": [
+          {
+            "n": 40,
+            "mean": 0.157354325,
+            "median": 0.1714925,
+            "p95": 0.1880076,
+            "minimum": 0.037407,
+            "maximum": 0.192756,
+            "total": 6.294173
+          },
+          {
+            "n": 40,
+            "mean": 0.1447985,
+            "median": 0.15266600000000002,
+            "p95": 0.17263825,
+            "minimum": 0.042775,
+            "maximum": 0.180815,
+            "total": 5.79194
+          },
+          {
+            "n": 40,
+            "mean": 0.1577741,
+            "median": 0.17092600000000002,
+            "p95": 0.18969189999999997,
+            "minimum": 0.042826,
+            "maximum": 0.199621,
+            "total": 6.310964
+          },
+          {
+            "n": 40,
+            "mean": 0.1511989,
+            "median": 0.1504525,
+            "p95": 0.18447819999999998,
+            "minimum": 0.045625,
+            "maximum": 0.187101,
+            "total": 6.047956
+          },
+          {
+            "n": 40,
+            "mean": 0.152226775,
+            "median": 0.1648695,
+            "p95": 0.18416534999999998,
+            "minimum": 0.036452,
+            "maximum": 0.186052,
+            "total": 6.089071
+          },
+          {
+            "n": 40,
+            "mean": 0.148793575,
+            "median": 0.156099,
+            "p95": 0.17483335,
+            "minimum": 0.049498,
+            "maximum": 0.179005,
+            "total": 5.9517430000000004
+          }
+        ]
+      },
+      "ratios": {
+        "mean": 1.0202438982036939,
+        "median": 1.0019658611430764,
+        "p95": 1.036761244322899,
+        "total": 1.0202438982036937
+      },
+      "paired_rounds": [
+        {
+          "round": 0,
+          "first": "batched",
+          "median_ratio": 1.0361051617210368,
+          "p95_ratio": 1.082347170697671,
+          "median_delta_ms": 0.005975999999999981
+        },
+        {
+          "round": 1,
+          "first": "ordinary",
+          "median_ratio": 0.9239241935044619,
+          "p95_ratio": 0.9438838831724093,
+          "median_delta_ms": -0.012570499999999984
+        },
+        {
+          "round": 2,
+          "first": "batched",
+          "median_ratio": 1.0994889344170027,
+          "p95_ratio": 1.0676903498228272,
+          "median_delta_ms": 0.015466500000000022
+        },
+        {
+          "round": 3,
+          "first": "ordinary",
+          "median_ratio": 0.9996711007162695,
+          "p95_ratio": 1.034638983298,
+          "median_delta_ms": -4.950000000000787e-05
+        },
+        {
+          "round": 4,
+          "first": "batched",
+          "median_ratio": 1.0636879185537875,
+          "p95_ratio": 1.0342913560611358,
+          "median_delta_ms": 0.009871499999999978
+        },
+        {
+          "round": 5,
+          "first": "ordinary",
+          "median_ratio": 1.015264842083355,
+          "p95_ratio": 0.999948239099898,
+          "median_delta_ms": 0.002346999999999988
+        }
+      ]
+    },
+    "64": {
+      "ordinary": {
+        "timing_ms": {
+          "n": 240,
+          "mean": 102.10430762916667,
+          "median": 112.31,
+          "p95": 115.43625,
+          "minimum": 0.076563,
+          "maximum": 125.996,
+          "total": 24505.033831
+        },
+        "totals": {
+          "gpu_calls": 111822,
+          "sync_calls": 111822,
+          "cache_hits": 0
+        },
+        "active_key_range": [
+          3,
+          21
+        ],
+        "factor_slot_range": [
+          3,
+          472
+        ],
+        "batch_totals": {
+          "requests": 0,
+          "batched_graphs": 0,
+          "prepared_factors": 0
+        },
+        "rounds": [
+          {
+            "n": 40,
+            "mean": 101.985214075,
+            "median": 112.616,
+            "p95": 114.43285,
+            "minimum": 0.076563,
+            "maximum": 114.451,
+            "total": 4079.408563
+          },
+          {
+            "n": 40,
+            "mean": 100.7664507,
+            "median": 109.347,
+            "p95": 116.59599999999999,
+            "minimum": 0.101428,
+            "maximum": 125.996,
+            "total": 4030.658028
+          },
+          {
+            "n": 40,
+            "mean": 102.425054875,
+            "median": 112.493,
+            "p95": 117.29254999999999,
+            "minimum": 0.081895,
+            "maximum": 119.501,
+            "total": 4097.002195
+          },
+          {
+            "n": 40,
+            "mean": 101.5108833,
+            "median": 111.84649999999999,
+            "p95": 114.5358,
+            "minimum": 0.088632,
+            "maximum": 115.435,
+            "total": 4060.435332
+          },
+          {
+            "n": 40,
+            "mean": 102.73289485,
+            "median": 112.8825,
+            "p95": 115.12475,
+            "minimum": 0.087794,
+            "maximum": 115.249,
+            "total": 4109.315794
+          },
+          {
+            "n": 40,
+            "mean": 103.205347975,
+            "median": 113.0505,
+            "p95": 118.92279999999998,
+            "minimum": 0.099319,
+            "maximum": 124.65,
+            "total": 4128.213919
+          }
+        ]
+      },
+      "batched": {
+        "timing_ms": {
+          "n": 240,
+          "mean": 4.308527095833333,
+          "median": 4.307919999999999,
+          "p95": 4.6682545,
+          "minimum": 0.063769,
+          "maximum": 14.8115,
+          "total": 1034.046503
+        },
+        "totals": {
+          "gpu_calls": 111822,
+          "sync_calls": 384,
+          "cache_hits": 111438
+        },
+        "active_key_range": [
+          3,
+          21
+        ],
+        "factor_slot_range": [
+          3,
+          472
+        ],
+        "batch_totals": {
+          "requests": 468,
+          "batched_graphs": 462,
+          "prepared_factors": 111438
+        },
+        "rounds": [
+          {
+            "n": 40,
+            "mean": 4.290407475,
+            "median": 4.32524,
+            "p95": 4.5983835,
+            "minimum": 0.063769,
+            "maximum": 14.4216,
+            "total": 171.616299
+          },
+          {
+            "n": 40,
+            "mean": 4.2796659,
+            "median": 4.269575,
+            "p95": 4.659362999999996,
+            "minimum": 0.084666,
+            "maximum": 13.5617,
+            "total": 171.186636
+          },
+          {
+            "n": 40,
+            "mean": 4.261822075,
+            "median": 4.31391,
+            "p95": 4.5903815,
+            "minimum": 0.085133,
+            "maximum": 13.9739,
+            "total": 170.472883
+          },
+          {
+            "n": 40,
+            "mean": 4.2926949500000005,
+            "median": 4.302135,
+            "p95": 4.604429499999999,
+            "minimum": 0.089948,
+            "maximum": 14.8115,
+            "total": 171.707798
+          },
+          {
+            "n": 40,
+            "mean": 4.3153216,
+            "median": 4.327725,
+            "p95": 4.720181,
+            "minimum": 0.088804,
+            "maximum": 14.2806,
+            "total": 172.612864
+          },
+          {
+            "n": 40,
+            "mean": 4.411250575,
+            "median": 4.3043700000000005,
+            "p95": 4.93054449999999,
+            "minimum": 0.120933,
+            "maximum": 14.79,
+            "total": 176.450023
+          }
+        ]
+      },
+      "ratios": {
+        "mean": 0.042197309749961796,
+        "median": 0.03835740361499421,
+        "p95": 0.04044010871801535,
+        "total": 0.042197309749961796
+      },
+      "paired_rounds": [
+        {
+          "round": 0,
+          "first": "batched",
+          "median_ratio": 0.03840697591816438,
+          "p95_ratio": 0.040184121080616274,
+          "median_delta_ms": -108.29076
+        },
+        {
+          "round": 1,
+          "first": "ordinary",
+          "median_ratio": 0.0390461100898973,
+          "p95_ratio": 0.03996160245634496,
+          "median_delta_ms": -105.07742499999999
+        },
+        {
+          "round": 2,
+          "first": "batched",
+          "median_ratio": 0.03834825278017299,
+          "p95_ratio": 0.03913617275777533,
+          "median_delta_ms": -108.17909
+        },
+        {
+          "round": 3,
+          "first": "ordinary",
+          "median_ratio": 0.038464636801330394,
+          "p95_ratio": 0.04020078874901995,
+          "median_delta_ms": -107.544365
+        },
+        {
+          "round": 4,
+          "first": "batched",
+          "median_ratio": 0.03833831639093748,
+          "p95_ratio": 0.04100057546270459,
+          "median_delta_ms": -108.55477499999999
+        },
+        {
+          "round": 5,
+          "first": "ordinary",
+          "median_ratio": 0.03807475420276779,
+          "p95_ratio": 0.0414600438267514,
+          "median_delta_ms": -108.74613
+        }
+      ]
+    }
+  },
+  "gpu_median_p95_gate": true,
+  "wall_seconds": 31.28099170100006,
+  "command": [
+    "taskset",
+    "-c",
+    "2",
+    "/workspace/cbs_gtsam4.3/runs/e1b4a_local_update_batching_20261012/release_2/test_solver_3",
+    "--gtest_filter=UpdateBatchSolver.DISABLED_AlternatingBenchmark",
+    "--gtest_output=xml:/workspace/cbs_gtsam4.3/runs/e1b4a_local_update_batching_20261012/release_2/timing1/test_solver.xml",
+    "--gtest_also_run_disabled_tests"
+  ],
+  "evidence_hashes": {
+    "test_solver_ldd.txt": "4dc401ce334805bc0d52116bea6770591afea790b6a87a1619bd03012b69d724",
+    "commands.json": "0445333327cffdf7fb3ffe1ecf93f8c795ad1f6a595bcea96695eb30f19303c8",
+    "test_solver.xml": "200846f31615e1913efe9fe5b6560202dc33c6398cd3d8a9774296de321ef16b",
+    "passed.json": "f3d9e263b71d5d0536c36801d2fc06fda9435286ab341595b4e762a1ee4bed97",
+    "test_solver.log": "98212104f373f3d4a1c9ddc39b9a38f50289c21f19d66b54a79ea11bbb7c143e"
+  },
+  "caveats": [
+    "CPU fallback acceptance is interpreted against all six paired rounds; no new threshold invented.",
+    "All40 steps, including initial prior-only step; percentile linear interpolation.",
+    "Times are solver.update scope, not complete source latency; printed log precision retained.",
+    "No whole-system or live-throughput inference."
+  ]
+}
