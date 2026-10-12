@@ -7,7 +7,8 @@ nonlinear LOCAL smoother. Preserve the validated E1b.4a implementation as the
 reference and rollback path. **S0/S1 preservation and feasibility, B0's unchanged
 timing reference and S2's isolated Gaussian backend are complete. S3's private
 lifecycle, synthetic and real-data first40s shadow gates now pass. The
-authoritative LOCAL provider remains unchanged; S4 has not started.**
+authoritative LOCAL provider remains unchanged. S4a saved-equation cost attribution
+is complete; no candidate publication or S4 live run has started.**
 See [S1 feasibility findings](GLIM_SHARED_LINEARIZATION_FEASIBILITY_S1_20261012.md)
 for the actual MAIN implementation and exact lifecycle hooks.
 
@@ -194,6 +195,13 @@ its result, and obtain the next decision. Do not start a campaign automatically.
 | S3 | Shadow validation on retained exact inputs where sufficient; at most one authorized 40 s capture if MAIN snapshots are missing | Passed: one ETH1 first40s capture, 783 updates, 313 retirements, 20 independent covariance checks (joint relative error max6.01e-15); 44/44 Release and ASan/UBSan,18 existing tests, exact receiver repeat. Old LOCAL authoritative. See experiments/shared_linearization_s3_capture_20261012/REPORT.md |
 | S4 | Candidate-only LOCAL covariance timing with identical retained inputs, then one separately authorized matched 40 s live check | Disable the second nonlinear LOCAL solver only in the candidate; validate factor conservation, publication, covariance and end-to-end runtime; report expected covariance/trajectory differences from the old definition |
 
+S4a's same-input timing is complete. The unchanged query costs160.274ms median;
+95.94% of query time is dense rank inspection, which computes unused eigenvectors.
+History stage/commit totals0.535s for783 updates. No provider promotion or live
+candidate run is justified yet. The next proposed isolated patch is
+EigenvaluesOnly with the same rank rejection policy, tested on the saved inputs.
+See [cost attribution](experiments/shared_linearization_s4_timing_20261012/REPORT.md).
+
 S3 is complete on the bounded real-data window. Its saved native equations,
 charts and lifecycle journal now support the next same-input timing gate without
 another source capture. See the [S3 result](experiments/shared_linearization_s3_capture_20261012/REPORT.md).
@@ -201,8 +209,9 @@ Sampled shadow covariance queries cost about160ms median, including dense rank
 inspection and Gaussian covariance work. Measure the required query cadence and
 candidate-only cost on retained equations before promising a speedup. Both
 unchanged timing captures remain preserved. S3 ran both covariance paths and
-does not establish replacement performance. No S4, full160s or new sequence
-follows automatically.
+does not establish replacement performance. S4a subsequently attributes this cost
+as recorded above. No S4 publication/live test, full160s or new sequence follows
+automatically.
 
 Proposed production selector semantics are `independent_local` (unchanged default),
 `shared_native_shadow` (compute but do not publish), and `shared_native` (publish

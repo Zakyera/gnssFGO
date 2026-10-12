@@ -1,0 +1,71 @@
+[
+  {
+    "name": "unit",
+    "command": [
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/asan_nopie/tests",
+      "--gtest_output=xml:/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/asan_nopie_results/unit.xml"
+    ],
+    "returncode": 0,
+    "seconds": 0.21442103699882864
+  },
+  {
+    "name": "pose_original",
+    "command": [
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/asan_nopie/original",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s3_capture_20261012/release_1/fixture.bin",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/asan_nopie_results/pose_original.bin"
+    ],
+    "returncode": 0,
+    "seconds": 0.03568380199976673
+  },
+  {
+    "name": "pose_instrumented",
+    "command": [
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/asan_nopie/instrumented",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s3_capture_20261012/release_1/fixture.bin",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/asan_nopie_results/pose_instrumented.bin"
+    ],
+    "returncode": 0,
+    "seconds": 0.0275191469991114
+  },
+  {
+    "name": "imu_original",
+    "command": [
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/asan_nopie/original",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s3_capture_20261012/mixed_fixture/imu.bin",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/asan_nopie_results/imu_original.bin"
+    ],
+    "returncode": 0,
+    "seconds": 0.031012714998723823
+  },
+  {
+    "name": "imu_instrumented",
+    "command": [
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/asan_nopie/instrumented",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s3_capture_20261012/mixed_fixture/imu.bin",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/asan_nopie_results/imu_instrumented.bin"
+    ],
+    "returncode": 0,
+    "seconds": 0.031161812999926042
+  },
+  {
+    "name": "bad_magic",
+    "command": [
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/asan_nopie/instrumented",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/asan_nopie_results/bad_magic.input",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/asan_nopie_results/bad_magic.bin"
+    ],
+    "returncode": 1,
+    "seconds": 0.01059090200033097
+  },
+  {
+    "name": "truncated",
+    "command": [
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/asan_nopie/instrumented",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/asan_nopie_results/truncated.input",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/asan_nopie_results/truncated.bin"
+    ],
+    "returncode": 1,
+    "seconds": 0.026174407999860705
+  }
+]

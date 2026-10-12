@@ -145,6 +145,7 @@ shared IMU, past means or nonlinear history are statistically independent.
 | B0 | Fresh unchanged first40s overall timing reference | Preserved E1b.4a build/settings; original functional gates and exact saved-journal repeat; report MAIN, LOCAL, covariance and complete-scan timing | Passed: LOCAL median/p95 10.965/15.385 ms; complete-scan 206.942/437.376 ms; functional gates and exact receiver repeat pass. MAIN remains dominant |
 | S2 | Private default-off native Gaussian history prototype | Synthetic same-chart dense oracle, native-only retirement, tangent transport, lifecycle/rollback and focused sanitizers | Passed: 26/26 Release; 25/25 UBSan and ASan+UBSan. Twelve retirements, dense oracle, zero extra native evaluations in actual MAIN cache fixture. No live integration, publication or run |
 | S3 | Private default-off MAIN lifecycle and native-admission observer | Actual fallback-wrapper update/retirement/reset fixtures; no added native evaluations; unchanged MAIN; same-chart shadow oracle before promotion | Real-data shadow gate passed: one ETH1 first40s capture;783 updates,313 retirements,20 covariance checks, max joint relative difference6.01e-15.44/44 Release twice and ASan/UBSan;18 regressions;receiver repeat exact. LOCAL authoritative. See experiments/shared_linearization_s3_capture_20261012/REPORT.md |
+| S4a | Saved native equation cost attribution only | Original/instrumented covariance equivalence, isolated stage/query timings and query-cadence audit | Complete: dense rank check95.94% of query cost; original query median160.274ms. Not a faster provider; proposed EigenvaluesOnly patch not implemented. See experiments/shared_linearization_s4_timing_20261012/REPORT.md |
 
 E1 first reuses existing gtsam_points batching around LOCAL graph preparation;
 it retains the auxiliary smoother and its conditioning. GPU-aware sidecar update,
@@ -187,6 +188,27 @@ its own explicit algorithmic decision. Fixed lag may bound resources but brings
 historical revision and marginal-prior semantics; reconsider only separately.
 
 ## Execution ledger
+
+### S4a — isolated saved equation cost attribution
+
+- Authorization: user "proceed" after the S3 timing clarification, 2026-10-12.
+- Status: COST ATTRIBUTED; NO PROMOTION. Parent36ded67; branch engineering/shared-native-gaussian-s4-timing-20261012.
+- Replay S3's recorded native equations only. Time the unchanged Gaussian
+  history and covariance query with original/instrumented numerical comparison.
+  No source run, speed patch, covariance-provider promotion or tuning.
+- Protocol: experiments/shared_linearization_s4_timing_20261012/PROTOCOL.md.
+- Three interleaved measured passes plus warm-ups of all783 saved updates and
+  20 exact queries: unchanged and timer-instrumented covariances byte-identical.
+  Original query median160.274ms; dense rank check153.513ms,95.94% of query time.
+  Stage/commit total0.535s per783 updates; retirement elimination median0.038ms.
+  The dense check requests unused eigenvectors. Next proposed single patch:
+  EigenvaluesOnly with identical rank policy, correctness and timing gates.
+- Release25/25 and focused non-PIE ASan/UBSan25/25 plus saved mixed fixtures pass.
+  Initial PIE sanitizer mixed-fixture startup DEADLYSIGNAL retained; identical
+  objects relinked non-PIE pass, root cause not claimed. No production changes.
+- Observed389 LOCAL queries vs20 sampled. MAIN's17331 revision rows are separate.
+  Current candidate not a speed replacement. Report/evidence:
+  experiments/shared_linearization_s4_timing_20261012/REPORT.md.
 
 ### S3 continuation — recorded Gaussian oracle and first40s shadow gate
 

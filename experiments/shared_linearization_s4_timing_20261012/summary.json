@@ -1,0 +1,440 @@
+{
+  "passed": true,
+  "variants": {
+    "original": {
+      "stage": {
+        "stage_total_s": {
+          "n": 2349,
+          "mean": 0.6483577007237122,
+          "median": 0.681874,
+          "p95": 0.9226963999999999,
+          "max": 1.75346,
+          "total": 1522.992239
+        }
+      },
+      "commit": {
+        "commit_total_s": {
+          "n": 2349,
+          "mean": 0.0352780153256705,
+          "median": 0.034669000000000005,
+          "p95": 0.0599172,
+          "max": 0.467841,
+          "total": 82.868058
+        }
+      },
+      "query": {
+        "query_total_s": {
+          "n": 60,
+          "mean": 141.81372135,
+          "median": 160.27386,
+          "p95": 167.68603274999998,
+          "max": 170.294343,
+          "total": 8508.823281
+        },
+        "recorded_s": {
+          "n": 60,
+          "mean": 141.8680786,
+          "median": 159.6556685,
+          "p95": 171.20424645,
+          "max": 174.710382,
+          "total": 8512.084716
+        }
+      },
+      "per_pass": {
+        "1": {
+          "stage": 0.513426605,
+          "commit": 0.027294153,
+          "query": 2.847657021
+        },
+        "2": {
+          "stage": 0.504751468,
+          "commit": 0.027667696,
+          "query": 2.826746595
+        },
+        "3": {
+          "stage": 0.504814166,
+          "commit": 0.027906209,
+          "query": 2.834419665
+        }
+      },
+      "errors": {
+        "max_information_relative_error": 1.6942822922309972e-17,
+        "max_covariance_relative_error": 3.729200613673675e-15
+      },
+      "epoch_bins": {
+        "early": {
+          "stage": {
+            "n": 585,
+            "mean": 0.4063047247863248,
+            "median": 0.437699,
+            "p95": 0.7794587999999999,
+            "max": 1.2268109999999999,
+            "total": 237.688264
+          },
+          "query": {
+            "n": 15,
+            "mean": 86.57657393333334,
+            "median": 92.08735399999999,
+            "p95": 161.3274743,
+            "max": 161.62795699999998,
+            "total": 1298.648609
+          }
+        },
+        "middle": {
+          "stage": {
+            "n": 1176,
+            "mean": 0.7257243265306123,
+            "median": 0.6988675,
+            "p95": 0.995394,
+            "max": 1.75346,
+            "total": 853.451808
+          },
+          "query": {
+            "n": 30,
+            "mean": 159.67665743333333,
+            "median": 161.034326,
+            "p95": 169.481728,
+            "max": 170.294343,
+            "total": 4790.299723
+          }
+        },
+        "late": {
+          "stage": {
+            "n": 588,
+            "mean": 0.7344424608843537,
+            "median": 0.7214769999999999,
+            "p95": 0.8369951999999999,
+            "max": 1.017636,
+            "total": 431.852167
+          },
+          "query": {
+            "n": 15,
+            "mean": 161.3249966,
+            "median": 162.968548,
+            "p95": 166.9593557,
+            "max": 167.60466399999999,
+            "total": 2419.874949
+          }
+        }
+      },
+      "retirement_only_ms": {
+        "n": 939,
+        "mean": 0.7670516411075612,
+        "median": 0.749023,
+        "p95": 1.0377295999999991,
+        "max": 1.75346,
+        "total": 720.261491
+      }
+    },
+    "instrumented": {
+      "stage": {
+        "stage.copy_and_prior_checks_s": {
+          "n": 2349,
+          "mean": 0.020438961260110685,
+          "median": 0.021007,
+          "p95": 0.029863199999999996,
+          "max": 0.07438800000000001,
+          "total": 48.01112
+        },
+        "stage.finalize_s": {
+          "n": 2349,
+          "mean": 0.1513199110259685,
+          "median": 0.156536,
+          "p95": 0.2018662,
+          "max": 1.677582,
+          "total": 355.450471
+        },
+        "stage.partition_incident_s": {
+          "n": 2349,
+          "mean": 0.01643188846317582,
+          "median": 0.012337,
+          "p95": 0.0417296,
+          "max": 0.103993,
+          "total": 38.598506
+        },
+        "stage.retirement_elimination_s": {
+          "n": 2349,
+          "mean": 0.03326562196679438,
+          "median": 2.8e-05,
+          "p95": 0.2060252,
+          "max": 0.6466259999999999,
+          "total": 78.140946
+        },
+        "stage.validate_and_clone_native_s": {
+          "n": 2349,
+          "mean": 0.40300441038739887,
+          "median": 0.44032400000000005,
+          "p95": 0.5554745999999999,
+          "max": 0.940654,
+          "total": 946.65736
+        },
+        "stage_total_s": {
+          "n": 2349,
+          "mean": 0.6372988880374627,
+          "median": 0.672536,
+          "p95": 0.8935034,
+          "max": 2.4615,
+          "total": 1497.015088
+        }
+      },
+      "commit": {
+        "commit_total_s": {
+          "n": 2349,
+          "mean": 0.03492527373350362,
+          "median": 0.034248,
+          "p95": 0.056857599999999994,
+          "max": 0.41125100000000003,
+          "total": 82.039468
+        }
+      },
+      "query": {
+        "query.assemble_dense_hessian_s": {
+          "n": 60,
+          "mean": 2.743679316666667,
+          "median": 3.0521795,
+          "p95": 3.30432175,
+          "max": 3.516702,
+          "total": 164.620759
+        },
+        "query.clone_graph_s": {
+          "n": 60,
+          "mean": 0.09399861666666666,
+          "median": 0.10190099999999999,
+          "p95": 0.1320065,
+          "max": 0.150509,
+          "total": 5.639917
+        },
+        "query.dense_rank_check_s": {
+          "n": 60,
+          "mean": 135.60347421666665,
+          "median": 153.512904,
+          "p95": 160.20549214999997,
+          "max": 183.71757,
+          "total": 8136.208453
+        },
+        "query.endpoint_rank_check_s": {
+          "n": 60,
+          "mean": 0.009386516666666667,
+          "median": 0.009004999999999999,
+          "p95": 0.01101475,
+          "max": 0.015193,
+          "total": 0.563191
+        },
+        "query.extract_and_transport_s": {
+          "n": 60,
+          "mean": 0.006898983333333333,
+          "median": 0.0068385,
+          "p95": 0.0082194,
+          "max": 0.011201,
+          "total": 0.413939
+        },
+        "query.joint_marginal_s": {
+          "n": 60,
+          "mean": 1.69403875,
+          "median": 1.7993375,
+          "p95": 3.2134855499999984,
+          "max": 3.9415530000000003,
+          "total": 101.642325
+        },
+        "query.relative_covariance_helper_s": {
+          "n": 60,
+          "mean": 0.038895933333333334,
+          "median": 0.033501,
+          "p95": 0.046595349999999994,
+          "max": 0.26108400000000004,
+          "total": 2.333756
+        },
+        "query.sparse_elimination_s": {
+          "n": 60,
+          "mean": 0.8940823333333333,
+          "median": 0.836404,
+          "p95": 1.4639904499999996,
+          "max": 1.765771,
+          "total": 53.64494
+        },
+        "query_total_s": {
+          "n": 60,
+          "mean": 141.34421158333333,
+          "median": 160.480201,
+          "p95": 168.00630844999998,
+          "max": 191.609777,
+          "total": 8480.652695
+        },
+        "recorded_s": {
+          "n": 60,
+          "mean": 141.8680786,
+          "median": 159.6556685,
+          "p95": 171.20424645,
+          "max": 174.710382,
+          "total": 8512.084716
+        }
+      },
+      "per_pass": {
+        "1": {
+          "stage": 0.497862103,
+          "commit": 0.027721003,
+          "query": 2.827228377
+        },
+        "2": {
+          "stage": 0.500650412,
+          "commit": 0.026967166,
+          "query": 2.828795465
+        },
+        "3": {
+          "stage": 0.498502573,
+          "commit": 0.027351299,
+          "query": 2.824628853
+        }
+      },
+      "errors": {
+        "max_information_relative_error": 1.6942822922309972e-17,
+        "max_covariance_relative_error": 3.729200613673675e-15
+      },
+      "epoch_bins": {
+        "early": {
+          "stage": {
+            "n": 585,
+            "mean": 0.40815007863247865,
+            "median": 0.442454,
+            "p95": 0.7767138,
+            "max": 1.189429,
+            "total": 238.767796
+          },
+          "query": {
+            "n": 15,
+            "mean": 87.4859698,
+            "median": 92.063479,
+            "p95": 165.0638638,
+            "max": 167.90696699999998,
+            "total": 1312.289547
+          }
+        },
+        "middle": {
+          "stage": {
+            "n": 1176,
+            "mean": 0.7094108741496599,
+            "median": 0.688722,
+            "p95": 0.97805525,
+            "max": 2.4615,
+            "total": 834.267188
+          },
+          "query": {
+            "n": 30,
+            "mean": 159.07330256666665,
+            "median": 160.480201,
+            "p95": 169.9973522,
+            "max": 191.609777,
+            "total": 4772.199077
+          }
+        },
+        "late": {
+          "stage": {
+            "n": 588,
+            "mean": 0.7210545986394558,
+            "median": 0.6990029999999999,
+            "p95": 0.82429895,
+            "max": 0.9471320000000001,
+            "total": 423.980104
+          },
+          "query": {
+            "n": 15,
+            "mean": 159.7442714,
+            "median": 161.924413,
+            "p95": 165.5373569,
+            "max": 166.15062899999998,
+            "total": 2396.164071
+          }
+        }
+      },
+      "retirement_only_ms": {
+        "n": 939,
+        "mean": 0.7545167060702875,
+        "median": 0.738269,
+        "p95": 1.0025805999999997,
+        "max": 2.4615,
+        "total": 708.491187
+      },
+      "retirement_elimination_only_ms": {
+        "n": 939,
+        "mean": 0.08318505431309904,
+        "median": 0.037712,
+        "p95": 0.2782536999999991,
+        "max": 0.6466259999999999,
+        "total": 78.110766
+      },
+      "rank_fraction": 0.9593847013446175,
+      "non_rank_query_ms": {
+        "n": 60,
+        "mean": 5.740737366666669,
+        "median": 6.329627500000004,
+        "p95": 8.50984330000001,
+        "max": 9.015496000000011,
+        "total": 344.44424200000014
+      },
+      "timer_unaccounted_ms": {
+        "n": 60,
+        "mean": 0.2597569166666677,
+        "median": 0.32519250000001554,
+        "p95": 0.5018381999999807,
+        "max": 0.7140479999999949,
+        "total": 15.585415000000063
+      }
+    }
+  },
+  "release_tests": {
+    "tests": 25,
+    "failures": 0,
+    "errors": 0,
+    "disabled": 0
+  },
+  "asan_nopie_tests": {
+    "tests": 25,
+    "failures": 0,
+    "errors": 0,
+    "disabled": 0
+  },
+  "cadence": {
+    "log": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_shared_linearization_s3_20261012/prepared/profile40_on_source/ros_logs/b36919ac-c668-11f1-9d82-362a2d7902c5/glim_rosnode-1-stdout.log",
+    "log_sha256": "3c0fcd6af25c32649095c8637e3b4f7e227df2f3ceb9e273fe666426f5dd69ea",
+    "calls": 389,
+    "requested_pairs": 389,
+    "successful_marginals": 389,
+    "outgoing_beliefs": 389,
+    "revision_rows": 17331,
+    "note": "Revision diagnostics use MAIN jointMarginalInformation separately; not extra LOCAL provider calls. Only 20 exact native query checkpoints retained.",
+    "projected_query_seconds": 55.16553760515001,
+    "projection_limit": "Sampled-query mean times observed call count only; not an unsampled all-query or end-to-end benchmark."
+  },
+  "identities": {
+    "passed": true,
+    "mode": "release",
+    "pairs": [
+      {
+        "label": "warmup",
+        "sha256": "3652c745b2f0005c4dbaf230dbcd5b26ecb89d2fd2cecc85bff8afd7d20841bd",
+        "byte_identical": true
+      },
+      {
+        "label": "measured1",
+        "sha256": "3652c745b2f0005c4dbaf230dbcd5b26ecb89d2fd2cecc85bff8afd7d20841bd",
+        "byte_identical": true
+      },
+      {
+        "label": "measured2",
+        "sha256": "3652c745b2f0005c4dbaf230dbcd5b26ecb89d2fd2cecc85bff8afd7d20841bd",
+        "byte_identical": true
+      },
+      {
+        "label": "measured3",
+        "sha256": "3652c745b2f0005c4dbaf230dbcd5b26ecb89d2fd2cecc85bff8afd7d20841bd",
+        "byte_identical": true
+      }
+    ],
+    "inputs": {
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s3_capture_20261012/release_1/fixture.bin": "e18a09ef240e33474455711460baea223db6c53c4f020f141b0d627b2fed1adb",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s3_capture_20261012/mixed_fixture/imu.bin": "591c1ce8fe4e48adffc8d0dfc82c8ee0eb44136a76b56c83fc63caa8543716de"
+    },
+    "real_journal_sha256": "25ab6edd4d33e55c6993abbaf63982b9711e2f634709d02a2b834460e258de1f"
+  },
+  "instrumentation_total_ratio": 0.9945647012508056
+}

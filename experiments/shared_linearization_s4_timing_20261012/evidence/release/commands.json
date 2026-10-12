@@ -1,0 +1,148 @@
+[
+  {
+    "command": [
+      "c++",
+      "-std=c++17",
+      "-O2",
+      "-DNDEBUG",
+      "-pthread",
+      "-I/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/driver",
+      "-I/workspace/cbs_gtsam4.3/src/cbs/include",
+      "-isystem",
+      "/workspace/cbs_gtsam4.3/devel/include/gtsam/3rdparty/Eigen",
+      "-isystem",
+      "/workspace/cbs_gtsam4.3/devel/include",
+      "-c",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/driver/NativeGaussianHistory.cpp",
+      "-o",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/release/original.o"
+    ],
+    "seconds": 13.672917199000949,
+    "returncode": 0
+  },
+  {
+    "command": [
+      "c++",
+      "-std=c++17",
+      "-O2",
+      "-DNDEBUG",
+      "-pthread",
+      "-I/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/driver",
+      "-I/workspace/cbs_gtsam4.3/src/cbs/include",
+      "-isystem",
+      "/workspace/cbs_gtsam4.3/devel/include/gtsam/3rdparty/Eigen",
+      "-isystem",
+      "/workspace/cbs_gtsam4.3/devel/include",
+      "-c",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/release/instrumented.cpp",
+      "-o",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/release/instrumented.o"
+    ],
+    "seconds": 13.492568936999305,
+    "returncode": 0
+  },
+  {
+    "command": [
+      "c++",
+      "-std=c++17",
+      "-O2",
+      "-DNDEBUG",
+      "-pthread",
+      "-I/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/driver",
+      "-I/workspace/cbs_gtsam4.3/src/cbs/include",
+      "-isystem",
+      "/workspace/cbs_gtsam4.3/devel/include/gtsam/3rdparty/Eigen",
+      "-isystem",
+      "/workspace/cbs_gtsam4.3/devel/include",
+      "-c",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/driver/replay.cpp",
+      "-o",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/release/replay.o"
+    ],
+    "seconds": 3.4310463609999715,
+    "returncode": 0
+  },
+  {
+    "command": [
+      "c++",
+      "-std=c++17",
+      "-O2",
+      "-DNDEBUG",
+      "-pthread",
+      "-I/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/driver",
+      "-I/workspace/cbs_gtsam4.3/src/cbs/include",
+      "-isystem",
+      "/workspace/cbs_gtsam4.3/devel/include/gtsam/3rdparty/Eigen",
+      "-isystem",
+      "/workspace/cbs_gtsam4.3/devel/include",
+      "-c",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/driver/test_native_gaussian.cpp",
+      "-o",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/release/tests.o"
+    ],
+    "seconds": 9.725586755999757,
+    "returncode": 0
+  },
+  {
+    "command": [
+      "c++",
+      "-std=c++17",
+      "-O2",
+      "-DNDEBUG",
+      "-pthread",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/release/original.o",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/release/replay.o",
+      "-o",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/release/original",
+      "-L/workspace/cbs_gtsam4.3/runs/e1b4a_local_update_batching_20261012/release_2",
+      "-L/workspace/cbs_gtsam4.3/devel/lib",
+      "-Wl,-rpath,/workspace/cbs_gtsam4.3/runs/e1b4a_local_update_batching_20261012/release_2:/workspace/cbs_gtsam4.3/devel/lib",
+      "-lgtsam",
+      "-ltbb"
+    ],
+    "seconds": 0.056992629999513156,
+    "returncode": 0
+  },
+  {
+    "command": [
+      "c++",
+      "-std=c++17",
+      "-O2",
+      "-DNDEBUG",
+      "-pthread",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/release/instrumented.o",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/release/replay.o",
+      "-o",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/release/instrumented",
+      "-L/workspace/cbs_gtsam4.3/runs/e1b4a_local_update_batching_20261012/release_2",
+      "-L/workspace/cbs_gtsam4.3/devel/lib",
+      "-Wl,-rpath,/workspace/cbs_gtsam4.3/runs/e1b4a_local_update_batching_20261012/release_2:/workspace/cbs_gtsam4.3/devel/lib",
+      "-lgtsam",
+      "-ltbb"
+    ],
+    "seconds": 0.05671389199960686,
+    "returncode": 0
+  },
+  {
+    "command": [
+      "c++",
+      "-std=c++17",
+      "-O2",
+      "-DNDEBUG",
+      "-pthread",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/release/instrumented.o",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/release/tests.o",
+      "-o",
+      "/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_timing_20261012/release/tests",
+      "-L/workspace/cbs_gtsam4.3/runs/e1b4a_local_update_batching_20261012/release_2",
+      "-L/workspace/cbs_gtsam4.3/devel/lib",
+      "-Wl,-rpath,/workspace/cbs_gtsam4.3/runs/e1b4a_local_update_batching_20261012/release_2:/workspace/cbs_gtsam4.3/devel/lib",
+      "-lgtsam",
+      "-ltbb",
+      "-lgtest_main",
+      "-lgtest"
+    ],
+    "seconds": 0.08982318999915151,
+    "returncode": 0
+  }
+]
