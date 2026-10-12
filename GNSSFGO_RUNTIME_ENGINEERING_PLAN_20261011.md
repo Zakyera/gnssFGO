@@ -684,6 +684,30 @@ documentation/archival/version control only; no estimator implementation or run.
 - STOP. A new explicitly authorized first40s capture may use fixed_release plus
   startup/layout gates; no automatic retry, next speed patch, promotion or push.
 
+### E1b.3b — repaired first40s ETH1 LOCAL profiling capture
+
+- Authorization: user "proceed" after E1b.3a report, 2026-10-12.
+- Status: BLOCKED BEFORE PLAYBACK; branch engineering/e1b-profile40-fixed-20261012.
+- Parent391e936dd846a831d9cffc343c2b21b9f53b2171.
+- One fresh first40s ETH1 classic CBS-ON capture at0.10x with concurrent native
+  GLIM, native Kimera and frozen E2 WNOA receiver. Reuse E1b.3 source profile,
+  priors, source/receiver binaries and integrity gates; change only run paths,
+  ROS port, unique source session and GLIM's repaired private libglim_ros.so.
+- Preflight must verify3344-byte wrapper allocation, actual process maps and
+  profiler environment before playback. Validate source/receiver conservation,
+  publication stationarity, original native outputs and deterministic replay.
+- Stop on failure, no automatic repeat. Partition LOCAL timing only from a
+  successful, complete capture. No optimization/tuning/follow-up sequence/push.
+- One capture launched. Preflight passed 668 protected hashes and 18 tests, but
+  `verify_effective.py` falsely required symlinked dependency `libglim.so` to
+  appear under `fixed_release` in `/proc/maps`; Linux reported its real pinned
+  `release_2` target. Source stopped before bag playback; transport counts all
+  zero. Retained E1b.3a actual maps prove the repaired wrapper path and resolved
+  dependency paths. Post-stop 668 hashes unchanged, owned processes stopped.
+  No timing or trajectory result and no retry. Full evidence/report:
+  `experiments/e1b_profile40_fixed_20261012/REPORT.md`. Next task, if
+  authorized, must correct/test only this pre-playback gate and use a new root.
+
 ### Template for subsequent tasks
 
 Copy this block under its task ID; do not erase earlier attempts.
