@@ -1,0 +1,12 @@
+set pagination off
+set confirm off
+set debuginfod enabled off
+set sysroot /proc/37884/root
+attach 37884
+handle SIGSTOP nostop noprint pass
+info sharedlibrary
+continue
+bt 20
+info registers
+kill
+quit

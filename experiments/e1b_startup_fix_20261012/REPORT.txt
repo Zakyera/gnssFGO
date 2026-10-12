@@ -1,0 +1,167 @@
+E1b.3a — private GLIM profiling-build startup repair
+2026-10-12
+
+Outcome
+The E1b.3 allocator crash has a reproduced cause and an isolated repair.
+Our private profiling relink combined incompatible object layouts. This was
+a build error, not evidence of a WNOA/CBS numerical failure, insufficient GPU
+capacity for the dataset, or processing growth. No dataset was played here.
+Release startup, idle and shutdown now pass with profiling OFF and ON.
+The GLIM speed problem is NOT solved by this repair; the intended profiling
+capture has still not happened. Stop before a new capture/optimization.
+
+1. Scope and identity
+Followed GNSSFGO_RUNTIME_ENGINEERING_PLAN_20261011.md, task E1b.3a only.
+Parent: 7c1b07f4c79e55a16163b5a5cb5a33ed6899f2a9.
+Branch: engineering/e1b-startup-fix-20261012.
+Local artifacts:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/e1b_startup_fix_20261012
+Container mirror: /workspace/cbs_gtsam4.3/runs/e1b_startup_fix_20261012
+No bag/sensor publishing, Kimera, receiver, tuning, model edits, dependency
+upgrade, source-checkout edits, installation or push. Only an isolated GLIM
+node and owned ROS master, with a fixed clock seed and no measurements.
+
+2. Actual corrupting write, not just the allocator assertion
+glim_ros1/src/glim_ros/glim_ros.cpp:109 allocates:
+  cbs_bridge.reset(new glim::GlimCbsBridge(nh));
+The allocation size is compiled into glim_ros.cpp.o, not dynamically obtained
+from the constructor library. E1b.2 build.py rebuilt the instrumented bridge
+but reused the older workspace allocator and inspector objects from link.txt.
+
+Object / independent header probe                 Bridge bytes
+workspace build/.../glim_ros.cpp.o (stale)         3296 (0xce0)
+known working E1 private/glim_ros.o                3344 (0xd10)
+current header sizeof(glim::GlimCbsBridge)         3344
+repaired fixed_release/glim_ros.o                  3344 (0xd10)
+
+Disassembly excerpts, hashes and exact paths are in validation.json under
+allocation_evidence. The size probe uses the same include order and target
+flags as the private compile, not a guess from timestamps or source text.
+
+ASan negative control retains the stale allocator and instruments the current
+bridge constructor. The actual no-data GLIM process reports:
+  ERROR: AddressSanitizer: heap-buffer-overflow
+  WRITE of size 8
+  GlimCbsBridge::GlimCbsBridge(ros::NodeHandle&)
+  .../overlay/cbs_bridge.cpp:646
+  0 bytes to the right of 3296-byte region
+  allocated by operator new -> GlimROS::GlimROS
+
+Line646 is the constructor/member-initialization location. The report does
+not identify one particular member by name; it does prove a write outside
+the allocation while constructing the larger object. The 48-byte shortfall
+explains why malloc detected corrupted heap state later in the failed run.
+Evidence: evidence/asan_bad/node.log. No sensor processing was needed.
+
+This does not implicate the working E1/E2 libraries: E1's allocator already
+uses3344, and those binaries/results retain their original hashes. The defect
+was introduced by the private profiling build recipe's stale-object reuse.
+
+3. Small repair and regression
+build_fix.py recompiles the unchanged current glim_ros.cpp and
+glim_factor_graph_inspector.cpp using the frozen wrapper target flags and
+the same include precedence as the instrumented cbs_bridge.cpp.o.
+Dependency files identify exactly these three transitive cbs_bridge.hpp users.
+The script fails closed if the recorded dependency closure differs.
+
+The Release repair reuses the exact already-tested instrumented bridge object:
+SHA256 d1647c6d66a9f7d5edbd438aa71c53f4ecc260c91051e4a11f77e323972e9610
+All other profiling DSOs are unchanged symlinks to E1b.2 release_2. Only the
+private libglim_ros.so is relinked. No constructor/member/optimizer algorithm
+is edited to accommodate the wrong allocation. No padding workaround.
+Actual build commands and library hashes are retained in evidence/ and
+validation.json. The repaired Release candidate lives at:
+  .../runs/e1b_startup_fix_20261012/fixed_release/libglim_ros.so
+SHA256: 567bb4bc3f0e1dacf8994ecf7ca4aa12ff128e0f91640dda3adf760cd7c85df8
+
+layout_guard.py checks the unique x86-64 constructor/allocation relocation
+against the independent sizeof probe. Unknown instruction patterns fail closed;
+this is a focused pinned-build gate, not a universal C++ ABI checker.
+Five tests: reject stale3296, accept repaired3344, accept workingE1 3344,
+check independent header probe, reject unknown disassembly. All pass.
+Future private relinks must rebuild header consumers, run this regression and
+validate whole-node startup before any sensor playback. Symbol resolution and
+isolated numerical fixtures alone did not detect the original defect.
+
+4. No-data runtime and numerical checks
+Case                         Ready/idle  Node exit  Result
+Release, profiler OFF        pass        0          no allocator/CUDA warning
+Release, profiler ON         pass        0          no allocator/CUDA warning
+ASan, profiler ON, verbose   pass        0          no reported host overflow*
+ASan, same settings repeat   pass        0          no reported host overflow*
+
+All successful cases reached actual /boxi/hesai/points subscription readiness,
+remained alive during the bounded idle check, then shut down on scoped SIGINT.
+Actual /proc maps certify the private wrapper loaded; maps excerpts archived.
+ROS state has no Hesai/CPT7/Kimera-belief publisher. Only owned ROS processes
+and clock seeds exist. Effective GLIM parameters match E1b.3 except output
+paths; output-only differences are listed in validation.json.
+With no updates there are no LOCAL profiler timing rows. Enabling the profiler
+environment here proves startup compatibility, not a live logging-overhead bound.
+
+Existing synthetic regression binaries against candidate dependency set:
+  8 profiler +1 solver +20 GPU fixtures =29 Release passes
+  1 preexisting GPU timing benchmark disabled, NOT counted as passed
+  8 focused profiler ASan/UBSan passes, leak checks enabled in this fixture
+  5 binary-layout regression passes
+The repeated solver fingerprint equals the original-library oracle exactly:
+4,716 state/covariance numbers, counted factor evaluations unchanged.
+Fingerprint SHA256:
+f156d2b49e28f9d56f1ac6305c0a1ee1c7a0ef64d658c36ff6107d023b4e3d12
+These are focused tests, not a clean rebuild/full suite of the entire workspace.
+
+5. Sanitizer/debug limitations — do not hide the unsuccessful attempts
+* Actual-node ASan instruments the bridge translation unit only. Dependencies
+and CUDA are not fully instrumented; actual-node leak checks are disabled.
+Each successful verbose ASan launch emits six cudaErrorMemoryAllocation
+warnings. Release checks do not. These tests validate the constructor write
+repair, NOT GPU workload correctness under ASan or actual CUDA capacity.
+
+The first corrected ASan launch (fixed_asan) emitted only DEADLYSIGNAL before
+"Starting GLIM" and no usable stack. It is preserved and remains unexplained.
+Two subsequent launches of the same candidate with verbose ASan diagnostics
+reached readiness and clean exit without a host memory-error report. Logging
+is not claimed to have fixed that intermittent failure. No system ASLR/ptrace
+policy, sanitizer safety check, covariance or model setting was weakened.
+
+Host debugger attachment was denied by ptrace permissions; no policy was
+changed to bypass it. Two initial ROS harness attempts queried the wrong
+network namespace and never started GLIM; switching to container-local RPC
+fixed the diagnostic harness. The stopped debugger target was cleaned with
+recorded PID/command checks inside its owning container. A first layout test
+used the copied-library directory instead of E1's object directory; corrected
+to the retained actual E1 object. A host archive check initially interpreted
+container-absolute symlinks as host paths; fixed path translation, not binaries.
+All failed attempts remain in the new artifact root. These were bounded
+no-data diagnostic attempts, not retries of the forbidden40s source capture.
+
+Raw build complete.json's reused_instrumented_bridge_sha256 field always
+names the Release bridge. For the two ASan variants, use commands.json and
+validation.json actual_bridge_object/actual_bridge_sha256: both actually link
+the SAME ASan bridge object, differing in corrected versus stale wrapper TUs.
+This reporting limitation does not affect the controlled negative comparison.
+
+6. Preservation, next step and recovery
+680 protected paths unchanged; six source repos clean at their pinned commits.
+225 shared relink inputs verified inside the container, zero mismatches.
+Working source/receiver binaries and the failed E1b.3 directory unchanged.
+No owned estimator/master/player/receiver process remains in either container.
+Validation hashes and curated evidence are in validation.json/evidence/;
+large DSOs/objects remain local, not committed. No sensitive full ROS environment
+is copied into this archive.
+
+E1b.3 remains the historical failed pre-playback attempt. E1b.3a resolves its
+specific layout bug and validates Release startup, with sanitizer limits above.
+Do NOT claim E1b profiling data, speedup,40s trajectory equivalence, late160s
+throughput, or scientific OFF/ON results from this work.
+
+Next proposed action, only after user authorization: one NEW frozen first40s
+profiling capture using fixed_release for GLIM, with a fresh output root,
+whole-node startup/maps gates and original admission/lifecycle/journal checks.
+No automatic capture retry or optimization now. Keep E4 disabled. Select a
+speed patch only from measured LOCAL phase costs once a valid capture exists.
+
+This local completion commit includes report, corrected private build recipe,
+regressions, evidence and plan update. Resolve it without a self-referential
+hash using git log -1 --format=%H -- experiments/e1b_startup_fix_20261012/REPORT.txt.
+STOP. No push or next experiment.

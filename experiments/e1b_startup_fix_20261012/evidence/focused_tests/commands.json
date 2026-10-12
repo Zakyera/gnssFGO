@@ -1,0 +1,48 @@
+[
+  {
+    "command": [
+      "taskset",
+      "-c",
+      "2",
+      "/workspace/cbs_gtsam4.3/runs/e1b_local_profile_20261012/release_2/test_profile",
+      "--gtest_output=xml:/workspace/cbs_gtsam4.3/runs/e1b_startup_fix_20261012/focused_tests/test_profile.xml"
+    ],
+    "returncode": 0
+  },
+  {
+    "command": [
+      "taskset",
+      "-c",
+      "2",
+      "/workspace/cbs_gtsam4.3/runs/e1b_local_profile_20261012/release_2/test_solver",
+      "--gtest_output=xml:/workspace/cbs_gtsam4.3/runs/e1b_startup_fix_20261012/focused_tests/test_solver.xml"
+    ],
+    "returncode": 0
+  },
+  {
+    "command": [
+      "taskset",
+      "-c",
+      "2",
+      "/workspace/cbs_gtsam4.3/runs/e1b_local_profile_20261012/release_2/test_gpu",
+      "--gtest_output=xml:/workspace/cbs_gtsam4.3/runs/e1b_startup_fix_20261012/focused_tests/test_gpu.xml"
+    ],
+    "returncode": 0
+  },
+  {
+    "command": [
+      "taskset",
+      "-c",
+      "2",
+      "/workspace/cbs_gtsam4.3/runs/e1b_local_profile_20261012/release_2/extra1/profile_asan_ubsan",
+      "--gtest_output=xml:/workspace/cbs_gtsam4.3/runs/e1b_startup_fix_20261012/focused_tests/asan_ubsan.xml"
+    ],
+    "returncode": 0
+  },
+  {
+    "command": [
+      "/workspace/cbs_gtsam4.3/runs/e1b_local_profile_20261012/release_2/test_solver"
+    ],
+    "returncode": 0
+  }
+]

@@ -1,0 +1,55 @@
+[0m[INFO] [1791795317.925104139]: Starting GLIM[0m
+[2026-10-12 08:55:17.926] [info] register linearization hooks
+[2026-10-12 08:55:17.927] [info] config_path: /workspace/cbs_gtsam4.3/runs/grandtour_eth1_presentation/grandtour_eth1_stereo_shared_cpt7_no_sidecar_cbs_off_full_346s_20260907/glim_config
+[2026-10-12 08:55:17.927] [info] GLIM timing rows enabled
+=================================================================
+==7196==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x61f000003760 at pc 0x7a91ef212d8e bp 0x7ffe39f3d530 sp 0x7ffe39f3d520
+WRITE of size 8 at 0x61f000003760 thread T0
+    #0 0x7a91ef212d8d in glim::GlimCbsBridge::GlimCbsBridge(ros::NodeHandle&) /workspace/cbs_gtsam4.3/runs/e1b_local_profile_20261012/overlay/cbs_bridge.cpp:646
+    #1 0x7a91ef10d960 in glim::GlimROS::GlimROS(ros::NodeHandle&) (/workspace/cbs_gtsam4.3/runs/e1b_startup_fix_20261012/asan_negative/libglim_ros.so+0x50d960)
+    #2 0x651deb86ff4a in GlimNode::GlimNode() (/workspace/cbs_gtsam4.3/devel/lib/glim_ros/glim_rosnode+0x35f4a)
+    #3 0x651deb84ca49 in main (/workspace/cbs_gtsam4.3/devel/lib/glim_ros/glim_rosnode+0x12a49)
+    #4 0x7a91eda35082 in __libc_start_main (/usr/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+    #5 0x651deb84cacd in _start (/workspace/cbs_gtsam4.3/devel/lib/glim_ros/glim_rosnode+0x12acd)
+
+0x61f000003760 is located 0 bytes to the right of 3296-byte region [0x61f000002a80,0x61f000003760)
+allocated by thread T0 here:
+    #0 0x7a91f122e587 in operator new(unsigned long) ../../../../src/libsanitizer/asan/asan_new_delete.cc:104
+    #1 0x7a91ef10d952 in glim::GlimROS::GlimROS(ros::NodeHandle&) (/workspace/cbs_gtsam4.3/runs/e1b_startup_fix_20261012/asan_negative/libglim_ros.so+0x50d952)
+    #2 0x651deb86ff4a in GlimNode::GlimNode() (/workspace/cbs_gtsam4.3/devel/lib/glim_ros/glim_rosnode+0x35f4a)
+    #3 0x651deb84ca49 in main (/workspace/cbs_gtsam4.3/devel/lib/glim_ros/glim_rosnode+0x12a49)
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow /workspace/cbs_gtsam4.3/runs/e1b_local_profile_20261012/overlay/cbs_bridge.cpp:646 in glim::GlimCbsBridge::GlimCbsBridge(ros::NodeHandle&)
+Shadow bytes around the buggy address:
+  0x0c3e7fff8690: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0c3e7fff86a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0c3e7fff86b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0c3e7fff86c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0c3e7fff86d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0c3e7fff86e0: 00 00 00 00 00 00 00 00 00 00 00 00[fa]fa fa fa
+  0x0c3e7fff86f0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0c3e7fff8700: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0c3e7fff8710: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0c3e7fff8720: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0c3e7fff8730: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==7196==ABORTING

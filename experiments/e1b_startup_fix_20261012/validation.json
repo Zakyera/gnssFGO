@@ -1,0 +1,256 @@
+{
+  "status": "PRIVATE_ALLOCATION_BUG_FIXED_RELEASE_STARTUP_VALIDATED",
+  "no_dataset_playback": true,
+  "source_measurements": 0,
+  "protected_manifest_sha256": "78e482e8379c68f0dc403418195222df1b4ded7a475be62527cdf725d0ba08a1",
+  "protected_files_unchanged": 680,
+  "sources_unchanged": {
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/cbs": {
+      "head": "7c3a1e66767938e105d46fd072bd853ad5ec50c2",
+      "status": "",
+      "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/glim": {
+      "head": "e817b335377191b34ff822d4acbe6a2da3934fb4",
+      "status": "",
+      "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/glim_ros1": {
+      "head": "fad72d6e11219e42cbbe09658341fff4512769dc",
+      "status": "",
+      "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/gtsam": {
+      "head": "150157b0a686c4411372c3f4455258d9c291219d",
+      "status": "",
+      "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/gtsam_points": {
+      "head": "857819676921650510e249018cd82d45c08d7e8d",
+      "status": "",
+      "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/Kimera-VIO": {
+      "head": "560ad0fd33c162ff2a0a64a1372f9b61e1d8d8f9",
+      "status": "",
+      "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "shared_link_inputs": {
+    "count": 225,
+    "mismatches": []
+  },
+  "builds": {
+    "fixed_release": {
+      "libglim_ros_sha256": "567bb4bc3f0e1dacf8994ecf7ca4aa12ff128e0f91640dda3adf760cd7c85df8",
+      "actual_bridge_object": "/workspace/cbs_gtsam4.3/runs/e1b_local_profile_20261012/release_2/cbs_bridge.cpp.o",
+      "actual_bridge_sha256": "d1647c6d66a9f7d5edbd438aa71c53f4ecc260c91051e4a11f77e323972e9610"
+    },
+    "asan_negative": {
+      "libglim_ros_sha256": "3527eac652ed31e62f4d3cdbd16b859e2443587dd8f08c465c57913825a86e10",
+      "actual_bridge_object": "/workspace/cbs_gtsam4.3/runs/e1b_startup_fix_20261012/asan_negative/cbs_bridge.asan.o",
+      "actual_bridge_sha256": "bf4a2c29eb2be09bfd9658c3c12a1b983a7deec32a6cf2deb6755fc88ae0fce5"
+    },
+    "asan_fixed": {
+      "libglim_ros_sha256": "22b9df4a99934e41ecbb6dc81c0e165ee5f834f313d142bd01ad66674d499578",
+      "actual_bridge_object": "/workspace/cbs_gtsam4.3/runs/e1b_startup_fix_20261012/asan_negative/cbs_bridge.asan.o",
+      "actual_bridge_sha256": "bf4a2c29eb2be09bfd9658c3c12a1b983a7deec32a6cf2deb6755fc88ae0fce5"
+    }
+  },
+  "allocation_evidence": {
+    "stale_workspace": {
+      "bytes": 3296,
+      "object": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/build/glim_ros/CMakeFiles/glim_ros.dir/src/glim_ros/glim_ros.cpp.o",
+      "sha256": "a1015e3314b45e50d50bcd6e1ad255733803326edda713918f4fdd450a49c4b9",
+      "excerpt": "    2c66:\t48 85 ff             \ttest   %rdi,%rdi\n    2c69:\t74 06                \tje     2c71 <glim::GlimROS::GlimROS(ros::NodeHandle&)+0x8f1>\n    2c6b:\t48 8b 07             \tmov    (%rdi),%rax\n    2c6e:\tff 50 08             \tcall   *0x8(%rax)\n    2c71:\t4c 89 e7             \tmov    %r12,%rdi\n    2c74:\te8 00 00 00 00       \tcall   2c79 <glim::GlimROS::GlimROS(ros::NodeHandle&)+0x8f9>\n\t\t\t2c75: R_X86_64_PLT32\tglim::CloudPreprocessorParams::~CloudPreprocessorParams()-0x4\n    2c79:\tbf e0 0c 00 00       \tmov    $0xce0,%edi\n    2c7e:\te8 00 00 00 00       \tcall   2c83 <glim::GlimROS::GlimROS(ros::NodeHandle&)+0x903>\n\t\t\t2c7f: R_X86_64_PLT32\toperator new(unsigned long)-0x4\n    2c83:\t4c 89 fe             \tmov    %r15,%rsi\n    2c86:\t48 89 c7             \tmov    %rax,%rdi\n    2c89:\t49 89 c5             \tmov    %rax,%r13\n    2c8c:\te8 00 00 00 00       \tcall   2c91 <glim::GlimROS::GlimROS(ros::NodeHandle&)+0x911>\n\t\t\t2c8d: R_X86_64_PLT32\tglim::GlimCbsBridge::GlimCbsBridge(ros::NodeHandle&)-0x4"
+    },
+    "known_working_e1": {
+      "bytes": 3344,
+      "object": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/glim_sync_compatible_batching_e1_20261011/private/glim_ros.o",
+      "sha256": "306708f73d14ca8ca73dd375919c5687d8b73b5edff9418f79452fb79f2db99e",
+      "excerpt": "    2c66:\t48 85 ff             \ttest   %rdi,%rdi\n    2c69:\t74 06                \tje     2c71 <glim::GlimROS::GlimROS(ros::NodeHandle&)+0x8f1>\n    2c6b:\t48 8b 07             \tmov    (%rdi),%rax\n    2c6e:\tff 50 08             \tcall   *0x8(%rax)\n    2c71:\t4c 89 e7             \tmov    %r12,%rdi\n    2c74:\te8 00 00 00 00       \tcall   2c79 <glim::GlimROS::GlimROS(ros::NodeHandle&)+0x8f9>\n\t\t\t2c75: R_X86_64_PLT32\tglim::CloudPreprocessorParams::~CloudPreprocessorParams()-0x4\n    2c79:\tbf 10 0d 00 00       \tmov    $0xd10,%edi\n    2c7e:\te8 00 00 00 00       \tcall   2c83 <glim::GlimROS::GlimROS(ros::NodeHandle&)+0x903>\n\t\t\t2c7f: R_X86_64_PLT32\toperator new(unsigned long)-0x4\n    2c83:\t4c 89 fe             \tmov    %r15,%rsi\n    2c86:\t48 89 c7             \tmov    %rax,%rdi\n    2c89:\t49 89 c5             \tmov    %rax,%r13\n    2c8c:\te8 00 00 00 00       \tcall   2c91 <glim::GlimROS::GlimROS(ros::NodeHandle&)+0x911>\n\t\t\t2c8d: R_X86_64_PLT32\tglim::GlimCbsBridge::GlimCbsBridge(ros::NodeHandle&)-0x4"
+    },
+    "fixed": {
+      "bytes": 3344,
+      "object": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/e1b_startup_fix_20261012/fixed_release/glim_ros.o",
+      "sha256": "306708f73d14ca8ca73dd375919c5687d8b73b5edff9418f79452fb79f2db99e",
+      "excerpt": "    2c66:\t48 85 ff             \ttest   %rdi,%rdi\n    2c69:\t74 06                \tje     2c71 <glim::GlimROS::GlimROS(ros::NodeHandle&)+0x8f1>\n    2c6b:\t48 8b 07             \tmov    (%rdi),%rax\n    2c6e:\tff 50 08             \tcall   *0x8(%rax)\n    2c71:\t4c 89 e7             \tmov    %r12,%rdi\n    2c74:\te8 00 00 00 00       \tcall   2c79 <glim::GlimROS::GlimROS(ros::NodeHandle&)+0x8f9>\n\t\t\t2c75: R_X86_64_PLT32\tglim::CloudPreprocessorParams::~CloudPreprocessorParams()-0x4\n    2c79:\tbf 10 0d 00 00       \tmov    $0xd10,%edi\n    2c7e:\te8 00 00 00 00       \tcall   2c83 <glim::GlimROS::GlimROS(ros::NodeHandle&)+0x903>\n\t\t\t2c7f: R_X86_64_PLT32\toperator new(unsigned long)-0x4\n    2c83:\t4c 89 fe             \tmov    %r15,%rsi\n    2c86:\t48 89 c7             \tmov    %rax,%rdi\n    2c89:\t49 89 c5             \tmov    %rax,%r13\n    2c8c:\te8 00 00 00 00       \tcall   2c91 <glim::GlimROS::GlimROS(ros::NodeHandle&)+0x911>\n\t\t\t2c8d: R_X86_64_PLT32\tglim::GlimCbsBridge::GlimCbsBridge(ros::NodeHandle&)-0x4"
+    }
+  },
+  "startup_checks": {
+    "fixed_off": {
+      "node_returncode": 0,
+      "master_returncode": 0,
+      "debug": null,
+      "expected_crash": false,
+      "passed": true,
+      "profile_enabled": false,
+      "cuda_allocation_warnings": 0
+    },
+    "fixed_on": {
+      "node_returncode": 0,
+      "master_returncode": 0,
+      "debug": null,
+      "expected_crash": false,
+      "passed": true,
+      "profile_enabled": true,
+      "cuda_allocation_warnings": 0
+    },
+    "fixed_asan_verbose": {
+      "node_returncode": 0,
+      "master_returncode": 0,
+      "debug": null,
+      "expected_crash": false,
+      "passed": true,
+      "profile_enabled": true,
+      "cuda_allocation_warnings": 6
+    },
+    "fixed_asan_repeat": {
+      "node_returncode": 0,
+      "master_returncode": 0,
+      "debug": null,
+      "expected_crash": false,
+      "passed": true,
+      "profile_enabled": true,
+      "cuda_allocation_warnings": 6
+    }
+  },
+  "changed_parameters_output_paths_only": {
+    "fixed_off": [
+      "/glim_rosnode/glim_dump_path"
+    ],
+    "fixed_on": [
+      "/glim_rosnode/glim_dump_path"
+    ],
+    "fixed_asan_verbose": [
+      "/glim_rosnode/glim_dump_path"
+    ],
+    "fixed_asan_repeat": [
+      "/glim_rosnode/glim_dump_path"
+    ]
+  },
+  "focused_tests": {
+    "passed": true,
+    "counts": {
+      "test_profile": {
+        "tests": 8,
+        "disabled": 0,
+        "failures": 0,
+        "errors": 0
+      },
+      "test_solver": {
+        "tests": 1,
+        "disabled": 0,
+        "failures": 0,
+        "errors": 0
+      },
+      "test_gpu": {
+        "tests": 21,
+        "disabled": 1,
+        "failures": 0,
+        "errors": 0
+      },
+      "asan_ubsan": {
+        "tests": 8,
+        "disabled": 0,
+        "failures": 0,
+        "errors": 0
+      }
+    },
+    "exact_state_covariance_numbers": 4716,
+    "fingerprint_sha256": "f156d2b49e28f9d56f1ac6305c0a1ee1c7a0ef64d658c36ff6107d023b4e3d12",
+    "environment": {
+      "LD_LIBRARY_PATH": "/workspace/cbs_gtsam4.3/runs/e1b_startup_fix_20261012/fixed_release:/workspace/cbs_gtsam4.3/runs/e1b_local_profile_20261012/release_2:/workspace/cbs_gtsam4.3/devel/lib:/opt/ros/noetic/lib:/workspace/cbs_gtsam4.3/devel:/workspace/cbs_gtsam4.3/devel/lib:/usr/local/cuda/targets/x86_64-linux/lib:/usr/local/lib:/usr/local/nvidia/lib:/usr/local/nvidia/lib64",
+      "ASAN_OPTIONS": "detect_leaks=1:halt_on_error=1",
+      "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1",
+      "OMP_NUM_THREADS": "1"
+    }
+  },
+  "layout_tests_passed": 5,
+  "post_cleanup_processes": {
+    "cbsms_ws_gpu": "    PID    PPID    PGID COMMAND\n      1       0       1 tail\n  12977       0   12977 ps\n",
+    "ubuntu-jammy-humble-nvidia": "    PID    PPID    PGID COMMAND\n      1       0       1 zsh\n     75       0      75 ps\n"
+  },
+  "sanitizer_limits": [
+    "One fixed_asan launch emitted only DEADLYSIGNAL before Starting GLIM; not diagnosed.",
+    "Two verbose ASan launches completed; CUDA allocation warnings present.",
+    "Only bridge translation unit instrumented for actual startup; leak checks disabled there.",
+    "Separate eight profiler ASan/UBSan tests pass with leak checks enabled."
+  ],
+  "evidence_manifest": {
+    "layout_tests.log": "428f2aff41d87dc160f96074d3cf7bbb09949f110ec6ef2e34876e1643f63f23",
+    "fixed_on/node.log": "0d89865e18e82e46c7bf799d3cb4dac79194f297b715da73807e566217c98aef",
+    "fixed_on/maps.txt": "1c7a56c69fb2f8d36634e6315b52775b9d0c7e47012b18e67642fc848831c6f4",
+    "fixed_on/params.json": "a36ed862751da330dbe21623e155af763578a6e741741f97fa05d71898a74ae1",
+    "fixed_on/result.json": "1c12eeefe2efdc6e6dfb34177b894b6a1bde549290ac93177d14108de0cac44f",
+    "fixed_on/command.txt": "1bc336a35150f717abf468e8a0ea29ab641129f5771785f6c11363d9230b49c9",
+    "fixed_on/master.log": "002ec78409236f1d9c99bf84f580c2781957c4b9603183f07ceea654b3976a89",
+    "fixed_on/ready.json": "6b80e2294f57bba7b9a63744d2910df09a1a98ed2ebb17be06d5648d425d1cb0",
+    "fixed_asan_repeat/node.log": "f6c049ca538ab37d6b36331863163a78ae25d23770d11fdeca78e9cb3091033f",
+    "fixed_asan_repeat/maps.txt": "85d558cb03f7298f233290f562c8c812daa0a6c8824292ac77ec9ccd82f47d2c",
+    "fixed_asan_repeat/params.json": "f8a14b24a2e5a3d0048673a662b0d2ff9817dadd69adaaceee5c1e73e4bc0026",
+    "fixed_asan_repeat/result.json": "1c12eeefe2efdc6e6dfb34177b894b6a1bde549290ac93177d14108de0cac44f",
+    "fixed_asan_repeat/command.txt": "fd899542a32fa6a3db438190e5f91d344fdf1ed0e4e524d906a121418ae0d028",
+    "fixed_asan_repeat/master.log": "6632803e3ebd1c442ca6c69b8678cd79b1d5864dc0bb259f37927a7911915b08",
+    "fixed_asan_repeat/asan_runtime.12800": "219a1a9fe6ad0f2d74bcd3678fe27cbe2c229ee74e103fe7079fc26d77c0b03d",
+    "fixed_asan_repeat/ready.json": "6b80e2294f57bba7b9a63744d2910df09a1a98ed2ebb17be06d5648d425d1cb0",
+    "fixed_off/node.log": "d80b24df27f89148d9bb15c4533e5a06ccd35beeef978bcfb5078d76016ea599",
+    "fixed_off/maps.txt": "09256805ffcf76106b85e60410ac6efac17805c1940eb544cf3684506cbcf966",
+    "fixed_off/params.json": "3e5fc0889bc1033620bc899b4057aa6f625d11ff0305b7831261c5837608d361",
+    "fixed_off/result.json": "1c12eeefe2efdc6e6dfb34177b894b6a1bde549290ac93177d14108de0cac44f",
+    "fixed_off/command.txt": "44f7fe304284d4481351a786f78dbf396c58af114159a77069474bb9282b1e20",
+    "fixed_off/master.log": "5879729c26241ec3f77f1c3d48325adb1017b68f17c5bfd59c64c35de86bb197",
+    "fixed_off/ready.json": "cfbc6711df4231b5b658df3b9244054e5728d68a908277b3a4864f94b1aa6e93",
+    "failed_abort/master.log": "831d7d17fef10462ff9df251ca81e23f3c9a72e5b0b4ba3057edfa8c3f21d3be",
+    "asan_negative/commands.json": "45193ee149f2ac1235e6ae85665eac0fe3b17a3d55d8ef34223d015e832223aa",
+    "asan_negative/link.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "asan_negative/asan_bridge.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "asan_negative/complete.json": "6c0a23b2d4828cde097743568fa20d03af3d77842a873436ae23657e031128d3",
+    "asan_fixed/commands.json": "5f2885c6ef6e797b08ca0161e8abf7a38e4677d51d1c3511b53f81eca455725f",
+    "asan_fixed/link.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "asan_fixed/complete.json": "fa546704a217a45fd1f825c0045b88b7e8d819017d4ba8e3609a25f9ce56d541",
+    "focused_tests/asan_ubsan.log": "db3ec34c6d911463d3f421efbf1416ed6c9e6032b11102d4c4e95fb99a9eba4b",
+    "focused_tests/asan_ubsan.xml": "f0d5cfadae644d0392a254bb03ca754256d7bad8941478998e2594537eb9e873",
+    "focused_tests/commands.json": "77a84991c87f761630ec9461c7c76ec335f43bb75df0c3b700a1cc4801d191da",
+    "focused_tests/test_profile.xml": "d90e025b9f33fdeee6038294db8387c59ae2950f1bcfaff2b5ca16494e8c19df",
+    "focused_tests/test_gpu.log": "cf08f1b3a0a0d708593f71071eefc83675c3279715d2fcf1d6eb7873713cc1e1",
+    "focused_tests/test_solver.xml": "24c637ba2ecac4e0d53843e10f47cbb8cfac8c18821910b865aee4d445124760",
+    "focused_tests/test_profile.log": "db3ec34c6d911463d3f421efbf1416ed6c9e6032b11102d4c4e95fb99a9eba4b",
+    "focused_tests/passed.json": "6018b7d82c97d8dc27f1089a0c100620518dafa7c70bfba73fb6da7535194696",
+    "focused_tests/test_gpu.xml": "d6a49009d8c8511d9873b265690b2f06b2fd36f6da50a9e3486d43c04544e29e",
+    "focused_tests/solver_repeat.log": "7f9fb33a897c8755613db71bad3c354a4b2316cc7fe3169f4f892c5e6c7e6f3f",
+    "focused_tests/test_solver.log": "1942cd662c35e456aac60989ce7334a234535a0c0002d5171283f2dd5a62ed8e",
+    "fixed_asan_verbose/node.log": "c2a5b571e6025279a755ac5702f00d5a2fee1a12decac5d0c1128551ff8ad7c2",
+    "fixed_asan_verbose/maps.txt": "5cb971408651275fe51ba40d2d90a497ad4b9128666c2d0c0cd3dad402650714",
+    "fixed_asan_verbose/params.json": "8fadfeaa2ca7ecd366ff02083670e2475394f8d16e00b50d6ab18ebc6f7c00dd",
+    "fixed_asan_verbose/result.json": "1c12eeefe2efdc6e6dfb34177b894b6a1bde549290ac93177d14108de0cac44f",
+    "fixed_asan_verbose/asan_runtime.11670": "081953e8ce00f34566c157ea54389e31f33a8d82e8768211abd09d072c4995ea",
+    "fixed_asan_verbose/command.txt": "365f05f4668c922879aed40fc3e766f708e7145374f08755c7e22599a7c6ffce",
+    "fixed_asan_verbose/master.log": "39dc1df7b97aa696c6a580c1863786d457295196f97341aead2771d7f9896636",
+    "fixed_asan_verbose/ready.json": "6b80e2294f57bba7b9a63744d2910df09a1a98ed2ebb17be06d5648d425d1cb0",
+    "failed_abort3/node.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "failed_abort3/gdb.log": "d8f4ba01519b59d5335f621a4159b55e27c137e40fd1693d96541ec6ac0b4210",
+    "failed_abort3/gdb.txt": "b138bdc55985740338283eeda2bfcd0c4071b6cebd8a584d6c7b1894abd26b3e",
+    "failed_abort3/params.json": "ae643608a113f68b0f34d21fa8210365c69b8aae4132e8cddbce208fcbbe858b",
+    "failed_abort3/command.txt": "735c3ab18d68419d76df2b76270d0179a29c2da0dc168343545f8cad4092decf",
+    "failed_abort3/master.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "fixed_release/glim_ros.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "fixed_release/commands.json": "f8bb5baa9a82f827b0ae9a4dd2b1d9c1ed6218821aa7c9f0415e6b1238edd77f",
+    "fixed_release/link.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "fixed_release/glim_factor_graph_inspector.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "fixed_release/complete.json": "18597a6605910d6e048cabe7a1f69dc9e7519f1d57f3fb129ee8d84c7f310fed",
+    "fixed_asan/node.log": "23970d9a7e713a18deca9eb13e94379f95758751ff3c4723fd5ef69459444643",
+    "fixed_asan/params.json": "72392d4dd2f0d462c4f02a6823cc389f230a123e31a108fc5bd61d161b1a184b",
+    "fixed_asan/command.txt": "23f3db358a5992852f5957d774105186a54ae41a4c9dd3d95c0ab8c5e76bf849",
+    "fixed_asan/master.log": "ad52e88ff108bbd75c29d3f77b9b6dc3af2d2c4db15fa49eeabca6db6a8b848c",
+    "failed_abort2/master.log": "4cb98e8336b60660a59dd633ed42b6b79765440abce3f890130d9f5f0d05f446",
+    "asan_bad/node.log": "a1c0257aedff5881d7d9f0a57876b9c9aebd98b420ea31c96028a14f437b2324",
+    "asan_bad/params.json": "3354bd811d490e0dc6980d192e6c60daff3b6d9ab85185d3ae43a982eb3c64ba",
+    "asan_bad/result.json": "241b61c41021f00e51b0f05b2e07b0ed98fc7aad7810eef370d2cd164966af06",
+    "asan_bad/command.txt": "3af6b96f76928b6ed524cd487a267a2271c42055e3e40135e3a7d328c9f6e139",
+    "asan_bad/master.log": "4aaaa9184f21ec55b201ad412954ef1019d3973adec2871bf4ab37e4c49167c4",
+    "layout/compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "layout/commands.json": "a4ac0750bcbabb22a621e1f9313d75c6a1bfa5d2ebeead2b4f38e0f66c3164d3",
+    "layout/size.log": "3735249b5c356c3b297b102cf1f0d29f0425cb79f4389791618edcede62fea23"
+  }
+}

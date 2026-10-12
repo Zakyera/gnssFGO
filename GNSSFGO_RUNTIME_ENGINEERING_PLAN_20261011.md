@@ -655,6 +655,35 @@ documentation/archival/version control only; no estimator implementation or run.
   not another capture or speed patch. E1b.2 is NOT runtime-ready pending that
   diagnosis. Preserve original attempt and require new authorization to retry.
 
+### E1b.3a — private GLIM startup diagnosis/fix
+
+- Authorization: user "proceed", 2026-10-12, following E1b.3 startup failure.
+- Status: SPECIFIC BUILD BUG FIXED; Release no-data startup validated.
+  Branch engineering/e1b-startup-fix-20261012.
+- Parent7c1b07f4c79e55a16163b5a5cb5a33ed6899f2a9.
+- Protocol: experiments/e1b_startup_fix_20261012/PROTOCOL.txt.
+- Debug startup with no data; fix only a reproduced private-build defect,
+  add regression and validate startup. No40s retry, source algorithm edits,
+  optimizer/covariance/lag changes, new dependency, acceleration or push.
+- Report: experiments/e1b_startup_fix_20261012/REPORT.txt; validation.json
+  and evidence retain the corrupting write, dependency closure and tests.
+- Private E1b.2 relink reused stale glim_ros.cpp.o allocating3296 bytes with
+  a current bridge requiring3344. ASan reproduces an8-byte constructor write
+  immediately outside that allocation. Working E1 already allocates3344.
+- Recompile unchanged wrapper/inspector header users, reuse exact instrumented
+  bridge and all other DSOs. No production build or source/math edit. Five
+  fail-closed layout regressions; actual Release profiling OFF/ON startup,
+  idle and exit0 pass with runtime DSO maps and zero sensor measurements.
+- 29 focused Release tests,8 profiler ASan/UBSan pass;1 timing test disabled.
+  Original/repeated solver4,716 state/covariance numbers still byte-identical.
+- ASan actual-node limits: one early DEADLYSIGNAL without stack; two verbose
+  repeats reach readiness/exit0 without host error but each has6 CUDA allocation
+  warnings. Not full CUDA/dependency sanitizer certification. Preserved all logs.
+- 680 protected paths,225 shared relink inputs,six clean source repos unchanged;
+  owned processes stopped. E1b.3 failed capture remains unchanged. No speed claim.
+- STOP. A new explicitly authorized first40s capture may use fixed_release plus
+  startup/layout gates; no automatic retry, next speed patch, promotion or push.
+
 ### Template for subsequent tasks
 
 Copy this block under its task ID; do not erase earlier attempts.
