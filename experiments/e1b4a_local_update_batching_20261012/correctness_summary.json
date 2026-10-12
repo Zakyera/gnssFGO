@@ -1,0 +1,122 @@
+{
+  "timing_test_started": false,
+  "checks": {
+    "release": {
+      "passed": 32,
+      "tests": [
+        "SolverProfile.SameStatesCovariancesAndEvaluationCounts",
+        "UpdateBatchSolver.IndependentRepeatedUpdatesRetirementReplacementFullStateAndCovariance",
+        "UpdateBatchSolver.IncrementalBranchAndCheckpointExceptionRecovery",
+        "UpdateBatchSolver.CpuOnlySolverMatchesOrdinary",
+        "UpdateBatchSolver.HeavyBenchmarkWorkloadEquivalence",
+        "LocalLinearizerCpu.DenseCovarianceHolesAndValues",
+        "LocalLinearizerCpu.LocalFilteringAndExactSidecarValues",
+        "LocalLinearizerCpu.FailedCallbackRetainsPublishedCovarianceAndCount",
+        "LocalLinearizerCpu.DuplicateReferencesAndReplacement",
+        "LocalLinearizerCpu.FixedLagActiveKeysAfterMarginalization",
+        "LocalLinearizerCpu.EmptyAndNullSlotsPreserveShape",
+        "LocalLinearizerGpu.MixedGraphBothOrdersFullCovarianceFreshValues",
+        "LocalLinearizerGpu.DuplicateRemovalReplacement",
+        "LocalLinearizerGpu.CpuFailureDrainsPreparedCaches",
+        "LocalLinearizerGpu.ErrorEvaluationAfterBatchUsesNewValues",
+        "LocalLinearizerGpu.IndependentHistoriesAndNativeCacheInterleaving",
+        "LocalLinearizerGpu.PendingNativeLinearizationFallsBackWithoutOverwrite",
+        "LocalLinearizerGpu.UnaryGpuFactor",
+        "LocalLinearizerGpu.DerivedGpuUsesWholeGraphSynchronousFallback",
+        "LocalLinearizerGpu.PreflightRejectsInvalidSetWithoutPreparedCaches",
+        "LocalLinearizerGpu.WrongTypePreflightHasNoCacheSideEffects",
+        "LocalLinearizerGpu.SharedFactorsAcrossGraphsAndValuesRemainFresh",
+        "LocalLinearizerGpu.LargeBatchConsumesEveryCacheDespiteCpuFailure",
+        "LocalLinearizerGpu.ScopedIndependentSharedHistoriesAndFullCovariance",
+        "LocalLinearizerGpu.ScopedFallbackDuplicatePendingAndUnknownCpu",
+        "LocalLinearizerGpu.ScopedMissingValuesAndPostGpuCpuExceptionRecover",
+        "LocalLinearizerGpu.ScopedUnaryFactor",
+        "LocalLinearizerGpu.ScopedUnknownGpuFallsBack",
+        "UpdateBatchScope.ReentrantFallbackNestedRejectionAndThreadIsolation",
+        "UpdateBatchScope.ThrowAndBadShapeRestoreScope",
+        "UpdateBatchScope.UnknownStatefulFactorRecursionRunsOrdinaryExactlyOnce",
+        "UpdateBatchScope.CpuOnlyExactAndDefaultOff"
+      ],
+      "maximum_p_orientation_v_bias_covariance_differences": [
+        0.0,
+        1.3877787807814457e-17,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "maximum_printed_matrix_difference": 0.0
+    },
+    "ubsan": {
+      "passed": 30,
+      "tests": [
+        "SolverProfile.SameStatesCovariancesAndEvaluationCounts",
+        "UpdateBatchSolver.IndependentRepeatedUpdatesRetirementReplacementFullStateAndCovariance",
+        "UpdateBatchSolver.IncrementalBranchAndCheckpointExceptionRecovery",
+        "UpdateBatchSolver.CpuOnlySolverMatchesOrdinary",
+        "LocalLinearizerCpu.DenseCovarianceHolesAndValues",
+        "LocalLinearizerCpu.LocalFilteringAndExactSidecarValues",
+        "LocalLinearizerCpu.FailedCallbackRetainsPublishedCovarianceAndCount",
+        "LocalLinearizerCpu.DuplicateReferencesAndReplacement",
+        "LocalLinearizerCpu.FixedLagActiveKeysAfterMarginalization",
+        "LocalLinearizerCpu.EmptyAndNullSlotsPreserveShape",
+        "LocalLinearizerGpu.MixedGraphBothOrdersFullCovarianceFreshValues",
+        "LocalLinearizerGpu.DuplicateRemovalReplacement",
+        "LocalLinearizerGpu.CpuFailureDrainsPreparedCaches",
+        "LocalLinearizerGpu.ErrorEvaluationAfterBatchUsesNewValues",
+        "LocalLinearizerGpu.IndependentHistoriesAndNativeCacheInterleaving",
+        "LocalLinearizerGpu.PendingNativeLinearizationFallsBackWithoutOverwrite",
+        "LocalLinearizerGpu.UnaryGpuFactor",
+        "LocalLinearizerGpu.DerivedGpuUsesWholeGraphSynchronousFallback",
+        "LocalLinearizerGpu.PreflightRejectsInvalidSetWithoutPreparedCaches",
+        "LocalLinearizerGpu.WrongTypePreflightHasNoCacheSideEffects",
+        "LocalLinearizerGpu.SharedFactorsAcrossGraphsAndValuesRemainFresh",
+        "LocalLinearizerGpu.LargeBatchConsumesEveryCacheDespiteCpuFailure",
+        "LocalLinearizerGpu.ScopedIndependentSharedHistoriesAndFullCovariance",
+        "LocalLinearizerGpu.ScopedFallbackDuplicatePendingAndUnknownCpu",
+        "LocalLinearizerGpu.ScopedMissingValuesAndPostGpuCpuExceptionRecover",
+        "LocalLinearizerGpu.ScopedUnaryFactor",
+        "UpdateBatchScope.ReentrantFallbackNestedRejectionAndThreadIsolation",
+        "UpdateBatchScope.ThrowAndBadShapeRestoreScope",
+        "UpdateBatchScope.UnknownStatefulFactorRecursionRunsOrdinaryExactlyOnce",
+        "UpdateBatchScope.CpuOnlyExactAndDefaultOff"
+      ],
+      "maximum_p_orientation_v_bias_covariance_differences": [
+        0.0,
+        1.3608464967233457e-17,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "maximum_printed_matrix_difference": 0.0
+    },
+    "asan_ubsan_cpu": {
+      "passed": 10,
+      "tests": [
+        "LocalLinearizerCpu.DenseCovarianceHolesAndValues",
+        "LocalLinearizerCpu.LocalFilteringAndExactSidecarValues",
+        "LocalLinearizerCpu.FailedCallbackRetainsPublishedCovarianceAndCount",
+        "LocalLinearizerCpu.DuplicateReferencesAndReplacement",
+        "LocalLinearizerCpu.FixedLagActiveKeysAfterMarginalization",
+        "LocalLinearizerCpu.EmptyAndNullSlotsPreserveShape",
+        "UpdateBatchScope.ReentrantFallbackNestedRejectionAndThreadIsolation",
+        "UpdateBatchScope.ThrowAndBadShapeRestoreScope",
+        "UpdateBatchScope.UnknownStatefulFactorRecursionRunsOrdinaryExactlyOnce",
+        "UpdateBatchScope.CpuOnlyExactAndDefaultOff"
+      ],
+      "maximum_p_orientation_v_bias_covariance_differences": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "maximum_printed_matrix_difference": 0.0
+    }
+  },
+  "artifacts": {
+    "release_2/libgtsam.so.4.3a1": "369f45866a82c40170ad7cfa83b4bc6b7f8a6f4ae22db34115daee926529bb37",
+    "release_2/libglim_ros.so": "83592aba553adbc2879f27b5f2cf3551826ab497a58201ba0101543934f49dec",
+    "release_2/test_dispatch_3": "1bcaf90fcb482ed548e439361cb71fa1d17983d6cf39a4d3597bc16691f698db",
+    "release_2/test_solver_3": "223232f359c3580886a2ff75f91daf26548289c51b0115366678b0878babfa5f"
+  }
+}

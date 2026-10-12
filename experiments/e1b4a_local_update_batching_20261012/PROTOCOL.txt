@@ -1,0 +1,44 @@
+E1b.4a: scoped batching for LOCAL graph-linearize requests, 2026-10-12.
+Authorization: user requests implementation one step at a time after E1b.4.
+Parent documentation commit db40f27. No source experiment in this step.
+
+Implement the saved E1b.4 proposal in isolated source overlays/private builds.
+Add a default-inactive, thread-local graph-linearization dispatch in the pinned
+GTSAM library; enable it only around GlimCbsBridge::updateSidecar. Reuse existing
+synchronous-compatible VGICP batching. Preserve exact supplied Values, factor
+order/null slots, existing solver decisions and CPU/GPU mathematical behavior.
+No class-layout change to existing estimators, BPSAM base swap, new dependency,
+cross-update cache, direct incremental/marginalization-loop edit, altered
+factors/covariance/lag/cadence, source protocol, receiver, or live replay.
+
+Ordinary oracle: E1b.3c's fixed_release wrapper and release_2 profiling libraries.
+Record all source/dependency identities before compiling. Rebuild all users of
+changed headers; preserve previous working binaries and captured inputs. Verify
+actual library resolution and no-data node startup before any future playback.
+
+Numerical gates from E1b.4, unchanged:
+- IDs/keys/order/slots/solver and retirement decisions: exact.
+- Existing deterministic CPU fingerprint: exact.
+- CPU Gaussian matrix maxabs diff <=1e-12+1e-12*maxabs(reference).
+- GPU augmented Hessian <=1e-8+1e-6*maxabs(reference).
+- Full joint and relative covariance <=1e-10+1e-6*maxabs(reference).
+- Same-input position/velocity/bias component differences <=1e-9 native units.
+- Same-input relative orientation angle <=1e-10 radians.
+
+Test nested/reentrant/thread isolation, duplicate/unsupported/pending cache
+fallback, missing Values, exception cleanup/recovery, shared MAIN/LOCAL factors,
+existing E1 GPU/cache/inlier tests, repeated fixed-lag updates with independent
+mutable factor instances, factor replacement/slot reuse and marginalization.
+Run focused Release and supported ASan/UBSan; state CUDA/dependency limitations.
+
+Only after correctness: alternating matched ordinary/candidate fixed-lag timing.
+Accept component speed if representative GPU-heavy median AND p95 update time
+are <=80% of reference without numerical/decision change. Report CPU fallback
+overhead and all remaining synchronous work. Fixture speed is not live capacity.
+Do not relax gates on failure; diagnose a reproducible implementation defect or
+report rejection. End with report/ledger, local commit, no push or live run.
+
+Execution boundary updated by user, 2026-10-12: "report me before the timing
+test". Complete the already-running correctness/sanitizer checks, save the
+pre-timing report, and stop. No timing benchmark in this turn. The performance
+gate above remains frozen and untested, not waived or passed.
