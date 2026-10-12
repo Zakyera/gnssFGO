@@ -1,0 +1,89 @@
+E1b.4a real-input gate: prerequisite audit, 2026-10-12
+
+Outcome: HOLD BEFORE PLAYBACK. Synthetic correctness/timing remain passed;
+the independent real-input source-optimizer oracle is not ready. No source or
+receiver run, benchmark repeat, build, source change, or parameter change here.
+
+Authorization: user "proceed" following the synthetic timing handoff.
+Parent HEAD: 899896fa3bef7ee3d8d038dc9768739b402aa4af.
+
+WHAT EXISTS AND CAN BE REUSED
+
+1. Validated E1b.4a private executable/library, exact source overlays, synthetic
+   independent repeated-solver test, and unchanged default-off selector.
+   experiments/e1b4a_local_update_batching_20261012/TIMING_REPORT.md.
+2. Real E1 covariance diagnostic, first20s ETH1 source-only CBS-ON:
+   /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/glim_e1_real_graph_20261011/prepared/.
+   Its six A/B/A2 comparisons are sampled graph-linearization/covariance checks,
+   not independent repeated LOCAL solver histories for the new update hook.
+   Retained matrices, source dumps and logs do not constitute serialized native
+   update inputs plus all mutable GPU factor state at every LOCAL update.
+3. Complete first40s baseline profiling/capture harness:
+   /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_e1b_profile40_mapguard_20261012/prepared/.
+   Source settings, resolved-library admission, lifecycle and exact receiver
+   journal validators remain reusable. The journal contains downstream beliefs
+   and clock samples, not the GLIM source GPU optimizer inputs.
+
+THE SPECIFIC GAP
+
+The saved proposal's real-data section (PROPOSAL.md:183-200 under
+experiments/e1b_local_update_batch_proposal_20261012) requires independent
+ordinary/candidate LOCAL instances with independent mutable GPU state and
+identical native update inputs, through marginalization, before interpreting
+live speed as acceptance. This is stronger than rerunning a bag twice.
+
+The existing IntegratedVGICPFactorGPU::clone() is NOT an exact state snapshot:
+  src/gtsam_points/src/gtsam_points/factors/integrated_vgicp_factor_gpu.cpp:122-133
+It constructs a new factor from keys, fixed pose if unary, target and source,
+with null stream/temp-buffer arguments. It does not transfer current derivative
+inlier state, cached linearization/error, linearization point, offloading/surface
+validation settings or configured inlier-update thresholds.
+
+Runtime setters are at lines102-112 in that implementation. Constructor state
+initialization is at lines17-84. Mutable factor data are declared in
+include/gtsam_points/factors/integrated_vgicp_factor_gpu.hpp:149 onward;
+derivative configuration and GPU inlier buffers are declared in
+include/gtsam_points/factors/integrated_vgicp_derivatives.cuh:59 onward.
+Paths above are under /home/yeranis/repos/V4RL/cbs_gtsam4.3/.
+
+This is NOT evidence that clone() is broken for its intended fresh-factor use,
+nor that batching changes the answer. It means that using it without additional
+work would not meet our promised exact-state oracle contract. A shallow graph
+or smoother copy also retains shared mutable GPU factors and is not independent.
+
+WHY NO 40s THROUGHPUT LAUNCH YET
+
+Two co-running captures can change CBS arrival/interleaving as execution gets
+faster. Matching ATE or approximate trajectories would not prove same-input
+mathematics. A faster run with a clean downstream journal is useful operational
+evidence, but cannot fill the missing source-optimizer comparison. This audit
+does not downgrade the gate or call the real-data stage complete.
+
+RECOMMENDED NEXT ISOLATED TASK
+
+Prepare a test-only exact-state snapshot/oracle for the native LOCAL update,
+without changing estimation or the validated timing build. It must:
+- capture original update factors, Values, timestamps, factor identities and
+  actual sidecar parameters;
+- own independent mutable GPU factor/cache/inlier buffers in the two branches;
+  share only geometry proven immutable; preserve runtime factor configuration;
+- demonstrate snapshot fidelity against ordinary execution before using it as
+  an oracle; test pending caches, unary/binary factors, repeated pointers,
+  replacement/retirement and exceptions; refuse unknown factor types;
+- compare the ordinary and batched histories at the existing tight gates,
+  including Gaussian blocks, state/linearization points and covariance across
+  a fixed-lag boundary; never substitute a comparison of shared pointers;
+- keep ordinary source output authoritative, save comparisons out of the
+  production path, and explicitly exclude the diagnostic overhead from timing.
+
+After that test infrastructure passes, use one bounded diagnostic capture
+(the earlier E1 first20s source-only protocol is the natural reusable starting
+point; exact scope must be frozen before launch), then the separately clean
+first40s 0.10x co-running throughput case. Do not combine the observer overhead
+with the acceptance timing. No new method, covariance changes, E1b direct-loop
+extension, MAIN optimization, live160, defaults or push.
+
+No new run metrics or numerical pass are claimed. This step only inspected
+retained code/evidence and saved the outstanding prerequisite; it did not build
+the new snapshot infrastructure. This is a validation scope expansion to agree
+before adding diagnostic GPU-state code.

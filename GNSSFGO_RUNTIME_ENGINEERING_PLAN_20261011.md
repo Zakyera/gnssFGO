@@ -26,6 +26,9 @@ E1b.4a synthetic timing gate PASSED: GPU-heavy median112.310->4.30792ms and
 p95115.43625->4.66825ms, with unchanged tested states/covariances/decisions.
 This is a small-cloud synthetic LOCAL-update result, NOT whole-GLIM or live
 capacity acceptance. The default remains off pending real-source gates.
+The subsequent real-input entry audit found that the required independent
+GPU-state oracle is not yet available; playback is held before launch, not
+reported as a failed batching experiment. See E1b.4a real-input gate below.
 The earlier E1/E2 live160 remains functionally
 validated but misses runtime headroom; E4 was rejected and remains disabled.
 MAIN and receiver full-history costs also remain. Working source/receiver
@@ -836,6 +839,27 @@ documentation/archival/version control only; no estimator implementation or run.
   no benchmark retry or source/binary/runner change.
 - Stop here; real-source equivalence/throughput is a separate authorization.
   No MAIN optimization, further implementation, live run or push.
+
+### E1b.4a real-input gate — entry audit
+
+- Date/authorization: 2026-10-12, user "proceed" after the synthetic timing
+  handoff. Parent `899896fa3bef7ee3d8d038dc9768739b402aa4af`.
+- Status: HOLD BEFORE PLAYBACK: independent real-input oracle prerequisite
+  missing. Entry audit completed; real-data equivalence/throughput NOT RUN.
+  No new optimization or default change is authorized by this entry.
+- First reuse the E1 real-graph diagnostic and E1b.3c first40s controller where
+  suitable. Do not mislabel old E1 covariance-only comparisons or a receiver
+  journal replay as E1b.4a independent LOCAL-update equivalence.
+- The existing GPU factor `clone()` constructs a fresh factor, rather than
+  preserving runtime settings, inlier buffers and cached results. A shallow
+  smoother copy shares GPU state. Neither alone satisfies the exact-state
+  independent-reference requirement. This is an oracle limitation, not a
+  demonstrated estimator/batching bug.
+- Evidence and proposed diagnostic-only next step:
+  `experiments/e1b4a_real_gate_preflight_20261012/REPORT.txt`.
+  Do not weaken the gate, launch throughput as a substitute, or conflate this
+  hold with rejection of the passed synthetic timing result. No source/library
+  edits, builds, experiments, default changes or push were made in this audit.
 
 ### Template for subsequent tasks
 
