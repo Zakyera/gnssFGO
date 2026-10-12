@@ -1,0 +1,43 @@
+E1b.4a exact-state diagnostic checker, 2026-10-12
+
+Scope: implement and validate diagnostic infrastructure before real inputs.
+No sensor playback, estimator run, timing result, production patch or promotion.
+Use private friend-only header overlays (no field/vtable/layout changes), the
+unchanged E1b.4a Release DSOs, and a separate diagnostic/test executable.
+
+Snapshot VGICP runtime settings, valid inlier indices/anchor, nominal cache
+state, pending error/linearization and exact device geometry. Own separate
+streams, scratch, inlier and geometry buffers. Never rebuild voxel maps from
+points or use ordinary clone() as an exact snapshot. Reject unsupported types
+and nonresident geometry. Require a quiescent logical factor boundary and drain
+previously issued device work. CUDA completion alone does not lock against
+concurrent producers: the caller must invoke the checker on the serialized
+LOCAL update thread, with no concurrent geometry/factor mutation.
+
+LOCAL snapshots preserve solver parameters, Bayes tree, Values, delta, factor
+slots, timestamp maps and update bookkeeping. Retain within-branch factor
+identity/aliases, detach nonlinear/Gaussian factors and clique conditionals.
+Restrict to the clean LOCAL sidecar, not general BPSAM/GBP graphs. Refuse extra
+diagnostic or external-belief states not explicitly supported.
+
+Compare independent ordinary and batched branches of each native checkpoint.
+Also compare the ordinary branch against authoritative ordinary execution;
+never mutate authoritative factors for covariance diagnostics. This is an
+exact-boundary LOCAL-update oracle, not a serialized frontend replay framework.
+Repeated fixture checkpoints must include fixed-lag marginalization/removal.
+
+Gates: keys/types/slots/retirement and solver decisions exact; CPU Gaussian
+matrices <=1e-12+1e-12*maxabs(reference); GPU <=1e-8+1e-6*maxabs(reference);
+full/relative covariance <=1e-10+1e-6*maxabs(reference); p/v/bias <=1e-9,
+orientation <=1e-10 rad. Snapshot fields/buffer contents exact. Unknown inputs,
+nonfinite values, failed comparisons or exceptions cannot yield PASS.
+
+Tests: fresh/used/nondefault/unary/binary/pending-cache states; independent
+mutation; duplicate factor identity/null slots; unknown factor rejection;
+checkpoint comparison through marginalization; missing Values and failure
+isolation. Focused Release, host UBSan and supported CPU ASan/UBSan. Report
+precisely the sanitizer boundary. No full-workspace or device-sanitizer claim.
+
+Protect the validated executable/DSOs, baseline manifests and six source repos.
+Use new output roots for builds/tests. Keep diagnostic overhead out of future
+throughput measurements. Stop and report before live-data integration/capture.

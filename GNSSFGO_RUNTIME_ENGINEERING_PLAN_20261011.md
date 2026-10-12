@@ -27,8 +27,12 @@ p95115.43625->4.66825ms, with unchanged tested states/covariances/decisions.
 This is a small-cloud synthetic LOCAL-update result, NOT whole-GLIM or live
 capacity acceptance. The default remains off pending real-source gates.
 The subsequent real-input entry audit found that the required independent
-GPU-state oracle is not yet available; playback is held before launch, not
-reported as a failed batching experiment. See E1b.4a real-input gate below.
+GPU-state oracle was not yet available; playback was held before launch, not
+reported as a failed batching experiment. The subsequent isolated snapshot
+checker now passes 40 Release/40 host UBSan/14 CPU ASan-UBSan tests, including
+authoritative-update fidelity and persistent copied histories. Real-input
+integration/capture remains pending; no playback or promotion occurred.
+See the E1b.4a real-input checker ledger below.
 The earlier E1/E2 live160 remains functionally
 validated but misses runtime headroom; E4 was rejected and remains disabled.
 MAIN and receiver full-history costs also remain. Working source/receiver
@@ -860,6 +864,33 @@ documentation/archival/version control only; no estimator implementation or run.
   Do not weaken the gate, launch throughput as a substitute, or conflate this
   hold with rejection of the passed synthetic timing result. No source/library
   edits, builds, experiments, default changes or push were made in this audit.
+
+### E1b.4a real-input checker — isolated implementation
+
+- Date/authorization: 2026-10-12, user "proceed" after the prerequisite hold.
+- Status: CHECKER FIXTURE GATE PASSED; REAL CAPTURE NOT RUN.
+  Parent edaa3e69031099b243cee73b38a767a031b5c9b5.
+- Implement diagnostic-only exact-state GPU snapshots and independent LOCAL
+  update comparisons. Preserve the validated batching DSOs, production source
+  checkouts and all estimation settings. No playback or timing in this task.
+- First prove snapshot fidelity, independent mutable storage, and rejection of
+  unsupported inputs; then exercise ordinary/batched LOCAL updates through
+  replacement, exceptions and fixed-lag marginalization. Record limitations.
+- Protocol and evidence: experiments/e1b4a_snapshot_checker_20261012/.
+- Exact device geometry/cache/inlier snapshots, alias-preserving factor copies
+  and clean LOCAL checkpoint branches implemented in private friend-only
+  overlays. Actual ordinary update is a separate fidelity oracle; covariance
+  checks operate on disposable copies. Unknown/nonresident inputs fail closed.
+- 40 Release, 40 host UBSan and 14 CPU ASan/UBSan tests pass; persistent branches
+  through replacement and marginalization. p/v/bias/H/full/relative covariance
+  differences zero; maximum orientation difference 6.993e-18 rad. Original
+  tolerances unchanged. No full-workspace/device-sanitizer claim.
+- 670 baseline /686 combined host hashes, 429 container build inputs and six
+  pinned source repos unchanged; sets overlap. Validated batching DSOs unchanged.
+- Report: experiments/e1b4a_snapshot_checker_20261012/REPORT.txt. Next: separately
+  integrate bounded real-input observer, then observer-free throughput only
+  after equivalence passes. No speed result is inferred from checker runtime.
+- No automatic live capture, next optimization, parameter change or push.
 
 ### Template for subsequent tasks
 

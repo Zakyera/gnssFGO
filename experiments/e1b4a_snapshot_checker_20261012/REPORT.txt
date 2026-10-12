@@ -1,0 +1,167 @@
+E1b.4a exact-state diagnostic checker — 2026-10-12
+
+RESULT
+
+CHECKER FIXTURE GATE PASSED. Implemented and tested an isolated exact-boundary
+LOCAL-update oracle. It is ready for bounded real-input integration; no real
+capture, playback, new timing measurement or production promotion occurred.
+The validated E1b.4a batching build and estimator settings remain untouched.
+
+Authorization: user "proceed" after the real-input prerequisite audit.
+Parent HEAD: edaa3e69031099b243cee73b38a767a031b5c9b5.
+Task: E1b.4a real-input checker in GNSSFGO_RUNTIME_ENGINEERING_PLAN_20261011.md.
+
+IMPLEMENTATION
+
+ExactGpuSnapshot.h/.cpp:
+- Test-only friend declarations in five private header copies. No production
+  source edits, new data members, vtable changes or estimator DSO rebuilds.
+- Copy current factor type/keys, fixed unary target, linearization point,
+  pending full Hessian/error results, offloading/surface-validation settings,
+  inlier thresholds, count, valid index list and evaluation anchor.
+- Exact device-to-device copy of factor-visible source points/covariances/
+  normals and voxel hash buckets/means/covariances. No voxel-map reconstruction
+  or CPU-double round trip. Geometry is deduplicated within a branch only;
+  source, ordinary and batched branches never share its GPU storage.
+- Each factor owns independent derivatives, stream, scratch and inlier buffers.
+  Ordinary clone() is untouched and is not used for VGICP snapshots.
+- Preserve duplicate factor identity within a branch, null slots and types;
+  explicitly preserve LinearDampingFactor's derived type and owned matrix.
+  Inherited LinearContainerFactor::clone() alone would erase that type.
+- The original inlier-anchor device pointer may refer to completed batch
+  scratch. Do not dereference/copy that address. Recreate owned device storage
+  from the identical CPU anchor recorded by reset_inliers().
+- Snapshot only defined, semantically live data. Fresh uninitialized anchor
+  fields and the write-only device reduction-count scratch are not read.
+  Unused capacity, object addresses, padding and geometry offload/LRU metadata
+  are not mathematical state. This is not a generic PointCloud clone.
+
+LocalUpdateCheck.h:
+- Copy the actual clean LOCAL smoother, including its parameters, timestamp
+  maps, Values, delta, factor slots, update counters and fixed-variable data.
+  GTSAM's existing BayesTree copy clones clique structure. Detach nonlinear
+  factors, linear factors, conditionals and cached Gaussian factors explicitly.
+- Existing copies omit lazy separator/marginal query caches; these are rebuilt
+  on independent snapshots for comparison, not used as solver input or silently
+  approximated. No source factor is evaluated for covariance diagnostics.
+- Construct two independent checkpoint branches. Feed the identical incoming
+  factors/Values/timestamps/removal slots; ordinary update in one, frozen scoped
+  batching in the other. Check estimate, theta, graph structure and decisions,
+  per-factor Gaussian matrices, full covariance and latest relative covariance.
+- finish(authoritative) separately compares the ordinary branch against the
+  actual ordinary solver after its update. Thus matching two faulty copies is
+  not the sole oracle. Unknown factors/values and unsupported GBP/diagnostic
+  sidecar states fail closed. Exceptions stay in disposable diagnostic branches.
+- The diagnostic does NOT wrap/enable a production update yet. Integration must
+  occur outside any batching scope; ordinary source execution remains primary.
+  Diagnostic failure must be made visible to the bounded-capture controller,
+  not swallowed by the bridge's usual warning-only exception handler.
+
+VALIDATION
+
+Final executable/test evidence under:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/e1b4a_snapshot_checker_20261012/
+
+  release_5/final: 40 executed tests, 0 failed
+  ubsan_2/final:   40 executed tests, 0 failed
+  asan_2/cpu_final:14 executed CPU tests, 0 failed
+
+One inherited timing test remains disabled. It was not run. All final C++/header
+inputs match the copies archived by these three builds. summary.json contains
+test names, source hashes, executable hashes and numerical maxima.
+
+Focused tests include:
+- fresh/used binary and unary factors; nondefault thresholds and offloading;
+- pending native linearization/error caches and compacted/zero inliers;
+- surface-validation normals and exact independent geometry;
+- mutation of one target cannot alter the other's device bytes;
+- original-copy destruction, alias/null preservation, unsupported subclasses;
+- reject nonresident geometry without touching/reloading the original;
+- damping/container factor identity and detached Gaussian storage;
+- unsupported checkpoint diagnostics and nonfinite/mismatched comparisons;
+- repeated 24-update pose/velocity/bias LOCAL fixture, 0.65 s lag, 0.1 s steps,
+  four GPU factors per new interval and periodic native cache preparation;
+- seven explicit replacement/removal events and 16 later updates after the
+  first pose has retired in each history;
+- two persistent independent histories copied at update 6 and advanced through
+  update 23, without resetting their solver states, plus every-update checkpoint
+  ordinary/batched/authoritative comparisons;
+- missing-Values failure in a disposable branch leaves authoritative theta,
+  timestamps and subsequent valid update behavior unchanged;
+- deterministic repeated fixture comparison summaries, exact within each build.
+
+Maximum observed differences over final Release and sanitizer comparisons:
+  position                         0
+  velocity                         0
+  gyro/accel bias coordinates       0
+  orientation                      6.992893892674703e-18 rad
+  Gaussian matrices                0
+  full covariance                  0
+  relative covariance              0
+
+Same keys, types, identity partition, occupied slots, timestamp maps, factor
+insertion/removal bookkeeping, marked/observed keys, relinearization/reelimination
+counts, recalculated factors, clique/nonzero counts and reorder decision.
+GPU fixture exercised 39 scoped batched graph requests per 24-update history.
+No tolerances were relaxed: p/v/bias 1e-9, orientation 1e-10 rad;
+GPU H 1e-8+1e-6*maxabs(reference), CPU H 1e-12+1e-12*maxabs(reference),
+full/relative covariance 1e-10+1e-6*maxabs(reference).
+
+Sanitizer scope: new host diagnostic/test translation units instrumented;
+frozen external DSOs and CUDA kernels not instrumented. ASan ran CPU checks only,
+with EIGEN_MALLOC_ALREADY_ALIGNED=1 matching the retained dependencies and leak
+detection disabled. Not a full-workspace, device-memory or leak certification.
+
+DEVELOPMENT RECORD
+
+First preparation stopped on a container-absolute symlink during host hashing;
+the incomplete preparation was resumed only after validating its existing
+header bytes. The first compile found a nullptr template mismatch and CUDA-header
+include order; both corrected in diagnostic code. Later builds added geometry
+deduplication, explicit damping handling, persistent histories and stronger
+decision/negative checks. Intermediate builds/logs remain retained.
+All executed numerical suites passed. The final summary parser initially tried
+to require bitwise-identical Release/UBSan rotation round-off summaries; observed
+~6.6e-18 versus ~7.0e-18 rad. It now retains both and reports their maximum under
+the original 1e-10 gate; no solver/test tolerances or outputs were changed.
+
+INTEGRITY AND RECOVERY
+
+integrity_final.json: all 670 frozen baseline hashes, 686 combined host hashes,
+429 container build inputs and six pinned clean source repositories unchanged.
+These sets overlap and must not be summed as distinct files. Five overlay headers
+verified to differ only by their friend declaration. Dynamic-loader mappings
+are saved alongside each test run.
+
+Unchanged batching DSO SHA256:
+libgtsam.so.4.3a1
+369f45866a82c40170ad7cfa83b4bc6b7f8a6f4ae22db34115daee926529bb37
+libglim_ros.so
+83592aba553adbc2879f27b5f2cf3551826ab497a58201ba0101543934f49dec
+
+Final checker SHA256:
+Release 18987a962a3835e3a4b348729fb6adcf852c197c8bed477b5b7bd5773434642f
+UBSan   832a387baf56f6193623e84dd4d0b89ca1eb88ff387b34111cc9594bb9d218d2
+ASan    c03e04608facf0320a65c5f5958be9c05b2daed4eb6dbf84c94e2873465fed11
+
+Nothing installed; ignoring this diagnostic directory fully restores the prior
+working arrangement. No selector/default/model/covariance/parameter changes,
+push, source playback, receiver run, new method or performance result.
+
+LIMITS / NEXT GATE
+
+This is an in-process exact-boundary LOCAL checker, not a serialized frontend
+restart system. A future real capture must call it on the serialized LOCAL
+thread while factors/geometry are not concurrently mutated. cudaDeviceSynchronize
+drains device work but is not a concurrency lock. Nonresident or unknown inputs
+must STOP that validation, not silently use a fresh factor.
+
+Real native GPU inputs have NOT been checked yet. The next bounded task is to
+integrate this observer into a separate diagnostic wrapper and sample a short
+ETH1 capture through marginalization, with ordinary execution authoritative.
+Only after it passes should a separate observer-free first40s throughput run
+measure E1b.4a. Diagnostic cloning/synchronization is intentionally expensive
+and must never be counted as the candidate's production runtime.
+
+Do not promote E1b.4a or infer full160/live capacity from this fixture result.
+Stop here before live integration/capture.
