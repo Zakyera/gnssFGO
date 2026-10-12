@@ -1,0 +1,288 @@
+{
+  "run": {
+    "passed": true,
+    "returncode": 0,
+    "seconds": 478.5657745100034,
+    "user_seconds": 475.28095,
+    "system_seconds": 2.33841,
+    "max_rss_kib": 580772,
+    "commands": [
+      [
+        "/home/yeranis/results/gnssfgo_e1_e2_correctness_audit_20261011/candidate/replay",
+        "--receiver-model",
+        "source_wnoa",
+        "--mode",
+        "sources",
+        "--timeline",
+        "record",
+        "--solver",
+        "isam2",
+        "--support-policy",
+        "uniform_imu",
+        "--support-period-ns",
+        "100000000",
+        "--receiver-startup-samples",
+        "59",
+        "--event-stream",
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_shared_linearization_s5_live160_20261012/prepared/capacity160_on_receiver/events.csv",
+        "--out",
+        "/home/yeranis/results/gnssfgo_receiver_sampling_s5c_20261013/replay_sample20_deep8"
+      ]
+    ],
+    "affinity": [
+      2
+    ],
+    "binary_sha256": "9d2ef832941c5ff2592da8428cb80104352590bcfea50c187624aaf4e90d60e0",
+    "collector_sha256": "8378d64721608e9047665139bf89f3c94b92566209057788de9574232670b25b",
+    "environment": {
+      "LD_LIBRARY_PATH": "/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib",
+      "OMP_NUM_THREADS": "1",
+      "WNOJ_STRICT_PUBLICATION": "1",
+      "WNOJ_INCREMENTAL_PROFILE": "nominal",
+      "E2_EXACT_LINEARIZATION_CACHE": "1",
+      "LD_PRELOAD": "/home/yeranis/results/gnssfgo_receiver_sampling_s5c_20261013/profiler/libreceiver_sampler_deep8.so",
+      "S5C_SAMPLER_OUTPUT": "/home/yeranis/results/gnssfgo_receiver_sampling_s5c_20261013/replay_sample20_deep8_profile",
+      "S5C_INTERVAL_NS": "20000000"
+    }
+  },
+  "cohorts": {
+    "all": {
+      "publication_ms": {
+        "count": 1480,
+        "mean": 257.24064806554054,
+        "median": 170.0370635,
+        "p95": 784.3051807999989,
+        "maximum": 1684.4285869999999
+      },
+      "attempts": {
+        "count": 1480,
+        "mean": 1.6513513513513514,
+        "median": 1.0,
+        "p95": 3.0,
+        "maximum": 6
+      },
+      "recovery_publications": 66,
+      "nonrecovery_ms": {
+        "count": 1414,
+        "mean": 223.32892027722772,
+        "median": 163.0801495,
+        "p95": 610.1773846999995,
+        "maximum": 1278.951308
+      },
+      "over_1000ms": 41,
+      "cache": {
+        "0": {
+          "calls": 6359404,
+          "hits": 1761749,
+          "misses": 4597655,
+          "failures": 0
+        },
+        "1": {
+          "calls": 9507233,
+          "hits": 2609269,
+          "misses": 6897964,
+          "failures": 0
+        }
+      }
+    },
+    "0-40s": {
+      "publication_ms": {
+        "count": 394,
+        "mean": 47.47609615228426,
+        "median": 43.6956095,
+        "p95": 114.00245489999999,
+        "maximum": 135.311816
+      },
+      "attempts": {
+        "count": 394,
+        "mean": 1.3197969543147208,
+        "median": 1.0,
+        "p95": 2.0,
+        "maximum": 2
+      },
+      "recovery_publications": 0,
+      "nonrecovery_ms": {
+        "count": 394,
+        "mean": 47.47609615228426,
+        "median": 43.6956095,
+        "p95": 114.00245489999999,
+        "maximum": 135.311816
+      },
+      "over_1000ms": 0,
+      "cache": {
+        "0": {
+          "calls": 343325,
+          "hits": 64677,
+          "misses": 278648,
+          "failures": 0
+        },
+        "1": {
+          "calls": 507814,
+          "hits": 90070,
+          "misses": 417744,
+          "failures": 0
+        }
+      }
+    },
+    "20-40s": {
+      "publication_ms": {
+        "count": 200,
+        "mean": 72.49315009,
+        "median": 65.394732,
+        "p95": 122.51237064999995,
+        "maximum": 135.311816
+      },
+      "attempts": {
+        "count": 200,
+        "mean": 1.4,
+        "median": 1.0,
+        "p95": 2.0,
+        "maximum": 2
+      },
+      "recovery_publications": 0,
+      "nonrecovery_ms": {
+        "count": 200,
+        "mean": 72.49315009,
+        "median": 65.394732,
+        "p95": 122.51237064999995,
+        "maximum": 135.311816
+      },
+      "over_1000ms": 0,
+      "cache": {
+        "0": {
+          "calls": 257074,
+          "hits": 49500,
+          "misses": 207574,
+          "failures": 0
+        },
+        "1": {
+          "calls": 382979,
+          "hits": 70583,
+          "misses": 312396,
+          "failures": 0
+        }
+      }
+    },
+    "60-80s": {
+      "publication_ms": {
+        "count": 200,
+        "mean": 170.44261676,
+        "median": 147.9075915,
+        "p95": 273.5054675999999,
+        "maximum": 438.362211
+      },
+      "attempts": {
+        "count": 200,
+        "mean": 1.23,
+        "median": 1.0,
+        "p95": 2.0,
+        "maximum": 2
+      },
+      "recovery_publications": 1,
+      "nonrecovery_ms": {
+        "count": 199,
+        "mean": 169.0962871407035,
+        "median": 147.848993,
+        "p95": 273.3000967,
+        "maximum": 329.068404
+      },
+      "over_1000ms": 0,
+      "cache": {
+        "0": {
+          "calls": 561624,
+          "hits": 98848,
+          "misses": 462776,
+          "failures": 0
+        },
+        "1": {
+          "calls": 840692,
+          "hits": 145238,
+          "misses": 695454,
+          "failures": 0
+        }
+      }
+    },
+    "120-140s": {
+      "publication_ms": {
+        "count": 200,
+        "mean": 528.99494734,
+        "median": 486.8340945,
+        "p95": 880.3529709499996,
+        "maximum": 979.857079
+      },
+      "attempts": {
+        "count": 200,
+        "mean": 2.305,
+        "median": 2.0,
+        "p95": 3.0,
+        "maximum": 4
+      },
+      "recovery_publications": 30,
+      "nonrecovery_ms": {
+        "count": 170,
+        "mean": 477.5287573705882,
+        "median": 468.85686799999996,
+        "p95": 670.01104685,
+        "maximum": 747.494117
+      },
+      "over_1000ms": 0,
+      "cache": {
+        "0": {
+          "calls": 1767775,
+          "hits": 553949,
+          "misses": 1213826,
+          "failures": 0
+        },
+        "1": {
+          "calls": 2642424,
+          "hits": 823912,
+          "misses": 1818512,
+          "failures": 0
+        }
+      }
+    },
+    "140s-end": {
+      "publication_ms": {
+        "count": 86,
+        "mean": 924.4267286627907,
+        "median": 936.7026255000001,
+        "p95": 1556.5024202500001,
+        "maximum": 1684.4285869999999
+      },
+      "attempts": {
+        "count": 86,
+        "mean": 3.8255813953488373,
+        "median": 4.0,
+        "p95": 6.0,
+        "maximum": 6
+      },
+      "recovery_publications": 25,
+      "nonrecovery_ms": {
+        "count": 61,
+        "mean": 764.1114946885247,
+        "median": 728.325017,
+        "p95": 1267.414002,
+        "maximum": 1278.951308
+      },
+      "over_1000ms": 40,
+      "cache": {
+        "0": {
+          "calls": 1334010,
+          "hits": 524810,
+          "misses": 809200,
+          "failures": 0
+        },
+        "1": {
+          "calls": 1991218,
+          "hits": 780838,
+          "misses": 1210380,
+          "failures": 0
+        }
+      }
+    }
+  },
+  "total_publication_seconds": 380.736832627,
+  "wall_overhead_fraction": 0.014895816244047122,
+  "total_cpu_overhead_fraction": 0.015298808321984492,
+  "main_thread_cpu_over_total_cpu": 0.999950834660471
+}

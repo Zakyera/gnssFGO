@@ -16,7 +16,24 @@ performance hypotheses into one acceptance experiment.
 
 ## Baseline and evidence
 
-**Measurement boundary (S5b, 2026-10-13):** Do not start E3a from the candidate
+**Latest measured diagnosis (S5c, 2026-10-13):** Original-executable sampling
+localizes the delay to full-history publication refinement (79.52% CPU overall,
+88.18% late). Disjoint dominant kernels: source residual/Jacobians 35.30%,
+Gaussian QR 24.98%, WNOA motion residual/Jacobians 12.51%. The accepted 20 ms
+profile has 23879 samples, zero truncation/errors, exact equality to the original
+unsampled OFFLINE control and 1.49% wall overhead. That original offline control
+equals S5b timers-OFF exactly but still differs slightly from the original LIVE
+capture: the old failed live-reference gate remains failed, and instrumentation
+alone is not its cause. Do not claim exact live work-count reproduction.
+First proposed optimization is now E2b shared exact endpoint evaluation: 4402
+final factor endpoint uses refer to 2204 source endpoint times. Reuse the
+original pose/Jacobian calculation only at bit-identical complete inputs;
+actual savings are unmeasured. E3a stays on hold. Full-history scaling/QR remain;
+no promise of indefinite-duration capacity. 751 protected inputs, 49 raw
+artifacts and six source repositories unchanged. No estimator edits or live/
+source reruns. See [S5c report](experiments/receiver_sampling_s5c_20261013/REPORT.txt).
+
+**Earlier measurement boundary (S5b, 2026-10-13):** Do not start E3a from the candidate
 identified below. Private timing instrumentation passed 50 Release checks with
 timers disabled and enabled, focused profiler ASan/UBSan checks, and exact
 five-second replay. The full timers-disabled replay failed the exact reference
@@ -29,7 +46,7 @@ and six source repos remain unchanged. Next measurement should sample the
 unmodified frozen executable; current per-process `perf` access is blocked by
 host permissions. See [S5b report](experiments/receiver_subphase_s5b_20261013/REPORT.txt).
 
-**Latest audit (S5a, 2026-10-13):** Retained-data analysis localizes the late
+**Earlier audit (S5a, 2026-10-13; candidate order superseded by S5c):** Retained-data analysis localizes the late
 receiver backlog to growing global publication work plus more refinement passes.
 In 140–148.58 s, publication median/p95 is 984.068/1619.918 ms; even calls
 without recovery have p95 1329.959 ms against the 1000 ms nominal wall budget.
@@ -176,7 +193,8 @@ shared IMU, past means or nonlinear history are statistically independent.
 | E1b.2 | Instrument LOCAL update subphases | Opt-in timing only; no extra factor/solver evaluations; scope/cache/exception tests; disjoint accounting; measured overhead before bounded profiling | Private implementation/tests passed 2026-10-12: 29 Release +29 UBSan +8 profiler ASan/UBSan; original-library fixture exact; no source capture or solver replacement |
 | E1b.3 | Bounded LOCAL subphase profile | Frozen source settings; explicit profiler overhead/coverage; separate nested/worker/outer wall costs; select one measured dominant subphase | E1b.3c validated first40s: 96.405% of LOCAL exclusive wall in synchronous GPU linearization; first40s limits retained |
 | E1b.4 | Batch LOCAL update linearizations at exact solver Values | Keep solver decisions and ordered Gaussian blocks; reuse E1 synchronous-compatible kernels; same-input repeated-solver and covariance checks before bounded live timing | Synthetic, sampled real-input and observer-free first40s timing gates PASSED. Default-off; longer capacity and full evolving-history equivalence remain uncertified |
-| E3a | Remaining WNOA motion-factor derivatives | Independent numerical derivative checks; manifold/frame tests; frozen-journal state/cost/covariance checks with predeclared tight tolerances | On hold pending measured S5b subphase attribution; no optimization authorized in S5b |
+| E3a | Remaining WNOA motion-factor derivatives | Independent numerical derivative checks; manifold/frame tests; frozen-journal state/cost/covariance checks with predeclared tight tolerances | On hold: S5c measures source interpolation as the larger kernel; E2b exact reuse proposed first, no derivative patch authorized |
+| E2b | Exact shared endpoint pose/Jacobian evaluation | Complete bit-exact input keys, immutable bounded/thread-safe reuse, revision/rollback/invalidation tests; exact frozen-journal outputs/decisions before matched timing | Proposed by S5c only; not implemented or benchmarked; no estimator change in the diagnosis task |
 | E3b | Remaining interpolated pose derivative blocks | Separate patch and independent checks as for E3a; do not redo already validated V/W substitution | Not started |
 | E4 | Selective incremental publication refinement | Same factors/events and fresh current-Values stationarity certificate; reference full refinement fallback; short/medium/late replay comparisons | Tested 2026-10-12; NOT ACCEPTED: strict state bounds failed,86.8% fallback,matched refinement~40% slower; stopped at130.68s |
 | E5 | Transport/logging/bookkeeping efficiency | One subchange per test; lossless ordered revision delivery and auditability; same factor accounting; no silent dropped/coalesced versions | Not started |
@@ -192,6 +210,7 @@ shared IMU, past means or nonlinear history are statistically independent.
 | S5 | Frozen private provider first160s capacity validation | Same S4d binaries/settings, complete source coverage, native history/wire checks, strict receiver publication and exact journal repeat; early/middle/late timing | Capacity failed at148.55s receiver queue gate. Partial scan timing improved; full correctness/replay gates unaccepted. No retry, model edit or promotion |
 | S5a | Retained receiver publication-cost audit around140–148s | Trace frozen executable sources; separate graph size, iterations, recovery, revision delivery and unmeasured subcosts | Completed2026-10-13: global publication work localized; E3a motion V/W derivative candidate proposed, not implemented |
 | S5b | Receiver subphase timing without changing estimation | Private timing-only instrumentation, exact-output/decision checks and overhead control on saved S5 journal; disjoint inclusive/exclusive accounting | Stopped2026-10-13: full exact-reference gate failed; no full timed profile, no optimization; external profiling permission unresolved |
+| S5c | Unmodified receiver sampling diagnosis | User-space profiling, exact frozen-journal output gates, overhead/sample coverage and dominant-code inspection | Complete2026-10-13: offline exact/quality gates pass,23,879 samples,1.49% wall overhead; publication/source-Jacobian/QR cost quantified. Original live equality remains failed; E2b proposed only |
 
 E1 first reuses existing gtsam_points batching around LOCAL graph preparation;
 it retains the auxiliary smoother and its conditioning. GPU-aware sidecar update,
@@ -234,6 +253,47 @@ its own explicit algorithmic decision. Fixed lag may bound resources but brings
 historical revision and marginal-prior semantics; reconsider only separately.
 
 ## Execution ledger
+
+### S5c — unmodified executable sampling diagnosis
+
+- User authorizes continued overnight diagnosis and a specific evidence-backed
+  fix proposal. No implementation, new source run, model or covariance change.
+- Parent8650acbd11b0705d69b6d8fbe048eb77d019dc8d. S5b remains stopped; its failed
+  exact gate is not waived. Prefer sampling the unmodified frozen executable.
+- Protocol and working status: experiments/receiver_sampling_s5c_20261013/.
+- Private user-space collector feasibility first; no security setting changes,
+  root, global installations or kernel profiling permission bypass.
+- Full unmodified unsampled replay equals S5b's timers-disabled replay exactly,
+  but not the retained live output. Preserve that failed live-reference gate;
+  instrumentation alone is not its cause. A separately declared matched offline
+  profiling scope uses the unchanged offline control, not a relaxed tolerance.
+- First10ms sample matches that offline control exactly (~3.8% overhead), but
+  110/48832 stacks exceed4096 frames. Quality gate remains failed. A final20ms,
+  separate8192-frame observer passed cadence, exact-prefix and full exact-output
+  gates:23879 samples,maximum depth4430,zero errors/truncation/overruns,
+  99.9967% coverage,1.49% wall overhead. Its CPU attribution is the primary result.
+  Censored10ms comparison assigns all capped stacks to UNKNOWN and agrees on
+  the dominant work. Failed historical gates remain failed, never overwritten.
+- Overall/late publication CPU shares79.52/88.18%. Disjoint overall kernels:
+  source relative residual/Jacobians35.30%,QR24.98%,motion12.51%; copy0.95%,
+  journal parsing0.38%. NormalizedGradient inclusive37.02% overlaps these costs,
+  not an extra additive percentage. Current-value certificates linearize the
+  entire retained graph and refinement forces full solves.
+- Unsampled late publication median/p95941.077/1526.115ms; nonrecovery
+  p951256.881ms, already above the1000ms support budget at0.1x. Late fresh
+  linearizations:1,210,380 source and809,200 motion; cache failures0.
+- End graph1481 supports/4443keys/3684factors.88,254 version operations replace
+  old versions; only2201 source factors remain, not88,254 accumulated factors.
+- E2b proposal: shared endpoint interpolation results/Jacobians at exact
+  complete inputs.4402 endpoint uses/2204 unique source endpoint times reveal
+  redundant cross-factor work, not a measured hit rate or speedup. Extend E2,
+  preserve all formulas, source covariances, revision order and strict checks.
+  E3a reprioritized, E4 stays rejected, no optimization implemented.
+- Final integrity PASS:751 protected files,49 raw S5 artifacts and six source
+  HEAD/status snapshots unchanged. No source/live run or production binary
+  changes. Small live/offline discrepancy remains unresolved; isolated profile
+  does not certify sustained live capacity. Follow-up disabled on completion.
+- Completion commit is the commit containing this report/ledger; no push.
 
 ### S5b — measure before selecting an optimization
 

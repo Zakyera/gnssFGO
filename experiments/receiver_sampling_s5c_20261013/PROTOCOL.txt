@@ -1,0 +1,116 @@
+S5c — unchanged-executable receiver cost attribution, 2026-10-13
+
+Authorization: user requests continuing overnight until the delaying work and
+the exact justified fix/redesign are understood, then reporting. Diagnosis
+only; no production fix/model/source experiment authorized.
+Parent8650acbd11b0705d69b6d8fbe048eb77d019dc8d.
+
+Reuse frozen original executable SHA256
+9d2ef832941c5ff2592da8428cb80104352590bcfea50c187624aaf4e90d60e0
+and full retained S5 journal, same container UID1000 and runtime libraries,
+single CPU2, OMP1, existing TBB1, E2 enabled, nominal strict checks unchanged.
+No new source runs, bag playback, math changes, tuning, installed replacement,
+or silent reuse/overwrite of existing output. Do not run S5b full_on.
+
+Sampling plan:
+1. Use installed GNU gprofng's compatible user-space collector, if possible,
+   in a private workspace directory. No perf security setting changes, root,
+   privileged container, downloads, or global installation. Host collection
+   frontend needs newer glibc than the pinned container; only use the collector
+   if its dependencies match. Preserve every original executable/library.
+2. Validate collector on an isolated CPU fixture, stack attribution and finite
+   output, then prefix original+sampled exact equivalence. Sampling only, no
+   heap/IO/synchronization tracing. Record actual setup and limitations.
+3. Run unmodified binary on the retained journal once as reference. Require
+   same outputs/accounting/certificates/decisions as retained reference (exclude
+   runtime clock columns only). Then sample the same executable at10ms; require
+   the same exact gate. Timeout1800s each. Failed gates stay failed, do not
+   silently relax tolerances. Diagnose a tooling/input issue before any retry.
+4. Record CPU versus wall time, overhead, phase/cohort cost and sample coverage.
+   Separate inclusive stacks from exclusive functions. Do not sum overlapping
+   costs. Do not equate CPU samples with a complete wall-clock partition.
+   If sample overhead exceeds10%, report it and do not call its latency native.
+   A second lower-frequency20ms measurement is allowed only to quantify
+   sampling overhead/attribution stability after exact correctness passes.
+5. At least1000 valid samples in the critical late workload if available;
+   inspect stack resolution/unknown frames. Attribute to derivatives, gradient,
+   elimination, copying, error evaluation, parsing/IO or explicit unknown.
+   Use original wall timers to connect sample diagnosis to observed queueing.
+6. Inspect the dominant function's code and scaling. Quantify redundant work
+   with retained counts; distinguish unavoidable changing-state work. Propose
+   one concrete targeted change with correctness gates, not an ATE-driven fix.
+   Do not implement it. If profiling remains blocked, exhaust safe existing
+   tooling alternatives and state the exact blocker without claiming diagnosis.
+7. Recheck protected751 inputs,49 S5 artifacts and six source repos. Save report
+   and engineering ledger. Disable overnight follow-up on completion/blocker.
+
+Result root /home/yeranis/results/gnssfgo_receiver_sampling_s5c_20261013
+Automation diagnose-frozen-receiver-delay; never duplicate running controller.
+
+Preflight addition (before any receiver replay): installed gprofng2.42 collector
+has only20 samples over2s in CPU fixture while describing10ms and reporting a
+timer-period warning. Founder-PID correction fixes nested experiment naming,
+not cadence. Reject it for quantitative attribution; retain evidence. Use a
+small diagnostic preload based on already-installed libunwind's signal-safe
+local unwind API and a POSIX thread-CPU timer, with explicit sample timestamps,
+counts, overrun/error/truncation checks and original executable unchanged.
+Verify2s fixture ~200 samples at10ms plus stack/CPU coverage before replay.
+No privileged profiler, recompilation of the estimator or global install.
+
+Deep-stack preflight: the initial64-frame private sampler has correct cadence
+and exact prefix outputs, but4/44 prefix stacks truncate in recursive GTSAM.
+Preserve it and build a separate4096-frame sampler, variable-length records.
+The deep2s fixture has200 samples,99.896% cadence coverage,zero errors/overruns;
+the43-sample prefix has99.423% coverage,zero truncation/errors and exact output.
+Deep sampler SHA908dd7267dfc65c2d0075ef03eb2111d3d87d58c76775c14217882eece77a519.
+Only this validated sampler is used for full diagnosis. A duplicate-keyword
+analysis-script error was corrected before its first result was saved; the
+driver blocked a premature reference invocation before starting the estimator.
+Neither issue changed estimator code or required an estimator retry.
+
+EXPLICIT DIAGNOSTIC SCOPE AMENDMENT — before full sampling:
+The unmodified, unsampled original executable completes but fails exact equality
+to the retained live output. It is instead BYTE-IDENTICAL (including decisions,
+states, cache counts and all normalized logs) to S5b's timers-disabled replay.
+Thus S5b's live mismatch is not evidence that its instrumentation caused it.
+No source/journal/solver parameter difference has been found; the specific
+live-versus-offline floating-point origin remains unknown. Preserve FAILED
+reference_validation.json and the blocked original sample action, no retry.
+
+The user's continuing delay diagnosis can still use a clearly scoped MATCHED
+OFFLINE profile: first-time replay_sample samples the unchanged executable and
+must match the new unsampled unchanged replay EXACTLY. This is not a relaxation
+of numeric tolerances and is not a claim to reproduce the live work count.
+Require offline_baseline_identity.json before launch, and preserve all earlier
+artifacts. Quantify the measured offline/live work-count difference explicitly.
+If the sampled-versus-unsampled gate fails, stop profiling. At most one20ms
+profile follows only for observer-overhead/stability assessment after this gate
+passes. No model fix, source run or live acceptance can follow from this scope.
+
+Full10ms observation outcome: sampled-versus-offline-control exact gate PASSES.
+Runtime489.288s versus471.542s (~3.8% overhead),48832 samples,zero errors,
+overruns or dropped writes. However110 stacks (0.225%) exceed4096 frames in
+deep recursive GTSAM paths; the strict zero-truncation quality gate FAILS.
+Do not use this profile for the primary numerical breakdown. The already
+allowed20ms observation will use a separate8192-frame preload, after its own
+2s cadence and exact-prefix gates. Preserve both old preload binaries and all
+failed quality evidence. This fixes an observed profiler capacity limit, not
+the estimator or its convergence. No further full profiling run is planned.
+
+For the secondary10ms sensitivity comparison only, analyze complete stacks and
+assign ALL110 capped stacks to an explicit unknown bucket (including their
+outer phase). Keep the original quality FAIL. This gives conservative bounds;
+never silently discard capped samples or pretend this is the primary profile.
+The20ms/8192-frame profile must still pass the original zero-truncation gate.
+
+COMPLETION:
+The20ms profile passed exact equality to the original OFFLINE control and all
+sampling quality gates:23879 samples,zero truncation/errors/overruns,99.9967%
+coverage,1.49% wall overhead. No further replay is authorized by this protocol.
+The original live equality failure remains preserved. Measured diagnosis and
+the proposed exact endpoint-reuse target are in REPORT.txt and the engineering
+ledger; no optimizer/model/source change was implemented. Protected751 inputs,
+49 original S5 artifacts and six source repositories pass final integrity.
+All cohort kernel/phase partitions sum to their sample counts;12 Python helper
+files pass syntax inspection. No new estimator Release/ASan campaign is claimed.
+Disable the overnight follow-up and stop after documentation/checkpoint work.

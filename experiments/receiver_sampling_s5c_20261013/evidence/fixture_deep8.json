@@ -1,0 +1,42 @@
+{
+  "passed": true,
+  "returncode": 0,
+  "seconds": 2.0796945319998486,
+  "user_seconds": 2.054367,
+  "system_seconds": 0.012124999999999999,
+  "max_rss_kib": 30464,
+  "commands": [
+    [
+      "c++",
+      "-std=c++17",
+      "-O2",
+      "-g",
+      "-shared",
+      "-fPIC",
+      "-DS5C_MAX_FRAMES=8192",
+      "/home/yeranis/repos/gnssFGO/experiments/receiver_sampling_s5c_20261013/sampler.cpp",
+      "-o",
+      "/home/yeranis/results/gnssfgo_receiver_sampling_s5c_20261013/profiler/libreceiver_sampler_deep8.so",
+      "-lunwind",
+      "-lrt"
+    ],
+    [
+      "/home/yeranis/results/gnssfgo_receiver_sampling_s5c_20261013/cpu_fixture"
+    ]
+  ],
+  "affinity": [
+    2
+  ],
+  "binary_sha256": "9d2ef832941c5ff2592da8428cb80104352590bcfea50c187624aaf4e90d60e0",
+  "collector_sha256": "8378d64721608e9047665139bf89f3c94b92566209057788de9574232670b25b",
+  "environment": {
+    "LD_LIBRARY_PATH": "/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib",
+    "OMP_NUM_THREADS": "1",
+    "WNOJ_STRICT_PUBLICATION": "1",
+    "WNOJ_INCREMENTAL_PROFILE": "nominal",
+    "E2_EXACT_LINEARIZATION_CACHE": "1",
+    "LD_PRELOAD": "/home/yeranis/results/gnssfgo_receiver_sampling_s5c_20261013/profiler/libreceiver_sampler_deep8.so",
+    "S5C_SAMPLER_OUTPUT": "/home/yeranis/results/gnssfgo_receiver_sampling_s5c_20261013/fixture_deep8_profile",
+    "S5C_INTERVAL_NS": "20000000"
+  }
+}

@@ -1,0 +1,342 @@
+S5c — Unchanged-executable receiver delay diagnosis
+2026-10-13. COMPLETE as an offline cost diagnosis; no optimization implemented.
+
+Finding
+  The bottleneck is repeated full-history publication refinement: fresh
+  stationarity checks, source/motion Jacobian evaluation and QR solves. The
+  largest measured kernel is source endpoint interpolation/Jacobian calculation.
+  First proposed fix: E2b exact shared endpoint evaluation reuse, not a model,
+  covariance, convergence-policy or source-estimator change. Details below.
+
+Scope
+  Frozen ETH1 S5 saved event journal only. No source estimator, bag, live
+  transport, viewer, fusion-model, Qc, covariance or publication-policy change.
+  Parent HEAD8650acbd11b0705d69b6d8fbe048eb77d019dc8d.
+
+Important validation distinction
+  The unsampled original executable completes in471.541775s, but is not exactly
+  equal to the retained live output. It is exactly equal to S5b's separately
+  rebuilt timers-disabled offline replay, including all non-clock diagnostics.
+  Therefore the earlier difference cannot be attributed to the instrumentation
+  build alone. The first tiny certificate difference is at support83/8.88s;
+  ten late publication decision rows differ. Original live/replay recovery
+  records are65/74. Maximum online position difference is0.161446mm (S5b's
+  numerical comparison applies because its offline result equals this replay).
+  All1481 checks in each remain stationary; the mismatch is NOT waived or
+  called exact live reproduction. Its specific floating-point origin remains
+  unknown; no parameter/input-order difference has been found.
+
+  Clearly separated sampled OFFLINE runs match the unsampled original OFFLINE
+  control exactly. Profiling conclusions apply to that matched workload and
+  are related, not equated, to retained live
+  timers. reference_validation.json remains FAILED. This scope amendment was
+  recorded before sampling in PROTOCOL.txt. There was no automatic retry.
+
+Identity
+  Original executable:
+  /home/yeranis/results/gnssfgo_e1_e2_correctness_audit_20261011/candidate/replay
+  SHA2569d2ef832941c5ff2592da8428cb80104352590bcfea50c187624aaf4e90d60e0
+  Runtime libraries:
+  /home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib
+  Journal:
+  /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_shared_linearization_s5_live160_20261012/prepared/capacity160_on_receiver/events.csv
+  Results:
+  /home/yeranis/results/gnssfgo_receiver_sampling_s5c_20261013
+
+  The original capture stopped at148.55s and drained to148.58s, not a successful
+  full160s capture. New replay timings are isolated, not co-running throughput.
+  source_wnoa, no central IMU factors, independent100ms supports, full-history
+  iSAM2 QR, native Gaussian covariance scale1, stable-ID revision replacement,
+  Qc[.00375,.00375,.00375,.015,.015,.015], sigmas1e-5/10/3 and strict normalized
+  gradient1e-5 are unchanged. Container ubuntu-jammy-humble-nvidia, UID1000,
+  CPU2, OMP1 and original TBB1 are used for both offline measurement arms.
+
+Observer preflight
+  Kernel perf access is denied by host settings. No security setting, root
+  privilege, global dependency or working binary was changed. A private copy
+  of the installed GNU collector was rejected: it sampled at100ms despite
+  describing10ms; the2s fixtures are retained. It did not profile the receiver.
+
+  A small private preload uses a main-thread CPU timer and installed libunwind
+  signal-frame unwinding. Only program counters/timestamps are written in the
+  handler; symbolization runs afterward in the same container and actual ELF
+  files. The initial64-frame observer truncated recursive GTSAM stacks and is
+  retained but not used for full diagnosis. A separate4096-frame observer passed
+  its2s cadence fixture and five-second exact receiver gate without truncation.
+  Deep observer SHA256:
+  908dd7267dfc65c2d0075ef03eb2111d3d87d58c76775c14217882eece77a519
+
+  Initial fixture199/200 and deep fixture200/200 expected samples establish
+  cadence only, not receiver overhead. Deep prefix43 samples also passes
+  cadence/unwind checks. Runtime checks explicitly cover dropped writes,
+  overruns, errors, truncation and a replaced signal handler. CPU samples are
+  not a complete wall-time partition or proof of exact per-call timing.
+
+1. Final measurement validity
+
+Primary measurement: replay_sample20_deep8
+  23,879 samples at 20 ms CPU cadence, 99.9967% coverage.
+  Median/max CPU gaps 19.9963/20.9995 ms.
+  Maximum observed stack depth 4430, capacity 8192.
+  Zero truncation, unwind errors, empty stacks, overruns or failed writes.
+  Signal handler unchanged; samples all from intended main thread.
+  4493 samples in the critical 140 s–end cohort.
+  Exact-output gate PASS: 15 byte-identical products plus clock-normalized
+  convergence, revision/progress records, summary and solver decisions.
+  Wall time 478.565775 s versus original unsampled 471.541775 s: +1.4896%.
+  Total CPU overhead +1.5299%; observer unwinding consumes 1.4494% of CPU.
+  Main-thread CPU = 99.995% of whole process CPU; other-thread work negligible.
+  Observer SHA256:
+  8378d64721608e9047665139bf89f3c94b92566209057788de9574232670b25b
+
+The first 4096-frame observer passed its fixture/prefix and exact full-output
+gate, but 110/48,832 full samples were capped. Its quality gate remains FAILED.
+It is used ONLY for secondary sensitivity: every capped sample is assigned
+wholly to UNKNOWN, never silently discarded. The separate final 8192-frame
+observer passed its own fixture/prefix before full use. No additional full
+profile followed it. Main full-workload shares from the censored 10 ms secondary
+comparison are 35.30% source kernels, 25.58% QR, 12.52% motion kernels, consistent
+with the accepted 20 ms result. This is stability evidence, not a claim that
+periodic samples are independent statistical observations.
+
+616/23,879 primary leaf symbols are unresolved (2.58%); only one leaf is outside
+the saved module map. Caller frames still identify project/GTSAM contexts.
+Stripped system-library export labels are not treated as exact functions:
+an addr2line label such as timer_settime or __default_morecore is not evidence
+of timer/allocator dominance. Inclusive TBB frames contain work executed by
+TBB; their large percentage is NOT scheduler overhead. Analysis uses complete
+caller stacks and records explicit other/unattributed work.
+
+Percentages below are sampled CPU attribution, not exact instrumented call
+durations. Existing unmodified wall timers supply actual publication latency.
+No new estimator Release/sanitizer campaign is claimed: estimation code/binary
+were unchanged. Observer fixtures, exact replays and integrity checks are this
+task's validation. Observer handler preserves errno; symbolization is offline.
+
+2. CPU attribution — mutually exclusive kernel categories
+
+                                           All CPU      140 s–end CPU
+Source relative residual/Jacobian kernel     35.299%          32.473%
+Gaussian QR elimination/assembly             24.976%          25.039%
+WNOA motion residual/Jacobian kernel          12.509%          11.195%
+Solver-update remainder                       5.222%           5.720%
+Source linearization remainder                4.787%           5.653%
+Stationarity/cached-evaluation remainder       4.045%           4.118%
+Motion linearization remainder                3.275%           3.272%
+Estimate/delta/back-substitution               2.923%           4.451%
+Nonlinear objective evaluation                2.136%           2.315%
+Solver destruction                            1.742%           2.604%
+Other/unattributed                            1.223%           1.202%
+Solver copy                                   0.946%           1.068%
+Journal parsing                               0.381%           0.134%
+Stable-cost-check remainder                   0.285%           0.556%
+Other factor linearization                    0.251%           0.200%
+
+Each sample has exactly ONE kernel category. The first three occupy 72.78%
+overall. Source kernel includes residual/Jacobian composition; WnoaEndpoint::pose
+itself is present in 34.60% of all stacks, and interpolatePose in 33.17%.
+Named source numericalDerivative11<Pose3,Pose3> is present in 28.94%; total named
+numerical differentiation is 41.04%. Inlined templates mean named derivative
+counts alone undercount the wider kernel work.
+
+Separate DISJOINT outer phases: publication 79.52%, source-version insertion/
+replacement 19.28%, support/startup/final/other 1.21%. Publication share by time:
+20–40 s 68.77%; 60–80 s 75.10%; 120–140 s 82.93%; 140 s–end 88.18%.
+
+OVERLAPPING caller contexts, NOT additional costs to add to the table:
+NormalizedGradient 37.02% overall/39.11% late; iSAM2 update 53.58% overall;
+iSAM2 batch recalculation 42.99%. Factor computations belong to both their
+outer contexts and their disjoint kernel category. The same rule applies to
+QR/source linearization. Fresh certificate evaluation is expensive because
+it requires current graph Jacobians, not merely a scalar comparison.
+
+3. How this creates the live delay
+
+Unobserved offline publication wall timings (same binary/journal):
+  Cohort             median ms       p95 ms       mean refinement attempts
+  0–40 s                42.480       112.310                  1.320
+  20–40 s               65.665       122.306                  1.400
+  60–80 s              146.432       273.685                  1.230
+  120–140 s            484.721       874.426                  2.305
+  140 s–end            941.077      1526.115                  3.826
+
+Late 40/86 publications exceed 1000 ms. Even WITHOUT recovery, late p95 is
+1256.881 ms. At 0.1x playback a 100 ms support interval provides approximately
+1000 ms wall time for ALL receiver work, not only refinement. Source-version
+insertion still needs time between publications. Bursts exceeding that service
+budget accumulate queue; earlier spare capacity does not bank unlimited credit.
+
+Original retained LIVE S5a figures agree on the mechanism, not exact decisions:
+late publication median/p95 984.068/1619.918 ms; no-recovery p95 1329.959 ms.
+Source-version input rate remains about 610/s simulated. The run stopped when
+the queue crossed its existing threshold, not because a queue code defect was
+found. No claim that merely enlarging it provides sustained throughput.
+
+Original unsampled wall = 471.541775 s, total CPU = 470.422457 s (99.76% of wall).
+Existing disjoint publication/revision timers total 375.276002 + 86.485712 s,
+about 97.93% of wall. Thus blocked I/O/waits are not the primary cost in this
+isolated replay. Parsing's small sampled share is NOT a full live transport
+benchmark, but the heavy receiver work exists without co-running sources.
+
+End graph: 1481 support states, 4443 X/V/W keys, 3684 factors comprising 1480
+WNOA, 2201 relative and three priors. Source factors are 1476 GLIM + 725 Kimera;
+all 2201 interpolate BOTH endpoints. There are 88,254 accepted version
+operations and 86,053 removals, NOT 88,254 simultaneous source factors. The
+remaining 25 loaded messages are before-support skips; duplicates/stale = 0.
+
+Late E2 counters: source 1,991,218 calls, 780,838 hits, 1,210,380 misses;
+motion 1,334,010 calls, 524,810 hits, 809,200 misses. Failures = 0. Nearly 39%
+hits show E2 is working, but over two million fresh factor linearizations still
+occur in this last ~8.6 s. These cumulative deltas include work between support
+publications; they are not source-message counts. Changed Values/new factor
+versions require new whole-factor calculations under current E2.
+
+The delay is growing retained work MULTIPLIED by repeated refinement passes,
+with expensive finite-difference interpolation inside each miss and QR work
+afterward. Recovery contributes late cost but is not its sole cause. This is
+receiver CPU computation, not GLIM's previous LOCAL/GPU bottleneck or receiver
+marginalization (this receiver never marginalizes). Rerun is not involved.
+This audit establishes where time is spent; it does not establish the physical
+or conditioning cause of every additional nonlinear refinement iteration.
+
+4. Exact code path and why it repeats work
+
+Frozen private source directory:
+ /home/yeranis/results/gnssfgo_e1_e2_correctness_audit_20261011/candidate/
+
+DiagnosticReplay.cpp:1903 calls RefinePublication at each support publication.
+Definition 998–1021 invokes numerical_audit::Refine and enforces stationarity.
+It does not simply publish the latest ordinary iSAM2 incremental estimate.
+
+ /home/yeranis/results/gnssfgo_publication_cache_20261010/build/FullPublicationRefinement.h
+ :27–54: initial full error/gradient; candidate copy; force_relinearize and
+ forceFullSolve; current estimate, full error and fresh gradient again.
+ :70–125: transactional QR rebuild/numerical polish only when needed.
+
+ /home/yeranis/repos/gnssFGO/online_fgo/include/offline_process/BoundedISAM2Refinement.h
+ :27–46: NormalizedGradient calls graph.linearize(values), gradientAtZero and
+ hessianDiagonal at CURRENT Values, not the old iSAM2 cached linearization.
+
+Candidate ExactLinearizationMemo.h:32–67: per-factor exact Values signature;
+hit returns a cloned Gaussian factor; miss calls Base::linearize. New factor
+revisions have separate caches. Unchanged endpoint calculations are not shared
+between different relative factors. Changing one endpoint invalidates the
+whole factor even when its other endpoint could be reused.
+
+Candidate SourceWnoaModel.h:55–96: WnoaEndpoint constructs the authors' WNOA
+interpolators. Lines 85–87 request two numerical pose-support Jacobians;
+90–92 separately reuse already-validated analytic velocity/angular-rate blocks.
+Lines 113–132 evaluate both relative-factor endpoints independently and chain
+Jacobians into the existing relative Pose3 residual.
+
+ /home/yeranis/repos/gnssFGO/online_fgo/include/model/gp_interpolator/GPWNOAInterpolator.h
+ :81–122: requested pose blocks use numericalDerivative11. The flag called
+ useAutoDiff selects numerical central differences here, NOT GPU or automatic
+ differentiation. :200 onward implements the interpolated pose using Lie-group
+ transforms/Jacobians. Pinned runtime gtsam/base/numericalDerivative.h:109–147
+ evaluates the base plus positive/negative perturbations for each coordinate.
+ Two six-dimensional pose blocks mean 2*(1+12)+1 = 27 interpolatePose_ calls
+ per endpoint Jacobian evaluation; two endpoints mean 54, plus two separate
+ analytic V/W interpolation calls. This is a code-derived count for a full
+ uncached relative Jacobian, NOT a measured total number of executed calls.
+
+ /home/yeranis/repos/gnssFGO/online_fgo/include/factor/motion/GPWNOAPrior.h
+ :90–122: all six motion X/V/W blocks still use numerical derivatives, unlike
+ the improved source interpolation V/W path. Candidate DiagnosticReplay.cpp
+ :1797–1799 chooses this branch. Existing analytic motion V/W blocks are at
+ 141–145,162–174; changing them is a separate E3a derivative-validation task.
+
+Full-history iSAM2 does not by itself mandate this global fresh nonlinear
+certificate/refinement before every publication; that is our wrapper. It was
+added for valid nominal outputs. Removing the check to gain speed would change
+the validated contract and is NOT recommended.
+
+5. One proposed fix — E2b exact shared endpoint evaluation reuse
+
+The final active-factor inventory gives:
+  Source         Edges    Endpoint uses    Unique endpoint times    Repeats
+  GLIM            1476        2952                1478                 1474
+  Kimera           725        1450                 726                  724
+  Total           2201        4402                2204                 2198
+
+Thus ~49.93% of references repeat a source endpoint already used by another
+factor. At identical support Values, both need the same endpoint pose/Jacobians.
+Current code computes them independently on whole-factor cache misses. This
+static count is NOT an observed hit rate or measured speedup. E2 hits, traversal
+order, changed Values and lookup overhead affect actual savings. Do not promise
+2x whole-receiver acceleration.
+
+The measured ranking reprioritizes S5a's motion V/W derivative proposal. It was
+an unmeasured hypothesis, not a demonstrated dominant fix. E3a stays on hold.
+E2b reuses the existing calculations instead of substituting new mathematics:
+
+  a. Extend E2 exact-signature utilities with shared immutable endpoint pose
+     and six Jacobian blocks. Keep the original calculation on every miss.
+  b. Key includes support keys, physical time, dt/tau, Qc/interpolator flags and
+     parameters, complete exact X/V/W representations/charts and output mode.
+     Timestamp alone or approximate Values matching is insufficient. ANY
+     relevant change invalidates reuse.
+  c. Leave measurement mean, covariance, whitening and outer relative residual
+     outside this cache. New revisions reuse endpoint work only if its inputs
+     match; the new source measurement/noise still takes effect normally.
+  d. Immutable returns, bounded lifetime/eviction and thread-safe access;
+     candidate/recovery solvers must not corrupt each other. Exceptions and
+     rollback cannot turn failed calculations into valid cached entries.
+  e. Default-off private build. Test every key/parameter/one-bit Values change,
+     cross-factor/revision sharing, candidate branches, rollback and concurrent
+     access. Compare residual/Jacobian/Gaussian blocks to the original path.
+  f. Exact saved-journal outputs, solver decisions/accounting and fresh
+     stationarity checks BEFORE matched timing. Stop on mismatch. No model,
+     derivative, tolerance, covariance or ordered-revision change. No live
+     promotion from unit tests alone.
+
+This follows the supervisor's useful reuse principle, but the reused object is
+a receiver interpolation calculation, NOT GLIM GPU equations or a transplanted
+source covariance. No source-estimator change is needed.
+
+Even ideal halving of the ~33% interpolation path would remove only ~16–17%
+of total CPU before lookup overhead/lost opportunities. This is illustrative,
+not a prediction. QR/global traversal and more passes still grow. If measured
+gain is insufficient, the structural target is publication's repeated global
+evaluation/refinement. That requires a separately specified correctness-preserving
+redesign, not larger queues or relaxed thresholds. Previously rejected E4
+remains rejected; no fixed-lag change, version skipping or automatic next patch.
+
+6. Evidence, preservation and limits
+
+Final integrity PASS: all 751 protected files, 49 original S5 raw artifacts
+and six source repository HEAD/status snapshots are unchanged. All observer
+binaries retain their fixture hashes. No installed estimator was overwritten.
+
+Compact evidence is saved in this task's evidence/; artifact_manifest.json
+records raw result hashes. Full samples/binaries/replays stay in the result root.
+  reference_validation.json — original live equality FAIL, retained;
+  offline_baseline_identity.json — original offline vs S5b timers-OFF PASS;
+  replay_sample20_deep8_validation.json — sampled/offline exact equality PASS;
+  replay_sample20_deep8_sampling_validation.json — primary quality PASS;
+  replay_sample20_deep8_attribution.json — primary CPU breakdown;
+  reference_timings.json — original unsampled wall/cache measurements;
+  replay_sample20_deep8_timings.json — overhead and thread coverage;
+  replay_sample_censored_attribution.json — secondary with quality FAIL retained;
+  endpoint_reuse_opportunity.json — static endpoint multiplicities;
+  before_integrity.json / after_integrity.json — protected input checks.
+
+No live completion or new ATE claim. Remaining limits: small original-live/
+offline difference unresolved; sampled rather than exact function timers;
+isolated one-core workload, partial 148.58 s capture, proposed savings unmeasured,
+and no proof of unlimited-duration scalability. The delaying work is localized
+and quantified; the runtime problem is NOT fixed by this audit.
+
+Completion commit is the commit containing this report: use
+git log -1 --format=%H -- experiments/receiver_sampling_s5c_20261013/REPORT.txt
+No push. The overnight follow-up is disabled on completion. OpenAI Docs skill
+guided that automation only, not the estimator diagnosis:
+ /home/yeranis/.codex/skills/.system/openai-docs/SKILL.md
+ https://learn.chatgpt.com/docs/automations?surface=app
+Observer API sources:
+ https://www.nongnu.org/libunwind/man/unw_init_local%283%29.html
+ https://www.nongnu.org/libunwind/man/libunwind%283%29.html
+ https://www.man7.org/linux/man-pages/man2/timer_create.2.html
+ https://sourceware.org/binutils/docs/gprofng.html
+
+STOP: diagnosis completed; no production fix, new sequence or source run.

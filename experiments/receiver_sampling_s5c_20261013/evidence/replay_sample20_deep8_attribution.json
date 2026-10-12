@@ -1,0 +1,1392 @@
+{
+  "samples": 23879,
+  "stack_depth": {
+    "count": 23879,
+    "mean": 385.0447673688178,
+    "median": 22,
+    "p95": 2582.0999999999985,
+    "maximum": 4430
+  },
+  "unknown_leaf": 616,
+  "censored_secondary_only": false,
+  "strict_sampling_gate_passed": true,
+  "unmapped_leaf": 1,
+  "leaf_elf_counts": {
+    "/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib/libgtsam.so.4": 12890,
+    "/usr/lib/x86_64-linux-gnu/libc.so.6": 2520,
+    "/usr/lib/x86_64-linux-gnu/libm.so.6": 1414,
+    "/home/yeranis/results/gnssfgo_e1_e2_correctness_audit_20261011/candidate/replay": 3653,
+    "/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib/libonline_fgo_util.so": 2418,
+    "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30": 364,
+    "/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib/libonline_fgo_solver.so": 47,
+    "/usr/lib/x86_64-linux-gnu/libtbbmalloc.so.2.5": 544,
+    "[unmapped]": 1,
+    "/usr/lib/x86_64-linux-gnu/libtbb.so.12.5": 27,
+    "/usr/lib/x86_64-linux-gnu/libgomp.so.1.0.0": 1
+  },
+  "phase_counts": {
+    "publication": 18988,
+    "source revision": 4603,
+    "support/startup/final/other": 288
+  },
+  "exclusive_functions": [
+    [
+      "void Eigen::internal::outer_product_selector_run<Eigen::Block<Eigen::Block<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>, -1, -1, false>, -1, -1, false>, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<double, double>, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<double>, Eigen::Matrix<double, -1, 1, 0, -1, 1> const> const, Eigen::Block<Eigen::Block<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>, -1, 1, true>, -1, 1, false> const>, Eigen::Map<Eigen::Matrix<double, 1, -1, 1, 1, -1>, 0, Eigen::Stride<0, 0> >, Eigen::internal::generic_product_impl<Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<double, double>, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<double>, Eigen::Matrix<double, -1, 1, 0, -1, 1> const> const, Eigen::Block<Eigen::Block<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>, -1, 1, true>, -1, 1, false> const>, Eigen::Map<Eigen::Matrix<double, 1, -1, 1, 1, -1>, 0, Eigen::Stride<0, 0> >, Eigen::DenseShape, Eigen::DenseShape, 5>::sub>(Eigen::Block<Eigen::Block<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>, -1, -1, false>, -1, -1, false>&, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<double, double>, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<double>, Eigen::Matrix<double, -1, 1, 0, -1, 1> const> const, Eigen::Block<Eigen::Block<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>, -1, 1, true>, -1, 1, false> const> const&, Eigen::Map<Eigen::Matrix<double, 1, -1, 1, 1, -1>, 0, Eigen::Stride<0, 0> > const&, Eigen::internal::generic_product_impl<Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<double, double>, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<double>, Eigen::Matrix<double, -1, 1, 0, -1, 1> const> const, Eigen::Block<Eigen::Block<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>, -1, 1, true>, -1, 1, false> const>, Eigen::Map<Eigen::Matrix<double, 1, -1, 1, 1, -1>, 0, Eigen::Stride<0, 0> >, Eigen::DenseShape, Eigen::DenseShape, 5>::sub const&, Eigen::internal::false_type const&) [clone .isra.0]",
+      1479
+    ],
+    [
+      "gtsam::Pose3::Logmap(gtsam::Pose3 const&, gtsam::OptionalJacobian<6, 6>)",
+      1333
+    ],
+    [
+      "void Eigen::internal::make_block_householder_triangular_factor<Eigen::Matrix<double, -1, -1, 1, -1, -1>, Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>, Eigen::Block<Eigen::Matrix<double, -1, 1, 0, -1, 1>, -1, 1, false> >(Eigen::Matrix<double, -1, -1, 1, -1, -1>&, Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false> const&, Eigen::Block<Eigen::Matrix<double, -1, 1, 0, -1, 1>, -1, 1, false> const&)",
+      1187
+    ],
+    [
+      "__default_morecore",
+      1157
+    ],
+    [
+      "f64xsubf128",
+      1017
+    ],
+    [
+      "gtsam::Rot3::rotate(Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, gtsam::OptionalJacobian<3, 3>, gtsam::OptionalJacobian<3, 3>) const",
+      995
+    ],
+    [
+      "fgo::utils::convertVwWbToVbWb(Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, gtsam::Pose3 const&, gtsam::OptionalJacobian<6, 3>, gtsam::OptionalJacobian<6, 3>, gtsam::OptionalJacobian<6, 6>)",
+      684
+    ],
+    [
+      "Eigen::internal::general_matrix_vector_product<long, double, Eigen::internal::const_blas_data_mapper<double, long, 1>, 1, false, double, Eigen::internal::const_blas_data_mapper<double, long, 0>, false, 0>::run(long, long, Eigen::internal::const_blas_data_mapper<double, long, 1> const&, Eigen::internal::const_blas_data_mapper<double, long, 0> const&, double*, long, double)",
+      628
+    ],
+    [
+      "??",
+      616
+    ],
+    [
+      "fgo::utils::rightJacobianPose3Q(Eigen::Matrix<double, 6, 1, 0, 6, 1> const&)",
+      614
+    ],
+    [
+      "gtsam::Rot3::unrotate(Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, gtsam::OptionalJacobian<3, 3>, gtsam::OptionalJacobian<3, 3>) const",
+      585
+    ],
+    [
+      "gtsam::Rot3::operator*(gtsam::Rot3 const&) const",
+      576
+    ],
+    [
+      "timer_settime",
+      573
+    ],
+    [
+      "gtsam::Pose3::Expmap(Eigen::Matrix<double, 6, 1, 0, 6, 1> const&, gtsam::OptionalJacobian<6, 6>)",
+      532
+    ],
+    [
+      "void Eigen::internal::call_dense_assignment_loop<Eigen::Matrix<double, 3, 3, 0, 3, 3>, Eigen::CwiseBinaryOp<Eigen::internal::scalar_difference_op<double, double>, Eigen::CwiseBinaryOp<Eigen::internal::scalar_sum_op<double, double>, Eigen::CwiseBinaryOp<Eigen::internal::scalar_sum_op<double, double>, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<double, double>, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<double>, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<double, double>, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<double>, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const, Eigen::CwiseBinaryOp<Eigen::internal::scalar_difference_op<double, double>, Eigen::CwiseBinaryOp<Eigen::internal::scalar_sum_op<double, double>, Eigen::Matrix<double, 3, 3, 0, 3, 3> const, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const> const> const, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<double, double>, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<double>, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const, Eigen::CwiseBinaryOp<Eigen::internal::scalar_difference_op<double, double>, Eigen::CwiseBinaryOp<Eigen::internal::scalar_sum_op<double, double>, Eigen::Product<Eigen::Matrix<double, 3, 3, 0, 3, 3>, Eigen::Matrix<double, 3, 3, 0, 3, 3>, 0> const, Eigen::Product<Eigen::Matrix<double, 3, 3, 0, 3, 3>, Eigen::Matrix<double, 3, 3, 0, 3, 3>, 0> const> const, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<double, double>, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<double>, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const> const> const> const, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<double, double>, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<double>, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const, Eigen::CwiseBinaryOp<Eigen::internal::scalar_sum_op<double, double>, Eigen::Product<Eigen::Matrix<double, 3, 3, 0, 3, 3>, Eigen::Matrix<double, 3, 3, 0, 3, 3>, 0> const, Eigen::Product<Eigen::Matrix<double, 3, 3, 0, 3, 3>, Eigen::Matrix<double, 3, 3, 0, 3, 3>, 0> const> const> const>, Eigen::internal::assign_op<double, double> >(Eigen::Matrix<double, 3, 3, 0, 3, 3>&, Eigen::CwiseBinaryOp<Eigen::internal::scalar_difference_op<double, double>, Eigen::CwiseBinaryOp<Eigen::internal::scalar_sum_op<double, double>, Eigen::CwiseBinaryOp<Eigen::internal::scalar_sum_op<double, double>, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<double, double>, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<double>, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<double, double>, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<double>, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const, Eigen::CwiseBinaryOp<Eigen::internal::scalar_difference_op<double, double>, Eigen::CwiseBinaryOp<Eigen::internal::scalar_sum_op<double, double>, Eigen::Matrix<double, 3, 3, 0, 3, 3> const, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const> const> const, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<double, double>, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<double>, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const, Eigen::CwiseBinaryOp<Eigen::internal::scalar_difference_op<double, double>, Eigen::CwiseBinaryOp<Eigen::internal::scalar_sum_op<double, double>, Eigen::Product<Eigen::Matrix<double, 3, 3, 0, 3, 3>, Eigen::Matrix<double, 3, 3, 0, 3, 3>, 0> const, Eigen::Product<Eigen::Matrix<double, 3, 3, 0, 3, 3>, Eigen::Matrix<double, 3, 3, 0, 3, 3>, 0> const> const, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<double, double>, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<double>, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const> const> const> const, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<double, double>, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<double>, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const, Eigen::CwiseBinaryOp<Eigen::internal::scalar_sum_op<double, double>, Eigen::Product<Eigen::Matrix<double, 3, 3, 0, 3, 3>, Eigen::Matrix<double, 3, 3, 0, 3, 3>, 0> const, Eigen::Product<Eigen::Matrix<double, 3, 3, 0, 3, 3>, Eigen::Matrix<double, 3, 3, 0, 3, 3>, 0> const> const> const> const&, Eigen::internal::assign_op<double, double> const&)",
+      503
+    ],
+    [
+      "Eigen::Matrix<double, 6, 1, 0, 6, 1>& Eigen::PlainObjectBase<Eigen::Matrix<double, 6, 1, 0, 6, 1> >::_set_noalias<Eigen::CwiseBinaryOp<Eigen::internal::scalar_sum_op<double, double>, Eigen::Product<Eigen::Block<Eigen::Matrix<double, 12, 12, 0, 12, 12> const, 6, 12, false>, Eigen::Matrix<double, 12, 1, 0, 12, 1>, 0> const, Eigen::Product<Eigen::Block<Eigen::Matrix<double, 12, 12, 0, 12, 12> const, 6, 12, false>, Eigen::Matrix<double, 12, 1, 0, 12, 1>, 0> const> >(Eigen::DenseBase<Eigen::CwiseBinaryOp<Eigen::internal::scalar_sum_op<double, double>, Eigen::Product<Eigen::Block<Eigen::Matrix<double, 12, 12, 0, 12, 12> const, 6, 12, false>, Eigen::Matrix<double, 12, 1, 0, 12, 1>, 0> const, Eigen::Product<Eigen::Block<Eigen::Matrix<double, 12, 12, 0, 12, 12> const, 6, 12, false>, Eigen::Matrix<double, 12, 1, 0, 12, 1>, 0> const> > const&)",
+      451
+    ],
+    [
+      "gtsam::so3::ExpmapFunctor::ExpmapFunctor(Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, bool)",
+      449
+    ],
+    [
+      "__nss_database_lookup",
+      431
+    ],
+    [
+      "sincosf64",
+      396
+    ],
+    [
+      "gtsam::SO<3>::Logmap(gtsam::SO<3> const&, gtsam::OptionalJacobian<3, 3>)",
+      385
+    ],
+    [
+      "Eigen::internal::general_matrix_vector_product<long, double, Eigen::internal::const_blas_data_mapper<double, long, 1>, 1, false, double, Eigen::internal::const_blas_data_mapper<double, long, 1>, false, 1>::run(long, long, Eigen::internal::const_blas_data_mapper<double, long, 1> const&, Eigen::internal::const_blas_data_mapper<double, long, 1> const&, double*, long, double) [clone .constprop.0]",
+      375
+    ],
+    [
+      "fgo::models::GPWNOAInterpolator::interpolatePose_(gtsam::Pose3 const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, gtsam::Pose3 const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&) const",
+      369
+    ],
+    [
+      "fgo::utils::rightJacobianRot3inv(Eigen::Matrix<double, 3, 1, 0, 3, 1> const&)",
+      366
+    ],
+    [
+      "void Eigen::internal::householder_qr_inplace_unblocked<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>, Eigen::Block<Eigen::Matrix<double, -1, 1, 0, -1, 1>, -1, 1, false> >(Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>&, Eigen::Block<Eigen::Matrix<double, -1, 1, 0, -1, 1>, -1, 1, false>&, Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>::Scalar*)",
+      315
+    ],
+    [
+      "gtsam::JacobianFactor::JacobianFactorHelper(gtsam::GaussianFactorGraph const&, std::vector<std::_Rb_tree_const_iterator<std::pair<unsigned long const, std::vector<unsigned long, tbb::detail::d1::tbb_allocator<unsigned long> > > >, tbb::detail::d1::tbb_allocator<std::_Rb_tree_const_iterator<std::pair<unsigned long const, std::vector<unsigned long, tbb::detail::d1::tbb_allocator<unsigned long> > > > > > const&)",
+      281
+    ],
+    [
+      "Eigen::internal::triangular_matrix_vector_product<long, 6, double, false, double, false, 1, 0>::run(long, long, double const*, long, double const*, long, double*, long, double const&) [clone .constprop.0]",
+      260
+    ],
+    [
+      "scalable_allocation_command",
+      238
+    ],
+    [
+      "gtsam::noiseModel::Gaussian::WhitenInPlace(Eigen::Matrix<double, -1, -1, 0, -1, -1>&) const",
+      212
+    ],
+    [
+      "fgo::utils::rightJacobianPose3inv(Eigen::Matrix<double, 6, 1, 0, 6, 1> const&)",
+      196
+    ],
+    [
+      "__dynamic_cast",
+      190
+    ],
+    [
+      "fgo::offline::WnoaEndpoint::pose(gtsam::Values const&, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > >*) const",
+      188
+    ],
+    [
+      "void Eigen::MatrixBase<Eigen::Block<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>, -1, -1, false> >::applyHouseholderOnTheLeft<Eigen::VectorBlock<Eigen::Block<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>, -1, 1, true>, -1> >(Eigen::VectorBlock<Eigen::Block<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>, -1, 1, true>, -1> const&, double const&, double*)",
+      184
+    ],
+    [
+      "gtsam::JacobianFactor::hessianDiagonalAdd(gtsam::VectorValues&) const",
+      164
+    ],
+    [
+      "free",
+      163
+    ],
+    [
+      "boost::detail::sp_if_not_array<gtsam::JacobianFactor>::type boost::make_shared<gtsam::JacobianFactor, gtsam::JacobianFactor const&>(gtsam::JacobianFactor const&)",
+      152
+    ],
+    [
+      "Eigen::internal::general_matrix_vector_product<long, double, Eigen::internal::const_blas_data_mapper<double, long, 0>, 0, false, double, Eigen::internal::const_blas_data_mapper<double, long, 1>, false, 0>::run(long, long, Eigen::internal::const_blas_data_mapper<double, long, 0> const&, Eigen::internal::const_blas_data_mapper<double, long, 1> const&, double*, long, double) [clone .isra.0]",
+      148
+    ],
+    [
+      "Eigen::Matrix<double, 3, 1, 0, 3, 1> const gtsam::Values::at<Eigen::Matrix<double, 3, 1, 0, 3, 1> >(unsigned long) const",
+      144
+    ],
+    [
+      "Eigen::internal::general_matrix_vector_product<long, double, Eigen::internal::const_blas_data_mapper<double, long, 1>, 1, false, double, Eigen::internal::const_blas_data_mapper<double, long, 0>, false, 0>::run(long, long, Eigen::internal::const_blas_data_mapper<double, long, 1> const&, Eigen::internal::const_blas_data_mapper<double, long, 0> const&, double*, long, double) [clone .constprop.0]",
+      142
+    ],
+    [
+      "gtsam::Values::Values(gtsam::Values const&, gtsam::VectorValues const&)",
+      123
+    ],
+    [
+      "malloc",
+      121
+    ],
+    [
+      "Eigen::internal::gebp_kernel<double, double, long, Eigen::internal::blas_data_mapper<double, long, 0, 0, 1>, 4, 4, false, false>::operator()(Eigen::internal::blas_data_mapper<double, long, 0, 0, 1> const&, double const*, double const*, long, long, long, double, long, long, long, long) [clone .constprop.0]",
+      119
+    ],
+    [
+      "void Eigen::internal::call_dense_assignment_loop<Eigen::Matrix<double, 6, 6, 0, 6, 6>, Eigen::Product<Eigen::Matrix<double, 6, 6, 0, 6, 6>, Eigen::Matrix<double, 6, 6, 0, 6, 6>, 1>, Eigen::internal::assign_op<double, double> >(Eigen::Matrix<double, 6, 6, 0, 6, 6>&, Eigen::Product<Eigen::Matrix<double, 6, 6, 0, 6, 6>, Eigen::Matrix<double, 6, 6, 0, 6, 6>, 1> const&, Eigen::internal::assign_op<double, double> const&)",
+      116
+    ],
+    [
+      "gtsam::Pose3 const gtsam::Values::at<gtsam::Pose3>(unsigned long) const",
+      114
+    ],
+    [
+      "gtsam::Pose3::inverse() const",
+      114
+    ],
+    [
+      "scalable_allocation_mode",
+      107
+    ],
+    [
+      "gtsam::GaussianConditional::solve(gtsam::VectorValues const&) const",
+      100
+    ],
+    [
+      "void Eigen::internal::call_dense_assignment_loop<Eigen::Matrix<double, 6, 1, 0, 6, 1>, Eigen::Product<Eigen::Matrix<double, 6, 6, 0, 6, 6>, Eigen::Matrix<double, 6, 1, 0, 6, 1>, 1>, Eigen::internal::assign_op<double, double> >(Eigen::Matrix<double, 6, 1, 0, 6, 1>&, Eigen::Product<Eigen::Matrix<double, 6, 6, 0, 6, 6>, Eigen::Matrix<double, 6, 1, 0, 6, 1>, 1> const&, Eigen::internal::assign_op<double, double> const&)",
+      100
+    ],
+    [
+      "fgo::factor::GPWNOAPrior::evaluateError_(gtsam::Pose3 const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, gtsam::Pose3 const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&) const",
+      100
+    ],
+    [
+      "boost::detail::sp_counted_base::release()",
+      99
+    ],
+    [
+      "gtsam::so3::ExpmapFunctor::expmap() const",
+      97
+    ],
+    [
+      "Eigen::internal::gebp_kernel<double, double, long, Eigen::internal::blas_data_mapper<double, long, 0, 0, 1>, 4, 4, false, false>::operator()(Eigen::internal::blas_data_mapper<double, long, 0, 0, 1> const&, double const*, double const*, long, long, long, double, long, long, long, long) [clone .constprop.4]",
+      92
+    ],
+    [
+      "void Eigen::MatrixBase<Eigen::Block<Eigen::Block<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>, -1, 1, true>, -1, 1, false> >::makeHouseholder<Eigen::VectorBlock<Eigen::Block<Eigen::Block<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>, -1, 1, true>, -1, 1, false>, -1> >(Eigen::VectorBlock<Eigen::Block<Eigen::Block<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>, -1, 1, true>, -1, 1, false>, -1>&, double&, double&) const",
+      85
+    ],
+    [
+      "gtsam::LieGroup<gtsam::Pose3, 6>::retract(Eigen::Matrix<double, 6, 1, 0, 6, 1> const&, gtsam::OptionalJacobian<6, 6>, gtsam::OptionalJacobian<6, 6>) const",
+      81
+    ],
+    [
+      "gtsam::JacobianFactor::gradientAtZero() const",
+      78
+    ],
+    [
+      "void gtsam::JacobianFactor::fillTerms<std::vector<std::pair<unsigned long, Eigen::Matrix<double, -1, -1, 0, -1, -1> >, std::allocator<std::pair<unsigned long, Eigen::Matrix<double, -1, -1, 0, -1, -1> > > > >(std::vector<std::pair<unsigned long, Eigen::Matrix<double, -1, -1, 0, -1, -1> >, std::allocator<std::pair<unsigned long, Eigen::Matrix<double, -1, -1, 0, -1, -1> > > > const&, Eigen::Matrix<double, -1, 1, 0, -1, 1> const&, boost::shared_ptr<gtsam::noiseModel::Diagonal> const&)",
+      78
+    ],
+    [
+      "fgo::models::GPWNOAInterpolator::interpolatePose(gtsam::Pose3 const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, gtsam::Pose3 const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, boost::optional<Eigen::Matrix<double, -1, -1, 0, -1, -1>&>, boost::optional<Eigen::Matrix<double, -1, -1, 0, -1, -1>&>, boost::optional<Eigen::Matrix<double, -1, -1, 0, -1, -1>&>, boost::optional<Eigen::Matrix<double, -1, -1, 0, -1, -1>&>, boost::optional<Eigen::Matrix<double, -1, -1, 0, -1, -1>&>, boost::optional<Eigen::Matrix<double, -1, -1, 0, -1, -1>&>) const",
+      77
+    ],
+    [
+      "gtsam::so3::ExpmapFunctor::init(bool)",
+      73
+    ],
+    [
+      "gtsam::check(boost::shared_ptr<gtsam::noiseModel::Base> const&, unsigned long)",
+      71
+    ],
+    [
+      "std::_Rb_tree_increment(std::_Rb_tree_node_base const*)",
+      70
+    ],
+    [
+      "gtsam::LieGroup<gtsam::Pose3, 6>::localCoordinates(gtsam::Pose3 const&, gtsam::OptionalJacobian<6, 6>, gtsam::OptionalJacobian<6, 6>) const",
+      69
+    ],
+    [
+      "e2_memo::MemoFactor<fgo::offline::WnoaRelativeFactor, 1ul>::linearize(gtsam::Values const&) const",
+      63
+    ],
+    [
+      "Eigen::internal::triangular_solve_vector<double, double, long, 1, 2, false, 0>::run(long, double const*, long, double*)",
+      61
+    ],
+    [
+      "gtsam::JacobianFactor::transposeMultiplyAdd(double, Eigen::Matrix<double, -1, 1, 0, -1, 1> const&, gtsam::VectorValues&) const",
+      60
+    ],
+    [
+      "rml::pool_reset(rml::MemoryPool*)",
+      55
+    ],
+    [
+      "gtsam::GaussianFactorGraph::gradientAtZero() const",
+      53
+    ],
+    [
+      "Eigen::internal::gemm_pack_lhs<double, long, Eigen::internal::const_blas_data_mapper<double, long, 0>, 4, 2, double __vector(2), 0, false, false>::operator()(double*, Eigen::internal::const_blas_data_mapper<double, long, 0> const&, long, long, long, long) [clone .constprop.4]",
+      53
+    ],
+    [
+      "std::_Rb_tree_insert_and_rebalance(bool, std::_Rb_tree_node_base*, std::_Rb_tree_node_base*, std::_Rb_tree_node_base&)",
+      53
+    ],
+    [
+      "gtsam::JacobianFactor::augmentedJacobianUnweighted() const",
+      50
+    ],
+    [
+      "e2_probe::Signature(std::vector<unsigned long, tbb::detail::d1::tbb_allocator<unsigned long> > const&, gtsam::Values const&, bool)",
+      50
+    ],
+    [
+      "fgo::offline::WnoaRelativeFactor::unwhitenedError(gtsam::Values const&, boost::optional<std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > >&>) const::{lambda(std::vector<unsigned long, tbb::detail::d1::tbb_allocator<unsigned long> > const&, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > const&, Eigen::Matrix<double, 6, 6, 0, 6, 6> const&)#1}::operator()(std::vector<unsigned long, tbb::detail::d1::tbb_allocator<unsigned long> > const&, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > const&, Eigen::Matrix<double, 6, 6, 0, 6, 6> const&) const",
+      49
+    ]
+  ],
+  "inclusive_functions": [
+    [
+      "__libc_init_first",
+      23879
+    ],
+    [
+      "main",
+      23879
+    ],
+    [
+      "_start",
+      23879
+    ],
+    [
+      "__libc_start_main",
+      23879
+    ],
+    [
+      "(anonymous namespace)::Run(int, char**)",
+      23879
+    ],
+    [
+      "tbb::detail::r1::submit(tbb::detail::d1::task&, tbb::detail::d1::task_group_context&, tbb::detail::r1::arena*, unsigned long)",
+      19188
+    ],
+    [
+      "(anonymous namespace)::IncrementalBackend::RefinePublication(unsigned long, long, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)",
+      19052
+    ],
+    [
+      "numerical_audit::Refine(std::unique_ptr<gtsam::ISAM2, std::default_delete<gtsam::ISAM2> >&, unsigned long, double)",
+      18988
+    ],
+    [
+      "gtsam::NonlinearFactorGraph::linearize(gtsam::Values const&) const",
+      13054
+    ],
+    [
+      "tbb::detail::d1::start_for<tbb::detail::d1::blocked_range<unsigned long>, gtsam::(anonymous namespace)::_LinearizeOneFactor, tbb::detail::d1::auto_partitioner const>::execute(tbb::detail::d1::execution_data&)",
+      13043
+    ],
+    [
+      "gtsam::(anonymous namespace)::_LinearizeOneFactor::operator()(tbb::detail::d1::blocked_range<unsigned long> const&) const",
+      13040
+    ],
+    [
+      "gtsam::ISAM2::update(gtsam::NonlinearFactorGraph const&, gtsam::Values const&, gtsam::ISAM2UpdateParams const&)",
+      12528
+    ],
+    [
+      "gtsam::NoiseModelFactor::linearize(gtsam::Values const&) const",
+      12292
+    ],
+    [
+      "gtsam::ISAM2::recalculate(gtsam::ISAM2UpdateParams const&, gtsam::FastSet<unsigned long> const&, gtsam::ISAM2Result*)",
+      12035
+    ],
+    [
+      "gtsam::ISAM2::recalculateBatch(gtsam::ISAM2UpdateParams const&, gtsam::FastSet<unsigned long>*, gtsam::ISAM2Result*)",
+      10265
+    ],
+    [
+      "e2_memo::MemoFactor<fgo::offline::WnoaRelativeFactor, 1ul>::linearize(gtsam::Values const&) const",
+      9572
+    ],
+    [
+      "fgo::offline::NormalizedGradient(gtsam::NonlinearFactorGraph const&, gtsam::Values const&)",
+      8839
+    ],
+    [
+      "fgo::offline::WnoaRelativeFactor::unwhitenedError(gtsam::Values const&, boost::optional<std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > >&>) const",
+      8797
+    ],
+    [
+      "fgo::offline::WnoaEndpoint::pose(gtsam::Values const&, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > >*) const",
+      8262
+    ],
+    [
+      "fgo::models::GPWNOAInterpolator::interpolatePose(gtsam::Pose3 const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, gtsam::Pose3 const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, boost::optional<Eigen::Matrix<double, -1, -1, 0, -1, -1>&>, boost::optional<Eigen::Matrix<double, -1, -1, 0, -1, -1>&>, boost::optional<Eigen::Matrix<double, -1, -1, 0, -1, -1>&>, boost::optional<Eigen::Matrix<double, -1, -1, 0, -1, -1>&>, boost::optional<Eigen::Matrix<double, -1, -1, 0, -1, -1>&>, boost::optional<Eigen::Matrix<double, -1, -1, 0, -1, -1>&>) const",
+      7920
+    ],
+    [
+      "gtsam::internal::FixedSizeMatrix<gtsam::Pose3, gtsam::Pose3>::type gtsam::numericalDerivative11<gtsam::Pose3, gtsam::Pose3, 6>(std::function<gtsam::Pose3 (gtsam::Pose3 const&)>, gtsam::Pose3 const&, double)",
+      6910
+    ],
+    [
+      "gtsam::EliminatableClusterTree<gtsam::ISAM2BayesTree, gtsam::GaussianFactorGraph>::eliminate(std::function<std::pair<boost::shared_ptr<gtsam::GaussianConditional>, boost::shared_ptr<gtsam::GaussianFactor> > (gtsam::GaussianFactorGraph const&, gtsam::Ordering const&)> const&) const",
+      6147
+    ],
+    [
+      "void gtsam::treeTraversal::internal::CreateRootTask<gtsam::ClusterTree<gtsam::GaussianFactorGraph>::Cluster, std::vector<boost::shared_ptr<gtsam::ClusterTree<gtsam::GaussianFactorGraph>::Cluster>, tbb::detail::d1::tbb_allocator<boost::shared_ptr<gtsam::ClusterTree<gtsam::GaussianFactorGraph>::Cluster> > >, gtsam::EliminationData<gtsam::EliminatableClusterTree<gtsam::ISAM2BayesTree, gtsam::GaussianFactorGraph> >, gtsam::EliminationData<gtsam::EliminatableClusterTree<gtsam::ISAM2BayesTree, gtsam::GaussianFactorGraph> > (boost::shared_ptr<gtsam::ClusterTree<gtsam::GaussianFactorGraph>::Cluster> const&, gtsam::EliminationData<gtsam::EliminatableClusterTree<gtsam::ISAM2BayesTree, gtsam::GaussianFactorGraph> >&), gtsam::EliminationData<gtsam::EliminatableClusterTree<gtsam::ISAM2BayesTree, gtsam::GaussianFactorGraph> >::EliminationPostOrderVisitor>(std::vector<boost::shared_ptr<gtsam::ClusterTree<gtsam::GaussianFactorGraph>::Cluster>, tbb::detail::d1::tbb_allocator<boost::shared_ptr<gtsam::ClusterTree<gtsam::GaussianFactorGraph>::Cluster> > > const&, gtsam::EliminationData<gtsam::EliminatableClusterTree<gtsam::ISAM2BayesTree, gtsam::GaussianFactorGraph> >&, gtsam::EliminationData<gtsam::EliminatableClusterTree<gtsam::ISAM2BayesTree, gtsam::GaussianFactorGraph> > (&)(boost::shared_ptr<gtsam::ClusterTree<gtsam::GaussianFactorGraph>::Cluster> const&, gtsam::EliminationData<gtsam::EliminatableClusterTree<gtsam::ISAM2BayesTree, gtsam::GaussianFactorGraph> >&), gtsam::EliminationData<gtsam::EliminatableClusterTree<gtsam::ISAM2BayesTree, gtsam::GaussianFactorGraph> >::EliminationPostOrderVisitor&, int)",
+      6145
+    ],
+    [
+      "tbb::detail::d1::function_task<gtsam::treeTraversal::internal::PreOrderTask<gtsam::ClusterTree<gtsam::GaussianFactorGraph>::Cluster, gtsam::EliminationData<gtsam::EliminatableClusterTree<gtsam::ISAM2BayesTree, gtsam::GaussianFactorGraph> >, gtsam::EliminationData<gtsam::EliminatableClusterTree<gtsam::ISAM2BayesTree, gtsam::GaussianFactorGraph> > (boost::shared_ptr<gtsam::ClusterTree<gtsam::GaussianFactorGraph>::Cluster> const&, gtsam::EliminationData<gtsam::EliminatableClusterTree<gtsam::ISAM2BayesTree, gtsam::GaussianFactorGraph> >&), gtsam::EliminationData<gtsam::EliminatableClusterTree<gtsam::ISAM2BayesTree, gtsam::GaussianFactorGraph> >::EliminationPostOrderVisitor> >::execute(tbb::detail::d1::execution_data&)",
+      6142
+    ],
+    [
+      "gtsam::EliminationData<gtsam::EliminatableClusterTree<gtsam::ISAM2BayesTree, gtsam::GaussianFactorGraph> >::EliminationPostOrderVisitor::operator()(boost::shared_ptr<gtsam::ClusterTree<gtsam::GaussianFactorGraph>::Cluster> const&, gtsam::EliminationData<gtsam::EliminatableClusterTree<gtsam::ISAM2BayesTree, gtsam::GaussianFactorGraph> >&)",
+      6057
+    ],
+    [
+      "gtsam::EliminateQR(gtsam::GaussianFactorGraph const&, gtsam::Ordering const&)",
+      5964
+    ],
+    [
+      "std::_Function_handler<std::pair<boost::shared_ptr<gtsam::GaussianConditional>, boost::shared_ptr<gtsam::GaussianFactor> > (gtsam::GaussianFactorGraph const&, gtsam::Ordering const&), std::pair<boost::shared_ptr<gtsam::GaussianConditional>, boost::shared_ptr<gtsam::JacobianFactor> > (*)(gtsam::GaussianFactorGraph const&, gtsam::Ordering const&)>::_M_invoke(std::_Any_data const&, gtsam::GaussianFactorGraph const&, gtsam::Ordering const&)",
+      5964
+    ],
+    [
+      "gtsam::treeTraversal::internal::PreOrderTask<gtsam::ClusterTree<gtsam::GaussianFactorGraph>::Cluster, gtsam::EliminationData<gtsam::EliminatableClusterTree<gtsam::ISAM2BayesTree, gtsam::GaussianFactorGraph> >, gtsam::EliminationData<gtsam::EliminatableClusterTree<gtsam::ISAM2BayesTree, gtsam::GaussianFactorGraph> > (boost::shared_ptr<gtsam::ClusterTree<gtsam::GaussianFactorGraph>::Cluster> const&, gtsam::EliminationData<gtsam::EliminatableClusterTree<gtsam::ISAM2BayesTree, gtsam::GaussianFactorGraph> >&), gtsam::EliminationData<gtsam::EliminatableClusterTree<gtsam::ISAM2BayesTree, gtsam::GaussianFactorGraph> >::EliminationPostOrderVisitor>::operator()() const",
+      5796
+    ],
+    [
+      "fgo::models::GPWNOAInterpolator::interpolatePose_(gtsam::Pose3 const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, gtsam::Pose3 const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&) const",
+      5403
+    ],
+    [
+      "gtsam::noiseModel::Gaussian::QR(Eigen::Matrix<double, -1, -1, 0, -1, -1>&) const",
+      5005
+    ],
+    [
+      "gtsam::inplace_QR(Eigen::Matrix<double, -1, -1, 0, -1, -1>&)",
+      4961
+    ],
+    [
+      "gtsam::ISAM2::update(gtsam::NonlinearFactorGraph const&, gtsam::Values const&, std::vector<unsigned long, tbb::detail::d1::tbb_allocator<unsigned long> > const&, boost::optional<gtsam::FastMap<unsigned long, int> > const&, boost::optional<gtsam::FastList<unsigned long> > const&, boost::optional<gtsam::FastList<unsigned long> > const&, bool)",
+      4707
+    ],
+    [
+      "(anonymous namespace)::Run(int, char**)::{lambda((anonymous namespace)::ScheduledBelief const*, long)#9}::operator()((anonymous namespace)::ScheduledBelief const*, long) const",
+      4603
+    ],
+    [
+      "(anonymous namespace)::Run(int, char**)::{lambda((anonymous namespace)::RelativeBelief const&)#10}::operator()((anonymous namespace)::RelativeBelief const&) const",
+      4592
+    ],
+    [
+      "e2_memo::MemoFactor<fgo::factor::GPWNOAPrior, 0ul>::linearize(gtsam::Values const&) const",
+      3769
+    ],
+    [
+      "gtsam::NoiseModelFactor6<gtsam::Pose3, Eigen::Matrix<double, 3, 1, 0, 3, 1>, Eigen::Matrix<double, 3, 1, 0, 3, 1>, gtsam::Pose3, Eigen::Matrix<double, 3, 1, 0, 3, 1>, Eigen::Matrix<double, 3, 1, 0, 3, 1> >::unwhitenedError(gtsam::Values const&, boost::optional<std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > >&>) const",
+      3114
+    ],
+    [
+      "fgo::factor::GPWNOAPrior::evaluateError(gtsam::Pose3 const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, gtsam::Pose3 const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, boost::optional<Eigen::Matrix<double, -1, -1, 0, -1, -1>&>, boost::optional<Eigen::Matrix<double, -1, -1, 0, -1, -1>&>, boost::optional<Eigen::Matrix<double, -1, -1, 0, -1, -1>&>, boost::optional<Eigen::Matrix<double, -1, -1, 0, -1, -1>&>, boost::optional<Eigen::Matrix<double, -1, -1, 0, -1, -1>&>, boost::optional<Eigen::Matrix<double, -1, -1, 0, -1, -1>&>) const",
+      3037
+    ],
+    [
+      "void Eigen::internal::householder_qr_inplace_unblocked<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>, Eigen::Block<Eigen::Matrix<double, -1, 1, 0, -1, 1>, -1, 1, false> >(Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>&, Eigen::Block<Eigen::Matrix<double, -1, 1, 0, -1, 1>, -1, 1, false>&, Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>::Scalar*)",
+      2718
+    ],
+    [
+      "gtsam::Pose3::Logmap(gtsam::Pose3 const&, gtsam::OptionalJacobian<6, 6>)",
+      2657
+    ],
+    [
+      "fgo::factor::GPWNOAPrior::evaluateError_(gtsam::Pose3 const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, gtsam::Pose3 const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&) const",
+      2556
+    ],
+    [
+      "std::_Function_handler<gtsam::Pose3 (gtsam::Pose3 const&), boost::_bi::bind_t<gtsam::Pose3, boost::_mfi::cmf6<gtsam::Pose3, fgo::models::GPWNOAInterpolator, gtsam::Pose3 const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, gtsam::Pose3 const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&>, boost::_bi::list7<boost::_bi::value<fgo::models::GPWNOAInterpolator const*>, boost::arg<1>, boost::_bi::value<Eigen::Matrix<double, 3, 1, 0, 3, 1> >, boost::_bi::value<Eigen::Matrix<double, 3, 1, 0, 3, 1> >, boost::_bi::value<gtsam::Pose3>, boost::_bi::value<Eigen::Matrix<double, 3, 1, 0, 3, 1> >, boost::_bi::value<Eigen::Matrix<double, 3, 1, 0, 3, 1> > > > >::_M_invoke(std::_Any_data const&, gtsam::Pose3 const&)",
+      2519
+    ],
+    [
+      "std::_Function_handler<gtsam::Pose3 (gtsam::Pose3 const&), boost::_bi::bind_t<gtsam::Pose3, boost::_mfi::cmf6<gtsam::Pose3, fgo::models::GPWNOAInterpolator, gtsam::Pose3 const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, gtsam::Pose3 const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&>, boost::_bi::list7<boost::_bi::value<fgo::models::GPWNOAInterpolator const*>, boost::_bi::value<gtsam::Pose3>, boost::_bi::value<Eigen::Matrix<double, 3, 1, 0, 3, 1> >, boost::_bi::value<Eigen::Matrix<double, 3, 1, 0, 3, 1> >, boost::arg<1>, boost::_bi::value<Eigen::Matrix<double, 3, 1, 0, 3, 1> >, boost::_bi::value<Eigen::Matrix<double, 3, 1, 0, 3, 1> > > > >::_M_invoke(std::_Any_data const&, gtsam::Pose3 const&)",
+      2507
+    ],
+    [
+      "void Eigen::MatrixBase<Eigen::Block<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>, -1, -1, false> >::applyHouseholderOnTheLeft<Eigen::VectorBlock<Eigen::Block<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>, -1, 1, true>, -1> >(Eigen::VectorBlock<Eigen::Block<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>, -1, 1, true>, -1> const&, double const&, double*)",
+      2315
+    ],
+    [
+      "void Eigen::internal::apply_block_householder_on_the_left<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>, Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>, Eigen::Block<Eigen::Matrix<double, -1, 1, 0, -1, 1>, -1, 1, false> >(Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>&, Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false> const&, Eigen::Block<Eigen::Matrix<double, -1, 1, 0, -1, 1>, -1, 1, false> const&, bool)",
+      2199
+    ],
+    [
+      "fgo::utils::rightJacobianPose3inv(Eigen::Matrix<double, 6, 1, 0, 6, 1> const&)",
+      2099
+    ],
+    [
+      "void Eigen::internal::make_block_householder_triangular_factor<Eigen::Matrix<double, -1, -1, 1, -1, -1>, Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>, Eigen::Block<Eigen::Matrix<double, -1, 1, 0, -1, 1>, -1, 1, false> >(Eigen::Matrix<double, -1, -1, 1, -1, -1>&, Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false> const&, Eigen::Block<Eigen::Matrix<double, -1, 1, 0, -1, 1>, -1, 1, false> const&)",
+      1837
+    ],
+    [
+      "__default_morecore",
+      1730
+    ],
+    [
+      "gtsam::Pose3::Expmap(Eigen::Matrix<double, 6, 1, 0, 6, 1> const&, gtsam::OptionalJacobian<6, 6>)",
+      1673
+    ],
+    [
+      "gtsam::ISAM2::recalculateIncremental(gtsam::ISAM2UpdateParams const&, gtsam::FastSet<unsigned long> const&, gtsam::FastList<unsigned long> const&, gtsam::FastSet<unsigned long>*, gtsam::FastList<boost::shared_ptr<gtsam::ISAM2Clique> >*, gtsam::ISAM2Result*)",
+      1667
+    ],
+    [
+      "gtsam::internal::FixedSizeMatrix<Eigen::Matrix<double, -1, 1, 0, -1, 1>, gtsam::Pose3>::type gtsam::numericalDerivative11<Eigen::Matrix<double, -1, 1, 0, -1, 1>, gtsam::Pose3, 6>(std::function<Eigen::Matrix<double, -1, 1, 0, -1, 1> (gtsam::Pose3 const&)>, gtsam::Pose3 const&, double)",
+      1564
+    ],
+    [
+      "void Eigen::internal::outer_product_selector_run<Eigen::Block<Eigen::Block<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>, -1, -1, false>, -1, -1, false>, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<double, double>, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<double>, Eigen::Matrix<double, -1, 1, 0, -1, 1> const> const, Eigen::Block<Eigen::Block<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>, -1, 1, true>, -1, 1, false> const>, Eigen::Map<Eigen::Matrix<double, 1, -1, 1, 1, -1>, 0, Eigen::Stride<0, 0> >, Eigen::internal::generic_product_impl<Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<double, double>, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<double>, Eigen::Matrix<double, -1, 1, 0, -1, 1> const> const, Eigen::Block<Eigen::Block<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>, -1, 1, true>, -1, 1, false> const>, Eigen::Map<Eigen::Matrix<double, 1, -1, 1, 1, -1>, 0, Eigen::Stride<0, 0> >, Eigen::DenseShape, Eigen::DenseShape, 5>::sub>(Eigen::Block<Eigen::Block<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>, -1, -1, false>, -1, -1, false>&, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<double, double>, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<double>, Eigen::Matrix<double, -1, 1, 0, -1, 1> const> const, Eigen::Block<Eigen::Block<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>, -1, 1, true>, -1, 1, false> const> const&, Eigen::Map<Eigen::Matrix<double, 1, -1, 1, 1, -1>, 0, Eigen::Stride<0, 0> > const&, Eigen::internal::generic_product_impl<Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<double, double>, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<double>, Eigen::Matrix<double, -1, 1, 0, -1, 1> const> const, Eigen::Block<Eigen::Block<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>, -1, 1, true>, -1, 1, false> const>, Eigen::Map<Eigen::Matrix<double, 1, -1, 1, 1, -1>, 0, Eigen::Stride<0, 0> >, Eigen::DenseShape, Eigen::DenseShape, 5>::sub const&, Eigen::internal::false_type const&) [clone .isra.0]",
+      1479
+    ],
+    [
+      "gtsam::internal::FixedSizeMatrix<Eigen::Matrix<double, -1, 1, 0, -1, 1>, Eigen::Matrix<double, 3, 1, 0, 3, 1> >::type gtsam::numericalDerivative11<Eigen::Matrix<double, -1, 1, 0, -1, 1>, Eigen::Matrix<double, 3, 1, 0, 3, 1>, 3>(std::function<Eigen::Matrix<double, -1, 1, 0, -1, 1> (Eigen::Matrix<double, 3, 1, 0, 3, 1> const&)>, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, double)",
+      1327
+    ],
+    [
+      "fgo::utils::convertVwWbToVbWb(Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, gtsam::Pose3 const&, gtsam::OptionalJacobian<6, 3>, gtsam::OptionalJacobian<6, 3>, gtsam::OptionalJacobian<6, 6>)",
+      1317
+    ],
+    [
+      "gtsam::LieGroup<gtsam::Pose3, 6>::localCoordinates(gtsam::Pose3 const&, gtsam::OptionalJacobian<6, 6>, gtsam::OptionalJacobian<6, 6>) const",
+      1237
+    ],
+    [
+      "fgo::utils::rightJacobianPose3Q(Eigen::Matrix<double, 6, 1, 0, 6, 1> const&)",
+      1232
+    ],
+    [
+      "gtsam::Rot3::Logmap(gtsam::Rot3 const&, gtsam::OptionalJacobian<3, 3>)",
+      1127
+    ],
+    [
+      "gtsam::SO<3>::Logmap(gtsam::SO<3> const&, gtsam::OptionalJacobian<3, 3>)",
+      1091
+    ],
+    [
+      "gtsam::Rot3::operator*(Eigen::Matrix<double, 3, 1, 0, 3, 1> const&) const",
+      1084
+    ],
+    [
+      "malloc",
+      1069
+    ],
+    [
+      "gtsam::LieGroup<gtsam::Pose3, 6>::retract(Eigen::Matrix<double, 6, 1, 0, 6, 1> const&, gtsam::OptionalJacobian<6, 6>, gtsam::OptionalJacobian<6, 6>) const",
+      1051
+    ],
+    [
+      "f64xsubf128",
+      1017
+    ],
+    [
+      "gtsam::Rot3::rotate(Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, gtsam::OptionalJacobian<3, 3>, gtsam::OptionalJacobian<3, 3>) const",
+      995
+    ],
+    [
+      "gtsam::SO<3>::Expmap(Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, gtsam::OptionalJacobian<3, 3>)",
+      892
+    ],
+    [
+      "free",
+      810
+    ],
+    [
+      "gtsam::so3::ExpmapFunctor::ExpmapFunctor(Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, bool)",
+      773
+    ],
+    [
+      "gtsam::Pose3::ChartAtOrigin::Retract(Eigen::Matrix<double, 6, 1, 0, 6, 1> const&, gtsam::OptionalJacobian<6, 6>)",
+      745
+    ],
+    [
+      "gtsam::Pose3::ChartAtOrigin::Local(gtsam::Pose3 const&, gtsam::OptionalJacobian<6, 6>)",
+      712
+    ],
+    [
+      "fgo::utils::rightJacobianRot3inv(Eigen::Matrix<double, 3, 1, 0, 3, 1> const&)",
+      657
+    ],
+    [
+      "void Eigen::internal::trmv_selector<6, 1>::run<Eigen::Transpose<Eigen::Block<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false> const, -1, -1, false> const>, Eigen::Transpose<Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<double, double>, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<double>, Eigen::Matrix<double, 1, -1, 1, 1, -1> const> const, Eigen::Transpose<Eigen::Block<Eigen::Block<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false> const, -1, 1, true> const, -1, 1, false> const> const> const>, Eigen::Transpose<Eigen::Block<Eigen::Block<Eigen::Matrix<double, -1, -1, 1, -1, -1>, 1, -1, true>, 1, -1, false> > >(Eigen::Transpose<Eigen::Block<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false> const, -1, -1, false> const> const&, Eigen::Transpose<Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<double, double>, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<double>, Eigen::Matrix<double, 1, -1, 1, 1, -1> const> const, Eigen::Transpose<Eigen::Block<Eigen::Block<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false> const, -1, 1, true> const, -1, 1, false> const> const> const> const&, Eigen::Transpose<Eigen::Block<Eigen::Block<Eigen::Matrix<double, -1, -1, 1, -1, -1>, 1, -1, true>, 1, -1, false> >&, Eigen::Transpose<Eigen::Block<Eigen::Block<Eigen::Matrix<double, -1, -1, 1, -1, -1>, 1, -1, true>, 1, -1, false> >::Scalar const&) [clone .isra.0]",
+      643
+    ],
+    [
+      "void Eigen::internal::gemv_dense_selector<2, 1, true>::run<Eigen::Transpose<Eigen::Block<Eigen::Block<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>, -1, -1, false>, -1, -1, false> const>, Eigen::Transpose<Eigen::Transpose<Eigen::Block<Eigen::Block<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>, -1, 1, true>, -1, 1, false> const> const>, Eigen::Transpose<Eigen::Map<Eigen::Matrix<double, 1, -1, 1, 1, -1>, 0, Eigen::Stride<0, 0> > > >(Eigen::Transpose<Eigen::Block<Eigen::Block<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>, -1, -1, false>, -1, -1, false> const> const&, Eigen::Transpose<Eigen::Transpose<Eigen::Block<Eigen::Block<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false>, -1, 1, true>, -1, 1, false> const> const> const&, Eigen::Transpose<Eigen::Map<Eigen::Matrix<double, 1, -1, 1, 1, -1>, 0, Eigen::Stride<0, 0> > >&, Eigen::Transpose<Eigen::Map<Eigen::Matrix<double, 1, -1, 1, 1, -1>, 0, Eigen::Stride<0, 0> > >::Scalar const&) [clone .isra.0]",
+      643
+    ],
+    [
+      "Eigen::internal::triangular_matrix_vector_product<long, 6, double, false, double, false, 1, 0>::run(long, long, double const*, long, double const*, long, double*, long, double const&) [clone .constprop.0]",
+      635
+    ],
+    [
+      "Eigen::internal::general_matrix_vector_product<long, double, Eigen::internal::const_blas_data_mapper<double, long, 1>, 1, false, double, Eigen::internal::const_blas_data_mapper<double, long, 0>, false, 0>::run(long, long, Eigen::internal::const_blas_data_mapper<double, long, 1> const&, Eigen::internal::const_blas_data_mapper<double, long, 0> const&, double*, long, double)",
+      628
+    ],
+    [
+      "std::_Function_handler<Eigen::Matrix<double, -1, 1, 0, -1, 1> (gtsam::Pose3 const&), boost::_bi::bind_t<Eigen::Matrix<double, -1, 1, 0, -1, 1>, boost::_mfi::cmf6<Eigen::Matrix<double, -1, 1, 0, -1, 1>, fgo::factor::GPWNOAPrior, gtsam::Pose3 const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, gtsam::Pose3 const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&>, boost::_bi::list7<boost::_bi::value<fgo::factor::GPWNOAPrior const*>, boost::arg<1>, boost::_bi::value<Eigen::Matrix<double, 3, 1, 0, 3, 1> >, boost::_bi::value<Eigen::Matrix<double, 3, 1, 0, 3, 1> >, boost::_bi::value<gtsam::Pose3>, boost::_bi::value<Eigen::Matrix<double, 3, 1, 0, 3, 1> >, boost::_bi::value<Eigen::Matrix<double, 3, 1, 0, 3, 1> > > > >::_M_invoke(std::_Any_data const&, gtsam::Pose3 const&)",
+      620
+    ],
+    [
+      "??",
+      616
+    ],
+    [
+      "gtsam::Rot3::unrotate(Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, gtsam::OptionalJacobian<3, 3>, gtsam::OptionalJacobian<3, 3>) const",
+      608
+    ],
+    [
+      "gtsam::Pose3::inverse() const",
+      606
+    ],
+    [
+      "std::_Function_handler<Eigen::Matrix<double, -1, 1, 0, -1, 1> (gtsam::Pose3 const&), boost::_bi::bind_t<Eigen::Matrix<double, -1, 1, 0, -1, 1>, boost::_mfi::cmf6<Eigen::Matrix<double, -1, 1, 0, -1, 1>, fgo::factor::GPWNOAPrior, gtsam::Pose3 const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, gtsam::Pose3 const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&>, boost::_bi::list7<boost::_bi::value<fgo::factor::GPWNOAPrior const*>, boost::_bi::value<gtsam::Pose3>, boost::_bi::value<Eigen::Matrix<double, 3, 1, 0, 3, 1> >, boost::_bi::value<Eigen::Matrix<double, 3, 1, 0, 3, 1> >, boost::arg<1>, boost::_bi::value<Eigen::Matrix<double, 3, 1, 0, 3, 1> >, boost::_bi::value<Eigen::Matrix<double, 3, 1, 0, 3, 1> > > > >::_M_invoke(std::_Any_data const&, gtsam::Pose3 const&)",
+      604
+    ],
+    [
+      "gtsam::Rot3::operator*(gtsam::Rot3 const&) const",
+      576
+    ],
+    [
+      "timer_settime",
+      573
+    ],
+    [
+      "gtsam::JacobianFactor::JacobianFactor(gtsam::GaussianFactorGraph const&, gtsam::Ordering const&)",
+      562
+    ],
+    [
+      "boost::detail::sp_counted_base::release()",
+      557
+    ],
+    [
+      "gtsam::GaussianFactorGraph::gradientAtZero() const",
+      543
+    ],
+    [
+      "operator new(unsigned long)",
+      533
+    ],
+    [
+      "gtsam::NonlinearFactorGraph::error(gtsam::Values const&) const",
+      510
+    ],
+    [
+      "gtsam::NoiseModelFactor::error(gtsam::Values const&) const",
+      504
+    ],
+    [
+      "void Eigen::internal::call_dense_assignment_loop<Eigen::Matrix<double, 3, 3, 0, 3, 3>, Eigen::CwiseBinaryOp<Eigen::internal::scalar_difference_op<double, double>, Eigen::CwiseBinaryOp<Eigen::internal::scalar_sum_op<double, double>, Eigen::CwiseBinaryOp<Eigen::internal::scalar_sum_op<double, double>, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<double, double>, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<double>, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<double, double>, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<double>, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const, Eigen::CwiseBinaryOp<Eigen::internal::scalar_difference_op<double, double>, Eigen::CwiseBinaryOp<Eigen::internal::scalar_sum_op<double, double>, Eigen::Matrix<double, 3, 3, 0, 3, 3> const, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const> const> const, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<double, double>, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<double>, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const, Eigen::CwiseBinaryOp<Eigen::internal::scalar_difference_op<double, double>, Eigen::CwiseBinaryOp<Eigen::internal::scalar_sum_op<double, double>, Eigen::Product<Eigen::Matrix<double, 3, 3, 0, 3, 3>, Eigen::Matrix<double, 3, 3, 0, 3, 3>, 0> const, Eigen::Product<Eigen::Matrix<double, 3, 3, 0, 3, 3>, Eigen::Matrix<double, 3, 3, 0, 3, 3>, 0> const> const, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<double, double>, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<double>, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const> const> const> const, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<double, double>, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<double>, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const, Eigen::CwiseBinaryOp<Eigen::internal::scalar_sum_op<double, double>, Eigen::Product<Eigen::Matrix<double, 3, 3, 0, 3, 3>, Eigen::Matrix<double, 3, 3, 0, 3, 3>, 0> const, Eigen::Product<Eigen::Matrix<double, 3, 3, 0, 3, 3>, Eigen::Matrix<double, 3, 3, 0, 3, 3>, 0> const> const> const>, Eigen::internal::assign_op<double, double> >(Eigen::Matrix<double, 3, 3, 0, 3, 3>&, Eigen::CwiseBinaryOp<Eigen::internal::scalar_difference_op<double, double>, Eigen::CwiseBinaryOp<Eigen::internal::scalar_sum_op<double, double>, Eigen::CwiseBinaryOp<Eigen::internal::scalar_sum_op<double, double>, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<double, double>, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<double>, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<double, double>, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<double>, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const, Eigen::CwiseBinaryOp<Eigen::internal::scalar_difference_op<double, double>, Eigen::CwiseBinaryOp<Eigen::internal::scalar_sum_op<double, double>, Eigen::Matrix<double, 3, 3, 0, 3, 3> const, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const> const> const, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<double, double>, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<double>, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const, Eigen::CwiseBinaryOp<Eigen::internal::scalar_difference_op<double, double>, Eigen::CwiseBinaryOp<Eigen::internal::scalar_sum_op<double, double>, Eigen::Product<Eigen::Matrix<double, 3, 3, 0, 3, 3>, Eigen::Matrix<double, 3, 3, 0, 3, 3>, 0> const, Eigen::Product<Eigen::Matrix<double, 3, 3, 0, 3, 3>, Eigen::Matrix<double, 3, 3, 0, 3, 3>, 0> const> const, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<double, double>, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<double>, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const> const> const> const, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<double, double>, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<double>, Eigen::Matrix<double, 3, 3, 0, 3, 3> const> const, Eigen::CwiseBinaryOp<Eigen::internal::scalar_sum_op<double, double>, Eigen::Product<Eigen::Matrix<double, 3, 3, 0, 3, 3>, Eigen::Matrix<double, 3, 3, 0, 3, 3>, 0> const, Eigen::Product<Eigen::Matrix<double, 3, 3, 0, 3, 3>, Eigen::Matrix<double, 3, 3, 0, 3, 3>, 0> const> const> const> const&, Eigen::internal::assign_op<double, double> const&)",
+      503
+    ],
+    [
+      "Eigen::Matrix<double, 6, 1, 0, 6, 1>& Eigen::PlainObjectBase<Eigen::Matrix<double, 6, 1, 0, 6, 1> >::_set_noalias<Eigen::CwiseBinaryOp<Eigen::internal::scalar_sum_op<double, double>, Eigen::Product<Eigen::Block<Eigen::Matrix<double, 12, 12, 0, 12, 12> const, 6, 12, false>, Eigen::Matrix<double, 12, 1, 0, 12, 1>, 0> const, Eigen::Product<Eigen::Block<Eigen::Matrix<double, 12, 12, 0, 12, 12> const, 6, 12, false>, Eigen::Matrix<double, 12, 1, 0, 12, 1>, 0> const> >(Eigen::DenseBase<Eigen::CwiseBinaryOp<Eigen::internal::scalar_sum_op<double, double>, Eigen::Product<Eigen::Block<Eigen::Matrix<double, 12, 12, 0, 12, 12> const, 6, 12, false>, Eigen::Matrix<double, 12, 1, 0, 12, 1>, 0> const, Eigen::Product<Eigen::Block<Eigen::Matrix<double, 12, 12, 0, 12, 12> const, 6, 12, false>, Eigen::Matrix<double, 12, 1, 0, 12, 1>, 0> const> > const&)",
+      451
+    ],
+    [
+      "__nss_database_lookup",
+      431
+    ],
+    [
+      "gtsam::noiseModel::Gaussian::WhitenSystem(std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > >&, Eigen::Matrix<double, -1, 1, 0, -1, 1>&) const",
+      429
+    ],
+    [
+      "gtsam::noiseModel::Gaussian::WhitenInPlace(Eigen::Matrix<double, -1, -1, 0, -1, -1>&) const",
+      425
+    ],
+    [
+      "gtsam::ISAM2::~ISAM2()",
+      416
+    ],
+    [
+      "gtsam::ISAM2::updateDelta(bool) const",
+      405
+    ],
+    [
+      "gtsam::DeltaImpl::UpdateGaussNewtonDelta(std::vector<boost::shared_ptr<gtsam::ISAM2Clique>, tbb::detail::d1::tbb_allocator<boost::shared_ptr<gtsam::ISAM2Clique> > > const&, gtsam::FastSet<unsigned long> const&, double, gtsam::VectorValues*)",
+      402
+    ],
+    [
+      "sincosf64",
+      396
+    ],
+    [
+      "gtsam::JacobianFactor::JacobianFactorHelper(gtsam::GaussianFactorGraph const&, std::vector<std::_Rb_tree_const_iterator<std::pair<unsigned long const, std::vector<unsigned long, tbb::detail::d1::tbb_allocator<unsigned long> > > >, tbb::detail::d1::tbb_allocator<std::_Rb_tree_const_iterator<std::pair<unsigned long const, std::vector<unsigned long, tbb::detail::d1::tbb_allocator<unsigned long> > > > > > const&)",
+      388
+    ],
+    [
+      "gtsam::JacobianFactor::gradientAtZero() const",
+      382
+    ],
+    [
+      "gtsam::ISAM2::relinearizeAffectedFactors(gtsam::ISAM2UpdateParams const&, gtsam::FastList<unsigned long> const&, gtsam::FastSet<unsigned long> const&)",
+      376
+    ],
+    [
+      "Eigen::internal::general_matrix_vector_product<long, double, Eigen::internal::const_blas_data_mapper<double, long, 1>, 1, false, double, Eigen::internal::const_blas_data_mapper<double, long, 1>, false, 1>::run(long, long, Eigen::internal::const_blas_data_mapper<double, long, 1> const&, Eigen::internal::const_blas_data_mapper<double, long, 1> const&, double*, long, double) [clone .constprop.0]",
+      375
+    ],
+    [
+      "void gtsam::treeTraversal::DepthFirstForest<gtsam::EliminationTree<gtsam::GaussianBayesNet, gtsam::GaussianFactorGraph> const, gtsam::ConstructorTraversalData<gtsam::ISAM2BayesTree, gtsam::GaussianFactorGraph, gtsam::EliminationTree<gtsam::GaussianBayesNet, gtsam::GaussianFactorGraph>::Node>, gtsam::ConstructorTraversalData<gtsam::ISAM2BayesTree, gtsam::GaussianFactorGraph, gtsam::EliminationTree<gtsam::GaussianBayesNet, gtsam::GaussianFactorGraph>::Node> (boost::shared_ptr<gtsam::EliminationTree<gtsam::GaussianBayesNet, gtsam::GaussianFactorGraph>::Node> const&, gtsam::ConstructorTraversalData<gtsam::ISAM2BayesTree, gtsam::GaussianFactorGraph, gtsam::EliminationTree<gtsam::GaussianBayesNet, gtsam::GaussianFactorGraph>::Node>&), void (boost::shared_ptr<gtsam::EliminationTree<gtsam::GaussianBayesNet, gtsam::GaussianFactorGraph>::Node> const&, gtsam::ConstructorTraversalData<gtsam::ISAM2BayesTree, gtsam::GaussianFactorGraph, gtsam::EliminationTree<gtsam::GaussianBayesNet, gtsam::GaussianFactorGraph>::Node> const&)>(gtsam::EliminationTree<gtsam::GaussianBayesNet, gtsam::GaussianFactorGraph> const&, gtsam::ConstructorTraversalData<gtsam::ISAM2BayesTree, gtsam::GaussianFactorGraph, gtsam::EliminationTree<gtsam::GaussianBayesNet, gtsam::GaussianFactorGraph>::Node>&, gtsam::ConstructorTraversalData<gtsam::ISAM2BayesTree, gtsam::GaussianFactorGraph, gtsam::EliminationTree<gtsam::GaussianBayesNet, gtsam::GaussianFactorGraph>::Node> (&)(boost::shared_ptr<gtsam::EliminationTree<gtsam::GaussianBayesNet, gtsam::GaussianFactorGraph>::Node> const&, gtsam::ConstructorTraversalData<gtsam::ISAM2BayesTree, gtsam::GaussianFactorGraph, gtsam::EliminationTree<gtsam::GaussianBayesNet, gtsam::GaussianFactorGraph>::Node>&), void (&)(boost::shared_ptr<gtsam::EliminationTree<gtsam::GaussianBayesNet, gtsam::GaussianFactorGraph>::Node> const&, gtsam::ConstructorTraversalData<gtsam::ISAM2BayesTree, gtsam::GaussianFactorGraph, gtsam::EliminationTree<gtsam::GaussianBayesNet, gtsam::GaussianFactorGraph>::Node> const&))",
+      374
+    ],
+    [
+      "gtsam::JunctionTree<gtsam::ISAM2BayesTree, gtsam::GaussianFactorGraph>::JunctionTree<gtsam::GaussianBayesNet, gtsam::GaussianFactorGraph>(gtsam::EliminationTree<gtsam::GaussianBayesNet, gtsam::GaussianFactorGraph> const&)",
+      374
+    ],
+    [
+      "fgo::offline::GaussianCostChange(gtsam::NonlinearFactorGraph const&, gtsam::Values const&, gtsam::Values const&)",
+      368
+    ],
+    [
+      "gtsam::JacobianFactor::splitConditional(unsigned long)",
+      356
+    ],
+    [
+      "tbb::detail::r1::allocate_memory(unsigned long)",
+      341
+    ],
+    [
+      "scalable_malloc",
+      338
+    ],
+    [
+      "std::_Function_handler<Eigen::Matrix<double, -1, 1, 0, -1, 1> (Eigen::Matrix<double, 3, 1, 0, 3, 1> const&), boost::_bi::bind_t<Eigen::Matrix<double, -1, 1, 0, -1, 1>, boost::_mfi::cmf6<Eigen::Matrix<double, -1, 1, 0, -1, 1>, fgo::factor::GPWNOAPrior, gtsam::Pose3 const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, gtsam::Pose3 const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&>, boost::_bi::list7<boost::_bi::value<fgo::factor::GPWNOAPrior const*>, boost::_bi::value<gtsam::Pose3>, boost::_bi::value<Eigen::Matrix<double, 3, 1, 0, 3, 1> >, boost::arg<1>, boost::_bi::value<gtsam::Pose3>, boost::_bi::value<Eigen::Matrix<double, 3, 1, 0, 3, 1> >, boost::_bi::value<Eigen::Matrix<double, 3, 1, 0, 3, 1> > > > >::_M_invoke(std::_Any_data const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&)",
+      330
+    ],
+    [
+      "std::_Function_handler<Eigen::Matrix<double, -1, 1, 0, -1, 1> (Eigen::Matrix<double, 3, 1, 0, 3, 1> const&), boost::_bi::bind_t<Eigen::Matrix<double, -1, 1, 0, -1, 1>, boost::_mfi::cmf6<Eigen::Matrix<double, -1, 1, 0, -1, 1>, fgo::factor::GPWNOAPrior, gtsam::Pose3 const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, gtsam::Pose3 const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&>, boost::_bi::list7<boost::_bi::value<fgo::factor::GPWNOAPrior const*>, boost::_bi::value<gtsam::Pose3>, boost::_bi::value<Eigen::Matrix<double, 3, 1, 0, 3, 1> >, boost::_bi::value<Eigen::Matrix<double, 3, 1, 0, 3, 1> >, boost::_bi::value<gtsam::Pose3>, boost::_bi::value<Eigen::Matrix<double, 3, 1, 0, 3, 1> >, boost::arg<1> > > >::_M_invoke(std::_Any_data const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&)",
+      329
+    ],
+    [
+      "gtsam::so3::ExpmapFunctor::init(bool)",
+      317
+    ],
+    [
+      "e2_probe::Signature(std::vector<unsigned long, tbb::detail::d1::tbb_allocator<unsigned long> > const&, gtsam::Values const&, bool)",
+      315
+    ],
+    [
+      "gtsam::GaussianConditional::solve(gtsam::VectorValues const&) const",
+      308
+    ],
+    [
+      "std::_Function_handler<Eigen::Matrix<double, -1, 1, 0, -1, 1> (Eigen::Matrix<double, 3, 1, 0, 3, 1> const&), boost::_bi::bind_t<Eigen::Matrix<double, -1, 1, 0, -1, 1>, boost::_mfi::cmf6<Eigen::Matrix<double, -1, 1, 0, -1, 1>, fgo::factor::GPWNOAPrior, gtsam::Pose3 const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, gtsam::Pose3 const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&>, boost::_bi::list7<boost::_bi::value<fgo::factor::GPWNOAPrior const*>, boost::_bi::value<gtsam::Pose3>, boost::_bi::value<Eigen::Matrix<double, 3, 1, 0, 3, 1> >, boost::_bi::value<Eigen::Matrix<double, 3, 1, 0, 3, 1> >, boost::_bi::value<gtsam::Pose3>, boost::arg<1>, boost::_bi::value<Eigen::Matrix<double, 3, 1, 0, 3, 1> > > > >::_M_invoke(std::_Any_data const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&)",
+      303
+    ],
+    [
+      "gtsam::JacobianFactor::transposeMultiplyAdd(double, Eigen::Matrix<double, -1, 1, 0, -1, 1> const&, gtsam::VectorValues&) const",
+      303
+    ],
+    [
+      "gtsam::internal::optimizeInPlace(boost::shared_ptr<gtsam::ISAM2Clique> const&, gtsam::VectorValues*)",
+      295
+    ],
+    [
+      "gtsam::Values::Values(gtsam::Values const&, gtsam::VectorValues const&)",
+      293
+    ],
+    [
+      "gtsam::Values::retract(gtsam::VectorValues const&) const",
+      293
+    ],
+    [
+      "scalable_allocation_command",
+      285
+    ],
+    [
+      "gtsam::JacobianFactor::clone() const",
+      285
+    ],
+    [
+      "boost::detail::sp_if_not_array<gtsam::JacobianFactor>::type boost::make_shared<gtsam::JacobianFactor, gtsam::JacobianFactor const&>(gtsam::JacobianFactor const&)",
+      283
+    ],
+    [
+      "std::_Function_handler<Eigen::Matrix<double, -1, 1, 0, -1, 1> (Eigen::Matrix<double, 3, 1, 0, 3, 1> const&), boost::_bi::bind_t<Eigen::Matrix<double, -1, 1, 0, -1, 1>, boost::_mfi::cmf6<Eigen::Matrix<double, -1, 1, 0, -1, 1>, fgo::factor::GPWNOAPrior, gtsam::Pose3 const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, gtsam::Pose3 const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&>, boost::_bi::list7<boost::_bi::value<fgo::factor::GPWNOAPrior const*>, boost::_bi::value<gtsam::Pose3>, boost::arg<1>, boost::_bi::value<Eigen::Matrix<double, 3, 1, 0, 3, 1> >, boost::_bi::value<gtsam::Pose3>, boost::_bi::value<Eigen::Matrix<double, 3, 1, 0, 3, 1> >, boost::_bi::value<Eigen::Matrix<double, 3, 1, 0, 3, 1> > > > >::_M_invoke(std::_Any_data const&, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&)",
+      282
+    ],
+    [
+      "gtsam::ConstructorTraversalData<gtsam::ISAM2BayesTree, gtsam::GaussianFactorGraph, gtsam::EliminationTree<gtsam::GaussianBayesNet, gtsam::GaussianFactorGraph>::Node>::ConstructorTraversalVisitorPostAlg2(boost::shared_ptr<gtsam::EliminationTree<gtsam::GaussianBayesNet, gtsam::GaussianFactorGraph>::Node> const&, gtsam::ConstructorTraversalData<gtsam::ISAM2BayesTree, gtsam::GaussianFactorGraph, gtsam::EliminationTree<gtsam::GaussianBayesNet, gtsam::GaussianFactorGraph>::Node> const&)",
+      281
+    ],
+    [
+      "Eigen::Matrix<double, 3, 1, 0, 3, 1> const gtsam::Values::at<Eigen::Matrix<double, 3, 1, 0, 3, 1> >(unsigned long) const",
+      279
+    ]
+  ],
+  "cohorts": {
+    "all": {
+      "samples": 23879,
+      "work_counts": {
+        "source interpolation numerical derivatives": 6910,
+        "source linearization remainder": 2662,
+        "journal parsing": 91,
+        "motion numerical derivatives": 2891,
+        "other/unattributed work": 292,
+        "Gaussian QR elimination/assembly": 5964,
+        "motion linearization remainder": 878,
+        "solver update remainder/order/tree/bookkeeping": 1247,
+        "estimate/delta/back-substitution": 698,
+        "stationarity/cached-evaluation remainder": 966,
+        "other factor linearization": 60,
+        "nonlinear objective evaluation": 510,
+        "solver copy": 226,
+        "solver destruction": 416,
+        "stable-cost check remainder": 68
+      },
+      "kernel_counts": {
+        "source residual/Jacobian kernel": 8429,
+        "source linearization remainder": 1143,
+        "journal parsing": 91,
+        "motion residual/Jacobian kernel": 2987,
+        "other/unattributed work": 292,
+        "Gaussian QR elimination/assembly": 5964,
+        "motion linearization remainder": 782,
+        "solver update remainder/order/tree/bookkeeping": 1247,
+        "estimate/delta/back-substitution": 698,
+        "stationarity/cached-evaluation remainder": 966,
+        "other factor linearization": 60,
+        "nonlinear objective evaluation": 510,
+        "solver copy": 226,
+        "solver destruction": 416,
+        "stable-cost check remainder": 68
+      },
+      "phase_kernel_counts": {
+        "publication / source residual/Jacobian kernel": 7153,
+        "source revision / source linearization remainder": 147,
+        "support/startup/final/other / journal parsing": 91,
+        "publication / motion residual/Jacobian kernel": 2544,
+        "publication / source linearization remainder": 993,
+        "source revision / other/unattributed work": 77,
+        "source revision / source residual/Jacobian kernel": 1262,
+        "source revision / Gaussian QR elimination/assembly": 1892,
+        "support/startup/final/other / Gaussian QR elimination/assembly": 13,
+        "source revision / motion residual/Jacobian kernel": 436,
+        "source revision / motion linearization remainder": 109,
+        "publication / Gaussian QR elimination/assembly": 4059,
+        "source revision / solver update remainder/order/tree/bookkeeping": 526,
+        "publication / solver update remainder/order/tree/bookkeeping": 714,
+        "source revision / estimate/delta/back-substitution": 110,
+        "publication / stationarity/cached-evaluation remainder": 966,
+        "source revision / other factor linearization": 44,
+        "publication / nonlinear objective evaluation": 510,
+        "publication / estimate/delta/back-substitution": 524,
+        "support/startup/final/other / other/unattributed work": 87,
+        "publication / motion linearization remainder": 672,
+        "publication / other factor linearization": 15,
+        "publication / solver copy": 226,
+        "publication / other/unattributed work": 128,
+        "support/startup/final/other / source linearization remainder": 3,
+        "publication / solver destruction": 416,
+        "support/startup/final/other / source residual/Jacobian kernel": 14,
+        "support/startup/final/other / motion residual/Jacobian kernel": 7,
+        "support/startup/final/other / estimate/delta/back-substitution": 64,
+        "support/startup/final/other / solver update remainder/order/tree/bookkeeping": 7,
+        "publication / stable-cost check remainder": 68,
+        "support/startup/final/other / motion linearization remainder": 1,
+        "support/startup/final/other / other factor linearization": 1
+      },
+      "inclusive_context_counts": {
+        "publication wrapper": 18988,
+        "normalized-gradient certificate": 8839,
+        "source factor linearization": 9579,
+        "numerical differentiation": 9801,
+        "source revision handler": 4603,
+        "iSAM2 update": 12795,
+        "iSAM2 batch recalculation": 10265,
+        "WNOA motion factor linearization": 3769,
+        "iSAM2 incremental recalculation": 1667,
+        "QR elimination": 5964,
+        "stable-cost check": 368,
+        "full-history rebuild": 245,
+        "publication cached evaluation": 49
+      },
+      "phase_counts": {
+        "publication": 18988,
+        "source revision": 4603,
+        "support/startup/final/other": 288
+      },
+      "phase_work_counts": {
+        "publication / source interpolation numerical derivatives": 5869,
+        "source revision / source linearization remainder": 381,
+        "support/startup/final/other / journal parsing": 91,
+        "publication / motion numerical derivatives": 2466,
+        "publication / source linearization remainder": 2277,
+        "source revision / other/unattributed work": 77,
+        "source revision / source interpolation numerical derivatives": 1028,
+        "source revision / Gaussian QR elimination/assembly": 1892,
+        "support/startup/final/other / Gaussian QR elimination/assembly": 13,
+        "source revision / motion numerical derivatives": 418,
+        "source revision / motion linearization remainder": 127,
+        "publication / Gaussian QR elimination/assembly": 4059,
+        "source revision / solver update remainder/order/tree/bookkeeping": 526,
+        "publication / solver update remainder/order/tree/bookkeeping": 714,
+        "source revision / estimate/delta/back-substitution": 110,
+        "publication / stationarity/cached-evaluation remainder": 966,
+        "source revision / other factor linearization": 44,
+        "publication / nonlinear objective evaluation": 510,
+        "publication / estimate/delta/back-substitution": 524,
+        "support/startup/final/other / other/unattributed work": 87,
+        "publication / motion linearization remainder": 750,
+        "publication / other factor linearization": 15,
+        "publication / solver copy": 226,
+        "publication / other/unattributed work": 128,
+        "support/startup/final/other / source linearization remainder": 4,
+        "publication / solver destruction": 416,
+        "support/startup/final/other / source interpolation numerical derivatives": 13,
+        "support/startup/final/other / motion numerical derivatives": 7,
+        "support/startup/final/other / estimate/delta/back-substitution": 64,
+        "support/startup/final/other / solver update remainder/order/tree/bookkeeping": 7,
+        "publication / stable-cost check remainder": 68,
+        "support/startup/final/other / motion linearization remainder": 1,
+        "support/startup/final/other / other factor linearization": 1
+      }
+    },
+    "20-40s": {
+      "samples": 1063,
+      "work_counts": {
+        "motion numerical derivatives": 130,
+        "Gaussian QR elimination/assembly": 308,
+        "source interpolation numerical derivatives": 317,
+        "solver update remainder/order/tree/bookkeeping": 47,
+        "source linearization remainder": 109,
+        "estimate/delta/back-substitution": 29,
+        "solver destruction": 8,
+        "nonlinear objective evaluation": 20,
+        "motion linearization remainder": 32,
+        "stationarity/cached-evaluation remainder": 25,
+        "other/unattributed work": 18,
+        "solver copy": 6,
+        "journal parsing": 7,
+        "other factor linearization": 7
+      },
+      "kernel_counts": {
+        "motion residual/Jacobian kernel": 135,
+        "Gaussian QR elimination/assembly": 308,
+        "source residual/Jacobian kernel": 389,
+        "solver update remainder/order/tree/bookkeeping": 47,
+        "estimate/delta/back-substitution": 29,
+        "solver destruction": 8,
+        "nonlinear objective evaluation": 20,
+        "motion linearization remainder": 27,
+        "source linearization remainder": 37,
+        "stationarity/cached-evaluation remainder": 25,
+        "other/unattributed work": 18,
+        "solver copy": 6,
+        "journal parsing": 7,
+        "other factor linearization": 7
+      },
+      "phase_kernel_counts": {
+        "publication / motion residual/Jacobian kernel": 113,
+        "source revision / Gaussian QR elimination/assembly": 154,
+        "publication / source residual/Jacobian kernel": 314,
+        "publication / Gaussian QR elimination/assembly": 154,
+        "publication / solver update remainder/order/tree/bookkeeping": 15,
+        "source revision / source residual/Jacobian kernel": 74,
+        "source revision / solver update remainder/order/tree/bookkeeping": 32,
+        "source revision / estimate/delta/back-substitution": 12,
+        "publication / solver destruction": 8,
+        "publication / nonlinear objective evaluation": 20,
+        "publication / motion linearization remainder": 26,
+        "publication / source linearization remainder": 31,
+        "publication / estimate/delta/back-substitution": 16,
+        "publication / stationarity/cached-evaluation remainder": 25,
+        "source revision / motion residual/Jacobian kernel": 21,
+        "source revision / other/unattributed work": 9,
+        "support/startup/final/other / source residual/Jacobian kernel": 1,
+        "publication / solver copy": 6,
+        "source revision / source linearization remainder": 6,
+        "support/startup/final/other / journal parsing": 7,
+        "source revision / other factor linearization": 7,
+        "support/startup/final/other / other/unattributed work": 6,
+        "support/startup/final/other / motion residual/Jacobian kernel": 1,
+        "publication / other/unattributed work": 3,
+        "support/startup/final/other / estimate/delta/back-substitution": 1,
+        "source revision / motion linearization remainder": 1
+      },
+      "inclusive_context_counts": {
+        "publication wrapper": 731,
+        "iSAM2 update": 640,
+        "iSAM2 batch recalculation": 452,
+        "WNOA motion factor linearization": 162,
+        "numerical differentiation": 447,
+        "normalized-gradient certificate": 357,
+        "source revision handler": 316,
+        "QR elimination": 308,
+        "iSAM2 incremental recalculation": 137,
+        "source factor linearization": 426
+      },
+      "phase_counts": {
+        "publication": 731,
+        "source revision": 316,
+        "support/startup/final/other": 16
+      },
+      "phase_work_counts": {
+        "publication / motion numerical derivatives": 108,
+        "source revision / Gaussian QR elimination/assembly": 154,
+        "publication / source interpolation numerical derivatives": 258,
+        "publication / Gaussian QR elimination/assembly": 154,
+        "publication / solver update remainder/order/tree/bookkeeping": 15,
+        "source revision / source interpolation numerical derivatives": 58,
+        "source revision / solver update remainder/order/tree/bookkeeping": 32,
+        "publication / source linearization remainder": 87,
+        "source revision / estimate/delta/back-substitution": 12,
+        "publication / solver destruction": 8,
+        "publication / nonlinear objective evaluation": 20,
+        "source revision / source linearization remainder": 22,
+        "publication / motion linearization remainder": 31,
+        "publication / estimate/delta/back-substitution": 16,
+        "publication / stationarity/cached-evaluation remainder": 25,
+        "source revision / motion numerical derivatives": 21,
+        "source revision / other/unattributed work": 9,
+        "support/startup/final/other / source interpolation numerical derivatives": 1,
+        "publication / solver copy": 6,
+        "support/startup/final/other / journal parsing": 7,
+        "source revision / other factor linearization": 7,
+        "support/startup/final/other / other/unattributed work": 6,
+        "support/startup/final/other / motion numerical derivatives": 1,
+        "publication / other/unattributed work": 3,
+        "support/startup/final/other / estimate/delta/back-substitution": 1,
+        "source revision / motion linearization remainder": 1
+      }
+    },
+    "60-80s": {
+      "samples": 2277,
+      "work_counts": {
+        "solver update remainder/order/tree/bookkeeping": 120,
+        "motion numerical derivatives": 282,
+        "motion linearization remainder": 82,
+        "Gaussian QR elimination/assembly": 551,
+        "source interpolation numerical derivatives": 687,
+        "estimate/delta/back-substitution": 54,
+        "stationarity/cached-evaluation remainder": 101,
+        "source linearization remainder": 248,
+        "solver destruction": 35,
+        "other/unattributed work": 26,
+        "nonlinear objective evaluation": 58,
+        "journal parsing": 14,
+        "solver copy": 15,
+        "other factor linearization": 2,
+        "stable-cost check remainder": 2
+      },
+      "kernel_counts": {
+        "solver update remainder/order/tree/bookkeeping": 120,
+        "motion residual/Jacobian kernel": 289,
+        "motion linearization remainder": 75,
+        "Gaussian QR elimination/assembly": 551,
+        "source residual/Jacobian kernel": 831,
+        "estimate/delta/back-substitution": 54,
+        "stationarity/cached-evaluation remainder": 101,
+        "solver destruction": 35,
+        "other/unattributed work": 26,
+        "source linearization remainder": 104,
+        "nonlinear objective evaluation": 58,
+        "journal parsing": 14,
+        "solver copy": 15,
+        "other factor linearization": 2,
+        "stable-cost check remainder": 2
+      },
+      "phase_kernel_counts": {
+        "source revision / solver update remainder/order/tree/bookkeeping": 67,
+        "publication / motion residual/Jacobian kernel": 244,
+        "publication / motion linearization remainder": 64,
+        "publication / Gaussian QR elimination/assembly": 312,
+        "publication / source residual/Jacobian kernel": 695,
+        "support/startup/final/other / estimate/delta/back-substitution": 7,
+        "source revision / source residual/Jacobian kernel": 133,
+        "source revision / Gaussian QR elimination/assembly": 238,
+        "publication / solver update remainder/order/tree/bookkeeping": 53,
+        "publication / stationarity/cached-evaluation remainder": 101,
+        "source revision / motion linearization remainder": 11,
+        "publication / estimate/delta/back-substitution": 40,
+        "publication / solver destruction": 35,
+        "source revision / motion residual/Jacobian kernel": 44,
+        "source revision / other/unattributed work": 6,
+        "publication / source linearization remainder": 82,
+        "publication / nonlinear objective evaluation": 58,
+        "support/startup/final/other / other/unattributed work": 12,
+        "source revision / source linearization remainder": 22,
+        "support/startup/final/other / journal parsing": 14,
+        "publication / solver copy": 15,
+        "support/startup/final/other / source residual/Jacobian kernel": 3,
+        "support/startup/final/other / motion residual/Jacobian kernel": 1,
+        "publication / other factor linearization": 1,
+        "publication / other/unattributed work": 8,
+        "source revision / estimate/delta/back-substitution": 7,
+        "support/startup/final/other / Gaussian QR elimination/assembly": 1,
+        "publication / stable-cost check remainder": 2,
+        "source revision / other factor linearization": 1
+      },
+      "inclusive_context_counts": {
+        "source revision handler": 529,
+        "iSAM2 update": 1303,
+        "publication wrapper": 1710,
+        "iSAM2 batch recalculation": 1086,
+        "WNOA motion factor linearization": 364,
+        "numerical differentiation": 969,
+        "QR elimination": 551,
+        "normalized-gradient certificate": 797,
+        "source factor linearization": 937,
+        "iSAM2 incremental recalculation": 149,
+        "stable-cost check": 8,
+        "full-history rebuild": 2
+      },
+      "phase_counts": {
+        "source revision": 529,
+        "publication": 1710,
+        "support/startup/final/other": 38
+      },
+      "phase_work_counts": {
+        "source revision / solver update remainder/order/tree/bookkeeping": 67,
+        "publication / motion numerical derivatives": 238,
+        "publication / motion linearization remainder": 70,
+        "publication / Gaussian QR elimination/assembly": 312,
+        "publication / source interpolation numerical derivatives": 577,
+        "support/startup/final/other / estimate/delta/back-substitution": 7,
+        "source revision / source interpolation numerical derivatives": 107,
+        "source revision / Gaussian QR elimination/assembly": 238,
+        "publication / solver update remainder/order/tree/bookkeeping": 53,
+        "publication / stationarity/cached-evaluation remainder": 101,
+        "publication / source linearization remainder": 200,
+        "source revision / motion linearization remainder": 12,
+        "publication / estimate/delta/back-substitution": 40,
+        "publication / solver destruction": 35,
+        "source revision / motion numerical derivatives": 43,
+        "source revision / other/unattributed work": 6,
+        "publication / nonlinear objective evaluation": 58,
+        "support/startup/final/other / other/unattributed work": 12,
+        "source revision / source linearization remainder": 48,
+        "support/startup/final/other / journal parsing": 14,
+        "publication / solver copy": 15,
+        "support/startup/final/other / source interpolation numerical derivatives": 3,
+        "support/startup/final/other / motion numerical derivatives": 1,
+        "publication / other factor linearization": 1,
+        "publication / other/unattributed work": 8,
+        "source revision / estimate/delta/back-substitution": 7,
+        "support/startup/final/other / Gaussian QR elimination/assembly": 1,
+        "publication / stable-cost check remainder": 2,
+        "source revision / other factor linearization": 1
+      }
+    },
+    "120-140s": {
+      "samples": 6362,
+      "work_counts": {
+        "Gaussian QR elimination/assembly": 1594,
+        "source linearization remainder": 768,
+        "source interpolation numerical derivatives": 1778,
+        "motion numerical derivatives": 731,
+        "motion linearization remainder": 243,
+        "solver destruction": 116,
+        "stationarity/cached-evaluation remainder": 270,
+        "solver update remainder/order/tree/bookkeeping": 324,
+        "nonlinear objective evaluation": 148,
+        "solver copy": 77,
+        "estimate/delta/back-substitution": 185,
+        "other/unattributed work": 72,
+        "journal parsing": 14,
+        "other factor linearization": 12,
+        "stable-cost check remainder": 30
+      },
+      "kernel_counts": {
+        "Gaussian QR elimination/assembly": 1594,
+        "source linearization remainder": 329,
+        "source residual/Jacobian kernel": 2217,
+        "motion residual/Jacobian kernel": 757,
+        "motion linearization remainder": 217,
+        "solver destruction": 116,
+        "stationarity/cached-evaluation remainder": 270,
+        "solver update remainder/order/tree/bookkeeping": 324,
+        "nonlinear objective evaluation": 148,
+        "solver copy": 77,
+        "estimate/delta/back-substitution": 185,
+        "other/unattributed work": 72,
+        "journal parsing": 14,
+        "other factor linearization": 12,
+        "stable-cost check remainder": 30
+      },
+      "phase_kernel_counts": {
+        "source revision / Gaussian QR elimination/assembly": 423,
+        "publication / source linearization remainder": 293,
+        "publication / source residual/Jacobian kernel": 1934,
+        "publication / motion residual/Jacobian kernel": 645,
+        "publication / Gaussian QR elimination/assembly": 1168,
+        "publication / motion linearization remainder": 188,
+        "publication / solver destruction": 116,
+        "publication / stationarity/cached-evaluation remainder": 270,
+        "source revision / solver update remainder/order/tree/bookkeeping": 105,
+        "source revision / motion linearization remainder": 29,
+        "source revision / motion residual/Jacobian kernel": 112,
+        "publication / nonlinear objective evaluation": 148,
+        "publication / solver copy": 77,
+        "publication / estimate/delta/back-substitution": 146,
+        "publication / solver update remainder/order/tree/bookkeeping": 216,
+        "source revision / source residual/Jacobian kernel": 282,
+        "support/startup/final/other / source linearization remainder": 1,
+        "source revision / source linearization remainder": 35,
+        "source revision / other/unattributed work": 13,
+        "support/startup/final/other / journal parsing": 14,
+        "source revision / other factor linearization": 7,
+        "publication / other/unattributed work": 41,
+        "source revision / estimate/delta/back-substitution": 19,
+        "publication / stable-cost check remainder": 30,
+        "support/startup/final/other / other/unattributed work": 18,
+        "support/startup/final/other / estimate/delta/back-substitution": 20,
+        "publication / other factor linearization": 4,
+        "support/startup/final/other / other factor linearization": 1,
+        "support/startup/final/other / Gaussian QR elimination/assembly": 3,
+        "support/startup/final/other / source residual/Jacobian kernel": 1,
+        "support/startup/final/other / solver update remainder/order/tree/bookkeeping": 3
+      },
+      "inclusive_context_counts": {
+        "source revision handler": 1025,
+        "iSAM2 update": 3232,
+        "iSAM2 incremental recalculation": 402,
+        "QR elimination": 1594,
+        "publication wrapper": 5276,
+        "normalized-gradient certificate": 2451,
+        "source factor linearization": 2548,
+        "iSAM2 batch recalculation": 2637,
+        "numerical differentiation": 2509,
+        "WNOA motion factor linearization": 974,
+        "stable-cost check": 158,
+        "full-history rebuild": 93
+      },
+      "phase_counts": {
+        "source revision": 1025,
+        "publication": 5276,
+        "support/startup/final/other": 61
+      },
+      "phase_work_counts": {
+        "source revision / Gaussian QR elimination/assembly": 423,
+        "publication / source linearization remainder": 670,
+        "publication / source interpolation numerical derivatives": 1557,
+        "publication / motion numerical derivatives": 626,
+        "publication / Gaussian QR elimination/assembly": 1168,
+        "publication / motion linearization remainder": 207,
+        "publication / solver destruction": 116,
+        "publication / stationarity/cached-evaluation remainder": 270,
+        "source revision / solver update remainder/order/tree/bookkeeping": 105,
+        "source revision / motion linearization remainder": 36,
+        "source revision / motion numerical derivatives": 105,
+        "publication / nonlinear objective evaluation": 148,
+        "publication / solver copy": 77,
+        "publication / estimate/delta/back-substitution": 146,
+        "publication / solver update remainder/order/tree/bookkeeping": 216,
+        "source revision / source interpolation numerical derivatives": 220,
+        "support/startup/final/other / source linearization remainder": 1,
+        "source revision / source linearization remainder": 97,
+        "source revision / other/unattributed work": 13,
+        "support/startup/final/other / journal parsing": 14,
+        "source revision / other factor linearization": 7,
+        "publication / other/unattributed work": 41,
+        "source revision / estimate/delta/back-substitution": 19,
+        "publication / stable-cost check remainder": 30,
+        "support/startup/final/other / other/unattributed work": 18,
+        "support/startup/final/other / estimate/delta/back-substitution": 20,
+        "publication / other factor linearization": 4,
+        "support/startup/final/other / other factor linearization": 1,
+        "support/startup/final/other / Gaussian QR elimination/assembly": 3,
+        "support/startup/final/other / source interpolation numerical derivatives": 1,
+        "support/startup/final/other / solver update remainder/order/tree/bookkeeping": 3
+      }
+    },
+    "140s-end": {
+      "samples": 4493,
+      "work_counts": {
+        "solver update remainder/order/tree/bookkeeping": 257,
+        "stationarity/cached-evaluation remainder": 185,
+        "source interpolation numerical derivatives": 1219,
+        "Gaussian QR elimination/assembly": 1125,
+        "nonlinear objective evaluation": 104,
+        "estimate/delta/back-substitution": 200,
+        "motion numerical derivatives": 488,
+        "source linearization remainder": 494,
+        "solver destruction": 117,
+        "motion linearization remainder": 162,
+        "other/unattributed work": 54,
+        "stable-cost check remainder": 25,
+        "solver copy": 48,
+        "other factor linearization": 9,
+        "journal parsing": 6
+      },
+      "kernel_counts": {
+        "solver update remainder/order/tree/bookkeeping": 257,
+        "stationarity/cached-evaluation remainder": 185,
+        "source residual/Jacobian kernel": 1459,
+        "Gaussian QR elimination/assembly": 1125,
+        "nonlinear objective evaluation": 104,
+        "estimate/delta/back-substitution": 200,
+        "motion residual/Jacobian kernel": 503,
+        "source linearization remainder": 254,
+        "solver destruction": 117,
+        "motion linearization remainder": 147,
+        "other/unattributed work": 54,
+        "stable-cost check remainder": 25,
+        "solver copy": 48,
+        "other factor linearization": 9,
+        "journal parsing": 6
+      },
+      "phase_kernel_counts": {
+        "source revision / solver update remainder/order/tree/bookkeeping": 64,
+        "publication / stationarity/cached-evaluation remainder": 185,
+        "publication / source residual/Jacobian kernel": 1321,
+        "publication / Gaussian QR elimination/assembly": 946,
+        "publication / nonlinear objective evaluation": 104,
+        "publication / estimate/delta/back-substitution": 168,
+        "publication / motion residual/Jacobian kernel": 457,
+        "publication / source linearization remainder": 226,
+        "publication / solver destruction": 117,
+        "source revision / source residual/Jacobian kernel": 135,
+        "source revision / motion residual/Jacobian kernel": 46,
+        "source revision / Gaussian QR elimination/assembly": 178,
+        "source revision / estimate/delta/back-substitution": 19,
+        "publication / motion linearization remainder": 134,
+        "publication / other/unattributed work": 33,
+        "source revision / motion linearization remainder": 13,
+        "publication / solver update remainder/order/tree/bookkeeping": 193,
+        "publication / stable-cost check remainder": 25,
+        "publication / solver copy": 48,
+        "source revision / source linearization remainder": 27,
+        "source revision / other/unattributed work": 7,
+        "publication / other factor linearization": 5,
+        "support/startup/final/other / estimate/delta/back-substitution": 13,
+        "support/startup/final/other / journal parsing": 6,
+        "support/startup/final/other / other/unattributed work": 14,
+        "source revision / other factor linearization": 4,
+        "support/startup/final/other / source residual/Jacobian kernel": 3,
+        "support/startup/final/other / Gaussian QR elimination/assembly": 1,
+        "support/startup/final/other / source linearization remainder": 1
+      },
+      "inclusive_context_counts": {
+        "source revision handler": 493,
+        "iSAM2 update": 2127,
+        "source factor linearization": 1714,
+        "publication wrapper": 3962,
+        "normalized-gradient certificate": 1757,
+        "iSAM2 batch recalculation": 1696,
+        "numerical differentiation": 1707,
+        "QR elimination": 1125,
+        "WNOA motion factor linearization": 650,
+        "iSAM2 incremental recalculation": 237,
+        "stable-cost check": 142,
+        "full-history rebuild": 120,
+        "publication cached evaluation": 49
+      },
+      "phase_counts": {
+        "source revision": 493,
+        "publication": 3962,
+        "support/startup/final/other": 38
+      },
+      "phase_work_counts": {
+        "source revision / solver update remainder/order/tree/bookkeeping": 64,
+        "publication / stationarity/cached-evaluation remainder": 185,
+        "publication / source interpolation numerical derivatives": 1106,
+        "publication / Gaussian QR elimination/assembly": 946,
+        "publication / nonlinear objective evaluation": 104,
+        "publication / estimate/delta/back-substitution": 168,
+        "publication / motion numerical derivatives": 443,
+        "publication / source linearization remainder": 441,
+        "publication / solver destruction": 117,
+        "source revision / source interpolation numerical derivatives": 110,
+        "source revision / motion numerical derivatives": 45,
+        "source revision / Gaussian QR elimination/assembly": 178,
+        "source revision / estimate/delta/back-substitution": 19,
+        "publication / motion linearization remainder": 148,
+        "publication / other/unattributed work": 33,
+        "source revision / motion linearization remainder": 14,
+        "publication / solver update remainder/order/tree/bookkeeping": 193,
+        "publication / stable-cost check remainder": 25,
+        "publication / solver copy": 48,
+        "source revision / source linearization remainder": 52,
+        "source revision / other/unattributed work": 7,
+        "publication / other factor linearization": 5,
+        "support/startup/final/other / estimate/delta/back-substitution": 13,
+        "support/startup/final/other / journal parsing": 6,
+        "support/startup/final/other / other/unattributed work": 14,
+        "source revision / other factor linearization": 4,
+        "support/startup/final/other / source interpolation numerical derivatives": 3,
+        "support/startup/final/other / Gaussian QR elimination/assembly": 1,
+        "support/startup/final/other / source linearization remainder": 1
+      }
+    }
+  }
+}
