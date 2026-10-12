@@ -16,6 +16,16 @@ performance hypotheses into one acceptance experiment.
 
 ## Baseline and evidence
 
+**Planning boundary (2026-10-12):** Task S0 preserves the completed E1b.4a
+checkpoint and plans the supervisor's native-equation reuse proposal in
+`GLIM_SHARED_LINEARIZATION_LOCAL_COVARIANCE_PLAN_20261012.md`.
+Planning/checkpoint work is complete; all 677 protected hashes and six source
+HEAD/status checks passed. No candidate implementation or new run is authorized
+by this entry. Unlike E1/E1b, this proposal would change the
+LOCAL linearization policy; it must not be called arithmetic-equivalent to the
+independent LOCAL smoother. All frozen semantics below still govern the current
+working implementation. Complete one proposed stage and report before the next.
+
 **Current status (2026-10-12):** E1b.3c completed and validated the first40s
 profile after the private startup and admission fixes. LOCAL synchronous GPU
 linearization accounts for 96.405% of its measured exclusive wall time;
@@ -127,6 +137,7 @@ shared IMU, past means or nonlinear history are statistically independent.
 | E3b | Remaining interpolated pose derivative blocks | Separate patch and independent checks as for E3a; do not redo already validated V/W substitution | Not started |
 | E4 | Selective incremental publication refinement | Same factors/events and fresh current-Values stationarity certificate; reference full refinement fallback; short/medium/late replay comparisons | Tested 2026-10-12; NOT ACCEPTED: strict state bounds failed,86.8% fallback,matched refinement~40% slower; stopped at130.68s |
 | E5 | Transport/logging/bookkeeping efficiency | One subchange per test; lossless ordered revision delivery and auditability; same factor accounting; no silent dropped/coalesced versions | Not started |
+| S0 | Preserve E1b.4a and plan native Gaussian-equation reuse | Recoverable local checkpoint; saved staged plan; distinguish native information from MAIN conditioning and mixed marginal priors | Completed 2026-10-12; all 677 hashes and six source HEAD/status checks passed; no implementation/run/push |
 
 E1 first reuses existing gtsam_points batching around LOCAL graph preparation;
 it retains the auxiliary smoother and its conditioning. GPU-aware sidecar update,
@@ -169,6 +180,31 @@ its own explicit algorithmic decision. Fixed lag may bound resources but brings
 historical revision and marginal-prior semantics; reconsider only separately.
 
 ## Execution ledger
+
+### S0 — shared-native-linearization proposal and preservation
+
+- Authorization: user requested a plan for the supervisor's method and saving
+  current progress, not implementation or another experiment.
+- Preserved baseline `3206123f4812d66158db58bd1f577167fe901875` with annotated
+  local tag `checkpoint/e1b4a-before-shared-linearization-20261012`. Original
+  E1b.4a branch remains at that commit. Documentation is on the separate
+  `planning/glim-shared-linearization-20261012` branch.
+- Plan: `GLIM_SHARED_LINEARIZATION_LOCAL_COVARIANCE_PLAN_20261012.md`.
+  Proposed native-only Gaussian history reuses MAIN's factor equations but
+  never its mixed prior/Bayes tree. Explicit chart, provenance, retirement,
+  tangent transport, transaction and independent dense-reference gates precede
+  any candidate publication. No statistical independence or equality to the
+  independent LOCAL covariance is claimed.
+- Rehashed all 677 protected files (10,554,314,414 bytes): zero differences.
+  Six source HEADs/worktrees match the clean frozen records. Added hashes for
+  15 retained private source/build/runtime/evidence files. Integrity and recovery
+  boundaries: `experiments/checkpoints/20261012_shared_linearization/`.
+- Default-off/private implementation, current native source settings and WNOA
+  receiver remain unchanged. No build, estimator run, tuning, new correctness
+  test, automatic follow-up or push. Existing validation remains historical.
+- Next proposed step is S1 read-only feasibility. The user's requested fresh
+  unchanged overall-timing reference (B0, proposed same first40s) precedes any
+  candidate implementation and needs separate run authorization. Stop here.
 
 ### E1b.4a observer-free first40s timing — passed
 
