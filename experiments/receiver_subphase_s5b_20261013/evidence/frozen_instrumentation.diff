@@ -1,0 +1,417 @@
+--- /home/yeranis/results/gnssfgo_e1_e2_correctness_audit_20261011/candidate/DiagnosticReplay.cpp
++++ /home/yeranis/results/gnssfgo_receiver_subphase_s5b_20261013/build/DiagnosticReplay.cpp
+@@ -1,3 +1,4 @@
++#include "ReceiverTiming.h"
+ #include <tbb/global_control.h>
+ // Copyright 2026 Yerasimos Zaky
+ //
+@@ -923,7 +924,8 @@
+     const fgo::solvers::FixedLagSmoother::KeyTimestampMap & timestamps = {})
+   {
+     if (isam2_) {
+-      isam2_->update(graph, values);
++      s5b::ContextScope support_context(s5b::Supporting);
++      s5b::Timed(s5b::SupportUpdate, [&] { s5b::Timed(s5b::IsamUpdate, [&] { return isam2_->update(graph, values); }); });
+     } else {
+       fixed_lag_->update(graph, values, timestamps);
+     }
+@@ -933,11 +935,13 @@
+     const gtsam::NonlinearFactorGraph & graph,
+     const gtsam::FactorIndices & remove_indices)
+   {
++    s5b::ContextScope revision_context(s5b::Replacing);
++    s5b::Scope revision_timer(s5b::Revision);
+     if (!isam2_ || graph.size() != 1) {
+       throw std::runtime_error("revision replacement requires one factor and full iSAM2");
+     }
+-    const auto result = isam2_->update(graph, gtsam::Values(), remove_indices,
+-      boost::none, boost::none, boost::none, true);
++    const auto result = s5b::Timed(s5b::IsamUpdate, [&] { return isam2_->update(graph, gtsam::Values(), remove_indices,
++      boost::none, boost::none, boost::none, true); });
+     if (result.newFactorsIndices.size() != 1) {
+       throw std::runtime_error("iSAM2 did not return one persistent factor index");
+     }
+@@ -986,7 +990,7 @@
+ 
+   gtsam::Values Estimate() const
+   {
+-    return isam2_ ? isam2_->calculateEstimate() : fixed_lag_->calculateEstimate();
++    return s5b::Timed(s5b::Estimate, [&] { return isam2_ ? isam2_->calculateEstimate() : fixed_lag_->calculateEstimate(); });
+   }
+ 
+   const gtsam::NonlinearFactorGraph& AuditGraph() const {
+@@ -1000,13 +1004,15 @@
+     if(!std::getenv("WNOJ_STRICT_PUBLICATION"))return;
+     if(!isam2_)throw std::runtime_error("full refinement requires iSAM2");
+     const auto start=std::chrono::steady_clock::now();
+-    const auto result=numerical_audit::Refine(isam2_);
+-    e2_memo::Flush(out,index,physical,phase);
++    s5b::ContextScope publication_context(s5b::Publishing);
++    const auto result=s5b::Timed(s5b::Publication, [&] { return numerical_audit::Refine(isam2_); });
++    s5b::Timed(s5b::MemoIO, [&] { e2_memo::Flush(out,index,physical,phase); });
+     publication_valid_=result.status=="stationary" && std::isfinite(result.gradient_after) && result.gradient_after<=1e-5;
+     unsetenv("AUDIT_ROUNDOFF_PUBLICATION");
+     for(const auto& step:result.steps) if(step.roundoff)setenv("AUDIT_ROUNDOFF_PUBLICATION","1",1);
+     if(!publication_valid_)setenv("AUDIT_FAILED_PUBLICATION","1",1);
+     const double seconds=std::chrono::duration<double>(std::chrono::steady_clock::now()-start).count();
++    { s5b::Scope publication_io(s5b::PublicationIO);
+     const auto path=std::filesystem::path(out)/"publication_convergence.csv";
+     const bool exists=std::filesystem::exists(path);
+     std::ofstream log(path,std::ios::app);log<<std::setprecision(17);
+@@ -1019,6 +1025,8 @@
+     if(!steps_exist)steps<<"phase,index,iteration,relinearized,error_before,error_after,gradient_after,accepted,roundoff,objective_allowance,state_step_norm,stable_cost_delta,arithmetic_bound,predicted_delta,predicted_bound,recovery,consensus,qr_disagreement,local_prediction\n";
+     for(const auto& s:result.steps)steps<<phase<<','<<index<<','<<s.iteration<<','<<s.relinearized<<','
+       <<s.before<<','<<s.after<<','<<s.gradient<<','<<s.accepted<<','<<s.roundoff<<','<<s.allowance<<','<<s.state_step_norm<<','<<s.cost.delta<<','<<s.cost.arithmetic_bound<<','<<s.cost.predicted_delta<<','<<s.cost.predicted_bound<<','<<s.recovery<<','<<s.consensus<<','<<s.qr_disagreement<<','<<s.local_prediction<<'\n';
++    }
++    s5b::Flush(index,physical,phase);
+   }
+ 
+   void RequireValidPublication() const {
+@@ -1077,7 +1085,7 @@
+     };
+   if (streaming) {
+     while (endpoints.empty()) {
+-      const auto event = event_stream->Next();
++      const auto event = s5b::Timed(s5b::EventRead, [&] { return event_stream->Next(); });
+       if (event.kind == 'E') throw std::runtime_error("stream ended before IMU initialization");
+       if (event.kind == 'I') receive_imu(event.imu);
+       else streamed_beliefs.push_back(event.belief);
+@@ -1738,7 +1746,7 @@
+   for (const auto & belief : streamed_beliefs) stream_belief(belief);
+   auto ensure_stream_support = [&](size_t index) {
+       while (index >= endpoints.size()) {
+-        const auto event = event_stream->Next();
++        const auto event = s5b::Timed(s5b::EventRead, [&] { return event_stream->Next(); });
+         if (event.kind == 'E') return false;
+         if (event.kind == 'I') {
+           const size_t before = endpoints.size();
+@@ -2196,7 +2204,8 @@
+ {
+   const tbb::global_control serial(tbb::global_control::max_allowed_parallelism, 1);
+   try {
+-    return Run(argc, argv);
++    s5b::Finalizer finish;
++    return s5b::Timed(s5b::Run, [&] { return Run(argc, argv); });
+   } catch (const std::exception & exception) {
+     std::cerr << "grandtour_ct_replay: " << exception.what() << '\n';
+     return 1;
+--- /home/yeranis/results/gnssfgo_e1_e2_correctness_audit_20261011/candidate/SourceWnoaModel.h
++++ /home/yeranis/results/gnssfgo_receiver_subphase_s5b_20261013/build/SourceWnoaModel.h
+@@ -1,3 +1,4 @@
++#include "ReceiverTiming.h"
+ // Opt-in source-driven receiver glue. Reuses gnssFGO's full WNOA model;
+ // there are deliberately no IMU samples, biases or gravity in this interface.
+ #pragma once
+@@ -82,18 +83,18 @@
+     const auto i = ReadSourceWnoaState(values, left), j = ReadSourceWnoaState(values, right);
+     if (h) {
+       h->resize(6);
+-      const auto result = interpolator->interpolatePose(i.pose, i.velocity, i.omega,
++      const auto result = s5b::Timed(s5b::NumericInterpolation, [&] { return interpolator->interpolatePose(i.pose, i.velocity, i.omega,
+         j.pose, j.velocity, j.omega,
+-        (*h)[0], boost::none, boost::none, (*h)[3], boost::none, boost::none);
++        (*h)[0], boost::none, boost::none, (*h)[3], boost::none, boost::none); });
+       // Do not request analytic pose blocks (they use a separate derivative
+       // path). Do not substitute the returned analytic pose into the residual.
+-      (void)twist_interpolator->interpolatePose(i.pose, i.velocity, i.omega,
++      (void)s5b::Timed(s5b::AnalyticInterpolation, [&] { return twist_interpolator->interpolatePose(i.pose, i.velocity, i.omega,
+         j.pose, j.velocity, j.omega,
+-        boost::none, (*h)[1], (*h)[2], boost::none, (*h)[4], (*h)[5]);
++        boost::none, (*h)[1], (*h)[2], boost::none, (*h)[4], (*h)[5]); });
+       return result;
+     }
+-    return interpolator->interpolatePose(i.pose, i.velocity, i.omega,
+-      j.pose, j.velocity, j.omega);
++    return s5b::Timed(s5b::NumericInterpolation, [&] { return interpolator->interpolatePose(i.pose, i.velocity, i.omega,
++      j.pose, j.velocity, j.omega); });
+   }
+ };
+ 
+@@ -112,6 +113,7 @@
+   }
+   gtsam::Vector unwhitenedError(const gtsam::Values& values,
+       boost::optional<std::vector<gtsam::Matrix>&> h = boost::none) const override {
++    s5b::Scope source_timer(s5b::SourceError);
+     std::vector<gtsam::Matrix> hi, hj;
+     const auto pi = from_.pose(values, h ? &hi : nullptr);
+     const auto pj = to_.pose(values, h ? &hj : nullptr);
+--- /home/yeranis/results/gnssfgo_e1_e2_correctness_audit_20261011/candidate/ExactLinearizationMemo.h
++++ /home/yeranis/results/gnssfgo_receiver_subphase_s5b_20261013/build/ExactLinearizationMemo.h
+@@ -1,3 +1,4 @@
++#include "ReceiverTiming.h"
+ #pragma once
+ // Private opt-in engineering candidate for the frozen immutable X/V/W factors.
+ // Does NOT change residuals, Jacobians, whitening, factor slots or solver policy.
+@@ -30,20 +31,21 @@
+     return boost::make_shared<MemoFactor>(static_cast<const Base&>(*this),enabled_);
+   }
+   gtsam::GaussianFactor::shared_ptr linearize(const gtsam::Values& values) const override {
++    s5b::Scope memo_timer(Kind == 0 ? s5b::MotionLinearize : s5b::SourceLinearize);
+     if(!enabled_) return Base::linearize(values);
+     std::lock_guard<std::mutex> lock(mutex_);
+     auto& c=counts.at(Kind);++c.calls;
+     try {
+       if(!this->active(values)) { Clear();++c.misses;return Base::linearize(values); }
+-      auto signature=e2_probe::Signature(this->keys(),values,true);
++      auto signature=s5b::Timed(s5b::Signature, [&] { return e2_probe::Signature(this->keys(),values,true); });
+       if(cached_ && signature==signature_) {
+         ++c.hits;
+         // GTSAM/callers may modify Gaussian factors: never expose our stored copy.
+-        return cached_->clone();
++        return s5b::Timed(s5b::HitClone, [&] { return cached_->clone(); });
+       }
+       if(cached_)++c.invalidations;
+       Clear();++c.misses;
+-      auto result=Base::linearize(values);
++      auto result=s5b::Timed(Kind == 0 ? s5b::MotionBase : s5b::SourceBase, [&] { return Base::linearize(values); });
+       if(result) {
+         auto jac=boost::dynamic_pointer_cast<gtsam::JacobianFactor>(result);
+         // The frozen families return JacobianFactors. Do not cache unexpected
+--- /home/yeranis/results/gnssfgo_publication_cache_20261010/build/FullPublicationRefinement.h
++++ /home/yeranis/results/gnssfgo_receiver_subphase_s5b_20261013/build/FullPublicationRefinement.h
+@@ -1,3 +1,4 @@
++#include "ReceiverTiming.h"
+ #pragma once
+ #include "offline_process/BoundedISAM2Refinement.h"
+ #include <gtsam/nonlinear/ISAM2UpdateParams.h>
+@@ -29,8 +30,8 @@
+   if (!solver || !std::isfinite(tolerance) || tolerance<=0)
+     throw std::invalid_argument("invalid full publication refinement policy");
+   Result result;
+-  const auto initial=solver->calculateEstimate();
+-  result.error_before=result.error_after=solver->getFactorsUnsafe().error(initial);
++  const auto initial=s5b::Timed(s5b::Estimate, [&] { return solver->calculateEstimate(); });
++  result.error_before=result.error_after=s5b::Timed(s5b::GraphError, [&] { return solver->getFactorsUnsafe().error(initial); });
+   result.gradient_before=result.gradient_after=fgo::offline::NormalizedGradient(solver->getFactorsUnsafe(),initial);
+   if(!std::isfinite(result.error_before))throw std::runtime_error("nonfinite input objective");
+   result.status="budget_exhausted";
+@@ -38,14 +39,14 @@
+   for(size_t iteration=1;iteration<=limit;++iteration) {
+     if(result.gradient_after<=tolerance){result.status="stationary";return result;}
+     ++result.attempted;
+-    auto candidate=std::make_unique<gtsam::ISAM2>(*solver);
++    auto candidate=s5b::Timed(s5b::SolverCopy, [&] { return std::make_unique<gtsam::ISAM2>(*solver); });
+     try {
+       gtsam::ISAM2UpdateParams params;
+       params.force_relinearize=true;
+       params.forceFullSolve=true;
+-      const auto update=candidate->update(gtsam::NonlinearFactorGraph(),gtsam::Values(),params);
+-      const auto estimate=candidate->calculateBestEstimate();
+-      const double error=candidate->getFactorsUnsafe().error(estimate);
++      const auto update=s5b::Timed(s5b::IsamUpdate, [&] { return candidate->update(gtsam::NonlinearFactorGraph(),gtsam::Values(),params); });
++      const auto estimate=s5b::Timed(s5b::Estimate, [&] { return candidate->calculateBestEstimate(); });
++      const double error=s5b::Timed(s5b::GraphError, [&] { return candidate->getFactorsUnsafe().error(estimate); });
+       const auto& before=solver->getFactorsUnsafe();
+       const auto& after=candidate->getFactorsUnsafe();
+       if(before.size()!=after.size())throw std::runtime_error("factor slots changed");
+@@ -56,26 +57,26 @@
+       const bool ordinary=std::isfinite(error) && error>=0 && error<=result.error_after;
+       bool stable=false;
+       if(!ordinary && std::isfinite(error) && error>=0) {
+-        cost=fgo::offline::GaussianCostChange(before,solver->calculateEstimate(),estimate);
++        cost=s5b::Timed(s5b::StableCost, [&] { return fgo::offline::GaussianCostChange(before,s5b::Timed(s5b::Estimate, [&] { return solver->calculateEstimate(); }),estimate); });
+         stable=fgo::offline::StableStationaryDescent(cost,result.gradient_after,gradient,tolerance);
+       }
+       const auto decision=ordinary ? fgo::offline::PublicationStepDecision::NonIncreasing :
+         stable ? fgo::offline::PublicationStepDecision::RoundoffStationary : fgo::offline::PublicationStepDecision::Reject;
+       const double allowance=0.;
+-      const double step=solver->calculateEstimate().localCoordinates(estimate).norm();
++      const double step=s5b::Timed(s5b::Estimate, [&] { return solver->calculateEstimate(); }).localCoordinates(estimate).norm();
+       if(!std::isfinite(step) || decision==fgo::offline::PublicationStepDecision::Reject) {
+         result.steps.push_back({iteration,update.variablesRelinearized,result.error_after,error,gradient,false,false,allowance,step,cost});
+         if(!recovery_attempted && std::isfinite(step) && std::isfinite(error)) {
+           recovery_attempted=true;
+-          auto rebuilt=fgo::offline::RebuildFullHistoryQR(*solver,solver->calculateEstimate());
+-          const auto recovered=rebuilt->calculateBestEstimate();
+-          const auto recovery_cost=fgo::offline::GaussianCostChange(before,solver->calculateEstimate(),recovered);
++          auto rebuilt=s5b::Timed(s5b::Recovery, [&] { return fgo::offline::RebuildFullHistoryQR(*solver,s5b::Timed(s5b::Estimate, [&] { return solver->calculateEstimate(); })); });
++          const auto recovered=s5b::Timed(s5b::Estimate, [&] { return rebuilt->calculateBestEstimate(); });
++          const auto recovery_cost=s5b::Timed(s5b::StableCost, [&] { return fgo::offline::GaussianCostChange(before,s5b::Timed(s5b::Estimate, [&] { return solver->calculateEstimate(); }),recovered); });
+           const double recovery_gradient=fgo::offline::NormalizedGradient(before,recovered);
+-          const double recovery_error=before.error(recovered);
+-          const double recovery_step=solver->calculateEstimate().localCoordinates(recovered).norm();
++          const double recovery_error=s5b::Timed(s5b::GraphError, [&] { return before.error(recovered); });
++          const double recovery_step=s5b::Timed(s5b::Estimate, [&] { return solver->calculateEstimate(); }).localCoordinates(recovered).norm();
+           const bool descent=std::isfinite(recovery_error) && std::isfinite(recovery_step) &&
+             fgo::offline::StableStationaryDescent(recovery_cost,result.gradient_after,recovery_gradient,tolerance);
+-          const double disagreement=fgo::offline::QRDisagreement(solver->calculateEstimate(),estimate,recovered);
++          const double disagreement=fgo::offline::QRDisagreement(s5b::Timed(s5b::Estimate, [&] { return solver->calculateEstimate(); }),estimate,recovered);
+           const bool consensus=!descent && std::isfinite(recovery_error) && std::isfinite(recovery_step) &&
+             fgo::offline::StationaryQRConsensus(cost,recovery_cost,result.error_after,result.gradient_after,gradient,recovery_gradient,disagreement,tolerance);
+           const bool accepted=descent||consensus;
+@@ -94,24 +95,25 @@
+               std::abs(c.delta)<=bound&&std::abs(c.predicted_delta)<=bound&&c.predicted_delta < -c.predicted_bound;
+           };
+           if(flat(cost)&&flat(recovery_cost)) {
+-            const auto anchor=solver->calculateEstimate();
++            const auto anchor=s5b::Timed(s5b::Estimate, [&] { return solver->calculateEstimate(); });
+             const publication_cache::Evaluation anchor_evaluation(before,anchor);
+             for(size_t pass=iteration+1;pass<=limit;++pass) {
++              s5b::Scope polish_timer(s5b::Polish);
+               ++result.attempted;
+-              const auto seed=rebuilt->calculateBestEstimate();
+-              auto trial=std::make_unique<gtsam::ISAM2>(*rebuilt);
+-              const auto update2=trial->update(gtsam::NonlinearFactorGraph(),gtsam::Values(),params);
+-              const auto x=trial->calculateBestEstimate();
+-              auto fresh=fgo::offline::RebuildFullHistoryQR(*rebuilt,seed);
+-              const auto y=fresh->calculateBestEstimate();
++              const auto seed=s5b::Timed(s5b::Estimate, [&] { return rebuilt->calculateBestEstimate(); });
++              auto trial=s5b::Timed(s5b::SolverCopy, [&] { return std::make_unique<gtsam::ISAM2>(*rebuilt); });
++              const auto update2=s5b::Timed(s5b::IsamUpdate, [&] { return trial->update(gtsam::NonlinearFactorGraph(),gtsam::Values(),params); });
++              const auto x=s5b::Timed(s5b::Estimate, [&] { return trial->calculateBestEstimate(); });
++              auto fresh=s5b::Timed(s5b::Recovery, [&] { return fgo::offline::RebuildFullHistoryQR(*rebuilt,seed); });
++              const auto y=s5b::Timed(s5b::Estimate, [&] { return fresh->calculateBestEstimate(); });
+               fgo::offline::RequireSameFactorSlots(before,trial->getFactorsUnsafe());
+               fgo::offline::RequireSameFactorSlots(before,fresh->getFactorsUnsafe());
+               const publication_cache::Evaluation seed_evaluation(before,seed),
+                 x_evaluation(before,x),y_evaluation(before,y);
+-              const auto cx=publication_cache::CumulativeChange(anchor_evaluation,seed_evaluation,x_evaluation);
+-              const auto cy=publication_cache::CumulativeChange(anchor_evaluation,seed_evaluation,y_evaluation);
++              const auto cx=s5b::Timed(s5b::StableCost, [&] { return publication_cache::CumulativeChange(anchor_evaluation,seed_evaluation,x_evaluation); });
++              const auto cy=s5b::Timed(s5b::StableCost, [&] { return publication_cache::CumulativeChange(anchor_evaluation,seed_evaluation,y_evaluation); });
+               const double gx=x_evaluation.gradient(),gy=y_evaluation.gradient();
+-              const double ex=before.error(x),ey=before.error(y);
++              const double ex=s5b::Timed(s5b::GraphError, [&] { return before.error(x); }),ey=s5b::Timed(s5b::GraphError, [&] { return before.error(y); });
+               const double sx=anchor.localCoordinates(x).norm(),sy=anchor.localCoordinates(y).norm();
+               const double agreement=fgo::offline::QRDisagreement(seed,x,y);
+               const bool descent2=std::isfinite(ey)&&std::isfinite(sy)&&
+--- /home/yeranis/results/gnssfgo_publication_cache_20261010/build/CachedGaussianEvaluation.h
++++ /home/yeranis/results/gnssfgo_receiver_subphase_s5b_20261013/build/CachedGaussianEvaluation.h
+@@ -1,3 +1,4 @@
++#include "ReceiverTiming.h"
+ #pragma once
+ #include "offline_process/StableGaussianCost.h"
+ #include <memory>
+@@ -17,7 +18,7 @@
+   const gtsam::Values& values() const { return values_; }
+   const gtsam::NonlinearFactorGraph& graph() const { return graph_; }
+   const gtsam::GaussianFactorGraph& linear() const {
+-    if (!linear_) { linear_ = graph_.linearize(values_); ++linearizations; }
++    if (!linear_) { linear_ = s5b::Timed(s5b::GraphLinearize, [&] { return graph_.linearize(values_); }); ++linearizations; }
+     return *linear_;
+   }
+   const gtsam::Vector& residual(size_t slot) const {
+@@ -29,8 +30,9 @@
+     return *residuals_[slot];
+   }
+   double gradient() const {
+-    const auto g = linear().gradientAtZero();
+-    const auto d = linear().hessianDiagonal();
++    s5b::Scope gradient_timer(s5b::Gradient);
++    const auto g = s5b::Timed(s5b::GradientVector, [&] { return linear().gradientAtZero(); });
++    const auto d = s5b::Timed(s5b::HessianDiagonal, [&] { return linear().hessianDiagonal(); });
+     double maximum = 0;
+     for (const auto& [key, v] : g) {
+       const auto& diagonal = d.at(key);
+--- /home/yeranis/repos/gnssFGO/online_fgo/include/offline_process/BoundedISAM2Refinement.h
++++ /home/yeranis/results/gnssfgo_receiver_subphase_s5b_20261013/build/offline_process/BoundedISAM2Refinement.h
+@@ -1,3 +1,4 @@
++#include "ReceiverTiming.h"
+ #pragma once
+ 
+ #include <gtsam/linear/GaussianFactorGraph.h>
+@@ -29,9 +30,10 @@
+ // A small value tests first-order stationarity, NOT observability/global optimality.
+ inline double NormalizedGradient(
+     const gtsam::NonlinearFactorGraph& graph, const gtsam::Values& values) {
+-  const auto linear = graph.linearize(values);
+-  const auto gradient = linear->gradientAtZero();
+-  const auto diagonal = linear->hessianDiagonal();
++  s5b::Scope gradient_timer(s5b::Gradient);
++  const auto linear = s5b::Timed(s5b::GraphLinearize, [&] { return graph.linearize(values); });
++  const auto gradient = s5b::Timed(s5b::GradientVector, [&] { return linear->gradientAtZero(); });
++  const auto diagonal = s5b::Timed(s5b::HessianDiagonal, [&] { return linear->hessianDiagonal(); });
+   double maximum = 0;
+   for (const auto& [key, g] : gradient) {
+     const auto& d = diagonal.at(key);
+--- /home/yeranis/repos/gnssFGO/online_fgo/include/offline_process/TransactionalISAM2Rebuild.h
++++ /home/yeranis/results/gnssfgo_receiver_subphase_s5b_20261013/build/offline_process/TransactionalISAM2Rebuild.h
+@@ -1,3 +1,4 @@
++#include "ReceiverTiming.h"
+ #pragma once
+ 
+ #include <gtsam/nonlinear/ISAM2.h>
+@@ -24,7 +25,7 @@
+     // FactorGraph::add_factors(...,true) compresses null entries in a new graph.
+     // Disable hole reuse for this one bulk load, then restore the exact policy.
+     params_.findUnusedFactorSlots=false;
+-    const auto result=update(graph,seed);
++    const auto result=s5b::Timed(s5b::IsamUpdate, [&] { return update(graph,seed); });
+     params_.findUnusedFactorSlots=parameters.findUnusedFactorSlots;
+     RequireSameFactorSlots(graph,getFactorsUnsafe());
+     if(result.newFactorsIndices.size()!=graph.size())
+--- /home/yeranis/repos/gnssFGO/online_fgo/include/factor/motion/GPWNOAPrior.h
++++ /home/yeranis/results/gnssfgo_receiver_subphase_s5b_20261013/build/factor/motion/GPWNOAPrior.h
+@@ -1,3 +1,4 @@
++#include "ReceiverTiming.h"
+ //  Copyright 2022 Institute of Automatic Control RWTH Aachen University
+ //
+ //  Licensed under the Apache License, Version 2.0 (the "License");
+@@ -29,7 +30,7 @@
+ #pragma once
+ 
+ #include <gtsam/nonlinear/Marginals.h>
+-#include "GPPriorBase.h"
++#include "factor/motion/GPPriorBase.h"
+ 
+ namespace fgo::factor {
+ 
+@@ -84,40 +85,41 @@
+       boost::optional<gtsam::Matrix &> H6 = boost::none
+     ) const override {
+ 
++      s5b::Scope motion_timer(s5b::MotionError);
+       using namespace gtsam;
+       using namespace fgo::utils;
+ 
+       if (useAutoDiff_) {
+         // jacobians
+         if (H1) {
+-          *H1 = gtsam::numericalDerivative11<gtsam::Vector, gtsam::Pose3>(
++          *H1 = s5b::Timed(s5b::MotionPoseDerivative, [&] { return gtsam::numericalDerivative11<gtsam::Vector, gtsam::Pose3>(
+             boost::bind(&This::evaluateError_, this, boost::placeholders::_1, vel1, omega1, pose2, vel2, omega2),
+-            pose1, 1e-5);
++            pose1, 1e-5); });
+         }
+         if (H2) {
+-          *H2 = gtsam::numericalDerivative11<gtsam::Vector, gtsam::Vector3>(
++          *H2 = s5b::Timed(s5b::MotionTwistDerivative, [&] { return gtsam::numericalDerivative11<gtsam::Vector, gtsam::Vector3>(
+             boost::bind(&This::evaluateError_, this, pose1, boost::placeholders::_1, omega1, pose2, vel2, omega2),
+-            vel1, 1e-5);
++            vel1, 1e-5); });
+         }
+         if (H3) {
+-          *H3 = gtsam::numericalDerivative11<gtsam::Vector, gtsam::Vector3>(
++          *H3 = s5b::Timed(s5b::MotionTwistDerivative, [&] { return gtsam::numericalDerivative11<gtsam::Vector, gtsam::Vector3>(
+             boost::bind(&This::evaluateError_, this, pose1, vel1, boost::placeholders::_1, pose2, vel2, omega2),
+-            omega1, 1e-5);
++            omega1, 1e-5); });
+         }
+         if (H4) {
+-          *H4 = gtsam::numericalDerivative11<gtsam::Vector, gtsam::Pose3>(
++          *H4 = s5b::Timed(s5b::MotionPoseDerivative, [&] { return gtsam::numericalDerivative11<gtsam::Vector, gtsam::Pose3>(
+             boost::bind(&This::evaluateError_, this, pose1, vel1, omega1, boost::placeholders::_1, vel2, omega2),
+-            pose2, 1e-5);
++            pose2, 1e-5); });
+         }
+         if (H5) {
+-          *H5 = gtsam::numericalDerivative11<gtsam::Vector, gtsam::Vector3>(
++          *H5 = s5b::Timed(s5b::MotionTwistDerivative, [&] { return gtsam::numericalDerivative11<gtsam::Vector, gtsam::Vector3>(
+             boost::bind(&This::evaluateError_, this, pose1, vel1, omega1, pose2, boost::placeholders::_1, omega2),
+-            vel2, 1e-5);
++            vel2, 1e-5); });
+         }
+         if (H6) {
+-          *H6 = gtsam::numericalDerivative11<gtsam::Vector, gtsam::Vector3>(
++          *H6 = s5b::Timed(s5b::MotionTwistDerivative, [&] { return gtsam::numericalDerivative11<gtsam::Vector, gtsam::Vector3>(
+             boost::bind(&This::evaluateError_, this, pose1, vel1, omega1, pose2, vel2, boost::placeholders::_1),
+-            omega2, 1e-5);
++            omega2, 1e-5); });
+         }
+         return evaluateError_(pose1, vel1, omega1, pose2, vel2, omega2);
+       } else {
+@@ -269,4 +271,3 @@
+   };
+ }
+ #endif //FGONAV_GAUSSIANPROCESSPRIORPOSE3VNWB_H
+-

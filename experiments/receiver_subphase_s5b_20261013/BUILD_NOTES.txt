@@ -1,0 +1,21 @@
+Private build corrections before any receiver replay:
+
+unit attempt1 failed because the copied GPWNOAPrior header's sibling include
+GPPriorBase.h was no longer beside it. The private include now names the same
+original factor/motion/GPPriorBase.h explicitly. No formulas changed.
+Existing test source dependencies were copied unchanged so their quoted includes
+resolve consistently to this private overlay. unit2 passed50 tests both ways.
+
+build attempt1 failed because original SnapshotAudit.h resolved its quoted
+SourceWnoaModel.h to the original directory, duplicating the private declaration.
+SnapshotAudit.h was copied unchanged into the overlay; its optional audit remains
+disabled. Original files/binaries remain untouched. The failed log is retained.
+The driver's failure-report path also tried to hash an absent failed binary;
+it now checks existence. These are build harness fixes, not estimator changes.
+
+The initial five-second prefix replay stopped on its synthetic end marker:
+the parser requires E,arrival_ns, not bare E. The source rows were valid and
+unchanged. Retain prefix5.csv and prefix_reference as failed fixture evidence;
+prefix5_valid.csv uses identical rows and the required timestamped end marker.
+The real S5 journal already has a valid timestamped end marker. This was a
+diagnostic input construction error, not a solver or numerical failure.

@@ -1,0 +1,82 @@
+{
+  "passed": true,
+  "returncode": 0,
+  "seconds": 0.9462278430000879,
+  "commands": [
+    [
+      "c++",
+      "-std=c++20",
+      "-O3",
+      "-UNDEBUG",
+      "-pthread",
+      "/home/yeranis/results/gnssfgo_receiver_subphase_s5b_20261013/build/test_timing.cpp",
+      "-o",
+      "/home/yeranis/results/gnssfgo_receiver_subphase_s5b_20261013/build/timing_release"
+    ],
+    [
+      "env",
+      "S5B_TIMING=0",
+      "/home/yeranis/results/gnssfgo_receiver_subphase_s5b_20261013/build/timing_release"
+    ],
+    [
+      "env",
+      "S5B_TIMING=1",
+      "S5B_PROFILE_OUTPUT=/home/yeranis/results/gnssfgo_receiver_subphase_s5b_20261013/timing_release.csv",
+      "/home/yeranis/results/gnssfgo_receiver_subphase_s5b_20261013/build/timing_release"
+    ],
+    [
+      "c++",
+      "-std=c++20",
+      "-O1",
+      "-g1",
+      "-fsanitize=address,undefined",
+      "-fno-omit-frame-pointer",
+      "-UNDEBUG",
+      "-pthread",
+      "/home/yeranis/results/gnssfgo_receiver_subphase_s5b_20261013/build/test_timing.cpp",
+      "-o",
+      "/home/yeranis/results/gnssfgo_receiver_subphase_s5b_20261013/build/timing_sanitize"
+    ],
+    [
+      "env",
+      "S5B_TIMING=0",
+      "/home/yeranis/results/gnssfgo_receiver_subphase_s5b_20261013/build/timing_sanitize"
+    ],
+    [
+      "env",
+      "S5B_TIMING=1",
+      "S5B_PROFILE_OUTPUT=/home/yeranis/results/gnssfgo_receiver_subphase_s5b_20261013/timing_sanitize.csv",
+      "/home/yeranis/results/gnssfgo_receiver_subphase_s5b_20261013/build/timing_sanitize"
+    ]
+  ],
+  "before": {
+    "load": [
+      0.32666015625,
+      0.42626953125,
+      0.384765625
+    ],
+    "affinity": [
+      2
+    ]
+  },
+  "after": {
+    "load": [
+      0.32666015625,
+      0.42626953125,
+      0.384765625
+    ],
+    "affinity": [
+      2
+    ]
+  },
+  "user_seconds": 0.696265,
+  "system_seconds": 0.1205,
+  "max_rss_kib": 132916,
+  "environment": {
+    "E2_EXACT_LINEARIZATION_CACHE": "1",
+    "LD_LIBRARY_PATH": "/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib",
+    "OMP_NUM_THREADS": "1",
+    "WNOJ_INCREMENTAL_PROFILE": "nominal",
+    "WNOJ_STRICT_PUBLICATION": "1"
+  }
+}

@@ -16,6 +16,19 @@ performance hypotheses into one acceptance experiment.
 
 ## Baseline and evidence
 
+**Measurement boundary (S5b, 2026-10-13):** Do not start E3a from the candidate
+identified below. Private timing instrumentation passed 50 Release checks with
+timers disabled and enabled, focused profiler ASan/UBSan checks, and exact
+five-second replay. The full timers-disabled replay failed the exact reference
+gate: maximum online position difference0.161446mm, ten late publication
+decision rows differ, and recovery rows65→74. All1481 publications remain
+stationary and source accounting is unchanged, but this is not an exact timing
+surrogate. The full timers-enabled replay was not launched. No internal cost
+percentages or optimization are accepted.751 protected inputs,49 raw artifacts
+and six source repos remain unchanged. Next measurement should sample the
+unmodified frozen executable; current per-process `perf` access is blocked by
+host permissions. See [S5b report](experiments/receiver_subphase_s5b_20261013/REPORT.txt).
+
 **Latest audit (S5a, 2026-10-13):** Retained-data analysis localizes the late
 receiver backlog to growing global publication work plus more refinement passes.
 In 140–148.58 s, publication median/p95 is 984.068/1619.918 ms; even calls
@@ -163,7 +176,7 @@ shared IMU, past means or nonlinear history are statistically independent.
 | E1b.2 | Instrument LOCAL update subphases | Opt-in timing only; no extra factor/solver evaluations; scope/cache/exception tests; disjoint accounting; measured overhead before bounded profiling | Private implementation/tests passed 2026-10-12: 29 Release +29 UBSan +8 profiler ASan/UBSan; original-library fixture exact; no source capture or solver replacement |
 | E1b.3 | Bounded LOCAL subphase profile | Frozen source settings; explicit profiler overhead/coverage; separate nested/worker/outer wall costs; select one measured dominant subphase | E1b.3c validated first40s: 96.405% of LOCAL exclusive wall in synchronous GPU linearization; first40s limits retained |
 | E1b.4 | Batch LOCAL update linearizations at exact solver Values | Keep solver decisions and ordered Gaussian blocks; reuse E1 synchronous-compatible kernels; same-input repeated-solver and covariance checks before bounded live timing | Synthetic, sampled real-input and observer-free first40s timing gates PASSED. Default-off; longer capacity and full evolving-history equivalence remain uncertified |
-| E3a | Remaining WNOA motion-factor derivatives | Independent numerical derivative checks; manifold/frame tests; frozen-journal state/cost/covariance checks with predeclared tight tolerances | Not started |
+| E3a | Remaining WNOA motion-factor derivatives | Independent numerical derivative checks; manifold/frame tests; frozen-journal state/cost/covariance checks with predeclared tight tolerances | On hold pending measured S5b subphase attribution; no optimization authorized in S5b |
 | E3b | Remaining interpolated pose derivative blocks | Separate patch and independent checks as for E3a; do not redo already validated V/W substitution | Not started |
 | E4 | Selective incremental publication refinement | Same factors/events and fresh current-Values stationarity certificate; reference full refinement fallback; short/medium/late replay comparisons | Tested 2026-10-12; NOT ACCEPTED: strict state bounds failed,86.8% fallback,matched refinement~40% slower; stopped at130.68s |
 | E5 | Transport/logging/bookkeeping efficiency | One subchange per test; lossless ordered revision delivery and auditability; same factor accounting; no silent dropped/coalesced versions | Not started |
@@ -178,6 +191,7 @@ shared IMU, past means or nonlinear history are statistically independent.
 | S4d | Private ordinary-publication provider; disable independent LOCAL in one matched first40s capture | Same extraction/helper and lifecycle tests; exact provider-to-wire covariance; frozen source/receiver gates; complete-scan latency | Passed:47 Release/47 ASan+UBSan,18 regressions;389 exact wire covariances,zero LOCAL updates/provider GPU calls. Complete-scan median206.942→167.421ms,p95437.376→312.422ms; exact receiver repeat. Private/default-off; no long-run certification |
 | S5 | Frozen private provider first160s capacity validation | Same S4d binaries/settings, complete source coverage, native history/wire checks, strict receiver publication and exact journal repeat; early/middle/late timing | Capacity failed at148.55s receiver queue gate. Partial scan timing improved; full correctness/replay gates unaccepted. No retry, model edit or promotion |
 | S5a | Retained receiver publication-cost audit around140–148s | Trace frozen executable sources; separate graph size, iterations, recovery, revision delivery and unmeasured subcosts | Completed2026-10-13: global publication work localized; E3a motion V/W derivative candidate proposed, not implemented |
+| S5b | Receiver subphase timing without changing estimation | Private timing-only instrumentation, exact-output/decision checks and overhead control on saved S5 journal; disjoint inclusive/exclusive accounting | Stopped2026-10-13: full exact-reference gate failed; no full timed profile, no optimization; external profiling permission unresolved |
 
 E1 first reuses existing gtsam_points batching around LOCAL graph preparation;
 it retains the auxiliary smoother and its conditioning. GPU-aware sidecar update,
@@ -220,6 +234,48 @@ its own explicit algorithmic decision. Fixed lag may bound resources but brings
 historical revision and marginal-prior semantics; reconsider only separately.
 
 ## Execution ledger
+
+### S5b — measure before selecting an optimization
+
+- Authorization: user asks to establish the exact delaying work before trying
+  solutions. Parent e66243471100a97921f2f405fa709c683c99ba7d; branch
+  audit/receiver-subphase-s5b-20261013.
+- Scope: private diagnostic build of the frozen receiver; instrumentation only.
+  Preserve all formulas, solver decisions, factor/event order, tolerances and
+  logs. Use the saved S5 journal, including its startup history; do not restart
+  a late graph from incomplete state or run new GLIM/Kimera/bag playback.
+- Measure nested/exclusive work for publication, solver copying, iSAM2 update,
+  factor-family linearization, motion/interpolation derivatives, current-value
+  gradient checks, recovery, revision insertion and IO. Uninstrumented library
+  work must remain explicitly named as a remainder, not mislabeled QR time.
+- Validate profiler scope/exception/accounting behavior and disabled/enabled
+  outputs. Require unchanged ordered events, publication decisions, state
+  outputs and certificates before interpreting cost percentages. Measure
+  instrumentation overhead against the same private binary with timers off.
+- E3a and all other optimizations are on hold. No derivative replacement,
+  fixed-lag change, relaxed certificate, covariance tuning or live experiment.
+- Protocol/evidence: experiments/receiver_subphase_s5b_20261013/.
+- Result: profiler Release and ASan/UBSan fixtures pass; existing50 receiver
+  checks pass with timers off and on; five-second saved-journal outputs match
+  exactly across original/private-off/private-on. Full private-off replay
+  completes in470.163s but fails exact reference equivalence. Do not interpret
+  that wall time as a live capacity comparison or accept full cost attribution.
+- First certificate-number difference occurs near8.88s; first changed
+  publication decision at143.88s. Ten of1481 decision rows differ. Maximum
+  online/final position differences are0.161446/0.0418404mm; all1481 outputs
+  still satisfy the unchanged stationarity rule. Revisions have identical
+  IDs, factor slots and outcomes. Numerical cause of rebuild difference is
+  not established; it is not proof of a source/model bug.
+- Full timers-enabled replay was NOT launched. The predeclared stop rule was
+  enforced. No retry, estimator fix, E3a, live source run, or tuning followed.
+- After-integrity check passes751 protected files,49 raw artifacts, six source
+  repos and17 pinned private build files. Compile and prefix-fixture mistakes
+  are retained separately in BUILD_NOTES.txt; not relabeled as solver failures.
+- External sampler feasibility only: host perf is installed but task-clock
+  access is denied (perf_event_paranoid=4); sudo requires a password. No sysctl,
+  privilege, installation or container changes. gprofng exists on host but not
+  in the pinned container. No external profile has been collected.
+- Detailed result: experiments/receiver_subphase_s5b_20261013/REPORT.txt.
 
 ### S5a — bounded retained receiver publication audit
 

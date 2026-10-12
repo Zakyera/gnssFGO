@@ -1,0 +1,36 @@
+S5b: receiver timing attribution before optimization, 2026-10-13
+
+Parent e66243471100a97921f2f405fa709c683c99ba7d.
+User request: determine the exact delaying work, not trial-and-error fixes.
+Frozen binary SHA256:
+9d2ef832941c5ff2592da8428cb80104352590bcfea50c187624aaf4e90d60e0
+Saved source:
+/home/yeranis/results/gnssfgo_e1_e2_correctness_audit_20261011/candidate
+Input:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_shared_linearization_s5_live160_20261012/prepared/capacity160_on_receiver/events.csv
+
+No new source run. Preserve original files and binaries. Private diagnostic
+overlay only, mechanically adding clocks around existing operations. No extra
+factor evaluation or covariance computation. No derivative, model, solver,
+tolerance, event, source or covariance change. No optimization after profiling.
+
+1. Record input/build hashes and provenance; controlled single P-core, same
+   compiler flags/dependencies as the frozen receiver. No installed replacement.
+2. Profiler unit checks: nested inclusive/exclusive accounting, exceptions,
+   disabled path, counters and flush; Release and sanitizer where supported.
+3. Five-second saved-journal prefix: compare frozen executable, private timers
+   disabled and enabled. Require exact states, trajectory, accounting, decision
+   and numerical certificate fields (ignore wall-clock/timing columns only).
+4. If the short gate passes, replay the retained journal through its existing
+   148.58s tail, once disabled and once enabled sequentially. Startup history is
+   necessary; not a new160s sensor experiment. Timeout1800s per replay. Stop on
+   numerical or output mismatch; do not tune or automatically retry failures.
+5. Compare exact disabled/enabled outputs and recorded reference outputs.
+   Report overhead and early/middle/late bins; no percentage attribution if
+   instrumentation materially changes decisions. Overhead >10% requires an
+   explicit warning and prohibits treating instrumented time as native latency.
+6. Separate inclusive from exclusive timers. iSAM2 update remainder includes
+   elimination, bookkeeping and other library work; do not call it QR alone.
+   Distinguish pure receiver replay from co-running source CPU contention.
+7. Verify protected inputs unchanged; save report and update ledger. Select at
+   most one next measurement/fix supported by the profile; do not implement it.

@@ -1,0 +1,152 @@
+S5b — Receiver timing attribution gate
+2026-10-13
+
+OUTCOME: STOPPED; EXACT SUBPHASE ATTRIBUTION NOT ESTABLISHED
+
+The request was to identify the delaying work before choosing a fix. The
+previous S5a audit already localizes the growing delay to the receiver's
+whole-graph publication refinement/certification wrapper. This task attempted
+to measure its internal subphases without changing estimator mathematics.
+The full exact-output gate failed, so the full timed replay was not launched.
+E3a remains on hold. No internal percentage, derivative bottleneck conclusion,
+new tuning, source run or optimization is accepted from this attempt.
+
+1. WHAT IS ALREADY MEASURED, AND WHAT IS NOT
+
+S5a's original retained capture, physical140–148.58s:
+  Publication median984.068ms; p951619.918ms.
+  Non-recovery publication p951329.959ms.
+  Mean ordinary refinement attempts3.85; median4, maximum6.
+  Nominal support budget1000ms wall at0.1x for100ms physical support spacing.
+  End graph1481 supports,4443 X/V/W keys,3684 factors.
+  Source revision arrival rate roughly610/s simulated, without a late surge.
+
+This is our strict publication wrapper, not an assertion that standard iSAM2
+necessarily recomputes an entire trajectory before every output. It repeatedly
+computes full-current-state stationarity checks, with solver copy/update and
+occasional recovery. Work grows both with retained history and iteration count.
+Inspectors were disabled; no receiver marginalization occurs in this mode.
+
+The retained logs do NOT split that time between numerical derivatives,
+linearization-cache lookup/copy, graph gradients, solver elimination, solver
+copying, stable cost checks, recovery, IO, or scheduling. Static code inspection
+shows many numerical derivatives but cannot prove they dominate wall time.
+S5a's recommendation to try motion V/W derivatives is a hypothesis, not the
+exact bottleneck diagnosis requested here. Do not implement it on that basis.
+
+2. PRIVATE DIAGNOSTIC METHOD
+
+Frozen executable:
+/home/yeranis/results/gnssfgo_e1_e2_correctness_audit_20261011/candidate/replay
+SHA2569d2ef832941c5ff2592da8428cb80104352590bcfea50c187624aaf4e90d60e0
+
+Input (unchanged):
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_shared_linearization_s5_live160_20261012/prepared/capacity160_on_receiver/events.csv
+
+Private build/results:
+/home/yeranis/results/gnssfgo_receiver_subphase_s5b_20261013
+
+The retained S5 capture stopped at148.55s and drained to148.58s support; it is
+not a completed160s run. No GLIM, Kimera or bag playback ran in this task.
+Only the saved receiver journal was replayed.
+
+The private overlay adds nested clocks around existing operations, without
+new estimator evaluations, changed formulas or solver settings. Timers record
+inclusive/exclusive wall time, operation counts, and top-level thread CPU time.
+Contexts distinguish publication, revision and support work. Non-instrumented
+library time remains a remainder; it must not be mislabeled as QR time alone.
+Existing TBB single-thread limit and OMP_NUM_THREADS=1 are preserved. Diagnostic
+runs use CPU2 in the existing container as UID1000 and frozen runtime libraries.
+No working executable or original source/header was replaced.
+
+source_wnoa, no central IMU factors,100ms independent support, Gaussian native
+covariance scale1, Qc[.00375,.00375,.00375,.015,.015,.015], initial sigmas
+1e-5/10/3, full-history iSAM2 QR, stable-ID replacement and strict1e-5 gradient
+criterion are preserved. Source classic CBS remains unchanged.
+
+3. VALIDATION AND STOP
+
+Profiler fixtures: Release and ASan+UBSan, enabled/disabled, nested/exclusive
+accounting and exceptions passed. Leak detection was disabled in the focused
+ASan fixture; this was not a full estimator sanitizer campaign.
+Existing receiver checks:50 Release tests pass with timers disabled and50
+with timers enabled. These are the same50 tests in two modes, not100 distinct
+tests; one existing disabled test remains disabled. Build/include and prefix
+marker fixture corrections are separately
+documented in BUILD_NOTES.txt with failed logs retained.
+
+Five-second valid prefix: original/private-off/private-on states, trajectories,
+ordered events, decisions and numerical certificates match exactly. Only
+explicit clock columns are excluded. prefix_validation.json passes.
+
+Full private-off replay: completed successfully in470.163089658 wall seconds,
+but full_reference_validation.json FAILS. This time is not a co-running live
+capacity measurement, and private-off is not claimed identical to the original.
+Full private-on was NOT run. Instrumentation overhead and full subphase timing
+therefore remain unmeasured. No acceptance thresholds were relaxed.
+
+Comparison at identical physical timestamps (1481 states):
+                              Maximum           RMS
+Online position [m]           1.61445967e-4      1.54503238e-5
+Final position [m]            4.18404468e-5      1.82346017e-5
+Online orientation [rad]      2.09036863e-6      2.09935715e-7
+Final orientation [rad]       5.32187718e-7      4.80879196e-7
+Online velocity [m/s]         1.65135975e-6      1.78723118e-7
+Final velocity [m/s]          4.79801780e-6      5.09741125e-7
+Online omega [rad/s]          6.48658892e-9      2.53957416e-10
+Final omega [rad/s]           5.48805858e-6      1.49531173e-7
+
+First differing publication certificate row82, support83 at8.88s: objective
+differs around1e-11 and gradient around1e-12; attempted/accepted decisions are
+initially identical. First differing decision is row1432, support1433 at143.88s:
+original attempted5/accepted5, private attempted5/accepted4, both stationary.
+Ten publication decision rows differ. Original/private ordinary attempts are
+2446/2444, accepted2439/2436, recovery rows65/74. Recovery rows are not the
+same as the number of publications entering recovery.
+
+Both runs have1481/1481 stationary certificates, maximum final normalized
+gradient9.98908662e-6 and9.99050569e-6 respectively. All88254 revision operation
+IDs, slots and outcomes agree. Support clock, causal dispatch, measurement
+accounting and covariance configuration outputs are exact.
+
+These small state differences do not establish a new trajectory/model bug.
+They DO violate this task's exact timing-path gate and change late work counts,
+precisely where timing attribution matters. A floating-point/build perturbation
+is possible, but its specific origin is not established. No assertion that
+timing alone caused it, nor that the instrumentation is proven harmless.
+
+4. PRESERVATION
+
+before_integrity.json and after_integrity.json pass:751 protected files,
+49 retained raw artifacts, six source repository HEAD/status pairs and17
+pinned private build files unchanged. No derivative, model, covariance,
+source protocol, solver tolerance or production binary change. No new ATE
+experiment. No automatic retry. Evidence lives alongside this report and in
+the result root; frozen_instrumentation.diff pins the tested private overlay.
+
+5. ONE NEXT MEASUREMENT, NOT A FIX
+
+Prefer an external statistical CPU/call-stack profile of the UNMODIFIED frozen
+executable on this same saved journal, with identity/conservation/stationarity
+checks and explicit sampling/overhead limits. This avoids claiming a rebuilt
+diagnostic executable has the same nonlinear path. CPU samples are not an
+exact wall-time partition; scheduler/IO delay must remain separate.
+
+Tool feasibility checks only: host perf7.0.14 exists, but task-clock access is
+denied with perf_event_paranoid=4. A scoped sudo -n perf stat test requires a
+password and did not run. No kernel setting was changed or privilege bypassed.
+Host gprofng/gdb exist but neither is installed in the pinned container; no
+tool/library was installed or copied into that runtime. No external profile
+has been collected. Establish an authorized per-process profiler path before
+another diagnostic execution; do not launch a new source experiment to do so.
+
+Until then: global publication refinement is the measured delaying stage;
+its dominant internal operation is UNKNOWN. E3a and other fixes remain on hold.
+
+6. PROVENANCE
+
+ParentHEAD e66243471100a97921f2f405fa709c683c99ba7d
+Branch audit/receiver-subphase-s5b-20261013
+Task files and ledger contain diagnostics/documentation only. The commit
+recording this report can be resolved with:
+git log -1 --format=%H -- experiments/receiver_subphase_s5b_20261013/REPORT.txt
