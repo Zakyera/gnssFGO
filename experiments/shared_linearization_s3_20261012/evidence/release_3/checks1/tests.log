@@ -1,0 +1,173 @@
+Running main() from /build/googletest-j5yxiC/googletest-1.10.0/googletest/src/gtest_main.cc
+[==========] Running 42 tests from 2 test suites.
+[----------] Global test environment set-up.
+[----------] 17 tests from Lifecycle
+[ RUN      ] Lifecycle.DisabledDoesNotRegisterOrCompute
+[       OK ] Lifecycle.DisabledDoesNotRegisterOrCompute (0 ms)
+[ RUN      ] Lifecycle.ActualWrapperMultipleRetirementsDenseOracleAndExactNoninterference
+LIFECYCLE dense_relative=3.23556e-16 covariance_relative=1.40247e-12 captures=33 admitted=17 absorbed=15 active=2 extra_native_calls=0
+[       OK ] Lifecycle.ActualWrapperMultipleRetirementsDenseOracleAndExactNoninterference (5 ms)
+[ RUN      ] Lifecycle.ObserverExceptionDoesNotTriggerFallbackOrMutateMain
+SHARED_NATIVE_SHADOW_FAILURE epoch=1 reason=intentional observer fault
+[       OK ] Lifecycle.ObserverExceptionDoesNotTriggerFallbackOrMutateMain (0 ms)
+[ RUN      ] Lifecycle.ActualFallbackInvalidatesEvenAfterNextEmptyUpdate
+warning: an exception was caught in fixed-lag smoother update!!
+       : intentional native linearization failure
+SHARED_NATIVE_SHADOW_FAILURE epoch=1 reason=MAIN fallback/reset; native history cannot continue from rebuilt MAIN prior
+falling back!!
+smoother_lag:2
+current_stamp:1.000000
+- symbol=x min_id=0 max_id=1 min_stamp=0.000000 fixation=1.000000
+fixing x0
+fixing x1
+factors:2 fixed:4 values:2 stamps:2
+[       OK ] Lifecycle.ActualFallbackInvalidatesEvenAfterNextEmptyUpdate (1 ms)
+[ RUN      ] Lifecycle.ExplicitRemovalAndNativeSlotReuse
+[       OK ] Lifecycle.ExplicitRemovalAndNativeSlotReuse (0 ms)
+[ RUN      ] Lifecycle.SameSlotExternalReplacementIsNotNative
+[       OK ] Lifecycle.SameSlotExternalReplacementIsNotNative (0 ms)
+[ RUN      ] Lifecycle.MissingCacheInvalidatesButMainContinues
+SHARED_NATIVE_SHADOW_FAILURE epoch=0 reason=MAIN Gaussian cache disabled
+[       OK ] Lifecycle.MissingCacheInvalidatesButMainContinues (0 ms)
+[ RUN      ] Lifecycle.DuplicateAdmissionFailsBeforeMain
+SHARED_NATIVE_SHADOW_FAILURE epoch=0 reason=duplicate or concurrent native admission
+[       OK ] Lifecycle.DuplicateAdmissionFailsBeforeMain (0 ms)
+[ RUN      ] Lifecycle.MissingAdmittedFactorInvalidates
+SHARED_NATIVE_SHADOW_FAILURE epoch=1 reason=native admission missing/duplicated in actual MAIN update
+[       OK ] Lifecycle.MissingAdmittedFactorInvalidates (0 ms)
+[ RUN      ] Lifecycle.QueryFailureDoesNotChangeOutputOrMain
+SHARED_NATIVE_SHADOW_FAILURE epoch=1 reason=Attempting to at the key "x9", which does not exist in the Values.
+[       OK ] Lifecycle.QueryFailureDoesNotChangeOutputOrMain (0 ms)
+[ RUN      ] Lifecycle.DestructorUnregistersOwnerAndPreventsAddressReuse
+[       OK ] Lifecycle.DestructorUnregistersOwnerAndPreventsAddressReuse (0 ms)
+[ RUN      ] Lifecycle.DefaultOffEnvironmentAndMidrunEnableFailsClosed
+SHARED_NATIVE_SHADOW_FAILURE epoch=0 reason=shadow must start with native initialization; no mid-run bootstrap
+[       OK ] Lifecycle.DefaultOffEnvironmentAndMidrunEnableFailsClosed (0 ms)
+[ RUN      ] Lifecycle.SeparateOwnersDoNotCrossAdmit
+SHARED_NATIVE_SHADOW_FAILURE epoch=2 reason=MAIN fallback/reset; native history cannot continue from rebuilt MAIN prior
+[       OK ] Lifecycle.SeparateOwnersDoNotCrossAdmit (0 ms)
+[ RUN      ] Lifecycle.WrapperExceptionBeforeInnerUpdateRollsBackShadow
+SHARED_NATIVE_SHADOW_FAILURE epoch=1 reason=MAIN update unwound before commit
+[       OK ] Lifecycle.WrapperExceptionBeforeInnerUpdateRollsBackShadow (0 ms)
+[ RUN      ] Lifecycle.EstimateFallbackOutsideUpdateInvalidatesShadow
+warning: an exception was caught in fixed-lag smoother update!!
+       : Requested variable 'x999' is not in this VectorValues.
+SHARED_NATIVE_SHADOW_FAILURE epoch=1 reason=MAIN fallback/reset; native history cannot continue from rebuilt MAIN prior
+falling back!!
+smoother_lag:2
+current_stamp:0.000000
+- symbol=x min_id=0 max_id=0 min_stamp=0.000000 fixation=1.000000
+fixing x0
+factors:1 fixed:2 values:1 stamps:1
+[       OK ] Lifecycle.EstimateFallbackOutsideUpdateInvalidatesShadow (0 ms)
+[ RUN      ] Lifecycle.RemoveAndInsertInOneUpdateKeepsStableIdentities
+[       OK ] Lifecycle.RemoveAndInsertInOneUpdateKeepsStableIdentities (0 ms)
+[ RUN      ] Lifecycle.ActualNativeImuVelocityBiasAndPoseRetireTogether
+[       OK ] Lifecycle.ActualNativeImuVelocityBiasAndPoseRetireTogether (3 ms)
+[----------] 17 tests from Lifecycle (9 ms total)
+
+[----------] 25 tests from NativeGaussian
+[ RUN      ] NativeGaussian.DisabledByDefault
+[       OK ] NativeGaussian.DisabledByDefault (0 ms)
+[ RUN      ] NativeGaussian.CopyThroughAndCovariance
+NUMERIC augmented_native_including_eta_constant abs=3.2065569280901918e-15 relative=6.9936479096480062e-17
+CONDITION 58.679649467836434
+NUMERIC endpoint_joint_covariance abs=3.2521368433051523e-15 relative=1.3630747128582614e-15
+[       OK ] NativeGaussian.CopyThroughAndCovariance (1 ms)
+[ RUN      ] NativeGaussian.NativeOnlyHistoryExcludesExternalEvenAfterRetirement
+NUMERIC augmented_native_including_eta_constant abs=4.2620173570557315e-15 relative=1.3720230796314832e-16
+CONDITION 48.189999436100514
+[       OK ] NativeGaussian.NativeOnlyHistoryExcludesExternalEvenAfterRetirement (0 ms)
+[ RUN      ] NativeGaussian.MultipleRetirementsVersionsAndNonincidentNoDoubleCount
+NUMERIC augmented_native_including_eta_constant abs=4.2620173570557315e-15 relative=1.3720230796314832e-16
+CONDITION 48.189999436100514
+NUMERIC augmented_native_including_eta_constant abs=5.5922478109174797e-15 relative=2.5899014238920781e-16
+CONDITION 54.648687137990827
+NUMERIC augmented_native_including_eta_constant abs=3.0735752882206605e-15 relative=2.8295330680673073e-16
+CONDITION 30.060826815595405
+NUMERIC retired_joint_covariance abs=4.4671529686582938e-15 relative=8.3052001376689447e-16
+[       OK ] NativeGaussian.MultipleRetirementsVersionsAndNonincidentNoDoubleCount (1 ms)
+[ RUN      ] NativeGaussian.RemovalSlotReuseAndNoResurrection
+NUMERIC augmented_native_including_eta_constant abs=2.357584937199871e-15 relative=4.9387595463098115e-17
+CONDITION 69.538158292242827
+[       OK ] NativeGaussian.RemovalSlotReuseAndNoResurrection (0 ms)
+[ RUN      ] NativeGaussian.StaleVersionsAndUndeclaredMutationRejected
+[       OK ] NativeGaussian.StaleVersionsAndUndeclaredMutationRejected (0 ms)
+[ RUN      ] NativeGaussian.MissingDuplicateAndInvalidDimensionsRejected
+[       OK ] NativeGaussian.MissingDuplicateAndInvalidDimensionsRejected (0 ms)
+[ RUN      ] NativeGaussian.NonfiniteRejected
+[       OK ] NativeGaussian.NonfiniteRejected (0 ms)
+[ RUN      ] NativeGaussian.PriorChartAndFixedKeyGuards
+[       OK ] NativeGaussian.PriorChartAndFixedKeyGuards (0 ms)
+[ RUN      ] NativeGaussian.NewPriorMustBeFixed
+[       OK ] NativeGaussian.NewPriorMustBeFixed (1 ms)
+[ RUN      ] NativeGaussian.RefreshAllowedOnlyOutsidePrior
+[       OK ] NativeGaussian.RefreshAllowedOnlyOutsidePrior (0 ms)
+[ RUN      ] NativeGaussian.TransactionRollbackAndReset
+NUMERIC augmented_native_including_eta_constant abs=3.2065569280901918e-15 relative=6.9936479096480062e-17
+CONDITION 58.679649467836434
+[       OK ] NativeGaussian.TransactionRollbackAndReset (0 ms)
+[ RUN      ] NativeGaussian.UnknownRemovalAndSkippedEpoch
+[       OK ] NativeGaussian.UnknownRemovalAndSkippedEpoch (0 ms)
+[ RUN      ] NativeGaussian.UnderconstrainedCovarianceFailsWithoutAnchor
+[       OK ] NativeGaussian.UnderconstrainedCovarianceFailsWithoutAnchor (0 ms)
+[ RUN      ] NativeGaussian.ConstantTermSurvivesCompleteComponentElimination
+NUMERIC augmented_native_including_eta_constant abs=2.634953026054921e-16 relative=1.612050390981769e-17
+CONDITION 2.3874329126219855
+[       OK ] NativeGaussian.ConstantTermSurvivesCompleteComponentElimination (1 ms)
+[ RUN      ] NativeGaussian.NonzeroDeltaTransportAndRelativeFiniteDifference
+NUMERIC current_chart_covariance abs=8.1789174807806476e-10 relative=3.1631751563246431e-10
+NUMERIC relative_schur_vs_numeric_propagation abs=3.2144826786976198e-10 relative=1.4929245216783903e-10
+NUMERIC reversed_endpoint_order abs=0 relative=0
+[       OK ] NativeGaussian.NonzeroDeltaTransportAndRelativeFiniteDifference (0 ms)
+[ RUN      ] NativeGaussian.RepeatedRunIsExact
+[       OK ] NativeGaussian.RepeatedRunIsExact (0 ms)
+[ RUN      ] NativeGaussian.MixedHessianAndWeightedJacobianNotWhitenedTwice
+NUMERIC augmented_native_including_eta_constant abs=4.9260660501984055e-15 relative=1.4955808256993571e-16
+CONDITION 115.25845122430904
+[       OK ] NativeGaussian.MixedHessianAndWeightedJacobianNotWhitenedTwice (1 ms)
+[ RUN      ] NativeGaussian.DeepCopyProtectsAgainstInPlaceCacheMutation
+[       OK ] NativeGaussian.DeepCopyProtectsAgainstInPlaceCacheMutation (0 ms)
+[ RUN      ] NativeGaussian.FailureContainedAndOutputPreserved
+[       OK ] NativeGaussian.FailureContainedAndOutputPreserved (0 ms)
+[ RUN      ] NativeGaussian.ConstrainedFactorsRejected
+[       OK ] NativeGaussian.ConstrainedFactorsRejected (0 ms)
+[ RUN      ] NativeGaussian.AllKeysRetiredQueryFailsSafely
+NUMERIC all_eliminated_constant abs=0 relative=0
+[       OK ] NativeGaussian.AllKeysRetiredQueryFailsSafely (0 ms)
+[ RUN      ] NativeGaussian.GaussianEliminationFailureRollsBack
+[       OK ] NativeGaussian.GaussianEliminationFailureRollsBack (0 ms)
+[ RUN      ] NativeGaussian.ChangedNativeEquationsCanChangeCovariance
+[       OK ] NativeGaussian.ChangedNativeEquationsCanChangeCovariance (1 ms)
+[ RUN      ] NativeGaussian.TwelveRetirementsKeepBoundedHistory
+NUMERIC augmented_native_including_eta_constant abs=4.2620173570557315e-15 relative=1.3720230796314832e-16
+CONDITION 48.189999436100514
+NUMERIC augmented_native_including_eta_constant abs=7.6869700122569764e-15 relative=3.7762016057932464e-16
+CONDITION 51.000910328179508
+NUMERIC augmented_native_including_eta_constant abs=4.8195139752660845e-15 relative=2.9762481830179883e-16
+CONDITION 51.818258756690859
+NUMERIC augmented_native_including_eta_constant abs=5.7201439998761606e-15 relative=3.6512486177100379e-16
+CONDITION 62.510157765793565
+NUMERIC augmented_native_including_eta_constant abs=4.2326813132021905e-15 relative=2.8026810852840676e-16
+CONDITION 72.806528584518077
+NUMERIC augmented_native_including_eta_constant abs=5.5545232828585459e-15 relative=3.5992657996519816e-16
+CONDITION 94.556288169036137
+NUMERIC augmented_native_including_eta_constant abs=5.104878771996781e-15 relative=3.2815466228914593e-16
+CONDITION 108.81878658657214
+NUMERIC augmented_native_including_eta_constant abs=5.2811252372864257e-15 relative=3.2486615298981921e-16
+CONDITION 115.54085370435092
+NUMERIC augmented_native_including_eta_constant abs=4.6701205835414673e-15 relative=2.8593882967559972e-16
+CONDITION 134.6714794864651
+NUMERIC augmented_native_including_eta_constant abs=6.9719365495145572e-15 relative=4.308762068870818e-16
+CONDITION 149.49450385230901
+NUMERIC augmented_native_including_eta_constant abs=1.3412409897194058e-14 relative=8.3414786476648706e-16
+CONDITION 154.9269376408198
+NUMERIC augmented_native_including_eta_constant abs=5.462446146200693e-15 relative=3.31208013204585e-16
+CONDITION 153.94597909732371
+BOUND retained_values=6 active_factors=1 absorbed=26 admitted=27
+[       OK ] NativeGaussian.TwelveRetirementsKeepBoundedHistory (12 ms)
+[----------] 25 tests from NativeGaussian (18 ms total)
+
+[----------] Global test environment tear-down
+[==========] 42 tests from 2 test suites ran. (27 ms total)
+[  PASSED  ] 42 tests.

@@ -4,9 +4,10 @@
 
 Plan the supervisor's proposal as an isolated alternative to the independent
 nonlinear LOCAL smoother. Preserve the validated E1b.4a implementation as the
-reference and rollback path. **Planning, preservation, S1 feasibility and B0's
-unchanged timing reference are completed. Shared-linearization candidate
-implementation and experiments have not started.**
+reference and rollback path. **S0/S1 preservation and feasibility, B0's unchanged
+timing reference and S2's isolated Gaussian backend are complete. S3's private
+lifecycle implementation and synthetic gate pass; its real-data shadow gate
+remains pending. The authoritative LOCAL provider remains unchanged.**
 See [S1 feasibility findings](GLIM_SHARED_LINEARIZATION_FEASIBILITY_S1_20261012.md)
 for the actual MAIN implementation and exact lifecycle hooks.
 
@@ -190,20 +191,25 @@ its result, and obtain the next decision. Do not start a campaign automatically.
 | S1 | Read-only feasibility audit of MAIN equations, charts, factor lifetimes and retirement hooks | Completed: feasible with lifecycle hooks, native provenance and explicit chart/reset checks; no numerical or runtime certification. See S1 report |
 | B0 | Fresh unchanged overall-timing reference before candidate implementation, as requested by the user | Completed and validated: same ETH1 first40s at0.10x, E1b.4a/E2 builds; functional checks and byte-identical receiver repeat pass. See experiments/shared_linearization_b0_20261012/REPORT.md |
 | S2 | Default-off Gaussian information backend and synthetic/dense-reference tests in a private build | Complete: 26/26 Release including actual MAIN cache fixture; 25/25 UBSan and ASan+UBSan; dense-oracle and twelve-retirement gates pass. No live hooks or authoritative covariance change. See experiments/shared_linearization_s2_20261012/REPORT.md |
-| S3 | Shadow validation on retained exact inputs where sufficient; at most one authorized 40 s capture if MAIN snapshots are missing | Existing LOCAL remains authoritative; compare candidate against a same-chart native Gaussian oracle through multiple retirements; no candidate CBS publication |
+| S3 | Shadow validation on retained exact inputs where sufficient; at most one authorized 40 s capture if MAIN snapshots are missing | Private lifecycle/bridge implementation and CPU gate pass: 42/42 Release and ASan+UBSan,18 existing tests,exact disabled original-library comparison. Real-data oracle/capture pending; no candidate CBS publication. See experiments/shared_linearization_s3_20261012/REPORT.md |
 | S4 | Candidate-only LOCAL covariance timing with identical retained inputs, then one separately authorized matched 40 s live check | Disable the second nonlinear LOCAL solver only in the candidate; validate factor conservation, publication, covariance and end-to-end runtime; report expected covariance/trajectory differences from the old definition |
 
-S2 is complete as an isolated default-off backend. S3 real lifecycle integration
-and shadow validation is the next decision, not an automatic run. Both unchanged
+S2 is complete as an isolated default-off backend. S3 real lifecycle hooks are
+implemented in a private default-off build and synthetically validated. Prepare
+the bounded oracle recording/no-data startup gate before the next separately
+authorized shadow capture; current candidate covariance logs alone are not the
+real-data independent oracle. Both unchanged
 timing captures remain preserved; another baseline capture is not required. S3 shadow
 runtime is not the candidate performance result,
 because both paths run together. Reuse one suitable capture rather than creating
 separate data runs for every test. No full 160-second run or new sequence follows
 automatically.
 
-Proposed selector semantics are `independent_local` (unchanged default),
+Proposed production selector semantics are `independent_local` (unchanged default),
 `shared_native_shadow` (compute but do not publish), and `shared_native` (publish
 only after acceptance). These are design labels, not implemented launch flags.
+S3 implements only private `GLIM_SHARED_NATIVE_SHADOW=1` observation; it cannot
+select the candidate as the outgoing covariance provider.
 Never change covariance providers midway through a candidate run without a
 valid matching native history. On a candidate failure, stop and recover using
 the preserved reference; do not silently substitute MAIN covariance.
