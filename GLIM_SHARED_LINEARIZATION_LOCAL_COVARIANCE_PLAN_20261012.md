@@ -6,8 +6,8 @@ Plan the supervisor's proposal as an isolated alternative to the independent
 nonlinear LOCAL smoother. Preserve the validated E1b.4a implementation as the
 reference and rollback path. **S0/S1 preservation and feasibility, B0's unchanged
 timing reference and S2's isolated Gaussian backend are complete. S3's private
-lifecycle implementation and synthetic gate pass; its real-data shadow gate
-remains pending. The authoritative LOCAL provider remains unchanged.**
+lifecycle, synthetic and real-data first40s shadow gates now pass. The
+authoritative LOCAL provider remains unchanged; S4 has not started.**
 See [S1 feasibility findings](GLIM_SHARED_LINEARIZATION_FEASIBILITY_S1_20261012.md)
 for the actual MAIN implementation and exact lifecycle hooks.
 
@@ -191,19 +191,18 @@ its result, and obtain the next decision. Do not start a campaign automatically.
 | S1 | Read-only feasibility audit of MAIN equations, charts, factor lifetimes and retirement hooks | Completed: feasible with lifecycle hooks, native provenance and explicit chart/reset checks; no numerical or runtime certification. See S1 report |
 | B0 | Fresh unchanged overall-timing reference before candidate implementation, as requested by the user | Completed and validated: same ETH1 first40s at0.10x, E1b.4a/E2 builds; functional checks and byte-identical receiver repeat pass. See experiments/shared_linearization_b0_20261012/REPORT.md |
 | S2 | Default-off Gaussian information backend and synthetic/dense-reference tests in a private build | Complete: 26/26 Release including actual MAIN cache fixture; 25/25 UBSan and ASan+UBSan; dense-oracle and twelve-retirement gates pass. No live hooks or authoritative covariance change. See experiments/shared_linearization_s2_20261012/REPORT.md |
-| S3 | Shadow validation on retained exact inputs where sufficient; at most one authorized 40 s capture if MAIN snapshots are missing | Private lifecycle/bridge implementation and CPU gate pass: 42/42 Release and ASan+UBSan,18 existing tests,exact disabled original-library comparison. Real-data oracle/capture pending; no candidate CBS publication. See experiments/shared_linearization_s3_20261012/REPORT.md |
+| S3 | Shadow validation on retained exact inputs where sufficient; at most one authorized 40 s capture if MAIN snapshots are missing | Passed: one ETH1 first40s capture, 783 updates, 313 retirements, 20 independent covariance checks (joint relative error max6.01e-15); 44/44 Release and ASan/UBSan,18 existing tests, exact receiver repeat. Old LOCAL authoritative. See experiments/shared_linearization_s3_capture_20261012/REPORT.md |
 | S4 | Candidate-only LOCAL covariance timing with identical retained inputs, then one separately authorized matched 40 s live check | Disable the second nonlinear LOCAL solver only in the candidate; validate factor conservation, publication, covariance and end-to-end runtime; report expected covariance/trajectory differences from the old definition |
 
-S2 is complete as an isolated default-off backend. S3 real lifecycle hooks are
-implemented in a private default-off build and synthetically validated. Prepare
-the bounded oracle recording/no-data startup gate before the next separately
-authorized shadow capture; current candidate covariance logs alone are not the
-real-data independent oracle. Both unchanged
-timing captures remain preserved; another baseline capture is not required. S3 shadow
-runtime is not the candidate performance result,
-because both paths run together. Reuse one suitable capture rather than creating
-separate data runs for every test. No full 160-second run or new sequence follows
-automatically.
+S3 is complete on the bounded real-data window. Its saved native equations,
+charts and lifecycle journal now support the next same-input timing gate without
+another source capture. See the [S3 result](experiments/shared_linearization_s3_capture_20261012/REPORT.md).
+Sampled shadow covariance queries cost about160ms median, including dense rank
+inspection and Gaussian covariance work. Measure the required query cadence and
+candidate-only cost on retained equations before promising a speedup. Both
+unchanged timing captures remain preserved. S3 ran both covariance paths and
+does not establish replacement performance. No S4, full160s or new sequence
+follows automatically.
 
 Proposed production selector semantics are `independent_local` (unchanged default),
 `shared_native_shadow` (compute but do not publish), and `shared_native` (publish

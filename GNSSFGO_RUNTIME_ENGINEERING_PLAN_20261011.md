@@ -144,7 +144,7 @@ shared IMU, past means or nonlinear history are statistically independent.
 | S1 | Read-only feasibility of MAIN native-equation reuse | Exact capture/retirement hooks, factor provenance, coherent reference charts and minimal isolated patch surface | Complete: feasible with lifecycle hooks; 677 hashes and six source repositories unchanged; no numerical certification, implementation or run |
 | B0 | Fresh unchanged first40s overall timing reference | Preserved E1b.4a build/settings; original functional gates and exact saved-journal repeat; report MAIN, LOCAL, covariance and complete-scan timing | Passed: LOCAL median/p95 10.965/15.385 ms; complete-scan 206.942/437.376 ms; functional gates and exact receiver repeat pass. MAIN remains dominant |
 | S2 | Private default-off native Gaussian history prototype | Synthetic same-chart dense oracle, native-only retirement, tangent transport, lifecycle/rollback and focused sanitizers | Passed: 26/26 Release; 25/25 UBSan and ASan+UBSan. Twelve retirements, dense oracle, zero extra native evaluations in actual MAIN cache fixture. No live integration, publication or run |
-| S3 | Private default-off MAIN lifecycle and native-admission observer | Actual fallback-wrapper update/retirement/reset fixtures; no added native evaluations; unchanged MAIN; same-chart shadow oracle before promotion | Implementation/synthetic integration gate passed: 42/42 Release twice,42/42 ASan+UBSan,18 existing tests; original-library disabled output exact. Real-data oracle/capture remains pending; LOCAL authoritative. See experiments/shared_linearization_s3_20261012/REPORT.md |
+| S3 | Private default-off MAIN lifecycle and native-admission observer | Actual fallback-wrapper update/retirement/reset fixtures; no added native evaluations; unchanged MAIN; same-chart shadow oracle before promotion | Real-data shadow gate passed: one ETH1 first40s capture;783 updates,313 retirements,20 covariance checks, max joint relative difference6.01e-15.44/44 Release twice and ASan/UBSan;18 regressions;receiver repeat exact. LOCAL authoritative. See experiments/shared_linearization_s3_capture_20261012/REPORT.md |
 
 E1 first reuses existing gtsam_points batching around LOCAL graph preparation;
 it retains the auxiliary smoother and its conditioning. GPU-aware sidecar update,
@@ -187,6 +187,36 @@ its own explicit algorithmic decision. Fixed lag may bound resources but brings
 historical revision and marginal-prior semantics; reconsider only separately.
 
 ## Execution ledger
+
+### S3 continuation — recorded Gaussian oracle and first40s shadow gate
+
+- User authorized proceeding from the completed S3 synthetic gate. Parent
+  `1cf5a22750316695d28c7654668e17a7c5fd52af`; one capture, old LOCAL authoritative.
+- Private binary recorder and independent SciPy dense Schur oracle prepared in
+  `experiments/shared_linearization_s3_capture_20261012/`. Every pre-retirement
+  snapshot has a separate successful-commit marker. Covariance query spacing
+  is 40 epochs; no source publication-cadence change or native GPU reevaluation.
+- Preflight passed: 44/44 Release twice and ASan/UBSan, existing18/18, original
+  disabled MAIN output byte-identical, no-data ROS startup with seven verified
+  private/pinned DSOs. Pose-only and mixed pose/velocity/bias recording fixtures
+  pass independent information, joint and relative covariance checks through
+  14 and 7 retirements respectively. S2 bytes unchanged.
+- First preflight stopped on the expected receiver-wrapper output-path change;
+  the path comparison was corrected explicitly. Model/config bytes unchanged;
+  no data had played. Both preflight logs retained.
+- Single authorized ETH1 first40s capture completed, root
+  `runs/gnssfgo_shared_linearization_s3_20261012`, port11420,445.405s wall.
+  All783 updates committed;313 retirements;5321 native contributions accounted
+  for as4513 absorbed+808 active.20 checkpoints pass: information relative
+  error3.85e-17,joint covariance6.01e-15,relative covariance7.06e-15.
+- Native/lifecycle/diagnostic/coverage/conservation/stationarity gates pass;
+  all393 receiver publications satisfy1e-5,21970 versions accounted for,queue
+  max47/end0,receiver repeat nine files byte-identical.716 protected run files,
+  680 inherited files,19 S1 pins and six source HEAD/clean-state checks unchanged.
+- No shadow failure, retry, candidate publication or S4 promotion. Complete-scan
+  median/p95210.474/431.506ms remains a dual-path shadow result. Candidate query
+  median159.656ms warrants same-recorded-input cost work before any speed claim.
+  Report:`experiments/shared_linearization_s3_capture_20261012/REPORT.md`.
 
 ### S2 — isolated native Gaussian history prototype
 

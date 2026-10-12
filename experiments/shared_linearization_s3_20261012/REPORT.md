@@ -1,5 +1,10 @@
 # Native Gaussian shadow lifecycle integration
 
+**Continuation:** The subsequently authorized first40s ETH1 recorded-equation
+gate passed. See the [real-data S3 report](../shared_linearization_s3_capture_20261012/REPORT.md).
+The report below preserves the earlier implementation/synthetic-gate boundary.
+Old LOCAL remains authoritative and S4 has not started.
+
 ## Result and current boundary
 
 The S3 **implementation and synthetic integration gate passes**. A private,
