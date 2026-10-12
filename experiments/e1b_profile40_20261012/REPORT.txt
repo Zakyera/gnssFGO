@@ -1,0 +1,114 @@
+E1b.3 — first40s profiling attempt: BLOCKED BEFORE PLAYBACK
+2026-10-12
+
+Outcome
+The one authorized private profiling launch failed during GLIM startup.
+No bag was played, no estimator processed measurements, and no timing profile
+was collected. Therefore no bottleneck percentages, throughput result,
+trajectory comparison or optimization recommendation can be inferred.
+This is NOT a failure caused by growing trajectory history in this experiment.
+
+1. Protocol and identities
+Followed GNSSFGO_RUNTIME_ENGINEERING_PLAN_20261011.md, E1b.3.
+Parent:83fc5ed6dd06457321bdb9d32fc9679c96ed2f55.
+Branch:engineering/e1b-profile40-20261012.
+Run root:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_e1b_profile40_20261012
+Prepared exactly one first40s ETH1 CBS-ON capture, offset0, playback0.10x.
+No source retry, full160 replay, profiling optimization or tuning was run.
+
+Frozen source profiles: ETH1 Hesai+CPT7, front stereo+CPT7, GLIM5s/Kimera25
+states, classic active_window_temporary, no source live_revision, native-IMU
+mean alignment, LOCAL schur_relative_between covariance, scale1, Gaussian,
+0.20s horizon/one pair/update. E1 covariance batching remains enabled.
+No central IMU: source_wnoa receiver, independent100ms support clock, full
+history, stable-ID replacement, frozen Qc/priors, E2 exact cache, E4 disabled.
+Receiver executable SHA256:
+9d2ef832941c5ff2592da8428cb80104352590bcfea50c187624aaf4e90d60e0
+
+Private release_2 profiling libraries selected only through GLIM node env.
+Kimera retains previous private E1/working libraries; receiver unchanged.
+No owning estimator checkout or production library was installed/replaced.
+prepare.py retains the exact mechanical harness transformations. Effective
+parameter dumps and Kimera CLI match live160 except output paths. Row-count
+minimums scaled only for40s (350 GLIM/150 Kimera); safety limits unchanged.
+
+2. Gates that passed, and their limitations
+Preflight passed:680 protected hashes, candidate artifact identities, six
+clean pinned source repositories, free disk/GPU check, idle containers,
+unused port11406, Python AST/shell syntax, ldd -r symbol resolution, existing
+18 focused CPU/GPU regression tests, launch parameter/argument comparison,
+receiver config identity and retained bag stat provenance.
+These are NOT proof of complete GLIM process startup compatibility. Earlier
+E1b.2 focused fixtures and sanitizers did not exercise this full application
+initialization path. No new sanitizer/full-workspace build was run here.
+
+3. Exact failure sequence
+2026-10-12 08:35:14 UTC: GLIM process866 started. It logged:
+  Starting GLIM
+  register linearization hooks
+  config_path: .../profile40_on_source/glim_config
+  GLIM timing rows enabled
+Then stderr reported:
+  glim_rosnode: malloc.c:4036: _int_malloc: Assertion
+  `(unsigned long) (size) >= (unsigned long) (nb)' failed.
+ROS recorded exit code -6 (SIGABRT), before startup readiness completed.
+
+Primary evidence:
+evidence/prepared/profile40_on_source/estimators.log
+evidence/prepared/profile40_on_source/ros_logs/
+ d731bce6-c617-11f1-85ca-0a2bddae36ee/glim_rosnode-1-stdout.log
+Original complete ROS launch log stays local; its hash is in validation.json.
+Only scoped environment fields are archived, not the complete environment.
+
+The observed assertion is consistent with invalid allocator/heap state, but
+does not identify the corrupting write, constructor or library. Root cause is
+NOT established. Do not call this OOM, GPU overload, marginalization growth,
+or a WNOA/CBS numerical failure. Private relink/startup compatibility and new
+instrumentation are suspects to debug, not proven causes.
+
+The controller observed roslaunch still alive while the individual GLIM node
+had died. Its existing readiness loop had not yet completed. On detecting
+the assertion, the agent interrupted only this owned controller (exit130),
+invoking its existing cleanup. Original control/failed.txt is blank because
+str(KeyboardInterrupt) is empty; this report preserves the actual cause.
+The source wrapper then recorded 'Estimator launch exited during startup.'
+The empty receiver reports 'one or more configured sources produced no
+revision rows' on shutdown; this is secondary, not a fusion instability.
+
+4. What was and was not executed
+Final transport:IMU0,beliefs0,poses0,queued0,max_queue0;events.csv and receipts
+empty. Only the normal pre-bag clock seed was published. No rosbag.log,
+effective_mode_check.json, profile JSONL, source/control completion marker,
+or deterministic numerical replay directory exists.
+ROS launch environment confirms profiler env assigned only to GLIM. Actual
+runtime DSO maps could not be certified: GLIM died before that gate. Static
+ldd evidence must not be described as actual process-map verification.
+Native/fusion coverage, covariance conservation, stationarity, profile
+accounting, throughput and deterministic journal replay were NOT executed.
+There is no new40s trajectory result and no ATE/RPE result.
+
+5. Cleanup, preservation, archive
+All680 protected files still match; all six source repos clean/pinned.
+Both containers are idle again: only original tail/zsh PID1 plus the inspection
+ps process. No estimator, ROS master, receiver or bag player left running.
+validation.json records final process checks, exact failure/zero-event state,
+candidate/profile protections and evidence hashes. Working E1/E2 build and
+previous scientific results are untouched. No push.
+An archive-only node-name lookup was corrected from a hyphen assumption to
+the observed ROS suffix. Rerunning this read-only archiver was NOT a source
+or receiver retry, and did not alter the original logs.
+
+6. Decision / next bounded task
+E1b.3 is BLOCKED, not completed successfully; E1b.2 cannot yet be promoted
+from focused-test success to runtime-ready. Stop before any acceleration.
+Next proposed task: debug the private GLIM startup under a debugger/sanitizer
+with NO bag playback, verify mixed-library/ABI/build configuration and locate
+the actual invalid allocation/write, then fix ONLY the reproduced engineering
+defect and add a startup regression. Do not weaken guards or change CBS math.
+Only after startup is validated should a NEW explicitly authorized40s capture
+be considered. Preserve this failed attempt; do not overwrite/reuse its root.
+
+Completion commit contains this report, evidence and ledger. Resolve final
+commit with git log -1 --format=%H -- experiments/e1b_profile40_20261012/REPORT.txt.
+STOP. No automatic follow-up experiment or optimization.

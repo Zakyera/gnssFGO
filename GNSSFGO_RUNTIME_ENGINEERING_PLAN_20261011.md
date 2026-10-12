@@ -631,6 +631,30 @@ documentation/archival/version control only; no estimator implementation or run.
   explicitly not a reproduction of the late120–160s tail. Pick one acceleration
   only after measured attribution. Commit locally; no push.
 
+### E1b.3 — first40s concurrent GLIM profiling capture
+
+- Authorization: user "proceed", 2026-10-12; parent83fc5ed6dd06457321bdb9d32fc9679c96ed2f55.
+- Status: BLOCKED BEFORE PLAYBACK. Branch engineering/e1b-profile40-20261012.
+- Protocol: experiments/e1b_profile40_20261012/PROTOCOL.txt.
+- One first40s ETH1 CBS-ON capture at0.10x, frozen E1/E2/temporary sources,
+  co-running WNOA receiver; private E1b.2 timing DSOs ONLY on GLIM. No tuning,
+  lag/covariance/model edits, E4, retry, optimization or default promotion.
+- Reuse corrected admission/lifecycle validators and exact journal replay.
+  Partition measured LOCAL work before proposing one next engineering patch.
+- Report: experiments/e1b_profile40_20261012/REPORT.txt; validation.json and
+  evidence retain failure, preflight, private harness and protected identities.
+- One launch only. Preflight/18 regression tests passed; actual GLIM process
+  aborted at startup with malloc.c:4036 _int_malloc assertion, exit-6, before
+  readiness or bag playback. Root cause unknown; no workload-growth inference.
+- Zero IMU/belief/output events and zero profiler rows. Actual DSO-map gate,
+  source/fusion numerical validation and journal replay never reached. Existing
+  focused tests were insufficient to certify whole-application startup.
+- Owned controller interrupted/cleaned; both containers idle.680 protected
+  files and six clean source repos unchanged. No retry, optimization or push.
+- Next proposed bounded task is private-build startup debugging without data,
+  not another capture or speed patch. E1b.2 is NOT runtime-ready pending that
+  diagnosis. Preserve original attempt and require new authorization to retry.
+
 ### Template for subsequent tasks
 
 Copy this block under its task ID; do not erase earlier attempts.
