@@ -1,0 +1,44 @@
+E1b.4a observer-free first40s timing, authorized user proceed,2026-10-12.
+Parent64be474f7a84d272fbbcddef0b577f81877dbff4.
+
+One fresh ETH1 bag0..40s classic CBS-ON active_window_temporary capture at0.10x.
+Concurrent native GLIM (Hesai/CPT7,5s lag), native Kimera(front stereo/CPT7,
+25 states,current IMU support override unset), unchanged frozen E2 receiver.
+Source means/native-IMU alignment, .20s horizon,one pair/update,schur relative
+full covariance,scale1,Gaussian,no health remain identical to E1b.3c.
+Receiver source_wnoa,X/V/W,independent100ms clock,no central IMU factors,
+fullhistory iSAM2QR,Qc[.00375,.00375,.00375,.015,.015,.015],same priors,
+strict nominal gradient1e-5/20 and stable-ID every-version replacement.
+E2 binary9d2ef832941c5ff2592da8428cb80104352590bcfea50c187624aaf4e90d60e0.
+
+Only runtime engineering intervention: CBS_E1B_LOCAL_UPDATE_GPU_BATCHING=1
+on GLIM with validated e1b4a_local_update_batching_20261012/release_2.
+Wrapper83592aba553adbc2879f27b5f2cf3551826ab497a58201ba0101543934f49dec,
+GTSAM369f45866a82c40170ad7cfa83b4bc6b7f8a6f4ae22db34115daee926529bb37.
+No build, source estimator/mathematical change, snapshot checker, graph
+inspectors, GT scoring, parameter tuning, or default promotion.
+Retain original E1b clocks/counters and bounded covariance diagnostics to match
+baseline. Observer-free means without the expensive independent snapshot oracle.
+
+Use fresh gnssfgo_e1b4a_timing40_20261012/prepared,port11414,unique session.
+Check effective parameters, loaded resolved libraries, no overlapping runs,
+protected files, same profiles/bags/receiver before playback. One capture only.
+Stop on failure, don't auto retry or overwrite. Existing queue cap1000,
+source deadline1000s,receiver drain650s remain unchanged.
+
+After complete: unchanged native/lifecycle/covariance/coverage/conservation/
+stationarity validators; one exact saved-journal receiver repeat. Check all
+protected hashes again. No second source capture.
+
+Primary timing gate predeclared: LOCAL all matched scan median AND p95 <=80%
+of retained E1b.3c (gnssfgo_e1b_profile40_mapguard_20261012). Also report sum,
+early0..10 and late30..40s, GPU synchronous/cache counts, MAIN costs, complete
+scan median/p95/max,receiver queue/output age and wall duration. Whole-scan
+p95<800ms is the 20% headroom gate at10Hz and0.10x. Passing40s does not prove
+sustained160s/fullsequence capacity. This compares two separately acquired live
+captures, not identical sensor/factor scheduling; no claim of trajectory identity
+between them. The previous exact-input gates establish sampled mathematical
+equivalence; live scheduling can change with runtime. Record this limitation.
+
+Save evidence/update ledger/local commit, then stop. No push, longer run,
+MAIN/direct-loop extension, receiver change or next optimization.

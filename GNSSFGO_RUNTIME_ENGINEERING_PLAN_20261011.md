@@ -34,7 +34,11 @@ authoritative-update fidelity and persistent copied histories. The subsequent
 first20s real-input diagnostic also PASSED: six independent checkpoint checks,
 zero p/v/bias/Gaussian/full-relative covariance differences, maximum orientation
 difference6.83e-18rad, including fixed-lag retirement. Ordinary execution remained
-authoritative. Observer-free throughput is still pending; no promotion occurred.
+authoritative. The subsequent observer-free first40s timing also PASSED:
+LOCAL median117.148->7.600ms,p95218.181->14.391ms; complete-scan
+median307.376->182.365ms,p95535.236->385.682ms. All functional gates and
+byte-identical saved-journal receiver replay passed. MAIN still made162254
+synchronous GPU calls. No default promotion or full160 acceptance occurred.
 See the E1b.4a real-input diagnostic ledger below.
 The earlier E1/E2 live160 remains functionally
 validated but misses runtime headroom; E4 was rejected and remains disabled.
@@ -118,7 +122,7 @@ shared IMU, past means or nonlinear history are statistically independent.
 | E1b.1 | Diagnose remaining GLIM LOCAL smoother update cost | Trace actual call chain and GPU evaluation semantics; inspect retained early/late timing; distinguish measured cost from missing instrumentation; specify one next patch | Completed 2026-10-12; report/evidence saved, no estimator change. LOCAL subphase costs not yet separated |
 | E1b.2 | Instrument LOCAL update subphases | Opt-in timing only; no extra factor/solver evaluations; scope/cache/exception tests; disjoint accounting; measured overhead before bounded profiling | Private implementation/tests passed 2026-10-12: 29 Release +29 UBSan +8 profiler ASan/UBSan; original-library fixture exact; no source capture or solver replacement |
 | E1b.3 | Bounded LOCAL subphase profile | Frozen source settings; explicit profiler overhead/coverage; separate nested/worker/outer wall costs; select one measured dominant subphase | E1b.3c validated first40s: 96.405% of LOCAL exclusive wall in synchronous GPU linearization; first40s limits retained |
-| E1b.4 | Batch LOCAL update linearizations at exact solver Values | Keep solver decisions and ordered Gaussian blocks; reuse E1 synchronous-compatible kernels; same-input repeated-solver and covariance checks before bounded live timing | Synthetic correctness/timing and sampled first20s real-input equivalence PASSED. Default-off; observer-free real throughput and longer candidate-history acceptance pending |
+| E1b.4 | Batch LOCAL update linearizations at exact solver Values | Keep solver decisions and ordered Gaussian blocks; reuse E1 synchronous-compatible kernels; same-input repeated-solver and covariance checks before bounded live timing | Synthetic, sampled real-input and observer-free first40s timing gates PASSED. Default-off; longer capacity and full evolving-history equivalence remain uncertified |
 | E3a | Remaining WNOA motion-factor derivatives | Independent numerical derivative checks; manifold/frame tests; frozen-journal state/cost/covariance checks with predeclared tight tolerances | Not started |
 | E3b | Remaining interpolated pose derivative blocks | Separate patch and independent checks as for E3a; do not redo already validated V/W substitution | Not started |
 | E4 | Selective incremental publication refinement | Same factors/events and fresh current-Values stationarity certificate; reference full refinement fallback; short/medium/late replay comparisons | Tested 2026-10-12; NOT ACCEPTED: strict state bounds failed,86.8% fallback,matched refinement~40% slower; stopped at130.68s |
@@ -165,6 +169,34 @@ its own explicit algorithmic decision. Fixed lag may bound resources but brings
 historical revision and marginal-prior semantics; reconsider only separately.
 
 ## Execution ledger
+
+### E1b.4a observer-free first40s timing — passed
+
+- Authorization: latest user "proceed"; parent64be474f7a84d272fbbcddef0b577f81877dbff4.
+- One first40s ETH1 classic temporary CBS-ON capture at0.10x with native GLIM,
+  native Kimera and unchanged E2 source-WNOA receiver. Use the validated private
+  release_2 LOCAL-update batcher; no snapshot checker or estimator/build edits.
+- Protocol: `experiments/e1b4a_timing40_20261012/PROTOCOL.txt`.
+- Compare retained E1b.3c profile under the same low-overhead instrumentation;
+  require existing functional gates, and predeclare LOCAL median/p95 <=80% of
+  baseline as the component timing gate. Report complete-scan/late-window costs
+  separately; first40s is not full160 headroom validation. No automatic retry,
+  default promotion, further optimization or push.
+- Outcome: one capture446.404s wall;391nativeGLIM/184nativeKimera/393fused
+  online and final poses. LOCAL median117.148->7.600ms,p95218.181->14.391ms,
+  total39.131->2.856s. LOCAL GPU calls130972cached,zero synchronous fallback.
+  Complete-scan median307.376->182.365ms,p95535.236->385.682ms; both declared
+  timing/headroom gates pass. MAIN remains43.264s/162254synchronous GPU calls.
+- All677protected hashes,six source HEADs,18preflight Release regressions,
+  effective library/profile checks,native admission/lifecycle/dense covariance
+  algebra,coverage,21946version conservation,strict publication gates passed.
+  Maximum gradient9.851213209e-6,transportmaxqueue42,endqueue0;output-age
+  p950.090004s. One saved-journal receiver replay:9files byte-identical.
+- No estimator/build/default edit; raw artifacts preserved,all owned processes
+  stopped. Report `experiments/e1b4a_timing40_20261012/REPORT.md` and
+  `comparison.json`. Separate live captures are not identical-input histories;
+  fixed-rate playback wall duration did not improve and no accuracy claim made.
+  Stop here: no longer run,MAIN extension or receiver change in this task.
 
 ### E1b.4a real-input diagnostic — sampled gate passed
 
