@@ -1,0 +1,48 @@
+E1b.4a bounded real-input LOCAL-update validation, 2026-10-12
+
+Parent 0a8e36d380b7ae8659c52be203a95f4611fdf32b. No new optimization hypothesis.
+Use the validated exact-state checker and frozen E1b.4a GTSAM/batching DSOs.
+Rebuild only a private ROS wrapper plus diagnostic units; never install it.
+
+One ETH1 2024-10-01-11-29-55 first20s capture, offset0, rate0.10, port11413.
+GLIM Hesai+CPT7, lag5s; Kimera front stereo+CPT7,25states,current IMU support
+override unset. Classic bidirectional active_window_temporary, native IMU mean
+alignment, horizon0.20s,one pair/update, full schur_relative_between covariance,
+scale1, Gaussian, health off. Existing E1 covariance batching enabled as in the
+latest profile. E1b.4a authoritative LOCAL-update batching OFF. No receiver,
+EKF, tuning, inspectors, GT scoring, long run or performance claim.
+
+At LOCAL call numbers10,30,60,100,150,180, before MAIN optimization and after
+new native factor creation, construct independent ordinary/batched snapshots
+from that actual LOCAL checkpoint; run identical new factors, Values, timestamps.
+Compare the resulting states/theta, solver decisions, factor identity/slots,
+Gaussian matrices, full active covariance and latest relative covariance.
+Compare the independent ordinary result against actual ordinary execution.
+All-update timestamp retirement logging confirms real fixed-lag events.
+
+Reuse exact existing tolerances, not loosened after results: p/v/bias1e-9,
+orientation1e-10rad; CPU H1e-12+1e-12*maxabs(reference), GPU H1e-8+1e-6*maxabs,
+full/relative covariance1e-10+1e-6*maxabs. Unsupported/nonresident factors,
+nonfinite results, thread mismatch, exceptions or missing samples fail closed.
+A failure marker and diagnostic process exit prevent the normal warning-only
+bridge catch from hiding a failed check. No automatic capture retry.
+
+Quiescence: AsyncOdometryEstimation::run calls insert_frame on one worker;
+OdometryEstimationIMU invokes callbacks synchronously before MAIN update.
+LOCAL update and outgoing covariance share this worker. Submapping receives
+retired frame objects and makes separate factors/keyframe geometry; it does not
+mutate LOCAL factor caches. CUDA synchronization drains outstanding work; it is
+not treated as a lock. Assert a consistent LOCAL thread at runtime.
+
+Preflight: pinned input hashes/source HEADs, correct include/ABI for all three
+wrapper users, private loader paths, checker Release regression and no-data
+startup if needed, exact effective flags/profile trees BEFORE playback. Fresh
+root/control ownership, no duplicate run. Existing >=90% duration/tail and
+bidirectional exchange checks retained, >=170 GLIM/>=70 Kimera native poses.
+Controller wall deadline420s. Failure ends capture and is reported, not tuned.
+
+This is six same-checkpoint real-input comparisons across ordinary source
+history, NOT six independent full replays or a continuous candidate trajectory.
+Persistent branch/marginalization tests remain the already-passed synthetic
+checker gate. Observer overhead is intentionally substantial; no throughput
+acceptance may be inferred. Stop and report before observer-free timing.

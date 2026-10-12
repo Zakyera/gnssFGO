@@ -30,9 +30,12 @@ The subsequent real-input entry audit found that the required independent
 GPU-state oracle was not yet available; playback was held before launch, not
 reported as a failed batching experiment. The subsequent isolated snapshot
 checker now passes 40 Release/40 host UBSan/14 CPU ASan-UBSan tests, including
-authoritative-update fidelity and persistent copied histories. Real-input
-integration/capture remains pending; no playback or promotion occurred.
-See the E1b.4a real-input checker ledger below.
+authoritative-update fidelity and persistent copied histories. The subsequent
+first20s real-input diagnostic also PASSED: six independent checkpoint checks,
+zero p/v/bias/Gaussian/full-relative covariance differences, maximum orientation
+difference6.83e-18rad, including fixed-lag retirement. Ordinary execution remained
+authoritative. Observer-free throughput is still pending; no promotion occurred.
+See the E1b.4a real-input diagnostic ledger below.
 The earlier E1/E2 live160 remains functionally
 validated but misses runtime headroom; E4 was rejected and remains disabled.
 MAIN and receiver full-history costs also remain. Working source/receiver
@@ -115,7 +118,7 @@ shared IMU, past means or nonlinear history are statistically independent.
 | E1b.1 | Diagnose remaining GLIM LOCAL smoother update cost | Trace actual call chain and GPU evaluation semantics; inspect retained early/late timing; distinguish measured cost from missing instrumentation; specify one next patch | Completed 2026-10-12; report/evidence saved, no estimator change. LOCAL subphase costs not yet separated |
 | E1b.2 | Instrument LOCAL update subphases | Opt-in timing only; no extra factor/solver evaluations; scope/cache/exception tests; disjoint accounting; measured overhead before bounded profiling | Private implementation/tests passed 2026-10-12: 29 Release +29 UBSan +8 profiler ASan/UBSan; original-library fixture exact; no source capture or solver replacement |
 | E1b.3 | Bounded LOCAL subphase profile | Frozen source settings; explicit profiler overhead/coverage; separate nested/worker/outer wall costs; select one measured dominant subphase | E1b.3c validated first40s: 96.405% of LOCAL exclusive wall in synchronous GPU linearization; first40s limits retained |
-| E1b.4 | Batch LOCAL update linearizations at exact solver Values | Keep solver decisions and ordered Gaussian blocks; reuse E1 synchronous-compatible kernels; same-input repeated-solver and covariance checks before bounded live timing | E1b.4a correctness + synthetic timing gates PASSED; median112.310->4.30792ms, p95115.43625->4.66825ms. Default-off, real-source gate pending; no live run or promotion |
+| E1b.4 | Batch LOCAL update linearizations at exact solver Values | Keep solver decisions and ordered Gaussian blocks; reuse E1 synchronous-compatible kernels; same-input repeated-solver and covariance checks before bounded live timing | Synthetic correctness/timing and sampled first20s real-input equivalence PASSED. Default-off; observer-free real throughput and longer candidate-history acceptance pending |
 | E3a | Remaining WNOA motion-factor derivatives | Independent numerical derivative checks; manifold/frame tests; frozen-journal state/cost/covariance checks with predeclared tight tolerances | Not started |
 | E3b | Remaining interpolated pose derivative blocks | Separate patch and independent checks as for E3a; do not redo already validated V/W substitution | Not started |
 | E4 | Selective incremental publication refinement | Same factors/events and fresh current-Values stationarity certificate; reference full refinement fallback; short/medium/late replay comparisons | Tested 2026-10-12; NOT ACCEPTED: strict state bounds failed,86.8% fallback,matched refinement~40% slower; stopped at130.68s |
@@ -162,6 +165,41 @@ its own explicit algorithmic decision. Fixed lag may bound resources but brings
 historical revision and marginal-prior semantics; reconsider only separately.
 
 ## Execution ledger
+
+### E1b.4a real-input diagnostic — sampled gate passed
+
+- Authorization: user "proceed" after the exact-state checker checkpoint,
+  parent `0a8e36d380b7ae8659c52be203a95f4611fdf32b`.
+- Integrate the validated checker in a private wrapper only. One first20s ETH1
+  source-only classic temporary CBS capture at0.10x; no receiver or GT scoring.
+- Ordinary LOCAL execution remains authoritative. At update calls
+  10,30,60,100,150,180 compare independent ordinary/batched snapshots and check
+  copied ordinary against the actual ordinary result. Include fixed-lag retirement.
+- Protocol: `experiments/e1b4a_real_input_20261012/PROTOCOL.txt`.
+  This sampled exact-boundary gate complements the persistent-history synthetic
+  tests; it is not an independently evolving full real-sequence branch.
+- Preserve current profiles, source mathematics, frozen libraries and defaults.
+  Stop on unsupported inputs/failure, no automatic capture retry. Diagnostic
+  overhead must not be interpreted as production timing. Observer-free throughput
+  remains a separate gate; update this entry with evidence before stopping.
+- Outcome: exactly one capture,242.052s wall including startup,0.10x playback,
+  drain and diagnostic overhead.192 LOCAL calls; all six selected checks passed,
+  including four after first retirement at call51.126 retirement updates,423
+  retired variable keys. Same factor identities/slots and tested solver decisions.
+- Max ordinary/batch and authoritative/copy differences: p/v/bias/Gaussians/full
+  covariance/latest relative covariance0; orientation6.830473686658665e-18rad.
+  Nine batched graph requests,1126 prepared GPU factor evaluations;506 at the
+  final selected update. No fallback at those graph requests.
+- Native coverage: GLIM191poses/18.9976s,Kimera84poses/19.5999s,CPT7span19.8500s;
+  startup-gap and tail gates passed. No GT accuracy conclusions. Source CBS
+  remained active:74 G2K and81 K2G injections,56 committed GLIM retirement rows.
+- Private wrapper compiled successfully;40 frozen checker Release tests rerun
+  against its dependency chain passed. Before-playback settings/loader checks,
+  copied profile equality,852 protected hashes and six clean source HEADs passed.
+  All owned processes exited. No covariance/model edits, no receiver, no retry.
+- Report/evidence: `experiments/e1b4a_real_input_20261012/REPORT.txt`.
+  No default switch or promotion. Stop before the separately authorized
+  observer-free first40s throughput gate. This result is not full160 acceptance.
 
 ### E0 — preservation checkpoint
 

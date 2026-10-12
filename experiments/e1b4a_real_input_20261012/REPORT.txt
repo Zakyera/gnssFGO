@@ -1,0 +1,164 @@
+E1b.4a sampled real-input LOCAL-update equivalence — 2026-10-12
+
+RESULT: PASSED
+
+The isolated GPU-batched LOCAL-update path passed all six preselected real-input
+checkpoint comparisons in one first20s ETH1 capture, including fixed-lag
+marginalization. No measured state, Gaussian-block or covariance discrepancy
+except orientation round-off below7e-18rad. Ordinary source execution stayed
+authoritative. This is NOT a clean throughput measurement or production rollout.
+
+Authorization: user "proceed" after snapshot-checker checkpoint.
+Parent HEAD: 0a8e36d380b7ae8659c52be203a95f4611fdf32b.
+Plan task: E1b.4a real-input diagnostic.
+Implementation/evidence commit is recorded by the following documentation
+checkpoint. No push; production repositories and installed libraries unchanged.
+
+1. FROZEN SCOPE
+
+Mission2024-10-01-11-29-55,offset0,first20s,rate0.10,ROSport11413.
+GLIM Hesai+CPT7/5s lag; Kimera front stereo+CPT7/25states with current IMU
+support override unset. Classic bidirectional active_window_temporary,
+native IMU mean alignment,horizon0.20s,one pair/update,full
+schur_relative_between covariance,scale1,Gaussian,no health weighting.
+Existing E1 LOCAL covariance batching on, as in the latest frozen40s profile.
+E1b.4a LOCAL-update batching OFF in the authoritative source, ON only in the
+independent candidate snapshots. Inspectors off. No gnssFGO/EKF/GT scoring.
+
+Copied profile trees matched the frozen ETH1 trees byte for byte. Actual ROS
+parameters, Kimera argv/environment and loaded GLIM/Kimera library paths were
+verified before bag playback, rather than inferred from launcher defaults.
+The inherited metadata's mono-overlay variable is unused in this stereo path;
+actual stereo flags/topics and the copied stereo profile are authoritative.
+
+2. PRIVATE INTEGRATION AND OWNERSHIP
+
+Private root:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/e1b4a_real_input_20261012
+
+RealInputObserver.h wraps only updateSidecar in a copied cbs_bridge.cpp.
+All three cbs_bridge.hpp users were rebuilt together: cbs_bridge,glim_ros,
+glim_factor_graph_inspector. ExactGpuSnapshot.cpp linked into the private
+wrapper; the previously validated GTSAM/CBS/GPU DSOs were reused unchanged.
+No data members/layout/vtable or production solver implementation changed.
+
+Quiescent callback evidence in the pinned workspace sources:
+- src/glim/src/glim/odometry/async_odometry_estimation.cpp:16,148:
+  one worker calls OdometryEstimation::insert_frame serially.
+- src/glim/src/glim/odometry/odometry_estimation_imu.cpp:427-436:
+  synchronous pre-update callback, then MAIN update, then completion callback.
+- src/glim_ros1/src/glim_ros/cbs_bridge.cpp:1267:
+  LOCAL update before consuming incoming external factors into MAIN.
+- src/glim/include/glim/util/callback_slot.hpp:call invokes callbacks serially.
+- src/glim_ros1/src/glim_ros/glim_ros.cpp:381,409 and
+  src/glim/src/glim/mapping/sub_mapping.cpp:113,340-408:
+  mapping consumes retired frames, constructs its own factors/keyframe geometry;
+  it does not mutate LOCAL nonlinear-factor caches.
+The observer asserts consistent worker thread. CUDA synchronization completes
+issued work but is not misrepresented as a cross-thread ownership lock.
+
+Each selected pre-update checkpoint yields separate exact-state ordinary and
+batched branches. New factors/Values/timestamps are identical; geometry, caches,
+inliers and nonlinear factors are independently owned. The copied ordinary
+post-update is then checked against the authoritative ordinary result.
+Full covariance diagnostics linearize disposable copies, never the source.
+Failures write FAILED.txt and exit the diagnostic GLIM process; they cannot be
+swallowed by the bridge's normal warning-only catch. None occurred.
+
+3. NUMERICAL RESULTS
+
+LOCAL call  Active variable keys  Factor slots*  Batched requests  GPU factors
+10          30                    69            1                 6
+30          90                    229           1                 6
+60          150                   417           2                 264
+100         150                   483           2                 334
+150         150                   573           1                 10
+180         153                   635           2                 506
+
+*Slots include empty slots; this is not the number of active nonlinear factors.
+Variable keys include pose,velocity,bias:150keys=50 such support states,
+750scalar covariance dimensions;153keys=51supports,765dimensions.
+Nine batched graph requests/1126 prepared GPU factor evaluations total. No
+fallback at those requests. Direct individual-factor paths are unchanged and
+not claimed to be fully batched by this observer.
+
+Maximum differences, both ordinary-vs-batched and authority-vs-copied ordinary:
+position                       0
+velocity                       0
+gyro/accel bias coordinates     0
+per-factor Gaussian matrices   0
+full active covariance         0
+latest relative covariance     0
+orientation                    6.830473686658665e-18rad
+
+Existing gates unchanged: p/v/bias1e-9,orientation1e-10rad;
+CPU H1e-12+1e-12*maxabs(reference),GPU H1e-8+1e-6*maxabs;
+full/relative covariance1e-10+1e-6*maxabs. Keys/types/alias partition,
+occupied slots,timestamps,insertions/removals,marked/observed keys and tested
+relinearization/reelimination/work/tree decisions matched exactly.
+
+192 actual LOCAL updates recorded. First variable retirement at call51,
+timestamp1727775013.675051.126 updates retired keys,423keys total.
+Four selected comparisons were after marginalization had begun, not merely
+startup/no-retirement tests.
+
+4. CAPTURE COVERAGE AND SOURCE LIFECYCLE
+
+CPT7:1986samples,19.850004s span.
+Native GLIM:191published poses,18.997596s span; final timestamp1727775027.672639.
+Native Kimera:84published poses,19.599893s span; final timestamp1727775027.755289.
+GLIM maximum gap0.100990s. Kimera startup gap3.199979s, then maximum0.200001s.
+GLIM/Kimera tails0.180840/0.098190s behind last recorded IMU.
+Existing >=90% duration, startup and tail checks passed without modification.
+LOCAL calls are internal update events, not a claim of one emitted pose per call.
+
+Source runner:189 G2K messages,74 G2K injected factors,81 K2G injected factors.
+56 committed GLIM external-factor retirement log rows. Raw diagnostic matcher
+also finds300 Kimera application-token log lines; these are NOT300 unique
+injections. Use the runner's74 unique/application count above for the capture.
+
+Coverage-only path lengths:GLIM5.666557m,Kimera5.356071m. Not scored against GT.
+No estimator accuracy ranking or whole-sequence conclusion is made.
+
+5. VALIDATION AND PRESERVATION
+
+- Private wrapper build passed, all three ABI-dependent users rebuilt.
+-40/40 frozen checker Release tests passed under the selected dependency chain;
+ one inherited benchmark disabled. Existing checker sanitizer evidence remains
+40 host UBSan/14 CPU ASan-UBSan from the preceding checkpoint, NOT newly rerun
+ on this live wrapper. No CUDA sanitizer/full-workspace certification claimed.
+-Before-playback live process/library/parameter/argv checks passed.
+-Six selected paired/fidelity checks and source coverage checks passed.
+-852 protected file hashes and six pinned clean source repositories unchanged.
+-Copied GLIM/Kimera sensor configuration trees unchanged.
+-No sidecar-update failure, assertion, allocation-failure or termination token
+ found in the checked source stdout logs. Two recorder clock warnings occurred
+ during the capture lifecycle; coverage and tails independently passed.
+-Exactly one capture, no retry.242.051960s controller wall time includes startup,
+ deliberately slow playback, drain and diagnostic overhead, NOT solver timing.
+-All owned ROS/source processes exited; only container idle process remained.
+
+Private wrapper SHA256:
+4b23b4d21cc3f269892110094060fcf9b5224a07739e81c8db904412fc1384a0
+Unchanged batching GTSAM SHA256:
+369f45866a82c40170ad7cfa83b4bc6b7f8a6f4ae22db34115daee926529bb37
+
+Small evidence copied into evidence/ with source paths/hashes in manifest.json.
+Full ROS logs,recordings,generated harness and private build remain in the run
+root. preflight.json pins generated scripts and libraries. Source scripts and
+the new observer are tracked here; binaries/recordings are not committed.
+
+6. DECISION AND LIMITS
+
+The sampled real-input equivalence gate PASSED. The proposed batching can now
+proceed to a separately authorized observer-free first40s throughput gate.
+Default stays OFF. No timing run, longer run or promotion was performed here.
+
+These are independent same-checkpoint updates sampled along authoritative
+ordinary history. They are NOT an independent continuously evolving batched
+real trajectory. Persistent copied histories were tested synthetically in the
+previous gate; this capture adds actual sensor-generated factor/cache states.
+No claim of full160s equivalence, sustainable1x throughput or eliminated MAIN/
+receiver bottlenecks follows from this result. Diagnostic cloning changes wall
+arrival/interleaving, so this is not a source-output reproducibility experiment.
+Stop here before clean timing. No model, covariance, protocol, default or push.
