@@ -708,6 +708,35 @@ documentation/archival/version control only; no estimator implementation or run.
   `experiments/e1b_profile40_fixed_20261012/REPORT.md`. Next task, if
   authorized, must correct/test only this pre-playback gate and use a new root.
 
+### E1b.3c — symlink-aware admission repair and fresh first40s capture
+
+- Authorization: user "fix it" after E1b.3b false admission failure, 2026-10-12.
+- Status: VALIDATED FIRST40S PROFILE; branch engineering/e1b-profile40-mapguard-20261012.
+- Parent c66ef94. Correct only the process-map admission check, prove it
+  accepts the retained repaired-build maps and rejects missing/wrong DSOs,
+  preflight a fresh run root, and execute one first40s ETH1 CBS-ON capture.
+- Freeze native GLIM/Kimera, E2 WNOA receiver, data, source settings, profiler
+  library, support clock, priors, covariance and classic CBS semantics. Stop on
+  any new source/receiver/validation failure; never overwrite E1b.3/3b.
+- If the run completes, validate native coverage, source/receiver accounting,
+  publication stationarity, saved-journal replay and LOCAL timing before any
+  performance attribution. No optimization, tuning, new sequence or push.
+- The symlink-aware real-path gate passed six wrong-path controls and the new
+  actual process map before playback. Fresh ETH1 first40s CBS-ON finished at
+  0.10x with native GLIM/Kimera and E2 WNOA receiver. Native, lifecycle,
+  dense-factor, conservation, strict publication and nine-file byte-identical
+  saved-journal validation passed. 3,986 timestamp samples, 21,970 belief
+  versions, 393 online supports, queue maximum48, pending0. No accuracy score.
+- 1,565 complete profile rows; 392 LOCAL. LOCAL owner-exclusive fallback GPU
+  linearization37.724/39.131s=96.405%;143,950/143,950 LOCAL GPU linearizations
+  synchronous, zero cache hits. MAIN also168,874/168,874 fallback; COVARIANCE
+  has195,592 cache hits and zero fallbacks. First40s result only, not the late
+  120–160s tail or an isolated profiler overhead bound. One measured next
+  candidate is exact-Values LOCAL batch linearization, not implemented here.
+- Full report `experiments/e1b_profile40_mapguard_20261012/REPORT.md`; parser
+  and JSON analysis alongside it. Post-run670 protected hashes match, six
+  source repos clean, owned processes stopped. No speed patch or push.
+
 ### Template for subsequent tasks
 
 Copy this block under its task ID; do not erase earlier attempts.

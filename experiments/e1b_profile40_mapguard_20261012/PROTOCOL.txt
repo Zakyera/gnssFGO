@@ -1,0 +1,19 @@
+E1b.3c: correct the E1b.3b false process-map gate, then one fresh capture.
+
+Authorized by the user's "fix it" after the pre-playback E1b.3b failure.
+The only code behavior changed is admission: compare actual mapped DSO paths
+against each library's resolved path inside the ROS container. Test this gate
+against the E1b.3a real startup map, including missing/wrong-library negatives,
+before any sensor playback. Keep the E1b.3b failed run unmodified.
+
+Use a new run root and ROS port/session, otherwise exactly the E1b.3 protocol:
+ETH1 bag seconds 0-40, 0.10x, classic CBS-ON active_window_temporary,
+Hesai/front stereo/shared CPT7, concurrent native GLIM/Kimera and frozen E2
+source-driven WNOA receiver. The repaired private GLIM profiling wrapper and
+all source/receiver mathematics, priors, Qc, source covariance, support clock,
+logging and strict guards stay unchanged. No production library installation.
+
+One capture only. Stop on source, receiver or validation failure, save evidence,
+and do not automatically restart. If complete, run the existing native, CBS,
+receiver and exact-journal validators before interpreting LOCAL timings.
+No new optimization, tuning, other sequence, full ETH1 or push.
