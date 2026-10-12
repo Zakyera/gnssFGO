@@ -16,6 +16,19 @@ performance hypotheses into one acceptance experiment.
 
 ## Baseline and evidence
 
+**Latest capacity result (2026-10-13):** S5's one frozen shared-native provider
+160s capture stopped at148.55s when receiver queue1018 exceeded1000 (final
+transport peak1020). Observed GLIM late120–148.57s scan p95 improved from
+1124.443 to724.291ms versus the retained E1/E2 prefix; this is not full160
+acceptance. Receiver nominal refinement alone reached median978.562ms and
+p951622.498ms in140–148.57s against a nominal1000ms wall support budget.
+All1481 recorded publications were stationary; no provider reset/failure
+was recorded. Full post-run lifecycle/wire/replay validation was not run
+after the capacity stop.47 fresh Release checks pass and747 protected files
+plus six source repos remain unchanged. No retry, tuning, default promotion
+or push. See [S5 report](experiments/shared_linearization_s5_live160_20261012/REPORT.md).
+Earlier acceptance records below retain their original bounded scope.
+
 **Planning boundary (2026-10-12):** Task S0 preserves the completed E1b.4a
 checkpoint and plans the supervisor's native-equation reuse proposal in
 `GLIM_SHARED_LINEARIZATION_LOCAL_COVARIANCE_PLAN_20261012.md`.
@@ -149,7 +162,7 @@ shared IMU, past means or nonlinear history are statistically independent.
 | S4b | Eigenvalues-only rank inspection in private Gaussian backend | Same rank decisions, unchanged equations/covariances, focused boundary/sanitizer tests, matched saved-input timing | Complete:31/31 Release and ASan/UBSan;130 rank cases agree; saved outputs byte-identical. Query156.711→38.045ms median,4.12× faster; still no provider promotion. See experiments/shared_linearization_s4_eigenvalues_20261012/REPORT.md |
 | S4c | Conservative fast rank certificate with original eigensolver fallback | Unchanged covariance and rank decisions, bounded error certificate, adversarial tests and matched timing on saved equations | Complete:40/40 Release and ASan/UBSan; saved outputs byte-identical; query37.285→11.196ms median vs S4b,3.33×. All20 checkpoints certify. Private only; no live run. See experiments/shared_linearization_s4_certificate_20261012/REPORT.md |
 | S4d | Private ordinary-publication provider; disable independent LOCAL in one matched first40s capture | Same extraction/helper and lifecycle tests; exact provider-to-wire covariance; frozen source/receiver gates; complete-scan latency | Passed:47 Release/47 ASan+UBSan,18 regressions;389 exact wire covariances,zero LOCAL updates/provider GPU calls. Complete-scan median206.942→167.421ms,p95437.376→312.422ms; exact receiver repeat. Private/default-off; no long-run certification |
-| S5 | Frozen private provider first160s capacity validation | Same S4d binaries/settings, complete source coverage, native history/wire checks, strict receiver publication and exact journal repeat; early/middle/late timing | In progress, explicitly authorized 2026-10-12; one CBS-ON capture at0.10x, no model edit or automatic retry |
+| S5 | Frozen private provider first160s capacity validation | Same S4d binaries/settings, complete source coverage, native history/wire checks, strict receiver publication and exact journal repeat; early/middle/late timing | Capacity failed at148.55s receiver queue gate. Partial scan timing improved; full correctness/replay gates unaccepted. No retry, model edit or promotion |
 
 E1 first reuses existing gtsam_points batching around LOCAL graph preparation;
 it retains the auxiliary smoother and its conditioning. GPU-aware sidecar update,
@@ -198,13 +211,36 @@ historical revision and marginal-prior semantics; reconsider only separately.
 - Authorization: user "Proceed" after the proposed single 160-second ETH1
   CBS-ON validation. Parent 8d862639dc66de6f434d37cf6526bcedd3ccceaf;
   branch engineering/shared-native-live160-20261012.
-- Status: preparation in progress. Reuse exact S4d release_2 source libraries
-  and E2 WNOA receiver; only duration and fresh run identities change. No build,
-  covariance-policy change, tuning, source retry, default promotion or push.
+- Status: CAPACITY FAILED / PARTIAL CAPTURE, completed2026-10-13.
+  Reused exact S4d release_2 source libraries and E2 WNOA receiver; only duration
+  and fresh run identities changed. No build, covariance-policy change, tuning,
+  source retry, default promotion or push. Preparation commit c9bb99e.
 - Protocol: experiments/shared_linearization_s5_live160_20261012/PROTOCOL.md.
 - Preserve strict gates. Report every 10-second timing bin, remaining MAIN
   work, native history/retirement, source delays, receiver backlog and coverage.
   Accuracy is not the acceptance criterion; no new OFF run or method follows.
+- Stopped148.550033s, final completedGLIMscan148.571408938s,1479scan records.
+  Controller queue1018>1000; transport final peak1020. All owned processes
+  stopped; no source/receiver/controller successful completion marker.
+- Matched observed-prefix comparison against oldE1/E2: overall scan
+  median412.067→206.661ms,p951036.715→622.301ms; late120–148.57
+  median727.310→371.955ms,p951124.443→724.291ms. Separate coupled captures,
+  not exact-input patch attribution or a full120–160/0–160 gate pass.
+- Provider1476queries,median10.178ms,p9528.506ms; zero LOCALupdates and
+  covariance-scope GPU evaluations. Zero resets/failure tokens. Query counters
+  balance; last30537=1624active+28913absorbed+0removed. Activeframes49–50,
+  but native factor density and memory still grow; no universal boundedness claim.
+- Late140–148.57 receiver refinement median978.562ms,p951622.498ms;
+  40/85 refinement records exceed1000ms, excluding other receiver work.
+  All1481publicationchecks stationary(max9.989086623436253e-6), yet backlog
+  grows. This localizes measured cost without identifying its exact internal cause.
+- Fresh47Release tests pass; prior47sanitizer/18regression evidence retained,
+  not rerun.747protectedhashes/sixsourceHEADs+clean states unchanged.
+  Full wire/lifecycle and deterministic receiver repeat NOT RUN after failure.
+  No ATE or CBS-OFF comparison. Raw artifacts retained, hashes archived.
+- Report and evidence: experiments/shared_linearization_s5_live160_20261012/.
+  Next proposal only: bounded retained-log receiver refinement audit140–148s;
+  no automatic live retry, implementation, model change or next sequence.
 
 ### S4d — private ordinary-publication provider integration
 
