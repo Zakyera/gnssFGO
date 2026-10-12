@@ -198,6 +198,8 @@ historical revision and marginal-prior semantics; reconsider only separately.
   copied profile equality,852 protected hashes and six clean source HEADs passed.
   All owned processes exited. No covariance/model edits, no receiver, no retry.
 - Report/evidence: `experiments/e1b4a_real_input_20261012/REPORT.txt`.
+  Implementation/evidence commit `2074422cb384b0908923fa49ce55844c3be33da7`;
+  subsequent documentation checkpoint records it. No push.
   No default switch or promotion. Stop before the separately authorized
   observer-free first40s throughput gate. This result is not full160 acceptance.
 
