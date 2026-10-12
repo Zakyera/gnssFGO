@@ -1,0 +1,293 @@
+S5a — Why the ETH1 WNOA receiver exceeded its live budget
+2026-10-13. Retained-data and code audit only.
+
+CONCLUSION
+
+The shared-native GLIM covariance path's observed benefit remains intact.
+The recorded receiver stop is explained by growing global publication work,
+amplified by a late increase in nonlinear iterations and numerical recovery.
+It is not explained by a late explosion in source revision arrival rate or a
+failed cache. No new estimator correctness bug is established by this audit.
+
+The important distinction: full-history iSAM2 does not inherently require a
+fresh whole-graph nonlinear certificate before every output. Our private strict
+publication wrapper does that, including repeated full-current-Values gradient
+checks. Its cost grows with history and with the number of refinement passes.
+Those checks protect previously established numerical correctness; removing
+them or relaxing their tolerance is not an authorized engineering fix.
+
+The next narrowly scoped proposal is E3a, starting with the WNOA motion factor's
+velocity/angular-rate derivative blocks: reuse the authors' existing closed-
+form blocks while retaining the exact current residual and numerical pose
+blocks. First validate and benchmark the factor in isolation. Do not change
+the solver policy, covariance, source timing or model. This audit does not
+establish that this patch alone would make a 160 s live run pass.
+
+1. SCOPE AND PROVENANCE
+
+One existing capture, no GLIM/Kimera/receiver replay, no build, no new sensor
+data, no GT evaluation, no profiling run and no estimator code changes.
+Primary interval140–148.58s; earlier intervals from this same capture provide
+controls. Runtime parameters remain exactly those of S5.
+
+Capture root:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_shared_linearization_s5_live160_20261012/prepared
+
+Frozen receiver executable:
+/home/yeranis/results/gnssfgo_e1_e2_correctness_audit_20261011/candidate/replay
+SHA256 9d2ef832941c5ff2592da8428cb80104352590bcfea50c187624aaf4e90d60e0
+
+The recorded build command selects candidate headers first, then
+gnssfgo_vw_jacobian_20261011/build, then
+gnssfgo_publication_cache_20261010/build, then the frozen runtime include tree
+and online_fgo/include. Inspecting only the repository's default replay target
+would describe a different implementation. No default target was substituted.
+
+analyze.py and summary.json retain joins, assertions, every late publication
+step, counts, statistics and hashes. Twenty-one inspected runtime/data inputs
+hash identically before and after analysis. Additional integrity verification
+is in integrity.json, including the747 protected S5 inputs and six source repos.
+
+Time origin is first retained CPT7 timestamp1727775008003475000ns. Last live
+controller observation was148.550033s; last completed source scan148.571408938s.
+This audit includes the final support publication at148.58s after abort drain:
+86 publications in140–148.58 rather than the85 in S5's scan-truncated table.
+That one-record difference explains984.068ms here versus978.562ms in S5.
+Neither interval covers the requested160s. Final retrospective output is not
+relabeled as online, and this audit does not upgrade S5's acceptance status.
+
+2. WHAT ACTUALLY GREW
+
+All numbers below are wall milliseconds. Publication time includes Refine()
+and the tiny cache-counter flush, but excludes the surrounding support loop.
+
+Physical interval  Median ms  p95 ms    Mean attempts  Recovery outputs / total
+0–40                 52.727    132.710       1.320             0 /394
+40–80               158.859    294.821       1.300             2 /400
+80–100              215.694    381.577       1.315             1 /200
+100–120             400.230    618.579       1.755             4 /200
+120–130             518.545    864.915       2.370            13 /100
+130–140             535.226    977.382       2.240            14 /100
+140–148.58          984.068   1619.918       3.849            24 /86
+
+Two mechanisms are visible:
+
+  A. Increasing cost with graph size. The first three intervals have nearly
+     the same mean iteration count, yet median publication time rises from
+     53 to159 to216ms. The median state-key count grows596→1787→2687.
+     This is consistent with the global code path and observed cache calls;
+     it is not a controlled experiment holding CPU frequency/contention fixed.
+
+  B. More iterations late. From130–140 to140–148.58, median graph size grows
+     only4036.5→4315.5 keys, but mean attempts rise2.24→3.85. Non-recovery
+     publication time divided by attempted passes stays similar in its median:
+     235.028→237.813ms. This ratio includes per-publication fixed work, so it
+     is not a direct per-step timer. The sharp final increase is predominantly
+     associated with more work passes/recovery, not a sudden per-pass collapse.
+
+At the end there are1481 support states,4443 X/V/W keys,1480 WNOA factors,
+2201 source factors and3 initial priors:3684 active factors. No receiver
+marginalization occurs in this full-history configuration. Source fixed-lag
+retirement does not retire historical factors from the downstream receiver.
+
+Every one of the2446 non-recovery step records reports
+variablesRelinearized=3*(support_index+1). Interpret this as GTSAM's reported
+update statistic, not a measured count of distinct Jacobian recomputations.
+The pinned update API says force_relinearize forces the threshold check and
+forceFullSolve disables wildfire truncation; neither flag's name alone proves
+that every Jacobian is recalculated. Independently, our NormalizedGradient()
+explicitly calls graph.linearize(current_values) on the whole graph, and the
+memo counters distinguish cache hits from actual linearization misses.
+
+3. RECOVERY IS IMPORTANT BUT NOT THE WHOLE PROBLEM
+
+Across1480 support publications,58 enter recovery. Their complete publication
+calls consume61.211s; the1422 calls without recovery consume346.127s. The first
+number includes those calls' ordinary work and is NOT pure recovery overhead.
+
+In140–148.58:
+
+  No recovery:62 outputs, median732.027ms, p951329.959ms, maximum1450.858ms.
+  With recovery:24 outputs, median1485.576ms, p951654.449ms, maximum1769.697ms.
+
+For non-recovery outputs in this interval, median time by attempted pass count:
+  1 pass283.698ms;2 passes530.360ms;3 passes713.959ms;
+  4 passes914.852ms;5 passes1083.468ms;6 passes1322.200ms.
+
+Thus disabling numerical recovery would not eliminate the capacity problem.
+Ordinary five/six-pass refinement already exceeds the1000ms nominal wall
+budget for a100ms simulated support interval at0.10x playback.
+
+The transition becomes pronounced around142.98s, when six-pass publications
+begin appearing. The controller first observes cumulative queue peaks >=100
+at143.930032s, >=500 at146.340032s and >=1000 at148.550033s. These are sampled
+first observations, not exact threshold-crossing times.
+
+Concrete worst call: support1456, physical146.18s,1769.697ms,4371 keys.
+Initial normalized gradient3.47938; ordinary passes reduce it to:
+  1:4.5603e-2;2:3.5973e-3;3:5.4304e-4;4:6.9715e-5.
+Pass5 slightly raises the total objective and leaves gradient1.0843e-5, above
+the unchanged1e-5 criterion. The alternative QR rebuild is also insufficient
+(1.0606e-5). One remaining private polish pass yields1.8102e-6 and passes the
+existing acceptance rule. Both checks and outcomes are retained in the trace.
+The total objective is about2.7165e7; the rejected pass's cost rise is tiny in
+relative terms. This trace explains extra work, not evidence that the threshold
+should be weakened or that the source beliefs are wrong. The physical/model
+cause of needing more iterations is outside this bounded timing audit.
+
+All1481 recorded checks including the final one are stationary. No non-nominal
+output or exception is inferred from numerical recovery.
+
+4. SOURCE TRAFFIC AND REVISION COST
+
+Belief-version arrivals per simulated second are approximately610 in each
+10-second interval120–130,130–140 and140–148.58. There is no corresponding
+late traffic-rate explosion. Sources still produce bursts; this conclusion is
+about interval rates, not an assertion of uniformly spaced arrivals.
+
+During140–148.58,5239 accepted version operations consume9.925s inside
+ReplaceFactor():4165 GLIM operations use7.548s;1074 Kimera operations use2.377s.
+Source-wise per-operation median/p95 are0.200/0.603ms for GLIM and1.497/6.023ms
+for Kimera. A GLIM operation reaches290.348ms, so its low median does not
+describe every update. There are5240 received versions in this time band;
+receipt-time and insertion-time grouping need not have identical membership.
+All joins between ordered revision and dispatch rows are checked by IDs,
+revision, outcome and arrival timestamp.
+
+Publication refinement sums82.541s in the same late time band; revision update
+timers add9.925s. These mutually separate function timers already total roughly
+92.5s against roughly86s of nominal playback time, before support insertion,
+factor construction/validation, bookkeeping, other IO or queueing. The time
+bands group publications by physical time and revisions by insertion time;
+this is a workload comparison, not an exact wall-clock profiler partition.
+
+Progress joined to receipt wall timestamps shows late event queueing plus
+processing p9517.209s and maximum18.781s wall time. These are not pure solver
+CPU times or source-generation delays. The growing receiver backlog is real,
+not merely a slow viewer: graph inspectors were disabled. No per-subphase IO
+timer exists, so this audit does not declare logging cost zero.
+
+5. THE CACHE WORKS BUT CANNOT REMOVE CHANGED-STATE WORK
+
+Late140–148.58 counters between publication flushes:
+
+Factor family       linearize calls     exact hits       misses    hit fraction
+WNOA motion              1335198           516820         818378       38.71%
+Source relative          1992995           768966        1224029       38.58%
+
+Failures are zero. Overall hit fractions are about27%; late fractions increase,
+not collapse. Deltas include intervening revision/support updates as well as
+publication. They cannot be converted directly into percentages of runtime.
+
+Each memo belongs to one immutable factor version and one exact X/V/W input
+signature. A changed state or new factor invalidates that entry. It must not
+reuse a stale Gaussian block merely because the state moved a small amount.
+Full-graph visits, signature checks, allocations and gradient accumulation
+remain even on hits. We have not timed those parts separately in this capture.
+
+6. EXACT CODE PATH AND REMAINING DERIVATIVE WORK
+
+Paths below are absolute. Lines refer to the unchanged files pinned in the
+audit input manifest, not the repository's older default replay target.
+
+Receiver entry and timer:
+/home/yeranis/results/gnssfgo_e1_e2_correctness_audit_20261011/candidate/DiagnosticReplay.cpp
+  998–1021 RefinePublication: timer, strict check, cache flush and diagnostics.
+  1739–1758 ensure_stream_support: ordered event reading and progress output.
+  1797–1799 WNOA prior constructed with useAutoDiff=true,calcJacobian=true.
+  1903 refinement before each support's online publication.
+  932–944 and1670–1673 stable-ID replacement and its separate update timer.
+
+Publication algorithm:
+/home/yeranis/results/gnssfgo_publication_cache_20261010/build/FullPublicationRefinement.h
+  27 Refine;32–34 initial estimate, global error and current gradient.
+  41 solver copy;44–46 forced check/full solve;48 error;54 current gradient.
+  60 stable cost path if ordinary objective comparison does not pass.
+  70 onward full QR recovery;96–133 private polish where needed.
+  The solver copy protects transactional behavior; deleting it is not an
+  automatically equivalent optimization. This routine is our experimental
+  wrapper, not a claim that standard gnssFGO/iSAM2 always runs this way.
+
+Global certificate:
+/home/yeranis/repos/gnssFGO/online_fgo/include/offline_process/BoundedISAM2Refinement.h
+  30–34 NormalizedGradient: fresh graph.linearize(values), gradientAtZero and
+  hessianDiagonal. This graph-wide certificate is independent of iSAM2's
+  internal cached linearization points.
+
+Remaining motion derivatives:
+/home/yeranis/repos/gnssFGO/online_fgo/include/factor/motion/GPWNOAPrior.h
+  90–122 useAutoDiff=true actually calls central numericalDerivative11 for
+  X_i,V_i,W_i,X_j,V_j,W_j at step1e-5. It is finite difference, not GPU work or
+  an automatic-differentiation engine.
+  141–145,162–174 contain the existing closed-form V/W blocks in the other
+  branch. Pose derivatives there follow a different path and are not implicitly
+  validated by the earlier source-interpolation V/W tests.
+  183–193 define the current residual.
+
+Each full motion-factor Jacobian miss requests2 Pose3(6D) and4 Vector3(3D)
+blocks:48 perturbed residual evaluations plus6 base evaluations and the returned
+residual,55 evaluations of evaluateError_ by static code count. This is not a
+wall-time measurement. Replacing just the four V/W blocks avoids24 perturbed
+evaluations per miss while keeping numerical pose blocks.
+
+Already improved source interpolation:
+/home/yeranis/results/gnssfgo_e1_e2_correctness_audit_20261011/candidate/SourceWnoaModel.h
+  84–96 requests numerical pose blocks and separately existing analytic V/W
+  blocks; it keeps the original interpolated pose for the residual.
+That earlier optimization did NOT replace GPWNOAPrior's derivatives.
+
+Cache implementation:
+/home/yeranis/results/gnssfgo_e1_e2_correctness_audit_20261011/candidate/ExactLinearizationMemo.h
+  32–75 bit-exact input signature, clone-on-hit, miss/invalidation and failure cleanup.
+  89 onward cumulative counters written at publication flushes.
+
+The API limitation is explicit in the pinned
+/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/include/gtsam/nonlinear/ISAM2UpdateParams.h:
+  force_relinearize requests the threshold check;forceFullSolve bypasses
+  wildfire truncation. Do not equate their names with measured per-factor work.
+
+7. WHAT THIS AUDIT DOES NOT ESTABLISH
+
+No separate timer for factor differentiation versus QR elimination, copying,
+gradient accumulation or IO exists in this capture. Therefore we cannot state
+that a particular family accounts for X% of receiver wall time, or promise a
+particular speedup from analytic derivatives. There is no evidence here of
+receiver marginalization cost, because it does not marginalize, nor a GLIM
+provider regression. The cache has no recorded failure, but this is not a new
+complete correctness proof. S5's wire/lifecycle/replay gates remain incomplete.
+
+No new ATE conclusion, diagnosis of belief accuracy, covariance calibration,
+or explanation of why this trajectory needs additional nonlinear iterations
+is drawn from a timing log. CPU frequency/affinity contention was not newly
+controlled; the audit is observational.
+
+8. ONE NEXT STEP, NOT A NEW MODEL
+
+Recommend the first small part of E3a, not another selective-refinement policy
+(the earlier E4 trial is already rejected) and not an immediate fixed-lag change.
+
+Create an isolated default-off WNOA motion-factor wrapper. Reuse the authors'
+four analytic V/W Jacobian blocks; keep the existing evaluateError_ residual,
+two numerical Pose3 blocks, whitening, Qc, covariance, event order, source
+factor revisions and strict publication rule unchanged. At fixed poses,
+e=[xi-dt*u_i;Jr(xi)^-1*u_j-u_i] is affine in the endpoint velocities/rates;
+their derivatives need no finite-difference perturbations.
+
+Before adoption: independent numerical derivative checks over nonzero rotations,
+world velocities/body rates and dense noise; exact residual and tight full
+Gaussian-block comparison; factor-level benchmark on representative retained
+states. This first check needs no new sensor experiment or changed solver.
+Only after it passes should a separate authorized saved-journal equivalence/
+timing test retain the original state/cost/stationarity/rollback gates.
+Do not blindly switch useAutoDiff=false for every block, advertise a live
+speedup from call counts, or promote the candidate if numerical gates fail.
+
+No E3a implementation or estimator execution occurred in S5a. Stop here.
+
+Parent:333410526a1f40966f6d5e1554d327a368d0ba63
+Branch:audit/receiver-publication-s5a-20261013
+Completion commit contains this report, audit script/output and plan entry;
+resolve with git log -1 --format=%H -- experiments/receiver_publication_audit_s5a_20261013/REPORT.txt.
+No push authorized or performed.
+
+RECEIVER_GLOBAL_REFINEMENT_COST_LOCALIZED

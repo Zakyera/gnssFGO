@@ -16,6 +16,20 @@ performance hypotheses into one acceptance experiment.
 
 ## Baseline and evidence
 
+**Latest audit (S5a, 2026-10-13):** Retained-data analysis localizes the late
+receiver backlog to growing global publication work plus more refinement passes.
+In 140–148.58 s, publication median/p95 is 984.068/1619.918 ms; even calls
+without recovery have p95 1329.959 ms against the 1000 ms nominal wall budget.
+Source-version arrival rate stays approximately 610/s simulated; the exact cache
+records no failures and improves its late hit fraction to about 39%.
+The frozen WNOA motion prior still finite-differences all six X/V/W blocks;
+earlier analytic V/W reuse only covered source interpolation. Recommend the
+first isolated E3a step: motion V/W blocks only, preserving numerical pose blocks
+and the exact residual, with independent checks before any replay. No patch or
+new estimator execution occurred. No retained timer separates derivatives from
+QR/copying/gradient/IO cost, so no exact speedup is promised. See
+[S5a report](experiments/receiver_publication_audit_s5a_20261013/REPORT.txt).
+
 **Latest capacity result (2026-10-13):** S5's one frozen shared-native provider
 160s capture stopped at148.55s when receiver queue1018 exceeded1000 (final
 transport peak1020). Observed GLIM late120–148.57s scan p95 improved from
@@ -163,6 +177,7 @@ shared IMU, past means or nonlinear history are statistically independent.
 | S4c | Conservative fast rank certificate with original eigensolver fallback | Unchanged covariance and rank decisions, bounded error certificate, adversarial tests and matched timing on saved equations | Complete:40/40 Release and ASan/UBSan; saved outputs byte-identical; query37.285→11.196ms median vs S4b,3.33×. All20 checkpoints certify. Private only; no live run. See experiments/shared_linearization_s4_certificate_20261012/REPORT.md |
 | S4d | Private ordinary-publication provider; disable independent LOCAL in one matched first40s capture | Same extraction/helper and lifecycle tests; exact provider-to-wire covariance; frozen source/receiver gates; complete-scan latency | Passed:47 Release/47 ASan+UBSan,18 regressions;389 exact wire covariances,zero LOCAL updates/provider GPU calls. Complete-scan median206.942→167.421ms,p95437.376→312.422ms; exact receiver repeat. Private/default-off; no long-run certification |
 | S5 | Frozen private provider first160s capacity validation | Same S4d binaries/settings, complete source coverage, native history/wire checks, strict receiver publication and exact journal repeat; early/middle/late timing | Capacity failed at148.55s receiver queue gate. Partial scan timing improved; full correctness/replay gates unaccepted. No retry, model edit or promotion |
+| S5a | Retained receiver publication-cost audit around140–148s | Trace frozen executable sources; separate graph size, iterations, recovery, revision delivery and unmeasured subcosts | Completed2026-10-13: global publication work localized; E3a motion V/W derivative candidate proposed, not implemented |
 
 E1 first reuses existing gtsam_points batching around LOCAL graph preparation;
 it retains the auxiliary smoother and its conditioning. GPU-aware sidecar update,
@@ -205,6 +220,35 @@ its own explicit algorithmic decision. Fixed lag may bound resources but brings
 historical revision and marginal-prior semantics; reconsider only separately.
 
 ## Execution ledger
+
+### S5a — bounded retained receiver publication audit
+
+- Authorization: user "yes proceed to the next audit", 2026-10-13.
+- Parent333410526a1f40966f6d5e1554d327a368d0ba63; branch
+  audit/receiver-publication-s5a-20261013.
+- Status: completed. Inspected S5's existing logs and exact E2 executable
+  implementation. Central section140–148.58s; earlier bins only as controls.
+- Distinguish all-history work per iteration, iteration/recovery counts,
+  stable-ID revision processing, source availability, and logging/transport.
+  Do not infer unrecorded subphase durations from call counts.
+- No source/receiver replay, build, estimator edits, settings changes, covariance
+  tuning, new performance benchmark or automatic next implementation.
+- Protocol/evidence: experiments/receiver_publication_audit_s5a_20261013/.
+- Evidence: 1480 support publications, 2446 ordinary refinement steps and
+  65 recovery rows; 1481 stationary checks including final. Late mean attempts
+  rise to3.85 (median4), versus2.24 in130–140s. No-recovery late p951329.959ms
+  already exceeds nominal1000ms wall/support. Refinement82.541s vs revision
+  update9.925s in the late physical/insertion-time cohorts; not a complete
+  wall-clock partition. Full graph has4443 keys and3684 factors at the end.
+- Next proposal: E3a motion V/W derivative-only isolated wrapper, first
+  independently validated and microbenchmarked. Do not switch all pose
+  derivatives, relax stationarity, repeat rejected E4 or change the model.
+- Integrity passed:747 protected files,49 frozen raw artifacts,62 archived
+  evidence files,21 inspected inputs and six source HEAD/status pairs unchanged.
+  Analysis/verification syntax and independent count checks passed. No new
+  Release/sanitizer or estimator tests; S5 remains partial and capacity-failed.
+- Completion commit: the commit adding this S5a report and ledger; resolve via
+  `git log -1 --format=%H -- experiments/receiver_publication_audit_s5a_20261013/REPORT.txt`.
 
 ### S5 — frozen provider first160s validation
 
