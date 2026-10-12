@@ -1,0 +1,21 @@
+E1b.1 completion checks, 2026-10-12
+
+python3 -m unittest -v test_analyze_retained.py
+5 tests passed.
+
+python3 analyze_retained.py --out evidence.json
+python3 analyze_retained.py --out evidence_repeat.json
+Both analyses succeeded: 1591 scan totals, 75912 matched GLIM source versions,
+1589 first versions. Seven input hashes and six clean source worktrees unchanged.
+One final callback timer absent; explicitly reported, no imputed values.
+
+cmp evidence.json evidence_repeat.json: identical.
+SHA256 (both): ed3f2b67e624d7f9849ee26e06e3be393fffc8b9980b7378004cc6d52786aebf
+
+Rechecked all entries of:
+experiments/e1_e2_live160_20261011/evidence/prepared/protected_manifest.json
+635 files; zero missing or mismatched SHA256.
+
+git diff --check: pass.
+No estimator build, source experiment, fusion replay, tuning or remote push.
+This validates the new read-only analysis, not a new acceleration implementation.

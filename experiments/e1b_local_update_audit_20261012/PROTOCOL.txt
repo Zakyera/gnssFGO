@@ -1,0 +1,28 @@
+E1b.1 — remaining GLIM LOCAL update diagnosis, 2026-10-12
+
+Authorization: user requests step-by-step execution with the saved plan.
+Parent a936c56b34760d38585b2aed4724439c4726aa11.
+One question: where does the remaining GLIM LOCAL update spend work after E1,
+and which exact equivalent acceleration is justified next?
+
+Read-only source/artifact inspection and offline diagnostic analysis only.
+Allowed new outputs: analysis scripts, evidence, report and execution ledger.
+Do not launch GLIM/Kimera/fusion, change estimator source, upgrade GTSAM/CUDA,
+replace iSAM2, change flags/lag/cadence/means/covariances or overwrite evidence.
+No synthetic speedup is to be labeled a real-run speedup.
+
+Primary input is the COMPLETE E1/E2 ETH1 CBS-ON live160 capture at:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_e1_e2_live160_20261011
+Its subsequent validation report is authoritative over the initial blocked
+validator report. Older failed143.79 and E1-only captures are historical only.
+
+Trace main/LOCAL ownership, call order, generic/GPU batching, cache invalidation,
+error and Jacobian evaluation, elimination/marginalization, belief availability
+timestamps and transport. Link exact file/function/lines. Distinguish cost
+measurements from structural inference, and identify unmeasured subphases.
+Analyze complete saved timing records in early/middle/late sections; do not add
+nested timers or infer CPU/GPU time percentages from overall wall timers.
+
+Deliver report with a single next implementation or profiling proposal and its
+tests/acceptance criteria. Verify protected input hashes and unchanged owning
+source worktrees. Save local commit; no push or automatic subsequent step.

@@ -1,0 +1,274 @@
+E1b.1 — GLIM LOCAL update diagnosis, 2026-10-12
+
+STEP COMPLETE: remaining cost localized; acceleration not yet implemented.
+
+1. Outcome and scope
+
+The remaining LOCAL update is a genuine serial part of GLIM's scan-processing
+critical path, still using generic GTSAM iSAM2. E1 batches LOCAL covariance
+reconstruction only; it does not batch this update. Native GLIM's main smoother
+already uses gtsam_points' GPU-aware iSAM2 extension.
+
+Important qualification from the completed live160 capture: the MAIN smoother
+now consumes more measured time than LOCAL. In the last40s, main=55.37% and
+LOCAL=33.44% of matched scan wall time. LOCAL acceleration is justified, but it
+cannot alone remove all source delay. Neither component is measured as pure
+CPU or GPU time: contention, synchronization and other-process work can affect
+wall timers. No speedup or fix is claimed by this diagnosis.
+
+The LOCAL active state count is bounded, not an ever-growing trajectory:
+150/153 keys before marginalization after startup (pose/velocity/bias for about
+50 scans); GLIM reports49/50 active frames after retirement. Every retained LOCAL
+lifecycle row reports zero external CBS factors. We must not explain its cost
+as retaining the full source trajectory or repeatedly marginalizing Kimera
+factors there. The receiver's full-history growth is a separate issue.
+
+No estimator run, new trajectory, tuning, solver/library upgrade or estimator
+source edit was performed. This is the single E1b.1 step in the saved plan.
+
+2. Provenance and reproducibility
+
+Plan: /home/yeranis/repos/gnssFGO/GNSSFGO_RUNTIME_ENGINEERING_PLAN_20261011.md
+Parent commit: a936c56b34760d38585b2aed4724439c4726aa11
+Branch: engineering/e1b-local-update-audit-20261012
+Protocol, parser, parser tests and numerical evidence are in this directory.
+Completion commit is the commit adding this report (git log -1 -- REPORT.txt);
+no remote push is part of this step.
+
+Retained source/receiver root:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_e1_e2_live160_20261011/prepared
+Source: live160_on_source
+Source stdout: ros_logs/fd776fca-c59c-11f1-82ac-62f7ac56faf4/glim_rosnode-1-stdout.log
+Receiver: live160_on_receiver/{events.csv,receipts.jsonl}
+Time origin:1727775008003475000ns; fixed0.1x playback.
+
+Use experiments/e1_e2_live160_validation_20261011/REPORT.txt for the existing
+functional pass; the initial live160 report's validator blocker was superseded.
+The source/receiver settings and protected executable remain unchanged:
+E1 LOCAL covariance batching ON, source live_revision OFF, classic temporary
+CBS, LOCAL covariance/current main means, lag5s, Kimera25states, receiver E2
+cache1, source_wnoa without central IMU, Gaussian dense scale1, frozen priors/Qc,
+100ms independent clock, strict nominal publication certificate. E4 stays OFF.
+
+evidence.json records exact input hashes, source heads and clean source status.
+Owning source heads:
+cbs          7c3a1e66767938e105d46fd072bd853ad5ec50c2
+glim         e817b335377191b34ff822d4acbe6a2da3934fb4
+glim_ros1    fad72d6e11219e42cbbe09658341fff4512769dc
+gtsam        150157b0a686c4411372c3f4455258d9c291219d
+gtsam_points 857819676921650510e249018cd82d45c08d7e8d
+Kimera-VIO   560ad0fd33c162ff2a0a64a1372f9b61e1d8d8f9
+
+3. Exact call path / ownership
+
+All source paths below start at:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/
+
+a. glim/src/glim/odometry/odometry_estimation_imu.cpp:424-444
+   Calls the pre-smoother callback, then main update_smoother, then the finish
+   callback. They are sequential on this scan path, not parallel optimizers.
+
+b. glim_ros1/src/glim_ros/cbs_bridge.cpp:650-682,1266-1276,3252-3264
+   Builds IncrementalFixedLagBpsamSmoother with generic ISAM2 parameters
+   (relinearizeSkip1, threshold0.1, reusable factor slots). updateSidecar runs
+   BEFORE newly received external factors are inserted into the main graph.
+   No sidecar add-belief call exists in this bridge. It receives native factors,
+   initial values and timestamps. Removal of external main factors remains intact.
+
+c. cbs/include/cbs/bpsam/bpsam.h:42
+   BaseSAM = gtsam::ISAM2; not gtsam_points::ISAM2Ext.
+   cbs/include/cbs/bpsam/incremental_fixed_lag_bpsam_smoother.h:123-241,368-378
+   Updates timestamp map, identifies departing keys, constrains ordering and
+   additional re-elimination keys, calls BPSAM::update, then marginalizeLeaves.
+   This ordinary path is distinct from its optional shadow-audit force-full path.
+
+d. cbs/src/bpsam/bpsam.cpp:3629-3658,4297,4562-4563
+   Copies the new factors/values; takes a BPSAM backup in active_window mode;
+   runs BaseSAM::update; calculates post-update Values for residual checks.
+   LOCAL inherits the mode despite having no external beliefs. Thus the backup
+   and calculateEstimate occur even when its staged/active external sets are
+   empty. This is potential avoidable work, NOT a measured dominant cost.
+   The copy constructor at1713-1750 copies the base solver and bookkeeping;
+   tmp_marginals is reset, not deep-copied. Do not claim it copies a dense
+   covariance workspace. Do not remove rollback/guard behavior without a
+   separately justified empty-external-path proof and tests.
+
+e. gtsam/gtsam/nonlinear/ISAM2.cpp:449-519,109,243,669 and ISAM2-impl.h:436
+   Generic update linearizes new factors and affected factors; re-eliminates
+   affected cliques and can take a batch-recalculation branch. Marginalization
+   is separately invoked by IFLS. There is no GPU batching hook on this LOCAL
+   call path. We have not measured how often its incremental/batch branches run.
+   ISAM2.h:329,334,349 helpers are not virtual. A small subclass overriding
+   just relinearizeAffectedFactors would NOT transparently alter base update.
+   Changing the shared BPSAM base globally would also affect Kimera: out of scope.
+
+f. gtsam_points/src/gtsam_points/optimizers/isam2_ext.cpp:87-142
+   Native main path already batches affected GPU factors with LinearizationHook
+   while retaining cached Gaussian factors where applicable. This existing code
+   is the relevant potential reuse target, not a new generic GPU optimizer.
+   It must not simply be pasted into generic iSAM2 with different relinearization,
+   factor ordering, result-cache or error semantics.
+
+g. glim_ros1/src/glim_ros/cbs_bridge.cpp:3339-3364
+   E1's experimental_local_gpu_batching selector is inside publishOutgoingBeliefs:
+   LOCAL setMarginalizationGraph -> linearizeCbsLocalGraphBatched. This happens
+   AFTER both smoother updates. It accelerates covariance preparation only.
+
+h. gtsam_points/src/gtsam_points/factors/integrated_vgicp_factor_gpu.cpp:166-212
+   error()/linearize() use precomputed results if present; otherwise issue the
+   synchronous derivative calculation and warning. Results are mutable one-use
+   caches. Ordinary graph shared-pointer copies do not clone factor objects.
+   Main and LOCAL therefore cannot be assumed to have isolated GPU caches even
+   though their solver Values are separate. No parallelization is proposed.
+   At247-253 E1 deliberately preserves synchronous inlier/error-cache semantics;
+   native store_linearized at239-244 changes them. Reuse must preserve this
+   distinction; a seemingly equivalent batching shortcut previously needed it.
+
+4. Retained timing measurements
+
+Units: milliseconds of WALL time, not simulated time.
+Window       scans   scan median/p95     LOCAL median/p95   MAIN median/p95
+0-40           393     205.73 /511.09       85.71 /218.53      95.88 /209.76
+40-80          400     430.98 /631.14      200.30 /241.57     193.48 /380.09
+80-120         400     396.27 /812.10       12.75 /301.47     201.11 /501.50
+120-160        398     719.68 /1129.95     335.21 /383.43     354.15 /707.91
+Whole         1591     415.58 /1045.41     180.95 /366.49     190.93 /654.46
+
+The final scan1591 has a native timer but no corresponding ROS callback timing
+rows in the retained log. Its total/main time is retained; LOCAL/post substage
+statistics use1590 complete joins (397 late). Do not silently fill the missing
+row. Initialization frame0 has callback/lifecycle rows but no normal scan timer.
+
+Mean scan time:412.28ms overall;617.20ms late. Maximum1812.21ms.
+109/1591 scans exceed1s;101/398 of those occur in the last40s. At10Hz lidar and
+0.1x replay, arrivals are roughly1wall-second apart. Individual overruns cause
+bursty lag; these measurements do NOT prove unbounded cumulative backlog.
+The late p95 still misses the existing800ms headroom goal.
+
+Disjoint sums / matched total scan wall time (not summed percentiles):
+                        whole         last40s
+Main smoother           51.11%        55.37%
+LOCAL update            35.89%        33.44%
+Other pre-callback       3.35%         3.41%
+Post-callback            8.85%         7.19%
+Rest of scan             0.80%         0.58%
+
+Nested post-callback diagnostics, NOT extra disjoint contributions:
+late LOCAL covariance prep median24.47ms,p9527.60ms;
+late outgoing+revision block median36.72ms,p9585.35ms.
+LOCAL update late median335.21ms is much larger than E1's now-small covariance
+prep. Its medium-window distribution is strongly variable, not monotonic with
+elapsed time. Stable active-key count alone does not bound relinearization work,
+factor count, clique fill-in, memory bookkeeping or CPU/GPU contention.
+
+5. Delay location and warning evidence
+
+Matched ALL75,912 GLIM source versions by edge/source revision to their receiver
+journal/receipt identity and producer timestamp;1,589 are first versions.
+No GLIM version is missing from this timing join. This is an additional timing
+check, not a rerun of the earlier full payload/covariance validation.
+
+First belief physical endpoint -> producer record, in SIMULATED ROS seconds:
+Window       median       p95          max
+0-40         .126443      .153716      .198872
+40-80        .151033      .171010      .214347
+80-120       .148045      .189620      .248897
+120-160      .182246      .254984      .297644
+
+Producer record -> fuser adapter observation/enqueue for first versions:
+whole median .001006s, p95 .001025s,max .002413s (ROS time).
+All versions: median .001024s,p95 .004051s,max .016121s.
+The source-age tail is about two orders of magnitude larger than first-belief
+log-tail observation delay. Transport polling is not the main delay at this
+particular0.1x operating point.
+
+These are NOT wall seconds. Nominal0.1x conversion is approximately10x, but
+ROS clock granularity/pauses mean do not assert exact wall latency this way.
+2,914 tiny negative transport differences down to-158ns come from double-second
+producer formatting versus integer-nanosecond receiver stamps; all lie within
+1us and are retained, not silently clamped. Older revision endpoints are
+intentionally old: they are not used to claim stale processing of new data.
+
+Code grounding: cbs_bridge.cpp:3440+ writes producer record before publish at3507;
+revision loop uses ros::Time::now at1519. Frozen transport_code/
+grandtour_live_receiver_ros1.py:149-176 tails completed source lines, observes
+current ROS time and enqueues. This audit does not measure native Kimera's
+receipt/acceptance latency, FIFO consumption, fuser solve or fused publication
+latency. Thus fast observation does not prove the entire receiver is fast.
+Source age also includes scan acquisition/support/preprocessing/queue time;
+it is not entirely caused by LOCAL computation.
+
+estimators.log contains2,376,985 synchronous linearization warnings and39,064
+error warnings:212,273,906bytes of warning-bearing lines. GPU factor code uses
+std::endl, so flushing/logging is real additional work. However these lines are
+untimestamped in a combined stream; the source stdout with per-scan timers has
+none. We CANNOT assign their cost/counts to LOCAL vs main vs other diagnostics
+or infer a wall-time percentage from their number. Silencing them alone would
+not remove the synchronous GPU calculation. No logging changes were made.
+
+6. Next single step: E1b.2, measurement-only LOCAL subphase profile
+
+Do NOT swap to a GPU batch optimizer or rewrite fixed-lag iSAM2 yet. Implement
+one opt-in, default-OFF instrumentation patch in an isolated candidate build:
+
+- Scoped thread-local context identifies MAIN, LOCAL_UPDATE, LOCAL_COVARIANCE,
+  revision export and OTHER. Do not confuse concurrent native/global processes.
+- Measure existing work only: input bookkeeping, BPSAM backup/copy, BaseSAM
+  update, post-estimate/guards, marginalizeLeaves, cleanup.
+- Within existing calls aggregate synchronous GPU linearization/error count
+  and duration; separate nested error->linearize time to avoid double-counting.
+  Reuse existing GTSAM timing sites where practical to partition factor work,
+  elimination/reordering and back-substitution, without adding evaluations.
+- Record already-available ISAM2Result relinearized/re-eliminated counts,
+  active keys, non-null/allocated factor slots, retiring keys and factor types.
+  Do not call calculateEstimate(), error(), linearize() or marginals just to
+  measure them. No additional GPU synchronization for timing. Host elapsed
+  times are not GPU kernel timings; record that distinction.
+- One aggregate row per scan/update, no per-factor log storm; include unassigned
+  wall time and validate nested/disjoint accounting and exception-safe scope.
+
+Before any performance capture: test instrumentation OFF equivalence, scope
+nesting/exception restoration, zero extra solver/factor evaluations, cache
+consumption unchanged and shared-factor ownership. Exercise the existing E1
+GPU fixtures (including sync-preserving cache/inlier behavior), Release and
+focused sanitizer tests. Keep production binaries intact and record hashes.
+
+Then request a separately bounded profiling capture using the frozen source
+profile; no ATE sweep or automatic full160 rerun. A short capture can identify
+per-update cost but must not be labeled a reproduction of the120-160s tail.
+Profiling can perturb live availability, so exact live event equality is not
+an honest requirement; require deterministic same-input fixture equality and
+unchanged call/evaluation counts, then disclose measured logging overhead.
+
+Decision from those measurements: choose ONE measured dominant subphase for
+an equivalent acceleration patch. The leading candidate remains reusing the
+existing gtsam_points batching for the actual affected LOCAL factor set at the
+exact iSAM2 Values, preserving E1's synchronous semantics. Backup/post-estimate
+work is a secondary candidate only if measured material. No global BPSAM base
+replacement, no extra full-graph prelinearization each update, no shortened lag,
+no dropped revisions and no weakened rollback/publication checks.
+
+Stop rule: do not repeat an uninstrumented long run or start multiple speculative
+optimizations. If a profile cannot attribute the time, fix its instrumentation
+first rather than claim that a solver upgrade will solve it.
+
+7. Validation / limitations
+
+-5 parser unit tests pass; exact nanosecond conversion, marker/ANSI handling,
+  timer indices, malformed/nonfinite rejection and percentile definitions.
+-Full retained analysis joins1,591 scan timers and75,912 GLIM versions; explicit
+  missing final callback record. Event/receipt count/identity checks pass.
+-Initial analysis attempt correctly stopped on the missing final callback;
+  parser now retains its total and explicitly excludes only missing subphases.
+  No source/output was altered to pass this check.
+-Seven input files hashed before/after unchanged; six owning source repositories
+  clean at the same heads and diff hashes before/after.
+-All635 files in the earlier live160 protected_manifest.json match their saved
+  SHA256. No estimator binary was rebuilt, run, replaced or promoted.
+-Repeated analysis is byte-identical (evidence.json and evidence_repeat.json),
+ SHA256 ed3f2b67e624d7f9849ee26e06e3be393fffc8b9980b7378004cc6d52786aebf.
+ git diff --check passes. No new numerical
+  estimator tests or throughput claim: existing validated results remain evidence
+  from their original runs, not tests newly performed here.
+
+E1b.1 COMPLETE. E1b.2 proposed only. Existing implementation preserved.

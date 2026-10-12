@@ -16,12 +16,20 @@ performance hypotheses into one acceptance experiment.
 
 ## Baseline and evidence
 
+**Current status (2026-10-12):** the later E1/E2 live160 capture completed and
+passed the retained-input validation; processing headroom still failed. E4 was
+rejected and remains disabled. E1b.1 completed the remaining LOCAL update audit:
+main/LOCAL consume 55.37%/33.44% of late matched scan wall time; LOCAL states are
+bounded. E1b.2 subphase instrumentation is proposed, not implemented. Receiver
+and source code remain frozen. The original checkpoint evidence below is
+historical and is not the latest run's status.
+
 The detailed read-only audit is archived at
 `experiments/checkpoints/20261011/results/gnssfgo_runtime_engineering_audit_20261011/REPORT.txt`.
 The archive README and the cbsms checkpoint manifest identify the exact source,
 profiles, dependencies, build instructions and recovery boundaries.
 
-Current reference executable, retained locally and never overwritten:
+Original checkpoint reference executable, retained locally and never overwritten:
 
 ```
 /home/yeranis/results/gnssfgo_vw_jacobian_20261011/build/replay
@@ -33,11 +41,18 @@ include chain also uses the preceding publication-cache build. Both are archived
 Keep existing binaries, frozen input journals, and result directories unchanged;
 build candidates in new isolated locations/branches.
 
-The latest requested 160 s ETH1 CBS-ON capture stopped at 143.790032 s after
-crossing the queue gate. It is not a completed 160 s validation. All 1433 recorded
+At that original checkpoint, the requested 160 s ETH1 CBS-ON capture stopped at
+143.790032 s after crossing the queue gate. It is not a completed 160 s validation. All 1433 recorded
 publication checks passed the existing stationarity threshold; this does not
 establish accuracy or sustainable long-duration throughput. The saved replay and
 Release/sanitizer checks remain historical evidence, not newly run tests.
+
+The later completed E1/E2 live160 uses
+`/home/yeranis/results/gnssfgo_e1_e2_correctness_audit_20261011/candidate/replay`,
+SHA256 `9d2ef832941c5ff2592da8428cb80104352590bcfea50c187624aaf4e90d60e0`.
+Its authoritative status is in
+`experiments/e1_e2_live160_validation_20261011/REPORT.txt`: functional pass,
+late GLIM p95 headroom miss. Neither old failure nor E4 rejection replaces it.
 
 Evidence motivating the order (not promised speedups):
 
@@ -82,6 +97,8 @@ shared IMU, past means or nonlinear history are statistically independent.
 | E0 | Save this plan and push a recoverable checkpoint | Exact-commit manifest; archive hashes; verified Zakyera branch SHAs; original runtime untouched | Completed 2026-10-11 |
 | E1 | GPU-batched GLIM LOCAL covariance reconstruction | Same LOCAL factors and Values; same Gaussian blocks, full 6x6 covariance and means within predeclared arithmetic tolerance; focused tests; measured stage latency | Re-audit 18/18 tests and zero matrix differences; component acceleration repeats. Earlier live60 headroom target missed; no full-run acceptance; default-off |
 | E2 | Receiver evaluation reuse at identical Values | Correct invalidation on any referenced Values/factor/revision change; identical outputs and decisions for arithmetic-preserving reuse; timing of normal and recovery paths | Re-audit: 50/50 Release and sanitizer, matched replay exact; isolated redundant whitening fixed. Same-executable/core mean ~5.2% shorter on frozen60; full/live capacity uncertified; default-off |
+| E1b.1 | Diagnose remaining GLIM LOCAL smoother update cost | Trace actual call chain and GPU evaluation semantics; inspect retained early/late timing; distinguish measured cost from missing instrumentation; specify one next patch | Completed 2026-10-12; report/evidence saved, no estimator change. LOCAL subphase costs not yet separated |
+| E1b.2 | Instrument LOCAL update subphases | Opt-in timing only; no extra factor/solver evaluations; scope/cache/exception tests; disjoint accounting; measured overhead before bounded profiling | Proposed only; do not replace the solver or launch another long run |
 | E3a | Remaining WNOA motion-factor derivatives | Independent numerical derivative checks; manifold/frame tests; frozen-journal state/cost/covariance checks with predeclared tight tolerances | Not started |
 | E3b | Remaining interpolated pose derivative blocks | Separate patch and independent checks as for E3a; do not redo already validated V/W substitution | Not started |
 | E4 | Selective incremental publication refinement | Same factors/events and fresh current-Values stationarity certificate; reference full refinement fallback; short/medium/late replay comparisons | Tested 2026-10-12; NOT ACCEPTED: strict state bounds failed,86.8% fallback,matched refinement~40% slower; stopped at130.68s |
@@ -539,6 +556,45 @@ documentation/archival/version control only; no estimator implementation or run.
 - 655 protected files unchanged; no source rerun/tuning/default promotion/push.
   Completion commit contains report/evidence. STOP; do not expand to another
   selective policy or fixed lag without a new user decision.
+
+### E1b.1 — remaining GLIM LOCAL update diagnosis
+
+- Authorization: user "Ok proceed step by step and refer to the plan in order
+  to not lose track", 2026-10-12, after the GLIM-first/GPU-backend discussion.
+- Status: COMPLETED. First step only: inspected existing code and retained
+  E1/E2 live160 source measurements; no acceleration patch implemented.
+- Parent a936c56b34760d38585b2aed4724439c4726aa11; isolated branch
+  engineering/e1b-local-update-audit-20261012.
+- Protocol: experiments/e1b_local_update_audit_20261012/PROTOCOL.txt.
+- Freeze E1/E2, source settings and receiver; E4 stays disabled. No GTSAM/CUDA
+  upgrade, optimizer replacement, covariance/lag/cadence change, new source
+  run or fusion experiment. Keep separate LOCAL conditioning and all revisions.
+- If retained logs cannot partition LOCAL update time, say so and specify the
+  smallest instrumentation needed; do not invent GPU/QR/marginalization shares.
+- Report and update this entry before the next implementation/experiment.
+- Report: `experiments/e1b_local_update_audit_20261012/REPORT.txt`;
+  `evidence.json` contains timing/latency distributions and input/source hashes.
+- Confirmed E1 batches LOCAL covariance preparation only. Actual LOCAL update
+  still uses generic iSAM2 and synchronous GPU-factor fallback; native main uses
+  gtsam_points batching. No uncontrolled LOCAL state growth: lag5s,150/153 keys
+  before marginalization after startup,zero external LOCAL factors throughout.
+- Main/LOCAL late wall shares 55.37%/33.44%; medians 354.15/335.21 ms. These shares
+  use disjoint matched per-scan timers, not added medians. Late scan p95 remains
+  1129.95 ms. One final callback timing row is absent, explicitly excluded only
+  from subphase statistics;1,591 normal scan totals retained.
+- Matched 75,912 GLIM versions to transport, 1,589 first versions. Late first
+  belief producer-age p95=.254984 simulated seconds; first-version log-tail
+  observation p95=.001025 simulated seconds overall. This does not measure
+  receiver solve/queue or Kimera acceptance. No new payload/scoring experiment.
+- Backup and post-estimate work occurs in LOCAL despite empty external sets,
+  but its cost is not separately measured.2,416,049 synchronous GPU warnings
+  cannot be phase-attributed from mixed untimestamped logs. Do not remove guards
+  or guess GPU/elimination cost percentages based on them.
+- Validation:5 parser tests, before/after seven input hashes and six clean
+  source repos;635 protected manifest hashes match. Completion commit contains
+  report/scripts/evidence/ledger. No estimator edits, runs, upgrades or push.
+- Decision: next E1b.2 is one instrumentation-only patch/profiling proposal
+  specified in REPORT section6. No automatic implementation/capture here.
 
 ### Template for subsequent tasks
 
