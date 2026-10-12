@@ -142,7 +142,8 @@ shared IMU, past means or nonlinear history are statistically independent.
 | E5 | Transport/logging/bookkeeping efficiency | One subchange per test; lossless ordered revision delivery and auditability; same factor accounting; no silent dropped/coalesced versions | Not started |
 | S0 | Preserve E1b.4a and plan native Gaussian-equation reuse | Recoverable local checkpoint; saved staged plan; distinguish native information from MAIN conditioning and mixed marginal priors | Completed 2026-10-12; all 677 hashes and six source HEAD/status checks passed; no implementation/run/push |
 | S1 | Read-only feasibility of MAIN native-equation reuse | Exact capture/retirement hooks, factor provenance, coherent reference charts and minimal isolated patch surface | Complete: feasible with lifecycle hooks; 677 hashes and six source repositories unchanged; no numerical certification, implementation or run |
-| B0 | Fresh unchanged first40s overall timing reference | Preserved E1b.4a build/settings; original functional gates and exact saved-journal repeat; report MAIN, LOCAL, covariance and complete-scan timing | Passed: LOCAL median/p95 10.965/15.385 ms; complete-scan 206.942/437.376 ms; functional gates and exact receiver repeat pass. MAIN remains dominant; S2 not started |
+| B0 | Fresh unchanged first40s overall timing reference | Preserved E1b.4a build/settings; original functional gates and exact saved-journal repeat; report MAIN, LOCAL, covariance and complete-scan timing | Passed: LOCAL median/p95 10.965/15.385 ms; complete-scan 206.942/437.376 ms; functional gates and exact receiver repeat pass. MAIN remains dominant |
+| S2 | Private default-off native Gaussian history prototype | Synthetic same-chart dense oracle, native-only retirement, tangent transport, lifecycle/rollback and focused sanitizers | Passed: 26/26 Release; 25/25 UBSan and ASan+UBSan. Twelve retirements, dense oracle, zero extra native evaluations in actual MAIN cache fixture. No live integration, publication or run |
 
 E1 first reuses existing gtsam_points batching around LOCAL graph preparation;
 it retains the auxiliary smoother and its conditioning. GPU-aware sidecar update,
@@ -185,6 +186,30 @@ its own explicit algorithmic decision. Fixed lag may bound resources but brings
 historical revision and marginal-prior semantics; reconsider only separately.
 
 ## Execution ledger
+
+### S2 — isolated native Gaussian history prototype
+
+- Authorization: explicit user proceed after S1/B0 and clarification that MAIN
+  Gaussian reuse was not yet implemented. Parent `4b2804cf094c590c8404e3c5fecd00ce682b2dbc`.
+- Added a private Disabled/Shadow-only helper and tests under
+  `experiments/shared_linearization_s2_20261012/`; no production source edit,
+  launch flag or covariance publication. Uses existing GTSAM Gaussian elimination
+  and unchanged CBS relative Schur extraction, not a second nonlinear optimizer.
+- Separate native prior, positive-ID/version/slot contract, exact-once absorption,
+  chart/fixed-key guards, tangent transport, transaction rollback/reset and
+  observer-safe failure path. Actual provenance/hook integration remains S3.
+- Final Release 26/26 twice; focused UBSan 25/25 and ASan+UBSan 25/25. Twelve
+  retirements preserve bounded active history. Dense information relative error
+  <=8.342e-16; endpoint covariance <=1.364e-15; numerical manifold covariance
+  comparisons <=3.164e-10. Repeated numerical diagnostics exact.
+- Actual ISAM2Ext synthetic cache fixture adds zero native evaluations and
+  leaves MAIN equations/estimate unchanged. This is not GPU/live validation.
+- 680 protected hashes, 19 S1 pins, six source HEAD/status checks and MAIN CPU
+  binary unchanged. No covariance/Q/CBS/receiver changes, dataset or timing run,
+  full build, production promotion or push. Report and evidence:
+  `experiments/shared_linearization_s2_20261012/REPORT.md`.
+- Stop at S2. Next decision: default-off real lifecycle capture and S3 shadow
+  validation; current independent LOCAL stays authoritative.
 
 ### B0 — fresh unchanged ETH1 first40s reference
 

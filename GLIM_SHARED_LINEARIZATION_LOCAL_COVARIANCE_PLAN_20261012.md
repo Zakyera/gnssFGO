@@ -189,12 +189,13 @@ its result, and obtain the next decision. Do not start a campaign automatically.
 | S0 | Save baseline and this plan | Local checkpoint, integrity record and clean committed documentation; completed in this task |
 | S1 | Read-only feasibility audit of MAIN equations, charts, factor lifetimes and retirement hooks | Completed: feasible with lifecycle hooks, native provenance and explicit chart/reset checks; no numerical or runtime certification. See S1 report |
 | B0 | Fresh unchanged overall-timing reference before candidate implementation, as requested by the user | Completed and validated: same ETH1 first40s at0.10x, E1b.4a/E2 builds; functional checks and byte-identical receiver repeat pass. See experiments/shared_linearization_b0_20261012/REPORT.md |
-| S2 | Default-off Gaussian information backend and synthetic/dense-reference tests in a private build | Pass the tests below; do not change authoritative outgoing covariance or disable current LOCAL yet |
+| S2 | Default-off Gaussian information backend and synthetic/dense-reference tests in a private build | Complete: 26/26 Release including actual MAIN cache fixture; 25/25 UBSan and ASan+UBSan; dense-oracle and twelve-retirement gates pass. No live hooks or authoritative covariance change. See experiments/shared_linearization_s2_20261012/REPORT.md |
 | S3 | Shadow validation on retained exact inputs where sufficient; at most one authorized 40 s capture if MAIN snapshots are missing | Existing LOCAL remains authoritative; compare candidate against a same-chart native Gaussian oracle through multiple retirements; no candidate CBS publication |
 | S4 | Candidate-only LOCAL covariance timing with identical retained inputs, then one separately authorized matched 40 s live check | Disable the second nonlinear LOCAL solver only in the candidate; validate factor conservation, publication, covariance and end-to-end runtime; report expected covariance/trajectory differences from the old definition |
 
-S2 is the next proposed step after completed S1 and B0. Both unchanged timing
-captures remain preserved; another baseline capture is not required. S3 shadow
+S2 is complete as an isolated default-off backend. S3 real lifecycle integration
+and shadow validation is the next decision, not an automatic run. Both unchanged
+timing captures remain preserved; another baseline capture is not required. S3 shadow
 runtime is not the candidate performance result,
 because both paths run together. Reuse one suitable capture rather than creating
 separate data runs for every test. No full 160-second run or new sequence follows
