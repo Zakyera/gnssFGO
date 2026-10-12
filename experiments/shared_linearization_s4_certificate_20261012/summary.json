@@ -1,0 +1,527 @@
+{
+  "correctness_passed": true,
+  "tests": {
+    "release": {
+      "tests": 40,
+      "failures": 0,
+      "errors": 0,
+      "disabled": 0
+    },
+    "asan": {
+      "tests": 40,
+      "failures": 0,
+      "errors": 0,
+      "disabled": 0
+    }
+  },
+  "variants": {
+    "reference": {
+      "stage": {
+        "n": 2349,
+        "mean": 0.6162532626649638,
+        "median": 0.665998,
+        "p95": 0.8522442,
+        "max": 3.0301820000000004,
+        "total": 1447.578914
+      },
+      "commit": {
+        "n": 2349,
+        "mean": 0.033162698169433805,
+        "median": 0.033636,
+        "p95": 0.0571968,
+        "max": 0.32297400000000004,
+        "total": 77.899178
+      },
+      "query": {
+        "n": 60,
+        "mean": 33.36546801666667,
+        "median": 37.2849355,
+        "p95": 40.466516999999996,
+        "max": 42.035211000000004,
+        "total": 2001.928081
+      },
+      "per_pass_seconds": {
+        "1": {
+          "stage": 0.487496937,
+          "commit": 0.026457089,
+          "query": 0.676564442
+        },
+        "2": {
+          "stage": 0.487988443,
+          "commit": 0.026023784,
+          "query": 0.658773681
+        },
+        "3": {
+          "stage": 0.472093534,
+          "commit": 0.025418305,
+          "query": 0.666589958
+        }
+      },
+      "per_pass_wall_seconds": {
+        "1": 1.470365314,
+        "2": 1.443442384,
+        "3": 1.435029856
+      },
+      "epoch_bins": {
+        "early": {
+          "n": 15,
+          "mean": 21.092471266666667,
+          "median": 21.94707,
+          "p95": 40.1678031,
+          "max": 40.912867,
+          "total": 316.387069
+        },
+        "middle": {
+          "n": 30,
+          "mean": 37.565138033333334,
+          "median": 37.5483265,
+          "p95": 40.3225735,
+          "max": 42.035211000000004,
+          "total": 1126.954141
+        },
+        "late": {
+          "n": 15,
+          "mean": 37.239124733333334,
+          "median": 37.041514,
+          "p95": 38.9682568,
+          "max": 40.850792,
+          "total": 558.586871
+        }
+      },
+      "max_errors": {
+        "max_information_relative_error": 1.6942822922309972e-17,
+        "max_covariance_relative_error": 3.729200613673675e-15
+      },
+      "conservation": {
+        "epoch": 783,
+        "queries": 20,
+        "retirements": 313,
+        "admitted": 5321,
+        "absorbed": 4513,
+        "removed": 0,
+        "active": 808
+      }
+    },
+    "candidate": {
+      "stage": {
+        "n": 2349,
+        "mean": 0.6176191174968072,
+        "median": 0.663068,
+        "p95": 0.8531042,
+        "max": 1.364314,
+        "total": 1450.787307
+      },
+      "commit": {
+        "n": 2349,
+        "mean": 0.03349334227330779,
+        "median": 0.033763999999999995,
+        "p95": 0.0545402,
+        "max": 0.396735,
+        "total": 78.675861
+      },
+      "query": {
+        "n": 60,
+        "mean": 12.708027033333334,
+        "median": 11.1959795,
+        "p95": 22.55116219999997,
+        "max": 35.62426,
+        "total": 762.481622
+      },
+      "per_pass_seconds": {
+        "1": {
+          "stage": 0.505266733,
+          "commit": 0.027394911,
+          "query": 0.265549518
+        },
+        "2": {
+          "stage": 0.476660731,
+          "commit": 0.026163768,
+          "query": 0.24829643
+        },
+        "3": {
+          "stage": 0.468859843,
+          "commit": 0.025117182,
+          "query": 0.248635674
+        }
+      },
+      "per_pass_wall_seconds": {
+        "1": 1.094341229,
+        "2": 1.026355532,
+        "3": 1.017742005
+      },
+      "epoch_bins": {
+        "early": {
+          "n": 15,
+          "mean": 8.949529,
+          "median": 7.054386999999999,
+          "p95": 21.300109,
+          "max": 21.966418,
+          "total": 134.242935
+        },
+        "middle": {
+          "n": 30,
+          "mean": 15.68019,
+          "median": 13.715840499999999,
+          "p95": 33.87100105,
+          "max": 35.62426,
+          "total": 470.4057
+        },
+        "late": {
+          "n": 15,
+          "mean": 10.522199133333332,
+          "median": 10.384898,
+          "p95": 11.3247387,
+          "max": 11.552896,
+          "total": 157.832987
+        }
+      },
+      "max_errors": {
+        "max_information_relative_error": 1.6942822922309972e-17,
+        "max_covariance_relative_error": 3.729200613673675e-15
+      },
+      "conservation": {
+        "epoch": 783,
+        "queries": 20,
+        "retirements": 313,
+        "admitted": 5321,
+        "absorbed": 4513,
+        "removed": 0,
+        "active": 808
+      }
+    }
+  },
+  "profile": {
+    "reference": {
+      "query.assemble_dense_hessian_s": {
+        "n": 20,
+        "mean": 2.69745975,
+        "median": 2.9997404999999997,
+        "p95": 3.1099155,
+        "max": 3.318925,
+        "total": 53.949195
+      },
+      "query.clone_graph_s": {
+        "n": 20,
+        "mean": 0.0893781,
+        "median": 0.095899,
+        "p95": 0.1171486,
+        "max": 0.124342,
+        "total": 1.787562
+      },
+      "query.dense_rank_check_s": {
+        "n": 20,
+        "mean": 28.250655,
+        "median": 31.784386,
+        "p95": 32.703249150000005,
+        "max": 32.793331,
+        "total": 565.0131
+      },
+      "query.endpoint_rank_check_s": {
+        "n": 20,
+        "mean": 0.00588315,
+        "median": 0.005568,
+        "p95": 0.006543000000000003,
+        "max": 0.01097,
+        "total": 0.117663
+      },
+      "query.extract_and_transport_s": {
+        "n": 20,
+        "mean": 0.00581385,
+        "median": 0.0053825,
+        "p95": 0.007296900000000004,
+        "max": 0.011987999999999999,
+        "total": 0.116277
+      },
+      "query.joint_marginal_s": {
+        "n": 20,
+        "mean": 1.58631045,
+        "median": 1.6604495,
+        "p95": 2.9945627500000005,
+        "max": 3.631039,
+        "total": 31.726209
+      },
+      "query.relative_covariance_helper_s": {
+        "n": 20,
+        "mean": 0.0345077,
+        "median": 0.0311355,
+        "p95": 0.038622600000000035,
+        "max": 0.08429099999999999,
+        "total": 0.690154
+      },
+      "query.sparse_elimination_s": {
+        "n": 20,
+        "mean": 0.68410455,
+        "median": 0.597541,
+        "p95": 1.0882250500000004,
+        "max": 1.389623,
+        "total": 13.682091
+      },
+      "query_total_s": {
+        "n": 20,
+        "mean": 33.52530545,
+        "median": 37.622854000000004,
+        "p95": 39.22713315,
+        "max": 40.003856,
+        "total": 670.506109
+      },
+      "recorded_s": {
+        "n": 20,
+        "mean": 141.8680786,
+        "median": 159.6556685,
+        "p95": 171.20424645,
+        "max": 174.710382,
+        "total": 2837.361572
+      }
+    },
+    "candidate": {
+      "query_total_s": {
+        "n": 20,
+        "mean": 12.39399325,
+        "median": 10.6090125,
+        "p95": 21.026496700000006,
+        "max": 33.731848,
+        "total": 247.879865
+      },
+      "rank.certificate_s": {
+        "n": 20,
+        "mean": 6.77029715,
+        "median": 4.5892915,
+        "p95": 13.28158355000001,
+        "max": 24.881303,
+        "total": 135.405943
+      },
+      "recorded_s": {
+        "n": 20,
+        "mean": 141.8680786,
+        "median": 159.6556685,
+        "p95": 171.20424645,
+        "max": 174.710382,
+        "total": 2837.361572
+      }
+    }
+  },
+  "identities": {
+    "release": {
+      "passed": true,
+      "phase": "release",
+      "outputs": {
+        "pose_reference": "19411716205b3f44c89227d6eefbfa30bfdb59a457d4771a0084769f12c2b3e9",
+        "pose_candidate": "19411716205b3f44c89227d6eefbfa30bfdb59a457d4771a0084769f12c2b3e9",
+        "imu_reference": "2663e1c908e594b7962bedff8584d2987e28c51c02835294a47e2b1e89e92bac",
+        "imu_candidate": "2663e1c908e594b7962bedff8584d2987e28c51c02835294a47e2b1e89e92bac",
+        "real_reference": "3652c745b2f0005c4dbaf230dbcd5b26ecb89d2fd2cecc85bff8afd7d20841bd",
+        "real_candidate": "3652c745b2f0005c4dbaf230dbcd5b26ecb89d2fd2cecc85bff8afd7d20841bd"
+      },
+      "real_journal_sha256": "25ab6edd4d33e55c6993abbaf63982b9711e2f634709d02a2b834460e258de1f"
+    },
+    "asan": {
+      "passed": true,
+      "phase": "asan",
+      "outputs": {
+        "pose_reference": "19411716205b3f44c89227d6eefbfa30bfdb59a457d4771a0084769f12c2b3e9",
+        "pose_candidate": "19411716205b3f44c89227d6eefbfa30bfdb59a457d4771a0084769f12c2b3e9",
+        "imu_reference": "2663e1c908e594b7962bedff8584d2987e28c51c02835294a47e2b1e89e92bac",
+        "imu_candidate": "2663e1c908e594b7962bedff8584d2987e28c51c02835294a47e2b1e89e92bac"
+      },
+      "real_journal_sha256": "25ab6edd4d33e55c6993abbaf63982b9711e2f634709d02a2b834460e258de1f"
+    },
+    "timing": {
+      "passed": true,
+      "phase": "timing",
+      "outputs": {
+        "warmup_reference": "3652c745b2f0005c4dbaf230dbcd5b26ecb89d2fd2cecc85bff8afd7d20841bd",
+        "warmup_candidate": "3652c745b2f0005c4dbaf230dbcd5b26ecb89d2fd2cecc85bff8afd7d20841bd",
+        "measured1_candidate": "3652c745b2f0005c4dbaf230dbcd5b26ecb89d2fd2cecc85bff8afd7d20841bd",
+        "measured1_reference": "3652c745b2f0005c4dbaf230dbcd5b26ecb89d2fd2cecc85bff8afd7d20841bd",
+        "measured2_reference": "3652c745b2f0005c4dbaf230dbcd5b26ecb89d2fd2cecc85bff8afd7d20841bd",
+        "measured2_candidate": "3652c745b2f0005c4dbaf230dbcd5b26ecb89d2fd2cecc85bff8afd7d20841bd",
+        "measured3_candidate": "3652c745b2f0005c4dbaf230dbcd5b26ecb89d2fd2cecc85bff8afd7d20841bd",
+        "measured3_reference": "3652c745b2f0005c4dbaf230dbcd5b26ecb89d2fd2cecc85bff8afd7d20841bd",
+        "profile_reference": "3652c745b2f0005c4dbaf230dbcd5b26ecb89d2fd2cecc85bff8afd7d20841bd",
+        "profile_candidate": "3652c745b2f0005c4dbaf230dbcd5b26ecb89d2fd2cecc85bff8afd7d20841bd"
+      },
+      "real_journal_sha256": "25ab6edd4d33e55c6993abbaf63982b9711e2f634709d02a2b834460e258de1f"
+    }
+  },
+  "certificates": {
+    "queries": 60,
+    "certified": 60,
+    "fallback": 0,
+    "reasons": {
+      "0": 60
+    },
+    "fallback_fraction": 0.0,
+    "certificate_ms": {
+      "n": 60,
+      "mean": 6.88501035,
+      "median": 4.8055319999999995,
+      "p95": 14.154105999999969,
+      "max": 26.275236,
+      "total": 413.100621
+    },
+    "fallback_ms": {
+      "n": 60,
+      "mean": 0,
+      "median": 0.0,
+      "p95": 0.0,
+      "max": 0,
+      "total": 0
+    },
+    "combined_check_ms": {
+      "n": 60,
+      "mean": 6.88501035,
+      "median": 4.8055319999999995,
+      "p95": 14.154105999999969,
+      "max": 26.275236,
+      "total": 413.100621
+    },
+    "dimensions": [
+      45,
+      345,
+      645,
+      750,
+      765
+    ]
+  },
+  "certificate_unique_checkpoints": {
+    "queries": 20,
+    "certified": 20,
+    "fallback": 0,
+    "reasons": {
+      "0": 20
+    },
+    "fallback_fraction": 0.0,
+    "certificate_ms": {
+      "n": 20,
+      "mean": 7.1940538,
+      "median": 4.924044,
+      "p95": 14.22640500000001,
+      "max": 26.275236,
+      "total": 143.881076
+    },
+    "fallback_ms": {
+      "n": 20,
+      "mean": 0,
+      "median": 0.0,
+      "p95": 0.0,
+      "max": 0,
+      "total": 0
+    },
+    "combined_check_ms": {
+      "n": 20,
+      "mean": 7.1940538,
+      "median": 4.924044,
+      "p95": 14.22640500000001,
+      "max": 26.275236,
+      "total": 143.881076
+    },
+    "dimensions": [
+      45,
+      345,
+      645,
+      750,
+      765
+    ]
+  },
+  "profile_certificates": {
+    "queries": 20,
+    "certified": 20,
+    "fallback": 0,
+    "reasons": {
+      "0": 20
+    },
+    "fallback_fraction": 0.0,
+    "certificate_ms": {
+      "n": 20,
+      "mean": 6.77029715,
+      "median": 4.5892915,
+      "p95": 13.28158355000001,
+      "max": 24.881303,
+      "total": 135.405943
+    },
+    "fallback_ms": {
+      "n": 20,
+      "mean": 0,
+      "median": 0.0,
+      "p95": 0.0,
+      "max": 0,
+      "total": 0
+    },
+    "combined_check_ms": {
+      "n": 20,
+      "mean": 6.77029715,
+      "median": 4.5892915,
+      "p95": 13.28158355000001,
+      "max": 24.881303,
+      "total": 135.405943
+    },
+    "dimensions": [
+      45,
+      345,
+      645,
+      750,
+      765
+    ]
+  },
+  "query_speedup_median": 3.330207553524013,
+  "query_median_reduction_fraction": 0.6997184157660672,
+  "query_mean_reduction_fraction": 0.619126366607972,
+  "paired_query_speedup": {
+    "1": 2.5477901338160214,
+    "2": 2.65317419585936,
+    "3": 2.6809908138926195
+  },
+  "speed_gates": {
+    "median_25_percent": true,
+    "every_pair_faster": true,
+    "no_p95_regression": true
+  },
+  "speed_gate_passed": true,
+  "projected_389_queries_seconds": {
+    "reference": 12.979167058483334,
+    "candidate": 4.943422515966667
+  },
+  "projection_limit": "20 saved checkpoints times389 historical requests; not measured every request or in live GLIM.",
+  "integrity": {
+    "protected_s3_files": 716,
+    "historical_pins": {
+      "shared_linearization_s4_timing_20261012": 7,
+      "shared_linearization_s4_eigenvalues_20261012": 8
+    },
+    "new_input_pins": 13,
+    "baseline": {
+      "protected_files": 680,
+      "S1_pins": 19,
+      "source_repositories": {
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/cbs": {
+          "head": "7c3a1e66767938e105d46fd072bd853ad5ec50c2",
+          "status": ""
+        },
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/glim": {
+          "head": "e817b335377191b34ff822d4acbe6a2da3934fb4",
+          "status": ""
+        },
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/glim_ros1": {
+          "head": "fad72d6e11219e42cbbe09658341fff4512769dc",
+          "status": ""
+        },
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/gtsam": {
+          "head": "150157b0a686c4411372c3f4455258d9c291219d",
+          "status": ""
+        },
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/gtsam_points": {
+          "head": "857819676921650510e249018cd82d45c08d7e8d",
+          "status": ""
+        },
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/Kimera-VIO": {
+          "head": "560ad0fd33c162ff2a0a64a1372f9b61e1d8d8f9",
+          "status": ""
+        }
+      },
+      "main_cpu_library_sha256": "a1fac7bede8bf7dafef2f3ae3d7206fd539b0285479d8a6cb739f8da22b0f593",
+      "failures": []
+    },
+    "unchanged_covariance_path": true,
+    "unchanged_previous_tests": true
+  }
+}

@@ -147,6 +147,7 @@ shared IMU, past means or nonlinear history are statistically independent.
 | S3 | Private default-off MAIN lifecycle and native-admission observer | Actual fallback-wrapper update/retirement/reset fixtures; no added native evaluations; unchanged MAIN; same-chart shadow oracle before promotion | Real-data shadow gate passed: one ETH1 first40s capture;783 updates,313 retirements,20 covariance checks, max joint relative difference6.01e-15.44/44 Release twice and ASan/UBSan;18 regressions;receiver repeat exact. LOCAL authoritative. See experiments/shared_linearization_s3_capture_20261012/REPORT.md |
 | S4a | Saved native equation cost attribution only | Original/instrumented covariance equivalence, isolated stage/query timings and query-cadence audit | Complete: dense rank check95.94% of query cost; original query median160.274ms. Cost attribution only; follow-up optimization is S4b. See experiments/shared_linearization_s4_timing_20261012/REPORT.md |
 | S4b | Eigenvalues-only rank inspection in private Gaussian backend | Same rank decisions, unchanged equations/covariances, focused boundary/sanitizer tests, matched saved-input timing | Complete:31/31 Release and ASan/UBSan;130 rank cases agree; saved outputs byte-identical. Query156.711→38.045ms median,4.12× faster; still no provider promotion. See experiments/shared_linearization_s4_eigenvalues_20261012/REPORT.md |
+| S4c | Conservative fast rank certificate with original eigensolver fallback | Unchanged covariance and rank decisions, bounded error certificate, adversarial tests and matched timing on saved equations | Complete:40/40 Release and ASan/UBSan; saved outputs byte-identical; query37.285→11.196ms median vs S4b,3.33×. All20 checkpoints certify. Private only; no live run. See experiments/shared_linearization_s4_certificate_20261012/REPORT.md |
 
 E1 first reuses existing gtsam_points batching around LOCAL graph preparation;
 it retains the auxiliary smoother and its conditioning. GPU-aware sidecar update,
@@ -189,6 +190,33 @@ its own explicit algorithmic decision. Fixed lag may bound resources but brings
 historical revision and marginal-prior semantics; reconsider only separately.
 
 ## Execution ledger
+
+### S4c — conservative rank certificate
+
+- Authorization: user "Proceed" after the bounded S4c proposal. Parent
+  feb737397453e10e8f13423993df020e41bbd3e6; branch
+  engineering/shared-native-rank-certificate-20261012.
+- Status: ACCEPTED PRIVATE OPTIMIZATION; NO PROVIDER PROMOTION. Derived and
+  tested one conservative check-only shifted sparse Cholesky/reconstruction
+  certificate using the pinned Eigen library.
+  It cannot simply reuse the unshifted factor as a rank guarantee. Preserve
+  the existing GTSAM covariance elimination; the shift never enters that graph.
+- The full S4b eigenvalue check remains the fallback on every uncertain case.
+  No threshold relaxation, production/provider change, live source run or push.
+- Protocol: experiments/shared_linearization_s4_certificate_20261012/PROTOCOL.md.
+- Result:40/40 Release and40/40 focused ASan/UBSan pass, retaining all31 previous
+  tests and130 rank fixtures. All12 real-journal passes have byte-identical query
+  output,783 updates,313 retirements,20 queries;5321=4513 absorbed+808 active.
+- Matched query median37.285→11.196ms (3.33×), p9540.467→22.551ms; all three
+  speed gates pass. All20 unique checkpoints certify; fallback0/60 measured
+  queries. Candidate history stage/commit0.510s per journal;389-request query
+  projection4.943s, not measured live/all-request timing. MAIN is unchanged.
+- Integrity:716 S3 protected files,680 baseline files,19 S1 pins,7 S4a/8 S4b
+  identities,13 staged inputs and six source HEAD/status checks pass. Existing
+  independent LOCAL remains authoritative. No code/library/profile promotion.
+- Report: experiments/shared_linearization_s4_certificate_20261012/REPORT.md.
+  Completion commit is the local commit containing this report and both plans.
+  Stop for a separate matched40s integration decision; no automatic next run.
 
 ### S4b — eigenvalues-only rank inspection
 

@@ -7,9 +7,10 @@ nonlinear LOCAL smoother. Preserve the validated E1b.4a implementation as the
 reference and rollback path. **S0/S1 preservation and feasibility, B0's unchanged
 timing reference and S2's isolated Gaussian backend are complete. S3's private
 lifecycle, synthetic and real-data first40s shadow gates now pass. The
-authoritative LOCAL provider remains unchanged. S4a cost attribution and S4b's
-isolated eigenvalues-only timing gate are complete; no candidate publication or
-S4 live run has started.**
+authoritative LOCAL provider remains unchanged. S4a cost attribution, S4b's
+eigenvalues-only gate and S4c's conservative rank-certificate gate are complete.
+S4c reduces matched query median37.285→11.196ms with byte-identical saved
+outputs; no candidate publication or S4 live run has started.**
 See [S1 feasibility findings](GLIM_SHARED_LINEARIZATION_FEASIBILITY_S1_20261012.md)
 for the actual MAIN implementation and exact lifecycle hooks.
 
@@ -208,6 +209,17 @@ speed promotion over B0's preserved independent LOCAL. No provider/default or
 publication change. Stop for the next decision rather than deleting a safety
 check or changing covariance. See [S4a attribution](experiments/shared_linearization_s4_timing_20261012/REPORT.md)
 and [S4b result](experiments/shared_linearization_s4_eigenvalues_20261012/REPORT.md).
+
+S4c now adds a check-only shifted sparse-Cholesky reconstruction certificate,
+with the unchanged full eigenvalue test on uncertainty. The shift never enters
+the covariance calculation. All40 Release/40 focused ASan/UBSan tests pass;
+saved outputs and previous failure decisions are unchanged. Matched against
+S4b: query median37.285→11.196ms, p9540.467→22.551ms, 3.33× median speedup;
+all20 unique saved checkpoints certify. The389-request cadence projects4.943s
+query work plus0.510s history, not a measured live/all-request result. This is
+promising enough for a separately authorized matched40s integration test, not
+proof of overall GLIM speedup or a production/provider promotion. No new source
+run occurred. See [S4c result](experiments/shared_linearization_s4_certificate_20261012/REPORT.md).
 
 S3 is complete on the bounded real-data window. Its saved native equations,
 charts and lifecycle journal now support the next same-input timing gate without
