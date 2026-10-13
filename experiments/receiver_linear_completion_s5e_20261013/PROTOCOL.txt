@@ -1,0 +1,32 @@
+S5e: complete the existing linear solve, not a new publication policy
+Parent: 332d3a1e24829d759f6a222336d2be296c18cac3
+
+Use only frozen S5 CBS-ON journal and E2b offline oracle. No source/live run.
+Same18 support indices as S5d:10,20,40,100,200,300,400,700,1000,1200,1300,
+1400,1420,1424,1438,1440,1460,1480. Selection frozen before new replay.
+At each selected support copy iSAM2 BEFORE strict refinement. On that copy,
+calculateEstimate then calculateBestEstimate, with NO update or relinearize.
+Keep ordinary, full-backsub, and published states distinct. No shadow result
+can replace an authoritative publication. Retain original strict gradient gate.
+
+Fresh nonlinear verification uses private factors with identical noise/mean/
+mathematics but no E2 memo or E2b endpoint cache. No shared cache mutation.
+Unknown factor types fail closed. Complete backsub and fresh verification are
+separate measurements. Runtime is diagnostic, not a speed benchmark.
+
+Unit/reference gates: full solve versus independent QR, no nonlinear factor
+calls by backsub, solver-copy isolation, unchanged factor keys/noise/residual/
+Jacobian in uncached clones, deterministic repeated copies, exception isolation.
+Release + focused ASan/UBSan, then observer OFF/ON5s prefixes, then ONE full
+saved replay. Stop on preservation failure. All19 nonclock products and cache
+counters must equal E2b offline oracle exactly. S5d initial snapshots must
+match exactly. Compare shadow X/V/W and gradient against S5d initial/first/final.
+Preserve751 protectedfiles,49 rawartifacts,six source repos and both oracles.
+
+Frozen algorithm: source_wnoa X/V/W, no central IMU, independent100ms support,
+full-history iSAM2 QR, all stable-ID revisions, Qc .00375rotation/.015translation,
+pose/V/W initialsigmas1e-5/10/3, nativeGaussian scale1, no gating/robust loss,
+existing strict1e-5 normalizedgradient and transactional refinement/recovery.
+E2/E2b enabled. Same pinned runtime, CPU2, TBB1/OMP1. No production promotion.
+One-step snapshots inherit prior strict publications: success is not validation
+of a repeatedly substituted solver policy. Original live/offline mismatch remains.

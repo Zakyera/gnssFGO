@@ -1,0 +1,146 @@
+{
+  "passed": true,
+  "returncode": 0,
+  "error": null,
+  "seconds": 0.4148193840010208,
+  "command": [
+    "/home/yeranis/results/gnssfgo_linear_completion_s5e_20261013/build/replay",
+    "--receiver-model",
+    "source_wnoa",
+    "--mode",
+    "sources",
+    "--timeline",
+    "record",
+    "--solver",
+    "isam2",
+    "--support-policy",
+    "uniform_imu",
+    "--support-period-ns",
+    "100000000",
+    "--receiver-startup-samples",
+    "59",
+    "--event-stream",
+    "/home/yeranis/results/gnssfgo_receiver_subphase_s5b_20261013/prefix5_valid.csv",
+    "--out",
+    "/home/yeranis/results/gnssfgo_linear_completion_s5e_20261013/prefix_off"
+  ],
+  "comparison": {
+    "a": "/home/yeranis/results/gnssfgo_endpoint_reuse_e2b_20261013/prefix_on",
+    "b": "/home/yeranis/results/gnssfgo_linear_completion_s5e_20261013/prefix_off",
+    "checks": {
+      "trajectory.tum": {
+        "equal": true,
+        "a_sha256": "d9feb585e2c6bc680e5857685e6b081fc5e7ed2730cdf98d417ca4c1bb5c6782",
+        "b_sha256": "d9feb585e2c6bc680e5857685e6b081fc5e7ed2730cdf98d417ca4c1bb5c6782"
+      },
+      "states.csv": {
+        "equal": true,
+        "a_sha256": "61b21785080f027522b09f7f9adb574cd10036985bee4e2d9c6e88fed2d4a83b",
+        "b_sha256": "61b21785080f027522b09f7f9adb574cd10036985bee4e2d9c6e88fed2d4a83b"
+      },
+      "online_trajectory.tum": {
+        "equal": true,
+        "a_sha256": "861df4461b2649af8c96d708ad85ffd001b5f4fc8addaf1830424a31c23e9b34",
+        "b_sha256": "861df4461b2649af8c96d708ad85ffd001b5f4fc8addaf1830424a31c23e9b34"
+      },
+      "online_states.csv": {
+        "equal": true,
+        "a_sha256": "c402c9d09195f729955295ac798d8acaa215eff0fe87c6c688997a559f5828c3",
+        "b_sha256": "c402c9d09195f729955295ac798d8acaa215eff0fe87c6c688997a559f5828c3"
+      },
+      "support_clock.csv": {
+        "equal": true,
+        "a_sha256": "85c6149e2d9ad08eb9517b9a417811e53cd32a167fcef07822380d4048148238",
+        "b_sha256": "85c6149e2d9ad08eb9517b9a417811e53cd32a167fcef07822380d4048148238"
+      },
+      "source_model_covariance.csv": {
+        "equal": true,
+        "a_sha256": "919c29d854657c353a82b3274948d05324f9e8b7d6f5098202502f1651464e7b",
+        "b_sha256": "919c29d854657c353a82b3274948d05324f9e8b7d6f5098202502f1651464e7b"
+      },
+      "model_covariance.csv": {
+        "equal": true,
+        "a_sha256": "33e7993b8d7fd805bb887bbe50c8febe266280d8ba956fa5d4a652f4c587256e",
+        "b_sha256": "33e7993b8d7fd805bb887bbe50c8febe266280d8ba956fa5d4a652f4c587256e"
+      },
+      "causal_dispatch.csv": {
+        "equal": true,
+        "a_sha256": "80d4b070800b8e5975930d764b0eb84d6ff9d06762eca93d20da7004480002ae",
+        "b_sha256": "80d4b070800b8e5975930d764b0eb84d6ff9d06762eca93d20da7004480002ae"
+      },
+      "measurement_events.csv": {
+        "equal": true,
+        "a_sha256": "c5deb168667e759f59f9daba8f422154394d0c2b70699c3edc90806fc1e3c333",
+        "b_sha256": "c5deb168667e759f59f9daba8f422154394d0c2b70699c3edc90806fc1e3c333"
+      },
+      "source_accounting.csv": {
+        "equal": true,
+        "a_sha256": "4021142da6cc112a46463d9d810634f462cc237f1926c503f398a67df08a9113",
+        "b_sha256": "4021142da6cc112a46463d9d810634f462cc237f1926c503f398a67df08a9113"
+      },
+      "unsupported_beliefs.csv": {
+        "equal": true,
+        "a_sha256": "cde31ac794b1fd74e8a3b4ad3ac556a2a9d7c754b429f5d9cbb35c7e1cfa568b",
+        "b_sha256": "cde31ac794b1fd74e8a3b4ad3ac556a2a9d7c754b429f5d9cbb35c7e1cfa568b"
+      },
+      "support_accelerations.csv": {
+        "equal": true,
+        "a_sha256": "948e33e133c14f7ecfc48256855bf3c4173087db7252bf7dc344fe9cea72ebe8",
+        "b_sha256": "948e33e133c14f7ecfc48256855bf3c4173087db7252bf7dc344fe9cea72ebe8"
+      },
+      "belief_residuals.csv": {
+        "equal": true,
+        "a_sha256": "082c4cd69e128cf00ae6e496a3762f7b47ee59ab666a59e8b0d9dd88225b4e80",
+        "b_sha256": "082c4cd69e128cf00ae6e496a3762f7b47ee59ab666a59e8b0d9dd88225b4e80"
+      },
+      "publication_steps.csv": {
+        "equal": true,
+        "a_sha256": "70a029cf268ce6d4498c968b03acc839c12c48b4dc0900eec2d6b4b1d0b1f6f4",
+        "b_sha256": "70a029cf268ce6d4498c968b03acc839c12c48b4dc0900eec2d6b4b1d0b1f6f4"
+      },
+      "e2_memo.csv": {
+        "equal": true,
+        "a_sha256": "260540817114904050e3988483977a6a87e6f3446cc2f0e38aed70aaa6511f88",
+        "b_sha256": "260540817114904050e3988483977a6a87e6f3446cc2f0e38aed70aaa6511f88"
+      },
+      "publication_convergence.csv": {
+        "equal": true,
+        "rows": [
+          45,
+          45
+        ],
+        "ignored": [
+          "seconds"
+        ],
+        "first_difference": null
+      },
+      "revision_events.csv": {
+        "equal": true,
+        "rows": [
+          889,
+          889
+        ],
+        "ignored": [
+          "update_seconds"
+        ],
+        "first_difference": null
+      },
+      "stream_progress.csv": {
+        "equal": true,
+        "rows": [
+          1338,
+          1338
+        ],
+        "ignored": [
+          "wall_unix_ns"
+        ],
+        "first_difference": null
+      },
+      "summary.json": {
+        "equal": true
+      }
+    },
+    "passed": true
+  },
+  "endpoint_counters_exact": true
+}

@@ -16,6 +16,20 @@ performance hypotheses into one acceptance experiment.
 
 ## Baseline and evidence
 
+**Latest diagnosis (S5e, 2026-10-13):** Full back-substitution without nonlinear
+update on18 copied initial-publication snapshots passes0/18 frozen1e-5 gradient
+checks. It is cheap (median2.185ms, maximum3.552ms), but remaining nonlinear
+corrections reach2.187mm position and.110798m/s velocity. Median97.10% objective
+reduction is not stationarity/state equivalence. Installed GTSAM4.2a8's
+update.forceFullSolve also forces zero-threshold eligible relinearization;
+calculateBestEstimate alone does not. This isolates a custom global nonlinear
+publication burden, not an intrinsically slow backsolve.68/68 Release and
+ASan/UBSan; both prefixes and ONE full saved-journal replay match all19 offline
+products and E2b counters exactly. Initial snapshots/gradients exactly match
+S5d. No policy/default/source change or live run. Cheap solve alone cannot replace
+strict publication; E4 rejection and live/offline mismatch remain. See
+[S5e report](experiments/receiver_linear_completion_s5e_20261013/REPORT.txt).
+
 **Latest diagnosis (S5d, 2026-10-13):** Private read-only snapshots pass68/68
 Release and ASan/UBSan, exact observer-OFF/ON prefixes and ONE complete saved
 CBS-ON journal replay against the E2b OFFLINE oracle (all19 non-clock products
@@ -241,6 +255,7 @@ shared IMU, past means or nonlinear history are statistically independent.
 | S5b | Receiver subphase timing without changing estimation | Private timing-only instrumentation, exact-output/decision checks and overhead control on saved S5 journal; disjoint inclusive/exclusive accounting | Stopped2026-10-13: full exact-reference gate failed; no full timed profile, no optimization; external profiling permission unresolved |
 | S5c | Unmodified receiver sampling diagnosis | User-space profiling, exact frozen-journal output gates, overhead/sample coverage and dominant-code inspection | Complete2026-10-13: offline exact/quality gates pass,23,879 samples,1.49% wall overhead; publication/source-Jacobian/QR cost quantified. Original live equality remains failed; E2b proposed only |
 | S5d | Incremental estimate versus strict publication | Read-only Values/gradient snapshots; exact offline decisions/accounting/output gates; separate p/orientation/V/W and per-pass progress | Complete2026-10-13:68 Release/68 ASan+UBSan, exact prefixes/full journal. First pass supplies>=99.9363% objective reduction at18 selected checkpoints; later global polishing localized. No early-stop/policy validation or promotion |
+| S5e | Complete cached linear solve versus nonlinear update | Copied solver, no update; independent cache-isolated fresh verification, S5d snapshot equality and exact replay gates | Complete2026-10-13:68 Release/68 ASan+UBSan; exact prefixes/full replay. Full backsub passes0/18 strict gradient checks; remaining V correction.110798m/s. No replacement policy/promotion |
 
 E1 first reuses existing gtsam_points batching around LOCAL graph preparation;
 it retains the auxiliary smoother and its conditioning. GPU-aware sidecar update,
@@ -283,6 +298,39 @@ its own explicit algorithmic decision. Fixed lag may bound resources but brings
 historical revision and marginal-prior semantics; reconsider only separately.
 
 ## Execution ledger
+
+### S5e — full linear back-substitution versus nonlinear relinearization
+
+- COMPLETE2026-10-13, authorized by user "proceed" after S5d.
+- One hypothesis: on a copied initial-publication iSAM2 snapshot, can
+  calculateBestEstimate() complete the existing linear solve without an update
+  and supply the first-pass correction? Strict original publication remains
+  authoritative. No source run, policy change, covariance/threshold tuning.
+- Same18 preselected S5d support checkpoints, frozen S5 journal/E2b oracle.
+  Isolate verification factor evaluations from authoritative mutable caches;
+  require exact observer-OFF/ON outputs, decisions and cache counters.
+- Private protocol/code: experiments/receiver_linear_completion_s5e_20261013/.
+- Parent332d3a1e24829d759f6a222336d2be296c18cac3; private branch
+  audit/receiver-linear-completion-s5e-20261013. Replay SHA256
+  7a83639b47a39f6d571fd887184724e716c078b259c66178daa509ae7e2d1535.
+- 68 Release/68 ASan+UBSan checks pass; original fixtures' scalar equals(...,0)
+  strict-inequality mistake and typed-null API build correction documented, all
+  failed development evidence retained. Final consistent-header rebuild also
+  passes68/68 Release and ASan/UBSan; inherited tests now select this private
+  model consistently (see API_NOTES.txt). No estimator replay retried.
+- Observer-OFF/ON prefixes and ONE full saved journal match19 nonclock products
+  plus E2b counters exactly. All18 initial Values/objectives/gradient coordinates
+  match S5d exactly; original1481 publication checks stationary.
+- Full backsub alone passes0/18. Remaining max p/q/V/W differences to strict
+  publication2.186764mm/.000163536rad/.110798m/s/.007761619rad/s.
+  Backsub median2.185ms,max3.552ms; copied-solver/verification times separate.
+  Raw439.026s observer replay is not an accepted timing benchmark.
+- 751 protectedfiles,49 raw artifacts,six source repositories and E2b/S5d
+  references unchanged at final check;191 result files hashed. Original live/offline mismatch
+  unresolved. E4 remains rejected. No source/live run, tuning, production change
+  or push. Necessary nonlinear work remains; no claim that every factor must
+  be globally rebuilt. E3a remains a next isolated candidate, NOT executed.
+- Checkpoint: local commit containing this entry and REPORT.txt; stop after S5e.
 
 ### S5d — incremental estimate versus strict publication diagnosis
 

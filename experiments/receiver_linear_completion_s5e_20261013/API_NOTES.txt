@@ -1,0 +1,44 @@
+Pinned runtime, not the other local GTSAM4.3 development repository:
+  /home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime
+config.h identifies4.2a8. SHA256:
+lib/libgtsam.so.4:
+392972415c6d262b283b0111a0a8cbab33b04aa723191326a66f74d0d22a3fdb
+include/gtsam/nonlinear/ISAM2.h:
+6e10936bd7d3125c37dcedb3c0fca960fd82877485b065b61e45710f225e7419
+include/gtsam/nonlinear/ISAM2-impl.h:
+a464e8fd23ecba8c755a586dbad0d2c450458db5c66d67285db30a302d9c0d6a
+
+ISAM2.h:207-245 distinguishes incomplete wildfire delta in calculateEstimate
+from complete back-substitution in calculateBestEstimate.
+ISAM2-impl.h:386-387: updateParams.forceFullSolve changes the relinearization
+key check to threshold0.0 (commented 'for debugging'). This is not equivalent
+to calling calculateBestEstimate without update(). The publication wrapper
+also sets force_relinearize=true on every trial. These are OUR strict wrapper
+choices, not a requirement that all gnssFGO/GTSAM deployments optimize every
+historical state to our global1e-5 gradient gate before every publication.
+
+BayesTree-inst.h:181-209 copies the forest via cloned clique objects.
+The diagnostic additionally tests unchanged source theta/delta/estimate and
+factor slots, and compares whole replay outputs plus both cache counters.
+
+Development/validation issues retained transparently; replay math unchanged:
+1. The first unit build rejected push_back(nullptr) in this boost-based API.
+   Corrected to an explicitly typed empty NonlinearFactor::shared_ptr.
+2. The first completed unit run had two false failure fixtures: scalar
+   Values.equals(other,0) uses abs(a-b)<tol (VectorSpace.h:221-222) and rejects
+   identical scalars. Corrected to exact zero local-coordinate difference;
+   no nonzero tolerance was introduced. Initial logs/binaries preserved.
+3. select was first requested while the before-integrity action held the
+   controller lock. The lock refused it before creating an action or running
+   an experiment; selection was issued after the integrity action completed.
+4. Final include audit found legacy quoted includes in inherited test files
+   could select older SourceWnoaModel definitions in separate translation units.
+   The four affected test sources were placed in this private folder, identical
+   to E2b's copies, to select one consistent header. An initial copy from the
+   older candidate omitted E2b's const-interpolator test-adapter fix; the build
+   rejected it and the existing E2b fix was restored, not newly invented.
+   Test binaries were rebuilt/rechecked and
+   retained as unit_consistent/sanitize_consistent; these supersede the earlier
+   mixed-header test results. The one-TU replay binary was unaffected, and was
+   not changed or rerun. Final test evidence is appended without overwriting
+   older records in evidence/; artifact_manifest_final.json is authoritative.

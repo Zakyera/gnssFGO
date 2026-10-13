@@ -1,0 +1,40 @@
+--- /home/yeranis/repos/gnssFGO/experiments/receiver_endpoint_reuse_e2b_20261013/DiagnosticReplay.cpp
++++ /home/yeranis/repos/gnssFGO/experiments/receiver_linear_completion_s5e_20261013/DiagnosticReplay.cpp
+@@ -60,6 +60,7 @@
+ #include "FullPublicationRefinement.h"
+ #include "FailureProbe.h"
+ #include "ExactLinearizationMemo.h"
++#include "LinearCompletionObserver.h"
+ 
+ namespace
+ {
+@@ -999,6 +1000,7 @@
+                          const std::string& out) {
+     if(!std::getenv("WNOJ_STRICT_PUBLICATION"))return;
+     if(!isam2_)throw std::runtime_error("full refinement requires iSAM2");
++    s5e::Observation shadow(*isam2_,index,physical,phase,out);
+     const auto start=std::chrono::steady_clock::now();
+     const auto result=numerical_audit::Refine(isam2_);
+     e2_memo::Flush(out,index,physical,phase);
+@@ -1008,6 +1010,7 @@
+     for(const auto& step:result.steps) if(step.roundoff)setenv("AUDIT_ROUNDOFF_PUBLICATION","1",1);
+     if(!publication_valid_)setenv("AUDIT_FAILED_PUBLICATION","1",1);
+     const double seconds=std::chrono::duration<double>(std::chrono::steady_clock::now()-start).count();
++    shadow.Finish(); // diagnostic only, outside authoritative refinement timer
+     const auto path=std::filesystem::path(out)/"publication_convergence.csv";
+     const bool exists=std::filesystem::exists(path);
+     std::ofstream log(path,std::ios::app);log<<std::setprecision(17);
+--- /home/yeranis/repos/gnssFGO/experiments/receiver_endpoint_reuse_e2b_20261013/SourceWnoaModel.h
++++ /home/yeranis/repos/gnssFGO/experiments/receiver_linear_completion_s5e_20261013/SourceWnoaModel.h
+@@ -140,6 +140,11 @@
+   gtsam::NonlinearFactor::shared_ptr clone() const override {
+     return boost::make_shared<WnoaRelativeFactor>(*this);
+   }
++  // Diagnostic clone: identical equations/noise, no authoritative mutable cache.
++  gtsam::NonlinearFactor::shared_ptr uncachedClone() const {
++    return boost::make_shared<WnoaRelativeFactor>(
++      from_.withCache(nullptr),to_.withCache(nullptr),measured_,noiseModel());
++  }
+   gtsam::Vector unwhitenedError(const gtsam::Values& values,
+       boost::optional<std::vector<gtsam::Matrix>&> h = boost::none) const override {
+     std::vector<gtsam::Matrix> hi, hj;

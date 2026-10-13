@@ -1,0 +1,207 @@
+S5e — full linear completion versus nonlinear publication refinement
+2026-10-13. COMPLETE DIAGNOSTIC; NO PRODUCTION POLICY CHANGE.
+
+Conclusion
+----------
+Completing the existing cached linear solve is inexpensive and often useful,
+but it is NOT sufficient to reproduce strict nonlinear publication. Zero of
+18 preselected support snapshots meets the unchanged normalized-gradient
+limit1e-5 after full back-substitution alone. No source run or live experiment
+was launched. Authoritative replay outputs/decisions/counters remain exact.
+
+Scope and identities
+--------------------
+Parent332d3a1e24829d759f6a222336d2be296c18cac3.
+Branch audit/receiver-linear-completion-s5e-20261013.
+Private replay SHA256:
+7a83639b47a39f6d571fd887184724e716c078b259c66178daa509ae7e2d1535.
+Checkpoint is the local commit containing this report and the plan's S5e ledger.
+No production binary, default CMake target, source estimator, model or profile
+was replaced; no push was made.
+
+Results root:
+ /home/yeranis/results/gnssfgo_linear_completion_s5e_20261013
+Frozen input:
+ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_shared_linearization_s5_live160_20261012/prepared/capacity160_on_receiver/events.csv
+Offline oracle:
+ /home/yeranis/results/gnssfgo_endpoint_reuse_e2b_20261013/full_on1
+Per-pass reference:
+ /home/yeranis/results/gnssfgo_publication_s5d_20261013/full_on
+
+This journal is the drained148.58s capture that stopped at148.55s; it is NOT a
+completed160s live run. Support origin1727775008583475000ns,148.0s support span.
+All table times below are seconds from that support origin, not bag-start time.
+Same18 S5d selections, including preselected late ordinary/recovery maxima.
+Not a random sample; no claim about every possible publication.
+
+Frozen source_wnoa X/V/W, no central IMU/GNSS/bias/acceleration factors.
+Independent100ms support; all ordered stable-ID revisions; full-history QR;
+Qc rotation.00375,translation.015; initial pose/V/W sigmas1e-5/10/3; native full
+Gaussian covariances scale1; no gating/robustification. Exact E2/E2b caches ON.
+Existing strict1e-5 gradient gate and transactional refinement/recovery unchanged.
+Legacy WNOJ environment names do not make this a WNOJ experiment.
+
+What was isolated
+-----------------
+At each selected publication, copy iSAM2 BEFORE authoritative refinement.
+On the saved copy, obtain:
+ A: calculateEstimate() — ordinary wildfire-limited delta.
+ B: calculateBestEstimate() — full back-substitution of the SAME linear system.
+No update(), factor insertion/removal, Jacobian rebuild or nonlinear iteration
+is allowed in B. Original strict refinement runs independently and publishes
+exactly as before. The diagnostic cannot commit B.
+
+Fresh objective/gradient verification is separate from B's linear solve:
+clone source factors with endpoint caches disconnected, slice the whole-factor
+memo wrapper off motion/source factors, preserve identical keys/means/noise/
+equations. Clone priors. Unknown factor types fail closed. This avoids altering
+the authoritative solver's shared factor caches. Source noise pointers are
+immutable and identical. Tests verify exact residual/Jacobian/gradient/diagonal
+equality, including dense covariance and null factor slots.
+Only additional public helper in the private SourceWnoaModel copy is an
+uncached diagnostic clone; existing authoritative evaluation code is unchanged.
+
+Compare B against S5d's A, first global nonlinear pass, and final accepted state
+at the identical physical timestamps and information set. All18 initial states,
+objectives and EVERY gradient/diagonal coordinate match S5d exactly. This also
+validates that copying a pre-refinement solver and examining it later did not
+change the snapshot's contents.
+
+API finding
+-----------
+See API_NOTES.txt for pinned4.2a8 headers/library hashes, not another local
+GTSAM4.3 tree. Installed ISAM2.h distinguishes the incomplete estimate from
+complete back-substitution. ISAM2-impl.h:386-387 explicitly changes the
+relinearization check to threshold0.0 when update.forceFullSolve is true.
+Our FullPublicationRefinement wrapper sets both force_relinearize=true and
+forceFullSolve=true on its nonlinear trials. Thus it requests global eligible
+state relinearization, NOT merely a complete solve of the already-built system.
+This strict wrapper is our experimental receiver policy, not a universal
+gnssFGO/GTSAM requirement. These facts do not establish the authors' deployment
+timings or make their experiments a controlled benchmark for this receiver.
+
+Results: fresh normalized nonlinear gradient
+-------------------------------------------
+Criterion: max_i |(J^T r)_i|/sqrt((J^T J)_ii) <=1e-5.
+Column 'cost%' is (F(A)-F(B))/(F(A)-F(final))*100.
+This is an objective-reduction fraction, not accuracy or state equivalence.
+
+ time_s       A             B          first_pass        final       cost%
+   1.0   1.716606e-5   1.716606e-5  5.337475e-10  5.337475e-10     0.0000
+   2.0   2.318875e-2   1.804905e-5  1.648905e-10  1.648905e-10    99.9999
+   4.0   2.937333e-1   1.269291e-2   2.408655e-7   2.408655e-7    99.9234
+  10.0   1.956265e+0   5.153480e-1   2.851547e-5   1.261331e-8    97.4466
+  20.0   1.788581e+0   1.788581e+0   2.199432e-4   1.422550e-7    61.0990
+  30.0   1.109251e+0   4.521417e-1   1.828596e-5   5.103148e-9    97.2265
+  40.0   2.613314e-1   4.030060e-2   1.390084e-6   1.390084e-6    99.4520
+  70.0   5.412821e-1   8.344119e-3   1.420667e-7   1.420667e-7    99.9906
+ 100.0   1.361074e+0   5.026720e-1   7.111238e-5   1.427984e-7    97.2587
+ 120.0   4.138935e+0   3.619516e+0   2.132479e-3   3.761098e-6    84.3146
+ 130.0   2.333446e+0   2.333446e+0   8.226088e-4   3.823356e-7    71.4124
+ 140.0   1.598087e+0   3.677507e-1   2.609262e-3   2.053628e-6    98.6980
+ 142.0   9.844940e-1   4.227647e-1   5.895754e-5   1.227316e-6    98.1949
+ 142.4   3.256782e+0   6.964734e-1   3.590806e-2   1.086161e-6    96.9772
+ 143.8   3.535433e+0   1.215567e+0   5.210457e-2   1.287056e-6    94.3390
+ 144.0   2.969702e+0   2.969702e+0   2.162800e-2   4.866075e-6    62.7667
+ 146.0   6.047697e+0   6.047697e+0   1.908919e-2   3.581270e-6    47.0949
+ 148.0   6.426227e+0   6.426227e+0   4.647038e-2   5.590781e-6    65.5741
+
+B passes0/18. The original strict publication remains valid at all1481 support
+and final publication checks. B's maximum gradient is6.426227; its median across
+these18 selections is.509010. At142.4s the full solve reduces3.25678 to.696473,
+but further nonlinear correction is still necessary for the unchanged gate.
+A maximum gradient staying unchanged does NOT imply no state/objective change.
+
+Across selections, B supplies median97.1018% (mean81.7649%) of the total
+publication objective decrease. Nevertheless, that does not guarantee
+stationarity or the required X/V/W correction. At148s it supplies65.5741%.
+S5d's first global pass supplied >=99.9363%; that stronger reduction includes
+new nonlinear linearization/optimization, not only back-substitution.
+
+State comparison (maximum over all retained states and18 snapshots)
+-----------------------------------------------------------------
+                          position(m)  orientation(rad) velocity(m/s) omega(rad/s)
+ ordinary A -> full B      .000163081   .000131569       .000621688    .001851262
+ full B -> first pass      .002181825   .000163573       .110786448    .008028605
+ full B -> final           .002186764   .000163536       .110798309    .007761619
+
+Largest remaining position correction is2.186764mm at144s; largest remaining
+velocity correction is.110798m/s at148s. These are solver-state differences,
+NOT ground-truth errors. Nearly all of S5d's largest velocity correction remains
+after linear completion. Small pose differences do not establish safe repeated
+omission of nonlinear refinement. No ATE or source accuracy was recomputed.
+
+Cost observations, NOT an acceptance benchmark
+---------------------------------------------
+Single pinned CPU2, OMP/TBB1, same runtime. Times from diagnostic:
+                     median(ms)    p95(ms)       max(ms)
+ solver copy          2.348577       3.059833      3.074162
+ full backsub B       2.185453       3.193527      3.552485
+ verification       152.208401     191.671592    192.819824
+
+Verification includes private graph cloning plus TWO fresh objective/gradient
+evaluations; it is not an optimized candidate publication cost. Full backsub
+time includes calculateBestEstimate Values construction, excludes copy and
+verification. At142.4s B=3.130ms, while retained strict refinement=1306.531ms;
+at148s B=3.000ms versus retained1007.575ms. Different work/outcomes: this is NOT
+a demonstrated300x receiver speedup. Raw instrumented replay elapsed439.026s.
+No matched timing series or live-capacity claim is made.
+
+Validation / preservation
+-------------------------
+Final consistent-header Release and ASan+UBSan suites each PASS68 checks
+(one inherited disabled benchmark). Their records supersede the first mixed-
+header test binaries: see unit_consistent/sanitize_consistent and API_NOTES.
+Four added S5e tests cover:
+ - no nonlinear evaluations during full backsub; unchanged theta/delta/source;
+ - deliberately wildfire-truncated linear chain versus independent Gaussian QR;
+ - deterministic solver copies and unchanged factor slots;
+ - exact uncached factor clones including dense noise, cache-counter isolation,
+   exception/rollback and unknown-type rejection;
+ - nonlinear scalar fixture showing exact linear solve need not be stationary.
+Existing14 E2b tests and50 receiver tests retained.
+
+Observer-OFF and observer-ON five-second controls pass.
+ONE full observer-ON frozen journal replay passes:
+ all19 nonclock estimator/decision products exactly match offline E2b oracle;
+ E2b endpoint counters byte-identical; E2 memo included in19.
+Explicit excluded fields are only wall/update timing, documented in comparison.
+No validation tolerance was relaxed.
+
+Exact conservation:
+ 88279 versions =88254 insertions +25 unsupported
+ 88254 insertions =86053 replacements +2201 active IDs
+ active source IDs:1476 GLIM,725 Kimera; duplicates0,stale0,pending0
+ 1481 supports;4443 X/V/W variable blocks
+ 3684 factors =1480 motion +2201 source +3 priors
+ zero IMU/bias/acceleration factors/variables.
+Covariance-construction max difference4.2067e-17 remains identical to oracle.
+
+Before/after751 protected files,49 raw artifacts,six source HEAD/status snapshots,
+all E2b oracle and S5d reference files and journal unchanged.
+Final evidence manifest hashes191 result files; small build/test/validation/analysis
+evidence and private diff archived beside this report. Results/binaries retain
+their original paths. Initial compile/API and false test-fixture failures are
+preserved and explained in API_NOTES.txt, including the consistent-header test
+rebuild. No estimator run was retried. Final after_final integrity check passes.
+
+Interpretation and stop
+-----------------------
+The cheap full-linear-solve shortcut is NOT sufficient under the frozen model
+and strict publication rule. Necessary nonlinear correction remains; this is
+not evidence that every historical factor must be rebuilt on every pass.
+Together with S5c/S5d, the bottleneck is the custom repeated full-history
+nonlinear refinement/gradient/QR work, not an intrinsically slow ~3ms backsolve.
+
+Do not remove strict refinement, relax its threshold, or promote B based on
+these snapshots. They inherit all earlier strictly refined history. The old
+live-versus-offline discrepancy remains unresolved; E4 selective-trial failure
+remains rejected. No new production policy has been validated.
+
+Next bounded choice, not executed: reduce the cost of the necessary nonlinear
+work while retaining exact equations/gates (the plan's isolated motion V/W
+Jacobian step E3a is still a candidate). If redesigning incremental publication
+instead, it requires a separate repeated-policy validation, not this one-step
+observation or a repeat of the rejected simple E4 trial. Full-history global
+checks still scale with sequence length; this task does not certify unlimited
+live operation. Stop here.
