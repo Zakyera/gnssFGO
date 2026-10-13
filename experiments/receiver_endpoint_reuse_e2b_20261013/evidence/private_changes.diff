@@ -1,0 +1,103 @@
+--- /home/yeranis/results/gnssfgo_e1_e2_correctness_audit_20261011/candidate/SourceWnoaModel.h
++++ /home/yeranis/repos/gnssFGO/experiments/receiver_endpoint_reuse_e2b_20261013/SourceWnoaModel.h
+@@ -10,6 +10,7 @@
+ #include <gtsam/nonlinear/Values.h>
+ #include "factor/motion/GPWNOAPrior.h"
+ #include "model/gp_interpolator/GPWNOAInterpolator.h"
++#include "ExactEndpointCache.h"
+ 
+ namespace fgo::offline {
+ using gtsam::symbol_shorthand::V;
+@@ -55,18 +56,23 @@
+ struct WnoaEndpoint {
+   bool exact{true};
+   size_t left{}, right{};
+-  std::shared_ptr<fgo::models::GPWNOAInterpolator> interpolator;
+-  std::shared_ptr<fgo::models::GPWNOAInterpolator> twist_interpolator;
++  std::shared_ptr<const fgo::models::GPWNOAInterpolator> interpolator;
++  std::shared_ptr<const fgo::models::GPWNOAInterpolator> twist_interpolator;
+ 
+-  static WnoaEndpoint Exact(size_t i) { return {true, i, i, nullptr}; }
++  static WnoaEndpoint Exact(size_t i) { WnoaEndpoint e;e.left=e.right=i;return e; }
+   static WnoaEndpoint Between(size_t i, size_t j, double dt, double tau,
+-                                 const gtsam::SharedNoiseModel& qc) {
++                                 const gtsam::SharedNoiseModel& qc,int64_t physical_ns=0) {
+     if (i >= j || !std::isfinite(dt) || !std::isfinite(tau) ||
+         dt <= 0 || tau < 0 || tau > dt)
+       throw std::invalid_argument("invalid full-WNOA endpoint support");
+-    return {false, i, j, std::make_shared<fgo::models::GPWNOAInterpolator>(
+-      qc, dt, tau, true, true),
+-      std::make_shared<fgo::models::GPWNOAInterpolator>(qc, dt, tau, false, true)};
++    WnoaEndpoint e;e.exact=false;e.left=i;e.right=j;
++    e.interpolator=std::make_shared<fgo::models::GPWNOAInterpolator>(qc,dt,tau,true,true);
++    e.twist_interpolator=std::make_shared<fgo::models::GPWNOAInterpolator>(qc,dt,tau,false,true);
++    e.original_numeric_=e.interpolator;e.original_twist_=e.twist_interpolator;
++    e.parameters_={1,std::bit_cast<uint64_t>(physical_ns),std::bit_cast<uint64_t>(dt),
++      std::bit_cast<uint64_t>(tau),1,1,0,1}; // schema, time, dt/tau, exact flags
++    e2b::Append(e.parameters_,e.interpolator->getQc());
++    e.cache_=e2b::DefaultCache();return e;
+   }
+ 
+   gtsam::KeyVector keys() const {
+@@ -75,6 +81,30 @@
+   }
+ 
+   gtsam::Pose3 pose(const gtsam::Values& values, std::vector<gtsam::Matrix>* h = nullptr) const {
++    // Only factory-created immutable interpolators have a complete trusted key.
++    // Replacement of a public pointer bypasses reuse, preserving old behavior.
++    if(exact || !cache_ || interpolator!=original_numeric_ || twist_interpolator!=original_twist_)
++      return poseUncached(values,h);
++    auto key=e2_probe::Signature(keys(),values,true);
++    key.insert(key.end(),parameters_.begin(),parameters_.end());
++    key.push_back(h!=nullptr);key.push_back(std::fegetround());
++    const auto result=cache_->get(std::move(key),[&] {
++      e2b::Value value;value.pose=poseUncached(values,h ? &value.jacobians : nullptr);return value;
++    });
++    if(h)*h=result.jacobians;
++    return result.pose;
++  }
++
++  // Explicit injection is for isolated tests, not a run-time tuning interface.
++  WnoaEndpoint withCache(std::shared_ptr<e2b::Cache> cache) const {
++    auto copy=*this;copy.cache_=std::move(cache);return copy;
++  }
++
++ private:
++  std::shared_ptr<const fgo::models::GPWNOAInterpolator> original_numeric_,original_twist_;
++  e2b::Key parameters_;
++  std::shared_ptr<e2b::Cache> cache_;
++  gtsam::Pose3 poseUncached(const gtsam::Values& values,std::vector<gtsam::Matrix>* h) const {
+     if (exact) {
+       if (h) *h = {gtsam::Matrix6::Identity()};
+       return values.at<gtsam::Pose3>(X(left));
+--- /home/yeranis/results/gnssfgo_e1_e2_correctness_audit_20261011/candidate/DiagnosticReplay.cpp
++++ /home/yeranis/repos/gnssFGO/experiments/receiver_endpoint_reuse_e2b_20261013/DiagnosticReplay.cpp
+@@ -644,7 +644,7 @@
+   if (location.exact) return fgo::offline::WnoaEndpoint::Exact(location.exact_index);
+   return fgo::offline::WnoaEndpoint::Between(location.left_index, location.right_index,
+     (timestamps.at(location.right_index) - timestamps.at(location.left_index)) * kNanosecondsToSeconds,
+-    (timestamp_ns - timestamps.at(location.left_index)) * kNanosecondsToSeconds, qc);
++    (timestamp_ns - timestamps.at(location.left_index)) * kNanosecondsToSeconds, qc, timestamp_ns);
+ }
+ 
+ gtsam::Pose3 PoseAtEndpoint(
+@@ -1002,6 +1002,7 @@
+     const auto start=std::chrono::steady_clock::now();
+     const auto result=numerical_audit::Refine(isam2_);
+     e2_memo::Flush(out,index,physical,phase);
++    e2b::Flush(out,index,physical,phase);
+     publication_valid_=result.status=="stationary" && std::isfinite(result.gradient_after) && result.gradient_after<=1e-5;
+     unsetenv("AUDIT_ROUNDOFF_PUBLICATION");
+     for(const auto& step:result.steps) if(step.roundoff)setenv("AUDIT_ROUNDOFF_PUBLICATION","1",1);
+--- /home/yeranis/results/gnssfgo_e1_e2_correctness_audit_20261011/candidate/test_twist.cpp
++++ /home/yeranis/repos/gnssFGO/experiments/receiver_endpoint_reuse_e2b_20261013/test_twist.cpp
+@@ -11,7 +11,8 @@
+ static auto Qc() { return gtsam::noiseModel::Diagonal::Variances(
+   (gtsam::Vector6()<<.00375,.00375,.00375,.015,.015,.015).finished()); }
+ static native::WnoaEndpoint Native(const WnoaEndpoint& e) {
+-  return {e.exact,e.left,e.right,e.interpolator};
++  return {e.exact,e.left,e.right,e.interpolator ?
++    std::make_shared<fgo::models::GPWNOAInterpolator>(*e.interpolator) : nullptr};
+ }
+ static void Exact(const gtsam::Matrix& a,const gtsam::Matrix& b) {
+   ASSERT_EQ(a.rows(),b.rows()); ASSERT_EQ(a.cols(),b.cols());

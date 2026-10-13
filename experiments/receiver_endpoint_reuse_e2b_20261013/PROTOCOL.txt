@@ -1,0 +1,40 @@
+E2b — exact shared endpoint evaluation, 2026-10-13
+Parent492a82cc855022325d6c86cc6c4932ded057e1e3.
+User authorizes implementation, correctness and saved-journal timing only.
+
+One hypothesis: share identical receiver WNOA endpoint pose/Jacobian evaluations
+across source factors. No source estimator/live/bag run. Preserve residuals,
+Jacobians, Qc/noise/priors, E2 whole-factor cache, every ordered revision,
+independent100ms support clock, full-history QR and strict1e-5 publication.
+S5c offline original replay is the exact oracle; its live-reference discrepancy
+remains unresolved and is NOT waived here. No production binary replacement.
+
+Private default-off E2B_ENDPOINT_CACHE=1 switch. Reuse existing e2_probe exact
+X/V/W signature. Bounded8192-entry LRU, complete bitwise key equality (hash is
+indexing only), immutable/copy-out results, thread-safe lookup/commit. Cache
+keys include support keys, endpoint time, dt/tau/Qc/constant interpolation flags,
+derivative-output mode and complete Values representations. Original immutable
+interpolators are retained; replacement bypasses cache. Miss computes original
+code. Nonfinite/exception outputs never enter cache. No approximate invalidation.
+
+Gates, in order:
+1. Focused Release and ASan/UBSan tests: exact endpoint/residual/Jacobian/Gaussian
+   results, every relevant state coordinate/parameter, revisions/noise, clones,
+   copying/rollback, concurrent reads, failure, nonfinite and bounded eviction.
+   Existing50 receiver tests also run with switch OFF and ON.
+2. Original five-second prefix vs private OFF vs ON: exact outputs, accounting,
+   decisions. New cache diagnostics are separate, not part of estimator oracle.
+3. Full retained148.58s journal private OFF vs S5c original offline oracle.
+   Only if exact, full ON and exact comparison. Never compare just trajectories.
+   Stop on mismatch; do not loosen tolerances or automatically rerun failures.
+4. If exact, repeat ON then OFF (ABBA overall) for matched single-core timing.
+   Primary late120–140 and140–end total/publication latency, whole runtime,
+   hit/miss/evaluation counts, memory. No preselected ATE or parameter tuning.
+   Accept engineering gain only if whole-run speed and late p95 improve in
+   both pairs without correctness failure; report magnitude, no live guarantee.
+
+Same frozen runtime/container UID1000, CPU2/OMP1/TBB1; no profiler preload.
+Exclusive controller lock, create-once logs/output,1800s timeout per command.
+Preserve original751 protected inputs,49 S5 artifacts,six source repo snapshots
+and S5c control outputs. Save build identity/diff, validation and report/ledger.
+Stop after this comparison; ask before any live validation or another patch.

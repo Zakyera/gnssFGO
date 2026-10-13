@@ -16,6 +16,17 @@ performance hypotheses into one acceptance experiment.
 
 ## Baseline and evidence
 
+**Latest isolated optimization (E2b, 2026-10-13):** Private default-off exact
+endpoint reuse passes64/64 Release and ASan/UBSan with cache disabled/enabled,
+exact five-second controls, and four exact full saved-journal replays against
+the S5c OFFLINE oracle. Same-executable/core ABBA runtime447.272→396.674s mean
+(11.31% shorter); late publication p95 improves8.1–8.9%.14.68million/24.77million
+endpoint requests reused, bounded8192 entries, no cache failures. Late p95 is
+still1.316–1.321s (total service p951.464–1.469s), so live160 capacity remains
+uncertified. No production/source changes or live rerun. The old live/offline
+discrepancy below remains unresolved. See
+[E2b report](experiments/receiver_endpoint_reuse_e2b_20261013/REPORT.txt).
+
 **Latest measured diagnosis (S5c, 2026-10-13):** Original-executable sampling
 localizes the delay to full-history publication refinement (79.52% CPU overall,
 88.18% late). Disjoint dominant kernels: source residual/Jacobians 35.30%,
@@ -28,7 +39,8 @@ alone is not its cause. Do not claim exact live work-count reproduction.
 First proposed optimization is now E2b shared exact endpoint evaluation: 4402
 final factor endpoint uses refer to 2204 source endpoint times. Reuse the
 original pose/Jacobian calculation only at bit-identical complete inputs;
-actual savings are unmeasured. E3a stays on hold. Full-history scaling/QR remain;
+at that point actual savings were unmeasured; E2b now reports them above.
+E3a stays on hold. Full-history scaling/QR remain;
 no promise of indefinite-duration capacity. 751 protected inputs, 49 raw
 artifacts and six source repositories unchanged. No estimator edits or live/
 source reruns. See [S5c report](experiments/receiver_sampling_s5c_20261013/REPORT.txt).
@@ -194,7 +206,7 @@ shared IMU, past means or nonlinear history are statistically independent.
 | E1b.3 | Bounded LOCAL subphase profile | Frozen source settings; explicit profiler overhead/coverage; separate nested/worker/outer wall costs; select one measured dominant subphase | E1b.3c validated first40s: 96.405% of LOCAL exclusive wall in synchronous GPU linearization; first40s limits retained |
 | E1b.4 | Batch LOCAL update linearizations at exact solver Values | Keep solver decisions and ordered Gaussian blocks; reuse E1 synchronous-compatible kernels; same-input repeated-solver and covariance checks before bounded live timing | Synthetic, sampled real-input and observer-free first40s timing gates PASSED. Default-off; longer capacity and full evolving-history equivalence remain uncertified |
 | E3a | Remaining WNOA motion-factor derivatives | Independent numerical derivative checks; manifold/frame tests; frozen-journal state/cost/covariance checks with predeclared tight tolerances | On hold: S5c measures source interpolation as the larger kernel; E2b exact reuse proposed first, no derivative patch authorized |
-| E2b | Exact shared endpoint pose/Jacobian evaluation | Complete bit-exact input keys, immutable bounded/thread-safe reuse, revision/rollback/invalidation tests; exact frozen-journal outputs/decisions before matched timing | Proposed by S5c only; not implemented or benchmarked; no estimator change in the diagnosis task |
+| E2b | Exact shared endpoint pose/Jacobian evaluation | Complete bit-exact input keys, immutable bounded/thread-safe reuse, revision/rollback/invalidation tests; exact frozen-journal outputs/decisions before matched timing | Passed2026-10-13:64 Release/64 ASan+UBSan OFF/ON; four exact full offline replays; mean11.31% shorter runtime. Late p95 still above budget; private/default-off, no live promotion |
 | E3b | Remaining interpolated pose derivative blocks | Separate patch and independent checks as for E3a; do not redo already validated V/W substitution | Not started |
 | E4 | Selective incremental publication refinement | Same factors/events and fresh current-Values stationarity certificate; reference full refinement fallback; short/medium/late replay comparisons | Tested 2026-10-12; NOT ACCEPTED: strict state bounds failed,86.8% fallback,matched refinement~40% slower; stopped at130.68s |
 | E5 | Transport/logging/bookkeeping efficiency | One subchange per test; lossless ordered revision delivery and auditability; same factor accounting; no silent dropped/coalesced versions | Not started |
@@ -253,6 +265,38 @@ its own explicit algorithmic decision. Fixed lag may bound resources but brings
 historical revision and marginal-prior semantics; reconsider only separately.
 
 ## Execution ledger
+
+### E2b — exact shared endpoint evaluation
+
+- User authorizes the proposed implementation/correctness/timing gates, not a
+  source/live run. Parent492a82cc855022325d6c86cc6c4932ded057e1e3.
+- Private branch perf/receiver-endpoint-reuse-e2b-20261013; protocol/code under
+  experiments/receiver_endpoint_reuse_e2b_20261013. Original binaries preserved.
+- OFF/ON must reproduce the S5c original OFFLINE control exactly, including
+  solver decisions/accounting. Earlier live mismatch remains out of scope.
+- One cache hypothesis only; Qc, covariance, source mathematics, numerical
+  derivatives and strict publication remain unchanged. No tuning/retries.
+- Implementation gate:64/64 Release tests with cache OFF/ON and64/64 ASan+UBSan
+  OFF/ON passed; one inherited disabled microbenchmark is not a correctness test.
+  Original offline five-second control and candidate OFF/ON match all19
+  non-timing products. Private replay SHA256
+  b4eab40dacf074cdbcd13ae23ed8175cba5bb57b0b493eec06f5b9a2de0d72d3.
+- Initial replay compilation caught duplicate original/private headers through
+  SnapshotAudit.h. Preserved failure log; copied that unchanged header into the
+  private overlay, then compilation passed. No estimator/replay failure retried.
+- All four full saved-journal controls passed all19 exact non-timing products;
+  enabled cache counters repeat byte-identically. ABBA wall seconds:
+  disabled449.124286,enabled397.473468,enabled395.874464,disabled445.419639.
+- Both paired performance gates pass:11.50%/11.12% shorter runtime and late
+  publication p95 reductions8.87%/8.06%. Mean speedup1.1276x. Cache reuses
+  14,677,392/24,768,616 requests(59.26%); maximum8192 entries, no failures.
+- Late publication p95 still1.316–1.321s; total support-completion interval
+  p951.464–1.469s. This is a partial speedup, NOT live160 capacity acceptance.
+  No source/library/production edit, live rerun, tuning, promotion or push.
+- After checks preserve751 protected inputs,49 raw artifacts,six source HEAD/status
+  snapshots and38 S5c oracle files. Report/code/evidence in
+  experiments/receiver_endpoint_reuse_e2b_20261013; checkpoint identity is the
+  local commit containing that report (git log -1 --format=%H -- its path).
 
 ### S5c — unmodified executable sampling diagnosis
 

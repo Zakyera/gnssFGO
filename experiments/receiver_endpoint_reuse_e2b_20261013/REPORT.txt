@@ -1,0 +1,180 @@
+E2b: exact shared endpoint interpolation reuse
+2026-10-13 — private/default-off engineering candidate
+
+STATUS: PASS — exact saved-journal preservation and repeatable runtime gain.
+Private/default-off only. Live-capacity acceptance remains unproven.
+
+1. Scope and hypothesis
+
+Reuse the same WNOA endpoint pose and endpoint Jacobians when multiple source
+factors ask for them with bit-identical inputs. This addresses repeated work
+measured by S5c, not the state/history growth or all of the receiver's cost.
+
+These are CACHE disabled/enabled comparisons on ONE existing CBS-ON journal.
+They are NOT new CBS-OFF/ON experiments and NOT live co-running estimators.
+No GLIM/Kimera source, bag, fusion-model, noise, covariance or policy change.
+
+Preserved: source_wnoa X/V/W; independent 100 ms support clock; full-history
+iSAM2 QR; every ordered stable-ID revision replacement; Gaussian scale 1;
+Qc [.00375,.00375,.00375,.015,.015,.015]; original priors/initialization and
+strict 1e-5 normalized-gradient/transactional publication rules. There are no
+central IMU measurement factors. uniform_imu names the existing clock policy.
+
+2. Implementation and exactness boundary
+
+Private switch E2B_ENDPOINT_CACHE=1; unset/0 means disabled. Existing whole-
+factor E2 memoization stays enabled in both controls. Production CMake targets,
+installed libraries and executables are untouched.
+
+SourceWnoaModel.h keeps the original poseUncached computation: same numeric
+pose derivatives and same author-library analytic V/W blocks. The cache shares
+its results, not a new derivative formula. Relative composition, measured mean,
+full source covariance, whitening and factor revisions remain outside it.
+
+ExactEndpointCache.h: fixed 8192-entry LRU, mutex-protected lookup/commit,
+deep-copy results, compute outside the lock. Concurrent cold duplicate misses
+may recompute, never expose mutable cached values. Hashes only index buckets;
+full vector equality decides a hit. Eviction never changes a returned result.
+Exceptions/nonfinite outputs are not cached. Failed solver branches can leave
+memo entries, but a restored state can reuse only its exact input signature.
+
+Key: endpoint support keys; exact X/V/W stored representations; physical
+timestamp; dt/tau; full actual Qc matrix; fixed interpolation flags; requested
+Jacobian/no-Jacobian mode; evaluation rounding mode. Factory-owned interpolators
+are immutable. Public pointer replacement bypasses reuse. Keys cover the frozen
+library/runtime and factory path used here, not arbitrary mutated third-party
+interpolators or changing floating-point environments during construction.
+
+Only two replay-TU additions: pass the physical endpoint timestamp to its
+factory and flush cumulative cache diagnostics after existing publication
+refinement. Cache diagnostic overhead is included in timings.
+
+3. Inputs, oracle and build identity
+
+Parent:492a82cc855022325d6c86cc6c4932ded057e1e3
+Branch:perf/receiver-endpoint-reuse-e2b-20261013
+Source/commands/tests: this directory.
+Results:/home/yeranis/results/gnssfgo_endpoint_reuse_e2b_20261013
+Journal:/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_shared_linearization_s5_live160_20261012/prepared/capacity160_on_receiver/events.csv
+Oracle:/home/yeranis/results/gnssfgo_receiver_sampling_s5c_20261013/reference
+Five-second oracle: same root/prefix_reference.
+
+The saved live capture failed its capacity gate at 148.55 s and drained to 148.58 s.
+It is NOT a completed 160 s run. The exact oracle here is the S5c original OFFLINE
+replay. S5c's small original live/offline mismatch remains unresolved; this task
+does not waive it or claim live work-count reproduction.
+
+Original executable:/home/yeranis/results/gnssfgo_e1_e2_correctness_audit_20261011/candidate/replay
+Original SHA256:9d2ef832941c5ff2592da8428cb80104352590bcfea50c187624aaf4e90d60e0
+Private executable: result root/build/replay
+Private SHA256:b4eab40dacf074cdbcd13ae23ed8175cba5bb57b0b493eec06f5b9a2de0d72d3
+
+Same retained runtime libraries, GCC C++20 -O3 -DNDEBUG, CPU 2, OMP1/TBB1,
+UID 1000 in existing ubuntu-jammy-humble-nvidia container; no sampling profiler.
+The container was initially stopped and was restarted; no estimator auto-start.
+Each command is create-once, exclusive-controller locked, with 1800 s timeout.
+
+4. Correctness and sanitizer validation
+
+64/64 Release tests passed with cache disabled and enabled.
+64/64 ASan+UBSan tests passed with cache disabled and enabled.
+This comprises 50 retained receiver regressions plus 14 focused endpoint tests.
+One inherited DISABLED_Microbench is not a skipped correctness assertion.
+Sanitizers instrument the private test code, not the retained shared libraries;
+leak detection is disabled. This is not a new whole-project/ROS suite claim.
+
+Focused coverage: independent original endpoint oracle (large translations,
+multiple durations, interval boundaries/interior); every V/W coordinate and
+both pose blocks; keys/timestamps/Qc/output mode; exact endpoint bypass; copies;
+replaced interpolator bypass; dense revised source covariance/mean and cloned
+factors; exact residual/whitened residual/Gaussian Jacobian comparisons;
+unchanged-endpoint sharing; missing Values/rollback; exception/nonfinite rejection;
+bounded eviction/zero capacity; 8-thread reads; iSAM2 pose/marginal-covariance
+equivalence and failed transactional branch preservation.
+
+Initial replay compilation failed because original SnapshotAudit.h pulled in
+the original SourceWnoaModel.h in addition to the private copy. Failure evidence
+is retained in build_replay.json/log. Copying SnapshotAudit.h unchanged into the
+private overlay fixed include resolution; build_replay_overlay passed. No
+algorithm/test assertion was changed and no failed estimator run was retried.
+
+Five-second disabled/enabled replays both match the original offline oracle.
+All four full disabled/enabled replays also match it exactly. Each comparison
+checks 19 non-timing products: final/online states and trajectories; reported and
+effective full source covariances; saved motion covariance diagnostics; residuals;
+clock/dispatch/source/revision accounting; convergence and publication decisions;
+whole-factor E2 counters and summary. Only explicitly named runtime clocks are
+excluded by the retained comparison helper. Full-history posterior covariance
+is not exported on every real update: posterior covariance exactness is covered
+by the synthetic graph test, not claimed as a new exhaustive real-data export.
+
+5. Timing results
+
+Same binary, same core, no profiler, sequence disabled1/enabled1/enabled2/disabled2:
+
+Run        Runtime(s)  Late publication median/p95(ms)  Late total p95(ms)  RSS(MiB)
+disabled1  449.124286   881.773 /1449.411                1587.836            568.238
+enabled1   397.473468   801.089 /1320.810                1463.720            585.637
+enabled2   395.874464   799.164 /1316.277                1469.017            585.801
+disabled2  445.419639   880.021 /1431.698                1592.029            567.246
+
+Late means 140–148.58 s: 86 support publications. Total is the wall interval
+between consecutive support-completion records, including intervening dispatch
+and revision work. It is OFFLINE service cost, not measured live queue/latency.
+
+Matched wall reduction: 11.5003% and 11.1233%. Mean runtime 447.271962→396.673966 s:
+11.3126% less time, or 1.1276x throughput for this saved journal. Late publication
+p95 reduces 8.8726% and 8.0618%; 120–140 s p95 reduces 11.0291% and 10.6162%.
+Both predeclared whole-runtime/late-p95 gain gates pass. Two paired repeats are
+not a broad machine/sequence variability study.
+
+First-pair publication timing by section (median / p95 ms):
+0–40s       40.092 /105.919 → 36.159 /100.681
+60–80s     142.364 /270.340 →125.236 /235.909
+120–140s   462.491 /835.530 →415.517 /743.378
+140s–end   881.773/1449.411 →801.089/1320.810
+All cohort means/maxima, repeats and service-interval timings: evidence/analysis.json.
+
+Enabled repeat cache counters are byte-identical:
+  24,768,616 endpoint requests; 14,677,392 hits (59.2580%).
+  10,091,224 uncached computations; 10,083,032 evictions; 8192 maximum entries.
+  Zero computation failures/nonfinite outputs.
+  Peak accounted key/value payload 21,626,928 bytes (20.625 MiB), excluding allocator,
+  hash/list-node overhead. Measured process peak RSS rises about 17–19 MiB.
+These are combined pose-only and pose-plus-Jacobian endpoint requests, not counts
+of all internal numerical perturbations. Do not multiply every hit by 27.
+
+All 1480 support publications plus the final publication remain stationary.
+All 2444 attempted support refinements and 66 distinct support publications with
+recovery are unchanged. Faster execution did not skip any mathematical work
+required by the solver; it reused identical endpoint results.
+
+Source accounting is unchanged: 88,279 received versions = 88,254 insertions + 25
+unsupported skips; 88,254 insertions = 86,053 removals/replacements + 2201 active IDs.
+No duplicates, stale revisions or pending events. Final graph: 1481 supports,
+4443 X/V/W keys, 1480 WNOA factors, 2201 relative factors, 3 priors; no central IMU.
+
+6. Limits and next decision
+
+This is a real but partial receiver speedup. Late enabled publication p95 is
+still 1.316–1.321 s, and total service-interval p95 is 1.464–1.469 s, above the nominal
+1 s/support wall budget at 0.1x. Late non-recovery publication p95 is still about
+1.093 s. 26/25 enabled support publications exceed 1 s, versus 36/35 disabled.
+This does not certify a new 160 s live run or eliminate the long-duration problem.
+
+The cache does not remove the 10.09 million necessary misses, Gaussian QR,
+WNOA motion evaluations, full-history graph growth, or refinement passes. The
+old S5c percentages describe the old profile, not a freshly measured E2b profile.
+Preserve this bounded improvement and choose the next isolated measured task;
+do not automatically tune, change marginalization or promote/restart a live run.
+
+7. Integrity, conclusion and checkpoint
+
+Before AND after: 751 protected files, 49 raw source artifacts, six source repository
+HEAD/status snapshots and 38 S5c reference files preserved. All checks pass.
+Build/test/action records, exact comparisons, input/output hashes and private diff
+are archived in evidence/; large raw outputs and binaries remain in the result root.
+The local commit containing this report and the updated engineering ledger is
+the E2b checkpoint; obtain its exact SHA with:
+  git log -1 --format=%H -- experiments/receiver_endpoint_reuse_e2b_20261013/REPORT.txt
+No default promotion, source/live rerun, tuning, production install or push.
