@@ -1,0 +1,283 @@
+S5d — What does strict full-history publication refinement actually change?
+2026-10-13. Diagnostic only. COMPLETED; no production policy changed.
+
+Conclusion
+----------
+The slow receiver is doing substantially more work than an ordinary incremental
+gnssFGO update: our publication wrapper repeatedly forces whole-history nonlinear
+relinearization and QR, then recomputes a fresh whole-graph stationarity test.
+The growing graph AND the increasing number of these passes explain the late cost.
+
+The first pass is not dispensable numerical noise: among 18 preselected snapshots
+the initial-to-final velocity correction reaches 0.110798 m/s. However, subsequent
+passes make much smaller physical changes. After one pass, the largest remaining
+position difference anywhere in the retained history is 0.172509 mm; the largest
+remaining velocity difference is 0.000734446 m/s. The first pass supplies at least
+99.9363% of that publication's total objective decrease at these checkpoints.
+
+Late example: after five passes at 142.4 s only FOUR variable blocks still violate
+the strict gradient threshold, but the sixth pass relinearizes ALL 4,275 blocks.
+It passes stationarity but triggers a QR recovery because of a tiny raw objective
+increase. Recovered and rejected candidate positions differ by only 6.754e-11 m.
+This identifies costly global convergence/polishing in OUR wrapper. It does not
+prove that removing refinement or loosening its tolerance would be safe.
+
+1. Scope, inputs and identity
+----------------------------
+Parent d0d675fbdf985737b9d3a7d622b8ce5a2a4f4530.
+Branch audit/receiver-publication-s5d-20261013.
+Private observer/code/protocol: this directory.
+Raw output: /home/yeranis/results/gnssfgo_publication_s5d_20261013
+Input journal:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_shared_linearization_s5_live160_20261012/prepared/capacity160_on_receiver/events.csv
+Exact OFFLINE oracle:
+/home/yeranis/results/gnssfgo_endpoint_reuse_e2b_20261013/full_on1
+
+The live source capture stopped at approximately 148.55 bag seconds and drained
+to 148.58 s. This is NOT a successful 160 s experiment. The receiver support clock
+starts at 1727775008583475000 ns and spans 148.0 s. All times in tables below are
+relative to THAT support origin, not bag start. Consequently the final timing
+cohort has 81 support publications, unlike earlier bag-relative 86-row cohorts.
+
+One existing CBS-ON saved journal was replayed. prefix_off/prefix_on name the
+OBSERVER disabled/enabled controls, not CBS-OFF/ON source experiments. full_on
+means observer enabled. No GLIM/Kimera/bag/live run or new ATE comparison.
+
+Frozen: source_wnoa X/V/W, independent 100 ms clock, full-history iSAM2 QR,
+every ordered stable-ID replacement, native Gaussian covariance scale 1,
+Qc [.00375,.00375,.00375,.015,.015,.015], pose/V/W sigmas 1e-5/10/3,
+strict normalized-gradient 1e-5 and existing transactional recovery. E2 whole-
+factor and E2b exact endpoint caches enabled as in the oracle. No central IMU,
+bias, acceleration or GNSS variables/factors. Source CBS remains classic
+active_window_temporary; no source-to-source live_revision change.
+
+Private replay SHA256:
+c0098e67acc0c427dadda42d9951b0eaf773eab8c803824fd4b030190140535c
+Same retained runtime libraries, GCC C++20 -O3 -DNDEBUG, CPU 2, OMP1/TBB1,
+UID 1000 in existing ubuntu-jammy-humble-nvidia container. No installation.
+
+2. Read-only observer and validation
+-----------------------------------
+PublicationObserver.h copies Values, J^T r and diag(J^T J) already computed by
+NormalizedGradient or the existing cached Evaluation. It introduces NO extra
+factor, derivative, linearization, update or solver-estimate calls. Copies are
+dumped after the refinement function returns. The original acceptance/recovery
+logic is unchanged. Only selected publications capture frames.
+
+Snapshots selected before replay: 10,20,40,100,200,300,400,700,1000,1200,1300,
+1400,1420,1424,1438,1440,1460,1480. The last two specially selected cases 1424
+and 1438 are the earliest retained late maximum-attempt recovery/no-recovery
+cases. Selection used existing work-count logs, not GT or candidate results.
+An additional final-phase frame at index 1480 is retained; physical tables use
+the support-publication frames only.
+
+Release 68/68 PASS; ASan/UBSan 68/68 PASS. Includes 64 retained receiver/E2b
+tests and four observer-specific checks: disabled behavior, independent exact
+copies/chronology/normalization, context cleanup, and nonfinite rejection before
+capture. One inherited disabled microbenchmark is not a correctness assertion.
+Dependency shared libraries are not sanitizer-instrumented; leak detection off.
+This is the focused harness, NOT a new full ROS/GPU project-suite claim.
+
+Five-second observer OFF and ON both exactly match the existing prefix oracle.
+The ONE complete observer-ON replay matches all 19 retained non-timing products,
+including online/final states/trajectories, source/motion covariance exports,
+source/revision/dispatch accounting, residuals, convergence and solver decisions.
+E2b endpoint counters match byte-for-byte too. Only named runtime clocks are
+excluded by the retained comparison helper; no numerical tolerance was relaxed.
+Each captured gradient matches its retained step exactly; every accepted final
+captured current state matches the oracle's published state within 1e-12 in its
+stored coordinates. Quaternion-angle analysis checked known 60-degree rotation
+and opposite-sign identity; physical metrics retain separate units.
+
+All 1480 support publications plus final publication remain stationary.
+88,279 received versions = 88,254 insertions + 25 unsupported skips;
+88,254 insertions = 86,053 replacements/removals + 2,201 active source IDs.
+No stale/duplicate revisions or pending events. Final 1,481 supports / 4,443
+X,V,W variable blocks / 3,684 factors (1,480 WNOA, 2,201 source, 3 priors).
+No full posterior covariance export is claimed; existing source/model covariance
+products and the retained synthetic covariance tests are unchanged.
+
+Before/after: 751 protected files, 49 raw artifacts, six source repository HEAD/
+status snapshots, 40 E2b oracle products plus the input journal preserved.
+Observer run wall time 595.841 s is NOT a performance benchmark or speedup:
+it includes diagnostic copies/dumps and unmatched runtime conditions. All timing
+tables use the retained observer-free E2b full_on1 run. No full observer-disabled
+repeat was needed after exact oracle comparison. No owned replay/compiler remains.
+
+3. Initial incremental estimate versus fully refined publication
+---------------------------------------------------------------
+Definitions: Euclidean world-position / stored world-V difference; shortest
+SO(3) quaternion difference in radians; stored body-W vector difference in rad/s.
+No trajectory alignment, GT, ATE or accuracy inference is used. 'Max' is across
+ALL historical states present at that particular publication, not just the robot.
+
+Time(s)  Passes  Max position(mm)  Current position(mm)  Max V(m/s)  After first: max position(mm)
+  1.0       1       0.0000719          0.0000719        0.000000610       0
+  2.0       1       0.0010455          0.0002048        0.000060141       0
+  4.0       1       0.0132452          0.0026630        0.000587323       0
+ 10.0       2       0.155424           0.155424         0.00645624        0.0000176
+ 20.0       2       0.246413           0.246413         0.0369088         0.0000277
+ 30.0       2       0.0636195          0.0335308        0.00474057        0.0000040
+ 40.0       1       0.0413533          0.0206456        0.00118401        0
+ 70.0       1       0.0515335          0.0027013        0.000530658       0
+100.0       2       0.121695           0.121695         0.00950309        0.0002457
+120.0       3       0.325871           0.271758         0.0744687         0.0220080
+130.0       3       0.208482           0.139548         0.0413595         0.0350398
+140.0       3       0.151457           0.151457         0.00345161        0.0167534
+142.0       2       0.258388           0.258388         0.00432962        0.0350252
+142.4       6       1.061143           0.726198         0.0113595         0.117983
+143.8       6       1.080596           1.080596         0.0223739         0.172509
+144.0       6       2.178697           2.053035         0.0621915         0.0285730
+146.0       5       1.828018           1.304307         0.105002          0.0977521
+148.0       5       1.589831           1.279123         0.110798          0.157722
+
+Recovery can add a second candidate at the same attempt number. Thus 142.4 s
+has six attempts but seven evaluated candidates, in addition to the initial state.
+
+Largest changes over these 18 snapshots and all their states:
+                          Initial -> final         First pass -> final
+position                  2.178697 mm               0.172509 mm
+orientation               1.63536e-4 rad            3.74521e-6 rad
+world velocity            0.110798 m/s              0.000734446 m/s
+body angular velocity     0.00771523 rad/s           0.000684004 rad/s
+Orientation values correspond to about 0.00937 degrees and 0.000215 degrees.
+
+The first ordinary pass is accepted in all selected cases and accounts for
+99.9363–100% of total objective decrease. At 144.0 s, for example, total decrease
+is 28.8533972 and the first pass leaves 0.0183698 of it for later passes. This
+fraction is within-update optimization progress, NOT a percentage of GT accuracy.
+Small remaining position changes do not imply exactly zero information or safe
+long-run omission. V/W matter to interpolation and future prediction too.
+
+4. Where the strict certificate is failing
+-----------------------------------------
+Certificate = max_j |(J^T r)_j| / sqrt((J^T J)_jj), evaluated at current Values.
+This is a normalized first-order stationarity check, not a physical pose-error
+bound, a calibrated uncertainty, or a guarantee of a global optimum.
+
+Only 13/1480 ordinary support estimates already pass 1e-5 (the final publication
+also starts stationary). At 40 s, 183 of 1203 blocks have violating coordinates;
+the strongest is W341, age 5.9 s. At 120 s, the strongest is pose X1109 rotation,
+age 9.1 s; current V1200 also has normalized gradient 3.55353. At 148 s, the
+strongest is current V1480 component 2, value 6.42623. These are not solely
+ancient inactive states. The strongest errors can be current or recent-history.
+
+Detailed 142.4 s example (1425 supports, 4275 variable blocks):
+Stage             max gradient   Violating blocks  Largest remaining position
+incremental       3.256782        326               1.061143 mm
+after pass 1      0.0359081       204               0.117983 mm
+after pass 2      0.00271553       53               0.058666 mm
+after pass 3      0.000849599      27               0.084254 mm
+after pass 4      0.0000459085     11               0.031112 mm
+after pass 5      0.0000204977      4               0.039666 mm
+pass 6 trial      0.00000201354     0               6.754e-8 mm
+QR recovery       0.00000108616     0               0 (accepted final)
+
+Every ordinary pass reports 4275 relinearized variables, even when only four
+blocks violate. After pass 5 the strongest is X1414 translation coordinate 3,
+age 1.0 s; all violations are at most 1.3 s old. Similarly at 143.8 s only five
+blocks still violate after pass 5, but pass 6 relinearizes all 4317 blocks. At
+144 s three blocks violate after pass 5, but all 4323 are relinearized next.
+These counts describe residual stationarity, not a proof that all other blocks
+can be held fixed: the system is coupled. The earlier E4 selective trial remains
+rejected and must not be silently repeated/promoted on the strength of this table.
+
+Position difference to the final answer can oscillate while objective decreases;
+e.g. 142.4 s pass2 -> pass3. This is consistent with small motions in weakly
+constrained/coupled directions, but no eigenmode/conditioning diagnosis was
+performed here. Do not label it proven gauge drift or numerical instability.
+
+Pass-6 trial objective at 142.4 s rises by approximately 5.96e-8 on a total near
+1.72e7 (3.46e-15 relative) compared with accepted pass5. It passes the gradient
+threshold but not the existing acceptance decision. Recovery is accepted; its
+position versus the trial differs at most 6.754e-11 m and orientation 8.946e-13
+rad. This particular recovery changes the numerical acceptance evidence, not
+the physical trajectory meaningfully. It does not establish that every recovery
+is unnecessary or justify bypassing transactional checks.
+
+Complete per-frame gradients/key ages and violating coordinate/block counts:
+evidence/gradient_passes.json. Physical current/recent/old/all-state statistics,
+descriptive threshold counts and per-pass differences: evidence/analysis.json.
+The 'preceding_frame_step' there is a sequential diagnostic difference, NOT a
+solver-parent increment when a rejected trial branches into recovery. The
+remaining-to-accepted-final differences do not have that ambiguity.
+
+5. Growing cost under the unchanged policy
+-----------------------------------------
+Observer-free oracle timings, support-origin cohorts as defined above:
+Time(s)     Pubs  Initial pass  Median/p95 attempts  Publication median/p95(ms)
+  0–40       399      5              1 / 2                  36.691 / 101.119
+ 40–80       400      0              1 / 2                 118.806 / 228.689
+ 80–120      400      2              1 / 3                 199.501 / 456.236
+120–140      200      5              2 / 3                 414.128 / 743.378
+140–148       81      1              4 / 6                 878.975 /1322.334
+'Initial pass' means number already passing the stationarity gate, not pass count.
+2444 total support-refinement attempts; 66 support publications have recovery.
+Late p95 still exceeds the nominal 1 second wall budget per 0.1 s physical support
+at 0.1x playback. These are isolated OFFLINE service timings, not a new live test.
+
+Mechanism in exact code:
+- DiagnosticReplay.cpp::RefinePublication calls numerical_audit::Refine.
+- FullPublicationRefinement.h::Refine first uses calculateEstimate(), full error
+  and fresh NormalizedGradient. Each trial sets force_relinearize=true AND
+  forceFullSolve=true, updates an iSAM2 copy, obtains calculateBestEstimate(),
+  then evaluates the full nonlinear objective and fresh Jacobians again.
+- Pinned GTSAM ISAM2-impl.h:386 uses CheckRelinearizationFull(delta,0.0) when
+  forceFullSolve=true (commented 'for debugging'), before fixed/noRelin exclusions.
+  Thus this flag does more than request full linear back-substitution.
+- NormalizedGradient in offline_process/BoundedISAM2Refinement.h computes current
+  graph.linearize(values), gradientAtZero and hessianDiagonal. Checking a scalar
+  tolerance therefore triggers real full-graph derivative work.
+- The older S5c measured profile attributes 79.52% overall CPU / 88.18% late CPU
+  to publication; source derivatives and QR dominate its disjoint kernels. These
+  are prior profile percentages, not freshly measured percentages after E2b.
+
+The authors' retained online_fgo/src/graph/GraphTimeCentric.cpp:570–577 calls
+solver_->update then calculateEstimate, not our extra strict-refinement wrapper.
+Their IncrementalFixedLagSmoother removes old states by lag. Our receiver retains
+all history and performs high-rate stable-ID source revisions. Those workloads
+are different. Local upstream comparison used upstream/ros2 revision
+16030fb6a24263a4b927d2ec5d1da266340ddb9b; no claim about the authors' current
+GitHub branch or their actual experimental hardware performance is made.
+
+6. What is resolved, and what remains
+------------------------------------
+Resolved: the expensive passes do not correspond to large pose changes on every
+iteration. They provide one substantive correction, followed by small physical
+refinements and sometimes numerical recovery. The wrapper's global scheduling
+makes even a handful of remaining recent-state violations pay whole-history cost.
+This is a concrete engineering target, not evidence that WNOA itself is invalid,
+that covariance must change, or that ROS/Rerun/GPU transfer is this bottleneck.
+
+NOT resolved: a replacement production policy. These snapshots all inherit the
+previous publication's FULLY refined history. They cannot predict accumulated
+error if we stop early at every future update. No tolerance, iteration cap,
+relinearization rule or covariance should be changed from this diagnosis alone.
+The original small live/offline mismatch remains unresolved; the exactness here
+is relative to the established OFFLINE oracle, not claimed live reproduction.
+
+One narrow next decision, NOT executed: separate incomplete linear propagation
+from necessary nonlinear relinearization. ISAM2.h:210–248 documents that
+calculateEstimate uses wildfire-limited delta, whereas calculateBestEstimate
+performs full back-substitution. On an isolated copy of selected existing solver
+states, compare full back-substitution ONLY with the current initial estimate
+and first global pass, with the same fresh gradient and physical metrics. Do
+not run another source sequence, publish the trial, drop the global gate, or
+repeat E4 blindly. If it remains nonstationary, that cheap completion is not a
+solution; further policy work needs an explicit bounded-cost/error contract.
+This S5d observer alone cannot separate those effects because the first trial
+changes both relinearization and linear-solve completeness.
+
+7. Recovery and record
+---------------------
+Small commands/tests/evidence and input/output SHA256 manifest are archived in
+evidence/. Large raw state/gradient frames and binaries remain under the result
+root. No frozen artifact, production target, estimator, library, model, launch
+profile or default was changed. No source rerun, no tuning, no push.
+Source/document whitespace check passes. Verbatim evidence logs end in blank
+lines and the saved unified diff contains space-prefixed blank context lines;
+their whitespace warnings are retained rather than rewriting raw evidence.
+Engineering plan updated. The completion commit contains this report and ledger;
+resolve its exact identity with:
+  git log -1 --format=%H -- experiments/receiver_publication_s5d_20261013/REPORT.txt
+Stop after this diagnostic and the report; no automatic follow-up experiment.

@@ -16,6 +16,23 @@ performance hypotheses into one acceptance experiment.
 
 ## Baseline and evidence
 
+**Latest diagnosis (S5d, 2026-10-13):** Private read-only snapshots pass68/68
+Release and ASan/UBSan, exact observer-OFF/ON prefixes and ONE complete saved
+CBS-ON journal replay against the E2b OFFLINE oracle (all19 non-clock products
+and endpoint counters). At18 preselected publications, initial-to-final maximum
+position/V corrections reach2.179mm/0.110798m/s: first-pass work is not all noise.
+After the first pass, remaining differences max0.172509mm/0.000734446m/s; the
+first pass supplies at least99.9363% of that publication's objective decrease.
+At142.4s, four blocks violate the gate after pass5, yet pass6 relinearizes all4275;
+trial/recovery positions differ only6.754e-11m. This localizes costly global
+polishing in our strict publication wrapper, not a new covariance/model fault.
+It does NOT validate early stopping: all snapshots inherit previously refined
+history, and first-pass full back-substitution versus nonlinear relinearization
+is not separated. No production change, source/live run, timing benchmark or
+tolerance relaxation. Original live/offline mismatch and E4 rejection remain.
+751 protected files,49 raw artifacts,six source snapshots and offline oracle
+preserved. See [S5d report](experiments/receiver_publication_s5d_20261013/REPORT.txt).
+
 **Latest isolated optimization (E2b, 2026-10-13):** Private default-off exact
 endpoint reuse passes64/64 Release and ASan/UBSan with cache disabled/enabled,
 exact five-second controls, and four exact full saved-journal replays against
@@ -223,6 +240,7 @@ shared IMU, past means or nonlinear history are statistically independent.
 | S5a | Retained receiver publication-cost audit around140–148s | Trace frozen executable sources; separate graph size, iterations, recovery, revision delivery and unmeasured subcosts | Completed2026-10-13: global publication work localized; E3a motion V/W derivative candidate proposed, not implemented |
 | S5b | Receiver subphase timing without changing estimation | Private timing-only instrumentation, exact-output/decision checks and overhead control on saved S5 journal; disjoint inclusive/exclusive accounting | Stopped2026-10-13: full exact-reference gate failed; no full timed profile, no optimization; external profiling permission unresolved |
 | S5c | Unmodified receiver sampling diagnosis | User-space profiling, exact frozen-journal output gates, overhead/sample coverage and dominant-code inspection | Complete2026-10-13: offline exact/quality gates pass,23,879 samples,1.49% wall overhead; publication/source-Jacobian/QR cost quantified. Original live equality remains failed; E2b proposed only |
+| S5d | Incremental estimate versus strict publication | Read-only Values/gradient snapshots; exact offline decisions/accounting/output gates; separate p/orientation/V/W and per-pass progress | Complete2026-10-13:68 Release/68 ASan+UBSan, exact prefixes/full journal. First pass supplies>=99.9363% objective reduction at18 selected checkpoints; later global polishing localized. No early-stop/policy validation or promotion |
 
 E1 first reuses existing gtsam_points batching around LOCAL graph preparation;
 it retains the auxiliary smoother and its conditioning. GPU-aware sidecar update,
@@ -265,6 +283,46 @@ its own explicit algorithmic decision. Fixed lag may bound resources but brings
 historical revision and marginal-prior semantics; reconsider only separately.
 
 ## Execution ledger
+
+### S5d — incremental estimate versus strict publication diagnosis
+
+- Authorization: user "ok proceed" on2026-10-13 following the authors-versus-
+  receiver cost inspection. COMPLETE. One hypothesis: distinguish meaningful
+  state corrections from numerical polishing in existing full-history refinement.
+- Use the frozen S5 journal and E2b offline oracle only. No GLIM/Kimera/bag/live
+  run, alternative policy, covariance/model/derivative edit or default promotion.
+- Retained logs lack pre-refinement full Values. Add a private observer that
+  copies already-computed Values/gradient/diagonal at selected early/middle/late
+  publications; no extra factor or solver evaluations. Match the unchanged
+  publication decisions, source accounting and estimator outputs exactly.
+- Protocol and detailed result: experiments/receiver_publication_s5d_20261013/.
+- Preserve the existing1e-5 gate; do not claim that small one-step corrections
+  prove safe accumulated behavior if refinement were removed. E4 stays rejected.
+- Parent d0d675fbdf985737b9d3a7d622b8ce5a2a4f4530, private branch
+  audit/receiver-publication-s5d-20261013. Replay SHA256
+  c0098e67acc0c427dadda42d9951b0eaf773eab8c803824fd4b030190140535c.
+- Added only observer hooks/copies, not extra factor/solver evaluations.68/68
+  Release and68/68 ASan/UBSan passed; inherited disabled benchmark excluded.
+  Observer disabled/enabled five-second controls and ONE full enabled replay
+  match all19 non-clock oracle products and E2b cache counters exactly.
+- All1481 publication checks stationary;88279 versions,88254 insertions,
+  86053 replacements,2201 active IDs,25 unsupported skips unchanged.
+- 18 predeclared support snapshots: initial-to-final p/orientation/V/W maxima
+  2.178697mm/1.63536e-4rad/.110798m/s/.00771523rad/s. After first pass maxima
+  .172509mm/3.74521e-6rad/.000734446m/s/.000684004rad/s. First pass objective
+  decrease fraction>=99.9363%; these are correction sizes, NOT GT accuracy.
+- At142.4s, pass5 leaves four violating blocks but pass6 relinearizes4275.
+  Stationary trial rejected by existing objective rule; accepted QR recovery
+  differs by6.754e-11m at most. Later passes are physically small but gate-
+  necessary under the unchanged policy. Raw run time595.841s is observer-
+  instrumented and NOT a speed benchmark. Retained oracle provides timings.
+- Before/after751 protected files,49 raw artifacts,six source HEAD/status
+  snapshots and40 E2b oracle files plus journal unchanged. Owned replay exited.
+- No stopping-rule change/fixed lag/tuning/source or live run/push. Proposed
+  next read-only distinction (not executed): full linear back-substitution only
+  versus nonlinear relinearization on isolated solver snapshots. A one-step
+  diagnosis cannot prove a safe repeated publication policy. Checkpoint is the
+  local commit containing experiments/receiver_publication_s5d_20261013/REPORT.txt.
 
 ### E2b — exact shared endpoint evaluation
 

@@ -1,0 +1,46 @@
+S5d: incremental versus fully refined publication, 2026-10-13
+Parent d0d675fbdf985737b9d3a7d622b8ce5a2a4f4530.
+Diagnosis only. No source estimator run, live transport, changed factors,
+derivatives, event/revision order, support clock, uncertainty, Qc, priors,
+convergence threshold or solver scheduling. E2b enabled as validated privately.
+
+Question: how much physical state correction and objective reduction occurs
+between the ordinary incremental estimate and strict stationary publication?
+Separate initial nonstationarity, ordinary refinement and numerical recovery.
+Do not infer the long-run result of omitting refinement from one-step differences.
+
+Frozen data/oracle:
+ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_shared_linearization_s5_live160_20261012/prepared/capacity160_on_receiver/events.csv
+ /home/yeranis/results/gnssfgo_endpoint_reuse_e2b_20261013/full_on1
+The capture ends148.58s, not a complete160s. Original live/offline tiny mismatch
+remains unresolved; exact observer validation targets the established OFFLINE oracle.
+
+Observer copies existing Values, J^T r and diag(J^T J) from calculations already
+performed. No additional linearization, solver update, factor error or derivative
+calls. Store selected publication frames, with no change to acceptance. Dump after
+the reference function returns. Reuse saved publication_steps for accept/reject
+identity and per-pass objective. Observe gradient key/coordinate and state age.
+
+Predeclared snapshots: indices10,20,40 for five-second gate; then100,200,300,400,
+700,1000,1200,1300,1400,1420,1440,1460,1480. Also choose one late recovery and one
+late no-recovery maximum-attempt publication from RETAINED logs (before replay),
+with lowest index tie-break. Selection does not use GT or candidate results.
+All unselected publications remain unchanged. Inspect every retained publication's
+gradient/objective/attempt logs, but only claim physical corrections where captured.
+
+Gates:
+1. Focused observer tests (disabled no data; copies independent; finite data;
+   gradient normalization; chronological frames; state units); original regressions.
+2. Private observer OFF and ON first5s exactly equal to saved prefix outputs,
+   decisions and accounting. Stop on mismatch; no tolerance relaxation/retries.
+3. If passed, ONE observer-ON full saved-journal replay exactly equal to E2b
+   full_on1 including original E2/E2b counters. No second method run. Timing with
+   observer is NOT a speed benchmark. Use already-retained uninstrumented timings.
+4. Report per-snapshot current and all-history p/orientation/v/omega changes,
+   per-pass remaining correction versus accepted final Values, objective reduction,
+   normalized gradient by block/age and keys above1e-5. No bias/IMU state exists.
+5. Preserve artifacts and protected manifests; update plan and report. Stop.
+
+No GT threshold selection. Descriptive state thresholds1um/0.1mm/1mm/1cm and
+orientation1e-6/1e-4/1e-3rad expose scale only, not acceptance gates. The existing
+1e-5 numerical certificate stays authoritative. No real-time/fixed-lag promotion.
