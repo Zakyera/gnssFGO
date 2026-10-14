@@ -16,6 +16,25 @@ performance hypotheses into one acceptance experiment.
 
 ## Baseline and evidence
 
+**FL4g MATCHED LIVE 120 s COMPLETE (2026-10-15):** The matched ETH1 first-120 s
+CBS-OFF and classic CBS-ON extension of FL4f completed at 0.10× with the same
+FL4e receiver SHA, 7 s source-WNOA fixed lag, profiles, Gaussian full source
+covariances, and no central IMU factor. Both source/receiver cases passed
+complete coverage, exact belief accounting and byte-identical deterministic
+receiver replay. ON injected 580 G→K and 581 K→G source factors; OFF injected
+none. On 1,160 identical timestamps spanning 115.9 s, native GLIM ATE improves
+`0.044372→0.025248 m`, but native Kimera ATE deteriorates
+`0.458070→3.745897 m`; fused **online/as-played** ATE worsens
+`0.055480→0.131993 m` and retrospective finalized ATE worsens
+`0.052336→0.127574 m`. Independent prism partial coverage corroborates the
+direction. On matched final edge revisions, Kimera's ON covariance trace
+usually **increases**, not collapses. The underlying cause is not established;
+no settings were tuned. See [FL4g protocol](experiments/fixed_lag_live_fl4g_20261015/PROTOCOL.md)
+and [FL4g report](experiments/fixed_lag_live_fl4g_20261015/REPORT.md). The
+full-window IE-TC reference shares CPT7; prism covers only about 65 s. This
+certifies neither 1× throughput nor nonlinear stationarity.
+
+
 **FL4f GIT MILESTONE ARCHIVE (2026-10-14):** The fixed-lag engineering
 experiment lineage, FL4e isolated receiver repair, and FL4f matched live
 result are saved with the [FL4f milestone manifest](experiments/fixed_lag_live_fl4f_20261014/MILESTONE.md).
