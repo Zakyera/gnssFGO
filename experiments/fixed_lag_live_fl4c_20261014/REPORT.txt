@@ -1,0 +1,109 @@
+FL4c — ETH1 first-30-second CBS-OFF live fixed-lag WNOA pilot
+2026-10-14
+Status: BOUNDED LIVE CAPTURE AND SAVED-JOURNAL REPEAT PASSED
+
+Scope and provenance
+--------------------
+This is one engineering pilot, not a CBS-OFF/ON accuracy comparison or a
+production fixed-lag certification. Native GLIM and Kimera and the gnssFGO
+receiver ran concurrently while the first 30 bag seconds of ETH1 mission
+2024-10-01-11-29-55 were played at 0.10x, headless. The earlier FL4a and FL4b
+failed preparations remain preserved; neither played bag data. FL4c is a fresh
+run root and the sole completed source capture here.
+
+The GLIM shared_native covariance provider requires its internal CBS mode
+active_window_temporary. We selected that mode without enabling source-to-
+source CBS reception: GLIM's effective receive flag was false, it had no
+Kimera-belief subscription before playback, Kimera's receive flag was false,
+and the source runner recorded zero G->K and K->G injections. Both still
+published classic diagnostic beliefs for downstream fusion. This pairing was
+checked at the resolved parameter, process/subscription and source-log levels;
+it was not inferred from the mode name. A stale copied launch-profile path in
+FL4b was caught before playback and corrected only in the new FL4c root.
+
+Frozen receiver: independent 100 ms support clock after 59 IMU samples, 7 s
+fixed lag, source-driven WNOA with Qc variances [.00375 x3,.015 x3], pose/V/W
+priors 1e-5/10/3, no central IMU factor, no GNSS, full dense source covariance
+at scale 1, Gaussian, no gating/health weighting, and stable-ID revision
+replacement. The thin live-output wrapper and receiver executable are the
+FL4a saved-prefix-checked build, SHA256
+15a2ae458f5142c0b3341e9e444b25fc41f05a263cefbbb877c18c4a527718bc.
+No estimator mathematics, source build, covariance or runtime policy changed
+for this capture. The earlier FL3i strict whole-replay equivalence gate remains
+FAILED; this pilot does not turn it into a pass.
+
+Actual outputs and conservation
+-------------------------------
+Native GLIM: 291 rows over 28.999702 s, 9.008107 m path, maximum gap 0.101 s.
+Native Kimera ROS odometry: 134 rows over 29.599838 s, 8.452773 m path.
+Kimera has a 3.200 s startup gap; subsequent maximum gap is 0.200 s. Do not
+describe its coverage as uninterrupted full 30 s. IMU: 2,986 samples spanning
+29.850006 s. Fused online/as-played: 293 supports spanning 29.2 s and a
+10.044144 m path. Fused fixed-lag-finalized: the same 293 physical supports,
+8.807206 m path; this is retirement/EOF output, NOT a full-history
+retrospectively optimized trajectory.
+
+Transport observed 15,884 belief versions (GLIM 12,884; Kimera 3,000), zero
+duplicate deliveries, and a maximum queue of 32. Exactly 420 stable IDs were
+inserted, 15,439 versions replaced them, and 25 early versions were excluded
+before receiver initialization; 420+15,439+25=15,884. No unsupported end
+events or pending factors remained. At EOF 319 inserted IDs had been absorbed
+into fixed-lag marginalization and 101 were active; no old factor was revived.
+All 15,884 event payloads were checked against committed records: covariance
+entries exact and relative-mean log roundtrip max 1.94e-14. A protected
+814-file input/build manifest rehashed unchanged.
+
+Measured capacity at this operating point
+-----------------------------------------
+The complete service time accumulated per published 100 ms support was mean
+39.06 ms, median 33.63 ms, p95 64.41 ms, maximum 104.26 ms. At 0.10x a
+100 ms data interval supplies about 1 s wall time; this particular short run
+met the predeclared 0.8 s p95 pilot target. Receipt-to-processing latency was
+median 5.60 ms, p95 16.86 ms, max 32.71 ms. Monitored output age peaked at
+0.100 s; 293/293 poses were published during source playback. Retained support
+count was 71 and factor-slot high-water 175. The queue was fully drained.
+These figures do not certify 1x playback, a long-run memory bound, a CBS-ON
+run, or nonlinear stationarity of the fixed-lag estimate. The receiver itself
+labels stationarity `not_checked_incremental_policy`.
+
+Determinism and operational cleanup
+-----------------------------------
+A first journal-repeat command on the host could not load its Boost 1.74
+runtime; it produced no receiver output. A second attempt under the default
+sandbox could not access Docker; it also produced no receiver output. The
+validated repeat was run once in the SAME Jammy receiver container used by
+the live capture, with the same executable, journal, model arguments, runtime
+libraries and CPU affinity. It finished in 11.014 s. All 16,365 archived
+commit files, online/finalized state CSVs, both TUM trajectories and summary
+were byte-identical. Those two preliminary environment failures are preserved
+as separate logs and are not source or solver failures. No owned GLIM, Kimera,
+receiver or ROS-master process remained at final inspection.
+
+Artifacts
+---------
+PREP=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live30_off_fl4c_20261014/prepared
+RESULT=/home/yeranis/results/gnssfgo_fixed_lag_live_fl4c_20261014
+Native paths: PREP/pilot30_off_source/{odom_imu.txt,kimera_odometry.csv}.
+Fused paths: PREP/pilot30_off_receiver/receiver/{online_trajectory.tum,
+finalized_trajectory.tum}.
+Validation: RESULT/{validation.json,repeat_validation.json}.
+Ordered arrivals: PREP/pilot30_off_receiver/{events.csv,receipts.jsonl}.
+Exact effective settings: PREP/pilot30_off_source/effective_mode_check.json,
+PREP/pilot30_off_source/run_metadata.txt and
+PREP/pilot30_off_receiver/resolved_config.json.
+Native GLIM/Kimera and fused TUM SHA256, respectively:
+10cb5ef0efb3c71899928df11ef2785ef4f9dd182f81778f7b36cfbed77a1f8a
+6d677defbdd23ce66f9c12c168c3eb2536757cf74b8b31ab6da8988382b5ee38
+6194a828832fc101a08cff1449e1bed7e79ce6713dad1f9722a2c7a653508988
+188e3bc63b640f7d515c003ea0e48e691dafb6dd408ae32d3a68c00f8631da2f
+
+Decision and limits
+-------------------
+The bounded CBS-OFF live path is operational at 0.10x with complete source
+accounting, timely publication and exact journal reproducibility. This does
+not yet compare against ground truth, establish improvement, or validate a
+matched CBS-ON run. GT metrics were deliberately not manufactured from a
+partial prism overlap. Any matched ON capture requires a separate decision
+and must preserve the same source profile, receiver binary and scoring mask.
+gnssFGO HEAD d3d152a28440f97ced3bd7a50ee072874beafe19; this report and
+private pilot files are uncommitted. Prior dirty work is preserved.

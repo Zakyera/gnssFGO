@@ -1,0 +1,131 @@
+FL3f — bounded incremental publication policy, 2026-10-14
+
+RESULT: CANDIDATE REJECTED. Structural transaction passes; state and boundary
+prior fidelity fail the predeclared screen. Production remains unchanged.
+
+Question and scope
+Would one ordinary iSAM2 refinement before and after retirement preserve the
+converged difficult update closely enough to replace expensive forced polishing?
+One candidate at event84958/support1224 only; one Release build, one saved-prefix
+restoration, one same-state reference reconstruction. Stopped after that event.
+No source run, full replay, next event, sweep, retry or new model/parameter tuning.
+
+Private implementation
+Before target: identical FL2b strict20 policy. Target: one ordinary refinement
+per phase, existing threshold.01,skip1,QR,calculateBestEstimate(), with both
+force_relinearize and forceFullSolve false. Retirement and original-chart
+joint-prior reload remain unchanged. At most4charged steps:pre1,retire1,reload1,
+post1. Ordinary insertion/dispatch still occurs and is included in event timing.
+All finite/cost/lifecycle checks preserved. Gradient1e-5 is measured but not a
+candidate publication requirement; numerical validity is NOT convergence.
+Private target archive rows explicitly say incremental_candidate and
+publication_candidate, never ordinary online/publication. This is not deployment.
+
+Unchanged: Gaussian source-driven WNOA,no central IMU,7s lag,100ms support clock,
+Qc/priors,full source mean/covariance scale1,stable-ID replacement and journal
+arrival order. Classic source-CBS settings and source executables were untouched.
+Pinned GTSAM4.2a8,CPU2,TBB1,OMP1,endpoint/linearization cachesOFF.
+
+Reference validity
+FL3e did not save its marginal matrix. Clone the exact restored pre-solve solver,
+run its already-validated116pre/retire/reload/7post sequence, then retain the joint
+marginal for comparison. Reference pre/final Values reproduce FL3e BYTE-EXACTLY.
+Candidate initial Values also reproduce FL3e exactly. All75000earlier archive
+files are byte-identical and429protected artifacts remain unchanged.
+This reference reconstruction is not another candidate or a production retry.
+
+Numerical results
+                         Before retirement              After retirement
+Refinement calls          1                               1
+Normalized gradient       1.586389 -> .0493792074           .207810851 -> .00186663231
+Converged at1e-5?          NO                              NO
+Cost before               2794137.3456364814              2793886.6114675696
+Cost after                2794135.3361750422              2793886.4038612065
+Relinearized variables    25                              205
+Reeliminated variables    27                              213
+Both trial steps accepted under the unchanged merit/roundoff guard.
+Pre/post and candidate/reference post-retirement objectives are different
+linearized retained objectives. Their absolute costs must NOT be compared as
+evidence that either trajectory is more accurate or better converged.
+
+Raw state difference versus converged reference; identical keys, no alignment
+                                  Pre RMS       Pre max       Post RMS      Post max
+position m                        .434852294    .445388930    .361049302    .369656803
+orientation rad                   .007857461    .008032745    .006515984    .006665037
+world velocity m/s                .008127119    .026886053    .006736851    .022190822
+body angular rate rad/s           .002767973    .017265756    .002358439    .015724943
+Post orientation maximum approximately.381882deg.
+Declared max limits:position.01m,orientation.1deg,velocity.01m/s,rate.01rad/s.
+All four maximum checks fail, both before and after retirement.
+The37cm difference is against a converged numerical reference, NOT ground truth;
+it is not an ATE result or proof that the reference is more physically accurate.
+We do not erase it with rigid alignment or relabel it harmless gauge motion.
+
+Joint boundary prior comparison
+Both priors are linearized at the SAME reference final Values with identical
+ordered keys. Whitened A,b saved; H=A^T A and g=-A^T b compared. No covariance
+rescaling or factor modification. Full joint matrix dimension36; numerical
+informed rank30 in both, relative eigenvalue cutoff1e-12. Both PSD within the
+declared roundoff tolerance. Constant residual offsets are not compared.
+Reference-informed W=U_positive diag(lambda^-1/2):
+  max abs eig[W^T(Hcandidate-Hreference)W] = .062931698779
+    limit.05 -> FAIL (6.293% maximum normalized information change).
+  RMS[W^T(gcandidate-greference)] =1.53938846444
+    limit.1 -> FAIL. Dimensionless numerical comparison, not calibrated sigma.
+  ||Hcandidate N_reference||2 / ||Hcandidate||2 =1.87616745335e-5
+    limit1e-10 -> FAIL. Rank equality does not imply identical nullspace.
+Thus the discrepancy is not only a label or output-display choice: retiring
+earlier also changes the linearized information carried into subsequent windows.
+No later-window drift was measured; the run stopped at the target.
+
+Timing, single diagnostic observation
+Target including separate reference reconstruction:1.365082106s.
+Reference reconstruction:1.332220132s.
+Candidate service by subtraction:.032861974s (32.86ms):
+  pre solve .009664904s;retirement .000335039s;
+  chart reload .006898432s;post solve .014682826s;
+  other event work .001280773s.
+Original FL3e converged event was1.358424210s in a separate capture.
+This is substantially less work but NOT a controlled speedup benchmark:
+same-process reference work precedes candidate and subtraction is diagnostic.
+No throughput, live-capacity or universal worst-case latency claim.
+Prefix plus target93.107457s;process93.142503s;peakRSS27480KiB.
+Build36.146543s. Existing base-class no-return compiler warnings unchanged;
+Release compilation succeeded. No new sanitizer/full-suite campaign in this
+bounded private-policy test; earlier lifecycle evidence is not a new test run.
+
+Lifecycle and validation
+Before:newest1223,oldest1153,71supports,174slots,101active IDs,1pending.
+After:newest1224,oldest1154,71supports,174slots,100active IDs,0pending.
+2IDs absorbed,1pending inserted;one old state finalized and one approximate
+candidate recorded. Surviving means,covariances,revisions,slots unchanged.
+72659versions=1817inserted+70817replaced+25excluded.
+1817IDs=100active+1717absorbed. No duplicate,stale,unsupported or buffered input.
+Only3new archivefiles:target record and2absorptionmarkers;no later/staged files.
+Rollback path is unchanged;this successful private transaction did not exercise
+failure rollback. Approximate output remains a rejected diagnostic artifact.
+Five small prior-comparator algebra checks pass:identity,information scaling,
+gradient shift,rank change,nullspace rotation. These do not test estimator accuracy.
+
+Decision
+Do NOT adopt this candidate. Bounding refinement calls works computationally,
+but one pre/post incremental step is not sufficiently faithful at this boundary.
+The test rules out THIS shortcut, not fixed lag, WNOA or all incremental policies.
+It does not justify increasing iteration budgets blindly, assuming slow events
+are rare, weakening the screen after results, or tuning covariances to hide it.
+The unresolved task remains fast, reliable treatment of the slowly converging
+boundary before its information is irreversibly summarized. No further candidate
+was run. FL3 fullstream gate remains incomplete;FL4 remains on hold.
+
+Identity and artifacts
+HEAD:d3d152a28440f97ced3bd7a50ee072874beafe19;unchanged,no commit/push.
+Branch:audit/receiver-linear-completion-s5e-20261013.
+Binary:e404eff386a35f3b5c69cf3ccec723ca25007e26fe5d7b99dacba20311b2b548
+Journal:da7f4f8e339f469ff05c5c20590941a062385d86a8979c92c1e42cd8c86d3f68
+Results:/home/yeranis/results/gnssfgo_fixed_lag_incremental_fl3f_20261014
+PROTOCOL.txt:predeclared policy/tolerances, unchanged after results.
+build.json/observe.json:exact command,binary/code identities,protected checks.
+validation.json:all results,comparisons,conservation,screen decision.
+diagnostics/:reference/candidate Values,A/b matrices,key order,traces,ledgers.
+archive/:unchanged prefix plus explicitly labelled target candidate.
+All prior dirty work preserved. STOPPED after this one rejected candidate.

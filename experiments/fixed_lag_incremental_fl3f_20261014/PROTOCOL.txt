@@ -1,0 +1,58 @@
+FL3f: one bounded-incremental publication policy, 2026-10-14
+
+One candidate at event84958/support1224 only. Earlier events retain frozen
+FL2b/FL2a behavior. No source run/full journal/next event/sweep/retry.
+Target policy:one ordinary iSAM2 update before retirement and one afterward,
+using existing .01 relinearization threshold,skip1,QR and calculateBestEstimate.
+force_relinearize=false;forceFullSolve=false. Full nonlinear convergence is
+measured at unchanged1e-5,not required for APPROXIMATE candidate output.
+Finite/error/ownership/conservation checks and cost guard remain mandatory.
+Cost rejection is unsafe and rolls back;never silently accept a rejected step.
+Original retirement and original-chart joint marginal/reload unchanged.
+Work ceiling4:one pre,one retirement,one reload,one post (early exit permitted).
+This bounds refinement calls,NOT walltime or all future input configurations.
+
+Only a private archive may record this candidate;target rows explicitly say
+incremental_candidate/publication_candidate,not ordinary online/publication.
+Both numerical validity and convergence status are recorded separately.
+No approximate policy is enabled for production or future journal events.
+
+Reference:restore existing prefix once. Clone the exact pre-solve iSAM2 state,
+reproduce FL3e's200-ceiling pre/retire/reload/post operations to recover its
+boundary marginal,which was not previously serialized. This is one reference
+reconstruction,not another candidate,parameter sweep or continuation.
+Reference pre/final Values must be byte-identical to FL3e and steps116/7.
+Timing of reference reconstruction is separately recorded/excluded from candidate
+event service estimate. This subtraction is diagnostic,not a clean speed benchmark.
+All existing prefix archive files and protected artifacts must remain unchanged.
+
+PREDECLARED NUMERICAL FIDELITY SCREEN (not GT accuracy or a universal guarantee):
+- All shared raw physical states,without alignment,both pre and post retirement:
+  max position difference <=0.01m;orientation<=0.1degree;
+  world velocity<=0.01m/s;body angular rate<=0.01rad/s.
+  These conservative engineering tolerances keep approximation at centimetre/
+  sub-degree scale;they are not fitted to ATE and will not be relaxed afterward.
+- Linearize candidate/reference joint marginals at the SAME reference final
+  Values,with identical ordered keys. Compare H=A^T A and g=-A^T b.
+  In reference informed subspace,largest absolute eigenvalue of
+  W^T(H_candidate-H_reference)W <=0.05,where W=U_positive*diag(lambda^-1/2).
+  RMS of W^T(g_candidate-g_reference) <=0.1 (dimensionless numerical scale,
+  NOT a claim of calibrated probabilistic uncertainty).
+  Eigenvalue rank cutoff1e-12*maxabs(H eigenvalue);equal ranks,PSD tolerance
+  1e-12*maxabs(eigenvalue);candidate information leakage into reference nullspace
+  <=1e-10 relative spectral norm. No Schur prior or covariance is rescaled.
+- All original bookkeeping,finite/merit checks pass;retained71supports;source
+  covariance/means/slots of surviving IDs unchanged;exact source accounting.
+
+A structural pass is NOT a fidelity pass. Reject this candidate if any screen
+fails;report actual differences rather than reclassifying them as harmless gauge.
+Passing would only justify further validation,not immediate production use.
+On failure stop. No alternative step counts,losses,thresholds,models or charts.
+
+Build/run:existing pinnedGTSAM4.2a8,CPU2,TBB1,OMP1,cachesOFF. One Release build
+and one prefix. Small algebra/validation self-checks only,no broad test campaign.
+WNOA,no centralIMU,7s lag,100ms supports,Gaussian scale1,priors/covariances
+and classic source-CBS data all unchanged.
+JournalSHA256:da7f4f8e339f469ff05c5c20590941a062385d86a8979c92c1e42cd8c86d3f68
+Freshresults:/home/yeranis/results/gnssfgo_fixed_lag_incremental_fl3f_20261014
+HEAD:d3d152a28440f97ced3bd7a50ee072874beafe19;no commit/push.

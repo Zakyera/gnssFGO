@@ -1,0 +1,95 @@
+FL4a — ETH1 30-second CBS-OFF fixed-lag live preparation
+2026-10-14
+Status: STOPPED BEFORE BAG PLAYBACK — SOURCE STARTUP CONFIGURATION MISMATCH
+
+Scope and outcome
+-----------------
+User authorized incremental movement to real experiments. Prepared one 30s
+ETH1 OFF pilot: 0.1x/headless, 7s fixed lag, independent 100ms supports,
+source-driven WNOA without central IMU factors, Gaussian source covariance
+scale1, stable-ID revision replacement. No CBS-ON, tuning or promotion.
+There is NO completed live experiment or new accuracy/throughput result.
+
+Unchanged receiver and successful preparation
+--------------------------------------------
+The thin Live.cpp wrapper consumes the existing EventStream and unchanged
+FL3i receiver. It exports committed poses, without additional optimization,
+to online_states.csv/online_trajectory.tum and finalized equivalents.
+Finalized means fixed-lag retirement plus the retained EOF window, NOT a
+full-history retrospective solution. Nonlinear stationarity is not certified.
+
+Private build: 45.0647s. Saved-prefix check: 9.20667s; all 10,503 archive
+files byte-identical to the tested FL3i prefix. All 200 online rows parsed by
+the existing ROS pose parser. Executable SHA256:
+15a2ae458f5142c0b3341e9e444b25fc41f05a263cefbbb877c18c4a527718bc
+The earlier FL3i strict numerical-equivalence failure remains failed.
+
+First launcher preflight rejected the old adapter's strict-nominal-only
+policy and unsupported environment keys, before starting sources/receiver.
+Preserved that evidence in pilot30_off_control and preflight_original.
+Made private transport copies with explicit fl4a_fixed_lag_incremental
+policy, requiring the exact wrapper and 7s lag and rejecting strict-policy
+claims. Seven policy tests pass. Launcher and ROS transport logic remain
+byte-identical to production; production tools untouched. Redundant E2 env
+keys removed from config (the frozen wrapper already disables those caches).
+
+Exact startup failure
+---------------------
+Second controller preflight passed. Receiver/adapter and source ROS launch
+started, but GLIM aborted immediately at 2026-10-14 15:06:41 UTC:
+  shared-native provider unsupported CBS configuration
+GLIM exit code -6. Kimera initialized and waited for sensor data.
+No rosbag playback was started. Manual scoped shutdown stopped the owned
+controller, sources, master and receiver; no source retry was attempted.
+
+The pinned S4d release_2 overlay/cbs_bridge.cpp:683-687 requires all of:
+  mode == ActiveWindowTemporary
+  outgoing_marginal_source == Direct
+  live_revision_enable == false
+  outgoing covariance mode == schur_relative_between
+when GLIM_SHARED_NATIVE_PROVIDER=shared_native is enabled.
+Our OFF runner selects observe_only, while glim_profile.launch unconditionally
+sets that provider. Therefore the first condition fails deterministically.
+The inherited S5 verifier likewise expects observe_only for OFF AND the
+shared_native provider, so it could not have certified this OFF combination.
+This was a preparation mistake, not evidence against the fixed-lag solver,
+GPU speed, WNOA equations or sensor data. Do not disable the guard silently.
+
+Evidence roots
+--------------
+PREP=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live30_off_fl4a_20261014/prepared
+RESULT=/home/yeranis/results/gnssfgo_fixed_lag_live_fl4a_20261014
+
+PREP/pilot30_off_source/estimators.log:196-197 contains the exception.
+PREP/pilot30_off_source/ros_logs/db37adf8-c7e0-11f1-a174-267c7c544b29/roslaunch-b5eb5e92f35a-533.log:93 records GLIM death.
+PREP/pilot30_off_receiver/events.csv has zero rows; transport_status.json
+reports zero IMU, beliefs, publications and queue. No source coverage,
+effective_mode_check.json, receiver summary or successful completion exists.
+Transport reports no revision rows after shutdown: consequence, not cause.
+PREP/preflight/validation.json and adapter_v2.json retain successful checks.
+RESULT contains build/prefix logs and preserved original protected manifest.
+
+Integrity and cleanup
+---------------------
+All 791 entries in protected_manifest_v2.json were rehashed unchanged after
+shutdown. Original config/controller/manifest and failed preflight preserved.
+No GLIM/Kimera/source-model or core receiver code changed or rebuilt.
+No source covariance, Qc, priors, lag, timing or receive switch changed.
+Container process inspection confirms no owned estimator/receiver/ROS master
+remains. Unrelated Humble ros2/rmw_zenohd processes were left alone.
+Base/final gnssFGO HEAD d3d152a28440f97ced3bd7a50ee072874beafe19;
+private new files and plan edits uncommitted; pre-existing dirty work preserved.
+
+Small next action, not executed
+------------------------------
+Resolve ONLY the OFF/provider configuration contract before a fresh pilot.
+An explicit candidate is retaining ActiveWindowTemporary as the provider's
+internal bookkeeping mode while keeping receive_external_beliefs=false and
+no incoming subscription/injections. Check all mode-dependent paths and
+effective OFF behavior before adopting that pairing; do not call a mode
+rename proven equivalent. Alternatively, qualify observe_only support in the
+provider separately. Do not silently fall back to a different covariance
+path or enable CBS-ON. Add startup child-death detection/preflight guard so
+this mismatch fails promptly rather than waiting for the ROS launch parent.
+Then use a fresh artifact directory for the same bounded OFF pilot. No broad
+solver investigation or new method is warranted by this startup failure.

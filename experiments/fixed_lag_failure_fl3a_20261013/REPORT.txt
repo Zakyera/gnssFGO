@@ -1,0 +1,221 @@
+FL3a -- fixed-lag support1224 failure diagnosis
+2026-10-13
+
+RESULT: FAILURE REPRODUCED AND SOLVER-LEVEL MECHANISM LOCALIZED.
+NOT REPAIRED. FL3 complete-stream acceptance and FL4 live work remain blocked.
+
+1. Plain-language conclusion
+
+The receiver did not stop from a growing queue, exhausted memory, a rejected
+cost-increasing step, or a missing factor. Its undamped Gauss-Newton publication
+loop made progress on every step, but used all20 steps without meeting the
+unchanged stationarity requirement. Its last gradient is54.76 times the limit.
+The largest remaining errors alternate between pose blocks beside the OLD
+marginal boundary. Most of the changing positions are a nearly common rigid
+motion of the retained window, rather than deformation of the local path.
+
+Fresh batch QR reproduces the incremental solver's directions to2.33e-12 in
+local coordinates. The original marginal's analytic chart Jacobian agrees
+with independent finite differences. This rules out stale incremental
+linearization or a gross marginal-chart derivative error in the tested solve.
+The combined linearized problem has full column rank, although it is ill-
+conditioned. QR successfully solves it. The observed failure is slow,
+alternating NONLINEAR convergence of this retained objective under our current
+publication procedure, not evidence that fixed lag cannot work.
+
+This is not a proof that every part of marginalization is universally correct,
+or that any particular damping policy will pass. No accepted stationary
+independent solution was obtained by the two bounded default-LM controls.
+No unique source factor has been shown to cause the slow mode. Do not blame
+Kimera simply because one Kimera belief became ready at the failing support.
+
+2. Scope and unchanged configuration
+
+Only replayed the existing ETH1 CBS-ON event stream up to event84958. No event
+after it was processed, no EOF/drain, no source estimator, no live run, no GT
+scoring, no full-stream retry. The failed transaction remained unpublished.
+The observer is a private derived smoother included by an otherwise unchanged
+FL2b receiver. Non-target calls delegate directly to original FL2a solve().
+Target calls use identical arithmetic, update flags, cost guard and acceptance
+test. Additional numerical evaluations occur after receiver rollback.
+
+Frozen7s lag,100ms independent support clock,59-sample origin,X/V/W state,
+WNOA Qc [.00375,.00375,.00375,.015,.015,.015], original priors1e-5/10/3,
+Gaussian full source covariance scale1, QR, ordered stable-ID replacement,
+endpoint cacheOFF, no centralIMU/GNSS/gating/robust loss/weighting.
+The original source journal uses classic active_window_temporary CBS, not
+experimental live_revision source exchange. No covariance/model/source change.
+Production/default receiver remains untouched and full history is the reference.
+
+Existing runtime container was stopped after shutdown. Its inspected startup
+command was an idle zsh shell; it was restarted solely for these diagnostics.
+Pinned GTSAM4.2a8/runtime,CPU2,oneTBB/OMP worker. No installation or download.
+
+3. Input and implementation identities
+
+Journal:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_shared_linearization_s5_live160_20261012/prepared/capacity160_on_receiver/events.csv
+SHA256 da7f4f8e339f469ff05c5c20590941a062385d86a8979c92c1e42cd8c86d3f68
+
+Code:
+/home/yeranis/repos/gnssFGO/experiments/fixed_lag_failure_fl3a_20261013/
+Artifacts:
+/home/yeranis/results/gnssfgo_fixed_lag_failure_fl3a_20261013/
+
+Observed executable SHA256:
+5767316f1d46a2d1d4459659c6dfe88314ff7a2086cee7ebe4939ca8f1e1eca4
+Saved-objective QR checker SHA256:
+61980d004f6796aafa57aca9dc9b0f20d446d15ef824af8758c1bfcb53a225d7
+Per-build source hashes, commands and run metadata:build_observer.json,
+observe.json,build_snapshot.json,snapshot_audit.json. Existing library/header
+warnings about empty virtual interpolation defaults were retained; builds passed.
+
+No commit/push requested or performed. HEAD remains
+d3d152a28440f97ced3bd7a50ee072874beafe19
+on audit/receiver-linear-completion-s5e-20261013. Pre-existing dirty work preserved.
+
+4. Exact failed branch
+
+Input event84958, I arrival1727775130983502000ns.
+New supportX1224 physical1727775130983475000ns =122.4s after origin.
+Original path:
+  fixed_lag_lifecycle_fl2b_20261013/Receiver.h:223
+    solve(); require passed; only THEN retire.
+  fixed_lag_boundary_fl2a_20261013/BoundarySmoother.h:84-96
+    at most20 forced relinearization/full-solve trials; normalized gradient1e-5.
+
+Initial normalized gradient:1.5863889609968425
+Final accepted gradient:0.00054760810443800164
+Required:<=0.00001
+Attempted20,accepted20,cost-rejected0. Stop:budget_exhausted.
+All216 variable blocks relinearized/re-eliminated on every trial; no fixed keys.
+72 transient supports/864 scalar variables. Current retirement was never reached.
+
+Initial cost2794137.3456364814 ->2794133.6862067287.
+All20 trial costs strictly decrease; last decrease0.0152286254, far larger
+than the2.794e-6 cost-guard allowance. Thus it is NOT numerical cost rejection.
+
+Selected normalized gradients / worst blocks:
+  initial 1.586389       X1224 coordinate4
+  step1   .234128572     X1155 coordinate0
+  step2   .002079704     X1154 coordinate5
+  step3   .201371808     X1155 coordinate0
+  step4   .001793324     X1154 coordinate5
+  step18  .000632164     X1154 coordinate5
+  step19  .063712143     X1155 coordinate0
+  step20  .000547608     X1154 coordinate5
+Pose chart order is rotation then translation. The repeatedly dominant blocks
+are one/two supports after the oldest retained support1153, not the newest1224.
+This is alternating slow convergence, not a monotonic gradient/noise floor.
+
+Detailed evidence:diagnostics/result.txt,trials.csv,decisions.csv.
+
+5. Exact retained-objective independent checks
+
+A. Saved the full retained source payloads, motion-factor recipe, all state
+values, and original joint marginal anchor/A/b/augmented information, including
+its constant term. No starting-state prior was invented or marginal reanchored.
+See diagnostics/snapshot/README.txt and factors.txt. This fixture allows further
+engineering without replaying122s of source events.
+
+B. Reloaded that objective independently. Costs AND normalized gradients are
+bit-identical at initial and trials1,18,19,20. Fresh QR Gauss-Newton directions
+match recorded next-state local coordinates with maximum2.3252511028e-12.
+Therefore the slow steps are also the batch linearized solution; they are not
+caused by iSAM2 skipping an active key or retaining stale Jacobians here.
+
+C. Joint marginal analytic versus independently finite-differentiated chart:
+maximum whitened Jacobian element difference5.3646462e-6, compared with maximum
+stored prior A element44620.1257 (ratio1.20e-10); right-hand-side difference0.
+Cost difference7.276e-12. This specific marginal passes the derivative check.
+At the worst final coordinate, direct whole-objective finite difference(h1e-5)
+gives normalized signed gradient-0.00054760989 versus analytic-0.00054760810.
+The threshold violation is real, not just an incorrect printed gradient.
+
+D. Final accepted whitened Jacobian is1500x864, full column rank at ordinary
+double-precision SVD tolerance. Singular values max118370.259,min1.365416;
+condition(A)=86691.709,condition(A^T A)=7.515e9.
+Column-normalized condition4503.914. This is poor conditioning but not a
+singular combined system; the solver uses QR, not normal equations. The
+marginal ALONE is rank-deficient/very poorly conditioned, which is not itself
+an error: other active factors supply additional constraints. Do not interpret
+its standalone condition number as proof of an invalid prior.
+
+E. Independent existing GTSAM LM, same complete retained objective and original
+prior, max100iterations,relative/absolute cost tolerance1e-12,QR:
+  seed              iterations    finalcost          finalgradient
+  original initial  80            2794133.586769164   7.794887e-5
+  last accepted     61            2794133.586766576   6.268563e-4
+NEITHER passes the receiver's1e-5 gradient check. Both terminate on their
+cost-based criterion, not the100-step cap. Near cost2.794million, relative
+1e-12 corresponds to a decrease~2.794e-6; cost convergence is not stationarity.
+Default legacy LM reduces lambda by10 after accepted progress. Retained logs
+show lambda reaches~1e-85/~1e-66, effectively returning to undamped steps.
+Do not claim this experiment validates simply swapping in default LM.
+
+F. A fresh QR step from trial20 still decreases cost but increases the maximum
+gradient to.0552311 atX1155:the alternating pattern is reproducible outside
+iSAM2. Cost finite differences along that direction show curvature~0.02562
+versus GN prediction.026014 (ratio~.985). Thus there is no evidence for a gross
+wrong-sign derivative in that direction. This one directional check does not
+identify the full nonlinear Hessian or a universal best damping rule.
+
+Evidence:linear_audit/*,linear_analysis.json,diagnostics/controls.csv,
+lm_from_*.csv,marginal_chart_check.csv,worst_coordinate_cost_derivative.csv.
+
+6. What is moving?
+
+Across72 retained poses, initial -> accepted step20:
+  raw position RMS.330374m,max.338457m.
+  after one best rigid POSITION alignment:RMS.00006136m,max.00023571m.
+  fitted common rotation.00602061rad,translation-vector norm.00844449m.
+Initial -> independent LM result:
+  raw position RMS.433541m,max.444127m.
+  after best rigid position alignment:RMS.00007150m,max.00029968m.
+The common rotation about a distant map origin accounts for much of the large
+absolute-position motion. This is a descriptive decomposition, NOT GT alignment,
+accuracy scoring, or permission to disregard that change in published states.
+V/W also change; the entire objective is not claimed to be exactly gauge-free.
+
+Evidence supports a slowly settling common-window/boundary-coupled mode. It
+does not prove all of that mode is caused by one marginalization decision,
+one source covariance or a specific incoming measurement. Full history solves
+a different objective and therefore is not a same-prior correctness oracle.
+
+7. Conservation, rollback and non-regression
+
+All75,000 committed archive/index files have identical names and bytes to the
+original stopped FL3 attempt. Thus every earlier admitted source payload,
+publication, retirement and absorption is reproduced, not just final ATE.
+Last committed event84957,newest1223,last output bundle84956;noX1224 output,
+noEOF/drain,no staging leftovers. Failed input had one pending Kimera version;
+snapshot reconstruction verifies its inserted factor exactly.
+94protected files unchanged, including the journal and prior protected source,
+binary and oracle artifacts. validation.json records the checks.
+Observer and snapshot builds pass. No new full Release/sanitizer suite was
+needed/run for a production repair because no production repair was made;
+earlier FL2a/FL2b suites remain historical evidence, not new runs claimed here.
+Diagnostic elapsed93.9998s is NOT a performance benchmark or live-capacity claim.
+
+8. Next bounded decision, not implemented
+
+Keep this serialized failure as the regression fixture. The next engineering
+target is the publication solver's handling of difficult nonlinear retained
+windows: test an existing GTSAM adaptive damping/trust-region option on this
+same objective, with unchanged1e-5 acceptance and bounded total publication
+work. GTSAM's installed LevenbergMarquardtParams exposes adaptive lambda and
+diagonal damping; its legacy LM default is NOT a validated repair here.
+No new estimator/fusion mathematics or custom optimizer needs to be invented.
+Count inner damping trials/linear solves in that work budget, not just accepted
+outer iterations. Solver damping must not be exported as measurement information
+or included as a new prior in the marginalized Gaussian/covariance.
+
+Any candidate must preserve the original marginal Gaussian/anchor, complete
+source covariances, stable IDs, accounting and rollback. First prove it reaches
+strict stationarity on this one fixture, including the post-retirement solve
+and total20-step publication budget, then synthetic regressions and only an
+explicitly authorized same-journal acceptance replay. Do not relax the check,
+raise the budget, enlarge lag, tune Q/R or rerun GLIM/Kimera to hide this failure.
+
+Status:FL3a diagnosis complete; numerical repair UNVALIDATED;FL3 incomplete;
+FL4/live held;full-history default and all earlier artifacts preserved.

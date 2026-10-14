@@ -1,0 +1,153 @@
+FL2b: fixed-lag WNOA receiver lifecycle integration
+2026-10-13; private candidate, not the installed/live receiver.
+
+Scope
+User authorized "Proceed" after FL2a. This stage integrates the validated boundary
+adapter with source arrivals, replacement, retirement, transaction and archival
+output. Synthetic events only. No GrandTour journal or source estimator was run.
+FL3 real-journal correctness/timing and FL4 live capacity remain unstarted.
+No ATE/GT/model tuning. Full-history implementation/default/binaries unchanged.
+
+Reuse and fixed configuration
+Receiver.h includes the unchanged FL2a BoundarySmoother, frozen E2b
+SourceWnoaModel and repository CausalSupportClock. No replacement optimizer,
+new interpolation model, IMU integration or manual production Schur elimination.
+Replay.cpp directly includes the frozen DiagnosticReplay.cpp under a renamed
+unused main, reusing its EXACT EventStream decoder/schema/validation. Its old
+Run/main are never invoked. Only the new private entry point calls Receiver.
+
+7s lag/100ms support period,59 raw timestamp observations to anchorX0;
+X/Pose3,V/world velocity,W/body angular rate; WNOA Qc
+[.00375,.00375,.00375,.015,.015,.015]; initial pose/V/W sigmas1e-5/10/3.
+Gaussian full dense6x6 source covariance scale1; no central IMU/GNSS, health,
+robust loss, covariance scaling or source estimator change. Raw IMU records
+drive only the independent clock; acceleration/gyro values do not feed this model.
+Source CBS remains classic active_window_temporary in the preserved baseline;
+there was no source-to-source CBS execution in these synthetic tests.
+
+Receiver implementation
+One active map entry owns one factor pointer/slot and latest admitted payload
+for stable(source,session,from_index,to_index). source/session count is not fixed.
+Endpoint stamps are immutable per ID. Exact ns bracket arithmetic maps arbitrary
+physical endpoints onto independent supports, including shared brackets.
+One arrival version is one ordinary forced-relinearization iSAM2 replacement,
+matching E2b ReplaceFactor. It removes the old slot then inserts one revised
+mean AND complete covariance. No source averaging, row selection or coalescing.
+
+Pending versions retain arrival order individually until their right support
+exists. Later/lower revisions are not silently collapsed. Existing1e-12 duplicate
+payload tolerance is retained; conflicts and changed endpoint timestamps fail.
+Before-X0 exclusions and unavailable-at-EOF right brackets are distinct from
+lag-induced failures. Source sessions can change without colliding with old IDs.
+Code review caught and corrected validation ordering in the initial candidate:
+endpoint identity is now checked BEFORE startup exclusion/pending classification,
+also against still-pending IDs. New negative tests prevent a malformed changed
+start timestamp from being silently reclassified as before-initialization.
+Normal synthetic archive products must remain unchanged; no tolerance changed.
+
+At each support boundary: add support/WNOA, dispatch eligible pending versions,
+refine, capture validated outgoing states, retire X/V/W by physical tick,
+translate/reload anchored marginal using FL2a, refine/check, reconcile consumed
+source slots, then commit. Strict cutoff retains equality. Source timestamps are
+never refreshed by arrival/revision. No suffix pinning or old-state resurrection.
+The20-step budget includes refinement, ordering/retirement and active-only reload;
+normalized gradient threshold stays1e-5. The prior is evaluated with its original
+chart/cross terms. No full-history fallback after retirement.
+
+Absorbed IDs are written into the archive, removed from the active map, and
+cannot be replaced through a recycled slot. Any later version of an absorbed
+ID fails closed, including a changed endpoint payload. A new unknown ID whose
+old bracket is gone also fails. Pending intervals that would cross retirement
+stop BEFORE information is lost rather than pinning an ever-growing window.
+
+Transaction and storage
+Solver-mutating events operate on a staged active-state copy: iSAM2, marginal
+anchors, physical clock/maps, pending ownership, IDs, counters and cursor.
+Failure before commit leaves the original receiver and published files unchanged.
+Raw timestamp samples emitting no support only validate/commit a scalar clock
+copy: no graph snapshot at raw IMU frequency. Products must exactly match the
+earlier always-staged implementation; this is not a measured speed claim.
+
+Archive: create-new single-writer output root; immutable per-event commit bundles
+and direct on-disk absorbed-ID index. Output becomes visible at a directory
+rename; all exception-prone solver/check/output staging work occurs first. The
+receiver pointer swap afterward is noexcept. Failed staging removes only its own
+uncommitted generated files. Existing roots are refused; there is no crash-resume
+or fsync/power-loss durability claim. A disconnected stream withoutE never
+receives a successful finalization marker.
+
+No all-history Values, source ID map or trajectory vector is copied/scanned in
+the active estimator. Finalized history and absorption markers grow ON DISK.
+Pending storage depends on arrivals/lateness; arbitrary unbounded rates/stalls
+are not supported by any bounded-memory claim. Disk per-event overhead has NOT
+been benchmarked and must be included in FL3 whole-service timing.
+
+The optional shared E2b endpoint cache is explicitly disabled via withCache(nullptr)
+in this first correctness adapter. Factors keep only their own current endpoints;
+their payload is released on absorption. This avoids shared mutable cache state
+across rollback; the frozen E2b cache/full-history executable are untouched.
+No endpoint-cache acceleration is claimed here. Re-enabling shared reuse requires
+separate isolation/rollback checks, not a hidden flag change in a real run.
+
+Output meaning
+online = immutable current-support publications at their real availability time.
+finalized = outgoing last validated state at retirement + remaining EOF window.
+drain = final current state after arrivals following the last support publication.
+Finalized is NOT a globally retrospectively reoptimized trajectory and NOT live.
+export_archive.py writes separate online.tum/finalized.tum and fullX/V/W state
+tables only from a complete committed archive. It does not align, score or rerun
+anything; incomplete archives are refused. Original native GLIM/Kimera paths
+remain distinct and were neither used as this test's output nor modified.
+
+Synthetic results
+No-retirement receiver versus independent bare iSAM2 using same information and
+update order: max state local-coordinate difference4.0657581468206426e-19;
+full joint covariance difference0. Same-prior independent numeric-chart/LM check
+after repeated retirement: full joint covariance difference1.1096821839239393e-12.
+These are numerical correctness differences, not sensor accuracy or ATE.
+
+14.4s fixture:145 publications,74 actual retirements,71 retained supports,
+72 transient supports.371 admitted versions =276 insertions+95 replacements;
+148 absorbed IDs,128 still active,peak active138,
+factor-slot high-water212. Strict publication maxgradient5.6751479353189249e-6;
+max2 publication-phase steps. One online and one finalized row per support.
+Stalls, arbitrary source/session labels, delayed/revised full covariances,
+duplicate/stale/conflict handling, pending right brackets and actual recycled
+slots are exercised. Absorbed information is not silently counted twice.
+
+Original-schema8s synthetic wire fixture:234 received versions =158 new factors
++76 replacements;20 absorbed IDs,138 active;81 publications/finalized rows,
+71 retained supports. The raw I records contain deliberately nonzero arbitrary
+acceleration/rates; this receiver consumes only their clock fields.
+
+Validation status
+PASS:1004 lifecycle assertions in test_release6/test_release7, byte-identical logs
+and complete archive files. Archive products also exactly match test_release2
+before the raw-clock fast path and early identity-guard correction.
+Focused ASan/UBSan test_sanitize1 passes1004 assertions with no findings.
+Final wire_release5/wire_release6 archives are byte-identical to each other and
+the earlier wire_release1. wire_sanitize1 completes without findings.
+wire_truncated2 deliberately exits1 on missingE, with no finalization marker.
+Unchanged FL2a regression binary passes651 supporting assertions; its expected
+original negative control remains blocked. validate.py independently reconstructs
+active/absorbed ownership, replacement/conservation and trajectory coverage from
+the committed records, exports the complete products, and refuses incomplete
+output. Result:FL2B_SYNTHETIC_RECEIVER_PASS in result-root validation.json.
+48 protected prior-source/runtime/artifact files remain unchanged.
+The pinned external prebuilt GTSAM/gnssFGO libraries are not sanitizer-instrumented.
+Focused candidate tests are not a full repository-suite or real-data certificate.
+Python syntax checks and git diff --check pass. No development test thresholds
+were loosened. Build/run action logs and manifests remain preserved, including
+intermediate binaries. Run durations are harness records, not speed benchmarks.
+
+Artifacts /home/yeranis/results/gnssfgo_fixed_lag_lifecycle_fl2b_20261013/
+Code experiments/fixed_lag_lifecycle_fl2b_20261013/
+No installed binary/default or frozen artifact changed. No commit/push requested;
+HEAD remains d3d152a28440f97ced3bd7a50ee072874beafe19.
+
+Next bounded stage, NOT run here
+FL3: a saved-journal prefix covering several real retirements, followed only on
+success by the frozen complete148.58s recorded stream. Verify exact conservation,
+same retained-objective stationarity, finalized/online output and complete service
+cost (solver + transactions + disk archive), then decide about live testing.
+Do not claim the receiver delay problem solved before that measurement.

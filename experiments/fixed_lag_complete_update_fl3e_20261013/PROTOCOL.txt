@@ -1,0 +1,40 @@
+FL3e: complete the original failing update, 2026-10-13
+
+Authorization: Proceed to the bounded plan in the preceding answer.
+ONE target event84958/support1224, restored by the exact existing journal prefix.
+Same frozen FL2b receiver/FL2a smoother, GTSAM4.2a8, WNOA without central IMU,
+Gaussian scale1,7s lag,100ms supports, no change to input mean/covariance,
+source policies, support timing, priors, numerical threshold1e-5 or acceptance.
+
+Private Receiver.h is an exact copy of frozen FL2b Receiver.h with ONLY:
+- target1224 publicationBudget200, otherwise20;
+- use that budget for pre-solve, retirement+reload guard and remaining post-solve.
+The existing accounting charges one step each for retirement and chart reload.
+The observer delegates non-target operations and records target pre/post solves
+without changing their math. It times original retire()/adoptCharts() calls.
+The original transaction commits only if all original checks pass; otherwise
+rollback must keep event84957/newest1223 and no new archive commit.
+On success, allow just this private archive publication then stop; no next event.
+
+Acceptance:
+- exact frozen journal SHA256 da7f4f8e339f469ff05c5c20590941a062385d86a8979c92c1e42cd8c86d3f68;
+- all75000previous FL3d archive/index files byte-identical;
+- pre-solve initial/final/116iterate Values and costs/gradients reproduce FL3d
+  (local-state max1e-8,cost and gradient absolute1e-7; report exact bytes);
+- total target publication work <=200, including retirement/reload;
+- pre/post original gradient checks <=1e-5; fresh committed check <=1e-5;
+- retained71supports, no retired factor keys, source slot owners correct;
+- exact ID/version conservation and unchanged payloads for surviving IDs;
+- outgoing states archived once, consumed factors no longer explicit and
+  absorption markers point to target commit; exactly one new online publication.
+
+One Release build and one bounded saved-prefix replay; CPU2/TBB1/OMP1,cachesOFF.
+No new synthetic matrix/sanitizer campaign; only private parameter wiring and
+observation, with original proven transaction implementation preserved.
+No tuning, automatic retry, full journal continuation or source-estimator run.
+Report total target time including support insertion, pending dispatch, checks,
+retirement, copying and archival publication, with phase breakdown and limits.
+Success of one update does not certify complete replay or live capacity.
+
+Fresh outputs:/home/yeranis/results/gnssfgo_fixed_lag_complete_update_fl3e_20261013
+Checkpoint:d3d152a28440f97ced3bd7a50ee072874beafe19. No commit/push authorized.

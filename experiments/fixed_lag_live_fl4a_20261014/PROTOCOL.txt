@@ -1,0 +1,49 @@
+FL4a: first bounded live fixed-lag receiver pilot, ETH1 CBS-OFF,30s.
+Authorization:user Proceed after recommending short OFF pilot then matched ON.
+Scope this step:OFF only, validate and report before ON. One source launch.
+
+Unchanged FL3i Receiver/NativeSmoother/SlotISAM2 mathematics and lifecycle.
+7s lag,100ms independent support,59timestamp clock startup,source-driven WNOA,
+Qc variances [.00375,.00375,.00375,.015,.015,.015], pose/V/W priors1e-5/10/3,
+no centralIMU/GNSS factors,Gaussian dense source covariance scale1,
+all stable-ID revisions,no coalescing,no extra convergence loop.
+The earlier FL3i strict whole-replay equivalence failure remains recorded;
+FL3j established exact same-input marginal information/ownership at target.
+This is experimental live validation,not production-equivalence certification.
+
+Only new code:thin executable I/O wrapper using original EventStream parser
+and unmodified FL3i receiver; export committed online/finalized rows to
+existing ROS adapter schema. No pose calculation or adjustment in wrapper.
+Archive committed rows remains authoritative. Flush current online poses
+during playback; finalized means at fixed-lag retirement,not full-history final.
+Compile privately; saved20s prefix must match prior core archive byte-for-byte
+and ROS parse rows exactly before live playback. Stop on failure.
+
+Reuse S5 source runner/profile with path/port/duration/OFF changes only.
+ETH1 mission2024-10-01-11-29-55,bagoffset0,duration30,rate0.1,drain25s.
+Hesai/CPT7 GLIM5s,frontstereo/CPT7 Kimera25states,current IMU packet path.
+GLIM S4d release_2 shared_native provider; classic CBS protocol,live_revision
+false; OFF receives disabled, publication/export enabled. Same Gaussian,
+schur_relative_between,horizon.20s,onepair/update,scale1,health off.
+Keep existing native safeguards and diagnostics; factor inspectors/Rerun off.
+No source/library rebuild. Record actual mapped libraries/resolved parameters
+before bag starts. Save native GLIM dump, native Kimera ROS odometry, fusion
+as-played and fixed-lag-finalized separately. Do not substitute source-only
+receiver controls or claim full-window GT from partial prism coverage.
+
+Fresh runroot gnssfgo_fixed_lag_live30_off_fl4a_20261014,ROS port11434.
+Guard no competing source/controller,existing runtime/GPU/resources available.
+Stop on source/provider/receiver error,lag information loss,queue>=1000,
+source deadline duration*10+600 or receiver drain timeout650s;no auto-retry.
+Frozen native coverage:span>=duration-2s,start<=1.5s,tail<=.5s,poststartup
+gap<=1s,existing explicit startup-gap reporting. Minimum GLIM270/Kimera120
+rows for30s (duration-scaled,not the old160s thresholds).
+Require fused/support/native coverage,zero pending at EOF,all source versions
+accounted,exact covariances and endpoints,no resurrection. Retained71supports;
+record slot/RSS high-water. Compare saved live journal using same executable:
+committed output archives and all numeric online/finalized products identical.
+Measure receipt-to-processing,publication age and queue during playback.
+Whole100ms support-cycle service p95<=.8s versus1wallsecond arrival interval;
+report start/drain separately,no conflating FIFO writer queue with solver lag.
+No GT tuning/new scoring framework. Use existing evaluator only if immediately
+applicable; always state GT coverage. Do not run matched ON automatically.

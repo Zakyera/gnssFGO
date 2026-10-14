@@ -1,0 +1,34 @@
+FL3d: restore original iSAM2, one bounded convergence diagnostic, 2026-10-13
+
+Authorization: latest Proceed; user requests minimal testing and no rabbit hole.
+One hypothesis: the original incremental refinement at support1224 can pass
+the unchanged normalized-gradient threshold1e-5 within200steps, versus20.
+
+Use the frozen journal, decoder, FL2b receiver, FL2a smoother and GTSAM4.2a8.
+All ordinary solves delegate to the original function. ONLY newest1224 uses
+an observed copy of its exact solve loop with ceiling200. No damping, changed
+linearization, Qc, covariance, source, priors, lag, timing, slot or retirement rule.
+Stop on cost rejection as before. Capture original Values in memory; write
+diagnostics after the solve. Deliberately throw before returning to Receiver,
+so no retirement/publication or next event can occur, even on convergence.
+
+Before interpretation require:
+- journal SHA256 da7f4f8e339f469ff05c5c20590941a062385d86a8979c92c1e42cd8c86d3f68;
+- event84958, newest1224, rollback event84957/newest1223;
+- initial and first20 iterates match FL3a at max local coordinate1e-8;
+- first20 costs and normalized gradients match at absolute1e-7;
+- preceding immutable archive/index file sets and all bytes match FL3a;
+- all protected source/runtime/input/earlier result hashes unchanged.
+
+One Release build and one prefix restoration, CPU2, TBB1, OMP1, caches off.
+No new broad test suite: this private observer changes no library or production
+implementation. Existing synthetic/sanitizer results remain historical evidence.
+Report per-step solve/check time, total target/prefix time, costs, gradients and
+raw p/orientation/velocity/angular-rate differences, particularly step20 to final.
+Observer overhead is included; not a live throughput or full-publication test.
+The production budget is still20 and retirement/reload checks are NOT tested.
+Do not continue past the target, retry, sweep settings, or run source estimators.
+
+Fresh result root:
+/home/yeranis/results/gnssfgo_fixed_lag_isam_convergence_fl3d_20261013
+Repository checkpoint: d3d152a28440f97ced3bd7a50ee072874beafe19.

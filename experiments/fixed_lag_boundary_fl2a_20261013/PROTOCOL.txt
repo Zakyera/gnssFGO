@@ -1,0 +1,86 @@
+FL2a: anchored marginal boundary refinement, 2026-10-13
+Prespecified before implementation/build/test execution.
+
+Authorization: "Proceed" after FL2 boundary stop. Isolate one solution to that
+specific blocker, not a full receiver implementation or real-data trial.
+Prior FL2 reports/code/results stay immutable; full-history remains default.
+
+Candidate
+Represent each joint Gaussian marginal as e(x)=A Local(anchor,x)-b with its
+original A,b, key order and anchor stored immutably. No independent per-pose
+priors, diagonalization, scale, information removal, or refreshed measurement.
+Use gtsam::traits<Pose3>::Local(anchor,current,none,Hcurrent) for the derivative;
+world V/body W Euclidean blocks have identity derivative. Reject unsupported
+state types; no identity-Jacobian approximation for Pose3.
+
+Standard gnssFGO IncrementalFixedLagSmoother still chooses/retire keys and uses
+iSAM2::marginalizeLeaves. At retirement, translate newly generated unanchored
+containers to the explicit immutable-chart representation. Reconstruct ONLY
+the active iSAM2 from retained Values and factors, preserving null factor slots.
+The estimator's linearization point may change, the marginal's reference point
+does NOT. No fixedVariables erasure on an existing tree; fresh active tree uses
+explicit chart factors. Reuse QR/ordinary bounded iSAM2 refinement, no new
+optimizer. Full-history RebuildFullHistoryQR remains untouched and prohibited.
+
+This changes the representation/refinement of the SAME prescribed retained
+nonlinear objective, not the original full-history posterior. Further ordinary
+retirement linearizes the inherited anchored prior through its chart Jacobian
+before summarizing it again. Verify against independent retained-graph/dense
+elimination reference. Never keep old AND replacement marginal simultaneously.
+
+Storage and transaction
+Preserve source-factor slots across fresh loading (holes included), then restore
+findUnusedFactorSlots=true. Keep maps/physical ticks unchanged. Rebuild belongs
+inside a transactional publication boundary; no output until post-retirement
+refinement passes. Snapshot also includes candidate counters and anchor factors.
+Test rollback after conversion/rebuild and subsequent actual retirement.
+
+Numerical gates, unchanged where inherited
+- 7 s lag=70 exact100ms metadata ticks; model dt=.1seconds.
+- source_wnoa X/V/W, Qc .00375x3,.015x3, Gaussian dense scale1;
+  priors pose/V/W=1e-5/10/3; no central IMU/GNSS;20 refinement steps,1e-5 gradient.
+- Stored A,b,anchors,source pointer slots/timestamps unchanged EXACTLY on
+  representation conversion. Gaussian-to-Jacobian square-root conversion may
+  differ in representation but must preserve cost/Hessian/gradient.
+- Marginal cost equality abs1e-9+relative1e-10; Hessian/gradient relative1e-7
+  and absolute1e-7 against independent numeric-chart linearization.
+- Chart Jacobian vs numerical derivative abs2e-6+relative2e-5 at steps1e-5/1e-6.
+- No-retirement state local max1e-8.
+- Linear means abs1e-9; joint covariance abs1e-9+relative1e-8.
+- Nonlinear same-frozen-prior reference state local max1e-5; joint covariance
+  abs1e-7+relative1e-4. Assess individual units separately, not one ATE.
+- Repeated retirement covariance conditional on same linearization: max
+  abs1e-7+relative1e-5; dense Schur/QR uses same information and current chart.
+- Exact rollback stored coordinates, ownership/maps/counters, deterministic logs.
+
+Tests
+1. Reproduce FL2 failed boundary fixture as negative control, unchanged.
+2. Analytic anchored factor vs independent numeric chart at substantial angles,
+   vector state blocks, full cross-covariances; original Gaussian cost equality.
+3. Same revision now passes strict test and separate LM/numeric-prior reference;
+   actual iSAM2 covariance agrees with independently linearized retained graph.
+4. One/two interpolated endpoints/shared bracket revisions affecting boundary,
+   dense covariance changes; no nearest-node approximation.
+5. Linear repeated retirement/dense full covariance; nonlinear streaming through
+   at least two complete7s turnovers. Selected post-retirement state/covariance
+   checks, bounds, immutable charts and failure/rollback, slot reuse.
+6. Release repeat, focused ASan/UBSan, protected hashes. No speed assertion.
+
+Stop if model preservation, chart gradient, strict stationarity or slot semantics
+fail. Diagnose implementation mistakes, but do not tune thresholds, lag or model
+to pass. A success completes ONLY boundary adapter correctness; complete source
+ID pending/active/absorbed lifecycle, transport and real journal remain held.
+
+Development correction after test_release1 (no mathematical/gate changes):
+The boundary-revision/interpolation/covariance gates passed, but linear turnover
+slot high-water reached32, exceeding the prespecified11 limit. The inherited
+marginalizeLeaves appends new marginals, not reusing holes. Candidate now moves
+ONLY newly generated receiver-owned marginals into vacant lower slots and trims
+null tail slots before rebuilding. Source-owned factors retain their exact slot.
+The earlier literal promise to preserve every null slot is corrected: preserving
+vacant tail storage is not a valid bounded-memory requirement. Initial failed
+evidence is retained; no bounds relaxed. There is still exactly one copy of each
+marginal. Timestamp, anchor, cost/Hessian and source ownership checks unchanged.
+
+Artifacts /home/yeranis/results/gnssfgo_fixed_lag_boundary_fl2a_20261013
+Report experiments/fixed_lag_boundary_fl2a_20261013/REPORT.txt

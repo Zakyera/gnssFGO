@@ -1,0 +1,73 @@
+FL2b receiver lifecycle integration, 2026-10-13
+Declared before implementation/build/tests. "Proceed" after FL2a synthetic pass.
+Private candidate; no real journal replay, dataset/source execution, timing,
+installation, default promotion, tuning or push. Frozen FL0/FL1/FL2/FL2a and E2b
+files/binaries remain hash-protected. Complete FL3/FL4 are not authorized here.
+
+Reuse existing CausalSupportClock (59 samples,100ms), SourceWnoaModel factories,
+prediction and full dense6D source factor, FL2a BoundarySmoother and ordinary
+gnssFGO/GTSAM marginalization. No new optimizer, residual, Qc or covariance path.
+7s lag; X/V/W, Qc .00375x3,.015x3; priors1e-5/10/3; Gaussian scale1;
+no central IMU/GNSS/health/gating. Preserve numeric/mixed Jacobian flags.
+20 total publication-phase steps, gradient1e-5; no full-history fallback.
+
+Transport-independent receiver accepts ordered clock/belief/end events. Clock
+values alone determine supports; source IDs are arbitrary safe source/session
+strings, with stable(from_index,to_index). Source timestamps and arrivals differ.
+Use exact int64 ns arithmetic for brackets and integer ticks for retirement.
+Preserve input order, ready-pending order, one replacement update per version;
+no coalescing. Same revision is duplicate only within existing1e-12 pose/cov
+tolerance; lower revision is stale. Changed endpoint times/conflicts fail.
+At initial startup buffer until first support; exclude before-initialization
+intervals distinctly. Pending right brackets cannot pin old history. A version
+targeting absorbed information fails closed even if its old slot was recycled.
+
+Each input operates on a staged copy of ACTIVE state, pending queue, timestamp
+clock, counters and solver. One publication transaction includes new support,
+eligible revisions, pre-refinement, outgoing-state capture, actual retirement,
+anchored reload, post-check and ownership reconciliation. Commit output only
+after all pass. Failures restore all receiver state and publish nothing.
+Finalized trajectory is last validated outgoing state, remaining window at EOF;
+online samples are immutable support publications, not retrospective final paths.
+
+Archive design: immutable per-event commit bundles and on-disk absorbed-ID index,
+single writer, create-new root, atomic visibility via commit-directory rename.
+No all-history Values/vector/ID map is copied or scanned each update. Absorbed
+marker is valid only if its commit bundle exists. Failure before commit removes
+only this transaction's own uncommitted files. No crash-resume claim: reopening
+an existing root is refused. OS-crash durability is not a live-model certificate.
+Keep disk output growth explicit; it is archival, not optimizer memory.
+Clock samples which emit no support validate/commit only a scalar clock copy;
+they do not need an iSAM2 snapshot or disk output. Solver-mutating events retain
+the full staged transaction. The unchanged synthetic products must agree with
+the earlier always-staged implementation (test_release2/3).
+
+Use source endpoints with explicit null E2b cache in this first correctness
+adapter. This prevents shared mutable cache state leaking across rollback and
+retires endpoint payloads with factors. E2b's bounded exact cache and frozen
+full-history binary remain unchanged. No cache-speed claim; enabling a shared
+cache later requires its own rollback/invalidation validation.
+
+Tests/tolerances before seeing results:
+- No-retirement receiver vs independently driven bare iSAM2 using same E2b
+  factories/update ordering: X/V/W local max1e-8, full covariance abs1e-8+rel1e-6.
+- Same frozen-prior independent numeric-chart optimization state max1e-5,
+  covariance abs1e-7+rel1e-4; inherited FL2a tests remain unchanged.
+- Exact counters/IDs/revisions/source slot pointer ownership/timestamps;
+  no duplicate current source factor; equality at cutoff retained.
+- Exact and one/two/shared-bracket endpoints; delayed pending/repeated versions,
+  source permutation/reset sessions, out-of-order endpoints/stale/duplicate/
+  conflicting rows, malformed covariances; no future application.
+- Actual retirement over at least14.4s synthetic time;71 steady supports/72
+  transient; memory ledger contains only active IDs, pending only unready data.
+- Late after absorption, changed endpoints, pending old bracket and truncated
+  stream fail closed with no partial output. EOF pending beyond available right
+  bracket is separately archived as original unsupported_at_end, not admitted.
+- Failure injections after source replacement, retirement, reload, and archive
+  staging/before commit: solver/maps/clock/counters/output exactly roll back;
+  ordinary subsequent execution equals no-failure control.
+- Repeated Release deterministic, focused ASan/UBSan, protected hashes.
+  New protocol limits may not silently relax to make tests pass.
+
+Report experiments/fixed_lag_lifecycle_fl2b_20261013/REPORT.txt
+Artifacts /home/yeranis/results/gnssfgo_fixed_lag_lifecycle_fl2b_20261013/

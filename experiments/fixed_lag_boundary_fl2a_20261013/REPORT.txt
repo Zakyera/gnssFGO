@@ -1,0 +1,161 @@
+FL2a: marginal-aware boundary refinement
+2026-10-13; private synthetic candidate, not the installed/live receiver.
+
+Result
+The FL2 boundary-refinement blocker is resolved by the isolated anchored-prior
+adapter on the declared synthetic tests. The failed original fixture remains a
+negative control: it still fails its strict check. No threshold was loosened.
+The complete fixed-lag receiver is NOT yet integrated/validated. No real-data
+replay, GLIM/Kimera execution, live run, timing campaign, tuning or default change.
+
+Scope and inheritance
+Authorized "Proceed" after FL2. Task FL2a in the runtime engineering ledger.
+Fixed lag7s, physical support period100ms, X/Pose3, V/world velocity, W/body rate;
+WNOA Qc[.00375,.00375,.00375,.015,.015,.015], prior sigmas1e-5/10/3; Gaussian
+dense source covariance scale1, QR, no central IMU/GNSS. Existing E2b source
+measurement/WNOA code and gnssFGO/GTSAM4.2a8 libraries are unchanged.
+Native source CBS settings are not used/modified in these synthetic tests.
+Actual sources remain classic active_window_temporary in the baseline.
+There is no comparison of CBS-OFF versus CBS-ON performance here.
+
+Why the old procedure failed
+MarginalizeLeaves leaves joint Gaussian information tied to a fixed solver
+linearization point. Standard iSAM2 removes these keys from relinearization,
+even with forceFullSolve. A later relative-belief revision can move their
+estimates. Ordinary refinement then need not minimize the exact retained
+nonlinear objective tested by our publication gate. This was observed, not
+inferred merely from ATE. It is not evidence that GTSAM's linear marginalization
+is wrong or that its original approximate fixed-linearization method is invalid.
+
+Existing infrastructure inspected/reused
+- IncrementalFixedLagSmoother: staging, physical timestamp selection, ordering,
+  update, factor removal/insertion, marginalizeLeaves and timestamp retirement.
+- BatchFixedLagSmoother: inspected optimize/marginalize/CalculateMarginalFactors.
+  It has its own controlled-linearization LM loop and LinearContainerFactor
+  representation; changing enforceConsistency is not an exact chart-derivative
+  adapter. Not silently substituted as the production method.
+- Pinned GTSAM Pose3 traits::Local exposes the actual configured chart derivative;
+  no independent new pose convention or hand-written SE(3) Jacobian is introduced.
+- Existing iSAM2 QR update/refinement remains the optimizer. No handwritten
+  Schur-complement implementation or new optimization algorithm.
+
+Candidate mathematical representation
+For each saved joint marginal, store its original Gaussian (A,b and any constant),
+original reference Values a, key ordering and ALL cross blocks. Its objective is
+
+  f_m(x) = 0.5 || A Local(a,x) - b ||^2 + constant.
+
+For an update dx in the CURRENT chart, its Jacobian is
+
+  J_m(x) = A blockdiag( D Local(a_k,x_k)/D dx_k ).
+
+Pose3 blocks use gtsam::traits<Pose3>::Local(a,x,none,Hcurrent). V/W vector blocks
+use identity. The saved reference a NEVER changes while that marginal exists.
+The original Gaussian error evaluates cost, preserving additive constants too.
+Unsupported state types/nonfinite marginals fail; publication checks reject
+nonfinite costs/gradients. There is no covariance scaling or new sensor belief.
+
+The difference is where the frozen reference lives: explicitly inside the
+marginal factor, rather than requiring the whole boundary variable's solver
+linearization point to stay frozen. Ordinary active factors can be relinearized
+while the old marginal information remains expressed in its original chart.
+When a later retirement summarizes that marginal again, its correct current
+chart Jacobian participates in the normal joint Gaussian elimination.
+
+Bounded reconstruction and ownership
+At each actual retirement the existing gnssFGO smoother eliminates old X/V/W.
+New unanchored marginal containers become immutable AnchoredMarginal objects.
+ONLY retained Values/factors are loaded into a fresh iSAM2, with null source
+slots preserved during loading; normal slot reuse is enabled afterward.
+No old trajectory states return, and no getFixedVariables mutation on an
+existing tree occurs. The prohibited RebuildFullHistoryQR is never called.
+The old and replacement marginal are never present together.
+
+Source-owned active factor pointers/indices remain unchanged through rebuilding.
+New receiver-owned marginals may fill empty slots; empty tail storage is trimmed.
+Timestamp maps are untouched; no arrival-time timestamp refresh or suffix pin.
+The transaction restores solver/tree/delta, maps, flags, marginal ownership,
+rebuild/retirement counters and publication cursor after failure.
+
+Strict publication
+Threshold remains1e-5. At most20 publication-phase solver steps: pre-retirement
+refinement, the existing ordering/retirement update, the bounded reload update,
+and any post-retirement refinement are counted. Ordinary source/support admission
+updates are separate, as before. This is not20 iterations independently per phase.
+Cost must remain finite/nonincreasing within1e-12*(1+|cost|) rounding allowance.
+No LM/recovery fallback is inserted into the candidate. LM is only an independent
+test oracle, using a separately differentiated numeric-chart prior.
+
+Main results (Release final fixture)
+Original FL2 negative control gradient          1.8417220148376386e-3 FAIL
+Anchored candidate same revision gradient       9.715419674596865e-7 PASS
+Required threshold                             1e-5, unchanged
+Additional refinement updates for that revision 1
+
+Candidate/reference differences for same frozen-prior boundary fixture:
+position approx1.0643e-6m; rotation approx5.6732e-7rad;
+velocity approx3.3783e-7m/s; angular rate approx1.0101e-7rad/s.
+Max full joint covariance discrepancy approx2.0232e-9.
+These are synthetic numerical agreement quantities, NOT ATE/RPE or real accuracy.
+
+Checks include one interpolated endpoint, both interpolated endpoints, and shared
+bracket endpoints; full dense covariance revisions, analytic derivative versus
+independent numerical derivatives, same-prior nonlinear reference optimization,
+and selected ACTUAL iSAM2 marginal covariance blocks (not only a recomputed
+reference covariance). Original Gaussian costs/anchors and joint cross terms pass.
+
+Independent marginalization tests
+Repeated linear fixture: retained means vs full dense QR max6.750155989720952e-14;
+full joint covariance max6.084022174945858e-14. Slot high-water10, not growing.
+Three nonlinear retirements also compare the joint retained covariance with a
+selection from an independently QR-factorized FULL pre-retirement graph, at the
+same verified unchanged linearization. Maximum difference2.941505546083523e-14.
+This is equality of the linearized information being marginalized, not equality
+of a future full-history nonlinear optimization after retirement.
+
+Streaming synthetic fixture
+14.4s,145 support publications,7s lag,74 actual retirements/rebuilds,222 retired
+X/V/W variable blocks. It spans two complete lag durations. Boundary-adjacent
+revisions included; rollback injected after actual retirement, after rebuilding,
+and before publication commit.
+Maximum retained supports71 =213 variable blocks =852 scalar dimensions.
+Factor-slot high-water144. Max normalized gradient2.0608890249919413e-6.
+Maximum publication-phase solver steps3, including retirement/reload overhead.
+Reference checks at7.1,8.0,10.0,14.4s pass. No ever-growing marginal-slot tail.
+These bounds apply to OPTIMIZER storage in the fixture: the test oracle keeps
+full truth/reference history, and production transport/cache/ID lifecycle are
+not yet integrated. No end-to-end RAM or real-time capacity claim.
+
+Engineering failure caught and corrected
+Initial test_release1 passed the boundary/interpolation/accuracy-of-computation
+gates but failed the prespecified slot-storage bound: high-water32 in30 linear
+steps. marginalizeLeaves appends new marginals regardless of ordinary insertion
+reuse. Preserving every empty tail slot therefore retained unbounded storage.
+Correction moves ONLY newly generated receiver-owned marginal factors into
+vacant lower slots and trims empty tail; source slots stay stable. The same
+bound now passes with10. No test bound or mathematical criterion was relaxed.
+This correction and retained initial failure are recorded in PROTOCOL.txt.
+
+Validation and artifacts
+Final suite:651 supporting assertions, including the expected frozen FL2 negative
+control. Final Release test_release3 and test_release4 both exit0 with byte-identical
+logs. Focused ASan/UBSan test_sanitize1 also exits0 with651 assertions and no
+findings. validate.py passes: FL2A_BOUNDARY_ADAPTER_SYNTHETIC_PASS, explicitly
+complete_receiver_ready=false. See result-root validation.json for metrics/hashes.
+Candidate builds and all development logs are retained;38 protected baseline/FL2
+files remain unchanged. The pinned external libraries themselves are prebuilt,
+not sanitizer-instrumented. This is a focused suite, not a full-repository test
+claim. Test runtimes are harness records, not a comparative performance benchmark.
+
+Code: experiments/fixed_lag_boundary_fl2a_20261013/
+  AnchoredMarginal.h, BoundarySmoother.h, test_gate.cpp, driver.py, validate.py.
+Artifacts: /home/yeranis/results/gnssfgo_fixed_lag_boundary_fl2a_20261013/
+No installed libraries/default target changed. No commit/push; parent/final HEAD
+d3d152a28440f97ced3bd7a50ee072874beafe19. Prior FL0/FL1/FL2 work remains preserved.
+
+Next bounded task, not executed
+Finish the receiver-level pending/active/absorbed stable-ID lifecycle and wiring
+against this candidate: replacement ownership, late-after-absorption fail-closed,
+complete transaction/output archive and cache retirement. Then complete FL2's
+receiver tests. Only afterward request/perform FL3 frozen real-journal validation
+and timing. Do not jump to a live run or claim the speed problem solved.

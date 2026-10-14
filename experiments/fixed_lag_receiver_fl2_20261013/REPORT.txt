@@ -1,0 +1,161 @@
+FL2: isolated fixed-lag marginalization/publication gate
+Date: 2026-10-13
+Status: BLOCKED_STRICT_RETAINED_PUBLICATION. FL2 NOT COMPLETED OR PROMOTED.
+
+Outcome
+The existing gnssFGO incremental fixed-lag solver preserves the linear retained
+information correctly. Its standard frozen-boundary nonlinear refinement does
+not meet our unchanged strict current-manifold publication test on a synthetic
+relative-belief revision touching the boundary. Stop before real-data replay.
+This is a mismatch between the proposed strict retained-nonlinear objective and
+the standard solver's fixed-linearization approximation, NOT evidence that
+GTSAM marginalization loses linear information or that fixed lag cannot work.
+
+Authorized scope and preservation
+User "Proceed" after FL1. Private FL2 synthetic implementation only. 7 s lag
+frozen from FL1, not selected by accuracy. No GrandTour data/GT, estimator run,
+fusion journal replay, tuning, dependency installation, commits or push.
+Default full-history receiver, GLIM/Kimera code and installed runtime unchanged.
+29 protected files include E2b source/binary, solver files and pinned libraries.
+Root: /home/yeranis/results/gnssfgo_fixed_lag_receiver_fl2_20261013
+Parent HEAD: d3d152a28440f97ced3bd7a50ee072874beafe19
+
+What is implemented (private prototype only)
+- StagedSmoother.h subclasses the EXISTING IncrementalFixedLagSmoother.
+  Additions/removals use setNotMarginalizing; boundary retirement calls the
+  existing constrained ordering/update/marginalizeLeaves path. No second solver.
+- Explicit snapshot/restore handles iSAM2, timestamp maps, atomic mode, result,
+  marginal-anchor table and publication cursor. This is NOT a completed
+  source-ID lifecycle/transport implementation.
+- Full joint Gaussian marginal factors are associated with their creation
+  anchors. No reanchoring, diagonalization or dropping of cross terms.
+- MarginalAudit.h re-expresses their cost and derivatives in the current chart
+  for correctness checks. Its ChartMarginal is NEVER inserted into candidate
+  iSAM2. The reference-only LM solve uses it to solve the prescribed objective.
+- Copied ordinary iSAM2 refinement keeps the 20-update ceiling and normalized
+  gradient threshold1e-5. It has a nonincreasing-cost check and NO full-history
+  rebuild fallback after retirement. This foundational procedure is not claimed
+  to reproduce all of the legacy full-history recovery/roundoff machinery.
+
+Frozen model and fixture
+Pinned GTSAM4.2a8, existing E2b WnoaRelativeFactor/SourceWnoaModel and original
+GPWNOAPrior with existing numeric-derivative settings(true,true), QR. X/V/W
+supports at100ms, Qc[.00375,.00375,.00375,.015,.015,.015], Gaussian full dense
+source covariance scale1. Initial pose/V/W priors1e-5/10/3, no central IMU/GNSS.
+Exact cache wrappers are not exercised in this foundational fixture; there is
+no speed claim or cache/receiver integration certification.
+
+Synthetic trajectory spans0..7.1s. Rotation vector=(.12t,-.04t,.23t), position
+=(.65t,.02t^2,.015t^2). Thus rotation exceeds1.8rad by the end, not a scalar or
+all-zero-angle example. Relative factors connect i-2 to i, using dense SPD
+6x6 covariance. After retirement of support0, revise the still-explicit edge
+1->3 by local perturbation[.025,-.017,.021,.032,-.019,.014]. This is a legal
+synthetic revision immediately at the oldest retained boundary, age7s. It is
+NOT an observed GrandTour revision or a claim that the FL1 capture has that
+delay (its maximum observed support age was5.3s). Model changes were not made
+after seeing the result. A separate linear fixture changes mean AND full dense
+covariance over repeated retirements/replacements.
+
+The timestamp maps use exact integer100ms ticks (lag70ticks); model dt remains
+in seconds. This only removes floating-point cutoff ambiguity. At7.0s support0
+remains; at7.1s its X/V/W retire together. 71supports/213variable blocks remain.
+
+Results: linear information and nonlinear boundary
+Independent dense QR solves the original linear graph; its retained joint
+covariance is compared with the marginalized graph over four retirements.
+Maximum retained mean error:1.2878587085651816e-14.
+Maximum full covariance error:1.1462231164216519e-10.
+All mean/covariance tolerances in PROTOCOL.txt pass; individual solver covariance
+blocks also match. This tests cross-covariance, not only covariance diagonals.
+
+No-retirement/long-lag state max local difference:1.387778780781446e-17.
+This is a synthetic same-event ordering regression, NOT a replay of the frozen
+full-history GrandTour trajectory. Binary/default preservation is by hash.
+
+Normalized gradients (required <=1e-5):
+Before retirement                          2.781260592734958e-09 PASS
+After first retirement                     4.145213553524755e-09 PASS
+Same revision WITHOUT marginalization      3.4928370867242994e-07 PASS
+Revised fixed-lag graph, before refinement  1.1063755809896138e-02 FAIL
+After one accepted standard refinement     1.8417220148376386e-03 FAIL
+Independent same-frozen-prior reference     2.0232687489280887e-09 PASS
+
+The second proposed refinement increases the correct retained objective from
+14.931045959909278 to14.931046021518332 (+6.1609054e-8), so it is rejected;
+the procedure does NOT exhaust20iterations. No fallback or threshold relaxation.
+The reference objective is14.931040764757903; candidate excess5.1951514e-6.
+Max candidate/reference local state-coordinate difference4.5508954132034271e-5;
+these coordinates mix angle/translation/V/W units, NOT an ATE or a distance.
+Full joint covariance max absolute difference3.2430613973043372e-8.
+These are small numerical differences, but the strict criterion fails by~184x.
+We do not claim divergent, inaccurate or unusable real trajectories from this.
+
+Independent gradient checks
+The maximum normalized residual gradient is on a fixed-linearization boundary
+variable:0.0018417220148376386; nonboundary maximum0.00084665072986188881.
+Central differences of the WHOLE retained objective give0.0018417220142906135
+and0.001841722020791362 at steps1e-5/1e-6. Thus it is not simply an incorrectly
+omitted prior term in the test. A separate intentionally displaced Pose3 prior
+check uses [.17,-.09,.12,.21,-.13,.08], passes both step sizes with maximum
+predeclared tolerance ratio0.17649, and agrees with original Gaussian cost.
+
+Mechanism and code evidence
+Runtime include/gtsam/nonlinear/ISAM2-impl.h:374-401 gathers relinearization
+keys; forceFullSolve uses threshold0, then explicitly removes fixedVariables.
+Runtime include/gtsam/nonlinear/ISAM2.h documents marginalizeLeaves fixing
+linearization points, not physical state values. A new revision can move those
+values while their anchors stay fixed. Standard copied updates therefore do
+not guarantee stationarity of our exact current-chart retained objective.
+The controlled no-retirement case passes, and an independent solve of the
+same marginal-prior objective passes; the failure is localized to this boundary
+linearization/refinement interaction rather than an unobservable source chain.
+
+The pinned runtime really creates an unanchored LinearContainerFactor. Its
+ordinary nonlinear error is zero. MarginalAudit evaluates the stored Gaussian
+at Local(anchor,current) instead. At a displaced linear boundary point, the
+recorded generic and chart-correct prior errors are0 and0.30504357376571184.
+Do NOT call graph.error()/graph.linearize(current) blindly on this wrapper and
+interpret its result as a valid nonlinear convergence certificate.
+
+Validation status
+Final Release build_release5 and focused ASan/UBSan build_sanitize2 complete.
+gate_release3/4 are byte-identical. All85 supporting assertions pass in both
+Release executions and the sanitizer execution; no ASan/UBSan findings. The
+overall acceptance gate returns2/BLOCKED in all three, not0/PASS. The installed
+dependencies are prebuilt and not themselves sanitizer-instrumented. Validation
+summary: result-root validation.json;29 protected files unchanged. Never relabel
+the failed acceptance as a successful complete test suite.
+Rollback tests cover injected failure after update, actual subsequent retirement,
+and failed nonlinear publication; coordinates, maps, anchors, slots, mode and
+cursor restore. Full transport/cache/pending-ledger rollback is NOT implemented.
+
+Development failures retained
+- build_release1 on host: Boost/ROS build dependencies absent. Existing Humble
+  container reused; nothing installed.
+- build_release2: inherited ExactLinearizationProbe include path omitted from
+  private command. Restored inherited include; no upstream/header edits.
+- gate_release1: exact rollback assertion mistakenly used Log(T^-1 T)==0,
+  which yields1.39e-17 roundoff even for identical stored Pose3. Corrected to
+  exact matrix/vector coordinate comparison; no tolerance was loosened.
+- build_release3/4 and earlier gate evidence retained; final build_release5
+  includes additional no-retirement, whole-objective and rollback controls.
+- Existing unused GPInterpolator base-method missing-return warnings remain
+  upstream; no suppression or unrelated edits.
+
+Unfinished, deliberately held
+No production/journal receiver integration, stable source/session ID ledger,
+pending/absorbed event handling, interpolated-retirement/slot-reuse/cache suite,
+long nonlinear turnover test, real-data replay, timing or live confirmation.
+FL3/FL4 remain prohibited until this FL2 issue is resolved and gates pass.
+
+Next decision
+The fixed-lag linear-information machinery is usable. The next bounded design
+decision is a marginal-aware publication/refinement path consistent with the
+preserved prior charts, or an explicitly justified publication contract for
+standard fixed-linearization smoothing. Do not silently loosen the threshold,
+drop the marginal, unfix anchors, resurrect eliminated states, or enable the
+full-history rebuild. No such change is implemented here. Full history remains
+the untouched fallback/default. Final HEAD remains
+d3d152a28440f97ced3bd7a50ee072874beafe19; FL0/FL1/FL2 work is uncommitted and
+preserved locally. This report is a correctness stop, not a speed
+or accuracy conclusion and not a rejection of fixed lag as a method.

@@ -16,6 +16,312 @@ performance hypotheses into one acceptance experiment.
 
 ## Baseline and evidence
 
+**FL4f GIT MILESTONE ARCHIVE (2026-10-14):** The fixed-lag engineering
+experiment lineage, FL4e isolated receiver repair, and FL4f matched live
+result are saved with the [FL4f milestone manifest](experiments/fixed_lag_live_fl4f_20261014/MILESTONE.md).
+That manifest includes byte-checked effective source/receiver settings, ETH1
+GLIM/Kimera profile trees, compact score/covariance evidence, and explicit
+limits of what is *not* archived in Git. This is archival only: no estimator
+change, new run, binary promotion, tuning, or claim beyond the bounded pilot.
+
+
+**FL4f MATCHED LIVE 30 s COMPLETE (2026-10-14):** Fresh ETH1 CBS-OFF and
+classic CBS-ON, both with FL4e receiver SHA `53c96a2b...`, completed at 0.10×
+in a fresh root. The first two setup attempts stopped **before playback**
+(Docker permission; omitted copied source-library overlay) and remain
+preserved. Both successful source/receiver cases passed exact conservation and
+byte-identical saved-journal replay. ON injected 130 G→K and 130 K→G factors;
+OFF injected none. On 260 identical timestamps over 25.9 s after Kimera's
+startup gap, native GLIM ATE `0.044864→0.020256 m`, native Kimera ATE
+`0.060388→0.042746 m`, and fused **online/as-played** ATE
+`0.051990→0.033126 m`. Complete saved-output scores over each 29.0–29.6 s
+span and the separate retrospectively fixed-lag-finalized scores are in the
+[FL4f report](experiments/fixed_lag_live_fl4f_20261014/REPORT.md). Final
+matched-edge GLIM covariance traces mostly contract under ON, but Kimera's
+translation trace usually increases; no shared scale-collapse claim or tuning.
+The IE-TC reference shares CPT7; independent prism covers only a partial
+window. FL3i whole-replay numerical and nonlinear-stationarity limitations
+remain, as does unproven longer-run/1× capacity. No new model/sequence run or
+code commit in FL4f.
+
+**FL4e SAVED-DATA GATE PASSED; NOT LIVE-PROMOTED (2026-10-14):** Original and
+stock-slot receivers both reproduce FL4d's missing `x71` at event8129. After
+event8128 retirement, `x71` is absent from graph/theta/index/node map but
+remains in a surviving Bayes-tree clique. The private candidate adds retiring
+keys themselves to constrained extra re-elimination, not just descendants;
+it leaves zero stale `x71` clique references and processes all8148 retained
+ON events. Complete OFF journal passes with original counts and only small
+ordering-level state differences (online position RMS1.01e-7m; finalized
+RMS1.55e-6m), not byte-identical to the old binary. Release and ASan/UBSan
+synthetic lifecycle gates pass50,818 checks; OFF and partial ON repeats are
+byte-identical;814protected files unchanged. No fresh live run or GT/ON
+accuracy comparison. A future matched live comparison must use the SAME
+candidate binary in OFF and ON, not old FL4c OFF versus candidate ON. Existing
+FL3i numerical/stationarity limits remain. See [FL4e report](experiments/fixed_lag_failure_fl4e_20261014/REPORT.md).
+
+**FL4d STOPPED ON RECEIVER FAILURE (2026-10-14):** The predeclared matched
+ETH1 first-30s CBS-OFF/ON comparison reused validated FL4c OFF and launched
+one fresh classic ON capture with matched profiles, pinned executable and
+receiver settings. Static and effective before-playback checks passed; all
+814 protected artifacts remained unchanged. ON failed after approximately
+14.78s at receiver `FL4A_STREAM_FAILURE Requested non-existent variable from
+VariableIndex: 120 71` (`x71`). Last successful event8128 retired index71;
+the next journal entry was a Kimera revision, but its causality is not proven.
+Maximum transport queue was21 with zero queued in the latest snapshot, so this
+is not evidence of a transport backlog. The source/controller aborted. No
+valid ON 30s result, GT metric, covariance comparison or deterministic repeat;
+no automatic retry or tuning. FL3i numerical and nonlinear-stationarity limits
+also remain. See [FL4d protocol](experiments/fixed_lag_live_fl4d_20261014/PROTOCOL.md)
+and [failure report](experiments/fixed_lag_live_fl4d_20261014/REPORT.md).
+
+**FL4c BOUNDED LIVE CBS-OFF PILOT PASSED (2026-10-14):** After the FL4a
+provider-mode startup mismatch and an FL4b copied-profile path error (both
+before bag playback), a fresh ETH1 first30s headless capture completed at
+0.10x. GLIM's required ActiveWindowTemporary provider bookkeeping was used
+with actual CBS belief reception disabled in both sources; zero cross-source
+injections and no GLIM incoming subscription were checked before playback.
+Native GLIM covered29.00s; native Kimera spanned29.60s but had a3.20s startup
+gap. The fixed-lag WNOA receiver published293as-played supports over29.2s,
+accounted for all15,884 source versions (420insert/15,439replace/25before
+initialization), and ended with no pending events. p95 whole-support service
+64.41ms, max queue32, active support bound71. Saved-journal repeat in the same
+receiver container matched16,365 commit files and all numerical trajectory/
+summary products byte-for-byte.814 protected inputs unchanged. This is a
+bounded operational result only: FL3i's strict whole-replay numerical failure
+is unchanged, fixed-lag stationarity is uncertified, no GT/ON result or1x/
+long-run capacity claim. See [FL4c report](experiments/fixed_lag_live_fl4c_20261014/REPORT.txt).
+
+**FL4a STOPPED BEFORE PLAYBACK (2026-10-14):** Thin live wrapper passes
+saved-prefix equivalence:10,503archive files byte-identical,200ROS-compatible
+pose rows. Private adapter explicitly admits incremental fixed-lag policy;
+production unchanged. One30s ETH1 OFF source launch then fails at GLIM startup:
+S4d shared_native provider requires ActiveWindowTemporary, but OFF runner
+selects observe_only. Exact guard at release_2/overlay/cbs_bridge.cpp:684-687.
+No bag played;0IMU/0beliefs/0fusion poses. Scoped processes stopped;791protected
+entries unchanged. No retry, covariance fallback, source rebuild, CBS-ON or
+solver changes. Fix ONLY this launch/provider contract before a fresh pilot;
+not evidence of a fixed-lag runtime/convergence failure. Earlier FL3i strict
+failure remains unchanged. See [FL4a report](experiments/fixed_lag_live_fl4a_20261014/REPORT.txt).
+
+**FL3j COMPLETE — SAME-INPUT BOOKKEEPING PASS (2026-10-14):** One prefix
+reconstruction stops at event70350/support1018. Fork identical pre-retirement
+ISAM2 into stock and slot-reuse copies:170surviving factor pointers/slots,
+removed keys and fixed anchors exact; new marginal and canonical H/g/constant
+differences0. Immediate state difference3.47e-18; native slot-order augmented
+information difference1.03e-17.62,043prefix files byte-identical to FL3i;
+118,986protected files unchanged. No bookkeeping defect found at this target;
+round-off accumulation is supported but its entire causal path not proved.
+Stop micro-difference investigation. Recommend a short experimental live pilot,
+not production-equivalence certification. FL3i strict gate remains FAILED;
+no tolerance change, source/live run or automatic promotion. No new model.
+See [FL3j report](experiments/fixed_lag_slot_audit_fl3j_20261014/REPORT.txt).
+
+**FL3i COMPLETE — SLOT GROWTH FIXED, NUMERICAL GATE FAILED (2026-10-14):**
+Private pinned marginalization copy preserves elimination verbatim; final
+bookkeeping reuses vacant slots and updates cache/VariableIndex. 50,818
+Release/repeat/ASan-UBSan checks pass; 1,029 synthetic retirements retain 13
+slots versus stock 1,042 with exact state/covariance. Nonlinear WNOA state
+max1.49e-12/covariance relative1.69e-11. Repeated20s prefix byte-identical.
+ONE148.58s capture preserves all2,201IDs/86,053revisions and exact covariances;
+slot extent stays175 versus1,571, activefactors<=172/supports71. Runtime
+66.550s versus66.446s: no demonstrated speedup. Full FL3h state-equivalence
+gate FAILS: as-played position RMS.01843mm/max.27943mm; finalized
+RMS.02100mm/max.17217mm (NOT GT errors). First as-played failure support1018,
+orientation1.787e-8 versus1e-8. Changed factor-index/assembly order is a
+plausible numerical cause, not proven exact mechanism. No threshold relaxation,
+second full replay, model change or promotion. 505protectedfiles unchanged;
+base/finalHEADd3d152a, private work uncommitted. FL3h/production preserved;
+FL4 still held. See [FL3i report](experiments/fixed_lag_slots_fl3i_20261014/REPORT.txt).
+
+**FL3h COMPLETE — STOCK SAVED-REPLAY GATE PASSED (2026-10-14):** Separate
+native-style incremental fixed lag from initialization, not early stopping
+inside FL2a's chart-reloaded history. Authored smoother plus read-only outgoing
+state observer; raw marginal fixed linearization points, ordinary incremental
+updates, no chart conversion/reload or full nonlinear publication certificate.
+1,193Release/repeat/ASan-UBSan checks pass; stock-reference state/covariance0;
+20s prefix archives byte-identical. ONE complete148.58s capture succeeds in
+66.446s:2,201IDs/86,053replacements, exact ordered source/payload accounting,
+1,481publications,71retained supports. As-played position difference from
+full-history RMS.354mm/max2.701mm; finalized versus full-history-final
+RMS.393mm/max1.894mm. Not GT errors or exact posterior/stationarity equivalence.
+Whole100ms-cycle service mean44.812ms/p9593.628ms/max132.402ms;0.1x simulated
+queue peak49events/max75.752ms and drains. Former problem event1.490ms rather
+than1.358s/125steps, but different histories/objectives, not equal-solution
+speedup (retained position differs from old FL3e by max.428m). Fresh copied
+gradients1.14–4.13 are explicitly not converged at1e-5. Active factors<=172,
+RSS25MiB; slot extent159->1571 grows, so unbounded-duration storage/cost NOT
+certified. No compaction, production promotion, live/source run or tuning.
+433protected files unchanged; base/finalHEADd3d152a, private work uncommitted.
+Old strict failures/acceptance remain unchanged;FL4 not automatically authorized.
+See [FL3h report](experiments/fixed_lag_native_fl3h_20261014/REPORT.txt).
+
+**FL3g DIAGNOSIS COMPLETE (2026-10-14):** Native GLIM normally takes insertion
++1 incremental update; Kimera's saved numOptimize=1 takes one. Neither requires
+our fresh full nonlinear gradient1e-5. Stock marginalization preserves fixed
+linearization points; our FL2a adapter instead creates anchored chart factors,
+reloads the retained graph and forces whole-window refinement. This confirms a
+solver/publication-contract mismatch, not a WNOA equation bug. Saved-objective
+diagnostics reproduce FL3a/FL3d and show significant residual curvature in one
+late oscillating direction:total estimated curvature4.776–4.949 vs GN2.752.
+WNOA contributes; the marginal's own extra curvature is tiny, so do not blame
+the chart derivative alone. Source second-curvature attribution is step-sensitive;
+no exact sender blame/eigenmode proof. Two tiny private diagnostic evaluations,
+no optimizer/source/journal run or production/model change;430protected files
+unchanged. Next design issue is consistent marginal/publication semantics, not
+blind Qc/iteration tuning. No fix promoted;FL3 incomplete,FL4 held. See
+[FL3g report](experiments/fixed_lag_cause_fl3g_20261014/REPORT.txt).
+
+**FL3f COMPLETE — BOUNDED CANDIDATE REJECTED (2026-10-14):** One ordinary
+iSAM2 refinement before and after unchanged retirement/reload,4charged steps,
+completes structurally in32.86ms excluding separately timed reference work.
+However,post-state differs from converged FL3e by max.369657m/.381882deg,
+.022191m/s and.015725rad/s;all predeclared max-state screens fail. Same-Values
+joint-prior comparison also fails:6.293%max normalized information change,
+1.539normalized gradient RMS change,1.876e-5relative nullspace leakage.
+Finalgradient.00186663 is explicitly NOT converged at1e-5. Exact reference
+reconstruction reproduces116pre/7post and byte-identical FL3e Values;
+75000previous archivefiles and429protectedfiles unchanged. Source conservation,
+71supports/174slots,2absorbedIDs/1pending admission all pass. Private target
+rows explicitly labelled incremental_candidate/publication_candidate,never
+production online output. No source/full-journal run,sweep,retry,tuning or
+production integration. One low-cost refinement policy is ruled out;fixed lag
+itself is not. FL3 incomplete,FL4 held. See
+[FL3f report](experiments/fixed_lag_incremental_fl3f_20261014/REPORT.txt).
+
+**FL3e COMPLETE — ONE WHOLE UPDATE PASSES (2026-10-13):** Target-only200-step
+publication ceiling on frozen lifecycle code. At event84958/support1224:
+116pre-refinements+1retirement+1chartreload+7post-refinements=125steps;
+committed gradient6.71063e-6 passes unchanged1e-5. Whole event1.358424s,
+including dispatch/copy/checks/archive. Retirement.000188s,reload.007093s;
+retained position shift across retirement/reload/post-solve max22.09micrometres.
+All117initial/pre-solve Values and costs/gradients exactly reproduce FL3d;
+75000prior archivefiles byte-identical;287protectedfiles unchanged.71retained
+supports,174slots;2sourceIDs absorbed,1pending admitted;exact version/ID
+conservation and unchanged surviving payloads/slots. One private publication,
+then STOP before next event. Production20-step policy unchanged;no source run,
+tuning,full-journal continuation or new synthetic/sanitizer campaign. This
+closes this update's lifecycle check,NOT FL3 or live capacity. FL4 held. See
+[FL3e report](experiments/fixed_lag_complete_update_fl3e_20261013/REPORT.txt).
+
+**FL3d COMPLETE — SINGLE PRE-RETIREMENT SOLVE PASSES (2026-10-13):** Actual
+iSAM2 restored from the saved prefix, not a batch substitution. Initial plus
+first20Values byte-identical to FL3a; costs/gradients identical;75000prior archive
+files and161protectedfiles unchanged. Original refinement passes1e-5 at step116
+(gradient7.97781e-6),116accepted/0rejected,1.272s targettime;93.34s prefix+target.
+Compared with step20, position changes .104520mRMS/.107055mmax;orientation
+.108191degRMS/.110616degmax. Gradient oscillates despite decreasing cost.
+Forced diagnostic stop rolls back to event84957/newest1223 before retirement,
+publication or later events. This establishes budget insufficiency at THIS
+solve, not full fixed-lag acceptance or universal iteration/runtime bounds.
+Production still20steps; no model/source/threshold change or live run. FL3
+remains incomplete and FL4 held. See
+[FL3d report](experiments/fixed_lag_isam_convergence_fl3d_20261013/REPORT.txt).
+
+**FL3c INCOMPLETE — REFERENCE-PATH ABORT (2026-10-13):** Authorized GN200
+fixture stopped at step2 BEFORE the larger-budget test: step1 matches original
+local coordinates to1.93e-12, but recursive batchstep2 differs7.83e-6, exceeding
+the predeclared1e-8 reproduction tolerance. Physical position difference max
+8.17micrometres; not a production trajectory failure. Original cost/gradient
+and saved objective exact;22Release/22focusedASan/UBSan pass,148protectedfiles
+unchanged. Earlier QR checks prove isolated-step, not recursive-path agreement.
+No convergence/budget conclusion, retry, relaxed tolerance, source/journal/live
+run or production change. Need exact incremental-state reproduction before
+claiming original solver's required iterations. See
+[FL3c report](experiments/fixed_lag_convergence_fl3c_20261013/REPORT.txt).
+
+**FL3b COMPLETE — CANDIDATE FAILS (2026-10-13):** One predeclared installed
+GTSAM adaptive diagonal-LM policy tested on FL3a's exact saved initial objective.
+20 attempts,20 accepted,0 rejected:cost decreases, but final normalized gradient
+0.04378656 fails the unchanged1e-5 gate (79.96x the retained GN20 gradient).
+42 Release and42 focused ASan/UBSan checks pass; wrapper matches native adaptive
+iterate(), original graph/covariance unchanged,134protectedfiles unchanged.
+No source/journal run, production integration, parameter sweep, budget increase
+or real-fixture retry. This policy is not adopted; does not rule out all damping.
+FL3 remains failed/incomplete,FL4 held. See
+[FL3b report](experiments/fixed_lag_damping_fl3b_20261013/REPORT.txt).
+
+**FL3a DIAGNOSIS COMPLETE (2026-10-13):** Failure at support1224 is20accepted
+cost-decreasing Gauss-Newton steps exhausting the frozen budget;gradient
+.000547608 remains54.76x the1e-5 limit.75000prior archive/index files byte-identical,
+94protectedfiles unchanged. Fresh batchQR directions match iSAM2 to2.33e-12;
+original marginal chart Jacobian matches independent finite differences.
+The remaining gradient alternates at old boundary poses1154/1155. Large raw
+position motion(.330mRMS) is almost rigid-window motion(.061mmRMS after rigidfit).
+Combined Jacobian fullrank but illconditioned;two bounded defaultLM controls
+also fail strict gradient, despite lower costs. Serialized same-objective fixture
+saved;no production repair, covariance/threshold/budget change, source/live run,
+or continuation beyond failed event. Next proposed task is isolated existing
+GTSAM adaptive damping/trust-region validation on this fixture, not automatic
+solver substitution. FL3 remains failed/incomplete;FL4 held. See
+[FL3a report](experiments/fixed_lag_failure_fl3a_20261013/REPORT.txt).
+
+**FL3 STOPPED (2026-10-13):**20s real-data prefix passes exact accounting,
+pre-retirement state tolerance,129retirements and byte-identical observer repeats.
+ONE full148.58s journal attempt stops at support1224/122.4s after initialization:
+`pre-retirement stationarity`. No failed output, retry, threshold/budget/model
+change or live run.1224acceptedpublications/1153retirements retain71supports;
+72659receivedversions=1816insert+70817replace+25startup+1pending,exactoracleorder.
+Covariancepayloads unchanged. Successfulportion whole-servicep95.123539s,
+max.203624s;RSS27448KiB;simulatedqueue49at0.1x. Runtime is promising but the
+complete gate FAILS numerically;failedgradient/attemptcount were notretained.
+Same-supportfullhistorypasses3refinementsteps. Nextproposedwork is onefailing
+retained-objective diagnosis, not tuning or live capture.80protectedfiles unchanged.
+See [FL3 report](experiments/fixed_lag_replay_fl3_20261013/REPORT.txt).
+
+**Fixed-lag lifecycle integration (FL2b, 2026-10-13):** SYNTHETIC RECEIVER PASS.
+Private pending/active/absorbed stable-ID receiver uses FL2a/E2b/gnssFGO and the
+original event-stream decoder. Retirement, replacement, complete rollback and
+atomic archival output pass1004 assertions; unchanged FL2a regression passes651.
+Repeated Release logs/archives are byte-identical; focused core/stream ASan/UBSan
+have no findings;48 protected files unchanged. No-retirement matches independent
+bare iSAM2:state max4.07e-19,covariance0.145 publications/74 retirements retain71
+supports,peak active IDs138/slots212; proper finalized versus online paths saved.
+An early endpoint-identity guard ordering bug was corrected and covered by new
+tests. Raw clock samples do not copy the graph unless they emit a support.
+Optional endpoint cache is explicitly off for this transactional candidate.
+No source/model/default change, real journal, speed or live-capacity claim.
+Next proposed task is FL3 saved-data validation/timing, not a live run. See
+[FL2b report](experiments/fixed_lag_lifecycle_fl2b_20261013/REPORT.txt).
+
+**Fixed-lag boundary correction (FL2a, 2026-10-13):** SYNTHETIC PASS, private only.
+An explicit original-chart joint marginal with correct current-chart derivatives
+resolves the FL2 boundary fixture: gradient9.7154e-7 vs unchanged1e-5. Existing
+retirement/QR is reused; only retained states are rebuilt, never full history.
+145 synthetic publications/74 retirements retain71 supports, bounded slot storage,
+and pass strict publication.651 assertions pass in two byte-identical Release
+runs and focusedASan/UBSan;38 protected files unchanged. The initial marginal-slot
+growth bug was caught and corrected without moving source slots or relaxing gates.
+Complete receiver lifecycle/cache/output integration remains unimplemented;
+FL3/FL4 stay held. No speed/live claim or default change. See
+[FL2a report](experiments/fixed_lag_boundary_fl2a_20261013/REPORT.txt).
+
+**Original fixed-lag correctness gate (FL2, 2026-10-13):** BLOCKED in its frozen prototype.
+Private existing-smoother staging passes linear means/full-covariance checks.
+A nonlinear boundary revision fails unchanged strict publication (gradient
+.001841722 vs1e-5); identical no-retirement revision and independent same-prior
+reference pass. Rollback is verified. No complete source lifecycle integration,
+real replay, source run or speed claim. Full history remains default; FL3/FL4
+held. See [FL2 report](experiments/fixed_lag_receiver_fl2_20261013/REPORT.txt).
+
+**Fixed-lag retention feasibility (FL1, 2026-10-13):** Metadata only, complete.
+Observed oldest-support ages max5.3s GLIM/5.0s Kimera select7.0s by the
+predeclared ceil(max+1s) rule. Every88,254 admitted version reconciles with the
+offline oracle; zero added losses,71 retained supports/72 transient.15 tests,
+8 byte-identical repeated products,35 protected files unchanged. All2,101
+hypothetically absorbed IDs have source-retirement evidence;74 unretired source
+IDs remain retained. No estimator/build/timing or model change. Next proposed
+FL2 is isolated marginalization correctness, not a live run. See
+[FL1 report](experiments/fixed_lag_retention_fl1_20261013/REPORT.txt).
+
+**Fixed-lag planning decision (FL0, 2026-10-13):** The user requested a plan for
+an isolated fixed-lag WNOA receiver. See
+[the staged plan](GNSSFGO_FIXED_LAG_RECEIVER_PLAN_20261013.md).
+Planning is complete; no receiver implementation/build/replay or source run was
+performed. Full history remains the reference/default. Next proposed task is
+FL1, a read-only revision/support-age and lifecycle feasibility check, not a
+solver switch. Marginal-aware publication/recovery and revision retirement must
+be validated before timing. E3a/E4 and all tuning remain on hold.
+
 **Latest diagnosis (S5e, 2026-10-13):** Full back-substitution without nonlinear
 update on18 copied initial-publication snapshots passes0/18 frozen1e-5 gradient
 checks. It is cheap (median2.185ms, maximum3.552ms), but remaining nonlinear
@@ -256,6 +562,11 @@ shared IMU, past means or nonlinear history are statistically independent.
 | S5c | Unmodified receiver sampling diagnosis | User-space profiling, exact frozen-journal output gates, overhead/sample coverage and dominant-code inspection | Complete2026-10-13: offline exact/quality gates pass,23,879 samples,1.49% wall overhead; publication/source-Jacobian/QR cost quantified. Original live equality remains failed; E2b proposed only |
 | S5d | Incremental estimate versus strict publication | Read-only Values/gradient snapshots; exact offline decisions/accounting/output gates; separate p/orientation/V/W and per-pass progress | Complete2026-10-13:68 Release/68 ASan+UBSan, exact prefixes/full journal. First pass supplies>=99.9363% objective reduction at18 selected checkpoints; later global polishing localized. No early-stop/policy validation or promotion |
 | S5e | Complete cached linear solve versus nonlinear update | Copied solver, no update; independent cache-isolated fresh verification, S5d snapshot equality and exact replay gates | Complete2026-10-13:68 Release/68 ASan+UBSan; exact prefixes/full replay. Full backsub passes0/18 strict gradient checks; remaining V correction.110798m/s. No replacement policy/promotion |
+| FL0 | Plan an isolated fixed-lag WNOA receiver | Reuse existing smoother; define lag from arrivals/revisions, marginal-aware checks, preservation and staged gates | Planning complete2026-10-13; see GNSSFGO_FIXED_LAG_RECEIVER_PLAN_20261013.md |
+| FL1 | Bound recorded revision retention without an estimator | Exact clock/dispatch/identity reconciliation and lifecycle simulation | Passed2026-10-13;7s candidate lag, zero added losses; followed by FL2 below |
+| FL2 | Isolated existing-smoother marginal correctness | Dense linear covariance, nonlinear current-chart objective, revision and rollback gate | Original failure retained; corrected in FL2a, private receiver integration passes FL2b. Synthetic gate complete; FL3/FL4 unstarted |
+| FL2a | Exact original-chart marginal boundary adapter | Independent derivative/dense-reference, strict publication, repeated retirement, slot ownership, rollback and sanitizer gates | Synthetic pass2026-10-13:651 assertions, repeated Release identical, ASan/UBSan clean,74 retirements/71 retained supports. Private only; no real replay or timing |
+| FL2b | Pending/active/absorbed receiver and transaction/archive integration | Original parser, no-retirement control, replacements/retirement/rollback, conservation and deterministic outputs | Synthetic pass2026-10-13:1004 assertions,651 inherited regressions, Release/ASan/UBSan and archive audit pass. Next gate FL3, no live/default promotion |
 
 E1 first reuses existing gtsam_points batching around LOCAL graph preparation;
 it retains the auxiliary smoother and its conditioning. GPU-aware sidecar update,
@@ -291,6 +602,11 @@ this does not excuse differences in a same-input mathematical kernel test.
 
 ## Deferred work, not authorized by this plan
 
+The 2026-10-13 FL0 decision authorizes fixed-lag **planning only**, separately
+documented above. It does not change the full-history baseline or authorize
+executing every FL stage. The restrictions below still govern implementation
+and experiments until the corresponding next stage is explicitly authorized.
+
 No covariance tuning, CBS redesign, changed priors/Qc, fixed-lag receiver,
 revision coalescing, source cadence changes, extra sequence, or longer stress run.
 Batching distinct revisions into a different nonlinear solve order also needs
@@ -298,6 +614,149 @@ its own explicit algorithmic decision. Fixed lag may bound resources but brings
 historical revision and marginal-prior semantics; reconsider only separately.
 
 ## Execution ledger
+
+### FL2b — fixed-lag receiver lifecycle integration (2026-10-13)
+
+- Authorization: user "Proceed" after FL2a. SYNTHETIC PASS; private integration
+  only, no real journal replay/live run, tuning, default edits or push.
+- Reuse FL2a smoother, E2b WNOA prediction/interpolation/source factors, existing
+  independent support clock and revision rules. Add pending/active/absorbed
+  ownership, transactional publication/output and bounded hot-path bookkeeping.
+- Freeze7s/100ms/model/Qc/priors/dense Gaussian scale1/strict1e-5/20-step gate.
+- Protocol: experiments/fixed_lag_lifecycle_fl2b_20261013/PROTOCOL.txt.
+- Implemented transport-independent Receiver plus minimal stream adapter reusing
+  the exact E2b EventStream parser. One current factor per stable ID; every ordered
+  version inserted/replaced individually; stale/duplicate rules preserved.
+- Consumed factors become on-disk absorbed IDs, not replaceable recycled slots.
+  Pending-old-bracket/new-after-absorption cases fail closed. Timestamp maps
+  are not refreshed, support count bounded, no lost information hidden as exclusions.
+- Staged solver/ledger/clock/output transaction, immutable commit archive and
+  explicit online versus fixed-lag-finalized trajectories. Disconnected stream
+  fails without finalization. No crash-resume/fsync durability claim.
+- No-retirement bare-iSAM2 comparison:state4.0657581468206426e-19,covariance0.
+  Same-prior retained-reference covariance difference1.1096821839239393e-12.
+  145 publications/74 retirements:71 retained/72 transient supports,371 admitted
+  versions,276 IDs=148 absorbed+128 active;peak active138,slot high-water212.
+  Max strict gradient5.6751479353189249e-6,max2 publication-phase solver steps.
+- Code review fixed stable-ID validation BEFORE startup exclusion/pending
+  classification. Regression cases added; thresholds unchanged. Raw clock events
+  without support use scalar-only commit, with byte-identical old/new products.
+  Endpoint memoization disabled explicitly to isolate rollback; frozen E2b untouched.
+- 1004 assertions pass twice byte-identically in Release and focusedASan/UBSan;
+  source-schema stream repeated archives identical and sanitizer clean; independent
+  validator reconciles archive lifecycle and exports paths.651 unchanged FL2a
+  regression assertions pass.48 protected files unchanged. No full-repository-suite
+  claim; no real-data/timing result. Head remains
+  d3d152a28440f97ced3bd7a50ee072874beafe19; no commit/push.
+- Report:experiments/fixed_lag_lifecycle_fl2b_20261013/REPORT.txt.
+  Artifacts:/home/yeranis/results/gnssfgo_fixed_lag_lifecycle_fl2b_20261013/.
+  FL3 prefix/full saved-journal validation and whole-service timing proposed next,
+  not executed automatically. Full history remains the rollback/default path.
+
+### FL2a — anchored marginal boundary refinement (2026-10-13)
+
+- Authorization: user "Proceed" after the FL2 correctness stop. SYNTHETIC PASS;
+  only the boundary adapter is completed, not the full receiver.
+- One isolated hypothesis: retain each joint marginal's original chart in an
+  explicit factor with correct current-chart derivatives, then rebuild ONLY
+  retained variables/slots in existing iSAM2. Existing gnssFGO retirement stays.
+- This is a deliberate marginal-aware continuation, not the prohibited old
+  full-history rebuild and not a threshold relaxation. No removed states return.
+- Freeze 7 s, model/Qc/priors/covariance,20-step budget and1e-5 publication gate.
+- Protocol: experiments/fixed_lag_boundary_fl2a_20261013/PROTOCOL.txt.
+  No datasets, real journal replay, timing campaign, source/default edits or push.
+- Implemented AnchoredMarginal with pinned Pose3 chart derivatives and immutable
+  original Gaussian/anchor/cross terms. Existing staged smoother still marginalizes;
+  an active-only iSAM2 reload permits current-chart refinement without refreshing
+  the prior or resurrecting states. Source slots remain stable.
+- Original failing negative control still fails. Same boundary revision now passes
+  normalized gradient9.715419674596865e-7; independent same-prior reference and
+  actual iSAM2 covariance checks pass. Three nonlinear marginalizations match
+  independent full pre-retirement QR covariance to max2.941505546083523e-14.
+- 145 streaming publications across14.4s/7s lag:74 actual retirements/reloads,
+  222 retired blocks,71 retained supports/213 variable blocks/852 scalars;
+  slot high-water144,gradient max2.0608890249919413e-6,max3 publication-phase
+  solver steps including retirement and reload. No speed claim.
+- Initial test_release1 caught marginal slot growth(high-water32). Newly generated
+  receiver-owned marginals now reuse empty slots and trim empty tail; source
+  slots do not move. Original storage bound passes(high-water10). Failure retained,
+  protocol correction documented; no mathematical/tolerance change.
+- Final651 assertions pass twice in Release with byte-identical logs and focused
+  ASan/UBSan(no findings).38 protected files unchanged; validator passes.
+  Report:experiments/fixed_lag_boundary_fl2a_20261013/REPORT.txt.
+  Artifacts:/home/yeranis/results/gnssfgo_fixed_lag_boundary_fl2a_20261013/.
+- HEAD unchanged:d3d152a28440f97ced3bd7a50ee072874beafe19; no commit/push.
+  Next bounded work: receiver pending/active/absorbed ownership, transaction/output
+  and cache retirement integration plus remaining FL2 tests. FL3/FL4 unstarted.
+
+### FL2 — isolated fixed-lag correctness gate (2026-10-13)
+
+- Authorization: user "Proceed" after FL1. BLOCKED, FL2 only; not promoted.
+- Frozen lag 7.0 s, E2b model and pinned runtime; full history stays default.
+- Start with the marginal-prior/strict-publication gate before wiring a real
+  journal receiver. Reuse the existing smoother, no new optimizer or fallback.
+- Protocol: experiments/fixed_lag_receiver_fl2_20261013/PROTOCOL.txt.
+- No source run, real journal replay, tuning, library installation or push.
+- Implemented private StagedSmoother plus audit-only anchored marginal; actual
+  existing ordering/marginalizeLeaves reused, atomic/maps/solver snapshot copied.
+- Linear retained mean max1.29e-14/full covariance max1.15e-10 pass. Synthetic
+  nonlinear X/V/W at100ms,7s cutoff and first actual retirement pass; then a
+  still-explicit boundary-edge revision fails correct normalized-gradient gate:
+  .001841722>1e-5. Second proposed update raises cost and is rejected, not a
+  20-iteration timeout. Same revision without retirement passes3.49e-7; same
+  frozen-prior independent reference passes2.02e-9. FD confirms test gradient.
+- Failed publication/retirement transaction rolls back. Standard fixed anchors
+  are excluded from relinearization; no fallback, threshold or model changes.
+  Full lifecycle/pending/interpolation/cache tests deliberately held at this gate.
+- Report: experiments/fixed_lag_receiver_fl2_20261013/REPORT.txt. Detailed final
+  Release/sanitizer/determinism checks in result-root validation.json. HEAD
+  remains d3d152a28440f97ced3bd7a50ee072874beafe19; no commit/push.
+- Final85 supporting assertions pass in two byte-identical Release runs and
+  focusedASan/UBSan(no findings); acceptance remains BLOCKED/exit2 in all.
+ 29 protected files unchanged. No full-suite or real-data correctness claim.
+
+### FL1 — recorded revision retention feasibility (2026-10-13)
+
+- Authorization: user "proceed" after FL0; FL1 only.
+- Status: PASS FOR RECORDED STREAM. Metadata-only journal/dispatch reconciliation
+  and lifecycle simulation; no estimator execution or model edits.
+- Protocol: `experiments/fixed_lag_retention_fl1_20261013/PROTOCOL.txt`.
+- Lag rule declared before numeric analysis: maximum dispatched oldest-bracket
+  age, plus 1.0 s engineering margin, rounded UP to a whole second. Strict-before
+  retirement on the 100 ms physical support clock; no wall-clock retirement.
+- Result:7s lag, observed maximum5.3s,1.7s headroom;88,254 admitted versions,
+  86,053 replacements,25 unchanged startup exclusions,zero added losses.
+  71 retained supports,72 transient,2,101 absorbed IDs all source-retired,
+  100 still explicit;74 source IDs right-censored and retained at EOF.
+- Validation:15 metadata tests;8 repeated byte-identical outputs;35 protected
+  files unchanged. Original CSV/estimator/model untouched. Corrected a derived
+  CSV writer schema error in incomplete analysis1; retained it and added test.
+- Report:experiments/fixed_lag_retention_fl1_20261013/REPORT.txt.
+  Artifacts:/home/yeranis/results/gnssfgo_fixed_lag_retention_fl1_20261013/.
+- HEAD unchanged:d3d152a28440f97ced3bd7a50ee072874beafe19. No commit/push.
+  No solver correctness, covariance, speed or live-capacity claim. Stop before
+  FL2; next proposed step is private fixed-lag implementation/synthetic tests.
+
+### FL0 — fixed lag WNOA receiver planning
+
+- Date/authorization: 2026-10-13, user "ok plan how to do it correctly".
+- Status: PLANNING COMPLETE; checkpoint d3d152a28440f97ced3bd7a50ee072874beafe19.
+- Plan: GNSSFGO_FIXED_LAG_RECEIVER_PLAN_20261013.md. Use the existing gnssFGO
+  IncrementalFixedLagSmoother and E2b observer-free model; keep full history as
+  default/reference, source profiles and source_wnoa/covariance settings frozen.
+- Read-only inspection confirms full-history-only revision/publication guards,
+  a recovery helper rejecting marginalized fixed variables, and Gaussian-cost
+  helpers that do not support arbitrary marginal factors. The old two-state
+  fixed-lag CT test does not actually marginalize. These are integration/test
+  boundaries, not a claim of an existing fixed-lag experiment or measured bug.
+- Next proposed FL1: metadata-only support/revision lifetime analysis, one
+  conservative lag and zero-added-loss lifecycle simulation. Future FL2 proves
+  marginal information/charts/rollback; FL3 measures retained real data; FL4 is
+  a separately authorized live gate. No ATE-driven lag selection or auto-retry.
+- Validation: documentation/source/API inspection and git diff checks only;
+  no estimator edits, code tests, builds, journal execution, live run or push.
+- Full-history correctness/performance limits and old live/offline mismatch
+  remain unchanged. Stop after delivering the plan; no solver promotion.
 
 ### S5e — full linear back-substitution versus nonlinear relinearization
 

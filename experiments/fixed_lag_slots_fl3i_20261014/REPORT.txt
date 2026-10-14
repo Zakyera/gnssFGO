@@ -1,0 +1,166 @@
+FL3i — bounded marginal-factor slot storage
+Date: 2026-10-14
+Status: SLOT_GROWTH_FIXED; FULL_NUMERICAL_GATE_FAILED; NOT_PROMOTED
+
+Outcome
+-------
+The isolated implementation removes the observed empty-slot growth. The one
+complete 148.58 s recorded replay keeps at most 175 factor slots rather than
+FL3h's 1,571, with the same source-version accounting and source payloads.
+However, it fails the numerical-equivalence limits declared before running.
+The largest as-played position difference from FL3h is 0.279428 mm; RMS is
+0.018426 mm. Small does not mean the declared gate passed. Production and the
+previous validated FL3h implementation are unchanged. No second full replay,
+tolerance relaxation, source run, live run, or automatic promotion occurred.
+
+Root cause and isolated change
+------------------------------
+Pinned runtime: GTSAM 4.2a8, from
+/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime
+Pinned implementation:
+/home/yeranis/workspaces/gnssfgo_ct_runtime/rwth_gtsam_src/gtsam/nonlinear/ISAM2.cpp
+Its ISAM2::marginalizeLeaves(), lines 659–686, appends marginal factors before
+removing summarized factors. Unlike ordinary insertion, it does not honor
+findUnusedFactorSlots for those marginal insertions. Active factors and states
+remain bounded while the backing array acquires more empty slots.
+
+Private SlotISAM2::marginalizeLeaves() copies the pinned elimination/Bayes-tree
+surgery verbatim. Only final bookkeeping changes, SlotISAM2.cpp:209–242:
+remove summarized factors and their index entries first; add the identical
+Gaussian marginals/LinearContainerFactors through add_factors with the existing
+reuse flag; update linear cache and VariableIndex at the returned indices.
+No surviving factor is compacted or remapped. Source ownership uses actual
+returned slots. Fixed linearization points, fixed keys and marginal information
+are unchanged. No graph reload, new Schur calculation, extra solve or optimizer
+policy change is introduced. Installed libraries are not edited/relinked.
+
+Frozen configuration
+--------------------
+Same as FL3h: 7 s native-style fixed lag, independent 100 ms support, X/V/W WNOA,
+no central IMU or GNSS factors, Gaussian source covariance scale 1, same initial
+priors and Qc, ordinary incremental GN/QR/relinearization policy, one extra
+retirement update, all stable-ID source revisions. Source CBS settings and
+saved inputs are unchanged. Raw IMU rows in the journal only retain the existing
+clock/initialization handling; they do not introduce central IMU factors here.
+CPU 2, TBB 1, OMP 1, same runtime, caches OFF for the recorded replay.
+This is saved-arrival replay, NOT a newly co-running live experiment.
+
+Validation before the full replay
+--------------------------------
+50,818 assertions passed in Release, repeated Release and focused ASan/UBSan.
+Release repetition and sanitizer output archives are byte-identical. The
+sanitizer instruments the private harness; linked libraries were not rebuilt,
+and leak detection was disabled. Tests cover stock comparison, ownership,
+replacement, rollback, cache on/off and reuse disabled.
+
+After 1,029 fixed-size synthetic retirements:
+  reuse ON: candidate 13 slots; stock 1,042 slots;
+            state/covariance maximum difference 0;
+            normalized augmented-Hessian difference 1.117e-23.
+  reuse OFF: both 3,108 slots; state/covariance/Hessian difference 0.
+Nonlinear WNOA comparison: maximum state difference 1.4884e-12;
+relative full covariance difference 1.6907e-11; peak 26 slots.
+The copied elimination prefix and unchanged receiver model/policy were checked
+mechanically, not merely assumed from the patch description.
+
+Initial test compilation failed on a test-only FastList initializer mismatch.
+The fixture was corrected to explicit push_back; the failed log is preserved.
+No estimator/model change was made to resolve that compile error.
+
+The saved 20 s prefix passed the declared gate, repeated byte-identically.
+Maximum online position difference from FL3h: 5.4287e-10 m; orientation:
+7.1423e-11 rad. Peak slot extent: 175. Only after this success was the ONE
+complete saved capture executed.
+
+Complete capture: conservation and boundedness PASS
+-------------------------------------------------
+88,279 received versions = 25 before initialization + 2,201 insertions +
+86,053 replacements. 2,101 IDs absorbed and 100 still active. Exactly 1,481
+publications, 1,410 retired supports and 71 retained supports. Ordered source
+accounting passes; source covariance payload maximum difference is 0;
+mean Log round-trip maximum error is 9.071e-14. Runtime warning count is 0.
+
+Support index       70     200     600    1200    1224    1480
+FL3h slot extent   159     291     691    1291    1315    1571
+FL3i slot extent   159     175     175     175     175     175
+
+Maximum nonempty factors 172, retained supports 71, fixed keys 9.
+Peak RSS: 25,184 KiB versus FL3h 25,600 KiB. This demonstrates bounded slot
+storage on these tests; it is not a universal duration/capacity guarantee.
+
+Complete capture: predeclared numerical-equivalence gate FAIL
+-----------------------------------------------------------
+Limits: position 1e-6 m, orientation 1e-8 rad, velocity/angular rate 1e-6 SI.
+Differences below are against FL3h at identical physical timestamps, NOT GT:
+
+Output                Quantity              RMS                  Maximum
+as-played             position, m           1.842576e-5           2.794278e-4
+as-played             orientation, rad      8.774433e-7           2.643188e-5
+as-played             velocity, m/s         2.296901e-6           7.596697e-5
+as-played             angular rate, rad/s   6.037938e-6           1.761783e-4
+fixed-lag finalized   position, m           2.100002e-5           1.721736e-4
+fixed-lag finalized   orientation, rad      3.402391e-7           2.673225e-6
+fixed-lag finalized   velocity, m/s         1.366704e-5           4.300978e-4
+fixed-lag finalized   angular rate, rad/s   8.689529e-6           2.048037e-4
+
+First as-played failure is support 1018, about 101.8 s from support origin:
+orientation 1.787396e-8 rad exceeds 1e-8 (position then 7.731528e-7 m).
+423 as-played rows and 497 finalized rows fail at least one criterion. The
+first failing finalized support is 948, whose retirement occurs later.
+Full real-data posterior covariance equivalence is NOT established by the
+synthetic covariance checks; no such claim is made.
+
+The change intentionally changes new factor slot IDs. Pinned ISAM2.cpp:62–110
+assembles affected Gaussian factors by their factor indices. Changed assembly
+order can change floating-point arithmetic and incremental threshold decisions.
+This is a plausible explanation for the small drift, NOT a demonstrated exact
+first divergence mechanism. The source/mathematics checks do not cancel the
+failed real-data numerical gate. No further optimizer experiment was launched.
+
+The initial postprocessor stopped on its numerical assertion. Analysis-only
+audit.py was then changed to retain both failed state comparisons and all
+accounting results before returning failure. Re-reading the existing outputs
+is not an estimator rerun. full_validation.json remains passed:false and
+full_gate_accepted:false; full_failure_audit.json preserves thresholds and
+first/max failures. No criterion was weakened.
+
+Timing: no meaningful speed improvement demonstrated
+----------------------------------------------------
+                                    FL3h             FL3i
+Full wall time, s                   66.446037        66.550017
+Whole 100 ms cycle mean, ms         44.812214        44.907307
+Whole cycle median, ms             33.893702        33.989073
+Whole cycle p95, ms                93.627906        93.965032
+Whole cycle maximum, ms           132.402443       136.623487
+Late-section mean, ms              59.444275        59.614383
+Late-section p95, ms              111.620134       112.066287
+
+Whole-cycle time includes intervening source revisions, not just support
+insertion/solver time. Original recorded-arrival 0.1x throughput screens pass;
+simulated peak queue is 49 events, maximum latency 74.328 ms, and it drains.
+This does not certify live co-running capacity or 1x operation. The patch solves
+backing-array growth, not a measured runtime bottleneck over this short capture.
+
+No GT ATE/RPE was computed. Saved output path lengths are 135.834202 m as-played
+and 107.330639 m fixed-lag-finalized. Finalized output is not online output.
+
+Artifacts, identity and decision
+--------------------------------
+Results: /home/yeranis/results/gnssfgo_fixed_lag_slots_fl3i_20261014/
+Key files: synthetic_validation.json, prefix_validation.json,
+full_validation.json, full_failure_audit.json, full_timing_analysis.json,
+summary.json, full_service.csv, full_outputs/, full_diagnostics/ and both
+failed_gate_*_differences.csv files. Original failed build/test logs retained.
+Source input:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_shared_linearization_s5_live160_20261012/prepared/capacity160_on_receiver/events.csv
+SHA256: da7f4f8e339f469ff05c5c20590941a062385d86a8979c92c1e42cd8c86d3f68
+Replay executable SHA256:
+67689891206d1e7a2c00297c1e0a500881714c54732a5393ad7018b75c2cbf23
+505 protected source/runtime/reference files unchanged. C++ inputs match the
+recorded executable build. Existing dirty worktree changes are preserved.
+Base and final HEAD: d3d152a28440f97ced3bd7a50ee072874beafe19.
+Private implementation/report remain uncommitted; no push was requested.
+
+Decision: retain as an isolated storage fix with a FAILED full numerical gate.
+Do not replace validated FL3h or production with this candidate. No extra
+sequence, tuning, solver experiment or automatic retry is part of this task.

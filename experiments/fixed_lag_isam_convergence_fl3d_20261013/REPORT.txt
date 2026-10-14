@@ -1,0 +1,86 @@
+FL3d — actual iSAM2 single-update convergence diagnostic, 2026-10-13
+
+RESULT: SAME ORIGINAL SOLVE PASSES AT116STEPS; FULL RECEIVER NOT YET VALIDATED.
+
+Exactly one Release build and one saved-prefix replay. No source estimator,
+live experiment, solver sweep, automatic retry or production change.
+
+1. Reproduction and scope
+Restored original FL2b/FL2a incremental state using the original decoder and
+saved journal, stopping at event84958/support1224 (122.4s from initialization).
+Every earlier solve uses the original code/budget. Only this pre-retirement
+solve uses the same copy/trial.update/accept/CheckedGradient loop with a200-step
+ceiling. Threshold1e-5 and cost-rejection rule unchanged. No batch substitute.
+WNOA, no central IMU, Gaussian scale1, priors, lag7s, timestamps, payloads,
+stable-ID replacement, factor slots and source settings remain unchanged.
+
+Initial state plus all20 originally recorded iterate Values are BYTE-IDENTICAL
+to FL3a. Maximum local-state, cost and gradient differences all0. All75000
+previous archive/index files have identical names and bytes;161protected source,
+runtime/input/earlier artifacts unchanged. This resolves FL3c's reference-path
+limitation for this diagnostic without relaxing its declared tolerances.
+
+2. Convergence
+216 X/V/W blocks,72transient supports,864scalar unknowns;0fixedkeys.
+All116attempts accepted;0rejected;216blocks relinearized/reeliminated per step.
+
+Step       Objective                  Normalized gradient
+0          2794137.3456364814          1.5863889609968425
+20         2794133.6862067287          5.4760810443800164e-4
+40         2794133.5924670841          1.3985695447179630e-4
+80         2794133.5867698006          3.1340946675284192e-5
+100        2794133.5867518182          4.9700133999914268e-5
+115        2794133.5867508268          7.4318784291068412e-5
+116        2794133.5867508003          7.9778088195995850e-6  PASS
+
+The gradient is not monotone, although cost decreases. This is first passage
+of the existing criterion, not proof that all subsequent hypothetical iterates
+would remain below it. No extra iterations or alternate checks were run.
+
+3. Runtime, observed on CPU2/TBB1/OMP1, caches OFF
+Target solve including gradient checks and in-memory observation:1.272291s.
+Initial check:0.004137s;116 update/copy/estimate portions total0.738297s;
+116 post-step gradient checks total0.463652s.
+First20iterations:0.218433s;additional96:1.043807s.
+Maximum individual observed iteration:0.012020s.
+Restoration prefix plus target:93.343060s;process93.393487s;peakRSS29160KiB.
+Release build35.492517s. Values files written only after diagnostic stop.
+These are single observed timings, not a paired timing campaign or live claim.
+The1.27s spike exceeds the1s support wall interval at0.1x playback; it does not
+alone establish an accumulating queue, but cannot certify throughput either.
+
+4. Raw state differences (no alignment or GT)
+Step20 -> converged step116, across all72retained/transient states:
+Quantity                  RMS                 Maximum             Newest X1224
+position m                0.1045200493        0.1070548564        0.1070548564
+orientation rad           0.0018882959        0.0019306204        0.0018881878
+world velocity m/s        0.0019670305        0.0064283326        0.0007181720
+body angular rate rad/s   0.0006664916        0.0041706797        0.0000071444
+Orientation RMS/max in degrees:0.108191386/0.110616399.
+Initial -> final position RMS/max:0.434853395/0.445471207m.
+Last accepted step alone position RMS/max:4.603162/4.707749micrometres.
+The additional refinement after20 is NOT negligible raw state motion.
+No accuracy, covariance calibration or rigid-window decomposition is inferred.
+
+5. Transaction and limits
+At completion, the observer deliberately throws FL3D_DIAGNOSTIC_STOP before
+returning to Receiver. Rollback verified:event84957,newest1223;last immutable
+commit84956;no staged output. No retirement, publication, EOF or next event ran.
+Production publication budget remains20. Existing synthetic/sanitizer evidence
+is unchanged; no new broad suite was run for this private observation wrapper.
+This establishes that the20-step cutoff is insufficient at THIS original solve
+and that200allows it to pass. It does not choose a universal budget, prove the
+subsequent retirement/reload cycle, or complete FL3. FL4 stays held. STOPPED.
+
+6. Identity and artifacts
+Branch:audit/receiver-linear-completion-s5e-20261013
+HEAD:d3d152a28440f97ced3bd7a50ee072874beafe19 (unchanged;no commit/push).
+Private binary SHA256:
+7598371cfbfbdddab8393f0743263f2fa744d2574385c00beb88df1462b9e911
+Frozen journal SHA256:
+da7f4f8e339f469ff05c5c20590941a062385d86a8979c92c1e42cd8c86d3f68
+Result root:/home/yeranis/results/gnssfgo_fixed_lag_isam_convergence_fl3d_20261013
+build.json/observe.json:exact commands, code hashes, pinned runtime and timings.
+validation.json:reference equality, state changes, all guards and protected count.
+diagnostics/trials.csv and *.values:all116steps, initial and last accepted states.
+Original source/production files untouched;pre-existing dirty work preserved.

@@ -1,0 +1,26 @@
+FL3g: cause audit, not a solver candidate or production modification.
+Read local GLIM/Kimera/gnssFGO fixed-lag code and actual saved source profiles.
+One saved failing objective only, no journal/source replay and no parameter sweep.
+Reuse FL3a snapshot loader and FL3d final pre-retirement Values/iterates.
+Verify initial/reference cost and gradient against saved artifacts before analysis.
+Attribute curvature along the observed late oscillation direction to marginal,
+WNOA, GLIM and Kimera factors without removing, scaling or modifying a factor.
+For f=0.5*r^T*r, directional Hessian = ||Jd||^2 + r^T*r''.
+Evaluate symmetric residual differences at h=.001,.0003,.0001 as a numerical
+stability check, not estimator parameters; compare to original factor Jacobians.
+An alternating GN mode near stationarity corresponds to a positive residual
+curvature comparable to GN curvature, not automatically a wrong derivative.
+Also record actual late-step alignment/contraction and original marginal anchor
+offsets. Do not infer exact source attribution if finite differences disagree.
+No optimizer run, modified marginal, full Hessian campaign or algorithm patch.
+One pinned Release diagnostic build/run, CPU2/TBB1/OMP1/cachesOFF.
+Read-only analysis may write new diagnostic artifacts only; protect frozen inputs.
+Stop after explaining measured differences and remaining causal limits.
+
+Numerical cross-check authorized within this read-only diagnosis: the residual
+second differences above lose precision at the smallest h. Evaluate the same
+directional Hessian as [g_d(+h)-g_d(-h)]/(2h), where g_d=r^T Jd, at the SAME
+three h values. Pose3 uses Expmap retract, so velocity along Exp(t*d) is d.
+One additional diagnostic build/run, same objective and direction; no solve,
+parameter sweep or new candidate. Keep the original results, including their
+finite-difference limitation, rather than claiming unstable group attribution.

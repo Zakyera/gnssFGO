@@ -1,0 +1,137 @@
+FL3c — larger-budget original Gauss–Newton diagnostic
+2026-10-13
+
+STATUS: INCOMPLETE — REFERENCE-PATH VALIDATION ABORT.
+NOT a result showing that Gauss–Newton fails to converge within200 iterations.
+
+1. Intended question and actual stopping point
+
+The user authorized ONE saved-window test: unchanged GN/QR mathematics and
+1e-5 publication stationarity, with a diagnostic ceiling of200 iterations.
+Production's20-step allowance was not changed. No source/journal/full-sequence
+run, estimator setting, covariance, marginal anchor, damping or GT tuning.
+
+The private implementation reused GTSAM GaussNewtonOptimizer::iterate() on the
+saved FL3a retained objective. This is a batch reconstruction, not the original
+in-memory iSAM2 tree. The protocol therefore required the first20 iterates to
+reproduce the saved incremental path before extending it. This guard failed
+at step2, and the diagnostic stopped immediately. Only TWO solves occurred.
+There is no new converged reference, no step200 result and no justified
+recommendation yet to raise the production iteration ceiling.
+
+2. Inputs and unchanged objective
+
+Input:
+/home/yeranis/results/gnssfgo_fixed_lag_failure_fl3a_20261013/diagnostics/snapshot/
+Initial seed: initial.values, not trial20 or a previously optimized oracle.
+FL3a's original loader was reused, preserving the joint marginal Gaussian,
+anchor, all source means/full covariances, WNOA factors/Qc and X/V/W variables.
+Support1224,122.4s after receiver initialization;72transient supports.
+Initial cost2794137.3456364814 and gradient1.5863889609968425 reproduced EXACTLY.
+Original factor pointers/slots, initial Values, initial Jacobian/RHS and cost/
+gradient checked unchanged after the diagnostic.148protected files unchanged.
+
+Runtime: pinned GTSAM4.2a8, existing ubuntu-jammy-humble-nvidia, CPU2,TBB/OMP1,
+endpoint cachesOFF. No installs. Branch audit/receiver-linear-completion-s5e-20261013;
+HEAD d3d152a28440f97ced3bd7a50ee072874beafe19 unchanged; no commit/push.
+
+3. Predeclared comparison and observed mismatch
+
+Every one of the first20 iterates had to satisfy ALL these reproduction guards:
+  max local state-coordinate difference <=1e-8;
+  absolute objective difference <=1e-7;
+  absolute normalized-gradient difference <=1e-7.
+These are DIAGNOSTIC equivalence tolerances, not production publication gates.
+The latter remains normalized gradient<=1e-5.
+
+               max local difference   cost difference    gradient difference
+  step1        1.9262369477e-12       1.1641532183e-8    2.3302856700e-8
+  step2        7.8266339488e-6        1.4866702259e-5    2.1762556485e-7
+
+Step1 passes all checks. Step2 violates all three. Both steps reduced cost;
+neither was rejected by the original accepted-cost rule. The explicit exception
+is `first20 GN equivalence failed`, not budget exhaustion or nonstationarity.
+The callback failed before logging step2 into trials.csv; that file has one
+complete row. first20_equivalence.csv and summary.json retain both attempts;
+summary reports attempts2/accepted2/equivalent_first_steps1. No record is omitted
+from accounting or mislabeled as a20-/200-step result.
+
+Independent comparison of saved step2 physical states against original trial2:
+  quantity                 RMS                   maximum
+  position (m)             7.9666463492e-6        8.1694000851e-6
+  orientation (rad)        1.4030796816e-7        1.4032894272e-7
+  world velocity (m/s)     1.8511295301e-7        5.0032106690e-7
+  body angular rate(rad/s) 1.2983325095e-10       4.5383292190e-10
+
+These are small physical differences: roughly8micrometres maximum position,
+NOT evidence of a visible trajectory failure. The unmodified diagnostic
+nevertheless cannot claim reproduction of the original incremental path at
+its predeclared tolerance. The tolerance was not loosened after observing it.
+
+4. What this changes in our interpretation
+
+FL3a's independent QR evidence remains valid but narrower than a full-path
+equivalence claim. It started each checked step from the EXACT saved state at
+that step (seeds0,1,18,19,20), then compared one fresh QR step to the recorded
+next state. It did not recursively feed its own tiny numerical differences
+through all20 subsequent linearizations.
+
+FL3c instead feeds its own first result into step2. Its first step exactly
+matches FL3a's recorded fresh-QR result, including cost2794135.0701842522 and
+gradient0.234128549071976, but is not bit-identical to the incremental result.
+The subsequently larger path difference prevents treating the two tests as
+equivalent evidence. The saved graph is ill-conditioned, and code inspection
+confirms finite-difference pose Jacobians remain in the existing WNOA paths:
+  receiver_endpoint_reuse_e2b_20261013/SourceWnoaModel.h:107-125;
+  online_fgo/include/model/gp_interpolator/GPWNOAInterpolator.h:91-119;
+  online_fgo/include/factor/motion/GPWNOAPrior.h:90-119.
+Despite the historical parameter name useAutoDiff, these branches explicitly
+call numericalDerivative11. Numerical sensitivity is a plausible explanation,
+NOT a demonstrated cause or permission to change those derivatives here.
+No wrapper/model bug explaining the discrepancy was established by inspection.
+
+This is a diagnostic reproduction issue. The actual receiver has not been
+rerun and has not newly failed at step2. Its prior recorded failure remains
+the20-step stationarity failure at support1224. Nor does this abort establish
+that a same-objective batch convergence result would be physically inaccurate.
+It only prevents answering the promised original-path budget question with
+this unvalidated substitution.
+
+5. Focused tests and timing limits
+
+Release:22 checks PASS. Focused ASan/UBSan:22 checks PASS, no findings.
+Tests cover zero-step stationarity, known linear solution and covariance,
+native versus direct-QR step, nonlinear convergence, zero/one-step budgets,
+cost-increase rejection and unchanged input on success/failure/nonfinite input.
+Existing linked libraries were not newly sanitizer-instrumented; leak detection
+disabled as in earlier focused checks. No complete receiver regression claimed.
+Compilation passed first attempt; inherited empty-virtual interpolation warnings
+remain in upstream headers, unchanged by this task.
+
+Actual process0.11462916s, diagnostic loop0.055142789s;
+two GN steps0.0183888s, checks0.011121935s,RSS44084KiB.
+These are only early-aborted batch-fixture timings, not the cost of convergence,
+not20-/200-step timings and not complete live receiver service.
+
+6. Artifacts and disposition
+
+Code: /home/yeranis/repos/gnssFGO/experiments/fixed_lag_convergence_fl3c_20261013/
+Results: /home/yeranis/results/gnssfgo_fixed_lag_convergence_fl3c_20261013/
+  PROTOCOL.txt (code directory): predeclared controls/stop rules.
+  protected.json: inherited and extended148-file integrity manifest.
+  fixture_outputs/first20_equivalence.csv: actual early-path comparison.
+  fixture_outputs/summary.json: exact failed guard and attempts.
+  fixture_outputs/state_changes.csv: initial->step2 and step1->step2,
+    NOT initial->converged or step20->converged.
+  fixture_outputs/final_diagnostic_only.values: step2, NOT converged/published.
+  validation.json: early_abort_valid=true,
+    GN200_convergence_result_available=false, physical step2 differences.
+  command/build/log/code hashes retained for every action.
+Binary SHA256 c98ec2c68528dd02ce2156f753aa5fb1a659c7b52ca66e44e8113caf8b4ca875.
+
+No automatic retry, threshold relaxation, alternative initialization or
+continuation from trial20. Production remains unchanged;FL3 incomplete,FL4held.
+Next decision should address reproduction of the actual incremental refinement
+state before using a larger budget to draw conclusions. If an exact solver-state
+capture requires replaying the saved journal prefix, that is separate scope;
+do not silently run it under this single-window-only authorization.

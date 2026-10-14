@@ -1,0 +1,46 @@
+FL1 — metadata-only retention feasibility, 2026-10-13
+
+Scope: frozen E2b full_on1 journal/order and metadata. No graph optimization,
+GLIM/Kimera execution, tuning, production changes, or covariance/GT inspection.
+Baseline HEAD: d3d152a28440f97ced3bd7a50ee072874beafe19.
+
+Input journal:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_shared_linearization_s5_live160_20261012/prepared/capacity160_on_receiver/events.csv
+Independent retained oracle directory:
+/home/yeranis/results/gnssfgo_endpoint_reuse_e2b_20261013/full_on1
+
+Preserve integer nanoseconds and raw record order. Reconstruct the actual
+streaming 59-sample initialization, 100 ms clock, both endpoint bindings,
+pending dispatch, stable ID/revision and EOF rules from DiagnosticReplay.cpp
+and CausalSupportClock.h. Compare all reconstructed support/dispatch/exclusion
+rows to the retained oracle. An unexplained mismatch blocks the conclusion.
+
+For every admitted version, h = newest created support physical time minus
+oldest endpoint support physical time, at its actual dispatch. Summarize first
+publication, replacements, first/last-observed revision ages and edge duration.
+Report actual pending delays separately from arrival minus endpoint time;
+neither is receiver wall-clock service latency.
+
+Predeclared lag selection: L_seconds = ceil(max(h_seconds) + 1.0 seconds).
+The 1.0-second additive reserve is an engineering margin (10 support periods),
+not an empirical universal bound, source-finalization guarantee or ATE tuning.
+Round with integer nanoseconds. Do not change this rule after seeing results.
+
+Lifecycle simulation: supports strictly older than newest_support - L retire
+at each support-publication boundary, after already eligible pending dispatch.
+Use original record order for ties. Record pending/active/absorbed stable IDs;
+source factors touching retired supports are absorbed, not discarded or
+reinserted. A later revision needing an absorbed factor or retired bracket is
+a hard failure. Check pending endpoint availability before each retirement.
+Count explicit source/motion factors and supports; marginal factor number,
+fill-in and speed cannot be inferred from metadata and must not be claimed.
+
+Unit fixtures: exact boundary, interpolated brackets, pending right support,
+source/session isolation, revisions before/after absorption, original source
+exclusions, EOF and delayed clock. Same integer input gives exact deterministic
+output. No tolerance on conservation/identity; no numeric optimizer test here.
+
+Preserve all inputs by before/after SHA256. Write derived outputs to a new
+result directory only; refuse overwrites. State truncation and lack/presence
+of terminal source markers. Recommend one lag for this experimental stream,
+not for all future sequences or unlimited stalls. Stop before FL2.

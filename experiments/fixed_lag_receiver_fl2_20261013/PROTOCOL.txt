@@ -1,0 +1,68 @@
+FL2 private fixed-lag receiver correctness gate, 2026-10-13
+Written before candidate builds or synthetic execution.
+
+Scope
+Start with the critical marginal objective and staged solver. Only if these
+pass proceed to complete source lifecycle/receiver integration. Stop on a
+genuine model/refinement limitation; do not design a new optimizer implicitly.
+No GrandTour data, GLIM/Kimera execution, journal replay, tuning or promotion.
+Existing repository solver/default model and private E2b binary remain unchanged.
+
+Reuse
+Pinned 4.2a8 runtime and gnssFGO IncrementalFixedLagSmoother. Private subclass
+copies protected solver/maps/result/atomic flags explicitly for rollback.
+Use setNotMarginalizing for additions/replacements; existing update performs
+ordered retirement at the publication boundary. No relatedKeys suffix pin.
+Timestamp metadata is integer 100-ms ticks (lag 70 ticks = 7 s), exactly
+representable as doubles in this bounded test, avoiding floating cutoff ties.
+This changes neither physical model dt nor measurement timestamps.
+
+Frozen WNOA test model
+Independent 100 ms X/V/W supports, Qc .00375x3,.015x3, source covariance
+scale1, Gaussian, pose/V/W prior sigmas1e-5/10/3, QR, no central IMU/GNSS.
+Use E2b SourceWnoaModel and original GPWNOAPrior. Exact and interpolated
+relative factors, one replacement removes one slot. Synthetic means/covariances
+are fixture inputs, not estimates/tuning from data. Use meaningful rotations.
+
+Marginal objective gate
+Observe actual pinned-runtime factor types/anchors. Retain each marginal's
+joint Gaussian and immutable creation anchor (solver theta for its keys).
+Audit 0.5||A Local(anchor,x)-b||^2, including current-chart derivative, once.
+Numerical Local derivative is permitted for audit/reference, NOT to change
+receiver optimization. Independent finite differences check cost gradient.
+Refinement: copied existing iSAM2 update, force relinearization/full solve;
+maximum20 updates, normalized gradient<=1e-5, finite/nonincreasing objective.
+No RebuildFullHistoryQR after retirement. Publication failure rolls back.
+Reference: dense QR/Schur for linear fixtures; separately assembled retained
+graph with SAME frozen marginal for nonlinear objective/covariance. A reference
+optimizer is an oracle only, never substituted into the receiver.
+
+Predeclared numerical limits
+- Structural identity, accounting, slot ownership, timestamps: exact.
+- Linear means: max absolute 1e-9; full covariance: 1e-9 absolute +1e-8 relative.
+- No-retirement state differences: 1e-8 per local coordinate.
+- Marginal cost analytic vs Gaussian: 1e-9 absolute +1e-10 relative.
+- Audit gradient vs central cost differences: 2e-5 absolute +2e-5 relative,
+  differences with step1e-5 and1e-6. Ignore no variables, especially boundary.
+- Independent nonlinear reference state 1e-5 local coords and covariance
+  1e-7 absolute +1e-4 relative when both solve the same retained objective.
+- Strict publication normalized gradient threshold1e-5, budget20, unchanged.
+- Rollback: exact Values coordinates, timestamps, factor pointer slots, fixed
+  variables, anchors, result and publication cursor, deterministic repeated run.
+
+Order
+1. Preserve hash manifest of model/runtime/solver/reference; private build.
+2. Linear retirement/replacement and no-retirement regression.
+3. Nonlinear X/V/W actual retirement, chart and stationarity check. Test
+   revision before cutoff and staged rollback. If ordinary iSAM2 refinement
+   cannot satisfy the correct retained objective, report this blocker and stop
+   integration: do not dilute threshold or claim FL2 completed.
+4. Only after foundational gate passes: finish pending/active/absorbed ledger,
+   source/session identity/slot reuse, endpoint/pending/cutoff/stall/EOF tests.
+5. Deterministic Release and focused ASan/UBSan. Test-only repeats are allowed;
+   each action has new log and immutable provenance; retain development failures.
+
+Artifacts: /home/yeranis/results/gnssfgo_fixed_lag_receiver_fl2_20261013
+Report: experiments/fixed_lag_receiver_fl2_20261013/REPORT.txt
+Full-history trajectory equivalence AFTER marginalization is not a criterion.
+This stage does not establish runtime or live capacity. No automatic FL3.

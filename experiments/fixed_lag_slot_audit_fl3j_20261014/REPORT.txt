@@ -1,0 +1,73 @@
+FL3j — one same-input marginalization audit
+Date: 2026-10-14
+Result: SAME_INPUT_BOOKKEEPING_PASS
+
+Purpose
+Rule out a concrete slot-bookkeeping defect before returning to real experiments.
+This does not redefine FL3i's failed strict full-replay equivalence gate.
+
+Execution
+One private build and one reconstruction of the existing FL3i saved-arrival
+prefix. No serialized solver checkpoint existed at the target. The diagnostic
+stopped after event70350/support1018, the first support where the previous
+as-played comparison exceeded its strict tolerance. Reconstruction took40.343s;
+this is diagnostic elapsed time, not a new performance benchmark.
+
+An observation-only hook immediately before marginalization copied the exact
+same current ISAM2 into an unmodified stock instance and an unchanged FL3i
+slot-reuse instance. Both retired the same3keys. The actual receiver then
+performed its unchanged retirement and committed the target event before stop.
+No event after the target was processed. No source/live/full-sequence run.
+
+Results
+Surviving factors:170, identical pointers and original slots in both copies.
+This preserves their actual full mean/covariance objects, not only factor counts.
+Removed factor indices, retained keys and fixed-key sets:exact agreement.
+Retained linearization points:exact agreement with each other and the input.
+New marginal factors:1, identical type, keys and anchor convention.
+New marginal augmented information relative difference:0.
+Canonical whole-graph information matrix relative difference:0.
+Canonical information vector relative difference:0.
+Canonical constant-term relative difference:0.
+Immediate retained-state maximum local difference:3.4694469519536296e-18.
+Slot-order whole-graph augmented-information relative difference:
+1.0259520720632066e-17.
+Post-retirement slot extent:175 reuse versus176 stock for this identical input.
+
+The canonical comparison linearizes at identical Values and assembles surviving
+factors then new marginals in the same order, with identical sorted variable
+ordering. The native slot-order comparison exposes a tiny assembly round-off
+difference while canonical information is exact. This establishes correct
+bookkeeping at the tested real retirement. It supports, but does not prove the
+entire accumulated causal mechanism behind, FL3i's later sub-millimetre drift.
+No claim of exact full-history trajectory or GT accuracy equivalence is made.
+
+Non-interference
+62,043 reconstructed prefix files match the previous FL3i output byte-for-byte,
+including the target commit.118,986 protected files unchanged (505 earlier
+protected sources/runtime/reference files plus FL3i sources and output archive).
+No production/runtime/model/solver-policy changes, covariance tuning, repeated
+optimization campaign, tolerance relaxation or automatic promotion.
+No new sanitizer campaign: this read-only diagnostic uses the already-tested
+candidate implementation; FL3i's prior sanitizer evidence remains separate.
+
+Decision
+No bookkeeping bug found. Stop this micro-difference investigation here.
+Recommend the slot-reuse candidate for an explicitly labelled short experimental
+live pilot, rather than requiring bit-level trajectory identity to the old slot
+order. This is readiness to TEST, not production/indefinite-capacity certification.
+Suggested next step:30s ETH1 CBS-OFF headless with bounded fixed-lag WNOA receiver;
+check queues, factor/version conservation and trajectory coverage before matched
+CBS-ON. Retain native GLIM/native Kimera/fused as-played/fixed-lag-finalized outputs
+separately, and report actual GT coverage. No live run launched in this task.
+Keep the FL3i strict numerical failure recorded; no existing gate is relabelled.
+
+Artifacts
+/home/yeranis/results/gnssfgo_fixed_lag_slot_audit_fl3j_20261014/
+comparison.json, validation.json, build.json, run.json, run.log, prefix/.
+Probe executable SHA256:
+e7ddb6046bc39f8fc3ee2b107a2f2b5ff12ae3f7c0e87c4db9f31d1fdf80ef91
+Harness:Probe.cpp,Audit.h,ObservedSmoother.cpp,run.py and PROTOCOL.txt here.
+ObservedSmoother.cpp differs from FL3i only by the audit include/call.
+Base/final HEAD:d3d152a28440f97ced3bd7a50ee072874beafe19.
+Work remains private/uncommitted; existing dirty files preserved; no push.

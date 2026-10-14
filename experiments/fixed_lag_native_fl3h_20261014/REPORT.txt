@@ -1,0 +1,214 @@
+FL3h — native-style incremental fixed lag from initialization
+Date: 2026-10-14
+Status: STOCK SEMANTICS / SAVED-REPLAY GATE PASSED; NOT PROMOTED TO PRODUCTION
+
+Outcome
+=======
+Yes: the receiver can use the same KIND of ordinary incremental fixed-lag
+operation used by GLIM/Kimera. The isolated candidate completed the entire
+existing 148.58s ETH1 arrival capture in 66.446s, including every admitted
+source revision, without the previous repeated nonlinear convergence cycle.
+No GLIM/Kimera source rerun, live run, tuning, model/default change or automatic
+retry was performed. This is a positive engineering result on ONE saved input,
+not a certification of future sequences, live throughput or GT accuracy.
+
+At identical physical timestamps, without alignment, candidate versus retained
+full-history reference:
+  as-played position: RMS 0.354426mm, maximum 2.700622mm;
+  fixed-lag-finalized versus full-history-final position:
+    RMS 0.393002mm, maximum 1.894353mm.
+These are differences between receiver solutions, NOT ATE against ground truth.
+The former custom fixed-lag path is a different reference: at its problem event
+the new retained window differs from it by position RMS0.418344m/max0.428153m.
+The new candidate is therefore NOT an exact acceleration of that old objective.
+It is a consistent stock-marginal/incremental policy from initialization, and
+stays much closer to the full-history output on this input.
+
+1. What changed, and what did not
+================================
+Private directory only: experiments/fixed_lag_native_fl3h_20261014/.
+RecordedFixedLagSmoother is the authors' existing gnssFGO fixed-lag smoother
+under a private name. One read-only callback captures outgoing states from an
+ISAM2 COPY immediately before marginalizeLeaves. This observes the actual
+retirement estimate, after the normal update, without perturbing mutable delta
+in the running solver. Validation normalizes the class/helper names and hook
+and verifies the remainder exactly against the original authored source.
+
+NativeSmoother keeps the original LinearContainerFactors and marginal-connected
+fixed linearization points. FIXED means the linearization point, not a frozen
+pose estimate. There is no custom AnchoredMarginal conversion, retained-graph
+reload, clearing fixed keys, or repeated pre/post whole-window convergence loop.
+The chart-converted audit view is used ONLY on disposable diagnostic copies.
+
+Receiver reuses FL2b transactional lifecycle, revision ownership, pending-event
+handling, absorption ledger and independent support clock. Each support/source
+version receives its ordinary incremental update; revision replacement retains
+the existing force_relinearize=true policy. At a retirement publication there
+is ONE additional stock update plus marginalizeLeaves. This is not one solver
+call for all source revisions in an entire 100ms interval: all versions remain
+individually processed. EOF emits the existing incremental state, with no hidden
+batch optimization. Outputs explicitly say *_incremental / not_checked.
+
+Frozen model/settings: 7s lag, independent100ms supports,59-sample clock origin,
+X/V/W state, WNOA Qc variances[.00375,.00375,.00375,.015,.015,.015], initial
+pose/V/W sigmas1e-5/10/3, Gaussian source covariance scale1, no central IMU/GNSS,
+same interpolated physical endpoints and source availability/revision order.
+Classic active_window_temporary source journal is unchanged; downstream stable
+ID replacement remains distinct from source-to-source CBS. No coalescing.
+Ordinary iSAM2 GN/QR, relinearization threshold.01, skip1, unused-slot reuse on.
+
+Output distinction:
+  online_incremental: immutable newest-state output at each support arrival;
+  finalized_incremental: each historical pose captured once as it retires,
+    followed by the remaining active states at EOF. Not full retrospective
+    smoothing, and never labelled online.
+The retained full-history reference has separate as-played and final outputs.
+
+2. Tests before real replay
+==========================
+1,193 checks pass in Release, repeat Release, and focused ASan/UBSan.
+Repeated Release archives/log are byte-identical. Sanitizer archives also match.
+Independent unmodified library smoother versus private observer through native
+retirement/replacement: maximum state difference0, covariance difference0;
+linearized augmented-Hessian comparison included.
+No-retirement WNOA bare-iSAM2 control: state max4.06576e-19, joint covariance0.
+Tests cover dense source payload, asynchronous endpoints, revision/slot
+ownership, fixed marginal anchors, malformed/stale/duplicate/late events,
+transaction rollback, clock, exactly-once online/finalized output and EOF.
+74 retirement cycles are exercised in the lifecycle fixture. A legacy printed
+max_gradient=0 counter is unused: it is NOT a convergence certificate and is
+excluded from synthetic_validation.json's reported metrics.
+
+One initial test compile failed on a mixed-type auto declaration; corrected
+test-only syntax and preserved the failed build log. No estimator trial failed
+or was retried. build_test2, build_sanitize and build_replay are successful.
+Sanitizer coverage is the private harness, not a rebuild/sanitization of every
+linked GTSAM/gnssFGO library. Leak detection disabled; ASan/UBSan halt-on-error.
+
+Saved20s prefix and exactly one repeat both pass and are byte-identical.
+10,209 received versions:25 before initialization,280 inserts,9,903 replaces,
+one endpoint beyond the prefix's last support classified unsupported_at_end.
+200 publications;129 retired +71 retained. No runtime missing-key warnings.
+Exact ordered admission matches the full-history oracle; covariance payload
+error0 and SE(3) Log round-trip max2.72517e-14. Full replay began only afterward.
+
+3. Complete saved-stream conservation
+====================================
+88,279 received versions =25 startup exclusions +2,201 inserts +86,053 replaces.
+2,201 IDs =2,101 absorbed +100 remaining active; peak active IDs103.
+1,481 support publications =1,410 retired +71 retained;1,481 finalized rows.
+No pending remainder, unsupported EOF, duplicate/stale event or runtime warning.
+Ordered source/session/ID/revision/arrival/insertion list exactly equals the
+retained full-history dispatch. Every input full6x6 covariance is unchanged
+(maxerror0); log-mean round-trip max9.07053e-14. Raw clock samples14,861.
+No central raw-IMU factor was added: samples continue to drive availability only.
+Finite p/q/V/W outputs and original support timestamps verified for all rows.
+Source factors are absorbed exactly once, not both explicit and in the marginal.
+The candidate fails closed on revisions touching already-absorbed IDs; this
+input did not require extending the fixed lag or discarding such revisions.
+
+4. Numerical comparison — no GT/alignment/fitting
+================================================
+                         as-played vs full-history as-played
+quantity                 RMS                 maximum
+position (m)             .000354426          .002700622
+orientation (rad)        .0000237852         .000154735
+velocity (m/s)           .000694537          .022139966
+angular rate (rad/s)     .000173230          .001211968
+
+                         fixed-lag-finalized vs full-history final
+position (m)             .000393002          .001894353
+orientation (rad)        .000141271          .001080698
+velocity (m/s)           .000593172          .009017497
+angular rate (rad/s)     .001976355          .014296561
+
+The largest as-played velocity difference occurs before retirement begins;
+ordinary incremental publication already differs from full refinement there.
+Finalization/freezing and full retrospective inference are different operations.
+Path lengths (m): candidate online135.833832/finalized107.330549;
+reference online135.850232/final-retrospective107.331190. Their different online
+versus retrospective lengths are not a new candidate effect.
+
+Fresh nonlinear-chart gradients on selected COPIES are not near1e-5:
+support70:1.294599;200:1.139775;600:1.628081;1200:3.205363;
+1224:1.656638;1480:4.127979. We explicitly do NOT certify full nonlinear
+stationarity, posterior equivalence or GT accuracy. Small state differences
+to the reference on this input do not make these gradients zero.
+
+At the previous failure event84958/support1224:
+  prior strict FL3e:1.358424s,125charged steps, gradient6.71063e-6;
+  candidate ordinary update/retirement/publication:0.001490487s,
+    one extra retirement update, no stationarity gate.
+Different histories/objectives since initialization, so do NOT call this a
+911x equal-solution solver speedup. Its retained-state difference from FL3e is
+documented in comparison.json (including rotation max.00780248rad). The old
+strict failure and rejected early-stop FL3f gate remain unchanged.
+
+5. Whole-service timing and remaining storage issue
+==================================================
+Pinned GTSAM4.2a8 runtime, CPU2,TBB1,OMP1, existing experiment caches OFF.
+One full replay only; process wall66.446037s, logged service66.367301s.
+Includes parser, every revision, transactional copy, output archive and checks.
+Seven copied diagnostic observations are excluded from service timing; process
+wall includes them. No ROS/source contention, viewer or real-time scheduling.
+
+All work between successive100ms support publications, including source events:
+                    mean(ms)    median(ms)    p95(ms)    max(ms)
+whole148.58s         44.812      33.894        93.628     132.402
+early0-20s          31.431      27.258        55.620      74.042
+late120-148s        59.444      59.384       111.620     132.402
+final140-148s       61.290      63.813       110.448     132.402
+Late support-publication event alone mean1.675ms/p95 3.304ms/max5.324ms;
+most remaining service is processing source versions. No source version was
+coalesced or omitted to achieve the result.
+0.1x recorded-arrival queue simulation: peak49events, maximumlatency75.752ms,
+p95latency21.893ms, late10s-bin ending queues drain. Meets the frozen recorded
+timing screens (p95<=.8s,late mean<1s,queue<1000,no late-bin tail>=1s).
+This is NOT evidence of live1x or even co-running0.1x acceptance.
+
+Stored active states remain71 support blocks (213X/V/W variables), with transient
+insertion of72 covered in tests. At publication active factor count<=172,
+one marginal of maximumdimension36, nine fixed-linearization keys. Receiver
+RSS high-water25MiB. However allocated factor-slot extent grows:
+support70:159;200:291;600:691;1200:1291;1480:1571slots.
+Thus this implementation is NOT yet certified constant-memory/constant-cost
+for unlimited duration, despite bounded active optimization. Empty slot storage
+was deliberately NOT compacted via graph reload, as that would change this
+experiment's hypothesis. Archive/absorbed-ID history also grows on disk by
+design. Late service growth cannot be attributed uniquely to slots from these
+aggregate measurements; version mix and nonlinear update work vary too.
+
+6. Evidence, integrity and decision
+==================================
+Protocol: PROTOCOL.txt in this directory, frozen before experiments.
+Results: /home/yeranis/results/gnssfgo_fixed_lag_native_fl3h_20261014/
+  synthetic_validation.json;prefix_validation.json;full_validation.json;
+  comparison.json;full_timing_analysis.json;
+  full_service.csv;full_diagnostics/;full_outputs/commits/;
+  full_online_incremental.tum;full_finalized_incremental.tum.
+full_validation.json's full_gate_accepted=false refers to NOT promoting through
+the old strict/full live acceptance contract; passed=true records the new
+candidate's structural accounting gate. They are not contradictory certificates.
+No full-stream deterministic repeat was run; determinism is demonstrated on
+the synthetic gate and20s prefix only, as predeclared.
+
+Input: existing capacity160_on_receiver/events.csv (148.58s captured, not a new
+160s/346s source run). SHA256:
+da7f4f8e339f469ff05c5c20590941a062385d86a8979c92c1e42cd8c86d3f68
+Reference: /home/yeranis/results/gnssfgo_endpoint_reuse_e2b_20261013/full_on1/.
+Receiver binary SHA256:
+a5f58b96377d7d231891a3eb521d13b5e5fa3634efa1edbd77aff37edd5fd433
+Build commands and source hashes retained in build_*.json. All433protected
+source/runtime/journal/oracle files unchanged. Original production and previous
+experimental implementations are preserved. No commit/push requested or made;
+base/final HEAD d3d152a28440f97ced3bd7a50ee072874beafe19, with pre-existing
+experimental worktree changes retained. This private candidate is uncommitted.
+
+Decision: viable native-style fixed-lag prototype on this frozen capture.
+It removes the demonstrated excessive publication-refinement requirement
+without source/model/covariance tuning. It does not establish that WNOA is
+inherently unsuitable, nor that all fixed-lag approximations are equivalent.
+Do not promote silently. Remaining engineering limitation is the growing empty
+factor-slot bookkeeping; a semantics-preserving slot-lifecycle fix would need
+separate authorization and exact stock-state/covariance regression checks.
+Co-running throughput and future-sequence accuracy remain untested. Stop here.

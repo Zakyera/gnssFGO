@@ -1,0 +1,199 @@
+FL3 — retained ETH1 real-data fixed-lag correctness/timing gate
+2026-10-13 | STOPPED: PRE-RETIREMENT STATIONARITY
+
+Decision
+The20s prefix passes. The ONE full saved-journal attempt stops at support1224,
+122.4s after receiver initialization (122.980027s after the first IMU).
+Do NOT promote the fixed-lag receiver, run live, retry, tune or claim completion.
+The measured successful portion is bounded and comfortably below the0.1x wall
+budget, but the unchanged strict numerical publication check fails later.
+This separates promising runtime from incomplete solver robustness.
+
+No GLIM/Kimera/source or live experiment occurred. No estimator, solver/model,
+Qc, prior, lag, covariance scale, threshold, iteration budget or production
+default changed. No change was made in response to the result. Full-history
+remains the reference/default. No source covariance/weighting conclusion follows.
+
+Frozen implementation and inputs
+Receiver/BoundarySmoother/E2b factors and parser reused unchanged.7s lag,
+100ms independent support clock,59startup samples,source_wnoa(X,V,W),QR,
+Qc[.00375,.00375,.00375,.015,.015,.015],pose/V/W priors1e-5/10/3,
+Gaussian full6x6 covariance scale1,stable-ID replacement of every ordered revision,
+no centralIMU/GNSS/gating/health/robustloss. Endpoint reuse explicitlyOFF in this
+private transactional candidate. Old E2b cacheON offline oracle unchanged.
+This source journal is classic active_window_temporary; no source live_revision.
+
+Journal /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_shared_linearization_s5_live160_20261012/prepared/capacity160_on_receiver/events.csv
+SHA256 da7f4f8e339f469ff05c5c20590941a062385d86a8979c92c1e42cd8c86d3f68
+Retained capture148.58s, NOT a completed160s source experiment.
+Reference /home/yeranis/results/gnssfgo_endpoint_reuse_e2b_20261013/full_on1
+Runtime /home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime
+PinnedGTSAM4.2a8, existingHumblecontainer,CPU2,oneTBB/OMP worker.
+
+Unchanged FL2b stream binary SHA256
+a323c23d1a6b37a23374b6a74e12e9bd12b6d9f47f3086d05a50a74936a57a7e
+New external timing wrapper binary SHA256
+e354f5044c306e420a4a9d90dd92f27897ea8ed0585249d724eb52cb79ba7388
+The wrapper includes the unchanged implementation; only event service timers,
+graph-size/RSS observations and failure context were added outside the receiver.
+No installed executable was replaced.80 protected original files hash unchanged.
+
+20s prefix correctness and observer gate
+Predeclared cutoff origin1727775008583475000+20s; retained original ordered bytes
+with arrival<=cutoff, then explicit syntheticE. Clock jitter means200 rather
+than201 supports are ready: X0..X199. No endpoint-based truncation or future data.
+Input2058clock records and10209belief versions.10209=280insertions+9903replacements
++25 originalbefore-initialization exclusions+1 pendingright-bracket at artificialEOF.
+The one EOF exclusion is a cutoff artifact, not an added lag loss; it is not
+excluded in the longer run.179IDs absorbed,101remain,129support retirements,
+71supports retained. Maximum gradient7.611232006e-6,maximum4publicationsteps.
+Admitted identities/revisions/timestamps/dispatch order exactly match E2b oracle.
+Every dense covariance payload unchanged bit-for-text numeric value; maxerror0.
+SE3 Log(Exp(mu)) loggingroundtrip max2.7252e-14.
+
+Pre-retirement maximum differences versus fullhistory online:
+  p2.9280e-10m,orientation3.5728e-11rad,V1.2890e-11m/s,W3.2575e-12rad/s.
+Post-retirement prefix maximum p0.000067958m,orientation0.0000161003rad.
+After marginalization a different retained objective is expected; this is not
+an exact fullhistory-equivalence requirement and is not GT accuracy.
+
+Unobserved prefix11.18475s. One read-only callstack observer repeat11.48722s;
+then external timing-wrapper prefix11.23611s. All10503archivefiles byte-identical
+across these successful cases. Wrapper-prefix overhead observation0.46% versus
+the single unobserved case is not a statistically established overhead benchmark.
+Initial200online/publication rows of fullattempt exactly repeat acceptedprefix.
+
+Retirement diagnostics inspected, not suppressed
+Prefix emitted387'VectorValues Update: key ... does not exist' diagnostics,
+exactlyX/V/W of retiredsupports0..128. A forwarding LD_PRELOAD observer captured
+the first stack without changing any value or numerical call:
+  Receiver::publish -> BoundarySmoother::adoptCharts -> calculateBestEstimate
+  -> updateDelta -> UpdateGaussNewtonDelta -> optimizeInPlace -> VectorValues::update.
+The pinnedlibrary prints and skips nonexistent destination keys. These are old
+leaf frontals in the transitional post-retirement backsolve, before the adapter
+reloads the retained graph. A leaf solve does not feed its parents; no surviving
+key is skipped in the observed prefix. Each retained publication is then checked.
+Fullattempt emits3456suchmessages, onlyretiredkeys; retiredX/V/W864 emitnone.
+No warnings were hidden, and no library-wide correctness claim is made.
+This does not establish why the later strict solve fails. That failure occurs
+BEFORE the new retirement, not while printing a new missing-key diagnostic.
+
+Exact full-attempt stop
+Failed input journal line84958:
+  I arrival=physical=1727775130983502000ns
+  new supportX1224 physical=1727775130983475000ns.
+Error: pre-retirement stationarity. Process exit1 after94.294850s.
+Last committed event84957; newest1223,oldest1153,1224acceptedpublications.
+Last physical output122.3s after origin.1153actualretirements;71retainedsupports.
+No output for failingX1224, no successfulEOF/drain, no abandoned stagingdirectory.
+Last archivebundle84956:84957onlyqueuedapendingversion,so nooutputbundle is expected.
+Do not export this partial archive as a completed finalized trajectory.
+
+This support would release pendingKimera ID
+  (kimera_front,eth1_shared_linearization_s5_live160_on_20261012,598,599),rev0
+  endpoints1727775130754695900 ->1727775130954694500ns
+  arrival1727775130977435540ns, requiredrightsupport1224.
+The failed transaction includes support insertion and pending dispatch; there is
+no evidence yet which operation/factor causes the strictsolve tofail. Do NOT
+blame this Kimera belief from its temporal coincidence alone.
+
+Every previously committed version reconciles exactly:
+  12298clock events;72659receivedbeliefs
+  72659=1816firstinsertions+70817replacements+25originalstartup exclusions+1pending
+  1816IDs=1715absorbed+101active;peakactive103.
+All admitted sequence/dispatch fields match fullhistory. Covariance maxdifference0;
+mean loggingroundtrip max3.6637e-14. No added lag-induced loss or doublecount was
+observed before stopping. The unread remainder was NOT processed or silentlydropped.
+
+All1224committedpublications pass1e-5; max8.577975204e-6. Maxacceptedsteps15.
+Support1223 needed15steps with finalgradient1.420435838e-6. Support1224's failed
+gradient and attemptedstepcount were NOT retained. solve() may stop when its
+20stepbudget is exhausted OR its cost-nonincreasing safeguard rejects a trial.
+We cannot distinguish these from the present log and do not invent the answer.
+The fullhistory oracle passes at the same support in3acceptedrefinementpasses,
+finalgradient4.767056326e-7. Its objective and algorithmic history differ after
+marginalization; this is a useful counterexample, not proof of a factorbug.
+
+Partial timing / storage, NOT a completed operational acceptance
+All numbers below cover successful logged events only. End-to-end process
+94.294850s; loggedinclusiveeventservice94.031159s. Difference0.263691s includes
+startup, the failed uncommitted transaction, termination and overhead; no separate
+failed-step timing is claimed. Exactly1224supportpublicationbuckets were measured.
+Each bucket includes every intervening beliefrevision, parser, transaction/copy,
+checks, retirement/reload and requiredarchiveI/O, plus lightobserveroverhead.
+No visualization/profiler/densecovariancequeries. No arbitrary solver-only speedclaim.
+
+                         Mean        Median       p95         Maximum
+All1224supportbuckets     .076747s    .071699s     .123539s    .203624s
+Early0..20s              .055921s    .058724s     .095793s    .105147s
+Middle60..80s            .073579s    .075087s     .095267s    .114693s
+Observedlate120..122.3s  .122145s    .128603s     .186751s    .189499s
+
+Latebin hasONLY24supports;140..148.58s bin was not reached. Growthless/indefinite
+capacity cannot be concluded from these bins. HistoricalE2bfullhistory timings
+are not a matched current full-length benchmark; no speedup ratio is claimed.
+
+Externally separableeventclasses, inclusive costs:
+  72659sourcebeliefevents:median.000406s,p95.002220s,max.022628s
+  1224support-producingclockevents:median.028281s,p95.050010s,max.157348s
+  11074clock-onlyevents:median1.859us,p956.647us,max21.186us.
+Sourceevents include all replace/copy/archive work. Supportevents include pending
+versions and all publication operations. Internal QR/refinement/copy/marginal/disk
+subphases were NOT separatelytimed; no internal percentage is asserted.
+
+Post-publication retainedsupports71,213X/V/W blocks,852scalars; FL2b logic allows
+72supports transiently. Graphslothighwater175,nonemptyfactors<=172,onejointmarginal
+over atmost36scalars. Last graph174slots/171nonempty. SourceIDspeak103.
+HotpathRSS highwater27448KiB (~26.8MiB), versus26536KiB early and26752KiB middle.
+The archive is append-onlydisk and grows with input; FL3wholeartifactroot~849MiB.
+Not a claim of bounded disk, arbitrary-rate pending memory or crash durability.
+Marginal scalar dimension is measured, matrix numericaldensity is not.
+
+Offline queue simulation using recordedarrivalclock at0.1x:
+  maxwaitingevents49;maxcompleted-eventlatency.157348s;p95.027293s.
+No accumulation in this completedportion, below1000queuecap. Computational
+headroom is promising against1s/support (.8s proposedp95target), but overall
+operational_target_pass=false because the replay DIDNOTcomplete.
+No inference of0.3x/1x, concurrent source load or livecapacity is authorized.
+
+Common-time state differences to fullhistory online, successful portion
+              RMS                 Maximum
+p             .004852068m         .028328791m
+orientation   .0000955295rad       .000497406rad (~.0284993deg)
+V             .0000700936m/s       .000514450m/s
+W             .0000001210rad/s     .0000015662rad/s
+These are unaligned same-initialization receiver differences, NOT ATE or native
+GLIM/Kimera performance. The finalized path after failure is incomplete bydesign.
+No completedrunATE/RPE, real retainedcovariance comparison or full deterministic
+repeat was performed after the stop. Earlier synthetic covariance/sanitizer
+results remain recordedFL2b evidence, not newlyrerun FL3 tests.
+
+Validation/artifacts
+New code experiments/fixed_lag_replay_fl3_20261013/:
+driver.py create-once/lock/hashguards;ReplayTimed.cpp externalobserver;
+ObserveVectorUpdate.cpp forwardingcallstackobserver;audit_prefix.py;
+accept_prefix.py;check_repeat.py;failure_audit.py;analyze_timing.py.
+Resultroot /home/yeranis/results/gnssfgo_fixed_lag_replay_fl3_20261013/
+Key records:prefix_acceptance.json,timed_prefix_acceptance.json,full_timed.json,
+failure_audit.json,full_timed_timing_analysis.json,partial_online_difference.csv.
+All80protectedfiles unchanged. Allnormal model/receiver code unchanged. Python
+syntax/gitdiffchecks performed; no new full repositorysuite claimed.
+Hostdefaultpython lackedNumPy; existingevoPythonusedforread-onlyanalysis,noinstall.
+Initialpartialaudit incorrectlyrequired a warning atEVERYretirement; corrected
+to require everywarningkeybelongtoretiredkeys, uniqueness and no survivingkey.
+This analyzer-only correction didnot rerun or alter the estimator.
+
+Suggested next bounded task, NOT executed
+Capture the single failing publication's retained graph, original anchoredprior,
+pre/postpending states, gradientblocks and everytrial cost/gradient using a private
+observer. Compare an independent solve of EXACTLY THAT SAME retained objective,
+including finite-difference prior derivatives if necessary. Determine exhausted
+budget versus rejected step, rank/conditioning, or a solver/chart/bookkeepingbug.
+Use noGT/covariancetuning, no automatic longerlag/moreiterations/looserthreshold,
+nofullsource/live rerun. Report the cause before proposing a numerical repair.
+Do not automatically launch this nextdiagnostic under FL3's failedgate.
+
+HEAD unchanged d3d152a28440f97ced3bd7a50ee072874beafe19.
+No commit orpushrequested. Existinguncommittedresearchstagespreserved;
+newFL3scripts/report/ledgerupdatesremainlocal. Fullhistorydefaultuntouched.
+FL3_STOPPED_PRE_RETIREMENT_STATIONARITY

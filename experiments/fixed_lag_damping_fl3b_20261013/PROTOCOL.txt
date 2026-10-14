@@ -1,0 +1,60 @@
+FL3b: one bounded adaptive-damping fixture test, 2026-10-13
+
+User: "no adaptive damping is better. check this".
+Test only adaptive damping, not a 40-step or unbounded-budget control. No
+production integration, source/live run, journal replay or GT evaluation.
+One candidate policy selected BEFORE observing its result; no lambda sweep.
+
+Input is FL3a's exact saved retained objective at failed support1224:
+/home/yeranis/results/gnssfgo_fixed_lag_failure_fl3a_20261013/diagnostics/snapshot
+Start from initial.values, not the already-improved trial20 or an LM oracle.
+Reuse FL3a's loader and verify exact original cost2794137.3456364814 and
+normalized gradient1.5863889609968425 before testing. Original joint marginal,
+anchor, source means/covariances, WNOA Qc and state definitions unchanged.
+Reference failed20-step Gaussian GN result is retained, not rerun/tuned.
+
+Policy: installed GTSAM4.2a8 LevenbergMarquardtParams::CeresDefaults(), QR.
+This supplies diagonal damping and adaptive lambda using model fidelity:
+lambdaInitial1e-4,lambdaFactor2,lambdaLowerBound1e-16,lambdaUpperBound1e32,
+minModelFidelity1e-3,minDiagonal1e-6,maxDiagonal1e32,useFixedLambdaFactor=false.
+No per-sequence parameter selected from ATE or this test's results.
+
+Drive the public existing linearize()/tryLambda() calls to cap actual
+linear-system attempts at20; rejected attempts count. Reuse a linearization
+when lambda is rejected, relinearize after an accepted state change, exactly
+as GTSAM iterate() does. Copy its Hessian-diagonal clamp/sqrt operation.
+Do NOT write a new LM or trust-region algorithm. Record library acceptance,
+lambda and true undamped cost/gradient for every trial.
+
+Use the unchanged normalized-gradient<=1e-5 requirement as the ONLY success
+criterion. Set LM relative/absolute cost stopping tolerances to0 inside this
+isolated wrapper because cost termination previously did not imply stationarity.
+This does not relax receiver acceptance or add iterations. Stop on strict
+success, exhausted20trials, nonfinite output, maximum lambda or library stall.
+Default library nonlinear acceptance/model-fidelity rule remains unchanged.
+
+All damping factors stay inside GTSAM's temporary linear system; the original
+nonlinear graph is never augmented or exported with damping. Validate original
+factor identities/keys, marginal anchor/Gaussian and original undamped error/
+linearization unchanged at the initial Values. No candidate state is published.
+
+Focused tests before the real fixture: already stationary ->0trials; a linear
+prior reaches its correct solution; a nonlinear rejection fixture accounts for
+every rejection; budget exhaustion/nonfinite failures leave caller inputs
+unchanged; bounded wrapper agrees with installed iterate() for an outer step;
+undamped covariance is original covariance, not damping-inflated information.
+Release and focused ASan/UBSan. If the real fixture succeeds, one identical
+repeat for determinism; no alternative setting/retry after failure.
+
+The20-trial solver test is a necessary PRE-retirement check only. It does not
+include installing a candidate Values into iSAM2, retirement, retained reload,
+post-retirement stationarity, receiver rollback or full-stream acceptance.
+If successful, report remaining work/budget rather than calling it an integrated
+fix. If unsuccessful, retain the result and stop, not tune the model/lambda.
+
+Private create-once code/results:
+experiments/fixed_lag_damping_fl3b_20261013/
+/home/yeranis/results/gnssfgo_fixed_lag_damping_fl3b_20261013/
+Pinned existing runtime/container, CPU2,oneTBB/OMP worker,endpoint cachesOFF.
+Protect old inputs/source/binaries; exclusive action locks/refuseoverwrite.
+No commits/push without request. Update ledger and report the actual result.

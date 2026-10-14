@@ -8,6 +8,12 @@ in `experiments/checkpoints/20261011/README.md`. This latest snapshot uses class
 `active_window_temporary` sources and source-driven WNOA without central IMU
 factors; the older baseline descriptions below are distinct configurations.
 
+For the latest bounded ETH1 fixed-lag live OFF/ON milestone, read
+`experiments/fixed_lag_live_fl4f_20261014/MILESTONE.md` and its report before
+reusing settings. It archives the exact source/receiver profiles and compact
+validation evidence. The FL4e receiver repair remains an isolated candidate,
+not the default build; the 30 s result does not certify longer or 1x operation.
+
 Before running or interpreting CBS-ON GLIM/Kimera source experiments, read
 `/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/cbsms/docs/CLASSIC_CBS_ON_RUNBOOK_20260925.md`.
 It is the current operational reference for the shared classic CBS protocol

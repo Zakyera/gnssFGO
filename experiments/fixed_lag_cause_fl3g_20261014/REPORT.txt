@@ -1,0 +1,243 @@
+FL3g — receiver versus native fixed-lag convergence audit, 2026-10-14
+
+RESULT: A CONCRETE SOLVER/PUBLICATION DESIGN MISMATCH IS CONFIRMED.
+NO NEW WNOA EQUATION BUG PROVED. NO REPAIR OR LIVE ACCEPTANCE CLAIMED.
+
+1. Answer
+
+We are not running the same fixed-lag procedure as native GLIM or Kimera.
+Those estimators normally perform a small configured number of incremental
+updates, retaining the standard fixed-linearization marginal semantics. Our
+experimental receiver converts marginals to explicit anchored nonlinear-chart
+factors, reloads the retained graph, and requires fresh full nonlinear
+stationarity before AND after retirement. It forces relinearization/full solves
+while checking every factor. Native fast publication does not demonstrate that
+the native graphs satisfy this stronger condition in one or two iterations.
+
+This is a real architectural mismatch, not merely the setting "lag = 7 s".
+It explains where the repeated work is introduced. It does not by itself prove
+that the chart adapter is mathematically wrong or that waiving the gate is safe.
+FL3f already demonstrated that stopping early within this modified procedure
+changes the current result and subsequently absorbed prior materially.
+
+The difficult retained objective also really converges slowly under our GN
+procedure. It is not just expensive marginalization or a misleading timer.
+The previously recorded 116-step solve has a poorly conditioned, nearly rigid
+whole-window motion coupled to the old marginal boundary. New saved-objective
+diagnostics support significant residual/nonlinear curvature along an observed
+late oscillation direction. WNOA contributes, but is not the sole contribution;
+the marginal's OWN nonlinear curvature is small in this direction. Thus
+"WNOA is broken" and "the marginal chart derivative is wrong" are not justified.
+
+2. Exact native/receiver code and effective settings
+
+Workspace prefix WS=/home/yeranis/repos/V4RL/cbs_gtsam4.3
+Receiver prefix FGO=/home/yeranis/repos/gnssFGO
+Saved source root:
+WS/runs/gnssfgo_shared_linearization_s5_live160_20261012/prepared/
+  capacity160_on_source/
+
+                         GLIM                Kimera               Receiver
+Window                   5.0 s               25 states             7.0 s
+Normal update policy     insertion + 1       numOptimize=1         forced repeats
+GN/Dogleg setting        GN                  GN                    GN
+Relinearize threshold    0.1                 0.01                  0.01, forced
+Relinearize skip         1                   1                     1
+Fresh full nonlinear
+gradient <=1e-5 required  no                  no                    yes
+Custom marginal chart /
+retained graph reload    no                  no                    yes
+
+The native counts above describe ordinary backend update paths, not all CBS
+maintenance, exception fallback, diagnostics, or total sensor processing time.
+They are not claims of full nonlinear convergence in that many steps.
+
+GLIM: saved glim_config/config_odometry_gpu.json:46-49 supplies lag/solver
+settings. Actual loaded libglim.so was the e1b_local_profile release_2 library.
+Its retained build.py compiles overlay/odometry_estimation_imu.cpp. That exact
+overlay calls update_smoother(...,1) at433 and implements one insertion plus
+the requested empty updates at601-614. Native wrapper:
+WS/src/gtsam_points/src/gtsam_points/optimizers/
+  incremental_fixed_lag_smoother_ext.cpp:95-123
+does one underlying update then marginalizeLeaves; the fallback wrapper is
+separate from this nominal path. The native source copy has the same policy.
+
+Kimera: saved kimera_profile/BackendParams.yaml:63-74 gives the values above,
+wildfire_threshold=.001 and useDogLeg=0. Saved effective_mode_check.json passed
+before playback and recorded /workspace/cbs_gtsam4.3/build/kimera_vio/libkimera_vio.so,
+not the separate clean_kimera_ws library. It also records shadow acceptance
+audit disabled. Relevant source:
+WS/src/Kimera-VIO/src/backend/VioBackend.cpp:5021,5083
+first calls updateSmoother, then loops n_iter=1 while n_iter<numOptimize.
+WS/src/Kimera-VIO/src/backend/VioBackendParams.cpp:27-53 sets GN, threshold,
+wildfire, CHOLESKY and no internal nonlinear-error evaluation.
+WS/src/cbs/include/cbs/bpsam/incremental_fixed_lag_bpsam_smoother.h:228-242
+has a forced-full-solve diagnostic branch, but the normal path does not use it;
+its marginalizeLeaves calls are at375/378. No AnchoredMarginal adapter here.
+This is a current-source/saved-profile audit, not a newly executed native solve.
+
+gnssFGO authors' incremental fixed-lag implementation:
+FGO/online_fgo/src/solver/IncrementalFixedLagSmoother.cpp:188,200,211-215
+does one isam_.update followed by marginalizeLeaves and reports iterations=1.
+Our outer publication loop is NOT an algorithmic requirement of this library.
+
+Pinned GTSAM4.2a8 runtime source:
+/home/yeranis/workspaces/gnssfgo_ct_runtime/rwth_gtsam_src/gtsam/nonlinear/
+ISAM2.cpp:658-670 creates raw linear marginal factors and marks their keys as
+fixed-linearization variables. ISAM2-impl.h:377-399 removes these keys from
+relinearization even when full solve is forced. Their ESTIMATES may still move;
+fixed linearization does not mean fixed physical poses. The documented API
+agrees: https://gtsam.org/doxygen/4.0.0/a03643.html (marginalizeLeaves).
+
+Our differences, exact files under FGO/experiments:
+fixed_lag_boundary_fl2a_20261013/BoundarySmoother.h:42-79
+  adoptCharts preserves original Gaussian/anchor, substitutes AnchoredMarginal,
+  reloads retained factors into a fresh ISAM2 and requires zero fixed keys.
+  Source ownership is preserved; it is not an arbitrary covariance scaling.
+BoundarySmoother.h:84-96
+  solve repeatedly forces full solve + relinearization and checks all-factor
+  normalized gradient <=1e-5. The actual observer recorded216 blocks on EVERY
+  one of the116 target iterations.
+fixed_lag_lifecycle_fl2b_20261013/Receiver.h:223 onward
+  requires the pre-retirement gate, retires, adopts charts, and checks again.
+fixed_lag_boundary_fl2a_20261013/AnchoredMarginal.h:29-49
+  residual A*Local(anchor,x)-b; current-chart Jacobian A*DLocal(anchor,x).
+
+The adapter was introduced to reconcile the strict publication gate with
+fixed-linearization marginalization (FL2/FL2a). It has synthetic/derivative
+validation, but must not be described as the stock native fixed-lag procedure.
+
+3. Exact measured delay — prior evidence, not rerun here
+
+At event84958/support1224,122.4 s after origin:
+  full-history reference:3 refinement passes (different objective/history);
+  fixed-lag pre-retirement:116 accepted GN passes,0 rejected;
+  time in update/copy/estimate portions:0.738297 s;
+  time in116 fresh gradient checks:0.463652 s;
+  complete observed pre-solve:1.272291 s.
+Complete original transaction FL3e:1.358424 s, including retirement0.000188 s,
+chart reload0.007093 s and7 post-refinements. These single saved timings do not
+constitute a new native-vs-receiver benchmark or universal live-throughput claim.
+The main cost is repeated nonlinear solution/certification, not the Schur
+elimination itself. Reload loses incremental reuse but its measured direct
+7 ms cost cannot explain the1.36 s spike on its own.
+
+Unchanged prior findings:72 transient supports,864 scalars,1500 Jacobian rows;
+full column rank,condition(A)=86691.709. Independent fresh QR reproduces tested
+iSAM2 directions within2.33e-12. Marginal chart derivative and worst-coordinate
+gradient pass independent finite differences. No stale factor/omitted-key or
+gross marginal-derivative bug was demonstrated in that solve.
+Initial to step20 raw position movement .330374 m RMS; after a common rigid
+position fit residual .00006136 m RMS. This is descriptive, not permission to
+discard a map-frame change. Step20 to116 still moves positions .104520 m RMS.
+
+4. New bounded saved-objective diagnostic
+
+No source, journal or optimizer replay. Reuse original FL3a snapshot loader and
+FL3d saved Values. Reproduced initial objective2794137.3456364814 and normalized
+gradient1.5863889609968425; reference objective2794133.5867508003 and gradient
+7.977808819599585e-6.216 blocks;174 factors =1 marginal +71 WNOA +67 GLIM +35 Kimera.
+
+Observed late directions alternate: cosine between successive local increments
+at steps113..116 =[-.971887,-.704618,-.965372,-.508641]. The ratio is not constant;
+do not present a fitted scalar convergence rate or universal iteration bound.
+At the saved accepted endpoint, the three marginal pose anchors differ from
+the current poses by .42086-.42308 m in their local translational coordinates
+and .00758-.00809 rad in rotation. This is a real anchor/estimate displacement,
+not an assertion that GTSAM should silently reanchor an unchanged Gaussian.
+
+For one normalized direction d taken from saved step114->115, evaluate the
+same unchanged least-squares objective f=.5*r^T*r:
+  d^T H_true d = ||Jd||^2 + r^T*r''.
+Gauss-Newton uses only the first term. Residual second differences at h=.001,
+.0003,.0001 were affected by cancellation, especially in source breakdowns.
+Retained those results and made ONE alternative numerical cross-check using
+[g_d(+h)-g_d(-h)]/(2h),g_d=r^T Jd, at the SAME three h and saved objective.
+Pose3 Expmap retract is enabled in the pinned runtime; along Exp(t*d), the
+right-local velocity is d. No Hessian-based optimizer or model change was run.
+
+Group       GN curvature   estimated extra residual curvature across3h
+Marginal      2.184365          .00132320 .. .00132428
+WNOA           .489904         1.17648    ..1.19880
+GLIM           .045204        -.61112    ..-.19384   [step-sensitive]
+Kimera         .032271         1.04017    ..1.56807   [step-sensitive]
+TOTAL         2.751744         2.02414    ..2.19736
+
+Total estimated curvature is4.77589..4.94911,versus GN2.75174. The omitted
+residual-curvature term is about74-80% of the GN curvature IN THIS DIRECTION.
+This supports an alternating nonlinear GN mode, but is not an eigenvalue proof
+or a precise explanation of116iterations. WNOA's extra term is substantial;
+the marginal's own extra term is tiny. Therefore the new evidence does NOT
+justify blaming marginal-chart nonlinearity alone. The marginal supplies most
+GN curvature along this weak common-window direction, while active WNOA/source
+residuals supply important nonlinear coupling. This is a JOINT-objective issue.
+
+Source-group second derivatives are not precise enough to assign causal shares
+or blame one sender. Numerical derivative noise/conditioning limits attribution;
+the WNOA useAutoDiff=true branch actually calls finite-difference derivatives
+at1e-5 (GPWNOAPrior.h:91-120), not an automatic-differentiation engine. Interpolated
+source factors also depend on GP interpolation derivatives. Do not infer that
+this derivative choice alone causes the116-step count. The original first-
+derivative check max||Jd-FD|| is4.4165e-7 for this saved direction. Negative
+GLIM second curvature is possible for nonlinear residuals; it does not mean
+negative covariance. These directional numbers are NOT total sensor weights.
+
+5. Is WNOA the difference? What is and is not proved
+
+WNOA is nonlinear on SE(3), with world V/body W and an asynchronous interpolated
+relative-factor model. It is not a scalar constant-velocity line in Euclidean
+space. GPWNOAPrior.h:183-197 uses Log(T1^-1*T2), pose-dependent conversion of V
+and the inverse right Jacobian. Native GLIM/Kimera instead have their own IMU
+and raw-sensor factors, and different state structure. Their whole objectives
+are not interchangeable controls for one WNOA factor.
+
+However, the same WNOA equations were used in the full-history reference and
+fixed-lag receiver. The large iteration increase is associated with changing
+the historical inference and marginal/publication treatment, not introducing
+WNOA for the first time. Full history retains nonlinear historical factors and
+states; fixed lag replaces older information with a frozen Gaussian summary.
+They need not have the same optimum, curvature or convergence rate.
+
+Confirmed: excessive work is requested by our repeated-global publication
+contract; the current receiver is not stock incremental fixed lag; the saved
+retained objective has genuine slow alternating convergence and poor conditioning.
+Supported, not isolated proof: frozen-prior anchoring of a nearly common-window
+mode plus residual curvature from active WNOA/source factors makes GN slow.
+NOT confirmed: a wrong Qc, wrong dt, missing factor, invalid marginal derivative,
+or WNOA implementation bug that explains the observed slowdown universally.
+No new-source/native timing test was necessary for these conclusions.
+
+6. Engineering implication — proposal only
+
+The next design decision belongs at the marginalization/publication interface,
+not a WNOA/Qc/covariance tuning campaign or further blind iteration-limit sweep.
+Native-style incremental fixed lag and strict stationarity of our explicit
+nonlinear frozen-prior objective are DIFFERENT solver contracts. We must choose
+and validate one consistently; mixing stock marginalization with a mandatory
+batch-like postcondition created the current custom adapter/refinement path.
+If adopting native semantics, test a genuine stock fixed-linearization receiver
+from before retirement, with honest approximate publication labels, exact factor
+accounting and explicit bounded state/prior errors against a retained reference.
+That is not the already-rejected FL3f shortcut, which kept the custom adapter
+and truncated refinement late in its inherited history. It requires separate
+authorization and a scientifically defensible acceptance contract; no promotion
+or tolerance change is made here. If strict nonlinear stationarity remains a
+hard requirement, further solver/coordinate work is needed; native update counts
+alone cannot certify that requirement. We have not found a proven one-line fix.
+
+7. Artifacts and validation
+
+Code: FGO/experiments/fixed_lag_cause_fl3g_20261014/
+Artifacts: /home/yeranis/results/gnssfgo_fixed_lag_cause_fl3g_20261014/
+Protocol,2private Release diagnostic builds,2saved-objective evaluations only.
+Initial compile16.602 s,evaluation .06423 s;cross-check compile15.651 s,
+evaluation .06391 s. CPU2,TBB1,OMP1,cachesOFF,pinnedGTSAM4.2a8.
+All430protected source/runtime/input/reference files unchanged.
+analysis.json records numerical tables, counts, reference checks and limits;
+build.json/diagnose.json/crosscheck.json retain commands, hashes and outcomes.
+No optimizer candidate, source run, full journal replay, GT scoring, covariance
+change, production edit or commit/push. No new broad sanitizer suite is claimed
+for read-only diagnostics. Existing failed validations remain failed.
+HEAD:d3d152a28440f97ced3bd7a50ee072874beafe19,
+branch:audit/receiver-linear-completion-s5e-20261013. Pre-existing dirty work kept.
+FL3g diagnosis complete;FL3 operational acceptance incomplete;FL4/live held.

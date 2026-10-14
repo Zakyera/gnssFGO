@@ -1,0 +1,24 @@
+FL3j: one same-input bookkeeping audit, 2026-10-14.
+User asks to work incrementally, avoid perfectionism and return to experiments.
+Question: does the isolated slot allocator change marginal information or
+surviving factor ownership when given exactly the same pre-retirement solver?
+
+Saved full FL3i capture first exceeds its state-equivalence gate at support1018.
+Only Values/trajectory snapshots exist, not a serialized ISAM2 checkpoint.
+Reconstruct the frozen FL3i input prefix once, stop at support1018. Add one
+observation-only hook before marginalization. Copy that exact ISAM2 state to
+unmodified stock and unchanged FL3i slot allocator. Retire identical leaf keys.
+Check removed keys, fixed variables/anchors, surviving factor pointer+slot
+identity (hence full mean/covariance), new marginal key sets, and Gaussian
+augmented information in canonical variable/factor order at identical Values.
+Also report information vector and constant independently, and immediate state
+differences. Require relative H/g/constant<=1e-10, immediate state<=1e-9,
+exact factor ownership/keys/anchors. Compare committed prefix output bytewise
+to saved FL3i. Audit copies must not change the actual receiver result.
+
+No change to model, estimator, runtime, solver policy, source covariance, priors,
+7s lag,100ms clock or revision handling. No source run/full capture/live launch.
+Do not relabel FL3i's failed strict full-replay gate. One build, one diagnostic;
+fix a compile-only harness error if necessary, no optimization sweep/retries.
+If ownership/information passes, recommend a bounded experimental live pilot,
+not indefinite numerical investigation or production equivalence certification.

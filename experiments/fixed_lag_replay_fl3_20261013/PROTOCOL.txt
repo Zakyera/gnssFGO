@@ -1,0 +1,67 @@
+FL3 saved ETH1 correctness and whole-service cost gate, 2026-10-13
+
+First action: unchanged validated FL2b build_wire3, not an instrumented rebuild.
+Use the frozen saved CBS-ON journal and an exact ordered arrival prefix ending
+20,000,000,000ns after origin1727775008583475000. Retain original row bytes,
+include all arrivals <= cutoff, append an explicit synthetic E at cutoff.
+No input resorting or endpoint cutoff. Artificial EOF is only the prefix gate;
+it does not certify final source versions. Check normal pending/EOF exclusions.
+7s lag means first retirement at7.1s and130 retirements by support200 if reached.
+
+Frozen implementation/configuration: FL2b Receiver/BoundarySmoother/E2b model,
+7s,100ms clock,59sample origin, source_wnoa X/V/W, QR, Qc
+[.00375,.00375,.00375,.015,.015,.015], priors1e-5/10/3, Gaussian full source
+covariance scale1, every ordered revision, stable-ID replacement, no centralIMU.
+No source estimator launched; classic active_window_temporary source journal.
+Endpoint cache remains explicitlyOFF in candidate; baseline full-history cache
+ON oracle is preserved. Strict gradient1e-5 and20step publication budget unchanged.
+CPU2,oneTBB/OMP worker,pinnedGTSAM4.2a8/runtime,Humble container as FL2b.
+
+Correctness: exact received/admitted/excluded counts and lifecycle/payload/clock
+identity against saved E2b oracle. No extra lag-induced exclusions, duplicates,
+resurrections or revision coalescing. Every committed publication gradient<=1e-5
+and steps<=20. Online/finalized contiguous unique timestamps and causal availability.
+After retirement the objective differs from full-history: report state differences,
+do not require equality or use ATE to select parameters. Before first retirement,
+report differences and investigate if position/rotation/V/W exceed1e-8 absolute.
+Repeat only successful cases for determinism. Any failure stops execution; no
+automatic modified retry, full stream, longer lag, extra iterations or relaxedgate.
+
+Only after this first prefix passes: minimal external/wrapper service timers may
+be added in FL3 files (not solver files), independently confirm prefix products
+unchanged, then run full retained148.58s stream and deterministic repeat. Count
+parsing, all intervening version processing, transaction/copy/checks, marginalization,
+reload and required archiveI/O in whole service; extra observation overhead must
+be separately declared. Dense covariance/profiling/GT outside timed path only.
+Measure per-support aggregate service and early/middle/late statistics, active
+states/factors/storage/RSS and backlog simulation at0.1x recordedarrivalclock.
+Target:p95 totalservice<=0.8s per0.1s simulated support,late mean<1s,no growing
+queue; existing1000queue safetycap unchanged. Offlinecapacity is NOT liveproof.
+No phase-time claims without direct phase observation; do not infer solverCPU
+from total. Existing same-mask accuracy descriptiveonly; no tuning/selection.
+
+Result root create-once; protect old source/binaries/journal/oracle hashes;
+exclusivecontrollerlock,per-actionstarted marker,refuseoverwrite,timeout1800s.
+Original validated receiver prints failure reason only. On failure inspect
+last committed bundle/next input to localize without another optimization run.
+Report numerical details not recorded as unknown, not guessed.
+
+Prefix diagnostic addendum BEFORE full-stream acceptance: the unchanged prefix
+completed all200 publications/129retirements, accounting and numerical checks,
+but emitted387 missing-key warnings, exactlyX/V/W for retiredsupports0..128.
+One repeat may interpose only VectorValues::update to print the FIRST callstack,
+then forward allcalls to the unchanged pinnedlibrary. It does not change values,
+suppress warnings or retry a failed solver. Require every archive byte equal to
+the successful unobserved prefix. Diagnostic timing is excluded. Trace the warning
+and prove no activekey is discarded before accepting theprefix; if unresolved stop.
+
+Timing observer: ReplayTimed.cpp includes unchanged receiver and parser; records
+steadyclock intervals spanning parsing+receiver+metadatainspection+previousCSVwrite.
+FinalCSVflush tail reported separately. Aggregate allintervening belief/clock events
+up to eachsupport publication; EOFdrain separately. This is inclusive cost, not
+just solve latency. KindB vs support-producingI separately observed; internals
+(copy/refinement/retirement/disk) NOT independently timed, do not invent percentages.
+Light graph-count/RSS observations perpublication are included conservatively.
+No shared endpointcache or solverchange. Allarchivebytes must match unchanged
+prefix before full replay. Fullcase then one successful deterministicrepeat,
+not modification/retry on failure. Report oldfullhistory timing ashistorical only.

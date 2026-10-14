@@ -1,0 +1,54 @@
+FL3c — ONE bounded original Gauss–Newton convergence diagnostic
+2026-10-13; user approved the proposed saved-window up-to200 iteration test.
+
+Start from FL3a diagnostics/snapshot/initial.values on the identical retained
+objective at support1224. Keep all factors, full source covariances, WNOA Qc,
+original marginal anchor/Gaussian, initial state, QR and stationarity unchanged.
+Do not start from trial20, change covariance/lag, or introduce damping.
+
+Use installed GTSAM GaussNewtonOptimizer::iterate() with MULTIFRONTAL_QR.
+This is the original fully relinearized GN mathematics, exercised on the saved
+batch fixture rather than a reconstructed incremental tree. FL3a independently
+verified batchQR versus incremental directions. Explicitly check EVERY first20
+iterate against its saved FL3a trial before proceeding beyond20:
+maximum per-coordinate local state difference<=1e-8,
+absolute objective difference<=1e-7,
+absolute normalized-gradient difference<=1e-7.
+Initial cost2794137.3456364814 and normalized gradient1.5863889609968425 exact.
+Abort if an equivalence check fails; do not call a different path equivalent.
+
+Call iterate() directly, not optimize() with an unrelated cost-stop criterion.
+Success is ONLY unchanged fl2a::CheckedGradient <=1e-5; stop immediately then.
+Hard ceiling200 actual linear solves. Use unchanged original accepted-cost
+guard: next <= old + 1e-12*(1+abs(old)), and finite state/gradient/cost.
+Failed trial never commits to caller state. No automatic retry, alternative
+settings, raising200, or post-result threshold/budget selection in this task.
+External process safety timeout60seconds for the fixture, not a live deadline.
+
+For every step record cost, gradient, largest-gradient key/coordinate, accepted
+status, solver and gradient-check time, and p/orientation/V/W change (RMS/max
+across72supports and newest support). Save initial, step20, final diagnostic
+Values and exact first20 comparisons. Report differences initial->final,
+step20->final, laststep->final and newest support without rigid alignment.
+All values/paths are solver diagnostics, not GT accuracy or publishable output.
+Runtime is a single-window batch microbenchmark, NOT total iSAM2 receiver
+service: retirement/reload, transport, archival I/O and rollback remain outside.
+
+Before real data: focused Release and ASan/UBSan tests of zero-step convergence,
+known linear solution, nonlinear convergence, hard budget, original cost guard,
+nonfinite rejection, unchanged caller/graph and native/directQR step agreement.
+Prior tests remain historical; do not claim complete receiver regression here.
+No second real-data repeat or full-stream continuation is authorized by this
+protocol. Whatever the outcome, write report and stop for the next decision.
+
+Pinned GTSAM4.2a8 in existing ubuntu-jammy-humble-nvidia, CPU2,TBB/OMP1;
+endpoint cachesOFF. No installation. Original inputs/code/binaries protected
+by inherited FL3b manifest plus diagnostic code/products and GN headers/source.
+Create-once artifacts, exclusive controller lock, exact command/build hashes.
+
+Code: /home/yeranis/repos/gnssFGO/experiments/fixed_lag_convergence_fl3c_20261013/
+Results: /home/yeranis/results/gnssfgo_fixed_lag_convergence_fl3c_20261013/
+Input: /home/yeranis/results/gnssfgo_fixed_lag_failure_fl3a_20261013/diagnostics/snapshot/
+Production still has20-step gate; this explicit larger diagnostic allowance
+does NOT modify it. No integration, source estimator, event journal, live run,
+GT tuning, commits or pushes. Update main ledger and fixed-lag plan at finish.

@@ -1,0 +1,46 @@
+FL3a bounded retained-objective diagnosis, 2026-10-13
+
+Authorization: resume the proposed diagnosis, not a repair or new experiment.
+Target: saved FL3 input event84958, support1224, physical122.4s after origin.
+No processing beyond the failure, no E/drain, no source estimator or live run.
+
+Hypothesis: determine whether strict publication fails because the existing
+20-step solve reaches its budget, rejects a cost-increasing Gauss-Newton trial,
+or has a retained-objective/chart/linearization inconsistency. Do not assume
+which one before observing evidence. Do not blame the newly ready Kimera factor
+merely because it arrived at this event.
+
+Include the unchanged FL2b receiver, FL2a smoother and E2b factors. An isolated
+derived smoother delegates all non-target calls to the unchanged solve(). For
+the target call, copy its exact arithmetic/calls/decisions and retain its Values,
+costs and update metadata. Extra evaluations occur ONLY AFTER receiver rollback.
+Verify every previously committed archive byte equals FL3 full_timed_outputs.
+Frozen journal SHA da7f4f8e339f469ff05c5c20590941a062385d86a8979c92c1e42cd8c86d3f68.
+
+Frozen:7s lag,100ms clock,59-sample origin,X/V/W,WNOA Qc
+[.00375,.00375,.00375,.015,.015,.015],priors1e-5/10/3,QR,
+full Gaussian source covariance scale1,ordered stable-ID replacement,
+no centralIMU,no gating/robust loss/weighting,endpoint cache OFF,
+gradient1e-5 and20 publication steps. Pinned GTSAM4.2a8/runtime,
+one TBB/OMP worker,CPU2,existing Humble container.
+
+After the expected failure only: evaluate all retained trial gradients and
+corrections; inspect worst gradient keys, source/motion/marginal contributions
+and independent finite-difference marginal chart derivatives. Apply existing
+GTSAM LevenbergMarquardtOptimizer to the EXACT SAME frozen retained objective,
+same prior anchor/Gaussian, from the captured initial/last accepted state as
+diagnostic only (max100iterations,relative/absolute error tolerances1e-12).
+Also check a fresh QR Gauss-Newton direction and cost along that direction.
+No reference solution may be injected into receiver history or published.
+Save snapshots/trace and sufficient factor data for independent reproduction.
+
+If diagnosis requires more than these bounded controls, stop and report the
+remaining question. No automatic full replay retry, solver substitution,
+threshold/budget/lag/Qc/priors/covariance change, or GT-driven decision.
+No throughput claim from instrumented diagnostic runtime.
+
+Use new exclusive artifact root
+/home/yeranis/results/gnssfgo_fixed_lag_failure_fl3a_20261013,
+create-once action markers/controller lock, timeout1800s, protected file hashes.
+Report mathematical validity separately from operational acceptance; FL3
+remains incomplete and full-history remains default/reference.

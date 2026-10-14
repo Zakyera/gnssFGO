@@ -1,0 +1,43 @@
+FL3i — fixed-lag marginal slot reuse, one bookkeeping hypothesis
+Authorization: user asks to solve the last remaining FL3h empty-slot issue.
+Preserve production, FL3h, source runs, full-history and strict-FL3 artifacts.
+Do not perform GT tuning, a source/live run, or another solver-policy change.
+
+Root cause: pinned4.2a8 ISAM2::marginalizeLeaves appends marginals before
+removing summarized factors. Ordinary add_factors already supports hole reuse.
+Private subclass method copies pinned elimination/BayesTree surgery exactly;
+only final factor bookkeeping changes to the upstream-style order:
+remove summarized slots and index entries; create identical LinearContainers;
+add_factors using the existing findUnusedFactorSlots parameter; update cached
+linear factors and VariableIndex at returned indices; remove retired variables.
+No factor-index compaction/remapping of surviving factors, graph rebuild,
+anchor change, extra solver call, or custom Schur complement.
+New slots differ from stock intentionally; source ownership follows the actual
+returned slot. Do not require equal numeric slot IDs between implementations.
+Keep findUnusedFactorSlots=false behavior valid and cache on/off coherent.
+
+Freeze FL3h model/clock/priors/Qc/7s lag/100ms support/ordinary updates and outputs.
+Use a separate private smoother type to select the subclass; no runtime install
+or production library relink. Preserve original marginalization source and
+validate copied elimination prefix byte-for-byte after class-name normalization.
+
+Before recorded replay:
+- independent unmodified stock path versus candidate: retained state<=1e-9,
+  covariance<=1e-10+1e-8*scale, normalized full linear Hessian<=1e-9;
+- at least1000 synthetic retirements; fixed-size workload factor-slot extent
+  must plateau, not grow with retirement count; test cache on/off and no-reuse;
+- exact surviving-factor pointer/slot ownership, returned marginal/deleted slot
+  semantics, variable-index/cache consistency, fixed anchors, source replacement;
+- existing FL3h lifecycle tests including rollback and output conservation;
+- repeated Release and focused ASan/UBSan; keep failed attempts if any.
+
+Then one existing20s prefix + repeat. Compare logical source/arrival/accounting
+and raw mean/covariance exactly (except intentional slot-ID differences), and
+states to FL3h: maximumposition1e-6m,orientation1e-8rad,V/W1e-6 in SI units.
+Candidate repeat byte-identical. If passed, ONE existing148.58s saved journal
+and same comparisons to FL3h; no automatic real-data retry or tolerance change.
+Confirm slot extent remains bounded after startup and all86,053 revisions are
+processed. Report service time and source-version bursts, not just solve time.
+No claim of GT accuracy, full nonlinear stationarity or co-running throughput.
+Pinned runtime,CPU2,TBB1,OMP1,cachesOFF as FL3h. Existing output artifacts never
+overwritten. Report and update plan; stop before promotion/live experiments.

@@ -1,0 +1,101 @@
+{
+  "passed": true,
+  "source_coverage": {
+    "passed": true,
+    "requested_s": 30.0,
+    "imu_samples": 2986,
+    "imu_span_s": 29.850006103515625,
+    "native_glim": {
+      "rows": 291,
+      "start_s": 1727775008.675043,
+      "end_s": 1727775037.674745,
+      "span_s": 28.999701976776123,
+      "maximum_pose_gap_s": 0.10099005699157715,
+      "post_startup_max_gap_s": 0.10099005699157715,
+      "start_after_first_imu_s": 0.6715681552886963,
+      "tail_behind_last_imu_s": 0.17873597145080566,
+      "path_length_m": 8.738621692974737
+    },
+    "native_kimera": {
+      "rows": 134,
+      "start_s": 1727775008.1553955,
+      "end_s": 1727775037.7552333,
+      "span_s": 29.59983777999878,
+      "maximum_pose_gap_s": 3.199979066848755,
+      "post_startup_max_gap_s": 0.20000100135803223,
+      "start_after_first_imu_s": 0.15192055702209473,
+      "tail_behind_last_imu_s": 0.09824776649475098,
+      "path_length_m": 8.59184825736517
+    }
+  },
+  "transport": {
+    "imu": 2986,
+    "duplicate_imu": 0,
+    "imu_clock_lag_events": 2917,
+    "max_imu_clock_lag_ns": 1031104,
+    "belief_clock_lag_events": 0,
+    "max_belief_clock_lag_ns": 0,
+    "beliefs": 15884,
+    "duplicates": 0,
+    "published_poses": 293,
+    "max_queue": 24,
+    "sources": {
+      "glim_hesai": 12884,
+      "kimera_front": 3000
+    }
+  },
+  "summary": {
+    "complete": true,
+    "model": "source_wnoa_fixed_lag",
+    "lag_seconds": 7,
+    "stationarity": "not_checked_incremental_policy",
+    "events": 18871,
+    "received": 15884,
+    "inserted": 420,
+    "replaced": 15439,
+    "excluded": 25,
+    "unsupported_end": 0,
+    "absorbed": 319,
+    "active": 101,
+    "pending_at_end": 0,
+    "publications": 293,
+    "finalized": 293,
+    "retained_supports": 71,
+    "peak_slots": 174
+  },
+  "actions": {
+    "before_initialization": 25,
+    "insert": 420,
+    "replace": 15439
+  },
+  "mean_log_roundtrip_error": 2.275870464307772e-14,
+  "covariance_payload_error": 0.0,
+  "online_path_m": 10.52504480066997,
+  "finalized_path_m": 8.72282059345531,
+  "fused_span_s": 29.200000000000003,
+  "support_cycle_seconds": {
+    "n": 293,
+    "mean": 0.08900295951877132,
+    "median": 0.08836204300000004,
+    "p95": 0.14971244200000006,
+    "max": 0.17758301200000004
+  },
+  "receipt_to_processing_seconds": {
+    "n": 18871,
+    "mean": 0.016881156726352604,
+    "median": 0.014879933000000001,
+    "p95": 0.043239899000000005,
+    "max": 0.10444491600000001
+  },
+  "monitor_output_age_s": {
+    "n": 162,
+    "mean": 0.045729404358024694,
+    "median": 0.040006,
+    "p95": 0.090004,
+    "max": 0.100009536
+  },
+  "published_during_source": 293,
+  "max_monitor_queue": 4,
+  "protected_unchanged": 845,
+  "claim": "live 0.1x bounded pilot; fixed-lag incremental without stationarity certificate"
+}

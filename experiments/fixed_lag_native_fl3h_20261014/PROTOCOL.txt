@@ -1,0 +1,60 @@
+FL3h — isolated standard incremental fixed-lag receiver from initialization
+Authorization: user Proceed following FL3g and explanation of native semantics.
+No production/default change. Preserve full-history and FL2a/FL2b branches.
+
+Single hypothesis: reuse stock fixed-linearization marginalization and ordinary
+incremental update semantics consistently from initialization, instead of the
+custom chart-adapter + strict nonlinear publication cycle. Approximate online
+estimates are explicitly labelled; no claim of strict1e-5 convergence or exact
+full-history/FL3e equality. Old failed gates are not retrospectively relaxed.
+
+Freeze:7s lag,100ms supports,59-sample origin,Qc[.00375x3,.015x3],priors1e-5/10/3,
+X/V/W state,source-driven WNOA,no central IMU/GNSS,bare Gaussian source scale1,
+source endpoints/session/IDs/revision order and raw source mean/covariance.
+Keep source replacement's existing ordinary force-relinearize=true policy.
+No revision coalescing, source exclusion changes, CBS modification or tuning.
+
+One ordinary insertion per support/source version. At a retirement publication,
+use ONE authored fixed-lag update including constrained reorder+marginalizeLeaves.
+No extra pre/post iterative polishing, chart adapter, retained graph reload,
+manual Schur complement or fixed-variable set modification. EOF finalizes the
+existing incremental estimate without a hidden batch optimization.
+
+Reuse FL2b transactional lifecycle and original event parser. Its private copy
+may change ONLY solver/publication/EOF policy, output labels and validation.
+Copy the authors' IncrementalFixedLagSmoother implementation under a private
+class name, with ONE read-only callback before marginalizeLeaves. Callback
+captures outgoing estimates from an ISAM2 COPY, preventing observation from
+changing the source solver's mutable delta. Verify retained estimates/covariance
+and fixed-key behavior against unmodified library smoother on synthetic data.
+No production library relink/install. Freeze and audit generated copy differences.
+
+Validation before real saved replay:
+- original stock smoother versus private observer path through retirement and
+  replacement:state max1e-10,covariance max1e-10+1e-8*reference scale;
+- original no-retirement bare iSAM2 update-order equivalence;
+- finite values,original dense measurement covariance,full source accounting;
+- fixed marginal anchors retained,zero custom chart/rebuilds;
+- late/duplicate/stale/changed-endpoint rejection and exact exception rollback;
+- exactly one immutable as-played and fixed-lag-finalized row per support;
+- repeated Release synthetic output byte identity;focused ASan/UBSan.
+State/covariance arithmetic fidelity tolerances are not trajectory accuracy gates.
+
+Then existing20s journal prefix once and deterministic repeat. If conservation,
+clock/covariance/source payload identity and finite states pass, ONE full existing
+148.58s capture replay (not a new346s sequence/live run). No automatic retry on
+real-data failure. Existing journal SHA256:
+da7f4f8e339f469ff05c5c20590941a062385d86a8979c92c1e42cd8c86d3f68
+Compare with retained E2b full-history as-played and final paths, and FL3/FL3e
+where available. Report unaligned p/q/V/W differences; no GT-based tuning or
+native-estimator performance claims. Evaluate fresh nonlinear-chart gradient
+only on a few copied diagnostic snapshots, not as publication acceptance.
+Report counts,tails,retained supports,active factor count AND factor-slot extent:
+pinned GTSAM appends marginal slots,so bounded active state does not by itself
+certify bounded slot storage. Do not silently add compaction/reload to fix it.
+
+Pinned runtimeGTSAM4.2a8,CPU2,TBB1,OMP1,cachesOFF. Fresh root only;lock and
+create-once commands. Protect original source/runtime/journals/oracles by hashes.
+Stop after evidence/report. No production promotion, live run, next policy or
+sequence. Numerical drift is measured honestly; this gate establishes stock
+semantics/operational behavior,not acceptable accuracy or universal stability.

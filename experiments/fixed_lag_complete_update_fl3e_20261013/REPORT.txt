@@ -1,0 +1,102 @@
+FL3e — Complete known failing update, 2026-10-13
+
+RESULT: COMPLETE SINGLE TARGET TRANSACTION PASSES; FULL REPLAY STILL UNTESTED.
+One Release build and one saved-prefix restoration. Stopped immediately after
+event84958/support1224;no next event,EOF,source rerun,tuning or automatic retry.
+
+Implementation
+Private Receiver.h is byte-exact FL2b except three declared budget replacements:
+choose200only for newest1224 (20otherwise);pass this budget to pre-solve;
+charge retirement/reload and pass ONLY the remainder to post-solve. One shared
+ceiling, not200per phase. Original accounting counts each retirement and chart
+reload as one step; ordinary support/factor admission remains ordinary work.
+Their time is INCLUDED in the complete event timing below.
+All lifecycle/rollback/owner/conservation/publication code otherwise unchanged.
+Observer captures pre/post solves and times existing retirement/reload calls.
+Only this private archive may receive the target output, after original checks.
+
+Configuration unchanged
+Original decoder and ETH1 CBS-ON journal;WNOA without central IMU,7s lag,
+independent100ms support clock,Gaussian full source covariance scale1,
+original Qc/priors/timestamps and stable-ID replacement. No source changes.
+Normalized-gradient threshold1e-5 and original cost-rejection tolerance unchanged.
+Pinned GTSAM4.2a8;CPU2,TBB1,OMP1,endpoint/linearization cachesOFF.
+
+Reproduction
+117pre-solve states (initial+116iterates) byte-identical to FL3d.
+Max local-state,cost and gradient differences0. All75000previous archive/index
+files have identical names and bytes.287protected source/runtime/input/earlier
+artifact hashes unchanged. Exact private-header patch checked before/after.
+
+Complete target result
+Pre-solve:116steps,all accepted;gradient1.5863889609968425 ->7.977808819599585e-6.
+Retirement:1step;old support1153/X,V,W retired,kept1154..1224.
+Original-chart marginal reload:1step;no new model/prior approximation introduced.
+Post-solve:82steps available,7used,all accepted;
+gradient3.4921166142656022e-5 ->6.7106316205304498e-6.
+TOTAL:125charged publication steps,within200.
+Fresh committed-graph check repeats6.7106316205304498e-6,below1e-5.
+Post objective2793972.3691899828 ->2793972.3691899972:net rise1.44e-8,
+within the existing roundoff acceptance rule1e-12*(1+|cost|),not a new relaxation.
+Pre/post objective totals are different retained objectives after elimination;
+their absolute difference is not a convergence or accuracy metric.
+
+Runtime (single observation, not a timing campaign)
+Complete target event including insertion,pendingdispatch,copies,checks,archive:
+1.358424210s.
+  Pre-solve                 1.267150962s
+  Retirement                0.000188007s
+  Retained-chart reload     0.007093296s
+  Post-solve                0.081062522s
+  Other event work          0.002929423s
+Instrumentation/state copies included;diagnostic file writes occur afterward.
+Replay prefix+target94.335857s;process94.398525s;peakRSS30360KiB.
+Build35.595201s. No source estimators or visualization were launched for this test.
+This event exceeds the1s support wall interval at0.1x. It is not proof of an
+accumulating backlog;the frequency of such spikes still requires full-journal
+assessment. No live-capacity claim and no full replay authorized in this task.
+
+Lifecycle/accounting
+Before:event84957,newest1223,oldest1153,71supports,174slots,101activeIDs,
+1pending,1224publications,1153finalizedstates.
+After:event84958,newest1224,oldest1154,71supports,174slots,100activeIDs,
+0pending,1225publications,1154finalizedstates.
+One pending belief admitted,2sourceIDs absorbed exactly once,oneoldstate
+finalized andonecurrentstate published.3variable blocks removed (X,V,W),
+12scalar degrees of freedom,not3pose states. Surviving source means/covariances/revisions/slots unchanged.
+Original explicit-source owner,retired-key and timestamp checks all pass.
+Version conservation:72659received=1817inserted+70817replaced+25startup-excluded.
+ID conservation:1817inserted=100active+1717absorbed.
+Only3newarchive files:targetrecords plus2absorption markers,allat event84958.
+No staged leftovers or later commits. No failure/rollback was triggered here;
+the existing rollback implementation was unchanged,not newly stress-tested.
+
+Retained state changes: converged pre-retirement -> committed post-retirement
+                         RMS                    Maximum
+position m               2.1478853713e-5         2.2086043425e-5
+orientation rad          3.8666208185e-7          3.9607721111e-7
+world velocity m/s       3.7166728801e-7          1.3578855663e-6
+body angular rate rad/s  8.2044908360e-8          5.0585666717e-7
+Position maximum22.09micrometres (0.02209mm). No alignment/GT or accuracy claim.
+
+Conclusion and limits
+The previously failing transaction can complete without changing model,
+covariance or tolerance:the20step budget was insufficient for this event.
+Retirement/reload is not its timing bottleneck in this capture;refinement is.
+This closes the single-update lifecycle check,not FL3/fullstream validation.
+Production stays unchanged at20;full-history remains default. No new broad
+synthetic/ASan/UBSan campaign,solver sweep or integrated live test was run.
+Next decision,not execution:one frozen full saved-journal replay with a declared
+shared ceiling,then report complete correctness and backlog/spike frequency.
+
+Identity/artifacts
+HEAD:d3d152a28440f97ced3bd7a50ee072874beafe19 (unchanged,no commit/push).
+Branch:audit/receiver-linear-completion-s5e-20261013.
+Binary SHA256:cc54ffe9a8c9b57aa2cb11547ce673d0d3400045c0a508e2f94201d1edd6007a
+Journal SHA256:da7f4f8e339f469ff05c5c20590941a062385d86a8979c92c1e42cd8c86d3f68
+Results:/home/yeranis/results/gnssfgo_fixed_lag_complete_update_fl3e_20261013
+build.json/observe.json:exact commands,code hashes,timing,protected verification.
+validation.json:allguards,conservation,state differences and117referencechecks.
+diagnostics/:pre/postiterationValues,traces,before/afterledger,result.txt.
+archive/commits/84958/records.txt:the one successful target publication.
+Original code/artifacts and prior dirty work preserved. STOPPED.

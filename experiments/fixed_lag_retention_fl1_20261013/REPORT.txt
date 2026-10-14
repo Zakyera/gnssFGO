@@ -1,0 +1,234 @@
+FL1 — FIXED-LAG RETENTION FEASIBILITY
+2026-10-13 | Metadata-only | PASS FOR RECORDED STREAM
+
+Decision
+--------
+Recommend one 7.0-second experimental lag for FL2/FL3. The maximum required
+oldest-support age at actual dispatch is 5.3 s (GLIM) and 5.0 s (Kimera).
+The predeclared rule ceil(maximum + 1.0 s) selects 7 s, giving 1.7 s of actual
+headroom. This is a bounded-lateness engineering contract, not GT tuning or
+a universal latency guarantee. Full-history remains the default/reference.
+
+GO to isolated FL2 implementation and synthetic marginalization validation,
+when authorized. Do not launch real replay/timing or source experiments yet.
+No receiver, GLIM or Kimera was executed; no model/default/source/covariance
+was changed. The work does NOT establish fixed-lag accuracy or speed.
+
+Inputs and identity
+-------------------
+HEAD remains d3d152a28440f97ced3bd7a50ee072874beafe19, branch
+audit/receiver-linear-completion-s5e-20261013. No new commit or push.
+The new plan/FL1 files and ledger updates are local uncommitted work.
+
+Journal:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_shared_linearization_s5_live160_20261012/prepared/capacity160_on_receiver/events.csv
+Offline E2b reference metadata:
+/home/yeranis/results/gnssfgo_endpoint_reuse_e2b_20261013/full_on1
+Authoritative derived outputs (identical independently repeated analysis):
+/home/yeranis/results/gnssfgo_fixed_lag_retention_fl1_20261013/analysis3
+/home/yeranis/results/gnssfgo_fixed_lag_retention_fl1_20261013/analysis4
+Validation record:
+/home/yeranis/results/gnssfgo_fixed_lag_retention_fl1_20261013/validation.json
+
+This is the partial ETH1 classic CBS-ON S5 capture, NOT a completed 160 s run.
+There are 1,481 independent 100 ms supports spanning 148.0 s:
+  origin:        1727775008583475000 ns
+  final support: 1727775156583475000 ns
+  final IMU:     1727775156603508000 ns
+  E marker:      1727775156610834842 ns
+The E marker is an orderly receiver-journal termination, not proof that every
+source edge has reached its final revision or that the full bag completed.
+
+Method and exact reconciliation
+-------------------------------
+Reconstructed only EventStream parsing, the 59-sample clock initialization,
+100 ms support creation, exact/interpolated endpoint indices, pending dispatch,
+source/session/edge identity, ordered replacement and EOF exclusion rules.
+No matrix, residual, covariance, trajectory, objective or GT was evaluated.
+CSV metadata stayed separate from original files, with integer nanoseconds.
+
+For each admitted version e:
+  h(e) = newest created support physical time at dispatch
+         - oldest support physical time needed by either endpoint.
+Both left/right interpolation brackets are included. Journal order, including
+ties, is preserved. An IMU row can release supports before subsequent source
+rows with the same arrival timestamp. Pending rows are dispatched in original
+order before the associated publication/retirement boundary. Wall-clock time
+never advances retirement. No timestamp refresh on source revision arrival.
+
+Every reconstructed row matches the retained independent C++ oracle exactly:
+  support_clock.csv:       1,481 rows
+  causal_dispatch.csv:    88,254 rows, all identity/time/support/outcome fields
+  unsupported_beliefs.csv:    25 rows
+  stream_progress.csv:   103,080 rows, excluding offline wall_unix_ns only
+
+Conservation:
+  Input: 14,861 I rows + 88,279 B rows + 1 E row.
+  88,279 versions = 88,254 admitted + 25 before-initialization exclusions.
+  88,254 admitted = 2,201 new IDs + 86,053 replacements.
+  GLIM: 70,429 admitted versions / 1,476 IDs.
+  Kimera: 17,825 admitted versions / 725 IDs, plus 25 original exclusions.
+  Zero duplicate/stale outcomes, zero EOF-pending versions.
+  All 2,201 IDs have both endpoints interpolated on this independent grid.
+
+Observed retention requirements (seconds unless noted)
+------------------------------------------------------
+                                                 GLIM          Kimera
+All dispatched support ages, median / p95 / max   2.8/5.0/5.3   2.6/4.8/5.0
+First dispatch support age, median / max          0.4/0.5       0.3/0.3
+Last observed dispatch support age, median/max    5.1/5.3       5.0/5.0
+First arrival minus endpoint, median / max       .128836/.232254 .020873/.025545
+Last observed arrival minus endpoint, median/max 4.876100/5.028779 4.817188/4.821651
+First-to-last observed arrival, median / max     4.735091/4.900624 4.796502/4.803164
+Replacements per ID, median / max                 47/48         24/24
+Physical edge duration, median / max             .200007/.201752 .199999/.200043
+
+725 Kimera versions waited for the next right support; maximum queue was one
+pending version. Wait median/p95/max = 7.6245 / 10.7884 / 14.4258 ms. GLIM had
+no such waits here. These waits are physical availability waits, NOT receiver
+wall-clock compute/backlog. First-publication delay alone would badly
+underestimate required retention: late revisions need about five seconds.
+Arrival here is the adapter's receipt ROS clock, not source compute completion.
+In particular, subtracting recorded arrivals from the later offline replay's
+wall timestamps would be meaningless; no wall-queue analysis was performed.
+
+Worst-case examples
+-------------------
+Session: eth1_shared_linearization_s5_live160_on_20261012.
+
+GLIM ID (glim_hesai, session, 1140, 1142), revision 48:
+  journal line 82700
+  endpoints 1727775122674943000 -> 1727775122874473100 ns
+  receipt/insertion 1727775127887767021 ns
+  brackets [1140,1141], [1142,1143]; newest support 1193
+  required age (1193-1140)*0.1 = 5.3 s.
+
+Kimera ID (kimera_front, session, 2, 3), revision 24:
+  journal line 3723
+  endpoints 1727775011555373700 -> 1727775011755372300 ns
+  receipt/insertion 1727775016572130368 ns
+  brackets [29,30], [31,32]; newest support 79
+  required age (79-29)*0.1 = 5.0 s.
+
+Seven-second lifecycle simulation
+--------------------------------
+At every support boundary, after pending dispatch, retire supports STRICTLY
+older than current physical support minus 7 s. Equality remains active.
+The first retirement is at support 71 / 7.1 s. The simulation rejects pending
+old brackets, revisions after absorption, missing support keys and inconsistent
+ID outcomes; it does not drop late factors, coalesce revisions or pin history.
+
+Result: zero added exclusions, zero missing brackets, zero revisions to
+absorbed IDs. All 86,053 replacements remain possible. At the end:
+  2,201 IDs = 2,101 absorbed + 100 still explicit.
+  GLIM: 1,410 absorbed + 66 explicit.
+  Kimera: 691 absorbed + 34 explicit.
+  1,410 supports retired; 71 remain; 1,410 retirement boundaries.
+
+Resource counts are metadata/model predictions, NOT measured solver results:
+                                           After retirement    Transient peak
+  Active supports                          71                  72
+  X/V/W variable blocks                    213                 216
+  Scalar state dimension                   852                 864
+  Explicit source factors                  101                 103
+  Explicit motion factors                  70                  71
+  Explicit total EXCLUDING marginal priors 171                 174
+
+The full-history oracle ends with 1,481 supports, 4,443 variable blocks and
+3,684 factors. We cannot infer marginal factor count, separator fill-in,
+conditioning, total RSS or runtime from the above counts. FL2 must reconcile
+actual marginalizeLeaves deleted/created slots, not assume the metadata
+absorption model is a certificate of GTSAM's internal slot behavior. Archived
+history can stay on disk; bounded hot-path state must be verified separately.
+
+Source retirement / truncation evidence
+--------------------------------------
+The original source logs DO contain retirement markers:
+  GLIM_CBS_REVISION_RETIRED_ROW: 1,427, all for admitted IDs.
+  KIMERA_CBS_REVISION_EDGE_RETIRE_ROW: 701, of which 700 admitted IDs.
+Last source-log revision equals each retirement marker, and every last source
+revision is present in receipt metadata. All 2,101 IDs hypothetically absorbed
+by the receiver have a retained source-retirement marker.
+
+74 admitted IDs have no source-retirement marker: 49 GLIM and 25 Kimera.
+Their last observed version is right-censored, not a certified final version.
+These 74 are still retained under the selected lag at end of capture.
+
+Current transport ignores retirement markers; the journal only carries I/B/E.
+They were checked offline as evidence, NOT used to advance the causal model.
+The prototype must retain explicit fail-closed lateness checks. It must not
+assume a future source stall or another sequence is covered by this one log.
+Receiver revision numbers are ordered transport versions. Kimera's source
+logger can repeat revision zero with a changed snapshot; receipt metadata was
+used to reconcile source versus transport version numbers, not equate them.
+
+Implementation surface for FL2 (NOT IMPLEMENTED)
+----------------------------------------------
+Reuse E2b DiagnosticReplay/SourceWnoaModel and gnssFGO's existing
+IncrementalFixedLagSmoother, pinned GTSAM 4.2a8. Build a separate opt-in adapter;
+leave full history the default, sources and WNOA/covariances unchanged.
+
+1. Adapter/lifecycle: replace bare-iSAM2 guards with explicit backend methods
+   for stable-ID replacement, returned insertion slots, active/absorbed ledger,
+   staged support timestamps and retirement after pending dispatch/refinement.
+   Use existing constrained ordering/marginalizeLeaves; do not retain an
+   ever-growing suffix with relatedKeys or refresh old support timestamps.
+2. Marginal semantics: expose created/deleted marginal slots and fixed anchors.
+   Preserve full joint marginal information, evaluate its anchored objective
+   and gradient correctly. Current Gaussian-only helpers and full-history QR
+   rebuild cannot simply be reused after marginalization. Verify the 100 ms
+   exact-cutoff rule despite floating-second timestamps in the existing API.
+3. Transaction/state output: snapshot solver, timestamps, flags, slots, ledger,
+   caches and output cursor. Roll back completely on failure. Retire X/V/W
+   together; save online versus fixed-lag-finalized outputs distinctly. The
+   latter is not a globally retrospectively optimized trajectory.
+4. Private build: current E2b links pinned libonline_fgo_solver/util and libgtsam.
+   If a solver extension is needed, compile the matching solver sources into
+   a private target; do not combine conflicting solver definitions or install
+   over those libraries. Verify header/library identity. No ROS source run is
+   required for synthetic tests.
+5. Gate: long-lag regression; real repeated marginalization against dense
+   linear/nonlinear retained-objective references; replacement/cutoff/rollback
+   tests; Release and focused ASan/UBSan. Same 1e-5 stationarity threshold for
+   the correctly defined retained objective. No shortcut acceptance based on
+   speed/ATE and no full-history rebuild of marginalized information.
+
+Code evidence (current local files)
+----------------------------------
+experiments/receiver_endpoint_reuse_e2b_20261013/DiagnosticReplay.cpp:
+  474-557 stream schema/ordered version parsing
+  1068-1090 independent clock/startup; 1117-1140 integer endpoint binding
+  1565-1610 identity/causality rules; 1718-1760 streaming/pending ordering
+  1877-1905 pending dispatch then publication
+  934-944 full-history-only replacement; 1004+ publication integration
+online_fgo/include/offline_process/CausalSupportClock.h: ObserveImu
+online_fgo/src/solver/IncrementalFixedLagSmoother.cpp: update, 95-205
+online_fgo/src/solver/FixedLagSmoother.cpp: findKeysBefore, 124-140
+tools/live_receiver_protocol.py: parse_belief, Versions.accept (28-99)
+tools/grandtour_live_receiver_ros1.py: poll_sources (148-178)
+Source logging:
+  /home/yeranis/repos/V4RL/cbs_gtsam4.3/src/glim_ros1/src/glim_ros/cbs_bridge.cpp:1520-1537
+  /home/yeranis/repos/V4RL/cbs_gtsam4.3/src/Kimera-VIO/src/backend/VioBackend.cpp:3684-3698
+The captured transport-code copy matches the inspected protocol file.
+
+Validation and limitations
+--------------------------
+15 metadata tests pass: brackets, exact cutoff, pending support/old brackets,
+clock delay, before/after-retirement revisions, source/session isolation,
+duplicate/stale/conflict guards, EOF/exclusions, tie order, deterministic repeat,
+oracle mismatch and CSV schema/no-overwrite behavior.
+Two independent full metadata analyses produce eight byte-identical result
+files. All 35 protected input/oracle/code/binary/log files hash unchanged.
+No C++ build, sanitizer, estimator, optimization or timing test is claimed.
+
+analysis1 had a derived CSV writer schema error when a source column first
+appeared; its incomplete outputs are retained without complete.json. Fixed in
+the analyzer and covered by a new test. analysis2 passed core bookkeeping;
+analysis3/4 additionally include original source retirement/receipt checks.
+No original artifact was overwritten and no estimator experiment was retried.
+
+Spreadsheet-analysis skill guided read-only CSV handling, unit preservation,
+source/derived separation and reconciliation; no workbook or source CSV edited.
+The earlier live/offline numerical discrepancy remains unresolved by this
+metadata check. No accuracy result, covariance calibration or fixed-lag runtime
+claim is made. Next is FL2 correctness only, not a new live run.

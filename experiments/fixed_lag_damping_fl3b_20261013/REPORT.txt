@@ -1,0 +1,160 @@
+FL3b — bounded adaptive damping on the saved fixed-lag failure
+2026-10-13
+
+RESULT: DIAGNOSTIC VALID; CANDIDATE DOES NOT PASS.
+
+The installed adaptive Levenberg–Marquardt policy does NOT repair the saved
+pre-retirement solve within 20 linear-system attempts. All 20 steps reduce the
+original objective, but the normalized gradient remains 0.043786559748509667,
+4378.66 times the unchanged 1e-5 publication limit. It is about 79.96 times the
+previous undamped 20-step final gradient. No receiver integration or promotion.
+This is one adaptive policy, not proof that every damping strategy must fail.
+
+1. Scope and provenance
+
+User selected adaptive damping instead of increasing the budget to 40 steps.
+The predeclared PROTOCOL.txt limits this task to FL3a's saved retained objective.
+No sequence/journal replay, source run, GT evaluation, model/covariance tuning,
+retirement attempt, published output, production edit, commit or push occurred.
+
+Code: /home/yeranis/repos/gnssFGO/experiments/fixed_lag_damping_fl3b_20261013/
+Artifacts: /home/yeranis/results/gnssfgo_fixed_lag_damping_fl3b_20261013/
+Input: /home/yeranis/results/gnssfgo_fixed_lag_failure_fl3a_20261013/diagnostics/snapshot/
+Initial values: initial.values (NOT trial20 or a previously optimized oracle).
+Support1224, physical1727775130983475000ns, 122.4s after initialization;
+216 X/V/W blocks, 72 transient supports, 864 scalar dimensions.
+Exact loader reused from FL3a SnapshotAudit.cpp; original joint marginal and
+its anchor/Gaussian, source means/full covariances, WNOA model and Qc unchanged.
+Initial cost2794137.3456364814 and gradient1.5863889609968425 reproduced EXACTLY.
+
+Pinned runtime: gnssfgo_synthetic_uncertainty_20261004/baseline/runtime,
+GTSAM4.2a8; existing ubuntu-jammy-humble-nvidia container, CPU2, one TBB/OMP
+worker, endpoint caches off. No library replacement or dependency installation.
+Branch audit/receiver-linear-completion-s5e-20261013;
+HEAD d3d152a28440f97ced3bd7a50ee072874beafe19 remains unchanged.
+
+2. What was tested
+
+BoundedAdaptive.h delegates the nonlinear step to the installed GTSAM optimizer:
+LevenbergMarquardtParams::CeresDefaults(), MULTIFRONTAL_QR,
+lambdaInitial1e-4, lambdaFactor2, lambdaLowerBound1e-16,
+lambdaUpperBound1e32, minModelFidelity1e-3, diagonalDamping=true,
+minDiagonal1e-6, maxDiagonal1e32, useFixedLambdaFactor=false.
+No policy or parameter was selected after observing the real fixture result.
+
+The temporary step solves (schematically):
+  (J'J + lambda D) delta = -J'r,
+where D is the clamped Hessian diagonal. Native tryLambda() evaluates actual
+versus predicted objective decrease and adjusts lambda. The wrapper only drives
+the public linearize()/tryLambda() interface and counts EVERY attempted solve,
+including rejected attempts. Rejected steps reuse the same solve linearization;
+accepted steps cause fresh linearization. Extra gradient evaluations are audit
+work, included in the reported runtime but not additional linear solves.
+
+Cost stopping tolerances are zero in this private diagnostic, so a small cost
+change cannot substitute for the unchanged normalized-gradient <=1e-5 gate.
+Budget is20 total attempts, NOT20 accepted steps plus uncounted retries.
+The existing fl2a::CheckedGradient function is used unchanged.
+
+Damping is only in the temporary linear system. It never becomes a measurement
+factor, covariance rescaling, physical prior, or exported marginal information.
+The candidate returns diagnostic Values, never commits a caller's state.
+
+Implementation references in the pinned GTSAM source:
+  gtsam/nonlinear/LevenbergMarquardtOptimizer.cpp:
+    linearize(), tryLambda(), buildDampedSystem(), iterate().
+  gtsam/nonlinear/internal/LevenbergMarquardtState.h:
+    increaseLambda(), decreaseLambda(), buildDampedSystem().
+  gtsam/nonlinear/LevenbergMarquardtParams.h: SetCeresDefaults().
+Source root: /home/yeranis/workspaces/gnssfgo_ct_runtime/rwth_gtsam_src/
+
+3. Validation BEFORE the real fixture
+
+Release:42 checks PASS. Focused ASan/UBSan:42 checks PASS, no findings.
+The linked existing GTSAM/gnssFGO libraries are not newly sanitizer-instrumented;
+leak detection is disabled, matching the existing focused-test environment.
+
+Checks cover:
+  - stationary input returns without a solve;
+  - linear prior converges to the known solution;
+  - a nonlinear square-residual example rejects5 trials and accepts6;
+  - all11 attempts are counted, with no state/cost change on rejection;
+  - one-trial exhaustion and nonfinite input leave caller inputs unchanged;
+  - one outer adaptive update matches native GTSAM iterate() exactly in Values,
+    lambda and accepted/inner iteration counts;
+  - original graph identities and initial linearization remain unchanged;
+  - covariance from the original undamped graph equals its known covariance,
+    while temporary damping factors remain outside that graph.
+
+Harness corrections retained transparently:
+  initial compile required materializing Vector3::Zero() before Values insertion;
+  first Release test used scalar Equals(...,0), which GTSAM implements as strict
+  abs(a-b)<tol and therefore fails even on identical doubles. Changed to exact
+  scalar equality, not a looser solver/test tolerance. Logs of both retained.
+  Post-run lambda validation was corrected to use multiplication by1/3 exactly
+  as the library does, rather than differently rounded floating-point division.
+These were harness corrections; adaptive policy/real fixture were not rerun.
+Existing GPInterpolatorBase empty virtual-method compiler warnings remain in
+included upstream code; no such method was introduced or changed here.
+
+4. Real fixture result — ONE run
+
+                                  retained GN20         adaptive LM20
+  attempts                        20                    20
+  accepted / rejected             20 / 0                20 / 0
+  initial cost                    2794137.3456364814     same exactly
+  final cost                      2794133.6862067287     2794133.7957259924
+  final normalized gradient       0.000547608104438002   0.043786559748509667
+  requirement                     <=0.00001             <=0.00001
+  pass                            NO                    NO
+
+GN is the retained FL3a reference, not a new rerun or same-executable timing
+comparison. LM reduces cost by3.5499104890041053 but fails strict stationarity.
+Trial1 already reduces gradient to0.00084470318295416639, still84.47x the limit.
+Subsequent gradients grow then decline; minimum observed is trial1, not a pass.
+All attempts are accepted; lambda decreases by the policy's factor1/3 on every
+accepted step, ending at2.8679719907924392e-14. No rejection, lambda ceiling,
+exception or hidden inner trial causes this failure. It is budget exhaustion.
+
+This illustrates the distinction: adaptive LM controls step/model agreement;
+it does not directly control the normalized gradient or guarantee faster strict
+convergence. Cost-decreasing steps can still leave a significant gradient.
+Here the policy keeps reducing damping because its steps pass model fidelity.
+It is not evidence that altering source uncertainty or WNOA is necessary.
+
+Measured fixture Solve() time including diagnostic gradients/Values copies:
+0.245291375s. Process including loading/writing:0.314973749s, RSS45572KiB.
+This is NOT a live/whole-receiver speed test and not a production speedup claim.
+
+5. Integrity, outputs and limits
+
+134 protected files verified unchanged before/after, including previous frozen
+inputs/code/binaries and the complete saved snapshot. Original graph slots,
+factor pointers, initial Values, original cost/gradient and full initial
+Jacobian/RHS checked unchanged. Snapshot hashes protect marginal anchors and
+Gaussian payloads. No new damping information enters the saved original graph.
+
+Products:
+  fixture_outputs/trials.csv — every attempted step/lambda/cost/gradient;
+  fixture_outputs/summary.json — numerical result and objective checks;
+  fixture_outputs/diagnostic_only.values — NOT a publishable trajectory;
+  validation.json — diagnostic_valid=true, candidate_passed=false;
+  protected.json and per-action command/log/identity records.
+No deterministic real-fixture repeat was run: protocol permits a repeat only
+after success. Synthetic wrapper/native equivalence is not real-stream proof.
+
+Binary SHA256:
+  fixture 7655c978cb97f5046ba18a052dda59981c15f4a6030b7531186f5a85cd146b96
+  Release tests c8f7eff87bbc87b91af83ad1381f7813c550533e43d50440932fd966099e5203
+  sanitizer tests 810121abec894384aa4ada26e570eb8746b1e8575ab7f6a6b5391d9616f17d9d
+
+This was only a PRE-retirement fixture. Receiver installation of accepted
+Values, marginalization, retained reload, post-retirement convergence, complete
+transaction rollback and their shared20-step budget remain untested for LM.
+No full sequence or production integration is justified by this failed gate.
+FL3 stays incomplete/failed; FL4 live work stays held; full-history remains the
+reference/default. No parameter sweep, extra iterations or automatic retry.
+
+Conclusion: adaptive damping was tested fairly without changing the information
+model. This particular existing-library policy is not better on the saved
+failure and is not adopted. Stop here for the next decision.
