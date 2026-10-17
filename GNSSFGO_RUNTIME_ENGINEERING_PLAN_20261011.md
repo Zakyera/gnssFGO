@@ -2343,7 +2343,7 @@ documentation/archival/version control only; no estimator implementation or run.
 
 - Date/authorization: 2026-10-17, user requested saving settings for future
   chats and pushing all relevant changes to Zakyera GitHub.
-- Status: ARCHIVE VERIFIED; repository checkpoint/push in progress.
+- Status: COMPLETE. Archive verified and checkpoint pushes confirmed on GitHub.
   Archival/documentation task only; no estimator run,
   rebuild, tuning, default promotion or alteration of frozen evidence.
 - Scope: preserve FL4v's actual launch, copied sensor profiles, private build
@@ -2362,6 +2362,21 @@ documentation/archival/version control only; no estimator implementation or run.
 - Existing CBS objective-audit/tests preserved unchanged in cbs ed93343;
   this task did not rebuild or rerun their C++ tests. Original validation
   receipts retain their scope; checkpoint checks are not estimator validation.
+- Remote checkpoint refs verified on Zakyera's named milestone branch:
+  gnssFGO acc908dab665006fec52302572b8980073966505,
+  cbsms cc26083e758661582700d1858386b2a513b9f310,
+  cbs ed93343e2601c1eb2d777d85fbd6171ca1cdfaf4,
+  glim_ros1 fad72d6e11219e42cbbe09658341fff4512769dc,
+  gtsam_points 857819676921650510e249018cd82d45c08d7e8d.
+  The cbsms exact manifest pins these archive/source commits. This subsequent
+  ledger-only closeout does not change their saved launch or implementation.
+- Initial upload review required explicit repository/payload approval; user
+  supplied it, and the four remaining pushes then succeeded. Unchanged
+  Kimera-VIO, Kimera-VIO-ROS and glim base commits were already present on
+  their Zakyera checkpoint refs; no new push to those repos was needed.
+- Future-chat entry points updated in gnssFGO/cbsms AGENTS and the canonical
+  runbook, plus local home/workspace AGENTS. No default branch was changed;
+  large data, binaries and full journals remain local. No further run authorized.
 
 ### Template for subsequent tasks
 
