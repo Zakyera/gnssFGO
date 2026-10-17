@@ -16,13 +16,293 @@ performance hypotheses into one acceptance experiment.
 
 ## Baseline and evidence
 
+**FL4v COMMON-PREFIX SCORING COMPLETE (2026-10-17):** User-requested OFF/ON
+table from retained FL4t OFF and FL4v ON; no estimator rerun or model change.
+Frozen evaluator/IE-TC reference, identical1055 timestamps spanning105.39990s
+(1727775011.5999973..1727775116.9998968),1045one-second RPE pairs. OFF->ON
+ATE m: nativeGLIM .041708->.025926, nativeKimera .687756->.235494,
+LIVE fusion .065905->.050717 (23.05% lower). Fusion1s t-RPE .032071->.035051m,
+r-RPE1.270812->1.562678deg: worse local errors despite better ATE. OFF remains
+a failed120s capture; prefix scores do NOT certify completion or stationarity.
+Startup gap and unavailable OFF tail excluded, not labeled full120s. Delayed
+finalized outputs omitted because ON has later future support. Inputs
+unchanged; no new estimator run. Evidence:
+`experiments/fixed_lag_live_on_fl4v_20261017/common_prefix_off_on.json`;
+script beside the FL4v prepared run root: `common_prefix_off_on.py`.
+
+**FL4v STANDALONE120S ON COMPLETE (2026-10-17):** Explicit user-authorized
+ETH1 ON despite incomplete FL4t OFF; exact FL4t/FL4s binaries/profiles/guards,
+not FL4u instrumentation. Three estimators live at0.10x; classic temporary CBS,
+unchanged7s no-central-IMU source-WNOA.1191GLIM/584Kimera/1193fusion poses span
+119.00/119.60/119.20s; Kimera startup3.20s gap separately disclosed.580G->K/
+581K->G injections; all584accepted steps non-increasing,76existing LM fallbacks,
+66cap hits; max cache/fresh0,tree1.07002e-9. No recovery/failure/retry, but no
+stationarity certificate or universal robustness claim.70756belief versions
+accounted:1770insert+68961replace+25preinit, pending/unsupported0,covariance
+error0,71supports/175slots. All1193online outputs live; peak queue42;
+support p95 .080328s/max .114025s. Saved-journal repeat byte-identical for
+numeric products and73113archive files. Full-saved IE-TC ATE m: nativeGLIM
+.026277,nativeKimera .270672,onlinefusion .058737,DELAYED finalized .055768.
+All saved rows scored; common115.90s mask separately reported. Finalized1s
+RPE .016239m/.341362deg vs online .035396m/1.615035deg. IE-TC sharesCPT7,
+not independent prism. Fusion does not beat nativeGLIM ATE. No matched120s
+OFF/ON claim: FL4t OFF failure remains unresolved.1131protected hashes and
+30profile files unchanged; containers restored stopped; no tuning/model/code
+change/default promotion/commit/push; HEAD67c00392 unchanged.
+Report: `experiments/fixed_lag_live_on_fl4v_20261017/REPORT.txt`.
+
+**FL4u DIAGNOSTIC COMPLETE; CONVERGENCE NOT CERTIFIED (2026-10-17):** One
+Kimera-only OFF capture at0.10x reproduced update531's original failure. All531
+preceding native messages byte-identical to FL4t; objective/acceptance rows
+exact excluding wall times. Ordinary proposal raises cost2155.442364->2156.901108.
+LM returns unchanged after ONE outer iteration at lambda0.1; wrapper's no-change
+break then strict-decrease failure is directly observed, not cap exhaustion.
+Only measured downhill probe improves1.446e-8, below existing2.156e-7 tolerance;
+no sufficient descent or full stationarity certificate. Analytic directional
+slope is6.274x the observed finite-difference slope, limiting gradient-based
+certification; factor/cause not localized. Do not accept unchanged states or
+increase iteration caps on this evidence. Release/focusedASan/UBSan pass;
+1084protected/40frozen diagnostic entries unchanged, both containers restored
+stopped. No GLIM/fuser/ON, retry, covariance/model/acceptance repair or promotion.
+HEAD67c00392 unchanged. Protocol, results and limits:
+`experiments/fixed_lag_stopping_fl4u_20261017/REPORT.txt`.
+
+**FL4t120S LIVE GATE FAILED (2026-10-16):** Exact FL4s binaries/profiles,
+0.10x,temporary classic CBS,native mean alignment,unchanged7s source-WNOA
+receiver without central IMU. OFF stops near109.38s captured input at Kimera
+update531: `FL4Q no decreasing current-chart LM step`; backend returns no
+output. ON NOT STARTED, no retry/tuning. Accepted0..530 all non-increasing;
+17fallbacks,1cap hit; max cache/fresh0,tree4.84114e-13. Failed-step cost/iteration
+not retained; cannot claim iteration exhaustion or root cause from the guard.
+Adjacent stereo tracking failure is evidence, not a causal conclusion.
+1087GLIM/531Kimera/1089fusion saved poses,~109s,NOT completed120s. Fusion queue0
+at last monitor,max48; partial journal drains64391beliefs with pending0,
+unsupported0,71supports/175slots. Its complete flag does not certify capture.
+No ATE/RPE,matched covariance,deterministic repeat or full-window pass claimed.
+All1059protected hashes and FL4s sensor profiles unchanged; stopped containers
+restored; existing dirty work preserved,HEAD67c00392 unchanged,no commit/push.
+Report:`experiments/fixed_lag_live_fl4t_20261016/REPORT.txt`.
+
+**FL4s MATCHED30S LIVE GATE PASSED (2026-10-16):** Exact FL4q Kimera
+candidate in BOTH ETH1 OFF/ON captures, all three estimators concurrent at0.10x;
+unchanged shared-native GLIM, FL4e7s fixed-lag source-WNOA receiver, no central
+IMU or covariance tuning. Real native temporal mean alignment enabled;
+classic temporary CBS, not live_revision. Each291GLIM/134Kimera/293fusion
+poses; all134accepted Kimera decisions non-increasing in each mode. OFF1
+fallback(44),ON3(53/63/87),ON2cap hits. No rollback/recovery; bounded descent,
+not stationarity. ON130G->K/131K->G injections,106Kimera retirements. Both
+receiver journals repeat byte-identically including committed archives.
+Covariance roundtrip error0; no pending/unsupported; max71supports/175slots;
+full-support p95 .080896s OFF/.087867s ON. All293outputs published live.
+Full-saved IE-TC ATE OFF->ON m: native GLIM .057256->.050283; native Kimera
+.087878->.043791; fusion online .057332->.054424; finalized .053795->.037504.
+Kimera/fusion1s RPE WORSENS: mixed accuracy, not universal improvement.
+Every saved pose scored; explicit initial3.2sKimera gap; separate common
+260timestamp/25.9s mask, not mislabeled30s. IE-TC sharesCPT7,not prism GT.
+Initial setup stopped before any playback on a stale pinned wrapper PATH;
+preserved, exact path registration corrected in freshFL4s2 root, no failed
+data rerun or solver change.990protected hashes unchanged, containers restored
+stopped; priorRelease/ASan/UBSan reused by hash. Existing dirty work preserved;
+HEAD67c00392 unchanged,no commit/push/promotion. Longer live gate unrun.
+Report:`experiments/fixed_lag_live_fl4s_20261016/REPORT.txt`.
+
+**FL4r LATE-WINDOW GATE PASSED (2026-10-16):** One94s Kimera-only replay
+with the unchanged FL4q DSO completes454 native poses/93.59949s;450 exact
+incoming wire messages/update bindings/full covariances;426 logged retirements.
+All134 native messages and objective/acceptance records from FL4q reproduce
+exactly (timing excluded).29 harmful proposals replaced;425 ordinary accepted;
+all454 accepted decisions non-increasing on their same post-removal graph.
+At candidate update438: before1,154,442.12, native proposal15,667,368.27,
+accepted17,283.57. It has a different preceding trajectory from baseline438,
+not a same-graph comparison against the old44.7M→107.1M result.21fallbacks hit
+10iterations; descent only, not stationarity, and late fallbacks are frequent.
+Cache/fresh H/g exact; max relative tree error4.977e-9 passes frozen1e-8 gate
+(larger than30s gate). Decision-stage median8.03ms/p95159.94ms/max265.79ms;
+excludes rebuild/native update/copy/marginalization/export. Wall972.29s at0.10x,
+not1x certification. No recovery, rollback, retry, ATE, GLIM/fuser or tuning.
+879baseline/37FL4q/30FL4r hashes unchanged; container restored stopped.
+Prior Release/ASan/UBSan reused, not rerun; production/defaults unmodified.
+HEAD67c00392 unchanged, no commit/push. Stop here; live bidirectional accuracy
+and throughput remain untested. [Report](experiments/fixed_lag_current_chart_fl4r_20261016/REPORT.txt).
+
+**FL4q SHORT-WINDOW CANDIDATE PASSED (2026-10-16):** User-authorized private
+current-estimate LM fallback preserves immutable original-chart Gaussian priors
+and rebuilds the undamped ISAM2 core at the accepted estimate, preserving sparse
+factor slots/native pointers/CBS metadata. Release and focused ASan/UBSan pass:
+dense covariance, next update, marginalization, temporary-CBS removal, cached
+LOCAL/full transaction rollback and deterministic fixture repeats. One30s
+Kimera-only frozen-input ETH1 capture completes134poses/29.60s,130exact incoming
+payloads/update bindings/covariances,106retirements. Native0..88 byte-identical
+to FL4n. Three harmful proposals replaced at89/101/113; all134accepted steps
+non-increasing in same objective. Update89 cost373023.81→native409915.52,
+candidate79697.75. Cache/fresh H/g exact, tree relative error≤2.28e-13. Fallback
+decision times.129/.180/.174s EXCLUDE rebuild/checks; not total backend timing.
+Two fallbacks hit10iterations: descent only, not stationarity. No ATE, full
+sequence, GLIM/fusion run, covariance tuning or production promotion. All879
+protected/37candidate hashes unchanged; container restored stopped. Branch
+`engineering/fl4q-current-chart-fallback-20261016`, HEAD67c00392 unchanged;
+no commit/push. Longer SAME frozen prefix through late failure remains unrun.
+[FL4q report](experiments/fixed_lag_current_chart_fl4q_20261016/REPORT.txt).
+
+**FL4p DIRECTION AUDIT COMPLETE (2026-10-16):** One23s frozen-input
+Kimera-only prefix reproduces99 native messages/22.60s and objective rows
+exactly;95 incoming payloads/bindings/covariances exact. At unchanged update89,
+native direction initially descends but full step overshoots: cost373023.81
+to409915.52; quarter step366105.97. Cached slope-128306.54 versus measured
+-49129.34. Native IMU explains99.93% of signed slope discrepancy; boundary
+factor x63-v63-x64-v64-b63 alone98.63% (cached-40.31 vs actual+78050.06;
+fresh current-point Jacobian agrees).16/27 pose anchors fixed, max3.06deg/
+.219m anchor-to-estimate offset. Forced solve does not override fixed-anchor
+relinearization exclusion. No tiny-step visual validity switch; reset-clone
+effect<=5.88 cost units, not the dominant cause. Release/focused ASan/UBSan
+and exact nonmutation pass;879protected/32candidate hashes unchanged;
+container restored stopped. Local model/overshoot identified, NOT all later
+failures or a production repair. No solver/covariance/policy change, GLIM/fuser,
+retry, commit or push. Report and proposed original-chart current-estimate
+solve boundary: `experiments/fixed_lag_direction_fl4p_20261016/REPORT.txt`.
+
+**FL4o CANDIDATE STOPPED; REPAIR INCOMPLETE (2026-10-16):** Private nonlinear
+step acceptance with original-chart prior cost and16-halving bound passes
+Release and focused ABI-matched ASan/UBSan synthetic checks: accepted-delta
+persistence through reads/next update/marginalization, unchanged Gaussian
+equations/covariance, smart-cache pointer-preserving rollback, whole-wrapper
+failure atomicity, exact fast-path parity and deterministic repeat. One94s
+Kimera-only frozen-input replay was attempted and STOPPED at update108.
+Shortening89/101/103 reduces their costs; at108 before1,532,262.188827,
+full1,933,392.808644, best trial1,532,262.570811: no tested decrease. Transaction
+rolled back; no native108 output.105 exact frozen inputs/bindings/covariances
+received;108 native poses span24.3999s, last at bag25.5553s;80 retirements.
+First native change89; no other recovery/drop. NOT a completed94s experiment,
+accuracy claim or production fix. All879 protected and31 candidate hashes
+unchanged; container restored stopped. No automatic LM/covariance/policy change
+or retry. A reliable original-chart descent direction remains unresolved; do
+not merely lengthen the run or relax acceptance. See
+[FL4o report](experiments/fixed_lag_step_acceptance_fl4o_20261016/REPORT.txt).
+
+**FL4n LINEAR-SYSTEM GATE COMPLETE (2026-10-15 UTC/16 local):** One private
+Kimera-only frozen-input94s replay captures28/89/438 before marginalization.
+Cached and fresh same-theta H/g are EXACTLY equal, including every factor;
+tree relative H/g discrepancy <=3.824e-16; actual scaled equation residual
+<=1.187e-15. No cached orphan/missing factor or surviving retired identity.
+Nevertheless update438 repeats cost44.711M→107.129M. All454 native messages
+(excluding receipt time) and all objective rows exactly reproduce FL4m remove;
+450exact inputs/bindings,426retirements,83cost increases. Scaled H condition
+~2.05e11 at438 and25/27 pose linearization points fixed; this is not a forward-
+accuracy/convergence certificate. Synthetic parity/removal/nonmutation and
+deliberate-corruption tests pass;879protected hashes unchanged; container
+restored stopped. Select original-chart nonlinear step acceptance/bounded
+numerical fallback, NOT a guessed cache/removal patch. Behavioral repair remains
+unimplemented; no tuning, GLIM/fusion run or production promotion. See
+[FL4n report](experiments/fixed_lag_linear_parity_fl4n_20261015/REPORT.txt).
+
+**FL4m RETIREMENT MECHANISM IMPLICATED (2026-10-15):** Two94s Kimera-only
+0.10x captures use450 identical frozen post-alignment FL4l GLIM factors. Private
+switch changes only scheduled retirement, preserving current active-window
+admission/solve/recovery (NOT historical persistent mode). First28 native outputs
+and objectives are exactly equal before retirement. At update438, remove case
+reproduces target error9.38→134.07mm and cost44.71M→107.13M; retain-through-
+marginalization gives6.55→2.25mm and4.21M→0.606M. Cost-increasing steps83vs1;
+late native~0.2s translation-error RMS29.23vs5.34mm. Each has454poses/93.60s,
+all450 exact payload/binding/update checks,426retirements,zero rollbacks. Runtime-
+API synthetic lifecycle/reference checks pass;879protected hashes unchanged.
+Container restored stopped. This implicates retirement/accumulated prior history,
+not uniquely a code defect or justification to inherit external information.
+No GLIM/fusion, tuning, production promotion or follow-up repair. See
+[FL4m report](experiments/fixed_lag_retirement_fl4m_20261015/REPORT.txt).
+
+**FL4l SAME-GRAPH BAD STEP CONFIRMED (2026-10-15):** One private94s ETH1
+source-only CBS-ON prefix captured update438 with preceding history. Same
+original-chart objective rises44.712M→107.129M in the accepted production
+step; cloned reference LM reduces it to16,772.87 without changing any factor,
+covariance or marginal prior. Target relative translation error rises9.38→134.07mm
+in production, versus0.71mm in the reference; this reproduces harmful deformation,
+not the historical exact432mm magnitude. Native source-IMU cost dominates the
+increase;25% of the production step decreases cost. Reference hit30-iteration
+cap, scaled gradient0.01045; no convergence/trajectory-performance claim.
+Prior-chart equality and synthetic derivative test pass. All879 protected
+paths/profile trees unchanged, container restored stopped. Initial startup
+path mismatch stopped before playback and is retained separately; actual capture
+completed once. No fusion, production fix, weighting/tuning or binary promotion.
+Full nonlinear graph was solved in process, not archived for standalone replay.
+Next proposed gate is a transactional original-chart objective safeguard and
+bounded numerical fallback, not covariance changes. See
+[FL4l report](experiments/fixed_lag_live_fl4l_20261015/REPORT.txt).
+
+**FL4k DIAGNOSTIC GATE COMPLETE (2026-10-15):** Corrected only the optional
+Kimera/BPSAM shadow-objective diagnostic: unanchored Gaussian priors are now
+evaluated in the owning iSAM2 theta chart; invalid chart/type/dimension/cost
+fails closed. Release 2/2 synthetic tests pass, including actual marginalization
+and nine wrapper updates with exactly unchanged states/per-key covariances when
+the diagnostic is enabled. Dense reference cost 3.1645055780930065 was previously
+reported as 0. Deterministic repeats match. Address/UB checks pass; wrapper
+LeakSanitizer reports 73 bytes in unchanged-library allocations (explicit limit,
+not a clean full sanitizer claim). All 879 FL4g protected paths unchanged.
+No production binary rebuild, source capture, replay, covariance or solver
+policy change. CBS source patch remains uncommitted on 7c3a1e6. Scalar objective
+repair does NOT establish the cause or repair ETH1 failure; original-chart
+same-graph capture/reference solve remains next, unexecuted. See
+[FL4k report](experiments/fixed_lag_live_fl4k_20261015/REPORT.txt) and retained
+synthetic receipt under `runs/fixed_lag_objective_fl4k_20261015/receipt`.
+
+**FL4j BOUNDED MECHANISM AUDIT COMPLETE (2026-10-15):** New retained-data
+finding: multi-view visual factors touching the incoming Kimera edge supply
+nonzero diagnostic endpoint information for187/300 at28.955s,11/228 at96.955s,
+0/204 at105.755s and0/193 at110.355s. These are fresh evaluations at the current
+estimate, NOT the actual cached iSAM system; exact triangulation rejection
+reason and cause/consequence remain unknown. Confirmed diagnostic defect:
+the existing disabled shadow objective sums unanchored LinearContainerFactor
+error, which returns0, omitting the marginal prior; fresh cross-family
+gradient diagnostics also mix prior/current charts. This is not a production
+root-cause claim. Existing residual rollback discards18 incoming GLIM factors
+with reference-error median7.08mm; a numerical failure does not establish a
+bad sender. Recommend ONE original-chart same-graph source-solver decision
+gate, not covariance tuning, repeated sequence runs or a blind provider
+rollback. No production edit, estimator run, build, container start or tuning.
+See [FL4j report](experiments/fixed_lag_live_fl4j_20261015/REPORT.txt) and its
+reproducible30-snapshot evidence. Proposed diagnostic repair/capture remains
+unexecuted; unique initiating cause is not yet isolated.
+
+**FL4i LAUNCH/SOURCE-LINEAGE AUDIT COMPLETE (2026-10-15):** FL4g effective
+settings/argv/profile bytes/mapped core libraries match FL4f; no accidental
+120s launch switch found. They are NOT historical persistent CBS: temporary
+factors, native-IMU alignment and GLIM covariance history changed. On the exact
+115.9s mask, Oct5 persistent ON native Kimera ATE.375084m; Oct11 independent
+LOCAL temporary/aligned ON already2.849717m; latest shared-native ON3.745897m.
+The failure predates the shared-Jacobian provider. Native ON GLIM instead
+improves.036950→.034628→.025248m; matched wire relative translation RMS
+.024973→.011122→.009544m. Latest/Oct11 translation covariance median ratio1.0036,
+not collapse. OFF Kimera poses/timestamps are exactly unchanged Oct5→now;
+OFF GLIM ATE worsens.030474→.044372m and is not claimed identical. Exact
+source-side causal change remains unisolated; do not convict temporary CBS or
+the provider from coupled runs. No estimator/receiver run, fixes or tuning.
+See [FL4i](experiments/fixed_lag_live_fl4i_20261015/REPORT.md). Further FL4h
+solver experiments remain unexecuted; next question is the earlier source-CBS
+semantic transition, not a blind speed-work rollback.
+
+**FL4h SAVED-SOURCE AUDIT COMPLETE (2026-10-15):** All580 G→K constructed
+payloads/covariances/timestamps match wire; aligned GLIM relative translation
+RMS9.81mm/max32.09mm. Kimera nevertheless develops source-graph deformation:
+at update438 /91.755s, target-edge reference error16.08→432.48mm while the
+aligned GLIM error is6.45mm. Saved-pose residuals reproduce the pre-marginal
+solver logs within6.7e-13, localizing this jump to optimization, not immediate
+retirement or output formatting. One-step Gauss–Newton plus a marginal prior
+that can freeze25 of26 active pose linearization points is a concrete next
+hypothesis, NOT a proved unique cause. Native IMU factor costs grow sharply.
+First recovery at100.555s is later than onset:580 constructions,18 undone,
+562 retained admissions;533 normal+11 guarded old removals,18 left.22 nested
+rollback transactions reconcile. Corrected FL4g's construction/admission
+wording. Report: [FL4h](experiments/fixed_lag_live_fl4h_20261015/REPORT.md).
+No new source/fusion capture, estimator edit, covariance change or tuning.
+Exact same-objective prior-chart diagnostic remains proposed, not executed.
+
 **FL4g MATCHED LIVE 120 s COMPLETE (2026-10-15):** The matched ETH1 first-120 s
 CBS-OFF and classic CBS-ON extension of FL4f completed at 0.10× with the same
 FL4e receiver SHA, 7 s source-WNOA fixed lag, profiles, Gaussian full source
 covariances, and no central IMU factor. Both source/receiver cases passed
 complete coverage, exact belief accounting and byte-identical deterministic
-receiver replay. ON injected 580 G→K and 581 K→G source factors; OFF injected
-none. On 1,160 identical timestamps spanning 115.9 s, native GLIM ATE improves
+receiver replay. ON constructed580 G→K candidates (FL4h:562 retained after
+recovery) and581 K→G source factors; OFF injected none. On 1,160 identical
+timestamps spanning115.9s, native GLIM ATE improves
 `0.044372→0.025248 m`, but native Kimera ATE deteriorates
 `0.458070→3.745897 m`; fused **online/as-played** ATE worsens
 `0.055480→0.131993 m` and retrospective finalized ATE worsens
@@ -2058,6 +2338,30 @@ documentation/archival/version control only; no estimator implementation or run.
 - Implementation/validation commit: a3846056bc081fc5af040a47c15993b55154328c;
   subsequent documentation-only entry records this hash. Not pushed.
 - No automatic live capture, next optimization, parameter change or push.
+
+### CP-FL4v — preserve and push the actual ETH1 launch
+
+- Date/authorization: 2026-10-17, user requested saving settings for future
+  chats and pushing all relevant changes to Zakyera GitHub.
+- Status: ARCHIVE VERIFIED; repository checkpoint/push in progress.
+  Archival/documentation task only; no estimator run,
+  rebuild, tuning, default promotion or alteration of frozen evidence.
+- Scope: preserve FL4v's actual launch, copied sensor profiles, private build
+  source overlays, build provenance and compact validation/results. Preserve
+  the intervening uncommitted diagnostics and push named milestone branches.
+- Baseline: gnssFGO 67c00392cd640a432bda9b67afcb57be4face381;
+  receiver/Kimera binary hashes and limits in the FL4v report.
+- Crucial limit: completed 120 s ON is not a completed 120 s OFF/ON pair.
+  FL4t OFF stopped early; the OFF/ON comparison is a common 105.4 s prefix.
+- Recovery: `experiments/checkpoints/20261017_fl4v/` and
+  `GNSSFGO_GRANDTOUR_FL4V_LAUNCH_20261017.txt` (this task).
+- Evidence: 170 byte-identical archived files, 15 binary identities checked;
+  original source/profile/build inputs unchanged. Read-only checks passed:
+  30 Python syntax, 7 shell syntax, 31 strict JSON, 14 XML launch files;
+  15 GLIM JSON-with-comments profiles hash-checked without rewriting.
+- Existing CBS objective-audit/tests preserved unchanged in cbs ed93343;
+  this task did not rebuild or rerun their C++ tests. Original validation
+  receipts retain their scope; checkpoint checks are not estimator validation.
 
 ### Template for subsequent tasks
 

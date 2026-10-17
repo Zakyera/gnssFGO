@@ -1,0 +1,172 @@
+FL4q — current-estimate Kimera fallback: short-window gate PASSED
+2026-10-16. Experimental candidate only; production unchanged.
+
+OUTCOME
+One30s ETH1 Kimera-only frozen-input replay completed. All134 accepted native
+updates were non-increasing in the same post-removal, original-prior-chart
+objective. The candidate replaced3 harmful native steps (89,101,113).
+It continued past update108, where the earlier FL4o shortening-only candidate
+stopped. Update108 here has a changed preceding trajectory: this is not a
+same-graph108 comparison. No full-sequence or accuracy result is claimed.
+
+At the first previously identified bad step89:
+  objective before                  373023.810888
+  proposed native full-step cost    409915.516752
+  accepted current-chart LM cost     79697.749684
+  LM iterations                              4
+  decision/solve time                         0.128724s
+These are objective units, NOT meters or ATE. The first89 original ROS messages
+(updates0..88) and ordinary objective rows are byte/numerically identical to
+FL4n. The first changed output is precisely update89, not an earlier launch,
+input, or initialization change.
+
+WHAT WAS IMPLEMENTED
+The opt-in private FL4Q_ENABLE path first tests the ordinary native update.
+When its cost rises beyond1e-10*(1+abs(before)), it uses the EXISTING GTSAM
+LevenbergMarquardt optimizer on a cloned graph at the initialized current
+estimate. No fresh research loss, health rule or covariance scale is added.
+
+An existing Gaussian marginal q(d)=0.5*d'H*d-eta'd+0.5*c keeps its original
+anchor A and coefficients H,eta,c. Its residual coordinates remain
+d=Local(A,X), even when the active nonlinear equations are refreshed at X.
+Using J=D Local(A,Retract(X,epsilon)), its local Gaussian is:
+  H_current = J'HJ
+  eta_current = J'(eta-Hd)
+  c_current = d'Hd-2eta'd+c.
+FL4l's OriginalChartPrior adapter supplies this coordinate derivative using
+central differences1e-6; it is tested independently here. Existing native IMU,
+BetweenFactor and smart-visual measurement implementations are unchanged.
+This preserves the prior FUNCTION, not a naive replacement of its anchor.
+
+LM bounds frozen before data:10 outer iterations; lambdaInitial1e-3,
+lambdaUpper1e12; diagonal numerical damping with the pinned default diagonal
+limits; relative/absolute cost tolerance1e-9. A5s wall budget is checked between
+iterations, not preemptively inside a library call. Each trial accepted by this
+wrapper must independently lower the unchanged original-chart objective on
+fresh clones. An invalid/no-decrease/budget failure throws and restores state.
+There is no silent automatic retry with another method.
+
+Accepted candidate values are NOT merely written into the output trajectory.
+The private BPSAM helper rebuilds its ISAM2 core at those values with:
+- original sparse factor slots and native factor pointer identities preserved;
+- Gaussian priors represented by immutable original-chart adapters;
+- unchanged source/CBS ownership maps, pending beliefs and parameters;
+- current undamped equations, Bayes tree and cleared covariance cache;
+- original ordering constraints and update counter retained;
+- zero accepted delta in the new current chart, surviving calculateEstimate.
+The zero delta records the accepted nonlinear point; it is NOT a claim that
+this point is the exact minimum of the current undamped Gaussian. Solver
+damping is discarded, never inserted into the graph or exported covariance.
+Later marginalization still creates native Gaussian priors; these acquire an
+immutable original chart if another fallback rebuild occurs.
+
+Ordinary steps keep the original path. Existing temporary-CBS retirement still
+removes the external factor before marginalization. Keeping an original-chart
+prior does not restore retired external factors or prove independent sources.
+
+TRANSACTION / COVARIANCE SAFETY
+The whole smoother update is backed up, including timestamps, factor slots,
+Bayes tree, delta, active/pending CBS metadata and the existing LOCAL marginal
+cache. Smart-factor mutable caches are restored in-place on failure because
+Kimera tracks their shared_ptr identities. Unknown transaction factor families
+fail closed. This is scoped to the tested Gaussian/health-disabled Kimera path.
+
+After each real fallback, cached H/g agree with independently relinearized
+current-point H/g exactly in the reported norm. Maximum relative tree-vs-cache
+H/g difference2.2797368123e-13. This is an equation/cache consistency check,
+not proof that the reported covariance is calibrated to real-world accuracy.
+Input measurement covariances are unchanged. Outgoing posterior covariance
+can naturally change because the estimate and linearization point change.
+
+REPLAY SCOPE / SOURCE IDENTITY
+Native Kimera only, first30s ETH1,0.10x; saved front stereo+CPT7 profile,
+25-state window, native current IMU support (KIMERA_IMU_SAMPLE_SUPPORT unset),
+classic active_window_temporary, Gaussian source factors, scale1, no gating.
+Incoming GLIM beliefs are the exact frozen, already temporally aligned FL4n
+payloads. Native alignment is deliberately not applied again to those payloads.
+No GLIM estimator or gnssFGO process ran. This is NOT a new live bidirectional
+CBS OFF/ON experiment and NOT evidence of fused accuracy.
+
+Native output134 poses, timestamp span29.599838037s, including its retained
+startup sampling gap. Incoming130/130 wire messages exactly equal the frozen
+prefix. All130 sender/receiver key bindings, backend update numbers and full
+6x6 covariance payloads match; aligned-mean equality tolerance1e-12. There are
+106 scheduled/removal log events. No candidate error, recovery, rollback or
+automatic data retry. Playback completes once; total controller wall332.318s.
+
+NUMERICAL RESULTS
+Update  Before cost       Native proposal    Accepted cost    Iterations Time s
+89      373023.810888     409915.516752        79697.749684       4       .128724
+101     446840.008348     520541.491329        68185.215771      10       .180292
+113     100418.655598     115164.473348        33656.044663      10       .174219
+
+131 native proposals accepted;3 replaced by current-point solves. All134
+decisions pass the nonincrease gate. Two fallbacks hit the10-iteration bound;
+neither is certified stationary. This is bounded objective descent, not a
+global/converged-solver guarantee.
+
+Decision/solve stage over all134 updates: median7.498ms,p958.891ms,max180.292ms,
+total1.380s. The3 fallback decisions total0.483s. These timers EXCLUDE the
+subsequent ISAM2-core rebuild/consistency checks, transaction copying, native
+update, covariance export and marginalization. Do not call them end-to-end
+backend latency or a1x throughput certificate. No additional timing run.
+
+VALIDATION / DEVELOPMENT RECORD
+Focused Release fixtures and ASan/UBSan passed:
+- nonlinear overshoot repaired by current-point LM; ordinary fast path exact;
+- immutable prior objective, independent prior derivative check;
+- current undamped covariance versus dense reference;
+- sparse slots and native factor identities preserved;
+- accepted estimate reads and following update;
+- actual leaf marginalization and subsequent rebuilt-chain updates;
+- temporary CBS removal, full rollback including cached LOCAL covariance;
+- independent smart-factor trial caches/in-place restoration;
+- deterministic repeated fixture states and covariances.
+
+Pinned linked libraries are uninstrumented, leak checking disabled; not a
+whole-workspace, GPU or production sanitizer certification. No full project
+test suite or GLIM/fusion run was claimed/performed in this bounded change.
+
+Development failures were retained, not erased: initial compiler rejected
+untyped nullptr in the pinned FactorGraph API (replaced with typed empty
+pointer); a zero-tolerance scalar-equality check always returned false because
+GTSAM uses strict '<tol' (replaced by explicit scalar equality/positive chart
+tolerance); the prior derivative test originally included the frozen native
+BetweenFactor's approximate Log Jacobian (isolated to the actual prior adapter).
+The final v4 Release fixture/build and sanitizer pass preceded the sole data
+capture. No candidate source or setting changed after capture started.
+
+PRESERVATION / RECOVERY
+All879 protected files unchanged; all37 frozen candidate paths unchanged.
+Private Kimera DSO SHA256:
+6ce24c266b0f0e2561f0c05de2a661a72d5a4d9335df7c3cdfa0a4c77af9b4ae
+No production source/library replacement, default promotion, commit or push.
+Existing dirty CBS/gnssFGO work preserved. Kimera-VIO and GTSAM source checkouts
+remain clean. Owned ROS processes stopped; container restored to initial stopped
+state. Candidate branch engineering/fl4q-current-chart-fallback-20261016,
+unchanged HEAD67c00392cd640a432bda9b67afcb57be4face381.
+
+DECISION / LIMITS
+PASS the isolated short-window numerical/lifecycle gate. FL4p's first harmful
+native step is repaired without changing input covariance or CBS weighting.
+This does NOT prove that every later Kimera failure is repaired, certify the
+unreplayed update438 region, establish improved ATE, or validate full-speed
+bidirectional operation. Smart-factor validity switches remain the frozen
+native objective semantics, not a newly corrected visual model. The tested
+Kimera path uses calculateEstimate; generic calculateBestEstimate forces a new
+undamped GN solve and is not certified as a publication API for this candidate.
+
+Stop here. The next meaningful gate, if authorized, is one longer SAME frozen-
+input Kimera prefix reaching the previously failing late region, with no new
+method/tuning/sequence. Do not promote merely because this30s gate passed.
+
+ARTIFACTS
+Experiment:
+/home/yeranis/repos/gnssFGO/experiments/fixed_lag_current_chart_fl4q_20261016
+Run:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/fixed_lag_current_chart_fl4q_20261016
+CoreRebuild.inc,CurrentChartFallback.h,test.cpp,PROTOCOL.txt,receipt.json;
+private source/build commands and wrapper.diff;
+run/pre_capture_receipt.json,final_receipt.json,v4_*logs,san_*logs;
+remove_capture/{preflight.json,resolved_params.yaml,complete.json,validation.json,
+acceptance.csv,objective.csv,outputs.bag,kimera.log,native.log}.

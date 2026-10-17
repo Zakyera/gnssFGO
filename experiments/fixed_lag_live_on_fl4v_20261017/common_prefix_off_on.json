@@ -1,0 +1,235 @@
+{
+  "claim": "Descriptive identical pre-stop interval; OFF failed, NOT completed120s OFF/ON validation",
+  "source_runs": {
+    "off": "/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_off_on_fl4t_20261016/prepared",
+    "on": "/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_on_fl4v_20261017/prepared"
+  },
+  "reference": {
+    "path": "/workspace/cbs_gtsam4.3/src/datasets/GrandTour/2024-10-01-11-29-55_cpt7_ie_tc.bag",
+    "topic": "/boxi/inertial_explorer/tc/odometry",
+    "sha256": "28815a4a300624766e3ffe0e1cc0f150ac60e09e395381ca25c3e6d7e04e18e3",
+    "caveat": "IE-TC GNSS/INS shares CPT7; not independent prism GT"
+  },
+  "scoring": "Frozen score(): rigid SE3 no scale, prism lever arm, 1s RPE; identical 10Hz grid for all six outputs",
+  "common_mask": {
+    "rows": 1055,
+    "start_s": 1727775011.5999973,
+    "end_s": 1727775116.9998968,
+    "span_s": 105.39989948272705,
+    "timestamps_sha256": "9194b283dfea6b1f7277bf35d441cc3b68566a9c9654dea0d3d750b86782fdcf"
+  },
+  "saved_coverage": {
+    "off_native_glim": {
+      "rows": 1087,
+      "start_s": 1727775008.675043,
+      "end_s": 1727775117.27473
+    },
+    "off_native_kimera": {
+      "rows": 531,
+      "start_s": 1727775008.1553955,
+      "end_s": 1727775117.1547897
+    },
+    "off_fused_online": {
+      "rows": 1089,
+      "start_s": 1727775008.583475,
+      "end_s": 1727775117.383475
+    },
+    "on_native_glim": {
+      "rows": 1191,
+      "start_s": 1727775008.675043,
+      "end_s": 1727775127.674791
+    },
+    "on_native_kimera": {
+      "rows": 584,
+      "start_s": 1727775008.1553955,
+      "end_s": 1727775127.7547235
+    },
+    "on_fused_online": {
+      "rows": 1193,
+      "start_s": 1727775008.583475,
+      "end_s": 1727775127.783475
+    }
+  },
+  "input_paths": {
+    "off_native_glim": "/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_off_on_fl4t_20261016/prepared/live120_off_source/odom_imu.txt",
+    "off_native_kimera": "/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_off_on_fl4t_20261016/prepared/live120_off_source/kimera_odometry.csv",
+    "off_fused_online": "/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_off_on_fl4t_20261016/prepared/live120_off_receiver/receiver/online_trajectory.tum",
+    "on_native_glim": "/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_on_fl4v_20261017/prepared/live120_on_source/odom_imu.txt",
+    "on_native_kimera": "/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_on_fl4v_20261017/prepared/live120_on_source/kimera_odometry.csv",
+    "on_fused_online": "/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_on_fl4v_20261017/prepared/live120_on_receiver/receiver/online_trajectory.tum"
+  },
+  "input_hashes": {
+    "off_native_glim": "9c4f8f00f02b8b85bae2469ecac60bf8b1953714d5ef3a31a5d719fea70793e3",
+    "off_native_kimera": "abee006812616e1bd9b96c1de7df516d7d9dde2e2ae0462092d28c8dfac5ebf9",
+    "off_fused_online": "6faf5f5a9c96b885fd5ff047c300623ac0c618e2e160cff2274f591efbafeb84",
+    "on_native_glim": "82bfe5a710ac271ff0f54689f6b955a1c2dd31ecac2f19694b08f54fa31267a3",
+    "on_native_kimera": "d09161905165a40a2460e380bdf9bf5219208109211d43ad82c157c0404cfb1c",
+    "on_fused_online": "5bf1d1367c650c95052531f0177c8c407b76e5f70c526b3b91934a0478cd7c4b"
+  },
+  "results": {
+    "off_native_glim": {
+      "rows": 1055,
+      "start_s": 1727775011.5999973,
+      "end_s": 1727775116.9998968,
+      "ATE_RMSE_m": 0.04170758860309511,
+      "translation_RPE_1s_RMSE_m": 0.02794165865397612,
+      "rotation_RPE_1s_RMSE_deg": 0.4318476845453945,
+      "path_length_prism_m": 62.308308549220655,
+      "reference_path_length_prism_m": 61.71835877231669,
+      "error_m": {
+        "n": 1055,
+        "mean": 0.032905451513283085,
+        "median": 0.026052518332330125,
+        "p95": 0.08253728034131694,
+        "max": 0.1765555851141268
+      },
+      "rpe_pairs": 1045
+    },
+    "off_native_kimera": {
+      "rows": 1055,
+      "start_s": 1727775011.5999973,
+      "end_s": 1727775116.9998968,
+      "ATE_RMSE_m": 0.6877561934735873,
+      "translation_RPE_1s_RMSE_m": 0.055603649505499675,
+      "rotation_RPE_1s_RMSE_deg": 0.5529697343088492,
+      "path_length_prism_m": 59.475521832162855,
+      "reference_path_length_prism_m": 61.71835877231669,
+      "error_m": {
+        "n": 1055,
+        "mean": 0.5745483824749441,
+        "median": 0.42963673656334145,
+        "p95": 1.504831270887321,
+        "max": 1.5500341581217572
+      },
+      "rpe_pairs": 1045
+    },
+    "off_fused_online": {
+      "rows": 1055,
+      "start_s": 1727775011.5999973,
+      "end_s": 1727775116.9998968,
+      "ATE_RMSE_m": 0.06590539494733118,
+      "translation_RPE_1s_RMSE_m": 0.032071324311437596,
+      "rotation_RPE_1s_RMSE_deg": 1.2708119095017891,
+      "path_length_prism_m": 64.03946086523472,
+      "reference_path_length_prism_m": 61.71835877231669,
+      "error_m": {
+        "n": 1055,
+        "mean": 0.05252365790452466,
+        "median": 0.0431847968895297,
+        "p95": 0.16934944646351843,
+        "max": 0.1981875494023973
+      },
+      "rpe_pairs": 1045
+    },
+    "on_native_glim": {
+      "rows": 1055,
+      "start_s": 1727775011.5999973,
+      "end_s": 1727775116.9998968,
+      "ATE_RMSE_m": 0.025925856174026013,
+      "translation_RPE_1s_RMSE_m": 0.01874102079818748,
+      "rotation_RPE_1s_RMSE_deg": 0.37336606972318553,
+      "path_length_prism_m": 61.99148227768747,
+      "reference_path_length_prism_m": 61.71835877231669,
+      "error_m": {
+        "n": 1055,
+        "mean": 0.022610360488386782,
+        "median": 0.02030642700857294,
+        "p95": 0.04483448902023367,
+        "max": 0.09403443443041958
+      },
+      "rpe_pairs": 1045
+    },
+    "on_native_kimera": {
+      "rows": 1055,
+      "start_s": 1727775011.5999973,
+      "end_s": 1727775116.9998968,
+      "ATE_RMSE_m": 0.2354943657608409,
+      "translation_RPE_1s_RMSE_m": 0.023390087025525336,
+      "rotation_RPE_1s_RMSE_deg": 0.5733956153628088,
+      "path_length_prism_m": 61.15039093889563,
+      "reference_path_length_prism_m": 61.71835877231669,
+      "error_m": {
+        "n": 1055,
+        "mean": 0.198007625260291,
+        "median": 0.14495081445105557,
+        "p95": 0.45466237573946433,
+        "max": 0.4996663119399837
+      },
+      "rpe_pairs": 1045
+    },
+    "on_fused_online": {
+      "rows": 1055,
+      "start_s": 1727775011.5999973,
+      "end_s": 1727775116.9998968,
+      "ATE_RMSE_m": 0.0507167279779407,
+      "translation_RPE_1s_RMSE_m": 0.03505133096315205,
+      "rotation_RPE_1s_RMSE_deg": 1.5626784272603262,
+      "path_length_prism_m": 64.09689036535435,
+      "reference_path_length_prism_m": 61.71835877231669,
+      "error_m": {
+        "n": 1055,
+        "mean": 0.04501836715528589,
+        "median": 0.04144510807449693,
+        "p95": 0.0908616526588346,
+        "max": 0.1268967431737388
+      },
+      "rpe_pairs": 1045
+    }
+  },
+  "comparison": {
+    "native_glim": {
+      "ATE_RMSE_m": {
+        "off": 0.04170758860309511,
+        "on": 0.025925856174026013,
+        "change_percent": -37.838995150867916
+      },
+      "translation_RPE_1s_RMSE_m": {
+        "off": 0.02794165865397612,
+        "on": 0.01874102079818748,
+        "change_percent": -32.92803039979656
+      },
+      "rotation_RPE_1s_RMSE_deg": {
+        "off": 0.4318476845453945,
+        "on": 0.37336606972318553,
+        "change_percent": -13.542185570306465
+      }
+    },
+    "native_kimera": {
+      "ATE_RMSE_m": {
+        "off": 0.6877561934735873,
+        "on": 0.2354943657608409,
+        "change_percent": -65.75903379779817
+      },
+      "translation_RPE_1s_RMSE_m": {
+        "off": 0.055603649505499675,
+        "on": 0.023390087025525336,
+        "change_percent": -57.93425929135847
+      },
+      "rotation_RPE_1s_RMSE_deg": {
+        "off": 0.5529697343088492,
+        "on": 0.5733956153628088,
+        "change_percent": 3.6938515413487583
+      }
+    },
+    "fused_online": {
+      "ATE_RMSE_m": {
+        "off": 0.06590539494733118,
+        "on": 0.0507167279779407,
+        "change_percent": -23.046166374586818
+      },
+      "translation_RPE_1s_RMSE_m": {
+        "off": 0.032071324311437596,
+        "on": 0.03505133096315205,
+        "change_percent": 9.29181041224323
+      },
+      "rotation_RPE_1s_RMSE_deg": {
+        "off": 1.2708119095017891,
+        "on": 1.5626784272603262,
+        "change_percent": 22.96693283846867
+      }
+    }
+  },
+  "omitted": "Delayed finalized fusion: unequal end-of-run future support; not substituted for live fusion.",
+  "estimators_rerun": false,
+  "inputs_unchanged": true
+}

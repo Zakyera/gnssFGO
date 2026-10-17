@@ -1,0 +1,185 @@
+FL4p — first harmful baseline step: direction/model audit
+2026-10-16. Diagnostic complete; no production repair or accuracy claim.
+
+CENTRAL FINDING
+At unchanged Kimera update89, the proposed direction is initially downhill,
+but the full native step overshoots. Its cached quadratic substantially
+misrepresents the slope at the current estimate. 99.93% of the signed total
+slope discrepancy is in native Kimera IMU factors; one old boundary IMU factor
+accounts for98.63%. Fresh current-point IMU Jacobians agree with independent
+finite differences. This identifies a specific local-model failure at this
+update, not corrupt cache assembly, a wrong GLIM payload, or a demonstrated
+IMU Jacobian implementation defect.
+
+The concrete mechanism is that marginalization fixes old linearization points
+(NOT the estimated poses). The states can move away from these anchors, but
+forceFullSolve still excludes fixed keys from relinearization. A correct solve
+of equations at those old anchors can therefore propose a bad nonlinear step.
+We have NOT proved that this one mechanism explains every later failure or
+that a particular replacement solver is production-ready.
+
+SCOPE / VALIDITY
+One23s ETH1 prefix at0.10x; native Kimera only, front stereo+CPT7, original
+25-state profile, Gaussian classic active_window_temporary. The incoming GLIM
+means/covariances are the frozen post-alignment FL4n messages. Native alignment
+is not repeated on already aligned inputs. Native Kimera IMU support remains
+current (KIMERA_IMU_SAMPLE_SUPPORT unset), exactly as in FL4n. No GLIM process,
+gnssFGO process, WNOA change, covariance change, scale/gate/health/robust loss,
+FL4o acceptance, new solver, or full-sequence replay.
+
+The observer runs only at update89, after normal optimization and before
+marginalization. It never feeds a correction back. All99 original ROS odometry
+messages are serialized-byte-identical to the saved baseline prefix; all99
+ordinary objective rows match exactly. All95 received wire messages and their
+backend update/sender/receiver bindings and full covariances match the frozen
+prefix exactly (aligned-mean round-trip max8.33e-17). Native span22.599878s;
+71 scheduled retirements; wall262.10s. No new ATE/RPE was computed.
+
+METHOD
+At the same post-removal graph define d0=Local(theta,X_before), d1=native delta,
+s=d1-d0, and X(alpha)=Retract(theta,d0+alpha*s). Evaluate independent cloned
+factors at alpha0, ±1e-2 through ±1e-8, .25, .5,1. The unanchored marginal
+prior is evaluated as its saved Gaussian in its owning theta chart, including
+the constant; ordinary LinearContainerFactor::error would omit that prior.
+
+Cached model slope is (H*d0-g)^T*s. Independently linearize native factors at
+X_before, transport the path tangent into that local chart, and preserve the
+prior's original chart using FL4l's diagnostic OriginalChartPrior. Compare
+the resulting directional derivative against centered finite differences.
+This diagnostic current-point graph is NEVER installed in the smoother.
+
+Repeat objective probes with clone triangulation caches explicitly reset,
+without resetting live caches. Record per-factor statuses, costs and slopes.
+Check live estimate/theta, Gaussian H/g and smart-cache signatures unchanged.
+The complete native-output prefix equality provides the separate runtime
+noninterference check. The full nonlinear graph is not serialized here; the
+recorded factor-wise curves, matrices and frozen-input capture are retained.
+
+RESULT 1: DOWNHILL DIRECTION, BAD FULL STEP
+Fraction of original step       Actual original-chart cost
+0                               373023.810888
+0.001                           372974.823817
+0.01                            372545.573818
+0.25                            366105.967802
+0.5                             369941.129010
+1                               409915.516752
+
+The full step increases cost by36891.705864 (+9.89%). A quarter step decreases
+it by6917.843086. These are measurement-weighted objective units, not meters.
+No fraction was applied to the real solver in this task.
+
+Cached-model predicted full-step change: -64153.272478 (improvement).
+Actual full-step change:                 +36891.705864 (worsening).
+Cached directional slope:               -128306.544957.
+Measured local directional slope:       approximately -49129.336.
+Fresh current-point model slope:        -49152.905486.
+
+Centered finite-difference slopes at h=1e-3,1e-4,1e-5,1e-6 are respectively
+-49129.32497,-49129.33619,-49129.33597,-49129.33943. The sign and magnitude
+are stable. Tiny-h second differences suffer cancellation: do not interpret
+the h<=1e-6 curvature estimates as reliable. At1e-3/1e-4 measured curvature
+is approximately284507/284506 versus cached128307, also showing mismatch.
+
+RESULT 2: FACTOR ATTRIBUTION
+Family          Count  Cached slope    Finite-difference slope   Cost change
+native IMU        26   -110729.060800   -31604.973759             +45712.617765
+bias between      26      -426.656759     -426.656759              +2558.542614
+pose between      24    -17127.527416   -17098.486460             -11397.029216
+marginal prior     1       -22.343499      -22.343499                 +9.783467
+visual smart    1448        -0.956483      +23.124485                 +7.791234
+
+The24 pose-between factors are the active incoming CBS relative-pose factors
+in this captured source graph. Their aggregate cost decreases in the harmful
+full step. The dominant problem is the competing native IMU local model, not
+evidence that this arriving GLIM message is intrinsically bad.
+
+Dominant IMU factor: slot13942, keys x63,v63,x64,v64,b63.
+  Cached predicted slope:                  -40.310083
+  Fresh current-point Jacobian slope:   +78050.060466
+  Numerical slope:                      +78050.062600
+  Cost before:                           156831.402454
+  Cost after full step:                  245563.707948
+This factor alone increases cost by88732.305494; other factors partly offset
+it. The agreement of the fresh and numerical derivatives isolates the
+problem to using the old local approximation here, not a newly demonstrated
+derivative formula/sign bug. Cache-versus-fresh-at-the-SAME-theta equality
+from FL4n was therefore entirely compatible with this failure.
+
+RESULT 3: FIXED ANCHORS AND VISUAL CHECK
+Before marginalization this graph has27 poses/81 total keys. Sixteen pose
+linearization points plus b63/v63 are fixed. Across poses, current-estimate
+displacement from theta reaches3.05768degrees and0.218636m in SE(3) translation
+coordinates. x63 and x64 both have fixed pose anchors. x63 displacement is
+0.034621rad/0.218636m; x64 is0.053367rad/0.193156m. These are anchor-to-estimate
+offsets, NOT errors against ground truth or the size of one update.
+
+At alpha0:661 visual factors valid,404 far,79 behind-camera,304 outlier.
+There are zero visual validity transitions for ±1e-3 and smaller steps;
+38 factors change status over the full step. Resetting only cloned
+triangulation caches changes total probe costs by at most5.87153; it changes
+neither endpoint cost. Thus visual switching/cache thresholds exist, but do
+not explain the approximately36.9k full-step increase or79.2k slope mismatch
+at this update. The small fresh-gradient/finite-difference remainder is mostly
+the smart-factor treatment; do not present fresh and numerical gradients as
+exactly equal for every factor.
+
+CODE PATH
+All paths below are relative to /home/yeranis/repos/V4RL/cbs_gtsam4.3/.
+- src/cbs/src/bpsam/bpsam.cpp:4232-4233 requests force_relinearize and
+  forceFullSolve during active-window CBS update/removal handling.
+- src/gtsam/gtsam/nonlinear/ISAM2.cpp:739-741 creates an unanchored marginal
+  LinearContainerFactor and marks its keys fixed.
+- src/gtsam/gtsam/nonlinear/ISAM2-impl.h:382-387 removes those fixed keys
+  even from the forced-relinearization selection.
+- src/gtsam/gtsam/nonlinear/ISAM2.cpp:773 onward solves the cached GN system;
+  there is no original-chart objective step-acceptance check on this path.
+- src/gtsam/gtsam/nonlinear/LinearContainerFactor.cpp:77-79 returns zero
+  from ordinary error() for an unanchored prior. Native Dogleg calls the
+  ordinary nonlinear graph error (ISAM2.cpp:815-819; DoglegOptimizerImpl.h:167),
+  so a blind Dogleg toggle is not a certified remedy for this graph.
+- src/gtsam/gtsam_unstable/slam/SmartStereoProjectionFactor.h:125 onward
+  uses a retriangulation threshold; its error path at418 onward returns zero
+  on invalid triangulation outside HANDLE_INFINITY. This explains why cache
+  policy and validity are explicitly distinguished in the diagnostic.
+
+VALIDATION / PRESERVATION
+Release and focused ASan/UBSan tests pass: known downhill overshoot/uphill
+derivatives, original-chart prior derivative, deterministic repeats, actual
+temporary-CBS retirement/marginalization, exact fixture state/covariance
+nonmutation, independent smart-clone evaluation/reset. Linked pinned libraries
+are uninstrumented and leak checking disabled; not whole-program certification.
+An initial synthetic scalar test used a shadowed X() key helper; it was fixed
+to symbol_shorthand::X before capture, and its failure log retained. The repeat
+cost check uses the exact same reconstructed path point to avoid mistaking
+SE(3) round-trip rounding for nondeterminism. No data capture retry occurred.
+
+All879 protected paths unchanged. All32 frozen candidate paths unchanged after
+capture. Kimera private DSO SHA256:
+c99c1047a67b48d4a2448850f630b29704d0bad79555deac4b7517dd9a5d4a78
+Container cbsms_ws_gpu restored stopped. Existing dirty source work preserved.
+No commit/push/default promotion. gnssFGO HEAD unchanged:
+67c00392cd640a432bda9b67afcb57be4face381
+
+DECISION / LIMIT
+First bad baseline step is an oversized downhill step built from a misleading
+old-anchor model, dominated by a boundary native IMU factor. This is stronger
+localization than "covariance too small" or "iSAM2 is broken"; it does not
+establish that marginalization itself is wrong or that all subsequent failures
+have the same cause. FL4o update108 occurred on an already changed trajectory
+and was deliberately not investigated in this task.
+
+The justified next candidate is a current-estimate local solve with the
+existing marginal prior evaluated/differentiated in its ORIGINAL coordinates,
+plus objective-based step acceptance. Do not unfreeze/reanchor priors naively,
+change covariance, inherit removed CBS information, or infer that more solves
+of the unchanged old-anchor equations repair the issue. No candidate is
+implemented or authorized by this report. Stop for discussion.
+
+ARTIFACTS
+Experiment: /home/yeranis/repos/gnssFGO/experiments/fixed_lag_direction_fl4p_20261016
+Run: /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/fixed_lag_direction_fl4p_20261016
+analysis.json, final_receipt.json, pre_capture_receipt.json, wrapper.diff;
+remove_capture/validation.json, objective.csv, outputs.bag, kimera.log;
+remove_capture/direction/update_89/{factors.csv,cost_curve.csv,summary.txt,
+cache_H.txt,cache_g.txt,current_H.txt,current_g.txt,d0.txt,d1.txt,
+path_tangent_at_before.txt,keys.txt}.

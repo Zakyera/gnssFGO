@@ -1,0 +1,160 @@
+FL4o — nonlinear step acceptance candidate: protection works, repair incomplete
+Date: 2026-10-16 local (2026-10-15 UTC)
+
+OUTCOME
+One private bounded Kimera-only frozen-input replay was attempted. The new
+safeguard shortened three harmful full steps, but stopped at update108 because
+none of16 tested smaller steps reduced the original-chart nonlinear objective.
+The transaction rolled back and the controller stopped playback. There was no
+automatic retry, covariance tuning, LM addition, factor-dropping fallback or
+production promotion. This is NOT a completed94s experiment or a validated
+trajectory repair. No ATE/RPE conclusion is drawn from its stopped prefix.
+
+WHY THIS CHANGE
+FL4n established that the baseline cached and freshly evaluated same-theta
+linear systems matched, and the Bayes-tree solve satisfied those equations,
+yet the accepted nonlinear step could substantially increase the full cost.
+FL4o tests one narrower hypothesis: keep the native GN direction, but shorten
+the update when its nonlinear cost increases. It is not another covariance or
+belief-policy experiment, and does not change the temporary-CBS/no-inheritance
+semantics.
+
+IMPLEMENTATION
+- Overlay only, in a new private run directory. Production source/library
+  files are not edited. The receiver/fuser is not run or changed.
+- At each smoother update, retain the previous estimate plus initialized new
+  variables. Perform the normal factor additions/removals and iSAM update.
+  Before marginalization, compare both estimates on this SAME post-removal
+  graph and its current owning theta chart.
+- Evaluate normal nonlinear factors on fresh clones. For an unanchored
+  LinearContainer marginal prior evaluate its saved Gaussian at
+  Local(theta,X), including the constant; its ordinary error(X)==0 is not used.
+- Full-step acceptance tolerance:1e-10*(1+abs(cost_before)). If the full step
+  fails this test, interpolate the two deltas in theta coordinates with
+  alpha=1/2,1/4,...,2^-16. Accept the first decrease exceeding that tolerance.
+  Invalid cost or exhausted search throws. No LM fallback is included.
+- Commit the accepted delta while retaining theta, undamped Bayes tree,
+  cached Gaussian equations and factor covariances. Clear the pending delta
+  recomputation mask and invalidate the covariance cache. This separates the
+  accepted nonlinear step from the Gaussian minimizer, as step-controlled
+  optimizers do. It is NOT a stationarity claim, covariance recalibration, or
+  proof that covariance is newly linearized at the accepted point.
+- Wrap the complete smoother update in a transaction. Restore tree, values,
+  timestamps, active-CBS bookkeeping and slots on failure. SmartStereo object
+  identities must survive because Kimera tracks these exact shared pointers.
+  Their three mutable caches (result_, cameraPosesTriangulation_, Fs) are
+  restored in place through a private nonvirtual header helper. Immutable
+  measurements, calibration, parameters and pointers are not replaced.
+- The candidate is scoped to the pinned Gaussian/active_window_temporary
+  configuration, with health weighting and temporary-linear mode disabled.
+  It is not a generic rollback guarantee for other BPSAM modes. The existing
+  calculateBestEstimate() forces a raw GN solve; no such caller exists in the
+  current Kimera path, and this candidate does not certify that API.
+
+SYNTHETIC VALIDATION
+Release and focused AddressSanitizer/UndefinedBehaviorSanitizer tests pass:
+1. Nonlinear x^2-1 overshoot reduced by bounded shortening; ordinary decreasing
+   step accepted unchanged; invalid cost/no decreasing step fail closed.
+2. Unanchored prior cost4.5 correctly recovered where ordinary error() is0;
+   missing prior chart rejected.
+3. Accepted delta survives reads, seeds the next update, and survives actual
+   leaf marginalization. Acceptance leaves theta, cached H/g, tree equations
+   and covariance exactly unchanged in the fixtures.
+4. Smart-factor objective evaluation does not contaminate original caches;
+   cache rollback preserves the original shared-pointer identity. Unknown
+   rollback factor families are rejected.
+5. Ten-update pose-chain fixture with temporary CBS retirement: exact normal
+   output/covariance parity with the selector disabled, deterministic repeat,
+   and exact restoration after an injected exception following retirement and
+   marginalization, including timestamps, slots, tree and active-CBS count.
+
+Tests are recorded in compile5_test_run.log and abi_matched_san_run.log.
+The sanitizer check instruments the new overlay/test, not all pinned libraries.
+Leak checking is disabled; earlier FL4k documented73bytes in unchanged library
+allocations. Therefore this is NOT a whole-program sanitizer/leak certificate.
+Development failures are retained: deleted whole-smart-object assignment,
+missing unstable-library linkage, fixture key-alias shadowing, strict '<0'
+scalar-equality test, and sanitizer Eigen allocation-ABI mismatch. The final
+cache helper restores only mutable fields; exact scalar checks use equality;
+the final sanitizer uses FL4k's EIGEN_MALLOC_ALREADY_ALIGNED=1 and non-PIE flags
+to match existing libraries. These were corrected before the one data capture.
+
+BOUNDED DATA CAPTURE
+ETH1 mission2024-10-01-11-29-55, first94s planned, playback0.10x. Kimera front
+stereo+CPT7, original25-state profile;450 previously frozen post-alignment
+GLIM beliefs planned, with original arrival times, means, full6x6 covariances
+and receiver key bindings. Classic CBS active_window_temporary; live_revision
+false; no health weighting, robust loss, new priors or scaling. No GLIM run,
+fusion run, full-sequence run or closed-loop source exchange in this diagnostic.
+The exact sensor/profile directory is byte-identical to FL4n.
+
+All108 accepted updates (0..107) satisfy the objective check. Three needed
+shortening; the other105 kept the native full proposal:
+
+update     before cost        full proposal      accepted cost       alpha
+89           373023.810888       409915.516752       369941.129010      0.50
+101          497046.544993      1080857.014255       494287.694760      0.25
+103         1901348.647341      2948443.048871      1878002.055964      0.25
+
+At update108:
+  before                 1532262.1888271268
+  full proposal          1933392.8086438328
+  best tested short step 1532262.5708110116
+  smallest tested alpha  1/65536
+
+Even the best trial was0.3819838848 above the starting cost, not a decrease.
+The exception occurred before accepted-state publication/marginalization for
+update108. The wrapper rollback executed; Kimera's exception graph dump shows
+the restored earlier graph, and native output ends at107. Full-state exact
+rollback is established by the synthetic fixture, not a saved before/after
+memory checkpoint of this data update.
+
+Stopped-prefix conservation checks:
+-105 received wire messages exactly equal the corresponding frozen prefix;
+  all105 means/covariances/update IDs/sender and receiver bindings match.
+  The105th belongs to the failed transaction:105 arrivals are NOT105 committed
+  update transactions. The full450-input gate did not run/pass.
+-108 native poses,24.399867537s timestamp span; last published physical time
+  is bag-relative25.555262804s. Do not label these as94s/40s results.
+-Native output is byte-numerically identical to FL4n (excluding receipt time)
+  through update88; the first difference is precisely the first shortening89.
+-80 committed scheduled retirements. No active-window recovery, staged-factor
+  drop, added recovery prior, or retry-without-CBS occurred before the intended
+  acceptance failure.
+-No update108 native pose is published. No completed/validation marker for a
+  successful full capture exists. failure_analysis.json explicitly marks false.
+
+INTERPRETATION AND STOP
+Step-length control can prevent some harmful accepted steps, but shrinking this
+native proposal is insufficient to complete even the bounded replay. Sixteen
+sampled failures do not prove that every conceivable step length is uphill,
+identify a unique cause, or prove the beliefs are wrong. They do rule out
+claiming that this particular bounded backtracking safeguard is a complete fix.
+
+The next decision is about producing a reliable descent direction for the
+original-chart objective (for example a chart-consistent damped local solve),
+not relaxing the acceptance tolerance, adding covariance scaling, inheriting
+external factors in the marginal prior, or simply running a longer sequence.
+No such follow-up is implemented here. Any later candidate must retain the
+current original-prior chart and no-inheritance constraints, and be validated
+before promotion. Do not conclude CBS performance from this incomplete capture.
+
+ARTIFACTS AND RESTORATION
+Run root:
+ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/fixed_lag_step_acceptance_fl4o_20261016
+Code/protocol/report:
+ /home/yeranis/repos/gnssFGO/experiments/fixed_lag_step_acceptance_fl4o_20261016
+Key evidence: pre_capture_receipt.json, failure_analysis.json, wrapper.diff,
+remove_capture/{acceptance.csv,objective.csv,failed.txt,outputs.bag,kimera.log,
+preflight.json,resolved_params.yaml}, compile5_* and abi_matched_san_* logs.
+analyze.py (completed-coverage accuracy comparison) was NOT executed.
+
+Candidate libkimera_vio.so SHA256:
+ 2cfb63fc0b987914c9c37f23ae03a29c3d0c743e30371a30f009ac6042175cfe
+All879 protected prior/runtime paths unchanged. All31 pre-capture candidate
+hashes unchanged after capture. Existing dirty work and artifacts preserved.
+Container cbsms_ws_gpu restored to its original stopped state.
+No commit, push or promotion. gnssFGO HEAD unchanged:
+ 67c00392cd640a432bda9b67afcb57be4face381
+
+DECISION: SAFEGUARD_TESTED; BOUNDED_REPLAY_FAILED; REPAIR_NOT_COMPLETE.

@@ -1,0 +1,38 @@
+--- 
++++ 
+@@ -15,8 +15,8 @@
+ assert json.loads((R/'sanitizer_passed.json').read_text())['passed']
+ with socket.socket() as s:
+     s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
+-    s.bind(('127.0.0.1',11439))
+-os.environ.update(ROS_MASTER_URI='http://127.0.0.1:11439',ROS_HOSTNAME='127.0.0.1',
++    s.bind(('127.0.0.1',11440))
++os.environ.update(ROS_MASTER_URI='http://127.0.0.1:11440',ROS_HOSTNAME='127.0.0.1',
+     ROS_LOG_DIR=str(D/'ros_logs'),FL4M_RETIREMENT=mode,FL4M_AUDIT=str(D/'objective.csv'),
+     KIMERA_CBS_REVISION_AUDIT='1',FL4Q_ENABLE='1',FL4Q_LOG=str(D/'acceptance.csv'))
+ os.environ.pop('KIMERA_IMU_SAMPLE_SUPPORT',None)
+@@ -38,7 +38,7 @@
+ def run(args):return subprocess.check_output(args,text=True)
+ master=rosgraph.Master('/fl4m_preflight')
+ try:
+-    core=start(['roscore','-p','11439'],'core')
++    core=start(['roscore','-p','11440'],'core')
+     wait_ready(lambda:master.getPid()>0)
+     run(['rosparam','set','/use_sim_time','true'])
+     seed=start(['rostopic','pub','-r','20','/clock','rosgraph_msgs/Clock','{clock: {secs: 1727775007, nsecs: 0}}'],'clock')
+@@ -79,12 +79,12 @@
+     time.sleep(2)
+     os.killpg(seed.pid,signal.SIGINT);seed.wait(timeout=10);handles.remove(seed)
+     ds=W/'src/datasets/GrandTour';mission='2024-10-01-11-29-55'
+-    play=start(['rosbag','play','--quiet','--clock','--delay=2','--rate=.10','--duration=30',
++    play=start(['rosbag','play','--quiet','--clock','--delay=2','--rate=.10','--duration=94',
+         str(ds/(mission+'_hesai.bag')),str(ds/(mission+'_cpt7_imu.bag')),str(ds/(mission+'_alphasense.bag')),str(R/'aligned_inputs.bag'),
+         '--topics','/boxi/cpt7/imu','/boxi/alphasense/front_left/image_raw/compressed','/boxi/alphasense/front_right/image_raw/compressed','/kimera/cbs/odom_belief_in'],'play')
+-    (D/'started.json').write_text(json.dumps(dict(pid=os.getpid(),play_pid=play.pid,start=time.time(),duration=30,mode=mode)))
++    (D/'started.json').write_text(json.dumps(dict(pid=os.getpid(),play_pid=play.pid,start=time.time(),duration=94,mode=mode)))
+     print('STARTED '+mode,flush=True)
+-    deadline=time.monotonic()+460
++    deadline=time.monotonic()+1150
+     diagnostic_offset=0
+     while play.poll() is None:
+         assert launch.poll() is None and rec.poll() is None,'owned process exited'

@@ -1,0 +1,277 @@
+{
+  "reference": {
+    "path": "/workspace/cbs_gtsam4.3/src/datasets/GrandTour/2024-10-01-11-29-55_cpt7_ie_tc.bag",
+    "sha256": "28815a4a300624766e3ffe0e1cc0f150ac60e09e395381ca25c3e6d7e04e18e3",
+    "topic": "/boxi/inertial_explorer/tc/odometry",
+    "frame_ids": [
+      "enu_origin"
+    ],
+    "child_frame_ids": [
+      "cpt7_imu"
+    ],
+    "caveat": "IE-TC GNSS/INS reference shares CPT7 IMU; not independent prism GT"
+  },
+  "common_mask": {
+    "rows": 1160,
+    "start_s": 1727775011.5999973,
+    "end_s": 1727775127.4998868,
+    "timestamps_sha256": "23c6a34297e3bde3928306cf38b91b00a92b1b6eba863ea000ed958a09b9417e",
+    "interpolation_gap_estimate_s": 0.5,
+    "interpolation_gap_reference_s": 0.05
+  },
+  "convention": "Per-path rigid SE(3) no-scale alignment for ATE at prism lever arm; 1s RPE in prism frame, no global alignment",
+  "results": {
+    "on_native_glim": {
+      "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_on_fl4v_20261017/prepared/live120_on_source/odom_imu.txt",
+      "sha256": "82bfe5a710ac271ff0f54689f6b955a1c2dd31ecac2f19694b08f54fa31267a3",
+      "full_saved_rows": 1191,
+      "full_saved_span_s": 118.99974799156189,
+      "full_saved_path_length_CPT7_m": 72.11486248233004,
+      "full_saved": {
+        "rows": 1191,
+        "start_s": 1727775008.675043,
+        "end_s": 1727775127.674791,
+        "span_s": 118.99974799156189,
+        "ATE_RMSE_m": 0.026276950171254834,
+        "translation_RPE_1s_RMSE_m": 0.01819685104734034,
+        "rotation_RPE_1s_RMSE_deg": 0.3604767061253861,
+        "path_length_prism_m": 72.24759557036398,
+        "reference_path_length_prism_m": 71.77543738605036,
+        "rpe_pairs": 1179,
+        "error_m": {
+          "n": 1191,
+          "mean": 0.0230938899887233,
+          "median": 0.021388215355739516,
+          "p95": 0.044825440642862854,
+          "max": 0.09500503533059088
+        }
+      },
+      "common": {
+        "rows": 1160,
+        "start_s": 1727775011.5999973,
+        "end_s": 1727775127.4998868,
+        "ATE_RMSE_m": 0.026048466132588818,
+        "translation_RPE_1s_RMSE_m": 0.01836913642428378,
+        "rotation_RPE_1s_RMSE_deg": 0.36477144244973847,
+        "path_length_prism_m": 71.86054732811593,
+        "reference_path_length_prism_m": 71.58950310779888,
+        "error_m": {
+          "n": 1160,
+          "mean": 0.022788555676723186,
+          "median": 0.02099812847323345,
+          "p95": 0.04550595997873191,
+          "max": 0.09623597095185796
+        },
+        "rpe_pairs": 1150
+      }
+    },
+    "on_native_kimera": {
+      "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_on_fl4v_20261017/prepared/live120_on_source/kimera_odometry.csv",
+      "sha256": "d09161905165a40a2460e380bdf9bf5219208109211d43ad82c157c0404cfb1c",
+      "full_saved_rows": 584,
+      "full_saved_span_s": 119.59932804107666,
+      "full_saved_path_length_CPT7_m": 71.32427839830873,
+      "full_saved": {
+        "rows": 584,
+        "start_s": 1727775008.1553955,
+        "end_s": 1727775127.7547235,
+        "span_s": 119.59932804107666,
+        "ATE_RMSE_m": 0.270672291482413,
+        "translation_RPE_1s_RMSE_m": 0.023277922126709465,
+        "rotation_RPE_1s_RMSE_deg": 0.5702678044886416,
+        "path_length_prism_m": 71.34446383718787,
+        "reference_path_length_prism_m": 71.68422970908536,
+        "rpe_pairs": 1151,
+        "error_m": {
+          "n": 584,
+          "mean": 0.24437813581885734,
+          "median": 0.2192172335478642,
+          "p95": 0.43779817425044903,
+          "max": 0.5131534199024144
+        }
+      },
+      "common": {
+        "rows": 1160,
+        "start_s": 1727775011.5999973,
+        "end_s": 1727775127.4998868,
+        "ATE_RMSE_m": 0.2694822348229079,
+        "translation_RPE_1s_RMSE_m": 0.023276266899369537,
+        "rotation_RPE_1s_RMSE_deg": 0.5703309869767054,
+        "path_length_prism_m": 70.96423888739983,
+        "reference_path_length_prism_m": 71.58950310779888,
+        "error_m": {
+          "n": 1160,
+          "mean": 0.24295665076238313,
+          "median": 0.2139794400599595,
+          "p95": 0.4388990273452473,
+          "max": 0.5132718116095168
+        },
+        "rpe_pairs": 1150
+      }
+    },
+    "on_fused_online": {
+      "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_on_fl4v_20261017/prepared/live120_on_receiver/receiver/online_trajectory.tum",
+      "sha256": "5bf1d1367c650c95052531f0177c8c407b76e5f70c526b3b91934a0478cd7c4b",
+      "full_saved_rows": 1193,
+      "full_saved_span_s": 119.19999980926514,
+      "full_saved_path_length_CPT7_m": 74.95602504498638,
+      "full_saved": {
+        "rows": 1193,
+        "start_s": 1727775008.583475,
+        "end_s": 1727775127.783475,
+        "span_s": 119.19999980926514,
+        "ATE_RMSE_m": 0.058737196485911004,
+        "translation_RPE_1s_RMSE_m": 0.03539582038893621,
+        "rotation_RPE_1s_RMSE_deg": 1.6150348747445087,
+        "path_length_prism_m": 75.71586696158565,
+        "reference_path_length_prism_m": 71.8697437748205,
+        "rpe_pairs": 1182,
+        "error_m": {
+          "n": 1193,
+          "mean": 0.053051688982133284,
+          "median": 0.05009785805250025,
+          "p95": 0.09533597147353573,
+          "max": 0.14554560567939517
+        }
+      },
+      "common": {
+        "rows": 1160,
+        "start_s": 1727775011.5999973,
+        "end_s": 1727775127.4998868,
+        "ATE_RMSE_m": 0.05687567129215114,
+        "translation_RPE_1s_RMSE_m": 0.03585006756447435,
+        "rotation_RPE_1s_RMSE_deg": 1.6345628965199264,
+        "path_length_prism_m": 74.22369165107258,
+        "reference_path_length_prism_m": 71.58950310779888,
+        "error_m": {
+          "n": 1160,
+          "mean": 0.05089928570614426,
+          "median": 0.047355925643994976,
+          "p95": 0.09650817172149288,
+          "max": 0.1453901706680171
+        },
+        "rpe_pairs": 1150
+      }
+    },
+    "on_fused_finalized": {
+      "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_on_fl4v_20261017/prepared/live120_on_receiver/receiver/finalized_trajectory.tum",
+      "sha256": "f5d473fcb0955b1160afa62befd2a479d747019f45819b910344230f94a627da",
+      "full_saved_rows": 1193,
+      "full_saved_span_s": 119.19999980926514,
+      "full_saved_path_length_CPT7_m": 72.09984468915476,
+      "full_saved": {
+        "rows": 1193,
+        "start_s": 1727775008.583475,
+        "end_s": 1727775127.783475,
+        "span_s": 119.19999980926514,
+        "ATE_RMSE_m": 0.05576768451258408,
+        "translation_RPE_1s_RMSE_m": 0.01623868496872894,
+        "rotation_RPE_1s_RMSE_deg": 0.34136171238745355,
+        "path_length_prism_m": 72.2314397196228,
+        "reference_path_length_prism_m": 71.8697437748205,
+        "rpe_pairs": 1182,
+        "error_m": {
+          "n": 1193,
+          "mean": 0.049760124401585656,
+          "median": 0.042679715369434754,
+          "p95": 0.09874183465247963,
+          "max": 0.13651417090589005
+        }
+      },
+      "common": {
+        "rows": 1160,
+        "start_s": 1727775011.5999973,
+        "end_s": 1727775127.4998868,
+        "ATE_RMSE_m": 0.054369468307782894,
+        "translation_RPE_1s_RMSE_m": 0.01643470168305273,
+        "rotation_RPE_1s_RMSE_deg": 0.3457776509833248,
+        "path_length_prism_m": 71.80322393370611,
+        "reference_path_length_prism_m": 71.58950310779888,
+        "error_m": {
+          "n": 1160,
+          "mean": 0.04785323855975649,
+          "median": 0.0397753762717277,
+          "p95": 0.10096069280530941,
+          "max": 0.13651941486514269
+        },
+        "rpe_pairs": 1150
+      }
+    }
+  },
+  "covariance": {
+    "on": {
+      "kimera_front": {
+        "versions": 14250,
+        "stable_ids": 582,
+        "revised_ids": 581,
+        "rotation_trace_rad2": {
+          "n": 14250,
+          "mean": 3.480491915934103e-08,
+          "median": 2.941785867787393e-08,
+          "p95": 6.699416653799575e-08,
+          "max": 1.153820010534807e-05
+        },
+        "translation_trace_m2": {
+          "n": 14250,
+          "mean": 7.6056351583622314e-06,
+          "median": 2.2780782837078124e-06,
+          "p95": 2.6607930777206257e-05,
+          "max": 0.0004486395488342956
+        },
+        "min_eigenvalue": 1.0611271764231793e-09,
+        "max_eigenvalue": 0.000311951998095779,
+        "max_symmetry_error": 0.0,
+        "first_last_rotation_trace_ratio": {
+          "n": 581,
+          "mean": 0.5964722686802164,
+          "median": 0.6015390614849089,
+          "p95": 0.8509353186806984,
+          "max": 1.4235217317471753
+        },
+        "first_last_translation_trace_ratio": {
+          "n": 581,
+          "mean": 0.4456309120326028,
+          "median": 0.31342319499029436,
+          "p95": 1.0763968372705033,
+          "max": 6.047941420771222
+        }
+      },
+      "glim_hesai": {
+        "versions": 56506,
+        "stable_ids": 1189,
+        "revised_ids": 1188,
+        "rotation_trace_rad2": {
+          "n": 56506,
+          "mean": 1.0074741439267729e-08,
+          "median": 7.926544830965032e-09,
+          "p95": 2.306517028140866e-08,
+          "max": 5.469049744308039e-08
+        },
+        "translation_trace_m2": {
+          "n": 56506,
+          "mean": 1.657580024563812e-06,
+          "median": 1.5906151788588714e-06,
+          "p95": 2.7095673117457146e-06,
+          "max": 6.616749365496288e-06
+        },
+        "min_eigenvalue": 2.040492070345575e-10,
+        "max_eigenvalue": 3.3892193175606674e-06,
+        "max_symmetry_error": 0.0,
+        "first_last_rotation_trace_ratio": {
+          "n": 1188,
+          "mean": 0.56187035043885,
+          "median": 0.636680668463083,
+          "p95": 0.8087783776438907,
+          "max": 0.8802190611488161
+        },
+        "first_last_translation_trace_ratio": {
+          "n": 1188,
+          "mean": 0.44466450621113024,
+          "median": 0.48515332450467674,
+          "p95": 0.5963153160342136,
+          "max": 0.6838392575784765
+        }
+      }
+    }
+  }
+}

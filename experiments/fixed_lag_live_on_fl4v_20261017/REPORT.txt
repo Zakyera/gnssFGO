@@ -1,0 +1,191 @@
+FL4v — standalone ETH1 first-120-second live CBS-ON capture
+2026-10-17
+=========================================================
+
+Outcome: COMPLETE; frozen source/receiver acceptance, coverage, conservation,
+and deterministic receiver replay checks PASS. No source failure or retry.
+This is a bounded 0.10x live result, not a stationarity or 1x certification.
+The previous FL4t OFF failure remains unresolved. This is NOT a matched
+completed-120-second OFF/ON comparison.
+
+1. Authorization and unchanged configuration
+-------------------------------------------
+User: "I want you to run again the cbs on for 120 seconds and see what will
+happen." One fresh standalone ON attempt was explicitly authorized despite
+the earlier failed OFF. No new OFF capture, solver repair or tuning was made.
+
+ETH1 mission 2024-10-01-11-29-55, bag offset 0, requested duration 120 s,
+playback 0.10x, source post-drain 25 s. Three estimators co-ran live; gnssFGO
+was ready before playback, not injected offline after source completion.
+Headless as in FL4t, with graph inspectors/presentation disabled.
+
+Native GLIM: same Hesai+CPT7, 5 s lag, shared-native LOCAL covariance provider.
+Native Kimera: same front stereo+CPT7, 25 states, FL4q private candidate DSO.
+Classic bidirectional active_window_temporary CBS; mean alignment enabled;
+0.20 s horizon, one pair/update, stride 1, full Schur-relative 6x6 covariance,
+Gaussian factors and covariance scales 1; source live_revision disabled.
+Native source IMU consumption unchanged (no experimental override added).
+
+Receiver: exact FL4e 7 s fixed-lag source-WNOA, independent 100 ms support
+clock, 59 startup samples, same Qc/priors, downstream stable-ID replacement.
+No central IMU factors, GNSS factors, Huber, gating, health weighting, or
+covariance rescaling. CPT7 samples supply the receiver clock, not a new
+central IMU motion measurement. Preserve the distinction from source IMUs.
+
+Only launch identities, paths, ROS port 11444, and standalone-ON admission
+changed relative to FL4t. All source/receiver runtime checks stayed enabled.
+The frozen evaluator was restricted to the ON files; scoring math unchanged.
+No FL4u diagnostic instrumentation used; no binaries rebuilt.
+
+Kimera DSO SHA256:
+6ce24c266b0f0e2561f0c05de2a661a72d5a4d9335df7c3cdfa0a4c77af9b4ae
+Receiver executable SHA256:
+53c96a2b7a762800cf2291166dc78520269098684411de641b52bee6a54dc5c9
+
+2. Actual coverage and reference
+-------------------------------
+Capture wall time including startup/drain: 1245.904 s (~20.77 min).
+11986 CPT7 clock samples, physical first-to-last span 119.850027 s.
+
+Output                 Saved poses   Span (s)    CPT7 path (m)
+Original/native GLIM       1191      118.999748      72.114862
+Original/native Kimera      584      119.599328      71.324278
+Fusion online/as-played    1193      119.200000      74.956025
+Fusion delayed finalized   1193      119.200000      72.099845
+
+GLIM timestamps: 1727775008.675043 through 1727775127.674791.
+Kimera timestamps: 1727775008.1553955 through 1727775127.7547235.
+Fusion timestamps: 1727775008.583475 through 1727775127.783475.
+GLIM first output is 0.671568 s after first clock sample, final output
+0.178711 s before last. Kimera corresponding offsets: 0.151921 / 0.098778 s.
+GLIM maximum pose gap: 0.100990 s. Kimera has the existing startup gap of
+3.199979 s; its maximum post-startup gap is 0.200043 s. Therefore its nominal
+119.60 s span must not be described as uniformly sampled from its first pose.
+
+Every saved pose was scored against the full-window IE-TC reference:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/datasets/GrandTour/2024-10-01-11-29-55_cpt7_ie_tc.bag
+topic /boxi/inertial_explorer/tc/odometry; enu_origin / cpt7_imu.
+Reference SHA256:
+28815a4a300624766e3ffe0e1cc0f150ac60e09e395381ca25c3e6d7e04e18e3
+
+IMPORTANT: IE-TC is a GNSS/INS reference sharing CPT7 IMU with the sources,
+not independent prism measurements. Existing evaluation convention retained:
+prism lever-arm conversion; per-path rigid SE(3), no-scale alignment for ATE;
+1 s relative pose errors in the prism frame without global alignment.
+No 11-second prism subset was substituted. All saved rows have GT brackets.
+RPE excludes intervals that cannot be interpolated across the startup gap.
+
+3. Accuracy: full saved trajectories
+-----------------------------------
+                              ATE m      1s t-RPE m  1s r-RPE deg  Prism path m
+Original/native GLIM        0.026277      0.018197      0.360477      72.247596
+Original/native Kimera      0.270672      0.023278      0.570268      71.344464
+Fusion ONLINE/as-played     0.058737      0.035396      1.615035      75.715867
+Fusion DELAYED finalized    0.055768      0.016239      0.341362      72.231440
+
+RPE pairs respectively: 1179, 1151, 1182, 1182.
+Reference prism path on each output's sampled times respectively:
+71.775437, 71.684230, 71.869744, 71.869744 m.
+
+Separate identical-timestamp within-ON comparison: 1160 samples at 10 Hz,
+1727775011.5999973 through 1727775127.4998868 (~115.89989 s), 1150 RPE pairs.
+Mask SHA256: 23c6a34297e3bde3928306cf38b91b00a92b1b6eba863ea000ed958a09b9417e
+This common mask is explicitly NOT the entire requested 120 s.
+
+                              ATE m      1s t-RPE m  1s r-RPE deg  Prism path m
+Original/native GLIM        0.026048      0.018369      0.364771      71.860547
+Original/native Kimera      0.269482      0.023276      0.570331      70.964239
+Fusion ONLINE/as-played     0.056876      0.035850      1.634563      74.223692
+Fusion DELAYED finalized    0.054369      0.016435      0.345778      71.803224
+Common reference path: 71.589503 m.
+
+Interpretation limited to this capture: fusion ATE lies between the native
+sources, and does not beat native GLIM. Delayed finalized fusion has lower
+1 s translation/rotation RPE than either native output on the common mask;
+online fusion has worse short-horizon errors than its finalized output.
+Do not present the finalized numbers as live/as-played accuracy. No claim
+that CBS-ON improves OFF over 120 s is possible from the incomplete FL4t OFF.
+No new parameter, algorithm, or failure-cause conclusion is inferred here.
+
+4. Source solver and CBS checks
+-------------------------------
+Before-playback subscriber/flag/DSO checks pass. Copied GLIM (16 files) and
+Kimera (14 files) sensor/profile trees exactly match FL4t saved profiles.
+580 actual GLIM-to-Kimera injections; 581 actual Kimera-to-GLIM injections.
+Kimera logs 556 planned temporary-factor retirements.
+
+All 584 accepted Kimera steps satisfy the frozen non-increasing-cost check.
+508 ordinary accepted proposals; 76 existing current-chart LM fallbacks.
+66 fallbacks reach their existing 10-iteration cap; all fallback accepted
+costs strictly decrease. Maximum cache/fresh discrepancy 0; maximum relative
+tree error 1.070019756e-9 (below existing 1e-8 check).
+No FL4Q exception, rollback, local-update retry or smoother recovery marker.
+These are acceptance/consistency checks, NOT nonlinear stationarity proofs.
+Frequent capped fallbacks remain a limitation; this run does not certify the
+previous OFF failure fixed or future runs universally reliable.
+
+5. Receiver conservation, timing and repeat
+------------------------------------------
+82743 journal events = 11986 clock + 70756 belief versions + one end event.
+GLIM 56506 versions / 1189 stable IDs; Kimera 14250 versions / 582 stable IDs.
+1770 factor insertions, 68961 replacements, 25 pre-initialization exclusions.
+No duplicate, stale, unsupported-at-end, or pending belief. Factor balance:
+1770 = 1669 absorbed + 101 active at end. Retained supports 71; peak slots 175.
+Incoming covariance payload vs committed factor: maximum error exactly 0.
+Relative-mean log roundtrip error: 2.110855e-14.
+
+All 1193 fused online publications occurred while sources were running.
+Transport peak queue 42; sampled monitor peak queue 6; final queue 0.
+Whole-support service (s): mean .054624, median .049003, p95 .080328,
+max .114025. Receipt-to-processing p95 .024735 s, max .095801 s.
+Sampled simulated output age: median .050013 s, p95 .090019 s,
+max .100023 s. These measurements validate this 0.10x run, not 1x capacity.
+Receiver policy remains incremental, stationarity not checked/certified.
+
+One deterministic validation replay of the saved journal (not a source rerun)
+took 61.993 s. Both trajectories, both state CSVs, summary and all 73113
+committed archive files reproduce byte-identically with the exact executable.
+
+6. Retained covariance histories (no tuning)
+------------------------------------------
+All outgoing/revised payloads retained in source CSVs and receiver events.csv.
+Version-weighted trace summaries, [phi,rho] ordering, NOT a weight comparison:
+                          Rotation trace rad^2             Translation trace m^2
+                          median       p95                 median       p95
+GLIM                      7.92654e-9   2.30652e-8          1.59062e-6   2.70957e-6
+Kimera                    2.94179e-8   6.69942e-8          2.27808e-6   2.66079e-5
+Minimum eigenvalue GLIM 2.04049e-10, Kimera 1.06113e-9; symmetry error 0.
+No covariance scaling/gating/robustification or new information-weight audit.
+
+7. Artifacts and integrity
+--------------------------
+Run root R:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_on_fl4v_20261017/prepared
+Native GLIM: R/live120_on_source/odom_imu.txt
+Native Kimera: R/live120_on_source/kimera_odometry.csv
+Online fusion: R/live120_on_receiver/receiver/online_trajectory.tum
+Delayed finalized: R/live120_on_receiver/receiver/finalized_trajectory.tum
+Full metrics/covariance summary: R/evaluation_full/summary.json
+Source solver check: R/live120_on_source/candidate_validation.json
+Effective preflight: R/live120_on_source/effective_mode_check.json
+Capture completion: R/live120_on_control/complete.json
+Receiver checks and deterministic replay:
+/home/yeranis/results/gnssfgo_fixed_lag_live_fl4v_20261017/on/
+Protocol, harness preparation/diff and final integrity receipt: this directory.
+
+Trajectory SHA256 values in the same order as the four output rows:
+82bfe5a710ac271ff0f54689f6b955a1c2dd31ecac2f19694b08f54fa31267a3
+d09161905165a40a2460e380bdf9bf5219208109211d43ad82c157c0404cfb1c
+5bf1d1367c650c95052531f0177c8c407b76e5f70c526b3b91934a0478cd7c4b
+f5d473fcb0955b1160afa62befd2a479d747019f45819b910344230f94a627da
+
+All 1131 protected entries verified unchanged before, during, and after run.
+Prior Release/focused ASan/UBSan binary validation reused by hash, not rerun.
+No estimator/solver/model code change, new default, promotion, commit or push.
+Existing unrelated dirty files/untracked experiments preserved.
+gnssFGO HEAD remains 67c00392cd640a432bda9b67afcb57be4face381.
+Owned run/validation processes ended; both initially stopped experiment
+containers restored stopped. About 20 GiB disk space remains. No next run.
+
+Decision: retain as a successfully completed standalone 120 s CBS-ON result,
+with the explicit acceptance/stationarity and reference-coverage limits above.

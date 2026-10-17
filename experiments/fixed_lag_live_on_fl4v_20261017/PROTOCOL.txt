@@ -1,0 +1,41 @@
+FL4v: one standalone ETH1 first120s live CBS-ON attempt, 2026-10-17
+================================================================
+Authorization: "I want you to run again the cbs on for120seconds and see what
+will happen." This explicitly permits ON despite failed/incomplete FL4t OFF.
+Do not rerun OFF, overwrite prior artifacts, or claim matched120s OFF/ON results.
+
+Reuse exact FL4t120s ON launch/settings, FL4q Kimera DSO and FL4e receiver.
+No FL4u logging overlay, new build, algorithm/solver/acceptance repair, tuning,
+relaxed checks, automatic data retry or changed source/receiver math.
+Mission2024-10-01-11-29-55, offset0, duration120s, rate0.10x, postdrain25s.
+Hesai+CPT7 GLIM5s; front-stereo+CPT7 Kimera25states, same savedETH1 calibration.
+Classic bidirectional active_window_temporary CBS, mean alignment enabled,
+0.20s horizon,1pair/update, stride1, full Schur-relative6x6, scales1, Gaussian.
+Source live_revision=false; downstream revision logging/replacement unchanged.
+Native source IMU path unchanged. Headless, inspectors disabled as in FL4t.
+Receiver live before playback: independent100ms clock,59startup samples,
+7s fixed-lag source-WNOA, unchangedQc/priors, no centralIMU/GNSS factors.
+Kimera SHA6ce24c266b0f0e2561f0c05de2a661a72d5a4d9335df7c3cdfa0a4c77af9b4ae.
+Receiver SHA53c96a2b7a762800cf2291166dc78520269098684411de641b52bee6a54dc5c9.
+
+Only changed run identities/paths/ROSport11444 and standaloneON admission.
+Require before-playback effective flags, subscribers, loaded DSOs, profiles;
+all same estimator/runtime/coverage/conservation/queue guards asFL4t.
+Initial containers stopped; restore after owned work ends. Disk>=8GiB before,
+>=5GiB while running; source timeout1800s; receiver drain650s.
+No duplicate launches/automatic retry. Original failure exceptions stop run.
+
+If completed, validate native coverage>=118s (startup gap separately reported),
+>=1170GLIM and>=570Kimera poses; accepted Kimera steps non-increasing;
+receiver conservation/covariance equality, no unsupported/pending, <=71states,
+<=200slots, queue<1000, p95whole-support<=.8s. Then deterministic saved-journal
+receiver replay using same binary. This is validation, not another source run.
+If any gate fails, preserve partial outputs and report failure, not120s RMSE.
+
+If valid, score original/native GLIM, original/native Kimera ROS odometry,
+fused online/as-played, and separately delayed fixed-lag-finalized trajectory.
+Use unchanged full-saved IE-TC evaluator, no-scale SE3/prism lever arm and1sRPE.
+Disclose IE-TC sharesCPT7 and is not independent prism. Report actual spans,
+rows, paths and within-ON common mask. No shortprism substitute or false OFF/ON
+matched-full-window claim. Retain all outgoing/revised covariance histories.
+Stop after report; no further fix, sequence, covariance or policy change.

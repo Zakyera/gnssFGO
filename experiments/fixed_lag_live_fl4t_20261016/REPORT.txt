@@ -1,0 +1,122 @@
+FL4t — attempted matched live 120-second ETH1 extension, 2026-10-16
+================================================================
+
+RESULT: CBS-OFF SOURCE FAILURE; CBS-ON NOT STARTED.
+
+The unchanged candidate passed the previous30s comparison, but this extension
+stopped near109.4s of captured input. Kimera update531 raised:
+    FL4Q no decreasing current-chart LM step
+Its backend returned no output and shut down. The controller detected this
+and stopped the owned experiment. No automatic retry, tuning, or ON run.
+This is NOT a completed120s experiment and provides no matched OFF/ON ATE.
+
+1. Scope and settings
+---------------------
+User requested extension to120s. OFF must pass before ON. Same ETH1 mission
+2024-10-01-11-29-55, offset0,0.10x, headless,25s planned source drain. All
+three estimators ran concurrently, not source trajectories replayed later.
+Only fresh paths/session/port11442, duration30->120 and duration-aware
+coverage/watchdog checks changed; see PROTOCOL.txt and harness.diff.
+
+GLIM: Hesai+CPT7,5s lag, unchanged shared-native LOCAL provider.
+Kimera: front Alphasense stereo+CPT7,25-state window; same native/current
+IMU packet path. The exact private FL4q candidate was used, not a rebuild.
+Classic active_window_temporary CBS,0.20s horizon,one pair/update,stride1,
+full6x6 schur_relative_between covariances,scale1, native temporal mean
+alignment enabled. OFF published beliefs but both receivers were disabled;
+verify_effective.py checked this before playback against resolved ROS params.
+No live_revision source exchange, robust loss, health weighting, or tuning.
+
+Fusion: unchanged FL4e7s incremental fixed-lag source-WNOA; independent100ms
+CPT7 support clock after59samples, NO central IMU factors, unchanged Qc and
+priors, Gaussian source scale1, downstream stable-ID revision replacement.
+Publication remains fl4a_fixed_lag_incremental, not strict stationarity.
+
+Kimera SHA256:
+6ce24c266b0f0e2561f0c05de2a661a72d5a4d9335df7c3cdfa0a4c77af9b4ae
+Receiver SHA256:
+53c96a2b7a762800cf2291166dc78520269098684411de641b52bee6a54dc5c9
+Preflight passed; saved GLIM/Kimera profile trees are byte-identical to FL4s.
+All1059 protected file hashes remain unchanged, including earlier evidence.
+
+2. Exact stop evidence and its limits
+------------------------------------
+R = /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_off_on_fl4t_20261016/prepared
+R/live120_off_control/failed.txt records FL4Q in the estimator log.
+R/live120_off_source/estimators.log:
+  line649337: 1-point RANSAC could not find a solution.
+  line649338: Stereo tracking failure; using IMU for pose guess.
+  line649339: FL4Q no decreasing current-chart LM step.
+  line649359: pending state keys b531,v531,x531.
+  line649362: KIMERA_OPTIMIZE_TIMING_ROW,531,56.7054,... (milliseconds).
+  line649364: Backend did not return an output: shutting down Backend.
+Tracking warnings are adjacent evidence, NOT a proven causal diagnosis.
+
+The guard is CurrentChartFallback.h:87 in
+/home/yeranis/repos/gnssFGO/experiments/fixed_lag_current_chart_fl4q_20261016.
+Fallback is entered when the ordinary proposal increases the same original-
+chart objective by more than tolerance=1e-10*(1+abs(before)). It tries fresh
+current-chart LM steps, at most10, with existing early convergence handling.
+This exception means no candidate met after < before-tolerance. It does NOT
+prove that10iterations were exhausted, that no mathematical descent direction
+exists, or that the trajectory physically diverged. Failed-step costs and
+iteration count are not in acceptance.csv because selection threw first.
+Those quantities remain unknown; no new instrumentation or rerun in this task.
+The preceding successful decision530 was:
+  before2155.8238184960496
+  ordinary2158.1611663573731
+  accepted2155.8237326340932 (2fallback iterations).
+Do not substitute these values for failed decision531.
+
+531 accepted updates0..530 were retained and all satisfy the frozen
+nonincrease check.17 used fallback; one reached10iterations. Max fresh/cache
+error0; max relative tree error4.841142970359478e-13. These describe accepted
+updates only, not a passing120s gate or stationarity certificate.
+
+3. Partial capture, not requested120s coverage
+---------------------------------------------
+                           Saved rows     First-to-last saved span
+Native GLIM                   1087              108.599687s
+Native Kimera ROS odometry      531              108.999394s
+Fusion online/as-played        1089              108.800000s
+Fusion fixed-lag-finalized     1089              108.800000s
+
+First IMU timestamp1727775008003475000ns; last1727775117383500000ns;
+captured IMU span109.380025s. Finalized output is delayed fixed-lag output,
+NOT online and NOT a final full-history optimization. No ATE/RPE scoring,
+matched covariance comparison, deterministic receiver repeat, or full-window
+validation was run after the source failure. No short-window score is being
+substituted for the requested full120s result.
+
+4. Fusion/transport did not trigger this stop
+--------------------------------------------
+Last periodic monitor: queued0, peak queue48, output age0.050025 simulated s.
+After stop, the receiver drained its truncated journal:
+ 10939IMU events;64391belief revisions(51466GLIM,12925Kimera).
+ 1613inserted,62753replaced,25pre-initialization exclusions.
+ 1513absorbed+100active=1613inserted; pending0,unsupported0.
+ 1089online and1089finalized outputs;71retained supports;175peak slots.
+The journal-count identities were checked in failure_closeout.py. Its
+summary.json complete=true means this partial journal drained, NOT that
+the source completed120s or the planned acceptance gates passed.
+There is no evidence of a fusion queue, disk reserve, or wall-time deadline
+trigger at the stop. The concrete trigger is Kimera's acceptance exception.
+No broader throughput or future-sequence reliability claim follows.
+
+5. Preservation and stopping point
+----------------------------------
+All failed-capture logs, source outputs, full received covariance payloads,
+and receiver archives are retained. No original artifact overwritten.
+Both originally-stopped containers were verified free of owned experiment
+processes and restored to stopped: cbsms_ws_gpu,ubuntu-jammy-humble-nvidia.
+No ON capture directory, no restart, no production changes or promotion.
+Previous Release/focused ASan/UBSan evidence is inherited via identical
+binaries; not rerun here. Existing dirty worktree changes were preserved;
+this task is not a clean-worktree claim. No commit or push.
+gnssFGO HEAD remains67c00392cd640a432bda9b67afcb57be4face381.
+
+Machine-readable evidence: failure_closeout.json.
+The next decision is whether to inspect this one failed Kimera decision.
+That investigation is not performed or authorized by this report.
+
+FL4T_120S_GATE_FAILED_KIMERA_ACCEPTANCE

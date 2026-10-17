@@ -1,0 +1,28 @@
+FL4n: one post-retirement linear-system decision gate, 2026-10-15
+
+Reuse FL4m frozen450 aligned GLIM inputs, exact sensors/profile, removal enabled,
+first94s ETH1 at0.10x. One Kimera-only capture, no GLIM/fusion or tuning. Existing
+complete snapshots do not contain the actual cached Gaussian/Bayes-tree system,
+so one bounded capture is necessary. Capture updates28,89,438 only, before
+marginalization. No numerical candidate changes in this capture.
+
+Compare cached Gaussian equations, assembled unique Bayes-tree conditionals and
+freshly cloned nonlinear factors at the SAME actual iSAM theta. Account for
+unanchored marginal priors in that chart; compare H/g separately from constants.
+Check removed factor identity does not survive, slot reuse is not a deletion
+failure, and compute normal-equation residual of the actual delta. Report
+factor-wise/family discrepancies. Fresh smart-factor caches may legitimately
+change validity; do not automatically call any discrepancy a removal bug.
+
+Private inline read-only cache accessor adds no fields or runtime API layout.
+Diagnostic runs on clones where nonlinear factors may mutate caches. Synthetic
+tests must verify cache/tree/fresh parity, nonmutation, removal/marginalization,
+and deliberate corrupted-cache detection. Preserve original-chart cost audit.
+Accept capture only with all450 original input/update bindings and complete
+454-pose coverage. Compare native outputs with frozen FL4m A for noninterference.
+No rerun on a failed capture. Save result before selecting any behavioral patch.
+
+Preserve all879 protected paths and original stopped-container state. No commit,
+production promotion, covariance changes or different sequence. If a precise
+bug is found, select one isolated repair; otherwise report the solver-safeguard
+branch with evidence, not a guessed cache fix.

@@ -1,0 +1,435 @@
+<launch>
+  <!-- Isolated 40 s active-window experiment. Shared launch remains unchanged. -->
+  <!--
+    GrandTour ETH-1 port of the verified Newer College official campaign.
+
+    The estimator/CBS execution shape intentionally mirrors
+    newer_college_2021_glim_kimera_cbs_on.launch:
+      * persistent bidirectional CBS when cbs_enable=true;
+      * both local belief streams remain published with CBS OFF for EKF parity;
+      * direct Kimera node invocation with the frozen official flag set;
+      * covariance scale 1.0 and no health/NIS/calibrated trust mechanism;
+      * 50-state Kimera profile supplied by the experiment runner.
+
+    Dataset-facing differences are limited to GrandTour topics, author sensor
+    calibration/body frames, and a 0.20 s edge interval matching the 10 Hz
+    camera's two-frame Kimera backend keyframe cadence.
+  -->
+
+  <arg name="glim_config_path"
+       default="/workspace/cbs_gtsam4.3/clean_glim_ws/src/glim/config_grandtour_eth1_gpu_hesai_cpt7"/>
+  <arg name="kimera_mode" default="mono"/>
+  <arg name="kimera_enable" default="true"/>
+  <arg name="kimera_params_folder"/>
+  <arg name="kimera_log_output_path"
+       default="/workspace/cbs_gtsam4.3/runs/runtime_kimera_logs/grandtour_eth1_cbs"/>
+  <arg name="diagnostic_node_output" default="screen"/>
+
+  <arg name="glim_input_imu_topic" default="/boxi/cpt7/imu"/>
+  <arg name="glim_input_points_topic" default="/boxi/hesai/points"/>
+  <arg name="glim_cbs_self_agent_id" default="g"/>
+  <arg name="glim_cbs_peer_agent_id" default="k"/>
+  <arg name="glim_cbs_odometry_topic" default="/glim/cbs/odometry"/>
+  <arg name="glim_dump_path" default="/tmp/dump"/>
+  <arg name="kimera_input_imu_topic" default="/boxi/cpt7/imu"/>
+  <arg name="kimera_camera_compressed_topic"
+       default="/boxi/alphasense/front_left/image_raw/compressed"/>
+  <arg name="kimera_camera_raw_topic"
+       default="/grandtour/front_left/image_raw"/>
+  <arg name="kimera_camera_skip_initial_frames" default="2"/>
+  <arg name="kimera_cbs_agent_id" default="k"/>
+  <arg name="kimera_cbs_requesting_agent_id" default="g"/>
+
+  <arg name="rerun_host"
+       default="rerun+http://172.17.0.1:9876/proxy"/>
+  <arg name="rerun_recording_id" default="grandtour_eth1_glim_kimera"/>
+  <arg name="glim_factor_graph_inspector_enable" default="true"/>
+  <arg name="glim_factor_graph_inspector_stride" default="1"/>
+  <arg name="glim_factor_graph_inspector_context_windows" default="2"/>
+  <arg name="glim_factor_graph_inspector_full_history_enable" default="true"/>
+  <arg name="glim_factor_graph_inspector_entity_prefix" default="glim"/>
+  <arg name="kimera_factor_graph_inspector_enable" default="true"/>
+  <arg name="kimera_factor_graph_inspector_stride" default="5"/>
+  <arg name="kimera_rerun_entity_prefix" default="kimera"/>
+  <arg name="glim_receiver_local_competition_audit_max_samples" default="0"/>
+  <arg name="glim_receiver_local_competition_audit_stride" default="1"/>
+  <arg name="kimera_receiver_local_competition_audit_max_samples" default="0"/>
+  <arg name="kimera_receiver_local_competition_audit_stride" default="1"/>
+
+  <!-- Verified Newer College persistent-CBS contract. -->
+  <arg name="cbs_enable" default="true"/>
+  <arg name="cbs_live_revision_enable" default="false"/>
+  <arg name="glim_publish_cbs_beliefs" default="true"/>
+  <arg name="kimera_publish_cbs_beliefs" default="true"/>
+  <arg name="glim_receive_cbs_beliefs" default="$(arg cbs_enable)"/>
+  <arg name="kimera_receive_cbs_beliefs" default="$(arg cbs_enable)"/>
+  <arg name="glim_cbs_mode"
+       default="$(eval 'inject_persistent' if arg('glim_receive_cbs_beliefs') else 'observe_only')"/>
+  <arg name="kimera_cbs_backend_enable" default="true"/>
+  <arg name="kimera_bad_update_audit_dir" default=""/>
+  <arg name="cbs_belief_receive_start_delay_sec" default="0.0"/>
+  <arg name="glim_belief_timestamp_tolerance_sec" default="0.12"/>
+  <arg name="kimera_belief_timestamp_tolerance_sec" default="0.05"/>
+  <arg name="cbs_belief_exchange_window_size" default="25"/>
+  <arg name="cbs_odom_sender_mode" default="time_horizon_window"/>
+  <arg name="cbs_odom_covariance_mode" default="schur_relative_between"/>
+  <arg name="cbs_odom_duration_gate_enable" default="true"/>
+  <arg name="cbs_odom_duration_tolerance_sec" default="0.06"/>
+  <arg name="cbs_odom_duration_ratio_min" default="0.5"/>
+  <arg name="cbs_odom_duration_ratio_max" default="2.0"/>
+  <arg name="cbs_odom_horizon_sec" default="0.20"/>
+  <arg name="cbs_odom_horizon_tolerance_sec" default="0.06"/>
+  <arg name="cbs_odom_max_horizon_pairs_per_update" default="25"/>
+  <arg name="cbs_odom_publish_stride" default="1"/>
+  <arg name="glim_export_endpoint_audit_enable" default="false"/>
+  <arg name="cbs_odom_unmatched_retry_max_age_sec" default="5.0"/>
+  <arg name="cbs_odom_unmatched_retry_max_beliefs" default="500"/>
+  <arg name="cbs_health_aware_enable" default="false"/>
+  <arg name="glim_cbs_k2g_odom_factor_covariance_scale" default="1.0"/>
+  <arg name="kimera_cbs_g2k_odom_factor_covariance_scale" default="1.0"/>
+
+  <arg name="glim_cbs_odom_belief_in_topic"
+       default="/kimera/cbs/odom_belief_out"/>
+  <arg name="glim_cbs_odom_belief_out_topic"
+       default="/kimera/cbs/odom_belief_in"/>
+  <arg name="kimera_cbs_odom_belief_in_topic"
+       default="/kimera/cbs/odom_belief_in"/>
+  <arg name="kimera_cbs_odom_belief_out_topic"
+       default="/kimera/cbs/odom_belief_out"/>
+
+  <arg name="glim_body_frame_id" default="cpt7_imu"/>
+  <arg name="kimera_body_frame_id" default="cpt7_imu"/>
+
+  <arg name="enable_ekf" default="false"/>
+  <arg name="ekf_glim_input_enable" default="true"/>
+  <arg name="ekf_kimera_input_enable" default="true"/>
+  <arg name="ekf_config_path"
+       default="$(find cbsms)/config/newer_college_cbs_ekf.yaml"/>
+
+  <param name="use_sim_time" value="true"/>
+  <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_enable" value="false"/>
+  <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_stride" value="20"/>
+  <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_max_updates" value="40"/>
+
+  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_off_on_fl4t_20261016/prepared/glim_profile.launch">
+    <arg name="config_path" value="$(arg glim_config_path)"/>
+    <arg name="glim_node_output" value="$(arg diagnostic_node_output)"/>
+    <arg name="glim_input_imu_topic" value="$(arg glim_input_imu_topic)"/>
+    <arg name="glim_input_points_topic" value="$(arg glim_input_points_topic)"/>
+    <arg name="glim_input_image_topic" value=""/>
+    <arg name="glim_ros_spinner_threads" value="4"/>
+    <arg name="glim_dump_path" value="$(arg glim_dump_path)"/>
+    <arg name="glim_timing_enable" value="true"/>
+
+    <arg name="glim_cbs_bridge_enable"
+         value="$(eval arg('glim_publish_cbs_beliefs') or arg('glim_receive_cbs_beliefs'))"/>
+    <arg name="glim_cbs_publish_beliefs"
+         value="$(arg glim_publish_cbs_beliefs)"/>
+    <arg name="glim_cbs_receive_external_beliefs"
+         value="$(arg glim_receive_cbs_beliefs)"/>
+    <arg name="glim_cbs_mode" value="$(arg glim_cbs_mode)"/>
+    <arg name="glim_cbs_outgoing_marginal_source" value="direct"/>
+    <arg name="glim_cbs_self_agent_id" value="$(arg glim_cbs_self_agent_id)"/>
+    <arg name="glim_cbs_peer_agent_id" value="$(arg glim_cbs_peer_agent_id)"/>
+    <arg name="glim_cbs_odom_belief_in_topic"
+         value="$(arg glim_cbs_odom_belief_in_topic)"/>
+    <arg name="glim_cbs_odom_belief_out_topic"
+         value="$(arg glim_cbs_odom_belief_out_topic)"/>
+    <arg name="glim_cbs_odometry_topic" value="$(arg glim_cbs_odometry_topic)"/>
+    <arg name="glim_cbs_child_frame_id" value="$(arg glim_body_frame_id)"/>
+    <arg name="glim_cbs_belief_timestamp_tolerance_sec"
+         value="$(arg glim_belief_timestamp_tolerance_sec)"/>
+    <arg name="glim_cbs_belief_receive_start_delay_sec"
+         value="$(arg cbs_belief_receive_start_delay_sec)"/>
+    <arg name="glim_cbs_belief_exchange_window_size"
+         value="$(arg cbs_belief_exchange_window_size)"/>
+    <arg name="glim_cbs_odom_sender_mode" value="$(arg cbs_odom_sender_mode)"/>
+    <arg name="glim_cbs_odom_receiver_match_mode" value="duration_aware_edge"/>
+    <arg name="glim_cbs_odom_covariance_mode"
+         value="$(arg cbs_odom_covariance_mode)"/>
+    <arg name="glim_cbs_odom_duration_gate_enable"
+         value="$(arg cbs_odom_duration_gate_enable)"/>
+    <arg name="glim_cbs_odom_duration_tolerance_sec"
+         value="$(arg cbs_odom_duration_tolerance_sec)"/>
+    <arg name="glim_cbs_odom_duration_ratio_min"
+         value="$(arg cbs_odom_duration_ratio_min)"/>
+    <arg name="glim_cbs_odom_duration_ratio_max"
+         value="$(arg cbs_odom_duration_ratio_max)"/>
+    <arg name="glim_cbs_odom_horizon_sec" value="$(arg cbs_odom_horizon_sec)"/>
+    <arg name="glim_cbs_odom_horizon_tolerance_sec"
+         value="$(arg cbs_odom_horizon_tolerance_sec)"/>
+    <arg name="glim_cbs_odom_max_horizon_pairs_per_update"
+         value="$(arg cbs_odom_max_horizon_pairs_per_update)"/>
+    <arg name="glim_cbs_odom_publish_stride" value="$(arg cbs_odom_publish_stride)"/>
+    <arg name="glim_cbs_export_endpoint_audit_enable"
+         value="$(arg glim_export_endpoint_audit_enable)"/>
+    <arg name="glim_cbs_live_revision_enable"
+         value="$(arg cbs_live_revision_enable)"/>
+    <arg name="glim_cbs_odom_unmatched_retry_max_age_sec"
+         value="$(arg cbs_odom_unmatched_retry_max_age_sec)"/>
+    <arg name="glim_cbs_odom_unmatched_retry_max_beliefs"
+         value="$(arg cbs_odom_unmatched_retry_max_beliefs)"/>
+    <arg name="glim_cbs_wait_for_receiver_covariance_linearization_enable"
+         value="false"/>
+    <arg name="glim_cbs_k2g_odom_factor_covariance_scale"
+         value="$(arg glim_cbs_k2g_odom_factor_covariance_scale)"/>
+    <arg name="glim_cbs_health_aware_enable" value="$(arg cbs_health_aware_enable)"/>
+    <arg name="glim_dcreg_belief_shadow_enable" value="false"/>
+    <arg name="glim_cbs_rerun_visualizer_enable" value="false"/>
+    <arg name="glim_cbs_receiver_local_competition_audit_max_samples"
+         value="$(arg glim_receiver_local_competition_audit_max_samples)"/>
+    <arg name="glim_cbs_receiver_local_competition_audit_stride"
+         value="$(arg glim_receiver_local_competition_audit_stride)"/>
+
+    <arg name="glim_factor_graph_inspector_enable"
+         value="$(arg glim_factor_graph_inspector_enable)"/>
+    <arg name="glim_factor_graph_inspector_stride"
+         value="$(arg glim_factor_graph_inspector_stride)"/>
+    <arg name="glim_factor_graph_inspector_context_windows"
+         value="$(arg glim_factor_graph_inspector_context_windows)"/>
+    <arg name="glim_factor_graph_inspector_full_history_enable"
+         value="$(arg glim_factor_graph_inspector_full_history_enable)"/>
+    <arg name="glim_factor_graph_inspector_recording_id"
+         value="$(arg rerun_recording_id)"/>
+    <arg name="glim_factor_graph_inspector_host" value="$(arg rerun_host)"/>
+    <arg name="glim_factor_graph_inspector_entity_prefix"
+         value="$(arg glim_factor_graph_inspector_entity_prefix)"/>
+  </include>
+
+  <param name="/glim_rosnode/glim_cbs_experimental_native_imu_mean_alignment" value="true"/>
+  <param name="/glim_rosnode/glim_cbs_experimental_local_gpu_batching" value="true"/>
+
+  <node if="$(eval arg('kimera_enable') and arg('kimera_mode') == 'mono')"
+        pkg="kimera_vio_ros"
+        type="compressed_to_raw_bridge.py"
+        name="grandtour_front_left_compressed_bridge"
+        output="screen">
+    <param name="input_topic" value="$(arg kimera_camera_compressed_topic)"/>
+    <param name="output_topic" value="$(arg kimera_camera_raw_topic)"/>
+    <param name="output_encoding" value="mono8"/>
+    <param name="queue_size" value="30"/>
+    <param name="skip_initial_frames"
+           value="$(arg kimera_camera_skip_initial_frames)"/>
+  </node>
+
+  <!-- Direct invocation copied from the verified Newer College campaign. -->
+  <node if="$(eval arg('kimera_enable') and arg('kimera_mode') == 'mono')"
+        name="kimera_vio_ros_node"
+        pkg="kimera_vio_ros"
+        type="kimera_vio_ros_node"
+        output="screen"
+        ns="kimera_vio_ros"
+        required="true"
+        args="--use_lcd=false
+              --vocabulary_path=$(find kimera_vio)/vocabulary/ORBvoc.yml
+              --flagfile=$(arg kimera_params_folder)/flags/Mesher.flags
+              --flagfile=$(arg kimera_params_folder)/flags/VioBackend.flags
+              --flagfile=$(arg kimera_params_folder)/flags/RegularVioBackend.flags
+              --flagfile=$(arg kimera_params_folder)/flags/Visualizer3D.flags
+              --use_external_odometry=false
+              --do_coarse_imu_camera_temporal_sync=false
+              --do_fine_imu_camera_temporal_sync=false
+              --lcd_no_optimize=false
+              --lcd_no_detection=false
+              --depth_image_mask=
+              --logtostderr=1
+              --colorlogtostderr=1
+              --log_prefix=1
+              --minloglevel=0
+              --v=0
+              --log_output=false
+              --log_euroc_gt_data=false
+              --output_path=$(arg kimera_log_output_path)
+              --lcd_disable_stereo_match_depth_check=false
+              --no_incremental_pose=false
+              --viz_type=2
+              --visualize=true
+              --cbs_use_bpsam_for_local_belief_covariance=false
+              --cbs_use_local_smoother_for_belief_covariance=true
+              --cbs_use_persistent_bpsam_sidecar_for_belief_covariance=false
+              --cbs_use_persistent_bpsam_for_main_backend=false
+              --cbs_log_covariance_sanity_diff=false
+              --cbs_backend_enable=$(arg kimera_cbs_backend_enable)
+              --kimera_bad_update_audit_dir=$(arg kimera_bad_update_audit_dir)
+              --cbs_enable_soft_reset=true
+              --cbs_use_raw_previous_belief_gate=false
+              --cbs_reject_first_message=true
+              --cbs_use_temporary_cbs_linear_factors=false
+              --cbs_odom_factor_mode=active_window_temporary
+              --cbs_live_revision_enable=$(arg cbs_live_revision_enable)
+              --cbs_odom_covariance_mode=$(arg cbs_odom_covariance_mode)
+              --cbs_l2k_odom_factor_covariance_scale=$(arg kimera_cbs_g2k_odom_factor_covariance_scale)
+              --cbs_external_belief_timestamp_tolerance_sec=$(arg kimera_belief_timestamp_tolerance_sec)
+              --cbs_odom_unmatched_retry_max_age_sec=$(arg cbs_odom_unmatched_retry_max_age_sec)
+              --cbs_odom_unmatched_retry_max_beliefs=$(arg cbs_odom_unmatched_retry_max_beliefs)
+              --cbs_odom_sender_mode=$(arg cbs_odom_sender_mode)
+              --cbs_odom_requesting_agent_id=$(arg kimera_cbs_requesting_agent_id)
+              --cbs_external_odom_duration_gate_enable=$(arg cbs_odom_duration_gate_enable)
+              --cbs_external_odom_duration_tolerance_sec=$(arg cbs_odom_duration_tolerance_sec)
+              --cbs_external_odom_duration_ratio_min=$(arg cbs_odom_duration_ratio_min)
+              --cbs_external_odom_duration_ratio_max=$(arg cbs_odom_duration_ratio_max)
+              --cbs_odom_horizon_sec=$(arg cbs_odom_horizon_sec)
+              --cbs_odom_horizon_tolerance_sec=$(arg cbs_odom_horizon_tolerance_sec)
+              --cbs_odom_max_horizon_pairs_per_update=$(arg cbs_odom_max_horizon_pairs_per_update)
+              --cbs_health_aware_enable=$(arg cbs_health_aware_enable)
+              --cbs_relative_covariance_matrix_dump_enable=false
+              --cbs_active_factor_diagnostic_enable=false
+              --cbs_active_factor_detail_diagnostic_enable=false
+              --cbs_covariance_exchange_audit_max_samples=$(arg kimera_receiver_local_competition_audit_max_samples)
+              --cbs_covariance_exchange_audit_stride=$(arg kimera_receiver_local_competition_audit_stride)
+              --cbs_d_reset=0.1">
+    <param name="image_transport" value="raw"/>
+    <param name="params_folder_path" value="$(arg kimera_params_folder)"/>
+    <param name="sensor_params_folder_path" value=""/>
+    <param name="online_run" value="true"/>
+    <param name="use_lcd" value="false"/>
+    <param name="robot_id" value="0"/>
+    <param name="use_external_odom" value="false"/>
+    <param name="force_same_image_timestamp" value="true"/>
+    <param name="bow_batch_size" value="1"/>
+    <param name="bow_skip_num" value="1"/>
+    <param name="publish_vlc_frames" value="false"/>
+
+    <param name="cbs_belief_bridge_enable"
+           value="$(eval arg('kimera_publish_cbs_beliefs') or arg('kimera_receive_cbs_beliefs'))"/>
+    <param name="cbs_belief_publish_enable"
+           value="$(arg kimera_publish_cbs_beliefs)"/>
+    <param name="cbs_belief_receive_enable"
+           value="$(arg kimera_receive_cbs_beliefs)"/>
+    <param name="cbs_agent_id" value="$(arg kimera_cbs_agent_id)"/>
+    <param name="cbs_odom_belief_in_topic"
+           value="$(arg kimera_cbs_odom_belief_in_topic)"/>
+    <param name="cbs_odom_belief_out_topic"
+           value="$(arg kimera_cbs_odom_belief_out_topic)"/>
+    <param name="cbs_belief_forward_queue_limit" value="800"/>
+    <param name="cbs_belief_receive_start_delay_sec"
+           value="$(arg cbs_belief_receive_start_delay_sec)"/>
+    <param name="cbs_external_pose_frame_id" value="$(arg glim_body_frame_id)"/>
+
+    <param name="rerun_visualizer_enable" value="false"/>
+    <param name="rerun_factor_graph_inspector_enable"
+           value="$(arg kimera_factor_graph_inspector_enable)"/>
+    <param name="rerun_factor_graph_inspector_topology_enable" value="true"/>
+    <param name="rerun_factor_graph_inspector_stride"
+           value="$(arg kimera_factor_graph_inspector_stride)"/>
+    <param name="rerun_factor_graph_inspector_stream_enable" value="true"/>
+    <param name="rerun_factor_graph_inspector_include_smart_factors"
+           value="false"/>
+    <param name="rerun_factor_graph_inspector_max_smart_factors" value="20"/>
+    <param name="rerun_entity_prefix" value="$(arg kimera_rerun_entity_prefix)"/>
+    <param name="rerun_recording_id" value="$(arg rerun_recording_id)"/>
+    <param name="rerun_host" value="$(arg rerun_host)"/>
+
+    <param name="odom_frame_id" value="odom"/>
+    <param name="base_link_frame_id" value="$(arg kimera_body_frame_id)"/>
+    <param name="map_frame_id" value="map"/>
+    <param name="left_cam_frame_id" value="alphasense_front_left"/>
+    <param name="right_cam_frame_id" value="alphasense_front_left"/>
+    <param name="log_gt_data" value="false"/>
+    <param name="use_rviz" value="true"/>
+    <param name="use_lcd_registration_server" value="false"/>
+
+    <remap from="left_cam/image_raw" to="$(arg kimera_camera_raw_topic)"/>
+    <remap from="imu" to="$(arg kimera_input_imu_topic)"/>
+    <remap from="odometry" to="odometry"/>
+    <remap from="imu_bias" to="imu_bias"/>
+    <remap from="optimized_trajectory" to="optimized_trajectory"/>
+    <remap from="pose_graph" to="pose_graph"/>
+    <remap from="mesh" to="mesh"/>
+    <remap from="frontend_stats" to="frontend_stats"/>
+    <remap from="debug_mesh_img/image_raw" to="debug_mesh_img/image_raw"/>
+    <remap from="feature_tracks/image_raw" to="feature_tracks/image_raw"/>
+    <remap from="time_horizon_pointcloud" to="time_horizon_pointcloud"/>
+
+    <param name="velocity_det_threshold" value="0.1"/>
+    <param name="position_det_threshold" value="0.3"/>
+    <param name="stereo_ransac_threshold" value="20"/>
+    <param name="mono_ransac_threshold" value="30"/>
+  </node>
+
+  <!-- Retained only as a non-primary ablation path. -->
+  <node if="$(eval arg('kimera_enable') and arg('kimera_mode') == 'stereo')"
+        pkg="tf" type="static_transform_publisher"
+        name="grandtour_alpha_imu_to_cpt7_imu_tf"
+        args="-0.302230743591 0.061798150147 -0.084107655163 -0.007201422999 -0.036738889993 -0.007919430999 0.999267569814 alphasense_imu cpt7_imu 100"/>
+
+  <include if="$(eval arg('kimera_enable') and arg('kimera_mode') != 'mono')"
+           file="$(dirname)/grandtour_eth1_kimera_stereo.launch">
+    <arg name="params_folder" value="$(arg kimera_params_folder)"/>
+    <arg name="imu_topic" value="$(arg kimera_input_imu_topic)"/>
+    <arg name="base_link_frame_id" value="$(arg kimera_body_frame_id)"/>
+    <arg name="log_output" value="false"/>
+    <arg name="log_output_path" value="$(arg kimera_log_output_path)"/>
+    <arg name="node_output" value="$(arg diagnostic_node_output)"/>
+    <arg name="rerun_visualizer_enable" value="false"/>
+    <arg name="rerun_host" value="$(arg rerun_host)"/>
+    <arg name="rerun_recording_id" value="$(arg rerun_recording_id)"/>
+    <arg name="rerun_factor_graph_inspector_enable"
+         value="$(arg kimera_factor_graph_inspector_enable)"/>
+    <arg name="rerun_factor_graph_inspector_stride"
+         value="$(arg kimera_factor_graph_inspector_stride)"/>
+    <arg name="rerun_entity_prefix" value="$(arg kimera_rerun_entity_prefix)"/>
+    <arg name="cbs_belief_bridge_enable"
+         value="$(eval arg('kimera_publish_cbs_beliefs') or arg('kimera_receive_cbs_beliefs'))"/>
+    <arg name="cbs_belief_publish_enable"
+         value="$(arg kimera_publish_cbs_beliefs)"/>
+    <arg name="cbs_belief_receive_enable"
+         value="$(arg kimera_receive_cbs_beliefs)"/>
+    <arg name="cbs_backend_enable" value="$(arg kimera_cbs_backend_enable)"/>
+    <arg name="cbs_odom_factor_mode" value="active_window_temporary"/>
+    <arg name="cbs_live_revision_enable" value="$(arg cbs_live_revision_enable)"/>
+    <arg name="kimera_bad_update_audit_dir"
+         value="$(arg kimera_bad_update_audit_dir)"/>
+    <arg name="cbs_agent_id" value="$(arg kimera_cbs_agent_id)"/>
+    <arg name="cbs_health_aware_enable" value="false"/>
+    <arg name="cbs_odom_belief_in_topic"
+         value="$(arg kimera_cbs_odom_belief_in_topic)"/>
+    <arg name="cbs_odom_belief_out_topic"
+         value="$(arg kimera_cbs_odom_belief_out_topic)"/>
+    <arg name="cbs_belief_receive_start_delay_sec"
+         value="$(arg cbs_belief_receive_start_delay_sec)"/>
+    <arg name="cbs_external_belief_timestamp_tolerance_sec"
+         value="$(arg kimera_belief_timestamp_tolerance_sec)"/>
+    <arg name="cbs_external_pose_frame_id" value="cpt7_imu"/>
+    <arg name="cbs_odom_horizon_sec" value="$(arg cbs_odom_horizon_sec)"/>
+    <arg name="cbs_odom_horizon_tolerance_sec"
+         value="$(arg cbs_odom_horizon_tolerance_sec)"/>
+    <arg name="cbs_external_odom_duration_tolerance_sec"
+         value="$(arg cbs_odom_duration_tolerance_sec)"/>
+    <arg name="cbs_odom_max_horizon_pairs_per_update"
+         value="$(arg cbs_odom_max_horizon_pairs_per_update)"/>
+    <arg name="cbs_odom_sender_mode" value="$(arg cbs_odom_sender_mode)"/>
+    <arg name="cbs_odom_requesting_agent_id"
+         value="$(arg kimera_cbs_requesting_agent_id)"/>
+    <arg name="cbs_external_odom_duration_gate_enable"
+         value="$(arg cbs_odom_duration_gate_enable)"/>
+    <arg name="cbs_external_odom_duration_ratio_min"
+         value="$(arg cbs_odom_duration_ratio_min)"/>
+    <arg name="cbs_external_odom_duration_ratio_max"
+         value="$(arg cbs_odom_duration_ratio_max)"/>
+    <arg name="cbs_odom_covariance_mode"
+         value="$(arg cbs_odom_covariance_mode)"/>
+    <arg name="cbs_l2k_odom_factor_covariance_scale"
+         value="$(arg kimera_cbs_g2k_odom_factor_covariance_scale)"/>
+    <arg name="cbs_covariance_exchange_audit_max_samples"
+         value="$(arg kimera_receiver_local_competition_audit_max_samples)"/>
+    <arg name="cbs_covariance_exchange_audit_stride"
+         value="$(arg kimera_receiver_local_competition_audit_stride)"/>
+  </include>
+
+  <include if="$(arg enable_ekf)"
+           file="$(find cbsms)/launch/newer_college_cbs_ekf.launch">
+    <arg name="config_path" value="$(arg ekf_config_path)"/>
+    <arg name="glim_input_enable" value="$(arg ekf_glim_input_enable)"/>
+    <arg name="kimera_input_enable" value="$(arg ekf_kimera_input_enable)"/>
+    <arg name="body_frame_id" value="$(arg glim_body_frame_id)"/>
+    <arg name="base_link_frame" value="$(arg glim_body_frame_id)"/>
+    <arg name="glim_belief_topic"
+         value="$(arg glim_cbs_odom_belief_out_topic)"/>
+    <arg name="kimera_belief_topic"
+         value="$(arg kimera_cbs_odom_belief_out_topic)"/>
+    <arg name="target_duration_sec" value="$(arg cbs_odom_horizon_sec)"/>
+    <arg name="duration_tolerance_sec"
+         value="$(arg cbs_odom_horizon_tolerance_sec)"/>
+  </include>
+</launch>

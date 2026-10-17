@@ -1,0 +1,46 @@
+FL4q: isolated current-estimate nonlinear fallback, 2026-10-16
+
+Authorization: user Proceed after FL4p findings and proposed bounded solver
+repair. One hypothesis: a current-point model with original-chart priors and
+objective acceptance avoids the harmful old-anchor step without reweighting.
+
+Never edit production Kimera/CBS/GTSAM or frozen artifacts. Private headers,
+one private Kimera translation unit/DSO; branch from current milestone.
+No GLIM process, gnssFGO process, full sequence, new covariance/health/gating,
+CBS inheritance, or automatic retry of a failed data capture.
+
+Keep the ordinary update when its original-chart objective is nonincreasing
+(tolerance1e-10*(1+abs(before))). Otherwise solve a cloned current-point graph
+using existing GTSAM LM: at most10 iterations, diagonal numerical damping,
+lambdaInitial1e-3, lambdaUpper1e12, QR/Cholesky as supported by frozen API.
+Check wall budget5s between iterations; no preemption inside a library solve.
+This is a bounded descent repair, NOT a nonlinear-stationarity certificate.
+Acceptance must independently lower the same post-removal original-chart cost.
+
+An existing Gaussian marginal is represented by its immutable original
+anchor/information/constant, differentiated in the current chart. Rebuilding
+the iSAM2 core at the accepted estimate must preserve sparse factor slots,
+native factor pointer identities, source bookkeeping, ordering constraints,
+and exact original prior objective. Undamped current-point equations/tree
+serve covariance/marginalization; accepted zero delta must persist on reads.
+No solver damping is retained as a measurement, prior or covariance scale.
+Wrap future unanchored priors only when a fallback rebuild is needed.
+
+Gates before capture: nonlinear descent/ordinary parity; original-chart prior
+objective/derivatives; cache/tree/dense covariance agreement; preserved factor
+slots and pointers; next update; actual retirement and leaf marginalization;
+failure rollback including smart-factor caches; deterministic repeat; focused
+Release and ASan/UBSan. Linked pinned libraries are not sanitizer-instrumented.
+
+One30s ETH1 native Kimera-only capture at0.10x, identical frozen post-alignment
+incoming GLIM messages/profile as FL4n/p. Unchanged current Kimera IMU support;
+no repeated alignment on already-aligned payloads. Includes former failing
+update89 and update108. Stop on candidate failure/rollback/recovery, timeout,
+input/binding mismatch or missing output. No retries or model adjustment after
+observing data. Check full incoming mean/covariance bytes and update identities,
+native prefix parity until first fallback, all objective decisions, model
+consistency checks, source retirements, elapsed runtime and protected hashes.
+No new ATE/RPE study: primary result is numerical/lifecycle validity.
+
+Report actual outcome and limitations. Do not promote to defaults, push, or
+launch a longer run automatically. Restore the initially stopped container.

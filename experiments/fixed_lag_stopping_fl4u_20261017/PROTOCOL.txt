@@ -1,0 +1,40 @@
+FL4u: one failed-decision diagnostic, 2026-10-17
+================================================
+Question: FL4t Kimera OFF update531: valid convergence or genuinely stalled?
+Retained files contain accepted0..530 only; no saved failed Kimera graph.
+Thus one diagnostic capture is needed. No assumption that stopping-policy
+weakness caused the observed failure.
+
+Preserve FL4t and FL4q manifests, binaries, profiles and evidence. Private
+logging-only Kimera DSO derived from exact FL4q source/compile/link recipe.
+Capture read-only LM trial cost/lambda/iteration data; on existing failure,
+probe fresh cloned objective, current-chart H/gradient, diagonal-scaled
+gradient, numerical directional derivatives and small trial costs on clones.
+No alternate step committed; original exception/rollback remains unchanged.
+Do not change iteration limit10, tolerances, damping, marginal prior,
+source covariance, source IMU path, frontend or factor implementation.
+Probe must not mutate source graph, state or smart caches. Test before data.
+
+One Kimera-only CBS-OFF capture, ETH1 offset0, at0.10x, maximum111s through
+failure531. Same front stereo+CPT7,25states,current IMU, temporary classic
+CBS with RECEIVE FALSE, publish true, revision logging, Gaussian scale1.
+No GLIM/fuser/ON/GT accuracy run; retain Hesai bag in playback to preserve
+time origin but play only same camera+IMU topics. Same profile/flags as FL4t
+except output paths; verify before play. Native first531 messages and accepted
+numerical decisions must match FL4t (ignore measured wall durations). If not,
+stop and report reproduction limit; no automatic retry.
+
+Interpretation gate:
+- Demonstrable independent objective decrease with a verified nonzero descent
+  derivative rules out treating the state as converged.
+- Tiny analytic gradient alone does not prove convergence: compare measured
+  derivatives, finite costs, scaled model and LM stopping details.
+- No-decrease alone is never evidence of convergence.
+The diagnostic step sizes (scaled direction magnitude1e-4,1e-3,1e-2,.1,1)
+are probes, not applied estimates or tuned solver parameters. Record all.
+Do not implement a proposed termination fix as a workaround for genuine stall.
+If ambiguous, report it and stop rather than trying more configurations.
+
+Save failed update identity, LM costs/lambda, gradient, descent probes,
+nonmutation/parity receipts and outcome. No long OFF/ON campaign, production
+promotion, commit, push, or further repair. Restore container initial state.

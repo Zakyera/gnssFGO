@@ -1,0 +1,136 @@
+FL4u — single Kimera failed-decision diagnostic, 2026-10-17
+=========================================================
+Outcome: SAME FAILURE REPRODUCED; SAFE CONVERGENCE NOT CERTIFIED.
+No acceptance-policy repair or further experiment was performed.
+
+Question and boundary
+---------------------
+Was FL4t CBS-OFF Kimera update531 already sufficiently converged, or genuinely
+stalled? Retained FL4t files lacked the failed costs/gradient/graph. One private
+logging-only Kimera capture was therefore run, ETH1 offset0, maximum111s at
+0.10x, stopped at the original failure. No GLIM, receiver, CBS-ON, GT scoring,
+changed covariance, model tuning, changed iteration limit, or data retry.
+PROTOCOL.txt records the predeclared gate. This is not a completed120s run.
+
+Exact reproduction
+------------------
+All531 original/native ROS odometry messages (updates0..530) are byte-identical
+to FL4t, including header timestamps and payloads; bag receipt times excluded.
+All531 objective rows and non-timing acceptance columns match exactly.
+Native output span108.99939445s. The original exception occurs at update531:
+  FL4Q no decreasing current-chart LM step
+Capture wall time to observation1102.365747s. Runtime includes slow playback;
+it is NOT a throughput benchmark. Same front stereo/CPT7/25-state profile,
+same native source IMU path, classic active_window_temporary, receive=false,
+publish=true, no live_revision and Gaussian scale1. No central fuser was run.
+
+What actually happened at update531
+----------------------------------
+Fresh objective before ordinary proposal: 2155.442364067741
+Fresh objective of ordinary proposal:     2156.9011084293734
+Increase:                                1.458744361632398
+Required independent decrease tolerance:  2.156442364067741e-7
+LM outer iterations performed:           1 (limit remains10)
+LM returned fresh and internal costs:     2155.442364067741, identical
+Returned-state local-coordinate norm:    1.0937778037455997e-17
+Final lambda:                            0.1 (upper bound1e12)
+
+Thus the ordinary proposal really raises the checked objective. The fallback
+returns effectively unchanged values. Our wrapper sees zero change, breaks
+its loop, then throws because it requires strict sufficient decrease. It did
+not exhaust ten outer iterations, reach maximum damping, or hit its5s budget.
+Increasing the outer iteration cap alone would not change this break branch.
+
+Relevant copied implementation: R/CurrentChartFallback.h:122-142, where R is
+the run directory below. LM is configured with relativeErrorTol1e-9; its
+corresponding cost scale is2.155442364067741e-6, whereas the wrapper requires
+decrease beyond2.156442364067741e-7. The local GTSAM source at
+src/gtsam/gtsam/nonlinear/LevenbergMarquardtOptimizer.cpp:227-283 explicitly
+allows returning without updating values on sufficiently small cost change.
+The outer return and wrapper break are directly observed. The diagnostic did
+not log every internal lambda trial, so its exact rejected tentative cost is
+not claimed. Different stopping/acceptance tests are not by themselves proof
+of a numerical bug or proof that this state is a valid solution.
+
+Independent read-only stationarity probes
+----------------------------------------
+405-dimensional fresh cloned linear model, all entries finite:
+  raw gradient norm:               266.63010269193796
+  diagonal-scaled gradient norm:   0.0012754591933174762
+  diagonal-scaled gradient inf:    0.0008231552744453873
+  scaled H eigenvalue range:       [1.2146577028433626e-11,2.9725072801923833]
+The raw norm mixes state units; it alone does not measure convergence.
+
+Direction d=-D^-1 g / ||D^-1/2 g||, D=diag(H). Each cost was evaluated on fresh
+clones, with the marginal prior's original chart retained. No probe committed.
+Analytic directional derivative g^T d: -0.0012754591933174762.
+
+alpha       F(before retracted by alpha*d)-F(before)  central derivative
+1e-4        -1.4456418284680694e-8                     -2.0330389816081151e-4
+1e-3        +3.8424377635237761e-7                     -2.0330253391875885e-4
+1e-2        +5.6721624787314795e-5                     -2.0330226107034832e-4
+1e-1        +5.8551345869091165e-3                     -2.0330227243903209e-4
+1           +5.873431785826142e-1                      -2.0330260485934559e-4
+
+There IS a tiny measured downhill step. Its improvement is only6.70% of the
+existing acceptance tolerance. None of these probes establishes a decrease
+beyond that tolerance. Conversely, one sampled direction cannot certify
+stationarity in all405 dimensions. No convergence tolerance was tuned after
+observing these numbers.
+
+There is also a concrete derivative discrepancy: the analytic prediction is
+about6.274x the stable central-difference slope along this same direction.
+This limits use of the analytic gradient as a convergence certificate here.
+It does not identify which factor/approximation/numerical operation causes
+that discrepancy. The very ill-conditioned scaled model is evidence, not a
+proven cause. No additional factor-by-factor campaign was started.
+
+Decision
+--------
+The bounded test rules out iteration exhaustion as the reason for this stop.
+It pinpoints the no-change -> strict-decrease-failure branch. However it does
+not justify accepting the unchanged state as converged, nor prove that a
+materially better state cannot be found. Therefore do NOT implement a loose
+acceptance workaround, increase the cap, or rerun OFF/ON on this evidence.
+Any future convergence repair first needs a trustworthy objective/derivative
+contract. That further work is not performed or automatically authorized here.
+
+Machine classification: INSUFFICIENT_EVIDENCE_FOR_STATIONARITY.
+In validation.json, central_derivative_and_decrease_exist=false specifically
+means no measured decrease BEYOND the predeclared acceptance tolerance; it
+does not deny the tiny sub-tolerance decrease listed above.
+
+Isolation and validation
+------------------------
+- Copied exact FL4q source/build recipe; only failed-decision logging/probes
+  and read-only per-LM-iteration scalars added. Production source untouched.
+- Unchanged FL4q Release tests pass. New stationary scalar probe test passes
+  and preserves the original exception/values. Focused ASan/UBSan passes;
+  linked libraries are not sanitizer-instrumented and leaks were not checked.
+- First pre-data compile exposed an Eigen expression syntax issue; corrected
+  parenthesization and rebuilt before freezing/playing. Both build logs kept.
+  There was exactly ONE dataset capture, not a retried estimator experiment.
+- All14 profile files match FL4t. All1084 protected files unchanged. All40
+  frozen diagnostic manifest entries unchanged after capture.
+- Original exception/transaction remains; probe costs at the original and
+  rejected states repeat exactly. No test candidate was committed.
+- Owned processes ended. docker top showed only the container's base tail;
+  cbsms_ws_gpu restored stopped, Humble container remained stopped.
+- HEAD67c00392cd640a432bda9b67afcb57be4face381 unchanged. No commit/push.
+  Pre-existing dirty/untracked work preserved; no clean-worktree claim.
+
+Artifacts and reproduction
+-------------------------
+R=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/fixed_lag_stopping_fl4u_20261017
+Baseline source:
+ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_off_on_fl4t_20261016/prepared/live120_off_source
+R/off_capture/failed_decision.txt: complete failed costs/model/probes.
+R/off_capture/parity.json and validation.json: exact output/decision parity.
+R/off_capture/preflight.json,resolved_params.yaml,started.json: launch evidence.
+R/off_capture/outputs.bag,kimera.log,acceptance.csv,objective.csv: retained run.
+R/pre_capture_receipt.json: private binary/profile/input protection manifest.
+H/preservation.json: final protected/frozen hash verification.
+H/instrumentation_final.diff: actual logging-only change versus FL4q.
+H is this report's directory; it also retains scripts and protocol.
+Do not invoke prepare/run scripts against these existing artifact directories;
+they deliberately refuse overwrite. No automatic retry or promotion.

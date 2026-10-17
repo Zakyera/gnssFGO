@@ -1,0 +1,42 @@
+FL4m: isolated Kimera CBS retirement A/B, 2026-10-15
+
+User authorized the bounded A/B, not production changes or a full experiment.
+Use original ETH1 first94s (the FL4l capture length), 0.10x, native front stereo
+and CPT7, exact frozen profile, existing ROS launch/replay mechanism. No GLIM,
+gnssFGO, visualization, new source covariance or parameter tuning.
+
+Input: all actually constructed FL4l G->K factors, frozen AFTER native IMU mean
+alignment. Preserve all36 covariance entries, sender IDs, original bag-record
+availability time, and actual physical receiver endpoint times. Transport those
+aligned means on the existing belief topic, with mean re-alignment disabled in
+BOTH cases. Other original unused wire candidates are not injected. Verify
+all constructed identities/bindings and values against the frozen list after
+each case. This conditional frozen-input experiment is not live bidirectional
+CBS and not an exact replay of the historical closed loop.
+
+Do not simply set cbs_odom_factor_mode=persistent: that changes forced solve,
+recovery and admission paths too. Both cases keep active_window_temporary.
+An isolated header overlay only controls retirement:
+A remove: unchanged scheduled external-factor removal before update/marginalization.
+B retain: do not schedule these expiring factor slots for deletion; retain them
+through optimization/marginalization, then remove only obsolete tracking entries.
+All other solver/guard/marginalization operations remain the current ones.
+B tests prior inheritance with the current solver, not historical binary identity.
+
+Synthetic gate: native chain with external constraints; A/B identical before
+first retirement, A/B produce different retained uncertainty afterward, no
+expired keys/explicit external factors remain, bounded active tracking, exact
+factor conservation. Compare against native-only and persistent references
+in a linear-at-solution Pose3 fixture. No data run unless gate passes.
+
+Observe same-graph original-chart objective before/after every update on
+clones, before marginalization; no reference optimization. Record native
+increment errors on exact IE-TC intervals and retirement events. IE-TC shares
+CPT7 and is not independent truth. Stop on any validity failure, mismatch,
+missing coverage or failed capture; no automatic retry or tuning sweep.
+If both fail, removal alone is not sufficient explanation. If neither fails,
+reproduction is limited. If A fails/B healthy, focus next on retirement/prior
+consistency, not automatic promotion of prior inheritance.
+
+Protect production binaries, sources, frozen profiles and prior artifacts.
+Restore original stopped container state. Record all limits and stop.

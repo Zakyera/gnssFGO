@@ -1,0 +1,150 @@
+FL4k — Original-chart marginal-prior objective diagnostic
+2026-10-15
+
+Outcome: DIAGNOSTIC_CORRECTED_AND_SYNTHETICALLY_VALIDATED.
+This is NOT a repair or a new evaluation of the failed ETH1 trajectory.
+
+Scope
+-----
+First gate of FL4j's proposed investigation only. Correct the disabled
+Kimera/BPSAM shadow objective; test it without sensor data. No source capture,
+receiver replay, solver policy change, covariance change or runtime promotion.
+
+Confirmed defect and correction
+-------------------------------
+The installed GTSAM LinearContainerFactor::error(Values) deliberately returns
+zero when the container does not carry a linearization point. iSAM2 creates
+such containers during marginalization. The prior is still present in the
+optimizer's Gaussian system: this was an objective-DIAGNOSTIC omission.
+
+The optional IncrementalFixedLagBpsamSmoother shadow audit now receives the
+owning iSAM2 getLinearizationPoint() after the update and BEFORE marginalization.
+For an unanchored container it evaluates:
+
+  delta = Local(theta_of_this_graph, candidate_values)
+  cost  = stored_Gaussian_factor.error(delta)
+
+This includes the full dense quadratic and constant. Prior keys retain their
+fixed linearization points; an arbitrary current estimate must never be
+substituted for theta. An anchored container uses its OWN anchor. Ordinary
+nonlinear factors retain their ordinary error evaluation. Before/after costs
+use the SAME post-update graph, including newly inserted factors and excluding
+removed ones, with new variables initialized as in the existing audit path.
+
+Missing chart/value keys, wrong dimensions or types, invalid coordinates and
+nonfinite costs return NaN through the audit adapter, invalidating the total
+instead of silently contributing zero. Explicit type checking is required:
+GTSAM GenericValue's local-coordinate cast is unchecked in this Release build.
+
+The existing graph clone isolates diagnostic nonlinear-factor caches. No factor
+is relinearized by this helper. No gradients are computed and no fixedVariables
+are cleared. This is not a common-chart Jacobian/stationarity implementation.
+
+Patch
+-----
+CBS repo: /home/yeranis/repos/V4RL/cbs_gtsam4.3/src/cbs
+Base HEAD: 7c3a1e6 (uncommitted patch, no push).
+
+* include/cbs/bpsam/fixed_lag_objective_audit.h: checked scalar-cost evaluator.
+* include/cbs/bpsam/incremental_fixed_lag_bpsam_smoother.h: pass owning theta
+  and replace only the two shadow-objective factor-error calls.
+* tests/: two synthetic executables, registered with CTest.
+* CMakeLists.txt: CBS_BUILD_DIAGNOSTIC_TESTS, default OFF.
+
+No changes to BPSAM's optimization code, Kimera VioBackend, GLIM, source
+profiles, the receiver, Q/R, factor lifetime, rejection logic, or damping.
+kimera_shadow_acceptance_audit_enable remains disabled by default. Existing
+runtime libraries were not rebuilt. The new header is not in the frozen run.
+
+Validation
+----------
+Release CTest: 2/2 passed. Repeated test output byte-identical.
+
+1. Dense coupled Pose3 + velocity + bias prior (15 columns, 19 residual rows):
+   old unanchored error = 0;
+   corrected cost = 3.1645055780930065;
+   agrees with independent 0.5*||A*delta-b||^2, tolerance 1e-10 relative/absolute.
+   Anchored and unanchored containers, Hessian and Jacobian forms, and nonzero
+   constant all agree. Deliberately using the estimate as anchor changes the
+   answer and is detected by the fixture. Repeated evaluation leaves the
+   Gaussian matrix and input chart unchanged.
+
+2. Failure tests: missing keys, wrong dimension, same-dimension wrong type,
+   nonfinite coordinates, null Gaussian, and nonlinear nonfinite cost fail
+   closed. Ordinary nonlinear cost is unchanged; empty graph slots are skipped.
+
+3. Actual GTSAM iSAM2 leaf marginalization, subsequent factor replacement and
+   insertion of a new variable: corrected prior cost agrees with Gaussian
+   error evaluated at the actual iSAM2 delta. Prior cost 7.8804168916198777e-05;
+   same-graph total before 1.220000000000002, after 0.00019443602248656025.
+   The ordinary nonlinear-graph total undercounts by exactly that prior cost.
+
+4. Actual BPSAM fixed-lag wrapper, nine synthetic updates: five updates include
+   a nonzero marginal prior. Diagnostic ON/OFF produce exactly identical theta,
+   delta, estimated poses and every active key's marginal covariance (maximum
+   difference 0). Totals independently checked using the prior's original
+   chart. This is per-key covariance parity, not a new joint covariance test.
+
+5. ASan/UBSan on the new test/helper/wrapper code: both pass memory-access and
+   undefined-behavior checks. Existing GTSAM/CBS libraries are NOT instrumented.
+   Helper-only test also passes leak detection. The wrapper leak check FAILS:
+   73 bytes in two allocations, one traced to aria::DynamicBenchmarkStats/TBB
+   inside the unchanged CBS library, the other to std::string assignment.
+   Address/UB checks were separately rerun with detect_leaks=0 and passed.
+   This is an explicit limitation, not an all-clean sanitizer claim; no library
+   leak fix was attempted. The same signature occurs with devel and frozen
+   FL4g CBS libraries; no claim of leak-free production behavior is made.
+
+During test development a fixture required an explicitly typed null factor,
+and the standalone CMake needed find_package(Eigen3). The type-mismatch test
+also caught the unchecked Release cast, now explicitly guarded. These were
+fixed before the retained final receipt; no estimator run was affected.
+
+Artifacts and reproduction
+--------------------------
+Build root:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/fixed_lag_objective_fl4k_20261015
+  release/, sanitized/: isolated test builds and CTest logs
+  record_checks.py: bounded receipt generator, refuses an existing receipt dir
+  receipt/results.json: commands, exits, hashes, repeat and sanitizer status
+  receipt/*.log: individual outputs, leak failure and actual library resolution
+
+Inside cbsms_ws_gpu, set W=/workspace/cbs_gtsam4.3, then:
+  cmake -S "$W/src/cbs/tests" -B <new-build-directory> \
+    -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$W/devel" \
+    -DCBS_TEST_WITH_EXISTING_CBS=ON
+  cmake --build <new-build-directory> -j2
+  LD_LIBRARY_PATH="$W/runs/gnssfgo_eth1_fixed_lag_live120_fl4g_20261015/prepared/private_build:$W/devel/lib" \
+    ctest --test-dir <new-build-directory> --output-on-failure -V
+
+Sanitizer build used GCC9, -O1 -g1 -DNDEBUG, address,undefined,
+-fno-sanitize-recover=all, -fno-omit-frame-pointer, non-PIE and
+EIGEN_MALLOC_ALREADY_ALIGNED=1 to match the existing unsanitized Eigen library.
+Full compiler/link commands and flags remain in the isolated CMake files.
+
+Final tests explicitly load the frozen FL4g libcbs.so, SHA256:
+82f85c2a307a9d9a849b2b8f09bb5c1e026ad80a4ef0a633c903d30cca712476
+GTSAM SHA256:
+0307b15321abd8953586c19dbc189fa0c4d9fe244b05ca105bfdc7a66e846616
+Unmodified Kimera runtime SHA256:
+8ca57e0bbd51ee3af480f1beb1d530c3dac925514a768177f78e9fcd6f75e3d7
+All 879 paths in FL4g prepared/protected_manifest.json still match (0 missing,
+0 changed). Existing dirty gnssFGO reports/audits were preserved.
+
+The stopped container was temporarily started for these tests only; process
+inspection showed only its idle tail process afterward. Returned to stopped
+state. No ROS, GLIM, Kimera or gnssFGO experiment was launched.
+
+Decision / next gate
+--------------------
+Scalar prior accounting is now usable for the next bounded same-graph check.
+The ETH1 source failure is still unresolved. Do NOT infer that fixing this
+diagnostic has improved the trajectory: the disabled diagnostic did not drive
+the failing run. Other old graph-error and mixed-chart gradient diagnostics
+remain uncertified and must not be used as stationarity or acceptance proof.
+
+Next, separately authorized: capture ONE problematic source update with its
+original prior chart and complete factor state, and compare production versus
+a bounded reference solve on that exact graph. A fresh short clip without the
+preceding marginalization history is not an equivalent checkpoint. No such
+capture, reference solve or production numerical change was performed here.

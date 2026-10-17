@@ -1,0 +1,229 @@
+<launch>
+	<arg name="config_path" default="config"/>
+	<arg name="glim_input_imu_topic" default=""/>
+	<arg name="glim_input_points_topic" default=""/>
+	<arg name="glim_input_image_topic" default=""/>
+	<arg name="glim_cbs_bridge_enable" default="false"/>
+	<arg name="glim_cbs_publish_beliefs" default="$(arg glim_cbs_bridge_enable)"/>
+	<arg name="glim_cbs_receive_external_beliefs" default="$(arg glim_cbs_bridge_enable)"/>
+	<arg name="glim_cbs_mode" default="observe_only"/>
+	<arg name="glim_cbs_outgoing_marginal_source" default="direct"/>
+	<arg name="glim_cbs_self_agent_id" default="g"/>
+	<arg name="glim_cbs_peer_agent_id" default="k"/>
+	<arg name="glim_cbs_odom_belief_in_topic" default="/kimera/cbs/odom_belief_out"/>
+	<arg name="glim_cbs_odom_belief_out_topic" default="/kimera/cbs/odom_belief_in"/>
+	<arg name="glim_cbs_odometry_topic" default="/glim/cbs/odometry"/>
+	<arg name="glim_cbs_frame_id" default="map"/>
+	<arg name="glim_cbs_child_frame_id" default="glim_imu"/>
+	<arg name="glim_cbs_belief_timestamp_tolerance_sec" default="0.12"/>
+		<arg name="glim_cbs_belief_receive_start_delay_sec" default="0.0"/>
+		<arg name="glim_cbs_belief_exchange_window_size" default="25"/>
+		<arg name="glim_cbs_odom_sender_mode" default="adjacent_window"/>
+		<arg name="glim_cbs_odom_receiver_match_mode" default="nearest_stamp"/>
+		<arg name="glim_cbs_odom_covariance_mode" default="schur_relative_between"/>
+		<arg name="glim_dcreg_belief_shadow_enable" default="false"/>
+		<arg name="glim_cbs_export_endpoint_audit_enable" default="false"/>
+		<arg name="glim_cbs_live_revision_enable" default="false"/>
+		<arg name="glim_cbs_relative_covariance_matrix_dump_enable" default="false"/>
+		<arg name="glim_cbs_relative_covariance_matrix_dump_limit" default="3"/>
+		<arg name="glim_cbs_relative_covariance_matrix_dump_trace_max" default="0.0"/>
+		<arg name="glim_cbs_relative_covariance_matrix_dump_edge_filter" default=""/>
+		<arg name="glim_cbs_odom_duration_gate_enable" default="false"/>
+		<arg name="glim_cbs_odom_duration_tolerance_sec" default="0.06"/>
+		<arg name="glim_cbs_odom_duration_ratio_min" default="0.5"/>
+		<arg name="glim_cbs_odom_duration_ratio_max" default="2.0"/>
+		<arg name="glim_cbs_odom_horizon_sec" default="0.20"/>
+		<arg name="glim_cbs_odom_horizon_tolerance_sec" default="0.06"/>
+	<arg name="glim_cbs_odom_max_horizon_pairs_per_update" default="25"/>
+	<arg name="glim_cbs_odom_publish_stride" default="1"/>
+		<arg name="glim_cbs_odom_unmatched_retry_max_age_sec" default="5.0"/>
+		<arg name="glim_cbs_odom_unmatched_retry_max_beliefs" default="500"/>
+		<arg name="glim_cbs_wait_for_receiver_covariance_linearization_enable" default="false"/>
+		<arg name="glim_cbs_k2g_odom_factor_covariance_scale" default="1.0"/>
+		<arg name="glim_cbs_active_factor_detail_log_enable" default="false"/>
+		<arg name="glim_cbs_active_factor_detail_max_rows_per_update" default="1000"/>
+		<arg name="glim_cbs_receiver_local_competition_audit_max_samples" default="0"/>
+		<arg name="glim_cbs_receiver_local_competition_audit_stride" default="1"/>
+	<arg name="glim_cbs_health_aware_enable" default="false"/>
+	<arg name="glim_cbs_health_sender_enable" default="true"/>
+	<arg name="glim_cbs_health_receiver_nis_enable" default="true"/>
+	<arg name="glim_cbs_health_alpha_min" default="1.0"/>
+	<arg name="glim_cbs_health_alpha_max" default="10.0"/>
+	<arg name="glim_cbs_health_alpha_cons_max" default="100.0"/>
+	<arg name="glim_cbs_health_chi2_threshold" default="16.81"/>
+	<arg name="glim_cbs_health_beta_receiver_cov" default="1.0"/>
+	<arg name="glim_cbs_health_relative_trust_enable" default="false"/>
+	<arg name="glim_cbs_health_relative_trust_calibrated_enable" default="false"/>
+	<arg name="glim_cbs_health_relative_trust_kappa" default="1.0"/>
+	<arg name="glim_cbs_health_relative_trust_min_weight" default="0.20"/>
+	<arg name="glim_cbs_health_relative_trust_max_weight" default="5.0"/>
+	<arg name="glim_cbs_health_relative_trust_deadband" default="0.0"/>
+	<arg name="glim_cbs_health_relative_trust_warmup_samples" default="20"/>
+	<arg name="glim_cbs_health_w_logdet" default="1.0"/>
+	<arg name="glim_cbs_health_w_lambda" default="0.0"/>
+	<arg name="glim_cbs_health_w_growth" default="1.0"/>
+	<arg name="glim_cbs_health_kappa" default="1.0"/>
+	<arg name="glim_cbs_health_warmup_samples" default="20"/>
+	<arg name="glim_cbs_health_rot_sigma0_rad" default="0.0523598776"/>
+	<arg name="glim_cbs_health_trans_sigma0_m" default="0.10"/>
+	<arg name="glim_cbs_health_floor_rot_sigma_rad" default="0.0174532925"/>
+	<arg name="glim_cbs_health_floor_trans_sigma_m" default="0.03"/>
+	<arg name="glim_cbs_health_eps" default="1e-9"/>
+	<arg name="glim_cbs_sender_health_alpha_min" default="$(arg glim_cbs_health_alpha_min)"/>
+	<arg name="glim_cbs_sender_health_alpha_max" default="$(arg glim_cbs_health_alpha_max)"/>
+	<arg name="glim_cbs_sender_health_w_logdet" default="$(arg glim_cbs_health_w_logdet)"/>
+	<arg name="glim_cbs_sender_health_w_lambda" default="$(arg glim_cbs_health_w_lambda)"/>
+	<arg name="glim_cbs_sender_health_w_growth" default="$(arg glim_cbs_health_w_growth)"/>
+	<arg name="glim_cbs_sender_health_kappa" default="$(arg glim_cbs_health_kappa)"/>
+	<arg name="glim_cbs_sender_health_warmup_samples" default="$(arg glim_cbs_health_warmup_samples)"/>
+	<arg name="glim_cbs_sender_health_rot_sigma0_rad" default="$(arg glim_cbs_health_rot_sigma0_rad)"/>
+	<arg name="glim_cbs_sender_health_trans_sigma0_m" default="$(arg glim_cbs_health_trans_sigma0_m)"/>
+	<arg name="glim_cbs_sender_health_floor_rot_sigma_rad" default="$(arg glim_cbs_health_floor_rot_sigma_rad)"/>
+	<arg name="glim_cbs_sender_health_floor_trans_sigma_m" default="$(arg glim_cbs_health_floor_trans_sigma_m)"/>
+	<arg name="glim_cbs_sender_health_eps" default="$(arg glim_cbs_health_eps)"/>
+	<arg name="glim_cbs_receiver_health_alpha_cons_max" default="$(arg glim_cbs_health_alpha_cons_max)"/>
+	<arg name="glim_cbs_receiver_health_chi2_threshold" default="$(arg glim_cbs_health_chi2_threshold)"/>
+	<arg name="glim_cbs_receiver_health_beta_receiver_cov" default="$(arg glim_cbs_health_beta_receiver_cov)"/>
+	<arg name="glim_cbs_receiver_health_relative_trust_kappa" default="$(arg glim_cbs_health_relative_trust_kappa)"/>
+	<arg name="glim_cbs_receiver_health_relative_trust_min_weight" default="$(arg glim_cbs_health_relative_trust_min_weight)"/>
+	<arg name="glim_cbs_receiver_health_relative_trust_max_weight" default="$(arg glim_cbs_health_relative_trust_max_weight)"/>
+	<arg name="glim_cbs_receiver_health_relative_trust_deadband" default="$(arg glim_cbs_health_relative_trust_deadband)"/>
+	<arg name="glim_cbs_receiver_health_relative_trust_warmup_samples" default="$(arg glim_cbs_health_relative_trust_warmup_samples)"/>
+	<arg name="glim_cbs_receiver_health_floor_rot_sigma_rad" default="$(arg glim_cbs_health_floor_rot_sigma_rad)"/>
+	<arg name="glim_cbs_receiver_health_floor_trans_sigma_m" default="$(arg glim_cbs_health_floor_trans_sigma_m)"/>
+	<arg name="glim_cbs_receiver_health_eps" default="$(arg glim_cbs_health_eps)"/>
+	<arg name="glim_cbs_rerun_visualizer_enable" default="false"/>
+	<arg name="glim_cbs_rerun_geometry_enable" default="true"/>
+	<arg name="glim_cbs_rerun_recording_id" default=""/>
+	<arg name="glim_cbs_rerun_host" default="auto"/>
+	<arg name="glim_cbs_rerun_uncertainty_scale" default="1.25"/>
+	<arg name="glim_ros_spinner_threads" default="4"/>
+	<arg name="glim_dump_path" default="/tmp/dump"/>
+	<arg name="glim_timing_enable" default="false"/>
+	<arg name="glim_deterministic_input_event_log_path" default=""/>
+	<arg name="glim_factor_graph_inspector_enable" default="false"/>
+	<arg name="glim_factor_graph_inspector_stride" default="5"/>
+	<arg name="glim_dcreg_visualization_stride" default="5"/>
+	<arg name="glim_factor_graph_inspector_context_windows" default="2"/>
+	<arg name="glim_factor_graph_inspector_full_history_enable" default="false"/>
+	<arg name="glim_factor_graph_inspector_recording_id" default=""/>
+	<arg name="glim_factor_graph_inspector_host" default="auto"/>
+	<arg name="glim_factor_graph_inspector_entity_prefix" default="glim"/>
+	<arg name="glim_node_output" default="screen"/>
+	<node pkg="glim_ros" type="glim_rosnode" name="glim_rosnode" output="$(arg glim_node_output)">
+		<env name="LD_LIBRARY_PATH" value="/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_provider_20261012/release_2:$(optenv LD_LIBRARY_PATH)"/>
+		<env name="CBS_E1B_LOCAL_UPDATE_GPU_BATCHING" value="1"/>
+        <env name="GLIM_SHARED_NATIVE_PROVIDER" value="shared_native"/>
+        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_off_on_fl4t_20261016/prepared/live120_on_source/e1b_profile.jsonl"/>
+		<param name="config_path" value="$(arg config_path)" />
+		<param name="glim_dump_path" value="$(arg glim_dump_path)" />
+		<param name="deterministic_input_event_log_path" value="$(arg glim_deterministic_input_event_log_path)" />
+		<param name="ros_spinner_threads" value="$(arg glim_ros_spinner_threads)" />
+		<param name="glim_cbs_bridge_enable" value="$(arg glim_cbs_bridge_enable)" />
+		<param name="glim_cbs_publish_beliefs" value="$(arg glim_cbs_publish_beliefs)" />
+		<param name="glim_cbs_receive_external_beliefs" value="$(arg glim_cbs_receive_external_beliefs)" />
+		<param name="glim_cbs_mode" value="$(arg glim_cbs_mode)" />
+		<param name="glim_cbs_outgoing_marginal_source" value="$(arg glim_cbs_outgoing_marginal_source)" />
+		<param name="glim_cbs_self_agent_id" value="$(arg glim_cbs_self_agent_id)" />
+		<param name="glim_cbs_peer_agent_id" value="$(arg glim_cbs_peer_agent_id)" />
+		<param name="glim_cbs_odom_belief_in_topic" value="$(arg glim_cbs_odom_belief_in_topic)" />
+		<param name="glim_cbs_odom_belief_out_topic" value="$(arg glim_cbs_odom_belief_out_topic)" />
+		<param name="glim_cbs_odometry_topic" value="$(arg glim_cbs_odometry_topic)" />
+		<param name="glim_cbs_frame_id" value="$(arg glim_cbs_frame_id)" />
+		<param name="glim_cbs_child_frame_id" value="$(arg glim_cbs_child_frame_id)" />
+		<param name="glim_cbs_belief_timestamp_tolerance_sec" value="$(arg glim_cbs_belief_timestamp_tolerance_sec)" />
+			<param name="glim_cbs_belief_receive_start_delay_sec" value="$(arg glim_cbs_belief_receive_start_delay_sec)" />
+			<param name="glim_cbs_belief_exchange_window_size" value="$(arg glim_cbs_belief_exchange_window_size)" />
+			<param name="glim_cbs_odom_sender_mode" value="$(arg glim_cbs_odom_sender_mode)" />
+			<param name="glim_cbs_odom_receiver_match_mode" value="$(arg glim_cbs_odom_receiver_match_mode)" />
+			<param name="glim_cbs_odom_covariance_mode" value="$(arg glim_cbs_odom_covariance_mode)" />
+			<param name="glim_dcreg_belief_shadow_enable" value="$(arg glim_dcreg_belief_shadow_enable)" />
+			<param name="glim_cbs_export_endpoint_audit_enable" value="$(arg glim_cbs_export_endpoint_audit_enable)" />
+			<param name="glim_cbs_live_revision_enable" value="$(arg glim_cbs_live_revision_enable)" />
+			<param name="glim_cbs_relative_covariance_matrix_dump_enable" value="$(arg glim_cbs_relative_covariance_matrix_dump_enable)" />
+			<param name="glim_cbs_relative_covariance_matrix_dump_limit" value="$(arg glim_cbs_relative_covariance_matrix_dump_limit)" />
+			<param name="glim_cbs_relative_covariance_matrix_dump_trace_max" value="$(arg glim_cbs_relative_covariance_matrix_dump_trace_max)" />
+			<param name="glim_cbs_relative_covariance_matrix_dump_edge_filter" value="$(arg glim_cbs_relative_covariance_matrix_dump_edge_filter)" />
+			<param name="glim_cbs_odom_duration_gate_enable" value="$(arg glim_cbs_odom_duration_gate_enable)" />
+			<param name="glim_cbs_odom_duration_tolerance_sec" value="$(arg glim_cbs_odom_duration_tolerance_sec)" />
+			<param name="glim_cbs_odom_duration_ratio_min" value="$(arg glim_cbs_odom_duration_ratio_min)" />
+			<param name="glim_cbs_odom_duration_ratio_max" value="$(arg glim_cbs_odom_duration_ratio_max)" />
+			<param name="glim_cbs_odom_horizon_sec" value="$(arg glim_cbs_odom_horizon_sec)" />
+			<param name="glim_cbs_odom_horizon_tolerance_sec" value="$(arg glim_cbs_odom_horizon_tolerance_sec)" />
+		<param name="glim_cbs_odom_max_horizon_pairs_per_update" value="$(arg glim_cbs_odom_max_horizon_pairs_per_update)" />
+		<param name="glim_cbs_odom_publish_stride" value="$(arg glim_cbs_odom_publish_stride)" />
+				<param name="glim_cbs_odom_unmatched_retry_max_age_sec" value="$(arg glim_cbs_odom_unmatched_retry_max_age_sec)" />
+				<param name="glim_cbs_odom_unmatched_retry_max_beliefs" value="$(arg glim_cbs_odom_unmatched_retry_max_beliefs)" />
+				<param name="glim_cbs_wait_for_receiver_covariance_linearization_enable" value="$(arg glim_cbs_wait_for_receiver_covariance_linearization_enable)" />
+				<param name="glim_cbs_k2g_odom_factor_covariance_scale" value="$(arg glim_cbs_k2g_odom_factor_covariance_scale)" />
+				<param name="glim_cbs_active_factor_detail_log_enable" value="$(arg glim_cbs_active_factor_detail_log_enable)" />
+				<param name="glim_cbs_active_factor_detail_max_rows_per_update" value="$(arg glim_cbs_active_factor_detail_max_rows_per_update)" />
+				<param name="glim_cbs_receiver_local_competition_audit_max_samples" value="$(arg glim_cbs_receiver_local_competition_audit_max_samples)" />
+				<param name="glim_cbs_receiver_local_competition_audit_stride" value="$(arg glim_cbs_receiver_local_competition_audit_stride)" />
+			<param name="glim_cbs_health_aware_enable" value="$(arg glim_cbs_health_aware_enable)" />
+			<param name="glim_cbs_health_sender_enable" value="$(arg glim_cbs_health_sender_enable)" />
+			<param name="glim_cbs_health_receiver_nis_enable" value="$(arg glim_cbs_health_receiver_nis_enable)" />
+			<param name="glim_cbs_health_alpha_min" value="$(arg glim_cbs_health_alpha_min)" />
+			<param name="glim_cbs_health_alpha_max" value="$(arg glim_cbs_health_alpha_max)" />
+			<param name="glim_cbs_health_alpha_cons_max" value="$(arg glim_cbs_health_alpha_cons_max)" />
+			<param name="glim_cbs_health_chi2_threshold" value="$(arg glim_cbs_health_chi2_threshold)" />
+			<param name="glim_cbs_health_beta_receiver_cov" value="$(arg glim_cbs_health_beta_receiver_cov)" />
+			<param name="glim_cbs_health_relative_trust_enable" value="$(arg glim_cbs_health_relative_trust_enable)" />
+			<param name="glim_cbs_health_relative_trust_calibrated_enable" value="$(arg glim_cbs_health_relative_trust_calibrated_enable)" />
+			<param name="glim_cbs_health_relative_trust_kappa" value="$(arg glim_cbs_health_relative_trust_kappa)" />
+			<param name="glim_cbs_health_relative_trust_min_weight" value="$(arg glim_cbs_health_relative_trust_min_weight)" />
+			<param name="glim_cbs_health_relative_trust_max_weight" value="$(arg glim_cbs_health_relative_trust_max_weight)" />
+			<param name="glim_cbs_health_relative_trust_deadband" value="$(arg glim_cbs_health_relative_trust_deadband)" />
+			<param name="glim_cbs_health_relative_trust_warmup_samples" value="$(arg glim_cbs_health_relative_trust_warmup_samples)" />
+			<param name="glim_cbs_health_w_logdet" value="$(arg glim_cbs_health_w_logdet)" />
+			<param name="glim_cbs_health_w_lambda" value="$(arg glim_cbs_health_w_lambda)" />
+			<param name="glim_cbs_health_w_growth" value="$(arg glim_cbs_health_w_growth)" />
+			<param name="glim_cbs_health_kappa" value="$(arg glim_cbs_health_kappa)" />
+			<param name="glim_cbs_health_warmup_samples" value="$(arg glim_cbs_health_warmup_samples)" />
+			<param name="glim_cbs_health_rot_sigma0_rad" value="$(arg glim_cbs_health_rot_sigma0_rad)" />
+			<param name="glim_cbs_health_trans_sigma0_m" value="$(arg glim_cbs_health_trans_sigma0_m)" />
+			<param name="glim_cbs_health_floor_rot_sigma_rad" value="$(arg glim_cbs_health_floor_rot_sigma_rad)" />
+			<param name="glim_cbs_health_floor_trans_sigma_m" value="$(arg glim_cbs_health_floor_trans_sigma_m)" />
+			<param name="glim_cbs_health_eps" value="$(arg glim_cbs_health_eps)" />
+			<param name="glim_cbs_sender_health_alpha_min" value="$(arg glim_cbs_sender_health_alpha_min)" />
+			<param name="glim_cbs_sender_health_alpha_max" value="$(arg glim_cbs_sender_health_alpha_max)" />
+			<param name="glim_cbs_sender_health_w_logdet" value="$(arg glim_cbs_sender_health_w_logdet)" />
+			<param name="glim_cbs_sender_health_w_lambda" value="$(arg glim_cbs_sender_health_w_lambda)" />
+			<param name="glim_cbs_sender_health_w_growth" value="$(arg glim_cbs_sender_health_w_growth)" />
+			<param name="glim_cbs_sender_health_kappa" value="$(arg glim_cbs_sender_health_kappa)" />
+			<param name="glim_cbs_sender_health_warmup_samples" value="$(arg glim_cbs_sender_health_warmup_samples)" />
+			<param name="glim_cbs_sender_health_rot_sigma0_rad" value="$(arg glim_cbs_sender_health_rot_sigma0_rad)" />
+			<param name="glim_cbs_sender_health_trans_sigma0_m" value="$(arg glim_cbs_sender_health_trans_sigma0_m)" />
+			<param name="glim_cbs_sender_health_floor_rot_sigma_rad" value="$(arg glim_cbs_sender_health_floor_rot_sigma_rad)" />
+			<param name="glim_cbs_sender_health_floor_trans_sigma_m" value="$(arg glim_cbs_sender_health_floor_trans_sigma_m)" />
+			<param name="glim_cbs_sender_health_eps" value="$(arg glim_cbs_sender_health_eps)" />
+			<param name="glim_cbs_receiver_health_alpha_cons_max" value="$(arg glim_cbs_receiver_health_alpha_cons_max)" />
+			<param name="glim_cbs_receiver_health_chi2_threshold" value="$(arg glim_cbs_receiver_health_chi2_threshold)" />
+			<param name="glim_cbs_receiver_health_beta_receiver_cov" value="$(arg glim_cbs_receiver_health_beta_receiver_cov)" />
+			<param name="glim_cbs_receiver_health_relative_trust_kappa" value="$(arg glim_cbs_receiver_health_relative_trust_kappa)" />
+			<param name="glim_cbs_receiver_health_relative_trust_min_weight" value="$(arg glim_cbs_receiver_health_relative_trust_min_weight)" />
+			<param name="glim_cbs_receiver_health_relative_trust_max_weight" value="$(arg glim_cbs_receiver_health_relative_trust_max_weight)" />
+			<param name="glim_cbs_receiver_health_relative_trust_deadband" value="$(arg glim_cbs_receiver_health_relative_trust_deadband)" />
+			<param name="glim_cbs_receiver_health_relative_trust_warmup_samples" value="$(arg glim_cbs_receiver_health_relative_trust_warmup_samples)" />
+			<param name="glim_cbs_receiver_health_floor_rot_sigma_rad" value="$(arg glim_cbs_receiver_health_floor_rot_sigma_rad)" />
+			<param name="glim_cbs_receiver_health_floor_trans_sigma_m" value="$(arg glim_cbs_receiver_health_floor_trans_sigma_m)" />
+			<param name="glim_cbs_receiver_health_eps" value="$(arg glim_cbs_receiver_health_eps)" />
+			<param name="glim_cbs_rerun_visualizer_enable" value="$(arg glim_cbs_rerun_visualizer_enable)" />
+		<param name="glim_cbs_rerun_geometry_enable" value="$(arg glim_cbs_rerun_geometry_enable)" />
+		<param name="glim_cbs_rerun_recording_id" value="$(arg glim_cbs_rerun_recording_id)" />
+		<param name="glim_cbs_rerun_host" value="$(arg glim_cbs_rerun_host)" />
+		<param name="glim_cbs_rerun_uncertainty_scale" value="$(arg glim_cbs_rerun_uncertainty_scale)" />
+		<param name="glim_timing_enable" value="$(arg glim_timing_enable)" />
+		<param name="glim_factor_graph_inspector_enable" value="$(arg glim_factor_graph_inspector_enable)" />
+		<param name="glim_factor_graph_inspector_stride" value="$(arg glim_factor_graph_inspector_stride)" />
+		<param name="glim_dcreg_visualization_stride" value="$(arg glim_dcreg_visualization_stride)" />
+		<param name="glim_factor_graph_inspector_context_windows" value="$(arg glim_factor_graph_inspector_context_windows)" />
+		<param name="glim_factor_graph_inspector_full_history_enable" value="$(arg glim_factor_graph_inspector_full_history_enable)" />
+		<param name="glim_factor_graph_inspector_recording_id" value="$(arg glim_factor_graph_inspector_recording_id)" />
+		<param name="glim_factor_graph_inspector_host" value="$(arg glim_factor_graph_inspector_host)" />
+		<param name="glim_factor_graph_inspector_entity_prefix" value="$(arg glim_factor_graph_inspector_entity_prefix)" />
+		<remap if="$(eval arg('glim_input_imu_topic') != '')" from="/os_cloud_node/imu" to="$(arg glim_input_imu_topic)" />
+		<remap if="$(eval arg('glim_input_points_topic') != '')" from="/os_cloud_node/points" to="$(arg glim_input_points_topic)" />
+		<remap if="$(eval arg('glim_input_image_topic') != '')" from="/image" to="$(arg glim_input_image_topic)" />
+	</node>
+</launch>

@@ -1,0 +1,189 @@
+READ FIRST — frozen ETH1 FL4v launch/settings checkpoint, 2026-10-17
+=================================================================
+Checkpoint/branch: milestone/eth1-fl4v-live120-cbs-on-20261017
+Purpose: preserve the ACTUAL configuration behind the latest results for
+future chats and authorized runs. This is not permission to start a run, a
+promotion of default CMake/ROS launch settings, or a claim of universal safety.
+
+1. Which result and which configuration?
+---------------------------------------
+Latest complete capture: FL4v, one standalone first-120-second ETH1 CBS-ON
+run, live GLIM + live Kimera + live gnssFGO at 0.10x bag playback.
+Read experiments/fixed_lag_live_on_fl4v_20261017/REPORT.txt and PROTOCOL.txt.
+FL4t CBS-OFF stopped near 109 s in Kimera (no decreasing current-chart LM
+step). It is NOT a completed 120 s OFF reference. FL4s is the preceding
+matched, completed 30 s OFF/ON gate using these same estimator binaries.
+
+The latest OFF/ON table uses the common 105.3999 s pre-stop mask (1055
+timestamps; 1045 one-second RPE pairs), not the entire requested 120 s.
+Evidence: experiments/fixed_lag_live_on_fl4v_20261017/common_prefix_off_on.json.
+                       OFF ATE m   ON ATE m    OFF path m  ON path m
+Original/native GLIM     .041708    .025926      62.3083     61.9915
+Original/native Kimera   .687756    .235494      59.4755     61.1504
+Fusion ONLINE           .065905    .050717      64.0395     64.0969
+Reference path on the same mask: 61.7184 m (prism-frame paths).
+Fusion ATE improves but its one-second RPE worsens on this mask; do not
+claim improvement of every metric. Do not compare a receiver GLIM-only or
+Kimera-only control as if it were the original estimator output.
+
+Full saved ON spans are ~119 s after startup. ON full-saved ATE:
+native GLIM .026277 m, native Kimera .270672 m, fusion ONLINE .058737 m,
+fusion DELAYED fixed-lag finalized .055768 m. Finalized is not online and
+does not mean full-history batch smoothing. Do not compare its longer future
+information with the early-stopped OFF finalization.
+
+2. Exact sources (not the September persistent-CBS default)
+---------------------------------------------------------
+Dataset: GrandTour ETH1, mission 2024-10-01-11-29-55.
+Window: bag offset 0, duration 120 s; playback 0.10x; post-playback drain 25 s.
+GLIM: Hesai /boxi/hesai/points; shared /boxi/cpt7/imu; 5-second smoother lag.
+Kimera: Alphasense front stereo, 25-state window; same CPT7 IMU/body frame.
+Raw compressed images: /boxi/alphasense/front_left/image_raw/compressed and
+/boxi/alphasense/front_right/image_raw/compressed, decompressed for Kimera
+to /grandtour/front_left/image_raw and /grandtour/front_right/image_raw.
+Profile: stereo_shared_cpt7; do not infer mono from an old filename/comment.
+GLIM and Kimera IMU consumption is the native recovered path. In particular
+KIMERA_IMU_SAMPLE_SUPPORT is UNSET, not the earlier experimental RIGHT override.
+No central IMU integration is performed in this receiver configuration.
+
+Source CBS: classic, bidirectional, active_window_temporary.
+External factors retire before marginalization according to the preserved
+temporary-factor implementation. No source-to-source live_revision.
+Both native-IMU mean alignment switches enabled; 0.20 s horizon;
+one horizon pair/update; publication stride 1; receive-start delay 0 s.
+Full dense schur_relative_between 6x6 covariance, Gaussian scale 1.0 in
+both directions; health-aware weighting disabled; no Huber/rescaling.
+Keep existing timestamp/duration/validity checks: 'Gaussian' does NOT mean
+disabling those checks or the existing temporary-factor lifecycle guards.
+
+GLIM uses the experimental shared-native Gaussian LOCAL covariance provider:
+GLIM_SHARED_NATIVE_PROVIDER=shared_native and local GPU batching enabled.
+The resolved outgoing-marginal-source parameter still says direct; the actual
+provider override and loaded library matter. Do not replace with old LOCAL
+nonlinear reoptimization just by copying a default launch.
+Kimera uses LOCAL smoother covariance; persistent BPSAM sidecar disabled.
+Source covariance/revision diagnostics remain enabled for downstream fusion.
+Headless: presentation and synchronous factor-graph inspectors disabled.
+Do not add live visualization load while claiming identical throughput.
+
+3. Actual builds (base repository HEAD is insufficient)
+------------------------------------------------------
+Workspace W=/home/yeranis/repos/V4RL/cbs_gtsam4.3
+Run R=W/runs/gnssfgo_fixed_lag_live120_on_fl4v_20261017/prepared
+
+Kimera private R/private_build/libkimera_vio.so:
+SHA256 6ce24c266b0f0e2561f0c05de2a661a72d5a4d9335df7c3cdfa0a4c77af9b4ae
+Actual overlay: W/runs/fixed_lag_current_chart_fl4q_20261016.
+FL4Q_ENABLE=1, FL4M_RETIREMENT=remove; acceptance.csv/objective.csv logging.
+This includes the current-chart LM fallback; do not substitute FL4u or an
+ordinary rebuild of the base Kimera-VIO branch and call it the same run.
+
+GLIM node's first LD_LIBRARY_PATH entry in the container:
+/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_provider_20261012/release_2
+The archive manifest hashes that directory's loaded DSOs and resolves its
+container-absolute dependency symlinks to host files. It is not the unused
+old libglim_ros.so copied alongside Kimera in R/private_build.
+
+Receiver /home/yeranis/results/gnssfgo_fixed_lag_failure_fl4e_20261014/candidate_live:
+SHA256 53c96a2b7a762800cf2291166dc78520269098684411de641b52bee6a54dc5c9
+Use the frozen receiver_fl4e.sh wrapper, not the default build target.
+OMP_NUM_THREADS=1; taskset CPU 2; E2_EXACT_LINEARIZATION_CACHE=0;
+E2B_ENDPOINT_CACHE=0; WNOJ_STRICT_PUBLICATION and WNOJ_INCREMENTAL_PROFILE unset.
+Runtime library directory:
+/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib
+
+4. Receiver model
+-----------------
+7-second fixed-lag source_wnoa, fl4a_fixed_lag_incremental publication policy.
+Independent 100,000,000 ns support clock, initialized after 59 CPT7 samples.
+IMU samples supply timing, NOT central Combined-IMU or other IMU factors.
+No GNSS factors. State at a support: pose X, world velocity V, body angular
+rate W. No acceleration state or IMU-bias state. Source arrival times remain
+separate from physical relative endpoints. Support grid is not GLIM-locked.
+
+WNOA Qc diagonal VARIANCES: [.00375,.00375,.00375,.015,.015,.015],
+rotational then translational tangent components. Same GP WNOA motion and
+interpolation code, no parameter retuning.
+Initial X=identity, V=0, W=0. Prior standard deviations: pose 1e-5 (all6),
+velocity 10 (all3), angular rate 3 (all3).
+See experiments/fixed_lag_slots_fl3i_20261014/Receiver.h::Qc and initialization.
+
+Downstream source factors: stable-ID mean+full-covariance revision replacement,
+scale 1, Gaussian; no Huber, health weights, or additional NIS gating.
+Use the existing bounded lifecycle/late-version handling; do not reinsert
+absorbed factors or accumulate revisions as independent measurements.
+This receiver's revision handling is distinct from classic source CBS.
+
+5. Saved files and commands — historical, NOT a new launch authorization
+---------------------------------------------------------------------
+Versioned byte archive: experiments/checkpoints/20261017_fl4v/.
+Run read-only integrity check from this repository:
+  python3 experiments/checkpoints/20261017_fl4v/verify_archive.py --originals
+Omit --originals on another machine to validate only the archived bytes.
+
+snapshot/launch contains the actual ON controller, environment, full nested
+launch chain, transport code, validation and evaluation scripts.
+snapshot/matched_off_launch contains FL4t's actual OFF and ON harness files.
+snapshot/profiles holds the actual copied GLIM (16 files) and Kimera (14)
+calibration/configuration files, not just links to mutable source profiles.
+snapshot/kimera_fl4q and snapshot/glim_s4 hold actual compiled source overlays
+and build commands. snapshot/receiver_dependencies preserves custom include
+inputs; receiver code itself is committed under the FL3i/FL4a/FL4e experiment
+directories. See checkpoint README.txt for receiver build provenance.
+
+Historical ON command (already completed; DO NOT repeat at this output root):
+  python3 R/run_case_on.py live120 on
+Historical validation (writes/replays; NOT the read-only archive verifier):
+  /home/yeranis/.local/share/pipx/venvs/evo/bin/python R/validate_case.py live120 on
+Scoring uses evaluate_fl4f.py inside the existing Noetic container; the exact
+script and common_prefix_off_on.py are archived. Do not change masks/alignment.
+
+For an explicitly authorized FUTURE run:
+a. Read this file, canonical CBS runbook, FL4v protocol/report and failure limits.
+b. Prepare a NEW run root/session/port; use archived actual harness as template.
+   Existing prepare.py files intentionally refuse reuse/overwrite. Do not run
+   archived historical controllers in place. Rebase path references carefully
+   in a separate copy; diff against the archive and preserve all guards.
+c. For ETH1 reuse these exact sensor profiles. For another mission verify its
+   bags/topics/extrinsics/GT/window independently; do not transplant ETH1 timing.
+d. Keep binaries and settings pinned. Hash actual DSOs and receiver, check
+   existing container mounts/runtime dependencies and no competing controllers.
+e. Verify resolved settings AND process-loaded DSOs before playback. Receiver
+   ready first. OFF disables source-to-source receiving in both directions,
+   preserves exports for downstream fusion; ON enables classic temporary CBS.
+f. Preserve no-duplicate/no-overwrite/stop-on-failure guards; no automatic retry.
+   Full matched OFF/ON requires a valid complete OFF first unless explicitly
+   authorized otherwise. FL4v's standalone-ON admission is not a general rule.
+g. Keep covariance histories, native trajectories, online and finalized fusion,
+   effective settings, timing/conservation evidence, and hashes per new run.
+
+6. Validation and interpretation limits
+---------------------------------------
+FL4v: 1191 native GLIM poses, 584 native Kimera poses, 1193 online fusion poses.
+70756 versions; 1770 insertions, 68961 replacements, 25 pre-init exclusions;
+0 pending/unsupported-at-end; 71 retained supports; peak queue42; p95 support
+service .080328 s. Deterministic saved-journal replay exact, including73113
+archive files. 1131 protected hashes and both copied source profiles unchanged.
+No re-run or re-build was made while saving this GitHub checkpoint.
+
+76 Kimera fallbacks, 66 reaching their10-iteration cap. Acceptance is measured
+cost nonincrease, NOT nonlinear stationarity. Receiver publication is likewise
+incremental/not stationarity-certified. Do not claim earlier OFF failure fixed,
+all sequences stable, 1x operation, or all metrics improved.
+
+Evaluate original/native GLIM and original/native Kimera ROS odometry, plus
+fusion ONLINE; optionally report DELAYED finalized separately. Full-saved and
+common-mask scores are distinct. IE-TC /boxi/inertial_explorer/tc/odometry is
+the full-window reference sharing CPT7 IMU, not independent prism GT. Preserve
+the existing prism lever arm, no-scale SE3 ATE alignment and1s RPE convention.
+No silent11s prism substitute, no presenting a prefix as the full requested run.
+
+7. Git recovery
+---------------
+Read cbsms/docs/GITHUB_CHECKPOINT_20261017_FL4V.txt and its dedicated
+checkpoints/grandtour-fl4v-20261017.repos exact-commit workspace manifest.
+The named milestone branches preserve the state without changing main/default
+branches. Older runbooks remain historical evidence; this file wins for FL4v.
+Large bags, runtime binaries, build objects, ROS logs and full journals remain
+local, not uploaded to GitHub. The archive is a source/configuration recovery
+checkpoint, not a self-contained container image or fresh-machine binary kit.

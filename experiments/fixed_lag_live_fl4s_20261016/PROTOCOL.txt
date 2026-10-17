@@ -1,0 +1,47 @@
+FL4s: matched live ETH1 first30s OFF/ON with unchanged Kimera candidate
+2026-10-16. Authorized by Proceed after FL4r and the proposed matched live gate.
+
+Run exactly two fresh captures, OFF then ON after OFF validation/repeat passes.
+First30s ETH1 mission2024-10-01-11-29-55, offset0, rate0.10, headless.
+GLIM Hesai+CPT7,5s lag, exact shared-native provider from FL4f; Kimera front
+stereo+CPT7,25states, native current IMU packet handling; copied FL4f profiles.
+Kimera FL4q DSO unchanged SHA256:
+6ce24c266b0f0e2561f0c05de2a661a72d5a4d9335df7c3cdfa0a4c77af9b4ae.
+Enable its bounded current-estimate LM safeguard in BOTH OFF and ON, with
+unchanged iterations/tolerances/original-chart prior model. No rebuild.
+Scope selector/log environment to Kimera, not GLIM or fuser.
+
+Live beliefs come from the concurrent estimators, not aligned_inputs.bag.
+Native temporal mean alignment MUST remain true in both source receivers as
+in FL4f. The frozen-input replay disabled it only because inputs were already
+aligned. OFF publishes but does not inject cross-source factors; ON uses real
+bidirectional classic active_window_temporary exchange. Full dense Schur
+covariances, scale1,0.20s horizon,one pair/update; no live_revision, health,
+robust loss, gating, inherited expired external factors or weighting changes.
+
+Fusion retains exact FL4e binary53c96a2b7a762800cf2291166dc78520269098684411de641b52bee6a54dc5c9:
+7s incremental fixed lag, source-WNOA, independent100ms CPT7 clock after59
+samples, no central IMU factor, unchanged Qc/priors, stable-ID replacement.
+Receiver starts before playback. Source/fusion inspectors remain disabled.
+
+Reuse FL4f controllers, effective-configuration/library checks, conservation,
+coverage, deterministic journal replay and existing evaluator. Add fail-closed
+checks for FL4Q candidate errors, rollback/recovery and all logged Kimera
+accepted objectives. Never retry a failed capture automatically. OFF and ON
+must use identical binaries/settings except reception and output/session IDs.
+Native spans>=28s, complete requested tail; report startup gaps, no gap filling.
+Fusion supports<=71,slots<=200,queue<1000,p95 whole-support service<=0.8s at0.10x,
+zero pending and unsupported-at-end; all mean/covariance payloads conserved.
+Exact receiver journal-repeat numeric products/archive, not a second source run.
+
+Score full saved native GLIM, native Kimera ROS odometry, fused online/as-played
+and separate fixed-lag-finalized paths against full-window IE-TC, then a common
+physical-time mask. Existing no-scale SE(3), prism lever arm and1s RPE only.
+IE-TC shares CPT7 input; do not call it independent prism truth. Partial prism
+must never substitute for full-window scores. Retain covariance summaries,
+actual source exchange counts, solver fallbacks/cap hits and runtime evidence.
+
+No tuning after results, source-parameter changes, production promotion,
+new sequence, longer capture, new method, commit or push. Preserve old artifacts
+and initial container state. Prior candidate tests are reused via hashes, not
+claimed freshly executed. Stop and report after the matched pair or any failure.

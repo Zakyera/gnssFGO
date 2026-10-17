@@ -2,6 +2,8 @@
 
 Date: 2026-10-15. Both cases completed with the frozen [predeclared protocol](PROTOCOL.md), and both saved receiver journals replayed byte-identically. This is a **negative 120 s ON result**, not a tuning run: native GLIM improves under classic CBS-ON, but native Kimera degrades sharply and the live fusion is worse. The favorable FL4f first-30 s result therefore does not extend unchanged to this longer window. No estimator, covariance, CBS, or receiver-model setting was changed after seeing the result.
 
+**Subsequent FL4h accounting clarification:** the580 G→K count below denotes constructed candidates, not final retained admissions. The saved Kimera log contains22 recovery transactions:18 candidate admissions are undone, leaving562 retained admissions. Eleven older external factors are additionally removed by existing residual guards. These are internal source recoveries, not process failures or downstream conservation failures. See the [source-failure audit](../fixed_lag_live_fl4h_20261015/REPORT.md). Source factors are Gaussian/scale1 with health/Huber disabled, but the existing temporary-factor recovery is not guard-free. The original trajectory metrics are unchanged.
+
 ## Exact experiment and provenance
 
 - GrandTour ETH1 mission `2024-10-01-11-29-55`, bag offset `0`, requested duration `120.0 s`, playback `0.10×`. Native GLIM uses Hesai+CPT7 with the historical 5 s source lag; native Kimera uses front stereo+CPT7 with a 25-state window. The copied OFF/ON GLIM configuration trees are byte-identical; so are the copied Kimera profile trees (`diff -qr`). All input bags existed before playback.
@@ -15,7 +17,7 @@ Date: 2026-10-15. Both cases completed with the frozen [predeclared protocol](PR
 |---|---:|---:|
 | Original GLIM poses / span | 1,191 / 119.00 s | 1,191 / 119.00 s |
 | Original Kimera ROS-odometry poses / span | 584 / 119.60 s | 584 / 119.60 s |
-| G→K / K→G injected source factors | 0 / 0 | 580 / 581 |
+| G→K / K→G constructed source candidates (see FL4h) | 0 / 0 | 580 / 581 |
 | Receiver GLIM / Kimera belief versions | 56,429 / 14,250 | 56,509 / 14,250 |
 | Receiver inserted / replaced / excluded-before-init | 1,770 / 68,884 / 25 | 1,770 / 68,964 / 25 |
 | Fused online / fixed-lag-finalized poses | 1,193 / 1,193 | 1,193 / 1,193 |

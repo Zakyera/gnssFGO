@@ -1,0 +1,229 @@
+FL4j — Kimera source-CBS numerical/visual mechanism investigation
+================================================================
+2026-10-15. Follows FL4h/FL4i. Retained-data parsing and source inspection
+only. No sensor playback, estimator/receiver run, build, parameter change,
+covariance tuning, or production-code edit. The ROS container was not started.
+
+Assessment
+----------
+The next improvement should target reliable integration of external factors
+inside Kimera, not GLIM speed, gnssFGO weights, or a larger experiment.
+There is a concrete numerical-acceptance weakness and a newly quantified
+loss of usable visual constraints. The unique initiating defect is NOT yet
+proved. In particular, this does not prove temporary-factor retirement alone
+causes the failure, or that changing a solver flag will cure it.
+
+Three distinctions matter:
+  factor present != informative at the current estimate;
+  full linear solve != nonlinear convergence;
+  successful update != checked decrease of the actual graph objective.
+
+1. The incoming information is not the late failure
+--------------------------------------------------
+FL4i established correct current-launch provenance, healthier current ON GLIM
+means, and the same large Kimera failure before the shared-native provider.
+The older persistent ON versus temporary/aligned ON transition remains coupled;
+historical covariance provider, factor lifetime and alignment changed together.
+
+FL4j partitions all 562 retained G->K admissions from FL4h. The other 18
+constructed candidates were undone by recovery, not consumed admissions.
+Translation RMS in metres, each factor scored on its actual receiver interval:
+
+ Bag-clock section   retained   incoming G   K edge before   K edge after
+ 0-30 s                 126       .01129        .00681         .00549
+ 30-75 s                225       .00851        .00595         .00585
+ 75-90 s                 75       .00914        .03541         .03262
+ 90-100.5 s              52       .00851        .07819         .11529
+ 100.5-end               84       .01188        .18653         .17828
+
+These are local relative errors, NOT ATE. The reference is the same CPT7 IE-TC
+trajectory used in FL4h; it is not independent prism truth. A before/after
+change includes the whole backend update, not an isolated CBS intervention.
+The late behavior is not uniform harm: many CBS-targeted edges still improve.
+But accurate incoming information no longer produces a consistently healthy
+state. These results do not justify scaling that information from ATE.
+
+2. New finding: present visual factors can supply zero endpoint information
+-------------------------------------------------------------------------
+The retained covariance-exchange audit evaluates existing factors at the
+pre-insertion calculateEstimate() state. For factors touching the receiving
+edge, it records error and the norm of their endpoint diagonal Hessian blocks.
+Thirty such snapshots exist; these are not per-update full-system checkpoints.
+
+ Time s   update   multi-view visual factors touching edge   nonzero H
+ 28.955     124                      300                         187
+ 72.955     344                      228                          86
+ 76.955     364                      205                          25
+ 92.955     444                      250                          23
+ 96.955     464                      228                          11
+105.755     508                      204                           0
+110.355     531                      193                           0
+
+All counted factors contain at least two pose keys. At update508, 179 factors
+connect BOTH target endpoints; all179 have zero endpoint Hessian norm. At531,
+the corresponding count is183/183. These are not merely newly created
+single-observation tracks. Zero-H entries also have exactly zero logged cost.
+
+The implementation explains how this is possible:
+  Kimera VioBackend.cpp:6404-6407 uses HESSIAN / ZERO_ON_DEGENERACY.
+  SmartStereoProjectionFactor.h:200-229 returns an all-zero Hessian if
+  triangulation is invalid; it does not require removing the factor object.
+  gtsam/geometry/triangulation.h:708-760 distinguishes rank degeneracy,
+  distance rejection, cheirality and reprojection outlier rejection.
+The saved settings are unchanged: rankTolerance1, distance10m,
+outlierRejection3pixels, retriangulationThreshold.001.
+
+Important limits:
+* This is a FRESH diagnostic linearization at the current estimate, NOT the
+  cached linearization actually used by that iSAM2 update. Frozen charts can
+  make these disagree. Calling the solver itself "vision-free" is unproved.
+* The exact triangulation failure status was not logged. We cannot distinguish
+  poor image geometry from pose deformation making otherwise useful tracks
+  inconsistent. Both causal directions, and a feedback loop, are plausible.
+* There is no matched OFF visual-Hessian inventory. Frontend stereo warnings
+  are38 OFF/39 ON, so warning count alone does not explain the large ON loss.
+* Small visual error is NOT evidence that vision is satisfied: invalid smart
+  factors can report zero error and zero information.
+
+At the same snapshots native IMU factor cost increases from2.92e3 at28.955s
+to1.19e8 at80.955s and1.48e10 at105.755s, with25 native IMU factors. These are
+residual costs, not weights and not same-graph objective changes. The logged
+native type is ImuFactorT plus separate bias-between factors. This is Kimera's
+own IMU, not the absent central IMU in the downstream WNOA receiver.
+
+3. Why the current numerical protection is insufficient
+------------------------------------------------------
+The profile requests one Gauss-Newton update per keyframe (numOptimize1,
+useDogLeg0). Temporary-CBS BPSAM requests force_relinearize/forceFullSolve and
+extra endpoint re-elimination at bpsam.cpp:4210-4233.
+
+However, ISAM2-impl.h:371-390 excludes fixedVariables from relinearization,
+even with forceFullSolve. ISAM2.cpp:482-501 retracts eligible charts, then
+linearizes new factors at theta_. Marginalization stores a Gaussian prior and
+fixes its keys' charts at ISAM2.cpp:738-741. Prior inventories in FL4h show up
+to25 of26 active poses in that separator. They can move via delta, but their
+linearization origins cannot simply be overwritten. More calls to update()
+alone do not ensure relinearization of those poses.
+
+This is stock fixed-linearization-prior behavior, NOT proof GTSAM is broken.
+It becomes a serious hypothesis when temporary constraint insertion/removal,
+large corrections and pose-dependent visual validity interact.
+
+The existing recovery guard does not test nonlinear stationarity or the full
+objective. It uses an unwhitened SE(3)-log norm and a new-factor limit
+max(1.25*pre+.25,.5), then retries without staged CBS on failure
+(bpsam.cpp:4585-4611). It is not a calibrated comparison of sender reliability.
+
+The known update438 illustrates its gap: accurate GLIM6.45mm, Kimera target
+error16.08->432.48mm, but the factor survives. The first rollback is later,
+100.555s. The18 eventually discarded GLIM candidates have reference-error
+median7.08mm/RMS9.39mm/max20.60mm. Thus discarding the new measurement on a bad
+optimizer trial can discard useful information; it does not establish that
+the sender caused the numerical failure. Nor does one factor's residual
+increase alone prove the full graph objective increased.
+
+4. Confirmed diagnostic defect: the marginal prior's chart/cost is omitted
+-----------------------------------------------------------------------
+Do not enable the existing shadow/reference helper unchanged and interpret
+its total as the complete objective.
+
+IncrementalFixedLagBpsamSmoother::captureShadowAcceptanceAudit(), lines697-757,
+sums factor.error(values), including the marginal LinearContainerFactor, and
+marks the result valid if finite. Yet iSAM2's marginal container has no
+explicit linearization point, and LinearContainerFactor.cpp:78-80 deliberately
+returns ZERO in that case. The prior is present in optimization; it is our
+generic nonlinear objective checker that omits its cost.
+
+The covariance-exchange diagnostic has a related chart limitation: it calls
+group.linearize(current_values), while LinearContainerFactor.cpp:104-108
+returns its stored Gaussian unchanged when it has no explicit anchor. Its
+reported gradient-at-zero is then in the retained prior chart, not necessarily
+the same current-estimate tangent as newly linearized nonlinear factors.
+Raw cross-family gradient/pull comparisons cannot be certified this way.
+This does not invalidate the explicitly identified visual-factor statistics
+or the standalone nonlinear IMU errors above.
+
+Correct diagnostic objective for the SAME proposed post-update graph:
+
+ E(X) = sum(non-marginal measurement errors at X)
+        + q_prior(Local(theta_prior, X))
+
+where q_prior(delta)=0.5*delta^T H delta - eta^T delta + c is evaluated in
+the original retained chart. The original theta, complete X/V/b values and
+Gaussian prior must be captured; transformations/Jacobians are required for
+a reference optimizer working in another tangent chart. Do not merely attach
+the current estimate as an invented prior anchor, remove the prior, or clear
+fixedVariables. Also record smart-factor validity changes: a lower displayed
+cost obtained by zeroing visual constraints is not a satisfactory validation.
+
+This objective helper is disabled in the actual current run. Its defect is
+therefore a diagnosis/acceptance-test defect, NOT the cause of that run's
+trajectory failure. Complete original-chart values/prior are not retained,
+so this audit cannot reconstruct a trustworthy historical total-cost test.
+
+5. Specific next improvement, with one bounded decision gate
+----------------------------------------------------------
+Preserve the successful GLIM runtime work and all source covariances. Do not
+change the gnssFGO model to compensate for a failing native source.
+
+The next target is a correctly charted, numerically safeguarded Kimera CBS
+update, not a residual gate that decides the external estimator is wrong.
+Before implementing that repair, one discriminating test is needed:
+
+1) Repair/validate the isolated diagnostic objective on a known Gaussian
+   marginal, including nonzero delta; verify cached versus freshly evaluated
+   native factors and smart-factor validity. This is not a covariance change.
+2) Capture one pre-/post-update Kimera problem from normal-start history near
+   the first failure (around75-92s): complete X/V/b, theta/delta, original
+   marginal prior, native IMU preintegrations, smart measurements/validity,
+   incoming GLIM factor, and exact removal set. Reuse saved GLIM messages in
+   their recorded order; do not rerun GLIM or gnssFGO. A late cold-start20s
+   clip does not recreate this marginal-prior history. Existing serializers
+   do not yet provide a validated full Kimera restart snapshot.
+3) On a CLONE, compare the production step against a bounded reference solve
+   of that SAME graph with the prior evaluated in its original chart. Keep
+   means, covariances, lifetime, calibration and the objective unchanged.
+
+Decision: if a better solution exists but production takes a bad step, improve
+the numerical solve/step acceptance and preserve the received factor rather
+than discarding it. If a well-solved unchanged objective is still unhealthy,
+stop solver tuning and isolate prior/temporary-lifetime consistency with the
+same incoming information. There is no justification yet for blindly adding
+iterations, changing lag, reverting to persistent CBS, or covariance scaling.
+
+For a numerical repair, bounded step control is a different operation from
+Huber: it controls how the optimizer moves toward a solution, not how much
+information a disagreeing sender is allowed to contribute. It still requires
+the correct objective and chart treatment; a line search alone is not claimed
+to cure stale charts or an inconsistent objective.
+
+No capture, repair, or reference optimization above was executed in FL4j.
+This is one proposed causal decision gate, not a multi-sequence campaign.
+
+6. Evidence and validation
+-------------------------
+analyze_saved.py reads the retained raw Kimera stdout and FL4h per-event
+products, checks slot uniqueness, multi-view keys, finite norms, accounting,
+and input hashes before/after. It does not modify any input. evidence.json
+contains all30 sample summaries and all section/accounting statistics.
+Two complete executions produce identical JSON (SHA256
+cb2b3881149fb88f3b931f9f68c63b1a4c3d700eec789f80a991d2720df4ed7c).
+evidence.json is a compact projection; the script also emits the full
+multi-view key-count histograms. All observed zero-H multiview entries have
+zero error. Counts reconcile562retained+18undone=580constructed candidates.
+
+All code paths above are under:
+ /home/yeranis/repos/V4RL/cbs_gtsam4.3/src/
+ cbs/src/bpsam/bpsam.cpp
+ cbs/include/cbs/bpsam/incremental_fixed_lag_bpsam_smoother.h
+ Kimera-VIO/src/backend/VioBackend.cpp
+ gtsam/gtsam/nonlinear/{ISAM2.cpp,ISAM2-impl.h,LinearContainerFactor.cpp}
+ gtsam/gtsam_unstable/slam/SmartStereoProjectionFactor.h
+ gtsam/gtsam/geometry/triangulation.h
+
+The exact artifact input hashes and raw log line spans are in evidence.json.
+Full original paths and historical provenance are in FL4h/FL4i. No source
+build/tests were claimed for this analysis-only task. Existing uncommitted
+work is preserved; no commit or push was made.
+
+SOURCE_CBS_NUMERICAL_AND_VISUAL_FAILURE_LOCALIZED_CAUSE_NOT_YET_ISOLATED

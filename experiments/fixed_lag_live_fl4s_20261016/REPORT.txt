@@ -1,0 +1,245 @@
+FL4s — matched live 30-second ETH1 gate, 2026-10-16
+=================================================
+
+RESULT: BOUNDED MATCHED LIVE GATE PASSED. No production promotion.
+
+Both native estimators and the unchanged gnssFGO receiver ran concurrently,
+CBS-OFF then classic CBS-ON, at 0.10x. The exact FL4q Kimera candidate passed
+in both modes; every logged accepted Kimera update was non-increasing on its
+same post-removal objective. Receiver conservation, throughput, and exact
+saved-journal repeats passed. ATE improves under ON for all output types in
+this short window, but Kimera/fusion 1-second RPE worsens. This is not a claim
+that all accuracy metrics improve or that the longer live case is solved.
+
+1. Scope and immutable implementation
+------------------------------------
+Authorized next gate after FL4r; no model/covariance/source-parameter tuning,
+rebuild, longer capture, new sequence, production change, commit, or push.
+
+Experiment directory H:
+/home/yeranis/repos/gnssFGO/experiments/fixed_lag_live_fl4s_20261016
+Fresh actual run root R:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live30_off_on_fl4s2_20261016/prepared
+Validation directory V:
+/home/yeranis/results/gnssfgo_fixed_lag_live_fl4s_20261016
+
+Kimera private DSO: R/private_build/libkimera_vio.so
+SHA256 6ce24c266b0f0e2561f0c05de2a661a72d5a4d9335df7c3cdfa0a4c77af9b4ae
+Same binary as the FL4q short and FL4r 94-second frozen-input gates.
+Receiver executable:
+/home/yeranis/results/gnssfgo_fixed_lag_failure_fl4e_20261014/candidate_live
+SHA256 53c96a2b7a762800cf2291166dc78520269098684411de641b52bee6a54dc5c9
+GLIM provider unchanged:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/shared_linearization_s4_provider_20261012/release_2
+
+Initial launch was stopped by a transport PRE-FLIGHT guard, before receiver,
+source, or bag playback: the copied guard still pinned the old FL4f wrapper
+path. Preserve this setup-only failure at:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live30_off_on_fl4s_20261016/prepared/pilot30_off_control
+No source/receiver output directories or source/receiver logs existed there.
+Fresh FL4s2 registers its exact identical wrapper path and directly validates
+both configs before playback. It does not loosen the guard or alter a solver.
+H/harness.diff preserves first preparation; H/harness_v2.diff records the
+corrected fresh preparation. No failed data capture was retried.
+
+2. Effective settings, not assumed defaults
+------------------------------------------
+ETH1 mission2024-10-01-11-29-55, bag offset0, duration30s, playback0.10x,
+25s source drain, isolated ROS port11441. Headless; graph inspectors disabled.
+GLIM: Hesai /boxi/hesai/points + /boxi/cpt7/imu,5s lag, shared-native LOCAL.
+Kimera: front Alphasense stereo + shared CPT7,25-state window; frozen classic
+native IMU packet handling (KIMERA_IMU_SAMPLE_SUPPORT unset/current).
+Copied sensor/calibration profiles are byte-identical between OFF and ON.
+Original profile root:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/grandtour_eth1_presentation/grandtour_eth1_stereo_shared_cpt7_no_sidecar_cbs_off_full_346s_20260907
+
+Classic active_window_temporary CBS,0.20s horizon,one pair/update,stride1,
+schur_relative_between full6x6 covariance,scale1; no live_revision, gating,
+health weighting, robust loss, or retention of expired external factors in
+the marginal prior. Source current-smoother revisions exported separately.
+OFF publishes but receives no CBS factors. ON exchanges real concurrent
+beliefs bidirectionally. Native temporal mean alignment enabled in BOTH
+sources; unlike frozen-input replay, these were NOT pre-aligned inputs.
+
+Candidate enabled only in Kimera: FL4Q_ENABLE=1, FL4M_RETIREMENT=remove;
+acceptance/objective logs scoped to its own output directory. Candidate DSO
+mapping, absence from GLIM, and exact effective settings checked before play.
+No changed incoming covariance, Schur recipe, LM budget, or prior definition.
+Outgoing posterior covariance can change with the estimated state; it is not
+asserted identical between modes or to an older run.
+
+Fusion: unchanged FL4e7s incremental fixed lag, source-WNOA, independent100ms
+CPT7 clock after59samples, NO central IMU factors, same Qc/priors,Gaussian
+scale1 factors, stable-ID revision replacement. Starts before playback.
+Publication policy is fl4a_fixed_lag_incremental: NOT a nonlinear stationarity
+certificate. Finalized states are delayed fixed-lag results, not online output
+and not a final full-history reoptimization.
+
+3. Native solver and source exchange validation
+----------------------------------------------
+                                       OFF                  ON
+Native Kimera updates                  134                  134
+Accepted non-increasing decisions      134/134              134/134
+Fallback updates                       44                   53,63,87
+Fallback iteration counts              3                    9,10,10
+10-iteration cap hits                  0                    2
+Logged Kimera external retirements     0                    106
+GLIM->Kimera injected                  0                    130
+Kimera->GLIM injected                  0                    131
+Max fresh/cache H,g difference          0                    0
+Max relative tree error                1.84509e-14          4.59271e-9
+
+Fallback cost (same graph before / rejected ordinary proposal / accepted):
+OFF44: 224.253641 /235.371195 /127.917504
+ON53: 394216.710719 /485174.320413 /58119.375344
+ON63: 727861.837674 /793207.532635 /64890.597372
+ON87: 683832.571451 /752583.294970 /70209.573892
+Fallback decision-stage seconds: OFF .063909; ON .136749,.215280,.182572.
+These timers EXCLUDE core rebuild/checks and other backend work, so they are
+not total source runtime. No rollback, recovery, retry, or candidate error.
+Bounded descent is demonstrated; full stationarity is not. The two ON cap
+hits remain a limitation, not grounds to increase the budget after results.
+
+4. Requested-window coverage and evaluation convention
+------------------------------------------------------
+Each mode:2986 raw IMU samples span29.850006s. Native GLIM291 poses span
+28.999702s (1727775008.675043..1727775037.674745); native Kimera134 poses span
+29.599838s (1727775008.155396..1727775037.755233); fusion293 supports span
+29.2s (1727775008.583475..1727775037.783475). No requested-tail truncation.
+GLIM tail0.178736s behind last IMU; Kimera tail0.098248s. Kimera has a3.199979s
+INITIAL pose gap; subsequent gaps <=.200001s. It is not continuous30s coverage
+at a uniform output cadence. No output was fabricated to fill startup gaps.
+
+Full saved ATE below uses EVERY saved pose, including Kimera's initial pose;
+all have IE-TC brackets. It does NOT use an11-second prism subset. Full-path
+1s RPE uses the existing valid-bracket rule and skips startup gaps >.5s.
+Common-grid scores are separate:260 timestamps at10Hz spanning25.899975s,
+1727775011.5999973..1727775037.4999726,2501s RPE pairs. Startup omission is
+explicit, not relabeled as the full requested window.
+Common timestamp SHA256:
+e0450fc6010b7f2267674259d68df91e3689d2d39e43c06656101ec2dac3c483
+
+Reference:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/datasets/GrandTour/2024-10-01-11-29-55_cpt7_ie_tc.bag
+topic /boxi/inertial_explorer/tc/odometry; enu_origin /cpt7_imu.
+SHA256 28815a4a300624766e3ffe0e1cc0f150ac60e09e395381ca25c3e6d7e04e18e3
+This is the full-window IE-TC GNSS/INS reference, sharing CPT7 IMU input with
+the sources, NOT independent prism ground truth. Existing evaluator unchanged:
+per-path rigidSE(3), no scale, CPT7->prism lever arm,1s relative error in prism
+frame; estimate interpolation gap<=.5s,reference<=.05s. No GT used in fitting
+the estimator or choosing a setting.
+
+5. Results against reference
+----------------------------
+FULL SAVED PATH: ATE m /1s t-RPE m /1s r-RPE deg /prism path length m
+Output                         OFF                                  ON
+Original native GLIM           .057256 /.041659 /.591264 /8.922337   .050283 /.034374 /.558813 /8.834973
+Original native Kimera ROS     .087878 /.027192 /.659902 /8.302886   .043791 /.031508 /.734306 /8.436380
+Fused online/as-played         .057332 /.035464 /1.318569 /10.076501 .054424 /.049930 /1.578742 /10.061771
+Fused fixed-lag finalized      .053795 /.023883 /.506662 /8.728701   .037504 /.027277 /.525596 /8.771950
+GT lengths on respective saved grids:GLIM8.489465,Kimera8.420340,fusion8.520671m.
+Native body-origin path lengths OFF/ON:GLIM9.013576/8.900662m;
+Kimera8.405491/8.603177m. Fusion body-origin:online10.075156/9.984581m;
+finalized8.812259/8.830126m. Different origin/path grids must not be mixed.
+
+COMMON260-TIMESTAMP GRID: ATE m /1s t-RPE m /1s r-RPE deg /prism path m
+Original native GLIM           .053077 /.042398 /.614356 /8.784944   .045598 /.034735 /.583062 /8.668445
+Original native Kimera ROS     .087800 /.027230 /.660088 /8.145906   .043869 /.031566 /.734876 /8.274971
+Fused online/as-played         .056404 /.037523 /1.389791 /9.418809   .052932 /.052907 /1.669296 /9.458863
+Fused fixed-lag finalized      .051943 /.025255 /.533558 /8.562496   .035764 /.028250 /.552820 /8.598859
+Common GT path8.441117m. The matched-grid result has the same mixed direction:
+ATE improves for all, but only GLIM improves both RPEs. No claim that the
+repair alone caused a gain versus an old unpatched run: that is not the
+controlled variable in this matched OFF/ON experiment.
+
+6. Retained covariances (diagnostics, no tuning)
+----------------------------------------------
+All transported full6x6 matrices finite, symmetric, positive definite.
+All-version median trace, rotation rad^2 /translation m^2:
+GLIM OFF 1.085394e-8 /2.220939e-6; ON 7.161168e-9 /1.602488e-6.
+Kimera OFF 2.515763e-8 /1.127907e-6; ON 2.602685e-8 /1.332090e-6.
+Smallest eigenvalues:GLIM OFF3.101024e-10,ON3.085838e-10;
+Kimera OFF9.928940e-10,ON1.102963e-9. Max symmetry error0.
+
+421 matched physical edge IDs, unchanged endpoint times:289GLIM +132Kimera.
+For last observed revision of each SAME edge, ON/OFF trace ratios:
+                  rotation median/mean/p95     translation median/mean/p95
+GLIM              .861230/.772443/1.042465     .788300/.718850/1.002100
+Kimera            .908461/1.117043/1.936585     1.005686/3.514713/17.653870
+Kimera translation ratio range .186628..25.820101: not a uniform shrinkage.
+These are conditional posterior statistics, not calibrated accuracy, NIS,
+or causal proof of what produced an error. All-version summaries weight
+frequently revised IDs more; matched-final ratios count each edge once.
+
+7. Conservation, deterministic repeat and throughput
+---------------------------------------------------
+                                         OFF                ON
+Total events                             18865              18871
+Belief versions                          15878              15884
+GLIM versions                            12878              12884
+Kimera versions                          3000               3000
+New source factor IDs inserted           420                420
+Stable-ID replacements                   15433              15439
+Before-initialization versions excluded  25                 25
+Absorbed /still-active IDs               319/101            319/101
+Pending /unsupported-at-end              0/0                0/0
+Duplicate /stale                         0/0                0/0
+Online /finalized outputs                293/293            293/293
+Outputs published while sources ran      293                293
+Maximum transport queue                  30                 38
+Max retained supports /peak slots        71/175             71/175
+Full-support service median seconds      .042552            .043904
+Full-support service p95 seconds         .080896            .087867
+Full-support service max seconds         .130118            .120556
+Receipt->processing p95 seconds          .020150            .023126
+Monitor output age max (simulated sec)   .100006            .100003
+Controller wall seconds (with drain)     345.461924         345.456444
+Covariance payload roundtrip difference  0                  0
+Mean log roundtrip max                   3.42008e-14        2.97837e-14
+
+Tiny ROS receipt clock lags on IMU records: max1.040926ms OFF /1.051857ms ON;
+no belief-clock lag. Explicitly counted in transport, not dropped/reordered
+silently. The sources emit different revision totals under live ON, as
+expected for changed active estimates; no claim of identical source events.
+Every captured belief has exactly one archived receiver disposition.
+421 exported edge IDs versus420inserted: pre-initialization exclusions are
+explicit. No factor duplicated by stable-ID revision replacement.
+
+Saved-journal repeats use the SAME receiver executable/container, not new
+source runs. Both online/finalized CSVs and TUMs and summary byte-identical.
+Committed archive:16359files OFF,16368ON,byte-identical; repeats13.662/13.784s.
+This establishes receiver determinism on each frozen event stream, NOT
+event-for-event determinism of concurrent source scheduling.
+
+8. Artifacts, preservation and limits
+------------------------------------
+Each source directory R/pilot30_{off,on}_source includes:
+  odom_imu.txt: original/native GLIM
+  kimera_odometry.csv: original/native Kimera ROS odometry
+  acceptance.csv,objective.csv,candidate_validation.json
+  effective_mode_check.json,run_metadata.txt,source_coverage.json
+  copied profiles,estimators.log,recordings/cbs.bag,GLIM native/provider logs
+Each receiver R/pilot30_{off,on}_receiver includes:
+  events.csv,receipts.jsonl,resolved_config.json,transport_complete.json
+  receiver/online_trajectory.tum,receiver/finalized_trajectory.tum
+  receiver/online_states.csv,receiver/finalized_states.csv,receiver/archive
+V/{off,on}/validation.json,repeat_validation.json,repeat_live are the gates.
+R/evaluation_full/summary.json contains precise scores,paths,input hashes,
+coverage and covariance statistics; belief_covariance_matched.json contains
+per-edge summary ratios. No new plot/parameter campaign.
+
+990protected files unchanged, including earlier baseline/candidate artifacts
+and the failed pre-playback setup. Matched profile trees byte-identical.
+Prior FL4q Release/focused ASan/UBSan results reused by hash, not rerun or
+claimed fresh. All launched experiment processes exited. Containers restored
+to their initial stopped state after checks. No production code modified.
+Existing unrelated dirty work preserved; worktree is NOT claimed clean.
+HEAD unchanged:67c00392cd640a432bda9b67afcb57be4face381
+Branch engineering/fl4q-current-chart-fallback-20261016; no commit/push.
+
+Conclusion: the original-chart current-estimate safeguard survives a matched
+LIVE short OFF/ON gate, including real bidirectional feedback, with bounded
+runtime at0.10x and no rejected/partial update. This is stronger than the prior
+frozen-input-only test. It still does not certify longer live feedback,1x,
+nonlinear stationarity, universally improved accuracy, or covariance calibration.
+Longer live validation remains the next decision; nothing else was launched.

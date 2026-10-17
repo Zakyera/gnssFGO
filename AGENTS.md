@@ -1,5 +1,15 @@
 # GrandTour/Newer College CBS and gnssFGO work
 
+**Latest saved launch/settings (2026-10-17):** read
+`GNSSFGO_GRANDTOUR_FL4V_LAUNCH_20261017.txt` FIRST for current ETH1 work, plus
+`experiments/checkpoints/20261017_fl4v/README.txt`. This freezes the actual
+FL4v private builds: temporary classic CBS, shared-native GLIM covariance,
+FL4q Kimera, FL4e 7-second fixed-lag WNOA without central IMU, scales1, 0.10x.
+It supersedes older configuration pointers below for this experiment, NOT
+their historical evidence. The120s ON completed; the OFF reference stopped
+early and only a105.4s common prefix is compared. No automatic retry, new run,
+default promotion or claim that the OFF failure is fixed is authorized.
+
 For the current incremental runtime engineering work, first read and update
 `GNSSFGO_RUNTIME_ENGINEERING_PLAN_20261011.md`. Identify its task ID before
 editing, and record evidence/status after each task. Do one hypothesis per patch;

@@ -1,0 +1,30 @@
+FL4l: bounded original-chart source-solver decision gate, 2026-10-15
+
+One fresh ETH1 CBS-ON source-only prefix, offset 0, duration 94 seconds,
+0.10x, to capture Kimera update 438 after preserving its startup/history.
+Reuse FL4g launch/profiles/source libraries; private Kimera VioBackend TU
+changes diagnostic target and capture only. No fusion process or tuning.
+Classic active_window_temporary, native IMU mean alignment, Gaussian dense
+source covariance scale 1, shared-native GLIM provider, lag25/5s unchanged.
+
+At update438 clone the graph just after optimization BEFORE marginalization.
+Retain original prior theta from before update; require every prior identical
+at the same slot, and surviving prior theta unchanged. Compare cost on this
+same graph at initial and production values. Convert ONLY cloned Gaussian
+containers to original-chart immutable priors for reference LM: max30,
+lambdaInitial1e-3, diagonal damping, absolute/relative tolerance1e-9.
+Reference starts from the production pre-update values including new keys.
+Never feed reference values back. Preserve complete prior constant. Check
+same scalar cost before/after and synthetic finite-difference gradient first.
+Report iteration cap/remaining gradient; do not claim convergence by default.
+
+Record per-family costs, fresh visual validity, reference pose/velocity/bias
+values and objective along production step. Compare target relative increment
+to retained historical diagnostic; a fresh coupled replay is NOT guaranteed
+bitwise reproduction. If it does not reproduce, say so and stop. Reference
+work can delay only the tail after capture: this is not a throughput benchmark.
+
+Stop on capture/coverage/solver failure; no automatic run retry. Frozen library
+and artifact hashes must remain unchanged. Restore container stopped state.
+No covariance, marginalization policy, damping policy, source factors or
+production binaries modified. No full120/346s experiment, no new ATE campaign.

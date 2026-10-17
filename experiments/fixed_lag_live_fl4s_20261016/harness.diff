@@ -1,0 +1,311 @@
+--- validate_case.py (FL4f)
++++ validate_case.py (FL4s)
+@@ -9,7 +9,7 @@
+ OUT=REC/'receiver'
+ CTL=P/f'pilot30_{MODE}_control'
+ EXE=Path('/home/yeranis/results/gnssfgo_fixed_lag_failure_fl4e_20261014/candidate_live')
+-RESULT=Path(f'/home/yeranis/results/gnssfgo_fixed_lag_live_fl4f_20261014/{MODE}')
++RESULT=Path(f'/home/yeranis/results/gnssfgo_fixed_lag_live_fl4s_20261016/{MODE}')
+ LIB=Path('/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib')
+ 
+ def sha(p):
+--- preflight_on_fl4f.py (FL4f)
++++ preflight_on_fl4f.py (FL4s)
+@@ -4,7 +4,7 @@
+ from pathlib import Path
+ 
+ P = Path(__file__).resolve().parent
+-RESULT = Path('/home/yeranis/results/gnssfgo_fixed_lag_live_fl4f_20261014/off')
++RESULT = Path('/home/yeranis/results/gnssfgo_fixed_lag_live_fl4s_20261016/off')
+ 
+ def sha(path):
+     h = hashlib.sha256()
+--- source.env (FL4f)
++++ source.env (FL4s)
+@@ -2,7 +2,7 @@
+ # to off_source/on_source and CBSMS_CBS_ENABLE to false/true.
+ : "${CBSMS_RUN_NAME:?Set fresh ETH1 source run name}"
+ : "${CBSMS_CBS_ENABLE:?Set false or true}"
+-export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live30_off_on_fl4f2_20261014/prepared
++export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live30_off_on_fl4s_20261016/prepared
+ export CBSMS_RUN_NAME CBSMS_CBS_ENABLE
+ export ROS_LOG_DIR="${CBSMS_RUN_ROOT}/${CBSMS_RUN_NAME}/ros_logs"
+ export CBSMS_PROJECT_ROOT=/workspace/cbs_gtsam4.3
+@@ -12,7 +12,7 @@
+ export CBSMS_POST_PLAYBACK_DRAIN_SEC=25
+ export CBSMS_BAG_RATE=0.10
+ export CBSMS_SEED_CLOCK_SECS=1727775007
+-export CBSMS_ROS_MASTER_PORT=11434
++export CBSMS_ROS_MASTER_PORT=11441
+ export CBSMS_USE_EXISTING_ROS_MASTER=true
+ export CBSMS_KIMERA_MODE=stereo_shared_cpt7
+ # The recovered classic Kimera source path is "current", not experimental RIGHT.
+--- run_case.py (FL4f)
++++ run_case.py (FL4s)
+@@ -31,7 +31,7 @@
+     own.mkdir(exist_ok=False)
+     inside = '/workspace/'+str(own.relative_to('/home/yeranis/repos/V4RL'))
+     env_inside = '/workspace/'+str((ROOT/'source.env').relative_to('/home/yeranis/repos/V4RL'))
+-    master_uri = 'http://127.0.0.1:11434'
++    master_uri = 'http://127.0.0.1:11441'
+     jobs = {}
+     streams = []
+     def start(name, command):
+@@ -45,7 +45,7 @@
+             text=True, capture_output=True, check=check)
+     def stop_pid(name):
+         # The PID is recorded by this case, command must match the owned port/run.
+-        token = '11434' if name=='master' else str(source.name)
++        token = '11441' if name=='master' else str(source.name)
+         script = ('import os,signal,sys; from pathlib import Path; p=Path(sys.argv[1]); '
+           'pid=int(p.read_text()) if p.exists() else 0; c=Path("/proc/%d/cmdline"%pid); '
+           'e=Path("/proc/%d/environ"%pid); '
+@@ -57,7 +57,7 @@
+     started = time.time()
+     try:
+         assert ros('rosparam get /rosversion',check=False).returncode != 0, 'port is already in use'
+-        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11434'
++        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11441'
+         start('master',['docker','exec','cbsms_ws_gpu','setsid','--wait','bash','-lc',master_script])
+         for _ in range(60):
+             if ros('rosparam get /rosversion',check=False).returncode==0:
+@@ -90,7 +90,7 @@
+                 if not log.exists():continue
+                 with log.open() as f:
+                     f.seek(log_positions.get(str(log),0));chunk=f.read();log_positions[str(log)]=f.tell()
+-                for token in ['SHARED_NATIVE_SHADOW_FAILURE','SHARED_NATIVE_SHADOW_SETUP_FAILURE','SHARED_NATIVE_PROVIDER_FAILURE']:
++                for token in ['SHARED_NATIVE_SHADOW_FAILURE','SHARED_NATIVE_SHADOW_SETUP_FAILURE','SHARED_NATIVE_PROVIDER_FAILURE','FL4Q','active_window_rollback','active_window_retry_local_update_','Smoother recovery','Persistent BPSAM recovery']:
+                     assert token not in chunk, token+': '+str(log)
+         while jobs['source'].poll() is None:
+             provider_failures()
+--- run_case_on.py (FL4f)
++++ run_case_on.py (FL4s)
+@@ -32,7 +32,7 @@
+     own.mkdir(exist_ok=False)
+     inside = '/workspace/'+str(own.relative_to('/home/yeranis/repos/V4RL'))
+     env_inside = '/workspace/'+str((ROOT/'source.env').relative_to('/home/yeranis/repos/V4RL'))
+-    master_uri = 'http://127.0.0.1:11434'
++    master_uri = 'http://127.0.0.1:11441'
+     jobs = {}
+     streams = []
+     def start(name, command):
+@@ -46,7 +46,7 @@
+             text=True, capture_output=True, check=check)
+     def stop_pid(name):
+         # The PID is recorded by this case, command must match the owned port/run.
+-        token = '11434' if name=='master' else str(source.name)
++        token = '11441' if name=='master' else str(source.name)
+         script = ('import os,signal,sys; from pathlib import Path; p=Path(sys.argv[1]); '
+           'pid=int(p.read_text()) if p.exists() else 0; c=Path("/proc/%d/cmdline"%pid); '
+           'e=Path("/proc/%d/environ"%pid); '
+@@ -58,7 +58,7 @@
+     started = time.time()
+     try:
+         assert ros('rosparam get /rosversion',check=False).returncode != 0, 'port is already in use'
+-        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11434'
++        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11441'
+         start('master',['docker','exec','cbsms_ws_gpu','setsid','--wait','bash','-lc',master_script])
+         for _ in range(60):
+             if ros('rosparam get /rosversion',check=False).returncode==0:
+@@ -91,7 +91,7 @@
+                 if not log.exists():continue
+                 with log.open() as f:
+                     f.seek(log_positions.get(str(log),0));chunk=f.read();log_positions[str(log)]=f.tell()
+-                for token in ['SHARED_NATIVE_SHADOW_FAILURE','SHARED_NATIVE_SHADOW_SETUP_FAILURE','SHARED_NATIVE_PROVIDER_FAILURE']:
++                for token in ['SHARED_NATIVE_SHADOW_FAILURE','SHARED_NATIVE_SHADOW_SETUP_FAILURE','SHARED_NATIVE_PROVIDER_FAILURE','FL4Q','active_window_rollback','active_window_retry_local_update_','Smoother recovery','Persistent BPSAM recovery']:
+                     assert token not in chunk, token+': '+str(log)
+         while jobs['source'].poll() is None:
+             provider_failures()
+--- verify_effective.py (FL4f)
++++ verify_effective.py (FL4s)
+@@ -58,7 +58,8 @@
+ for key, value in expected_flags.items():
+     assert flags.get(key) == value, (key, flags.get(key), value)
+ loaded = Path('/proc/%d/maps' % pid).read_text()
+-assert '/workspace/cbs_gtsam4.3/build/kimera_vio/libkimera_vio.so' in loaded
++assert str(root/'private_build/libkimera_vio.so') in loaded
++assert '/workspace/cbs_gtsam4.3/build/kimera_vio/libkimera_vio.so' not in loaded
+ assert '/workspace/cbs_gtsam4.3/devel/lib/libkimera_vio.so' not in loaded
+ glim_uri=master.lookupNode('/glim_rosnode')
+ glim_pid=xmlrpc.client.ServerProxy(glim_uri).getPid('/active_window40_preflight')[2]
+@@ -71,6 +72,11 @@
+ assert str(root/'private_build/libcbs.so') in loaded
+ def env(pid):
+     return dict(x.decode().split('=',1) for x in Path('/proc/%d/environ'%pid).read_bytes().split(b'\0') if b'=' in x)
++assert env(pid)['FL4Q_ENABLE']=='1'
++assert env(pid)['FL4M_RETIREMENT']=='remove'
++assert Path(env(pid)['FL4Q_LOG']).resolve()==source/'acceptance.csv'
++assert Path(env(pid)['FL4M_AUDIT']).resolve()==source/'objective.csv'
++assert 'FL4Q_ENABLE' not in env(glim_pid)
+ assert env(glim_pid)['CBS_E1B_PROFILE_PATH'] == str(source/'e1b_profile.jsonl')
+ assert 'CBS_E1B_PROFILE_PATH' not in env(pid)
+ assert env(glim_pid)['CBS_E1B_LOCAL_UPDATE_GPU_BATCHING']=='1'
+--- verify_effective_on.py (FL4f)
++++ verify_effective_on.py (FL4s)
+@@ -62,7 +62,8 @@
+ for key, value in expected_flags.items():
+     assert flags.get(key) == value, (key, flags.get(key), value)
+ loaded = Path('/proc/%d/maps' % pid).read_text()
+-assert '/workspace/cbs_gtsam4.3/build/kimera_vio/libkimera_vio.so' in loaded
++assert str(root/'private_build/libkimera_vio.so') in loaded
++assert '/workspace/cbs_gtsam4.3/build/kimera_vio/libkimera_vio.so' not in loaded
+ assert '/workspace/cbs_gtsam4.3/devel/lib/libkimera_vio.so' not in loaded
+ glim_uri=master.lookupNode('/glim_rosnode')
+ glim_pid=xmlrpc.client.ServerProxy(glim_uri).getPid('/active_window40_preflight')[2]
+@@ -75,6 +76,11 @@
+ assert str(root/'private_build/libcbs.so') in loaded
+ def env(pid):
+     return dict(x.decode().split('=',1) for x in Path('/proc/%d/environ'%pid).read_bytes().split(b'\0') if b'=' in x)
++assert env(pid)['FL4Q_ENABLE']=='1'
++assert env(pid)['FL4M_RETIREMENT']=='remove'
++assert Path(env(pid)['FL4Q_LOG']).resolve()==source/'acceptance.csv'
++assert Path(env(pid)['FL4M_AUDIT']).resolve()==source/'objective.csv'
++assert 'FL4Q_ENABLE' not in env(glim_pid)
+ assert env(glim_pid)['CBS_E1B_PROFILE_PATH'] == str(source/'e1b_profile.jsonl')
+ assert 'CBS_E1B_PROFILE_PATH' not in env(pid)
+ assert env(glim_pid)['CBS_E1B_LOCAL_UPDATE_GPU_BATCHING']=='1'
+--- source_runner.sh (FL4f)
++++ source_runner.sh (FL4s)
+@@ -577,7 +577,7 @@
+   "kimera_receive_cbs_beliefs=${kimera_receive_external_beliefs}" \
+   "glim_cbs_mode=${glim_cbs_mode}" \
+   "kimera_cbs_odom_factor_mode=active_window_temporary" \
+-  "experiment=gnssfgo_fixed_lag_live30_off_on_fl4f2_20261014" \
++  "experiment=gnssfgo_fixed_lag_live30_off_on_fl4s_20261016" \
+   "glim_sensor_pair=hesai+cpt7_imu" \
+   "kimera_sensor_pair=${kimera_sensor_pair}" \
+   "glim_body_frame=cpt7_imu" \
+--- source_runner_on.sh (FL4f)
++++ source_runner_on.sh (FL4s)
+@@ -577,7 +577,7 @@
+   "kimera_receive_cbs_beliefs=${kimera_receive_external_beliefs}" \
+   "glim_cbs_mode=${glim_cbs_mode}" \
+   "kimera_cbs_odom_factor_mode=active_window_temporary" \
+-  "experiment=gnssfgo_fixed_lag_live30_off_on_fl4f2_20261014" \
++  "experiment=gnssfgo_fixed_lag_live30_off_on_fl4s_20261016" \
+   "glim_sensor_pair=hesai+cpt7_imu" \
+   "kimera_sensor_pair=${kimera_sensor_pair}" \
+   "glim_body_frame=cpt7_imu" \
+--- active_window.launch (FL4f)
++++ active_window.launch (FL4s)
+@@ -111,7 +111,7 @@
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_stride" value="20"/>
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_max_updates" value="40"/>
+ 
+-  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live30_off_on_fl4f2_20261014/prepared/glim_profile.launch">
++  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live30_off_on_fl4s_20261016/prepared/glim_profile.launch">
+     <arg name="config_path" value="$(arg glim_config_path)"/>
+     <arg name="glim_node_output" value="$(arg diagnostic_node_output)"/>
+     <arg name="glim_input_imu_topic" value="$(arg glim_input_imu_topic)"/>
+--- active_window_on.launch (FL4f)
++++ active_window_on.launch (FL4s)
+@@ -111,7 +111,7 @@
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_stride" value="20"/>
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_max_updates" value="40"/>
+ 
+-  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live30_off_on_fl4f2_20261014/prepared/glim_profile_on.launch">
++  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live30_off_on_fl4s_20261016/prepared/glim_profile_on.launch">
+     <arg name="config_path" value="$(arg glim_config_path)"/>
+     <arg name="glim_node_output" value="$(arg diagnostic_node_output)"/>
+     <arg name="glim_input_imu_topic" value="$(arg glim_input_imu_topic)"/>
+--- glim_profile.launch (FL4f)
++++ glim_profile.launch (FL4s)
+@@ -114,7 +114,7 @@
+ 		<env name="LD_LIBRARY_PATH" value="/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_provider_20261012/release_2:$(optenv LD_LIBRARY_PATH)"/>
+ 		<env name="CBS_E1B_LOCAL_UPDATE_GPU_BATCHING" value="1"/>
+         <env name="GLIM_SHARED_NATIVE_PROVIDER" value="shared_native"/>
+-        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live30_off_on_fl4f2_20261014/prepared/pilot30_off_source/e1b_profile.jsonl"/>
++        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live30_off_on_fl4s_20261016/prepared/pilot30_off_source/e1b_profile.jsonl"/>
+ 		<param name="config_path" value="$(arg config_path)" />
+ 		<param name="glim_dump_path" value="$(arg glim_dump_path)" />
+ 		<param name="deterministic_input_event_log_path" value="$(arg glim_deterministic_input_event_log_path)" />
+--- glim_profile_on.launch (FL4f)
++++ glim_profile_on.launch (FL4s)
+@@ -114,7 +114,7 @@
+ 		<env name="LD_LIBRARY_PATH" value="/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_provider_20261012/release_2:$(optenv LD_LIBRARY_PATH)"/>
+ 		<env name="CBS_E1B_LOCAL_UPDATE_GPU_BATCHING" value="1"/>
+         <env name="GLIM_SHARED_NATIVE_PROVIDER" value="shared_native"/>
+-        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live30_off_on_fl4f2_20261014/prepared/pilot30_on_source/e1b_profile.jsonl"/>
++        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live30_off_on_fl4s_20261016/prepared/pilot30_on_source/e1b_profile.jsonl"/>
+ 		<param name="config_path" value="$(arg config_path)" />
+ 		<param name="glim_dump_path" value="$(arg glim_dump_path)" />
+ 		<param name="deterministic_input_event_log_path" value="$(arg glim_deterministic_input_event_log_path)" />
+--- kimera_vio_ros.launch (FL4f)
++++ kimera_vio_ros.launch (FL4s)
+@@ -450,6 +450,10 @@
+     <param name="external_odometry_rosbag_topic"
+            value="$(arg external_odom_topic)"
+            unless="$(arg online)"/>
++    <env name="FL4Q_ENABLE" value="1"/>
++    <env name="FL4Q_LOG" value="$(env ROS_LOG_DIR)/../acceptance.csv"/>
++    <env name="FL4M_RETIREMENT" value="remove"/>
++    <env name="FL4M_AUDIT" value="$(env ROS_LOG_DIR)/../objective.csv"/>
+     <param name="log_gt_data"            value="$(arg log_gt_data)"/>
+ 
+     <!-- Other subscription topics -->
+--- pilot30_off.json (FL4f)
++++ pilot30_off.json (FL4s)
+@@ -1,7 +1,7 @@
+ {
+   "sequence": "ETH1 first30s CBS-OFF FL4f fixed-lag WNOA matched live pilot",
+   "source_protocol": "classic",
+-  "ros_master_uri": "http://127.0.0.1:11434",
++  "ros_master_uri": "http://127.0.0.1:11441",
+   "imu_topic": "/boxi/cpt7/imu",
+   "imu_frame": "cpt7_imu",
+   "world_frame": "gnssfgo_world",
+@@ -12,18 +12,18 @@
+   "drain_timeout_wall_sec": 300,
+   "ros1_container": "cbsms_ws_gpu",
+   "receiver_container": "ubuntu-jammy-humble-nvidia",
+-  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live30_off_on_fl4f2_20261014/prepared/receiver_fl4e.sh",
++  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live30_off_on_fl4s_20261016/prepared/receiver_fl4e.sh",
+   "sources": [
+     {
+       "id": "glim_hesai",
+-      "session": "eth1_fl4f2_live30_off_20261014",
++      "session": "eth1_fl4s_live30_off_20261016",
+       "kind": "glim",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/ros_logs/*/glim_rosnode-*-stdout.log"
+     },
+     {
+       "id": "kimera_front",
+-      "session": "eth1_fl4f2_live30_off_20261014",
++      "session": "eth1_fl4s_live30_off_20261016",
+       "kind": "kimera",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/estimators.log"
+--- pilot30_on.json (FL4f)
++++ pilot30_on.json (FL4s)
+@@ -1,7 +1,7 @@
+ {
+   "sequence": "ETH1 first30s classic CBS-ON FL4f fixed-lag WNOA matched live pilot",
+   "source_protocol": "classic",
+-  "ros_master_uri": "http://127.0.0.1:11434",
++  "ros_master_uri": "http://127.0.0.1:11441",
+   "imu_topic": "/boxi/cpt7/imu",
+   "imu_frame": "cpt7_imu",
+   "world_frame": "gnssfgo_world",
+@@ -12,18 +12,18 @@
+   "drain_timeout_wall_sec": 300,
+   "ros1_container": "cbsms_ws_gpu",
+   "receiver_container": "ubuntu-jammy-humble-nvidia",
+-  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live30_off_on_fl4f2_20261014/prepared/receiver_fl4e.sh",
++  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live30_off_on_fl4s_20261016/prepared/receiver_fl4e.sh",
+   "sources": [
+     {
+       "id": "glim_hesai",
+-      "session": "eth1_fl4f2_live30_on_20261014",
++      "session": "eth1_fl4s_live30_on_20261016",
+       "kind": "glim",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/ros_logs/*/glim_rosnode-*-stdout.log"
+     },
+     {
+       "id": "kimera_front",
+-      "session": "eth1_fl4f2_live30_on_20261014",
++      "session": "eth1_fl4s_live30_on_20261016",
+       "kind": "kimera",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/estimators.log"

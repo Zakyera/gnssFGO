@@ -1,0 +1,471 @@
+{
+  "protected_files_unchanged": 879,
+  "private_manifest": {
+    "private_build/libkimera_vio.so": "3ffebe0a4da54766e6bdec01dd96257bc441699666c6f46d10cd9bef6875dded",
+    "private_build/libcbs.so": "82f85c2a307a9d9a849b2b8f09bb5c1e026ad80a4ef0a633c903d30cca712476",
+    "test": "b2eac15e599ea134ac84388156043003a84f7962fad2e37ca0542b77afa066ec",
+    "VioBackend.cpp": "de1185fe77599c18cba49ea0768c6a2986d6909c19cc644b2b67a00b0da144aa",
+    "include/cbs/bpsam/incremental_fixed_lag_bpsam_smoother.h": "c80a100decdb01c5ea403287516ce23f20bc72c5ad5e85edf1263d1986ecfef5",
+    "RetirementAudit.h": "a838ccd4af220f4290fa56227c5e89de13cd4e8ffc5e184cce38830fc6175de4",
+    "aligned_inputs.bag": "097fa9dacbbd1ceda96acfa89c053dacd7e79f1514af5630c72e4aadca745586",
+    "frozen_inputs.json": "c2991f2fe4ecfb70769907bb6f00ed7f4e9d817f93472a74b804d234f34f32f8"
+  },
+  "exact_pre_retirement_native_messages_excluding_receipt_time": true,
+  "exact_pre_retirement_objective_fields": true,
+  "pre_retirement_count": 28,
+  "same_cbs_flags": true,
+  "validation": {
+    "remove": {
+      "valid": true,
+      "mode": "remove",
+      "pose_count": 454,
+      "pose_span_s": 93.59948976300001,
+      "incoming_factor_count": 450,
+      "exact_covariance": true,
+      "exact_endpoint_bindings": true,
+      "exact_recorded_wire_payloads": true,
+      "exact_backend_update_ids": true,
+      "cost_updates": 454,
+      "cost_increases": 83,
+      "planned_retirements": 426
+    },
+    "retain": {
+      "valid": true,
+      "mode": "retain",
+      "pose_count": 454,
+      "pose_span_s": 93.59948976300001,
+      "incoming_factor_count": 450,
+      "exact_covariance": true,
+      "exact_endpoint_bindings": true,
+      "exact_recorded_wire_payloads": true,
+      "exact_backend_update_ids": true,
+      "cost_updates": 454,
+      "cost_increases": 1,
+      "planned_retirements": 426
+    }
+  },
+  "completion": {
+    "remove": {
+      "play_exit": 0,
+      "wall_sec": 972.310095881,
+      "mode": "remove"
+    },
+    "retain": {
+      "play_exit": 0,
+      "wall_sec": 972.3125902250003,
+      "mode": "retain"
+    }
+  },
+  "reference": "IE-TC in CPT7 frame, shares IMU; not independent GT",
+  "cases": {
+    "remove": {
+      "bins": {
+        "0_75": {
+          "translation_m": {
+            "n": 353,
+            "rms": 0.00557389429630976,
+            "max": 0.016757526840795917,
+            "median": 0.0041856187400246625
+          },
+          "rotation_deg": {
+            "n": 353,
+            "rms": 0.21129881530975925,
+            "max": 0.7845749844930604,
+            "median": 0.1475386911606639
+          }
+        },
+        "75_90": {
+          "translation_m": {
+            "n": 75,
+            "rms": 0.016540607527468706,
+            "max": 0.037457438287535755,
+            "median": 0.011641526665632673
+          },
+          "rotation_deg": {
+            "n": 75,
+            "rms": 0.15989094414625699,
+            "max": 0.34775598991617446,
+            "median": 0.13348902682032177
+          }
+        },
+        "90_100": {
+          "translation_m": {
+            "n": 24,
+            "rms": 0.029225823044680074,
+            "max": 0.07309796594427095,
+            "median": 0.016626585829849584
+          },
+          "rotation_deg": {
+            "n": 24,
+            "rms": 0.17054455358410728,
+            "max": 0.4444936288133688,
+            "median": 0.1129668190623945
+          }
+        }
+      },
+      "cost_increase_count": 83,
+      "first_cost_increases": [
+        {
+          "update": 89,
+          "time": 21.955283164978027,
+          "native_increment_error_m": 0.012019378026317208,
+          "native_increment_error_deg": 0.6874342523344035,
+          "cost_before": 373023.81088839704,
+          "cost_after": 409915.51675227383,
+          "imu_before": 285721.4695632573,
+          "imu_after": 331434.08732766047,
+          "prior_before": 156.70358637753293,
+          "prior_after": 166.48705353409798,
+          "retirements": 1,
+          "prior_count": 1,
+          "target_before_m": 0.004420052256720278,
+          "target_before_deg": 0.727677311214334,
+          "target_after_m": 0.004769809267715548,
+          "target_after_deg": 0.5350251004021271
+        },
+        {
+          "update": 101,
+          "time": 24.35526967048645,
+          "native_increment_error_m": 0.0023568719858808483,
+          "native_increment_error_deg": 0.06981072270958767,
+          "cost_before": 376957.75905882556,
+          "cost_after": 1102953.2793162684,
+          "imu_before": 301727.6055487188,
+          "imu_after": 1035138.399997071,
+          "prior_before": 411.69717695411435,
+          "prior_after": 217.51318520488553,
+          "retirements": 1,
+          "prior_count": 1,
+          "target_before_m": 0.0074382932277046255,
+          "target_before_deg": 0.22152906236701023,
+          "target_after_m": 0.0017711359529329342,
+          "target_after_deg": 0.16972046968739896
+        },
+        {
+          "update": 103,
+          "time": 24.75526738166809,
+          "native_increment_error_m": 0.007084964038195685,
+          "native_increment_error_deg": 0.2097341676994843,
+          "cost_before": 2303367.5310567673,
+          "cost_after": 2976704.604862246,
+          "imu_before": 2233957.7717665546,
+          "imu_after": 2908338.5010025487,
+          "prior_before": 344.49003715295476,
+          "prior_after": 423.45085681472665,
+          "retirements": 1,
+          "prior_count": 1,
+          "target_before_m": 0.0032686642338009136,
+          "target_before_deg": 0.3682552154099233,
+          "target_after_m": 0.0043698676063835306,
+          "target_after_deg": 0.3133732731391871
+        },
+        {
+          "update": 108,
+          "time": 25.755261659622192,
+          "native_increment_error_m": 0.009148394911383383,
+          "native_increment_error_deg": 0.16791683564629142,
+          "cost_before": 1586614.3961585409,
+          "cost_after": 1957129.3851948755,
+          "imu_before": 1526810.896305047,
+          "imu_after": 1906608.690446866,
+          "prior_before": 385.44209721775815,
+          "prior_after": 669.0091317841534,
+          "retirements": 1,
+          "prior_count": 1,
+          "target_before_m": 0.007226773431976381,
+          "target_before_deg": 0.23380077981353695,
+          "target_after_m": 0.009229693510373218,
+          "target_after_deg": 0.19468760731454018
+        },
+        {
+          "update": 111,
+          "time": 26.355258226394653,
+          "native_increment_error_m": 0.0038034524808555382,
+          "native_increment_error_deg": 0.2198649552138049,
+          "cost_before": 1563837.4539582646,
+          "cost_after": 1714874.2636675574,
+          "imu_before": 1510689.5507831157,
+          "imu_after": 1665107.8109505475,
+          "prior_before": 368.71712467141845,
+          "prior_after": 397.7518569376484,
+          "retirements": 1,
+          "prior_count": 1,
+          "target_before_m": 0.003327264840228515,
+          "target_before_deg": 0.11943223057405096,
+          "target_after_m": 0.0040608392369240335,
+          "target_after_deg": 0.1389421252849564
+        }
+      ],
+      "largest_cost_increases": [
+        {
+          "update": 438,
+          "time": 91.75490236282349,
+          "native_increment_error_m": 0.0562083827066797,
+          "native_increment_error_deg": 0.050320444156461044,
+          "cost_before": 44711460.77854857,
+          "cost_after": 107128694.61787191,
+          "imu_before": 44682135.18887985,
+          "imu_after": 107094975.15593977,
+          "prior_before": 1291.0042173916834,
+          "prior_after": 1320.3600617898771,
+          "retirements": 1,
+          "prior_count": 1,
+          "target_before_m": 0.009377879169862303,
+          "target_before_deg": 0.18223246730573495,
+          "target_after_m": 0.13406983323720117,
+          "target_after_deg": 0.10574089336810209
+        },
+        {
+          "update": 423,
+          "time": 88.75491619110107,
+          "native_increment_error_m": 0.024910407586959206,
+          "native_increment_error_deg": 0.10070764149369082,
+          "cost_before": 65634456.75680832,
+          "cost_after": 92345829.9613994,
+          "imu_before": 65602336.35587324,
+          "imu_after": 92302462.6536975,
+          "prior_before": 1249.9247430169391,
+          "prior_after": 1319.1738925634204,
+          "retirements": 1,
+          "prior_count": 1,
+          "target_before_m": 0.016545603701620764,
+          "target_before_deg": 0.2989569373644888,
+          "target_after_m": 0.03538866593426421,
+          "target_after_deg": 0.3167148080786129
+        },
+        {
+          "update": 444,
+          "time": 92.95489382743835,
+          "native_increment_error_m": 0.03713052689901567,
+          "native_increment_error_deg": 0.1659352949025096,
+          "cost_before": 116887669.2359456,
+          "cost_after": 131286781.39575616,
+          "imu_before": 116850273.93848065,
+          "imu_after": 131250343.85167746,
+          "prior_before": 1379.4874001694388,
+          "prior_after": 1365.3224252114119,
+          "retirements": 1,
+          "prior_count": 1,
+          "target_before_m": 0.02854268715796632,
+          "target_before_deg": 0.0737027646161244,
+          "target_after_m": 0.026138603644509723,
+          "target_after_deg": 0.041097574193896216
+        },
+        {
+          "update": 431,
+          "time": 90.35490918159485,
+          "native_increment_error_m": 0.01625014532312105,
+          "native_increment_error_deg": 0.15587281391026328,
+          "cost_before": 46485980.581984624,
+          "cost_after": 58856923.02113423,
+          "imu_before": 46457766.77501487,
+          "imu_after": 58825114.81988227,
+          "prior_before": 1299.7210559411997,
+          "prior_after": 1314.3742390384227,
+          "retirements": 1,
+          "prior_count": 1,
+          "target_before_m": 0.007303281866950993,
+          "target_before_deg": 0.11967481325989816,
+          "target_after_m": 0.0362981835862163,
+          "target_after_deg": 0.07836346551521778
+        },
+        {
+          "update": 449,
+          "time": 93.95488905906677,
+          "native_increment_error_m": 0.024569189147151383,
+          "native_increment_error_deg": 0.11490252500193052,
+          "cost_before": 110518039.62006357,
+          "cost_after": 121468055.0959005,
+          "imu_before": 110487382.70068896,
+          "imu_after": 121434746.6880021,
+          "prior_before": 1316.1001840474562,
+          "prior_after": 1317.4365316117635,
+          "retirements": 1,
+          "prior_count": 1,
+          "target_before_m": 0.012780616012566741,
+          "target_before_deg": 0.06426739186502425,
+          "target_after_m": 0.023147107669625813,
+          "target_after_deg": 0.07021294453539394
+        }
+      ],
+      "update438": {
+        "update": 438,
+        "time": 91.75490236282349,
+        "native_increment_error_m": 0.0562083827066797,
+        "native_increment_error_deg": 0.050320444156461044,
+        "cost_before": 44711460.77854857,
+        "cost_after": 107128694.61787191,
+        "imu_before": 44682135.18887985,
+        "imu_after": 107094975.15593977,
+        "prior_before": 1291.0042173916834,
+        "prior_after": 1320.3600617898771,
+        "retirements": 1,
+        "prior_count": 1,
+        "target_before_m": 0.009377879169862303,
+        "target_before_deg": 0.18223246730573495,
+        "target_after_m": 0.13406983323720117,
+        "target_after_deg": 0.10574089336810209
+      },
+      "first_native_step_over_5cm": {
+        "update": 438,
+        "time": 91.75490236282349,
+        "native_increment_error_m": 0.0562083827066797,
+        "native_increment_error_deg": 0.050320444156461044,
+        "cost_before": 44711460.77854857,
+        "cost_after": 107128694.61787191,
+        "imu_before": 44682135.18887985,
+        "imu_after": 107094975.15593977,
+        "prior_before": 1291.0042173916834,
+        "prior_after": 1320.3600617898771,
+        "retirements": 1,
+        "prior_count": 1,
+        "target_before_m": 0.009377879169862303,
+        "target_before_deg": 0.18223246730573495,
+        "target_after_m": 0.13406983323720117,
+        "target_after_deg": 0.10574089336810209
+      },
+      "first_retirement": {
+        "update": 28,
+        "time": 9.755345821380615,
+        "native_increment_error_m": 0.0024208375473854806,
+        "native_increment_error_deg": 0.14977359996674686,
+        "cost_before": 247455.7107795578,
+        "cost_after": 22383.64784151311,
+        "imu_before": 223929.00640530506,
+        "imu_after": 252.66346039523177,
+        "prior_before": 144.46532142182306,
+        "prior_after": 132.49687450443994,
+        "retirements": 1,
+        "prior_count": 1,
+        "target_before_m": 0.003783985212116765,
+        "target_before_deg": 0.18336990269050246,
+        "target_after_m": 0.0026766614309387212,
+        "target_after_deg": 0.14568289633975026
+      }
+    },
+    "retain": {
+      "bins": {
+        "0_75": {
+          "translation_m": {
+            "n": 353,
+            "rms": 0.004891766636240776,
+            "max": 0.01693738740719606,
+            "median": 0.0035107988346062425
+          },
+          "rotation_deg": {
+            "n": 353,
+            "rms": 0.21117375108437053,
+            "max": 0.7855819308813995,
+            "median": 0.14695502982142433
+          }
+        },
+        "75_90": {
+          "translation_m": {
+            "n": 75,
+            "rms": 0.0054943286697523375,
+            "max": 0.011722259502579095,
+            "median": 0.005003976651422265
+          },
+          "rotation_deg": {
+            "n": 75,
+            "rms": 0.16017561458008364,
+            "max": 0.33620472822339115,
+            "median": 0.13165457321601737
+          }
+        },
+        "90_100": {
+          "translation_m": {
+            "n": 24,
+            "rms": 0.005336259079891836,
+            "max": 0.009690838462193485,
+            "median": 0.004874046425841368
+          },
+          "rotation_deg": {
+            "n": 24,
+            "rms": 0.17070238644755462,
+            "max": 0.4483638264491533,
+            "median": 0.11271789279998116
+          }
+        }
+      },
+      "cost_increase_count": 1,
+      "first_cost_increases": [
+        {
+          "update": 52,
+          "time": 14.555320024490356,
+          "native_increment_error_m": 0.0048963822085744116,
+          "native_increment_error_deg": 0.14695502982142433,
+          "cost_before": 205559.6621637072,
+          "cost_after": 206918.16287735218,
+          "imu_before": 131658.23059536892,
+          "imu_after": 133165.05275579647,
+          "prior_before": 21489.697442039833,
+          "prior_after": 21489.58680162684,
+          "retirements": 1,
+          "prior_count": 1,
+          "target_before_m": 0.003397119823631053,
+          "target_before_deg": 0.037946932130587065,
+          "target_after_m": 0.00317545458096904,
+          "target_after_deg": 0.012380144303163632
+        }
+      ],
+      "largest_cost_increases": [
+        {
+          "update": 52,
+          "time": 14.555320024490356,
+          "native_increment_error_m": 0.0048963822085744116,
+          "native_increment_error_deg": 0.14695502982142433,
+          "cost_before": 205559.6621637072,
+          "cost_after": 206918.16287735218,
+          "imu_before": 131658.23059536892,
+          "imu_after": 133165.05275579647,
+          "prior_before": 21489.697442039833,
+          "prior_after": 21489.58680162684,
+          "retirements": 1,
+          "prior_count": 1,
+          "target_before_m": 0.003397119823631053,
+          "target_before_deg": 0.037946932130587065,
+          "target_after_m": 0.00317545458096904,
+          "target_after_deg": 0.012380144303163632
+        }
+      ],
+      "update438": {
+        "update": 438,
+        "time": 91.75490236282349,
+        "native_increment_error_m": 0.0012336719026699828,
+        "native_increment_error_deg": 0.04996561801461348,
+        "cost_before": 4209572.327846466,
+        "cost_after": 605923.1713332601,
+        "imu_before": 3602318.2781161857,
+        "imu_after": 403.94373630413946,
+        "prior_before": 586562.968777711,
+        "prior_after": 586563.1269669785,
+        "retirements": 1,
+        "prior_count": 1,
+        "target_before_m": 0.006549926496147815,
+        "target_before_deg": 0.18304669909009041,
+        "target_after_m": 0.0022504551593901883,
+        "target_after_deg": 0.1273910771511668
+      },
+      "first_native_step_over_5cm": null,
+      "first_retirement": {
+        "update": 28,
+        "time": 9.755345821380615,
+        "native_increment_error_m": 0.002419501195504408,
+        "native_increment_error_deg": 0.14976740870882252,
+        "cost_before": 247481.58467347745,
+        "cost_after": 22413.151174953822,
+        "imu_before": 223929.00640530506,
+        "imu_after": 252.4782497847949,
+        "prior_before": 144.46532142182306,
+        "prior_after": 145.78492103728743,
+        "retirements": 1,
+        "prior_count": 1,
+        "target_before_m": 0.003783985212116765,
+        "target_before_deg": 0.18336990269050246,
+        "target_after_m": 0.0026762832757161923,
+        "target_after_deg": 0.14567988526321646
+      }
+    }
+  }
+}

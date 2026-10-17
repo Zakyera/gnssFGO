@@ -1,0 +1,183 @@
+FL4n — Kimera post-retirement linear-system decision gate
+Capture date: 2026-10-15 UTC (completed 2026-10-16 local time)
+COMPLETE: no cache/removal-equation discrepancy at the three captured events.
+Selected repair direction: original-chart nonlinear step acceptance, not a
+factor-cache patch. Behavioral repair is NOT implemented or promoted here.
+
+Outcome
+-------
+The current code removes the intended temporary factor, assembles the correct
+cached Gaussian system at its actual theta, and solves that system with a tiny
+normal-equation residual. At the bad event, that linear solution nevertheless
+increases the SAME nonlinear objective from44.711M to107.129M. A fresh factor
+linearization at the SAME theta gives EXACTLY the same H and g, including every
+individual factor. Replacing the cache or forcing another solve at that theta
+is therefore not a supported fix for this captured failure.
+
+This is not proof that all retirement implementation is bug-free, that the
+nonlinear solution is accurate, or that ill-conditioning is harmless. It is a
+bounded negative result for stale/undeleted factors and inconsistent elimination
+equations at the first retirement, first cost increase and large late event.
+
+Controlled capture and noninterference
+------------------------------------
+One Kimera-only replay of original first94s ETH1,0.10x. Reuse FL4m's450 frozen
+post-alignment G->K inputs with unchanged full covariance, availability, endpoint
+bindings and original backend update IDs. Same front stereo/CPT7/profile and
+active_window_temporary removal; no source live_revision. This is conditional
+frozen-message replay, NOT a new live bidirectional CBS or fusion experiment.
+No GLIM, gnssFGO, visualization, covariance tuning or full-sequence rerun.
+
+Private include overlay adds an inline read-only linear-factor accessor (no
+fields/ABI-layout change) and three pre-marginalization snapshots, after update
+and the unchanged original-chart objective observer. It saves the identities
+of the scheduled-to-retire nonlinear factors before update and verifies none
+survives afterwards. Slot reuse is allowed. Mutable factor evaluations use
+clones; actual cached Gaussian factors and tree conditionals are only read.
+
+All454 native ROS odometry messages, including poses/twists/covariance fields
+but excluding ROS receipt time, are EXACTLY equal to FL4m remove. All454
+objective rows are EXACTLY equal too. Source output span93.599489763s.
+All450 incoming serialized payloads,36 covariance entries, aligned means,
+receiver endpoints and backend update IDs pass existing strict validation.
+426retirements,83cost-increasing updates, no rollback/recovery log events.
+Wall972.296918s includes0.10x playback/drain, NOT an optimization benchmark.
+
+Linear-system comparison
+------------------------
+Write each quadratic as 0.5*d'H*d-g'd+constant in the SAME actual iSAM theta.
+Use identical key ordering for: cached Gaussian factors; unique Bayes-tree
+conditionals; cloned nonlinear factors freshly linearized at theta.
+Compare H/g, not elimination-dependent constants. Unanchored prior Gaussians
+stay in their owning theta chart. Nonlinear objective comparison separately
+includes prior constants and evaluates q(Local(theta,X)) correctly.
+
+The normal residual is ||D^-1(H*d-g)|| / (1+||D^-1*g||),
+where D=sqrt(max(abs(diag(H)),1e-24)). All systems have405 scalar dimensions.
+
+Update                         28                 89                 438
+Meaning                        first retirement   first cost rise    large event
+Cache/fresh H relative diff     0                  0                  0
+Cache/fresh g relative diff     0                  0                  0
+Cache/tree H relative diff      2.950e-16          2.037e-16          1.673e-16
+Cache/tree g relative diff      3.824e-16          1.297e-16          1.816e-16
+Actual delta normal residual    1.187e-15          4.317e-16          3.447e-16
+Cached orphan factors           0                  0                  0
+Live factors missing cache      0                  0                  0
+Retired factor absent           yes                yes                yes
+Pose linearization points fixed 25/27              16/27              25/27
+Scaled H condition estimate     5.676e8            7.557e8            2.054e11
+
+At every capture, each individual prior, native IMU, bias-between,
+pose-between/CBS and smart-stereo factor has identical cached/fresh H and g
+and identical keys. No smart-factor validity mismatch was observed here.
+Smart-factor counts816/1448/866;26IMU,26bias-between,24pose-between and1prior
+in each capture. Tree diagonal-normalized maximum H discrepancy <=1.107e-15.
+
+Numerical caution: a tiny equation residual is backward consistency, not a
+guarantee of forward accuracy in a poorly conditioned system. The independently
+assembled, diagonally scaled LDLT solution differs in total delta norm by
+relative7.637e-9/8.269e-9/3.512e-6 for28/89/438. Both solves have tiny residuals.
+These normal-equation checks do not establish machine-precision forward error
+or certify a unique well-conditioned minimum.
+
+Nonlinear result and fixed-chart limitation
+------------------------------------------
+Update             Objective before       Objective after       Native IMU before/after
+28                 247455.710780          22383.647842          223929.006405 /252.663460
+89                 373023.810888          409915.516752         285721.469563 /331434.087328
+438                44711460.778549        107128694.617872      44682135.188880 /107094975.155940
+
+At438,25of27 pose LINEARIZATION POINTS are fixed by marginal-prior involvement.
+The pose estimates themselves are NOT fixed: they still move through delta.
+Maximum pose displacement from theta is6.6244deg in phi and1.72312m in rho.
+These are accumulated tangent displacements from the linearization anchors,
+NOT a1.72m single-update robot jump, nor necessarily the same pose for both maxima.
+At28 the corresponding maxima are0.66124deg/0.0099124m; at89,3.12754deg/0.198962m.
+
+Thus 'fresh at theta' must not be confused with 'relinearized around the current
+accepted estimate'. The quadratic can be internally correct yet be a poor
+nonlinear approximation far from its anchors. The observed conditioning and
+anchor separation are relevant limitations, not an isolated proof of the
+earliest initiating cause. FL4m additionally implicates the retirement/prior
+history via its controlled retain comparison. Together these support fixing
+nonlinear step acceptance in this path without guessing a bookkeeping defect.
+
+FL4l already showed, on the same bad graph/measurements/prior, that a quarter
+production step decreases cost and a cloned reference LM reduces44.7M to16772.87.
+That reference hit its30-iteration cap; it was NOT convergence-certified.
+No new accuracy claim is derived from the linear matrices here. In particular,
+this report supplies no new ATE or short-GT-overlap substitute for full coverage.
+
+Relevant implementation locations
+---------------------------------
+Under /home/yeranis/repos/V4RL/cbs_gtsam4.3:
+- src/cbs/include/cbs/bpsam/incremental_fixed_lag_bpsam_smoother.h:
+  update228-243 precedes tracking commit330 and marginalization370-380 in the
+  production source; private overlay adds capture before marginalization.
+- src/gtsam/gtsam/nonlinear/ISAM2.cpp:737-741 builds unanchored Gaussian prior
+  containers and marks their keys fixed;773-787 computes GN delta;871-875
+  returns theta.retract(delta).
+- src/gtsam/gtsam/nonlinear/ISAM2-impl.h:382-387 forceFullSolve checks all
+  deltas but still removes fixed linearization keys from the relinearization set.
+- src/gtsam/gtsam/nonlinear/LinearContainerFactor.cpp:77-90 unanchored
+  error(Values) returns0; the original-chart audit helper must be used.
+- src/gtsam/gtsam/nonlinear/ISAM2.cpp:814-819 standard dogleg passes ordinary
+  nonlinearFactors_.error into acceptance. Therefore blindly switching the
+  optimizer flag does not establish correct prior-aware acceptance here.
+
+Next bounded repair (selected, NOT implemented)
+----------------------------------------------
+1. Keep the current retirement policy. Build the same post-removal/pre-marginal
+   graph transaction, retaining exact factors, covariances and original prior.
+2. Evaluate before/candidate costs on that same graph with the verified
+   original-chart helper. Require finite valid costs and non-increase within
+   stated numerical tolerance; never compare costs of different graph contents.
+3. On a bad full step, use bounded numerical step control/LM on that SAME
+   objective, preserving the prior's chart. Numerical damping changes the step,
+   not the measurement covariance or permanent objective. The FL4l reference is
+   a starting point, not already a valid drop-in production solver.
+4. Commit only a validated accepted estimator state AND consistent solver/
+   bookkeeping state before marginalization. Do not merely overwrite published
+   odometry or scale a cached delta and call that a complete solver repair.
+   If acceptance fails, preserve/restore the complete transaction and stop with
+   evidence; do not classify the incoming GLIM belief as wrong solely because
+   optimization failed. Do not silently drop measurements or marginalize a
+   rejected state. Explicitly test covariance/linearization consistency.
+5. First test accepted/rejected steps, original-chart prior preservation and
+   rollback synthetically; then one matching bounded replay. No covariance
+   scaling, removal-policy reversal, new sequence or broad test sweep.
+
+This gate is complete. It does not itself repair the source estimator, certify
+future convergence, or justify replacing the production build.
+
+Validation, preservation and evidence
+------------------------------------
+Release private synthetic fixture: same-chart cache/tree/fresh parity through
+removal and marginalization; deliberate cache corruption detected; exact
+observer-off/on state and per-key marginal-covariance parity. PASS. One actual
+source capture, no capture retry. No complete-suite/ASan/UBSan claim for this
+private diagnostic. All879 protected paths retain hashes; profiles/CBS flags
+and frozen input bag also match FL4m. Original stopped container restored after
+confirming only its idle PID1 remained. No production source/library changes,
+commit/push or estimator-policy promotion. Existing dirty work preserved.
+gnssFGO HEAD67c00392cd640a432bda9b67afcb57be4face381.
+
+Code/protocol/receipt:
+/home/yeranis/repos/gnssFGO/experiments/fixed_lag_linear_parity_fl4n_20261015
+Run root:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/fixed_lag_linear_parity_fl4n_20261015
+
+Run root includes build_commands.json, actual_test_commands.json, build/test
+logs, test_passed.json, wrapper.diff, private_build/, and remove_capture/.
+Each linear_parity/update_{28,89,438}/ has cached/tree/fresh H/g, actual and
+dense-reference deltas, key dimensions/fixed flags, factor-wise CSV and summary.
+remove_capture has strict validation.json, complete.json, original objective
+rows, preflight flags/library maps, native.log and outputs.bag.
+analysis.json and code-directory receipt.json contain reproducible compact
+results/protected-file count/private SHA256 identities. analyze.py reproduces
+the read-only calculations and refuses to overwrite its receipts.
+
+Private Kimera library SHA256:
+e805fcff8b7e658b81100cbc69fa7132c15b2de26464faac2afcae265c2304f7
+No production repair made. STOP after the repair-decision gate.

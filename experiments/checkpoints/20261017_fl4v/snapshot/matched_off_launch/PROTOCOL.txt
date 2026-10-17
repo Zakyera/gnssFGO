@@ -1,0 +1,61 @@
+FL4t: matched live ETH1 first 120 seconds, 2026-10-16
+==================================================
+User: "Let's run further. Like 120 seconds" after FL4s30s matched live gate.
+Run exactly two captures, OFF then ON after OFF validation and deterministic
+receiver-journal replay pass. No failed-capture retries, tuning, rebuilds,
+source/method edits, production promotion, new sequence, commit or push.
+
+Reuse FL4s2 live harness and exact binaries/settings. Change only fresh output
+identities/port11442, duration30->120s and duration-specific coverage checks.
+Source native spans >=118s, tail <=.5s, initial start <=1.5s after first IMU,
+post-startup gap<=1s (unchanged coverage rule), GLIM>=1170poses,Kimera>=570.
+Candidate acceptance/objective counts must equal native Kimera count; IDs
+contiguous,finite,all accepted steps non-increasing under unchanged tolerance.
+No assumed exact native count forced by an older result.
+
+Mission2024-10-01-11-29-55,offset0,playback0.10x,drain25s,headless. GLIM Hesai
++ CPT7,5s lag,unchanged shared-native provider; Kimera front stereo+CPT7,
+25states,native current IMU packet path. Full saved ETH1 profiles from FL4s.
+Classic active_window_temporary,0.20s horizon,one pair/update,stride1,complete
+6x6 schur_relative_between covariances,scale1,temporal mean alignment enabled
+in both estimators. OFF publication only; ON bidirectional exchange during
+playback. No live_revision,Huber,gating,health weighting,or expired CBS factors
+in marginal priors. Diagnostic current-smoother revisions for fuser only.
+
+Kimera FL4q DSO enabled in BOTH modes, SHA256:
+6ce24c266b0f0e2561f0c05de2a661a72d5a4d9335df7c3cdfa0a4c77af9b4ae
+Unchanged bounded original-chart current-estimate fallback,10iterations;
+FL4Q/FL4M environment scoped only to Kimera. No covariance alteration.
+No rollback/recovery/error tolerated. Decreasing cost is not stationarity.
+
+Receiver exact FL4e SHA256:
+53c96a2b7a762800cf2291166dc78520269098684411de641b52bee6a54dc5c9
+7s incremental fixed lag,source-WNOA,independent100ms CPT7 clock after59samples,
+no central IMU factors,Gaussian scale1,same Qc/priors,stable-ID replacement.
+Starts before playback. Max retained supports71,slots200,queue<1000,
+p95 whole-support service<=.8s; no pending/unsupported at end, complete
+mean/covariance disposition. Explicit pre-initialization exclusions allowed
+and reported. Existing incremental publication policy is NOT strict
+stationarity certification. Existing source/fusion inspectors remain off.
+Disk guard: >=8GiB free before starting each case; stop if <5GiB during run.
+Expected pair footprint ~3GiB based on measured30s artifacts, not guaranteed.
+
+Validate ordered saved-journal numerical outputs and archive byte-identically
+with same receiver/container. Extend replay watchdog300->1200s only for four
+times input length. Live source deadline remains duration*10+600; receiver
+drain650s and transport limits unchanged. Do not relax gates after observing.
+Reuse prior Release/focused ASan/UBSan receipts via binary hashes, not new tests.
+
+Score original GLIM,original Kimera ROS odometry,fusion online/as-played and
+separate delayed fixed-lag-finalized paths. Existing evaluator unchanged:
+every saved pose against full-window IE-TC,rigidSE3/no scale,prism lever arm,
+1s RPE valid-bracket rule. Separately report common physical timestamps
+(>1100 at10Hz); disclose startup gaps and exact GT coverage. IE-TC shares
+CPT7,not independent prism GT. Never substitute a short prism subset for120s.
+Retain full received covariance histories and matched-edge summaries; no tuning.
+
+Protect FL4s artifacts and inherited manifests. Separate fresh run root:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_off_on_fl4t_20261016/prepared
+Stop/report if a scientific/source/receiver/validation failure occurs; do not
+run ON after failed OFF or silently shorten the requested experiment. On
+completion restore initially-stopped containers; no follow-on experiment.

@@ -1,0 +1,158 @@
+FL4m — isolated Kimera CBS retirement comparison
+2026-10-15 | COMPLETE: retirement/prior-history mechanism implicated
+
+Finding
+-------
+With exactly the same frozen incoming GLIM factors and ETH1 sensors, removing
+expired external factors before marginalization reproduces the harmful late
+Kimera optimization step. Keeping those factors through marginalization avoids
+that late translation instability in this bounded comparison.
+
+This narrows the cause to the retirement intervention and its accumulated
+optimization/prior history. It does NOT prove that prior inheritance is the
+correct CBS production policy, identify an exact implementation defect, or
+separate immediate constraint removal from the subsequent prior-history effect.
+No production repair or policy change is promoted.
+
+Controlled experiment
+---------------------
+Two Kimera-only runs, ETH1 original first94s, playback0.10x. No GLIM, gnssFGO,
+visualizer, covariance tuning, additional sequence or automatic data-run retry.
+Front stereo/CPT7, copied FL4l profile and existing native source solver remain.
+
+A (remove): current active_window_temporary retirement, remove expiring external
+factor slots before the update/marginalization.
+B (retain): same active_window_temporary admission, forced solve, guards and
+recovery; skip only scheduled deletion of expiring external factors. They remain
+in that optimization and ordinary marginalization, then obsolete tracker entries
+are removed. This is NOT a switch to the historical persistent configuration,
+which also changes admission/recovery/forced-solve behavior.
+
+450 actually constructed FL4l G->K factors are frozen AFTER native-IMU mean
+alignment. Their means, all36 covariance entries, sender IDs, original recorded
+availability times and physical receiver endpoint times are preserved. Existing
+ROS bag playback injects them; mean realignment is disabled identically in both
+cases to avoid changing measurements as the Kimera state changes. Original
+unused wire candidates are omitted. This is conditional frozen-input replay,
+NOT live bidirectional CBS or an exact historical closed-loop reproduction.
+
+Both cases have454 native ROS odometry poses spanning93.599489763s, with all450
+factor payloads, post-binding means/covariances, receiver endpoints and original
+backend update IDs validated. Each has426 retirement events and zero recovery
+rollbacks/drops. The first28 complete native messages (excluding receipt time)
+and original-chart objective fields are EXACTLY identical before retirement.
+First retirement: update28, diagnostic time9.755345821s; divergence then starts
+small. The result is not a sudden catastrophic jump at the first retirement.
+
+Decisive event: update438
+-------------------------
+Diagnostic time91.754902363s; target edge x436->x437, physical timestamps
+1727775098.3549044 to1727775098.5549035. The unchanged aligned incoming GLIM
+measurement has5.44mm translation error in FL4l's retained reference check.
+
+Quantity                                  A remove                 B retain
+Target-edge translation error before      9.37788mm                 6.54993mm
+Target-edge translation error after       134.06983mm               2.25046mm
+Target-edge rotation error before/after    .18223/.10574deg          .18305/.12739deg
+Current native-output increment error     56.20838mm                1.23367mm
+Same-graph objective before               44,711,460.78             4,209,572.33
+Same-graph objective after                107,128,694.62              605,923.17
+Native source-IMU cost before              44,682,135.19             3,602,318.28
+Native source-IMU cost after              107,094,975.16                  403.94
+Marginal-prior cost before/after           1291.00/1320.36           586562.97/586563.13
+
+Target-edge error comes from active smoother poses on the fixed incoming edge.
+The native-output increment is a DIFFERENT, current consecutive odometry
+interval. Neither is whole-trajectory ATE or standard1-second RPE.
+Rotation is not uniformly better in B; at this one target edge A's post-update
+rotation error is slightly smaller.
+
+Each before/after cost uses the SAME graph and original prior chart for that
+case/update, cloned for evaluation before marginalization. A/B prior histories
+and graph contents differ after retirement: their absolute total costs are NOT
+direct comparative accuracy scores. A's own cost increases2.396x; B's decreases.
+The source-IMU cost explains most of A's bad step. There is no central IMU/fuser.
+
+Across454 observed updates, objective increases above before*(1+1e-6)+1e-6:
+A83, B1. A's first is update89; its largest is438. B's sole increase is update52,
+205559.66->206918.16 (~0.66%). B is therefore NOT certified monotonically
+converged or universally stable. A reproduces FL4l's134.07mm event closely,
+not byte-identically and not FL4g's earlier432mm magnitude.
+
+Matched native relative-interval errors
+--------------------------------------
+Reference: existing IE-TC decoder, CPT7 body frame, interpolation maximum gap50ms.
+IE-TC shares CPT7 and is not independent ground truth. Consecutive ~0.2s native
+intervals are used; the3.2s startup gap is excluded identically. No alignment or
+scale is fitted to these relative intervals. Both cases use452 identical scored
+intervals across the available native output, not a selected11s ATE window.
+
+Diagnostic time range     N     Translation RMS A/B      Rotation RMS A/B
+up to75s                 353       5.574 /4.892mm          .21130/.21117deg
+75–90s                    75      16.541 /5.494mm          .15989/.16018deg
+90–94.755s                24      29.226 /5.336mm          .17054/.17070deg
+All available intervals  452      10.724 /5.021mm
+Maximum                           73.098 /16.937mm
+
+Time origin here is1727775007s (the retained diagnostic convention), not exact
+bag start1727775007.955396. Native span is1.155396–94.754885 in that convention.
+The late error is reduced substantially in B; rotation is essentially unchanged.
+No new whole-trajectory ATE, full120s/full346s or fused-performance claim is made.
+
+Implementation and validation
+-----------------------------
+Private include overlay changes only retirement scheduling and adds a read-only
+original-chart observer. Private VioBackend.cpp adds post-binding payload logging.
+The production native libraries, source files, frozen profiles, data and previous
+results are unchanged: all879 protected hashes verified before/after.
+
+Release synthetic runtime-API fixture passes: pre-retirement A/B parity; removed
+factor covariance equals native-only reference; retained factor covariance equals
+persistent reference; expired state keys and tracker entries disappear. This is
+a linear-at-solution Pose3 fixture, not general nonlinear consistency proof.
+No full-suite or sanitizer claim is added for this private diagnostic.
+
+Actual captures each ran once and completed. Wall time972.310s A /972.313s B
+includes0.10x playback and drain; not a solver throughput benchmark.
+Validation also checks finite/strictly timed native poses, exact recorded incoming
+wire bytes, all450 bound inputs and finite original-chart objectives.
+
+Setup history is retained: initial compile exposed an unused source-only GLIM
+API overload absent from the installed runtime; the private header was corrected
+to preserve installed API. Initial launcher lacked its Kimera log directory,
+and a subsequent socket preflight encountered TIME_WAIT. Both stopped BEFORE
+playback; no failed source capture was retried. Fresh *_capture directories hold
+the only actual A/B plays. Final receipt parsing excludes only two known rostopic
+post-playback no-clock warning lines; bag-based454-pose validation is unchanged.
+
+All owned processes exited; container restored to its original stopped state.
+No commit/push or production binary promotion. Repository HEAD remains
+67c00392cd640a432bda9b67afcb57be4face381; pre-existing dirty work was preserved.
+
+Evidence and reproduction
+-------------------------
+Code/protocol/receipt:
+/home/yeranis/repos/gnssFGO/experiments/fixed_lag_retirement_fl4m_20261015
+Run artifacts:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/fixed_lag_retirement_fl4m_20261015
+
+Key artifacts: remove_capture/ and retain_capture/ each contain preflight,
+objective.csv, kimera.log, outputs.bag, validation.json and complete.json.
+analysis.json contains every derived per-update comparison; final_validation.json
+and code-directory receipt.json contain compact evidence/protected hashes.
+wrapper_final.diff and prepare_final.py supersede the initial build-stage copies;
+actual_test_commands.json records the runtime-API compile flags actually used.
+Private Kimera library SHA256:
+3ffebe0a4da54766e6bdec01dd96257bc441699666c6f46d10cd9bef6875dded
+Frozen serialized input+arrival SHA256:
+58c3d7e151bc9fc2cd433ef8cfab4e75f876f2c6b8d00278af3b31de4ad1f3f2
+
+Decision
+--------
+The bounded intervention supports a causal role for the temporary-retirement
+path/history in this late instability; the hypothesis is no longer based only on
+historical ATE. It does not show that all CBS problems are solved, prove GLIM's
+changes harmless everywhere, or justify reintroducing information inheritance.
+If continuing, target a numerically consistent, safeguarded retirement/update
+while preserving the intended no-inheritance semantics, not covariance tuning
+or a new full-sequence sweep. That repair remains unimplemented. STOP.

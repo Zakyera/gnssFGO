@@ -1,0 +1,124 @@
+FL4r — unchanged Kimera current-estimate fallback: 94 s gate PASSED
+2026-10-16. Isolated candidate; production/defaults unchanged.
+
+RESULT
+One 94-second ETH1 Kimera-only frozen-input replay completed at 0.10x,
+including the previously problematic late update 438. It produced 454 native
+ROS odometry messages spanning 93.599489763 s. The original startup sampling
+gap remains; we did not invent output samples to fill it.
+
+The entire 134-message output from the preceding 30 s FL4q experiment is
+byte-identical here. Its objective rows and all non-timing acceptance fields
+also agree exactly. Native updates 0..88 still match the original FL4n baseline;
+the first changed native output is update 89, as intended.
+
+No algorithm or measurement setting changed for this extension. The exact
+FL4q private libkimera_vio.so was copied without rebuilding:
+SHA256 6ce24c266b0f0e2561f0c05de2a661a72d5a4d9335df7c3cdfa0a4c77af9b4ae.
+Runner changes are limited to private port 11440, duration 94 s, deadline
+1150 s and paths derived from the fresh output root. See runner.diff.
+
+WHAT THE CHECK SHOWS
+Of 454 updates, 425 kept the ordinary native proposal. At the other 29, that
+proposal increased the unchanged objective; the existing FL4q current-estimate
+LM fallback found and installed a decreasing step. Every accepted decision
+passes the predeclared nonincrease tolerance 1e-10*(1+abs(before)).
+
+Selected steps (objective units, NOT meters/ATE):
+Update   Before             Native proposal     Accepted           Iterations
+89       373,023.810888      409,915.516752       79,697.749684       4
+438    1,154,442.116507   15,667,368.266662       17,283.572292      10
+440      740,773.341736    9,685,336.293053       18,820.334486      10
+
+At update 438, the candidate still encounters a very harmful ordinary proposal,
+but rejects it and accepts a much lower-cost current-estimate solution. It then
+continues to the end without a rollback, recovery, restart or automatic retry.
+
+The old baseline 438 cost was 44,711,460.78 -> 107,128,694.62. This is context
+only: candidate and baseline already diverged at update 89, so they do NOT have
+the same preceding states/priors at 438. The valid same-graph comparison is
+the before/native-proposal/accepted triple within this candidate update.
+
+The objective is compared before/after EACH step on its same post-retirement,
+pre-marginalization graph. The graph changes between updates as measurements
+arrive and states retire; this is not a claim of globally monotonic costs across
+different graphs. No ATE/RPE or improved physical accuracy is claimed here.
+
+Fallback updates:
+89,101,113,147,226,235,278,293,296,298,301,305,309,313,377,390,404,
+417,419,422,424,426,428,431,434,436,438,440,449.
+They occur in 29/454 updates (6.39%) and cluster late. Twenty-one of the 29
+reach the unchanged 10-outer-iteration cap. Passing means bounded objective
+descent and valid continuation, NOT nonlinear stationarity or universal
+convergence. Do not describe the fallback as necessarily rare.
+
+INPUT / LIFECYCLE VALIDATION
+- 450/450 incoming wire messages exactly match the saved frozen input bag.
+- All 450 backend update numbers and sender/receiver endpoint bindings match.
+- Full 6x6 incoming covariances match exactly; maximum aligned-mean logging
+  discrepancy 1.1102230246251565e-16, below the frozen 1e-12 threshold.
+- All 454 native physical timestamps match the baseline grid.
+- 426 scheduled retirements in objective.csv; 426 corresponding
+  active_window_remove_scheduled log entries. No recovery/rollback markers.
+- Cached versus freshly relinearized current-point H/g error is zero at all
+  29 fallback rebuilds. Maximum relative tree-versus-cache H/g error is
+  4.97703494080691e-9 at update 278, passing the original 1e-8 gate.
+  This is larger than the 30 s result (2.28e-13), not machine-precision equality
+  for the tree throughout this longer run. It is an equation consistency gate,
+  not certification of calibrated posterior uncertainty.
+
+PRESERVED MODEL / LIMITS
+The private solver still uses FL4q's original-chart marginal prior function,
+existing GTSAM LM and current undamped ISAM2-core rebuild. Numerical damping
+is not retained in exported information. Existing native measurement models,
+noise matrices, input covariance scales and temporary-CBS retirement policy
+are unchanged. Incoming covariance equality does not imply outgoing posterior
+covariance equality: state/linearization changes can naturally alter it.
+
+ETH1 mission 2024-10-01-11-29-55, front stereo+CPT7, 25-state Kimera window,
+native current IMU support (KIMERA_IMU_SAMPLE_SUPPORT unset), Gaussian classic
+active_window_temporary. Incoming GLIM payloads are already aligned frozen
+FL4n inputs; native mean alignment is off to avoid aligning twice. No live_revision,
+Huber, weighting, gating or covariance scaling. No GLIM estimator, gnssFGO,
+bidirectional live comparison or new sequence ran in this task.
+
+The same tested FL4q executable/support libraries were reused. Prior focused
+Release and ASan/UBSan passes were verified by artifact identity, NOT rerun or
+represented as a new whole-workspace sanitizer test. The entire 30 s real-data
+prefix repeated exactly; the whole 94 s candidate has not been run twice.
+
+RUNTIME
+Controller wall time: 972.290611391 s at 0.10x, including setup/drain.
+Decision/solve stage, all 454 updates:
+  median 8.03250 ms; p95 159.93907 ms; max 265.79229 ms; total 8.53725 s.
+Fallback decision/solve stage only:
+  median 177.83589 ms; p95 224.32611 ms; max 265.79229 ms; total 5.22313 s.
+These timers exclude core rebuild/verification, transaction copies, original
+native update, marginalization and covariance export. They do not establish
+total backend latency, a speedup, or 1x throughput. No extra benchmark was run.
+
+PRESERVATION / ARTIFACTS
+All 879 protected baseline files, 37 FL4q candidate files and 30 newly frozen
+FL4r files retain their hashes. No production source/default/library edits;
+existing dirty CBS and gnssFGO work was preserved. Kimera-VIO and GTSAM source
+checkouts remain clean. All owned ROS processes stopped; the previously stopped
+container was returned to stopped state. No commit/push or automatic next run.
+Branch: engineering/fl4q-current-chart-fallback-20261016.
+Unchanged HEAD: 67c00392cd640a432bda9b67afcb57be4face381.
+
+Run root:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/fixed_lag_current_chart_fl4r_20261016
+  pre_capture_receipt.json, final_receipt.json
+  remove_capture/{preflight.json,resolved_params.yaml,complete.json,
+    validation.json,acceptance.csv,objective.csv,outputs.bag,kimera.log,native.log}
+Repository evidence:
+/home/yeranis/repos/gnssFGO/experiments/fixed_lag_current_chart_fl4r_20261016
+  PROTOCOL.txt, prepare.py, validate.py, status.py, finalize.py,
+  archived_run_case.py, runner.diff, receipt.json, REPORT.txt.
+
+DECISION
+PASS the unchanged candidate's longer numerical/lifecycle gate. The known late
+region no longer causes an accepted objective-increasing step or failed replay.
+Do not promote as a fully converged, calibrated or accuracy-validated production
+repair. A separately authorized matched live check is the next meaningful gate;
+no new solver/covariance change or wider experiment was started. Stop here.

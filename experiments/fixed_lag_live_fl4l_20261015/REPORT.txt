@@ -1,0 +1,185 @@
+FL4l — one original-chart Kimera source-solver decision gate
+2026-10-15
+
+STATUS: COMPLETE — BAD PRODUCTION STEP REPRODUCED ON THE SAME OBJECTIVE.
+No production repair is implemented or promoted.
+
+Primary result
+--------------
+At update438, approximately91.755s from the retained clock origin, the new
+capture reproduces a large harmful deformation (not the exact old magnitude).
+The complete original-chart objective INCREASES by2.396x during the accepted
+production step. A bounded reference solve using the SAME factors, SAME dense
+covariances and SAME marginal prior reduces that objective by99.984% relative
+to production. Thus this event is not simply an optimal compromise forced by
+the chosen weights: the production step is substantially inferior on its own
+same-graph objective.
+
+                                  Before       Production      Reference
+Complete objective                44,711,636.70 107,129,189.53    16,772.87
+Scaled gradient max                3,980.77      8,003.17             0.01045
+Target translation error, IE-TC        9.38mm      134.07mm           0.71mm
+Target rotation error, IE-TC           0.1822deg     0.1057deg        0.1280deg
+Target translation disagreement G     13.93mm      131.32mm           5.39mm
+
+Target edge is x436->x437, physical timestamps1727775098.3549044 to
+1727775098.5549035. Aligned incoming GLIM error is5.44mm and0.1104deg.
+Reference rotation error is lower than before, but slightly higher than the
+production step: do not describe every coordinate as improved.
+
+Reference used all30 allowed LM iterations (0.2885s measured solver wall time)
+and retains a nonzero scaled gradient. It is NOT a convergence certificate,
+a real-time guarantee, or a proposed always-30-iterations production setting.
+The current experiment supplies no complete-trajectory ATE improvement claim.
+
+Same-graph cost decomposition (dimensionless objective, NOT raw weights):
+Family / count                    Before       Production      Reference
+Native Kimera IMU /26              44,682,311.09 107,095,470.03       268.97
+Bias between /26                       3,155.17       2,860.07     2,809.26
+Pose between /24                      24,804.54      29,474.28    12,404.91
+Marginal prior /1                      1,291.00       1,320.36     1,248.47
+Smart stereo /866                         74.90          64.79        41.27
+Fresh valid smart factors                   196            180          212
+
+The large cost rise is overwhelmingly in Kimera's OWN native IMU factors,
+not a central gnssFGO IMU (there is no fusion process in this capture).
+The prior was neither removed nor weakened. Smart validity is freshly
+evaluated on cloned factors; changing validity means a falling visual cost
+alone is not sufficient evidence of improvement. Pose-between is the measured
+family label, not a generic information-weight summary.
+
+Along the actual production correction, objective at25% of the step is
+40,406,421.10, lower than the pre-step44,711,636.70; at50% it rises to
+49,491,727.95, and the full step reaches107,129,189.53. This supports an
+oversized/inadequately controlled nonlinear step. It does not separately
+identify how much is due to frozen linearization points, stale cached factors,
+one-step iteration policy, or prior/history inconsistency. Those are not
+interchangeable claims. No damping policy was changed in the live source.
+
+The one marginal factor has27 keys: b412,v412,x412..x436. Its Gaussian is
+exactly unchanged at its saved slot; maximum change of surviving prior theta
+is1.94e-18. The original-chart reference and checked original Gaussian cost
+agree at both initial and production values. No rollback/drop was recorded
+in this prefix; the poor update was accepted by the existing source path.
+
+Scope and identity
+------------------
+One ETH1 CBS-ON source-only prefix: bag offset0, duration94s, playback0.10x.
+The preceding history is retained; a fresh clip starting at90s would not
+recreate the marginal prior. No fusion process, covariance tuning, source
+weighting change, production solver change, or new full120/346s experiment.
+Classic active_window_temporary, shared-native GLIM provider, native-IMU mean
+alignment and the exact FL4g source profiles remain selected. No promotion.
+
+Private root:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/fixed_lag_same_graph_fl4l_20261015
+
+Implementation
+--------------
+Reuse Kimera's existing captureBadUpdateStagesOnce hook, now selecting only
+update438 in a private VioBackend.cpp overlay. All other existing Kimera build
+objects are reused. The original libkimera_vio.so is never overwritten.
+The source runtime uses the same frozen CBS/GTSAM libraries. Only the private
+diagnostic includes FL4k's checked original-chart objective helper.
+
+The graph is cloned after the production optimization and before marginalizing
+keys. For its pre-existing linear-container priors, require identical Gaussian
+factors at the same slots and unchanged surviving theta. Use original theta,
+not current optimized poses, as the marginal prior's origin.
+
+The reference objective is q(Local(theta,X)) plus the unchanged nonlinear
+factors. Its derivative uses the local-coordinate chain rule. For
+q(d)=0.5*d' H d-eta' d+0.5*c, d=d0+J*epsilon, use:
+Hnew=J' H J; etaNew=J'(eta-H*d0); cNew=d0'H*d0-2*eta'd0+c.
+This preserves the full dense prior and constant, not a replacement sensor
+prior. The implementation adapts the existing FL2a original-chart utility to
+GTSAM4.3 and bias variables. Local-coordinate derivatives use central1e-6
+differences. No reference state is fed back into Kimera.
+
+Reference LM starts at the actual pre-update state, has max30 iterations,
+initial lambda1e-3, diagonal damping, relative/absolute tolerance1e-9.
+Settings are predeclared, not chosen from GT. Hitting the cap or a remaining
+gradient must be reported; lower objective alone does not prove convergence
+or improve the complete trajectory. Costs/gradients are fresh evaluations,
+not reconstructions of the cached iSAM2 Gaussian system.
+
+Engineering validation
+----------------------------
+Release synthetic test passed. Dense coupled Pose3/velocity/bias prior cost
+matches independently computed squared residual exactly; maximum gradient
+finite-difference discrepancy3.97812e-10; linearized constant discrepancy
+4.44089e-16. This turn does not claim a new full sanitizer suite.
+
+The first private compile caught a GTSAM API name mismatch; corrected to
+setDiagonalDamping. Successful build then retained only an unused-old-helper
+warning. The old diagnostic helper is not called.
+
+First startup stopped BEFORE sensor playback: copied GLIM profiler path still
+contained pilot120_on_source. The verifier caught the mismatch. Its source
+and control logs are preserved as on_source/ and control/. Corrected only the
+private profiler output path. Actual capture has distinct on_source_capture/
+and control_capture/ directories. No failed sensor experiment was retried.
+
+Interpretation gate
+-------------------
+A fresh coupled replay is not bitwise guaranteed: the first101 native Kimera
+timestamps match the old run exactly, while raw position RMS difference is
+0.0236579m (max0.0573059m). Therefore do not assume update438 reproduces the
+historical16.08mm->432.48mm target-edge error. Check the new captured edge
+before interpreting a reference solve. IE-TC local relative checks share CPT7;
+they are not an independent-GT trajectory ATE evaluation.
+
+Completion and preservation
+---------------------------
+Actual source capture completed successfully in981.59 wall seconds including
+startup/drain/cleanup. Recorded9386 IMU samples span93.850s; native GLIM has
+931 poses spanning92.9997s; native Kimera has454 poses spanning93.5995s.
+Its known3.2s startup gap remains reported, not filled. Both tails reach
+within0.18s of the last recorded IMU. All duration/finite/order/gap gates pass.
+Source logs show450 G->K constructions and451 K->G injections, zero rollback
+or staged-drop records in this bounded prefix. No source revisions or received
+covariances were rescaled. No new source/fuser performance table was scored.
+
+All879 FL4g protected artifact hashes still match. Copied GLIM16-file and
+Kimera14-file profile trees match the frozen ON trees exactly. Effective ROS
+parameters/flags and runtime library paths were verified before playback.
+Production Kimera SHA256 remains:
+8ca57e0bbd51ee3af480f1beb1d530c3dac925514a768177f78e9fcd6f75e3d7
+Private diagnostic Kimera SHA256:
+d2424a6a1d82e28e2e91cb32fabb6dfc45ae21e884853c87e9abe41c56775b8c
+
+After owned processes exited, container cbsms_ws_gpu was restored to stopped.
+No runtime library, estimator profile or algorithm policy was overwritten.
+Existing dirty changes were preserved. No commit or push was requested here.
+HEADs: gnssFGO67c00392cd640a432bda9b67afcb57be4face381;
+CBS7c3a1e66767938e105d46fd072bd853ad5ec50c2;
+Kimera560ad0fd33c162ff2a0a64a1372f9b61e1d8d8f9.
+
+Retained artifacts / limits
+--------------------------
+In the private root: control_capture/complete.json; on_source_capture/ raw
+logs, source bag and effective settings; capture/update_438/ original theta,
+before/production/reference states, original dense prior, visual observations,
+per-factor costs and objective; analysis.json; receipt.json; private sources,
+build commands and synthetic CTest log. Compact analysis and receipt are
+also saved next to this report. The complete nonlinear graph was cloned and
+solved in process; it was NOT successfully serialized as a standalone
+replayable graph archive. Do not claim those retained text snapshots alone
+reproduce every smart-factor cache/preintegration object.
+
+Decision and next bounded step (NOT executed)
+--------------------------------------------
+Prioritize a source-solver safeguard before covariance tuning: reject or
+backtrack a source update that increases the complete original-chart objective,
+and use a bounded damped/relinearized fallback on the SAME graph. Preserve the
+received GLIM belief; a failed numerical step does not prove a bad sender.
+The correction must keep the original marginal prior chart and transactionally
+update the owning solver, not merely replace the published pose. Do not clear
+fixedVariables or inject the reference Values into iSAM2 without a consistent
+internal-state update.
+
+This capture justifies designing that narrow candidate. It does not establish
+the unique initiating cause of the entire120s failure or prove that a scalar
+cost check alone will solve long-run stability. In particular, the existing
+cached Gaussian system has not been reconstructed and compared here. Stop
+after this diagnostic; no new receiver, weighting, lag or sequence experiment.

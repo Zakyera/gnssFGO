@@ -1,0 +1,534 @@
+--- validate_case.py FL4s
++++ validate_case.py FL4t
+@@ -4,12 +4,12 @@
+ P=Path(__file__).resolve().parent
+ MODE=sys.argv[2] if len(sys.argv)>2 else 'off'
+ assert MODE in ('off','on')
+-SRC=P/f'pilot30_{MODE}_source'
+-REC=P/f'pilot30_{MODE}_receiver'
++SRC=P/f'live120_{MODE}_source'
++REC=P/f'live120_{MODE}_receiver'
+ OUT=REC/'receiver'
+-CTL=P/f'pilot30_{MODE}_control'
++CTL=P/f'live120_{MODE}_control'
+ EXE=Path('/home/yeranis/results/gnssfgo_fixed_lag_failure_fl4e_20261014/candidate_live')
+-RESULT=Path(f'/home/yeranis/results/gnssfgo_fixed_lag_live_fl4s_20261016/{MODE}')
++RESULT=Path(f'/home/yeranis/results/gnssfgo_fixed_lag_live_fl4t_20261016/{MODE}')
+ LIB=Path('/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib')
+ 
+ def sha(p):
+@@ -47,8 +47,8 @@
+     assert cfg['source_protocol']=='classic'
+     assert json.loads((OUT/'summary.json').read_text())['stationarity']=='not_checked_incremental_policy'
+     source_cov=json.loads((SRC/'source_coverage.json').read_text())
+-    assert source_cov['passed'] and source_cov['requested_s']==30
+-    assert source_cov['native_glim']['rows']>=270 and source_cov['native_kimera']['rows']>=120
++    assert source_cov['passed'] and source_cov['requested_s']==120
++    assert source_cov['native_glim']['rows']>=1170 and source_cov['native_kimera']['rows']>=570
+     metadata=(SRC/'run_metadata.txt').read_text()
+     markers=['mode=cbs_'+MODE,
+              'glim_receive_cbs_beliefs='+str(MODE=='on').lower(),
+@@ -98,7 +98,7 @@
+     assert cov_error==0 and mean_error<1e-12
+     assert action['insert']==summary['inserted'] and action['replace']==summary['replaced']
+     assert action['before_initialization']==summary['excluded']
+-    assert action['unsupported_at_end']==summary['unsupported_end']
++    assert action['unsupported_at_end']==summary['unsupported_end']==0
+     assert absorbed==summary['absorbed']
+     assert summary['received']==sum(action.values())
+     assert len(online_records)==summary['publications']
+@@ -120,7 +120,7 @@
+         assert indices==list(range(len(indices))),name
+     times=[int(p['timestamp_ns']) for p in online]
+     assert all(b-a==100_000_000 for a,b in zip(times,times[1:]))
+-    assert (times[-1]-times[0])*1e-9>=28.
++    assert (times[-1]-times[0])*1e-9>=118.
+     assert [r[1:3] for r in online_records]==[r[1:3] for r in final_records]
+     path={}
+     for name,products in [('online',online),('finalized',final)]:
+@@ -182,7 +182,7 @@
+     with (RESULT/'repeat_container_escalated.log').open('x') as f:
+         started=time.monotonic()
+         rc=subprocess.run(['docker','exec','ubuntu-jammy-humble-nvidia','bash','-lc',shell],
+-                          stdout=f,stderr=subprocess.STDOUT,timeout=300).returncode
++                          stdout=f,stderr=subprocess.STDOUT,timeout=1200).returncode
+     assert rc==0
+     files=['online_states.csv','finalized_states.csv','online_trajectory.tum',
+            'finalized_trajectory.tum','summary.json']
+--- validate_candidate.py FL4s
++++ validate_candidate.py FL4t
+@@ -4,14 +4,14 @@
+ import numpy as np
+ R=Path(__file__).resolve().parent
+ mode=sys.argv[1];assert mode in ['off','on']
+-S=R/f'pilot30_{mode}_source'
+-assert (R/f'pilot30_{mode}_control/complete.json').exists()
+-assert not (R/f'pilot30_{mode}_control/failed.txt').exists()
++S=R/f'live120_{mode}_source'
++assert (R/f'live120_{mode}_control/complete.json').exists()
++assert not (R/f'live120_{mode}_control/failed.txt').exists()
+ a=np.loadtxt(S/'acceptance.csv',delimiter=',',ndmin=2)
+ obj=np.loadtxt(S/'objective.csv',delimiter=',',ndmin=2)
+ with (S/'kimera_odometry.csv').open() as f:poses=list(csv.DictReader(f))
+-assert len(a)==len(obj)==len(poses)==134
+-assert np.array_equal(a[:,0],np.arange(134))
++assert len(a)==len(obj)==len(poses) and len(a)>=570
++assert np.array_equal(a[:,0],np.arange(len(a)))
+ assert np.isfinite(a).all() and np.isfinite(obj).all()
+ assert np.all(a[:,3]<=a[:,1]+1e-10*(1+np.abs(a[:,1])))
+ fb=a[a[:,4]==1]
+--- evaluate_fl4f.py FL4s
++++ evaluate_fl4f.py FL4t
+@@ -97,7 +97,7 @@
+         rpe_pairs=len(terr),error_m=stat(errors))
+ 
+ def covariances(mode):
+-    path = ROOT / f'pilot30_{mode}_receiver/events.csv'
++    path = ROOT / f'live120_{mode}_receiver/events.csv'
+     groups = collections.defaultdict(list)
+     versions = collections.defaultdict(list)
+     with path.open(newline='') as f:
+@@ -131,13 +131,13 @@
+ def main():
+     assert not OUT.exists(), 'Refusing to overwrite an evaluation'
+     for mode in ('off','on'):
+-        assert (ROOT/f'pilot30_{mode}_control/complete.json').is_file()
+-        assert (ROOT/f'pilot30_{mode}_source/complete.marker').is_file()
+-        assert (ROOT/f'pilot30_{mode}_receiver/complete.marker').is_file()
++        assert (ROOT/f'live120_{mode}_control/complete.json').is_file()
++        assert (ROOT/f'live120_{mode}_source/complete.marker').is_file()
++        assert (ROOT/f'live120_{mode}_receiver/complete.marker').is_file()
+     paths = {}
+     for mode in ('off','on'):
+-        src = ROOT / f'pilot30_{mode}_source'
+-        rec = ROOT / f'pilot30_{mode}_receiver/receiver'
++        src = ROOT / f'live120_{mode}_source'
++        rec = ROOT / f'live120_{mode}_receiver/receiver'
+         paths[f'{mode}_native_glim'] = src/'odom_imu.txt'
+         paths[f'{mode}_native_kimera'] = src/'kimera_odometry.csv'
+         paths[f'{mode}_fused_online'] = rec/'online_trajectory.tum'
+@@ -156,7 +156,7 @@
+     times=np.asarray([stamp for stamp in grid if
+         rel.interpolate_pose(*reference,stamp,.05) is not None and
+         all(rel.interpolate_pose(*c,stamp,.5) is not None for c in curves.values())])
+-    assert len(times)>200 and max(np.diff(times))<=.100001
++    assert len(times)>1100 and max(np.diff(times))<=.100001
+     results={}
+     for name,curve in curves.items():
+         results[name]=dict(path=str(paths[name]),sha256=sha(paths[name]),
+--- compare_belief_cov_fl4f.py FL4s
++++ compare_belief_cov_fl4f.py FL4t
+@@ -10,7 +10,7 @@
+ assert not OUT.exists()
+ 
+ def last(mode):
+-    path=P/f'pilot30_{mode}_receiver/events.csv'
++    path=P/f'live120_{mode}_receiver/events.csv'
+     result={}
+     counts=collections.Counter()
+     with path.open(newline='') as f:
+@@ -33,7 +33,7 @@
+ 
+ off,oc=last('off');on,nc=last('on')
+ assert set(off)==set(on)
+-assert len(off)==421
++assert len(off)>=1700
+ report={}
+ for source in ('glim_hesai','kimera_front'):
+     keys=[key for key in off if key[0]==source]
+--- preflight_on_fl4f.py FL4s
++++ preflight_on_fl4f.py FL4t
+@@ -4,7 +4,7 @@
+ from pathlib import Path
+ 
+ P = Path(__file__).resolve().parent
+-RESULT = Path('/home/yeranis/results/gnssfgo_fixed_lag_live_fl4s_20261016/off')
++RESULT = Path('/home/yeranis/results/gnssfgo_fixed_lag_live_fl4t_20261016/off')
+ 
+ def sha(path):
+     h = hashlib.sha256()
+@@ -13,15 +13,16 @@
+             h.update(block)
+     return h.hexdigest()
+ 
++assert json.loads((P/'live120_off_source/candidate_validation.json').read_text())['passed']
+ assert json.loads((RESULT/'validation.json').read_text())['passed']
+ assert json.loads((RESULT/'repeat_validation.json').read_text())['passed']
+-assert (P/'pilot30_off_control/complete.json').is_file()
+-assert not any((P/f'pilot30_on_{part}').exists() for part in ('source','receiver','control'))
++assert (P/'live120_off_control/complete.json').is_file()
++assert not any((P/f'live120_on_{part}').exists() for part in ('source','receiver','control'))
+ manifest=json.loads((P/'protected_manifest.json').read_text())
+ for path,want in manifest.items():
+     assert sha(path)==want,path
+-off=json.loads((P/'pilot30_off.json').read_text())
+-on=json.loads((P/'pilot30_on.json').read_text())
++off=json.loads((P/'live120_off.json').read_text())
++on=json.loads((P/'live120_on.json').read_text())
+ for config in (off,on):
+     config.pop('sequence')
+     for source in config['sources']:
+--- source.env FL4s
++++ source.env FL4t
+@@ -2,17 +2,17 @@
+ # to off_source/on_source and CBSMS_CBS_ENABLE to false/true.
+ : "${CBSMS_RUN_NAME:?Set fresh ETH1 source run name}"
+ : "${CBSMS_CBS_ENABLE:?Set false or true}"
+-export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live30_off_on_fl4s2_20261016/prepared
++export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_off_on_fl4t_20261016/prepared
+ export CBSMS_RUN_NAME CBSMS_CBS_ENABLE
+ export ROS_LOG_DIR="${CBSMS_RUN_ROOT}/${CBSMS_RUN_NAME}/ros_logs"
+ export CBSMS_PROJECT_ROOT=/workspace/cbs_gtsam4.3
+ export CBSMS_MISSION=2024-10-01-11-29-55
+ export CBSMS_BAG_START_SEC=0.0
+-export CBSMS_BAG_DURATION_SEC="${CBSMS_BAG_DURATION_SEC:-30.0}"
++export CBSMS_BAG_DURATION_SEC="${CBSMS_BAG_DURATION_SEC:-120.0}"
+ export CBSMS_POST_PLAYBACK_DRAIN_SEC=25
+ export CBSMS_BAG_RATE=0.10
+ export CBSMS_SEED_CLOCK_SECS=1727775007
+-export CBSMS_ROS_MASTER_PORT=11441
++export CBSMS_ROS_MASTER_PORT=11442
+ export CBSMS_USE_EXISTING_ROS_MASTER=true
+ export CBSMS_KIMERA_MODE=stereo_shared_cpt7
+ # The recovered classic Kimera source path is "current", not experimental RIGHT.
+--- run_case.py FL4s
++++ run_case.py FL4t
+@@ -6,6 +6,7 @@
+ import os
+ from pathlib import Path
+ import shlex
++import shutil
+ import subprocess
+ import time
+ from experiment import ROOT, REPO, file_sha
+@@ -13,7 +14,7 @@
+ 
+ def main():
+     parser = argparse.ArgumentParser()
+-    parser.add_argument('phase', choices=['pilot30'])
++    parser.add_argument('phase', choices=['live120'])
+     parser.add_argument('mode', choices=['off'])
+     parser.add_argument('--attempt',type=int,choices=[1],default=1)
+     args = parser.parse_args()
+@@ -28,10 +29,11 @@
+     receiver = ROOT/(tag+'_receiver')
+     assert not source.exists() and not receiver.exists()
+     own = ROOT/(tag+'_control')
++    assert shutil.disk_usage(ROOT).free>8*1024**3, 'disk preflight: need 8GiB free'
+     own.mkdir(exist_ok=False)
+     inside = '/workspace/'+str(own.relative_to('/home/yeranis/repos/V4RL'))
+     env_inside = '/workspace/'+str((ROOT/'source.env').relative_to('/home/yeranis/repos/V4RL'))
+-    master_uri = 'http://127.0.0.1:11441'
++    master_uri = 'http://127.0.0.1:11442'
+     jobs = {}
+     streams = []
+     def start(name, command):
+@@ -45,7 +47,7 @@
+             text=True, capture_output=True, check=check)
+     def stop_pid(name):
+         # The PID is recorded by this case, command must match the owned port/run.
+-        token = '11441' if name=='master' else str(source.name)
++        token = '11442' if name=='master' else str(source.name)
+         script = ('import os,signal,sys; from pathlib import Path; p=Path(sys.argv[1]); '
+           'pid=int(p.read_text()) if p.exists() else 0; c=Path("/proc/%d/cmdline"%pid); '
+           'e=Path("/proc/%d/environ"%pid); '
+@@ -57,7 +59,7 @@
+     started = time.time()
+     try:
+         assert ros('rosparam get /rosversion',check=False).returncode != 0, 'port is already in use'
+-        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11441'
++        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11442'
+         start('master',['docker','exec','cbsms_ws_gpu','setsid','--wait','bash','-lc',master_script])
+         for _ in range(60):
+             if ros('rosparam get /rosversion',check=False).returncode==0:
+@@ -75,7 +77,7 @@
+             assert jobs['receiver'].poll() is None, 'receiver startup failed'
+             assert time.monotonic()<deadline, 'transport startup timeout'
+             time.sleep(.2)
+-        duration=30
++        duration=120
+         source_script = ('export CBSMS_RUN_NAME='+tag+'_source CBSMS_CBS_ENABLE='+('true' if args.mode=='on' else 'false')+
+           ' CBSMS_BAG_DURATION_SEC='+str(float(duration))+'; source '+shlex.quote(env_inside)+
+           '; echo $$ > '+shlex.quote(inside+'/source.pid')+
+@@ -93,6 +95,7 @@
+                 for token in ['SHARED_NATIVE_SHADOW_FAILURE','SHARED_NATIVE_SHADOW_SETUP_FAILURE','SHARED_NATIVE_PROVIDER_FAILURE','FL4Q','active_window_rollback','active_window_retry_local_update_','Smoother recovery','Persistent BPSAM recovery']:
+                     assert token not in chunk, token+': '+str(log)
+         while jobs['source'].poll() is None:
++            assert shutil.disk_usage(ROOT).free>5*1024**3, 'disk reserve below 5GiB'
+             provider_failures()
+             assert jobs['receiver'].poll() is None, 'receiver stopped during playback'
+             assert time.time()-started < duration*10+600, 'source deadline exceeded'
+--- run_case_on.py FL4s
++++ run_case_on.py FL4t
+@@ -6,6 +6,7 @@
+ import os
+ from pathlib import Path
+ import shlex
++import shutil
+ import subprocess
+ import time
+ from experiment import ROOT, REPO, file_sha
+@@ -13,7 +14,7 @@
+ 
+ def main():
+     parser = argparse.ArgumentParser()
+-    parser.add_argument('phase', choices=['pilot30'])
++    parser.add_argument('phase', choices=['live120'])
+     parser.add_argument('mode', choices=['on'])
+     parser.add_argument('--attempt',type=int,choices=[1],default=1)
+     args = parser.parse_args()
+@@ -29,10 +30,11 @@
+     receiver = ROOT/(tag+'_receiver')
+     assert not source.exists() and not receiver.exists()
+     own = ROOT/(tag+'_control')
++    assert shutil.disk_usage(ROOT).free>8*1024**3, 'disk preflight: need 8GiB free'
+     own.mkdir(exist_ok=False)
+     inside = '/workspace/'+str(own.relative_to('/home/yeranis/repos/V4RL'))
+     env_inside = '/workspace/'+str((ROOT/'source.env').relative_to('/home/yeranis/repos/V4RL'))
+-    master_uri = 'http://127.0.0.1:11441'
++    master_uri = 'http://127.0.0.1:11442'
+     jobs = {}
+     streams = []
+     def start(name, command):
+@@ -46,7 +48,7 @@
+             text=True, capture_output=True, check=check)
+     def stop_pid(name):
+         # The PID is recorded by this case, command must match the owned port/run.
+-        token = '11441' if name=='master' else str(source.name)
++        token = '11442' if name=='master' else str(source.name)
+         script = ('import os,signal,sys; from pathlib import Path; p=Path(sys.argv[1]); '
+           'pid=int(p.read_text()) if p.exists() else 0; c=Path("/proc/%d/cmdline"%pid); '
+           'e=Path("/proc/%d/environ"%pid); '
+@@ -58,7 +60,7 @@
+     started = time.time()
+     try:
+         assert ros('rosparam get /rosversion',check=False).returncode != 0, 'port is already in use'
+-        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11441'
++        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11442'
+         start('master',['docker','exec','cbsms_ws_gpu','setsid','--wait','bash','-lc',master_script])
+         for _ in range(60):
+             if ros('rosparam get /rosversion',check=False).returncode==0:
+@@ -76,7 +78,7 @@
+             assert jobs['receiver'].poll() is None, 'receiver startup failed'
+             assert time.monotonic()<deadline, 'transport startup timeout'
+             time.sleep(.2)
+-        duration=30
++        duration=120
+         source_script = ('export CBSMS_RUN_NAME='+tag+'_source CBSMS_CBS_ENABLE='+('true' if args.mode=='on' else 'false')+
+           ' CBSMS_BAG_DURATION_SEC='+str(float(duration))+'; source '+shlex.quote(env_inside)+
+           '; echo $$ > '+shlex.quote(inside+'/source.pid')+
+@@ -94,6 +96,7 @@
+                 for token in ['SHARED_NATIVE_SHADOW_FAILURE','SHARED_NATIVE_SHADOW_SETUP_FAILURE','SHARED_NATIVE_PROVIDER_FAILURE','FL4Q','active_window_rollback','active_window_retry_local_update_','Smoother recovery','Persistent BPSAM recovery']:
+                     assert token not in chunk, token+': '+str(log)
+         while jobs['source'].poll() is None:
++            assert shutil.disk_usage(ROOT).free>5*1024**3, 'disk reserve below 5GiB'
+             provider_failures()
+             assert jobs['receiver'].poll() is None, 'receiver stopped during playback'
+             assert time.time()-started < duration*10+600, 'source deadline exceeded'
+--- verify_effective.py FL4s
++++ verify_effective.py FL4t
+@@ -10,7 +10,7 @@
+ 
+ root = Path(__file__).resolve().parent
+ source = Path(sys.argv[1])
+-assert os.environ['CBSMS_BAG_DURATION_SEC'] == '30.0'
++assert os.environ['CBSMS_BAG_DURATION_SEC'] == '120.0'
+ enabled = os.environ['CBSMS_CBS_ENABLE'] == 'true'
+ assert os.environ['CBSMS_CBS_PROTOCOL'] == 'classic'
+ assert os.environ['CBSMS_CBS_LIVE_REVISION_ENABLE'] == 'false'
+--- verify_effective_on.py FL4s
++++ verify_effective_on.py FL4t
+@@ -10,7 +10,7 @@
+ 
+ root = Path(__file__).resolve().parent
+ source = Path(sys.argv[1])
+-assert os.environ['CBSMS_BAG_DURATION_SEC'] == '30.0'
++assert os.environ['CBSMS_BAG_DURATION_SEC'] == '120.0'
+ enabled = os.environ['CBSMS_CBS_ENABLE'] == 'true'
+ assert enabled, 'ON verifier requires CBS reception enabled'
+ assert os.environ['CBSMS_CBS_PROTOCOL'] == 'classic'
+--- source_runner.sh FL4s
++++ source_runner.sh FL4t
+@@ -43,7 +43,7 @@
+ run_dir="${run_root}/${run_name}"
+ experiment_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ launch_file="${experiment_dir}/active_window.launch"
+-[[ "${cbs_enable}" == false && "${cbs_direction}" == bidirectional && "${duration_sec}" == 30.0 && "${bag_start_sec}" == 0.0 ]] || { echo "Prepared 30-second OFF fixed-lag capture only." >&2; exit 2; }
++[[ "${cbs_enable}" == false && "${cbs_direction}" == bidirectional && "${duration_sec}" == 120.0 && "${bag_start_sec}" == 0.0 ]] || { echo "Prepared 120-second OFF fixed-lag capture only." >&2; exit 2; }
+ glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-${project_root}/clean_glim_ws/src/glim/config_grandtour_eth1_gpu_hesai_cpt7}"
+ kimera_profile_source="${CBSMS_KIMERA_PROFILE_SOURCE:-}"
+ kimera_calibration_overlay="${CBSMS_KIMERA_CALIBRATION_OVERLAY:-${project_root}/src/cbsms/config/grandtour_kimera/eth1_mono_shared_cpt7}"
+@@ -502,8 +502,8 @@
+   g2k_applied_tail_gap=$((kimera_last_index - g2k_applied_max_target))
+ fi
+ 
+-min_glim_rows=270
+-min_kimera_rows=120
++min_glim_rows=1170
++min_kimera_rows=570
+ if (( glim_rows < min_glim_rows || kimera_rows < min_kimera_rows )); then
+   echo "Insufficient estimator output: GLIM=${glim_rows}, Kimera=${kimera_rows}." >&2
+   exit 6
+@@ -577,7 +577,7 @@
+   "kimera_receive_cbs_beliefs=${kimera_receive_external_beliefs}" \
+   "glim_cbs_mode=${glim_cbs_mode}" \
+   "kimera_cbs_odom_factor_mode=active_window_temporary" \
+-  "experiment=gnssfgo_fixed_lag_live30_off_on_fl4s2_20261016" \
++  "experiment=gnssfgo_fixed_lag_live120_off_on_fl4t_20261016" \
+   "glim_sensor_pair=hesai+cpt7_imu" \
+   "kimera_sensor_pair=${kimera_sensor_pair}" \
+   "glim_body_frame=cpt7_imu" \
+--- source_runner_on.sh FL4s
++++ source_runner_on.sh FL4t
+@@ -43,7 +43,7 @@
+ run_dir="${run_root}/${run_name}"
+ experiment_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ launch_file="${experiment_dir}/active_window_on.launch"
+-[[ "${cbs_enable}" == true && "${cbs_direction}" == bidirectional && "${duration_sec}" == 30.0 && "${bag_start_sec}" == 0.0 ]] || { echo "Prepared 30-second classic CBS-ON fixed-lag capture only." >&2; exit 2; }
++[[ "${cbs_enable}" == true && "${cbs_direction}" == bidirectional && "${duration_sec}" == 120.0 && "${bag_start_sec}" == 0.0 ]] || { echo "Prepared 120-second classic CBS-ON fixed-lag capture only." >&2; exit 2; }
+ glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-${project_root}/clean_glim_ws/src/glim/config_grandtour_eth1_gpu_hesai_cpt7}"
+ kimera_profile_source="${CBSMS_KIMERA_PROFILE_SOURCE:-}"
+ kimera_calibration_overlay="${CBSMS_KIMERA_CALIBRATION_OVERLAY:-${project_root}/src/cbsms/config/grandtour_kimera/eth1_mono_shared_cpt7}"
+@@ -502,8 +502,8 @@
+   g2k_applied_tail_gap=$((kimera_last_index - g2k_applied_max_target))
+ fi
+ 
+-min_glim_rows=270
+-min_kimera_rows=120
++min_glim_rows=1170
++min_kimera_rows=570
+ if (( glim_rows < min_glim_rows || kimera_rows < min_kimera_rows )); then
+   echo "Insufficient estimator output: GLIM=${glim_rows}, Kimera=${kimera_rows}." >&2
+   exit 6
+@@ -577,7 +577,7 @@
+   "kimera_receive_cbs_beliefs=${kimera_receive_external_beliefs}" \
+   "glim_cbs_mode=${glim_cbs_mode}" \
+   "kimera_cbs_odom_factor_mode=active_window_temporary" \
+-  "experiment=gnssfgo_fixed_lag_live30_off_on_fl4s2_20261016" \
++  "experiment=gnssfgo_fixed_lag_live120_off_on_fl4t_20261016" \
+   "glim_sensor_pair=hesai+cpt7_imu" \
+   "kimera_sensor_pair=${kimera_sensor_pair}" \
+   "glim_body_frame=cpt7_imu" \
+--- active_window.launch FL4s
++++ active_window.launch FL4t
+@@ -111,7 +111,7 @@
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_stride" value="20"/>
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_max_updates" value="40"/>
+ 
+-  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live30_off_on_fl4s2_20261016/prepared/glim_profile.launch">
++  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_off_on_fl4t_20261016/prepared/glim_profile.launch">
+     <arg name="config_path" value="$(arg glim_config_path)"/>
+     <arg name="glim_node_output" value="$(arg diagnostic_node_output)"/>
+     <arg name="glim_input_imu_topic" value="$(arg glim_input_imu_topic)"/>
+--- active_window_on.launch FL4s
++++ active_window_on.launch FL4t
+@@ -111,7 +111,7 @@
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_stride" value="20"/>
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_max_updates" value="40"/>
+ 
+-  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live30_off_on_fl4s2_20261016/prepared/glim_profile_on.launch">
++  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_off_on_fl4t_20261016/prepared/glim_profile_on.launch">
+     <arg name="config_path" value="$(arg glim_config_path)"/>
+     <arg name="glim_node_output" value="$(arg diagnostic_node_output)"/>
+     <arg name="glim_input_imu_topic" value="$(arg glim_input_imu_topic)"/>
+--- glim_profile.launch FL4s
++++ glim_profile.launch FL4t
+@@ -114,7 +114,7 @@
+ 		<env name="LD_LIBRARY_PATH" value="/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_provider_20261012/release_2:$(optenv LD_LIBRARY_PATH)"/>
+ 		<env name="CBS_E1B_LOCAL_UPDATE_GPU_BATCHING" value="1"/>
+         <env name="GLIM_SHARED_NATIVE_PROVIDER" value="shared_native"/>
+-        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live30_off_on_fl4s2_20261016/prepared/pilot30_off_source/e1b_profile.jsonl"/>
++        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_off_on_fl4t_20261016/prepared/live120_off_source/e1b_profile.jsonl"/>
+ 		<param name="config_path" value="$(arg config_path)" />
+ 		<param name="glim_dump_path" value="$(arg glim_dump_path)" />
+ 		<param name="deterministic_input_event_log_path" value="$(arg glim_deterministic_input_event_log_path)" />
+--- glim_profile_on.launch FL4s
++++ glim_profile_on.launch FL4t
+@@ -114,7 +114,7 @@
+ 		<env name="LD_LIBRARY_PATH" value="/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_provider_20261012/release_2:$(optenv LD_LIBRARY_PATH)"/>
+ 		<env name="CBS_E1B_LOCAL_UPDATE_GPU_BATCHING" value="1"/>
+         <env name="GLIM_SHARED_NATIVE_PROVIDER" value="shared_native"/>
+-        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live30_off_on_fl4s2_20261016/prepared/pilot30_on_source/e1b_profile.jsonl"/>
++        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_off_on_fl4t_20261016/prepared/live120_on_source/e1b_profile.jsonl"/>
+ 		<param name="config_path" value="$(arg config_path)" />
+ 		<param name="glim_dump_path" value="$(arg glim_dump_path)" />
+ 		<param name="deterministic_input_event_log_path" value="$(arg glim_deterministic_input_event_log_path)" />
+--- pilot30_off.json FL4s
++++ live120_off.json FL4t
+@@ -1,7 +1,7 @@
+ {
+-  "sequence": "ETH1 first30s CBS-OFF FL4f fixed-lag WNOA matched live pilot",
++  "sequence": "ETH1 first120s CBS-OFF FL4t fixed-lag WNOA matched live pilot",
+   "source_protocol": "classic",
+-  "ros_master_uri": "http://127.0.0.1:11441",
++  "ros_master_uri": "http://127.0.0.1:11442",
+   "imu_topic": "/boxi/cpt7/imu",
+   "imu_frame": "cpt7_imu",
+   "world_frame": "gnssfgo_world",
+@@ -12,18 +12,18 @@
+   "drain_timeout_wall_sec": 300,
+   "ros1_container": "cbsms_ws_gpu",
+   "receiver_container": "ubuntu-jammy-humble-nvidia",
+-  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live30_off_on_fl4s2_20261016/prepared/receiver_fl4e.sh",
++  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_off_on_fl4t_20261016/prepared/receiver_fl4e.sh",
+   "sources": [
+     {
+       "id": "glim_hesai",
+-      "session": "eth1_fl4s_live30_off_20261016",
++      "session": "eth1_fl4t_live120_off_20261016",
+       "kind": "glim",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/ros_logs/*/glim_rosnode-*-stdout.log"
+     },
+     {
+       "id": "kimera_front",
+-      "session": "eth1_fl4s_live30_off_20261016",
++      "session": "eth1_fl4t_live120_off_20261016",
+       "kind": "kimera",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/estimators.log"
+--- pilot30_on.json FL4s
++++ live120_on.json FL4t
+@@ -1,7 +1,7 @@
+ {
+-  "sequence": "ETH1 first30s classic CBS-ON FL4f fixed-lag WNOA matched live pilot",
++  "sequence": "ETH1 first120s classic CBS-ON FL4t fixed-lag WNOA matched live pilot",
+   "source_protocol": "classic",
+-  "ros_master_uri": "http://127.0.0.1:11441",
++  "ros_master_uri": "http://127.0.0.1:11442",
+   "imu_topic": "/boxi/cpt7/imu",
+   "imu_frame": "cpt7_imu",
+   "world_frame": "gnssfgo_world",
+@@ -12,18 +12,18 @@
+   "drain_timeout_wall_sec": 300,
+   "ros1_container": "cbsms_ws_gpu",
+   "receiver_container": "ubuntu-jammy-humble-nvidia",
+-  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live30_off_on_fl4s2_20261016/prepared/receiver_fl4e.sh",
++  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_off_on_fl4t_20261016/prepared/receiver_fl4e.sh",
+   "sources": [
+     {
+       "id": "glim_hesai",
+-      "session": "eth1_fl4s_live30_on_20261016",
++      "session": "eth1_fl4t_live120_on_20261016",
+       "kind": "glim",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/ros_logs/*/glim_rosnode-*-stdout.log"
+     },
+     {
+       "id": "kimera_front",
+-      "session": "eth1_fl4s_live30_on_20261016",
++      "session": "eth1_fl4t_live120_on_20261016",
+       "kind": "kimera",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/estimators.log"
+--- live_receiver_protocol.py FL4s
++++ live_receiver_protocol.py FL4t
+@@ -132,7 +132,7 @@
+         raise ValueError('unknown receiver_publication_policy')
+     if policy == 'fl4a_fixed_lag_incremental':
+         # Private FL4a adapter only. No nonlinear stationarity certificate is claimed.
+-        expected = '/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live30_off_on_fl4s2_20261016/prepared/receiver_fl4e.sh'
++        expected = '/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_off_on_fl4t_20261016/prepared/receiver_fl4e.sh'
+         if config.get('receiver_model') != 'source_wnoa' or config.get('receiver_binary') != expected:
+             raise ValueError('FL4a policy requires the pinned fixed-lag wrapper')
+         if config.get('receiver_fixed_lag_seconds') != 7 or any(key.startswith('WNOJ_') for key in environment):

@@ -1,0 +1,51 @@
+--- 
++++ 
+@@ -1,7 +1,7 @@
+ #pragma once
+ #include "RetirementAudit.h"
+ #include "LinearParityAudit.h"
+-#include "StepAcceptance.h"
++#include "CurrentChartFallback.h"
+ 
+ #include <cbs/bpsam/bpsam.h>
+ #include <cbs/bpsam/fixed_lag_objective_audit.h>
+@@ -121,22 +121,22 @@
+           gtsam::FixedLagSmoother::KeyTimestampMap(),
+       const gtsam::FactorIndices& factorsToRemove =
+           gtsam::FactorIndices()) override {
+-    if (fl4o::enabled()) {
+-      return fl4o::transaction(*this, newFactors, [&] {
+-        return fl4oUpdateImpl(newFactors,newTheta,timestamps,factorsToRemove);
++    if (fl4q::enabled()) {
++      return fl4q::transaction(*this, newFactors, [&] {
++        return fl4qUpdateImpl(newFactors,newTheta,timestamps,factorsToRemove);
+       });
+     }
+-    return fl4oUpdateImpl(newFactors,newTheta,timestamps,factorsToRemove);
+-  }
+-
+-  gtsam::FixedLagSmoother::Result fl4oUpdateImpl(
++    return fl4qUpdateImpl(newFactors,newTheta,timestamps,factorsToRemove);
++  }
++
++  gtsam::FixedLagSmoother::Result fl4qUpdateImpl(
+       const gtsam::NonlinearFactorGraph& newFactors,
+       const gtsam::Values& newTheta,
+       const gtsam::FixedLagSmoother::KeyTimestampMap& timestamps,
+       const gtsam::FactorIndices& factorsToRemove) {
+     const bool debug = ISDEBUG("IncrementalFixedLagBpsamSmoother update");
+ 
+-    const bool fl4m_audit = std::getenv("FL4M_AUDIT") != nullptr || fl4o::enabled();
++    const bool fl4m_audit = std::getenv("FL4M_AUDIT") != nullptr || fl4q::enabled();
+     gtsam::Values fl4m_before, fl4m_theta;
+     if (fl4m_audit) {
+       fl4m_before = isam_.calculateEstimate();
+@@ -280,7 +280,7 @@
+                                  additionalMarkedKeys);
+     }
+ 
+-    if (fl4o::enabled()) fl4o::accept(current_timestamp,isam_,fl4m_before);
++    if (fl4q::enabled()) fl4q::accept(current_timestamp,isam_,fl4m_before,constrainedKeys);
+ 
+     if (fl4m_audit)
+       cbs::fl4mAudit(current_timestamp, isam_.getFactorsUnsafe(),

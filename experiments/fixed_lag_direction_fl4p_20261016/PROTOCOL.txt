@@ -1,0 +1,38 @@
+FL4p: update89 direction audit, 2026-10-16
+
+One hypothesis: the cached same-theta quadratic need not describe the local
+nonlinear objective at the initialized current estimate. Diagnose, do not fix.
+Frozen FL4n remove-mode Kimera, front stereo+CPT7, 25-state window, classic
+active_window_temporary, exact frozen post-alignment GLIM payloads/bindings,
+no live_revision, no covariance scaling/gating/health/robust loss. No GLIM
+estimator or gnssFGO process. Native Kimera IMU support remains current.
+
+The saved update89 matrices do not contain the nonlinear graph. Reuse its
+private build/runner for ONE <=23s ETH1 prefix at0.10x. Run only a read-only
+observer at update89 after the normal update, before marginalization. Do not
+enable FL4o acceptance or alter the native step. Stop on failure; no automatic
+capture retry. Require exact baseline objective/native-output prefix and
+frozen payload/covariance/update-binding parity before interpretation.
+
+Use theta-owned coordinates d0=Local(theta,X_before), d1=native delta,
+s=d1-d0 and X(alpha)=Retract(theta,d0+alpha*s). Compare cached quadratic
+directional derivative (H*d0-g)^T*s to finite differences of the actual
+original-chart objective at alpha0. Evaluate ±1e-2, ±1e-3, ±1e-4, ±1e-5,
+±1e-6, ±1e-7, ±1e-8 and positive .25,.5,1. Keep factor families separate.
+Also independently linearize at X_before; transport path tangent numerically
+into its local coordinates and preserve original prior chart via FL4l's
+validated OriginalChartPrior. This reference is diagnostic, never installed.
+
+Smart factors: independent clones per evaluation, record validity/degenerate/
+outlier/behind/far status and cost. Repeat with cloned triangulation cache
+explicitly reset only as a diagnostic to distinguish cache thresholds from
+model curvature. Preserve live pointers, caches, estimates, H/g and parameters.
+Record per-factor cost/derivative rows, anchors/current/proposed coordinates,
+cached and current-reference matrices, and factor keys. No ATE/RPE claims.
+
+Synthetic gate: known uphill/downhill directions, numerical-vs-analytic prior
+derivative, finite-difference convergence, observer nonmutation, deterministic
+repeat, real fixed-lag removal/covariance parity; focused ASan/UBSan with the
+pinned Eigen ABI. Linked libraries remain uninstrumented. Save all evidence,
+verify protected paths before/after, restore stopped container. Report exact
+mechanism evidence and limitations, not a unique cause if unsupported.

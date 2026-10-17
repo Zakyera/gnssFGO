@@ -1,0 +1,169 @@
+{
+  "experiment_passed": false,
+  "closeout_verified": true,
+  "requested_seconds": 120,
+  "off": "FAILED_SOURCE_KIMERA_UPDATE_531",
+  "on": "NOT_STARTED",
+  "controller_failure": "FL4Q: /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_off_on_fl4t_20261016/prepared/live120_off_source/estimators.log",
+  "failure_log": [
+    {
+      "line": 649339,
+      "text": "E1016 17:37:50.015511   442 VioBackend.cpp:5889] FL4Q no decreasing current-chart LM step"
+    },
+    {
+      "line": 649362,
+      "text": "I1016 17:37:50.017436   442 VioBackend.cpp:5230] KIMERA_OPTIMIZE_TIMING_ROW,531,56.7054,3.04807,0.001464,0.009305,53.6448,0,0,0,0,0,0,0,0,0,0,0"
+    },
+    {
+      "line": 649364,
+      "text": "E1016 17:37:50.017453   442 VioBackendModule.cpp:34] Backend did not return an output: shutting down Backend."
+    }
+  ],
+  "protected_unchanged": 1059,
+  "source_profiles_identical_to_fl4s": true,
+  "effective_settings_passed_before_playback": true,
+  "covariance_or_model_tuning": false,
+  "automatic_retry": false,
+  "first_imu_ns": 1727775008003475000,
+  "last_imu_ns": 1727775117383500000,
+  "captured_imu_span_s": 109.380025,
+  "coverage": {
+    "native_glim": {
+      "rows": 1087,
+      "first_ns": 1727775008675043072,
+      "last_ns": 1727775117274729984,
+      "span_s": 108.59968691200001,
+      "start_after_first_imu_s": 0.671568072,
+      "end_after_first_imu_s": 109.27125498400001
+    },
+    "native_kimera": {
+      "rows": 531,
+      "first_ns": 1727775008155395209,
+      "last_ns": 1727775117154789659,
+      "span_s": 108.99939445000001,
+      "start_after_first_imu_s": 0.151920209,
+      "end_after_first_imu_s": 109.15131465900001
+    },
+    "fused_online": {
+      "rows": 1089,
+      "first_ns": 1727775008583475000,
+      "last_ns": 1727775117383475000,
+      "span_s": 108.80000000000001,
+      "start_after_first_imu_s": 0.5800000000000001,
+      "end_after_first_imu_s": 109.38000000000001
+    },
+    "fused_fixed_lag_finalized": {
+      "rows": 1089,
+      "first_ns": 1727775008583475000,
+      "last_ns": 1727775117383475000,
+      "span_s": 108.80000000000001,
+      "start_after_first_imu_s": 0.5800000000000001,
+      "end_after_first_imu_s": 109.38000000000001
+    }
+  },
+  "accepted_before_failure": 531,
+  "all_logged_accepted_nonincreasing": true,
+  "failed_update_has_acceptance_row": false,
+  "fallbacks_before_failure": 17,
+  "fallback_updates": [
+    44,
+    303,
+    371,
+    384,
+    385,
+    393,
+    449,
+    503,
+    513,
+    515,
+    516,
+    520,
+    522,
+    525,
+    527,
+    529,
+    530
+  ],
+  "cap_hits_before_failure": 1,
+  "max_cache_fresh_error": 0.0,
+  "max_tree_error": 4.841142970359478e-13,
+  "last_accepted": [
+    530.0,
+    2155.8238184960496,
+    2158.161166357373,
+    2155.823732634093,
+    1.0,
+    2.0,
+    0.039844339,
+    0.0,
+    3.26813383153373e-13
+  ],
+  "receiver_partial_journal_summary": {
+    "complete": true,
+    "model": "source_wnoa_fixed_lag",
+    "lag_seconds": 7,
+    "stationarity": "not_checked_incremental_policy",
+    "events": 75331,
+    "received": 64391,
+    "inserted": 1613,
+    "replaced": 62753,
+    "excluded": 25,
+    "unsupported_end": 0,
+    "absorbed": 1513,
+    "active": 100,
+    "pending_at_end": 0,
+    "publications": 1089,
+    "finalized": 1089,
+    "retained_supports": 71,
+    "peak_slots": 175
+  },
+  "transport": {
+    "imu": 10939,
+    "duplicate_imu": 0,
+    "imu_clock_lag_events": 10737,
+    "max_imu_clock_lag_ns": 1040137,
+    "belief_clock_lag_events": 0,
+    "max_belief_clock_lag_ns": 0,
+    "beliefs": 64391,
+    "duplicates": 0,
+    "published_poses": 1089,
+    "max_queue": 48,
+    "sources": {
+      "glim_hesai": 51466,
+      "kimera_front": 12925
+    }
+  },
+  "last_monitor": {
+    "imu": 10914,
+    "duplicate_imu": 0,
+    "imu_clock_lag_events": 10713,
+    "max_imu_clock_lag_ns": 1040137,
+    "belief_clock_lag_events": 0,
+    "max_belief_clock_lag_ns": 0,
+    "beliefs": 64220,
+    "duplicates": 0,
+    "published_poses": 1086,
+    "max_queue": 48,
+    "sources": {
+      "glim_hesai": 51320,
+      "kimera_front": 12900
+    },
+    "queued": 0,
+    "last_ros_ns": 1727775117133500000,
+    "last_imu_ns": 1727775117133500000,
+    "last_published_ns": 1727775117083475000,
+    "output_age_seconds": 0.050025,
+    "wall_ns": 1792172268121889576,
+    "source_running": true
+  },
+  "full_window_validation_run": false,
+  "deterministic_repeat_run": false,
+  "accuracy_scoring_run": false,
+  "containers_restored": [
+    "/cbsms_ws_gpu exited",
+    "/ubuntu-jammy-humble-nvidia exited"
+  ],
+  "head": "67c00392cd640a432bda9b67afcb57be4face381",
+  "commit_created": false,
+  "note": "Receiver complete means its truncated journal drained, not the requested120s experiment passed."
+}

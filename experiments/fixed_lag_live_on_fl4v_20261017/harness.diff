@@ -1,0 +1,227 @@
+--- validate_case.py FL4t
++++ validate_case.py FL4v
+@@ -9,7 +9,7 @@
+ OUT=REC/'receiver'
+ CTL=P/f'live120_{MODE}_control'
+ EXE=Path('/home/yeranis/results/gnssfgo_fixed_lag_failure_fl4e_20261014/candidate_live')
+-RESULT=Path(f'/home/yeranis/results/gnssfgo_fixed_lag_live_fl4t_20261016/{MODE}')
++RESULT=Path(f'/home/yeranis/results/gnssfgo_fixed_lag_live_fl4v_20261017/{MODE}')
+ LIB=Path('/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib')
+ 
+ def sha(p):
+--- evaluate_fl4f.py FL4t
++++ evaluate_fl4f.py FL4v
+@@ -1,6 +1,6 @@
+ """Score frozen FL4f2 native/as-played/finalized paths and received covariances.
+ 
+-Run after both live cases validate, inside the existing ROS Noetic container.
++Run after the standalone ON case validates, inside the existing ROS Noetic container.
+ IE-TC is a shared-CPT7 GNSS/INS reference, not independent prism ground truth.
+ """
+ import collections
+@@ -130,12 +130,12 @@
+ 
+ def main():
+     assert not OUT.exists(), 'Refusing to overwrite an evaluation'
+-    for mode in ('off','on'):
++    for mode in ('on',):
+         assert (ROOT/f'live120_{mode}_control/complete.json').is_file()
+         assert (ROOT/f'live120_{mode}_source/complete.marker').is_file()
+         assert (ROOT/f'live120_{mode}_receiver/complete.marker').is_file()
+     paths = {}
+-    for mode in ('off','on'):
++    for mode in ('on',):
+         src = ROOT / f'live120_{mode}_source'
+         rec = ROOT / f'live120_{mode}_receiver/receiver'
+         paths[f'{mode}_native_glim'] = src/'odom_imu.txt'
+@@ -171,7 +171,7 @@
+             timestamps_sha256=hashlib.sha256(times.astype('<f8').tobytes()).hexdigest(),
+             interpolation_gap_estimate_s=.5,interpolation_gap_reference_s=.05),
+         convention='Per-path rigid SE(3) no-scale alignment for ATE at prism lever arm; 1s RPE in prism frame, no global alignment',
+-        results=results,covariance={mode:covariances(mode) for mode in ('off','on')})
++        results=results,covariance={mode:covariances(mode) for mode in ('on',)})
+     OUT.mkdir(exist_ok=False)
+     with (OUT/'summary.json').open('x') as f:
+         json.dump(report,f,indent=2,allow_nan=False)
+--- source.env FL4t
++++ source.env FL4v
+@@ -2,7 +2,7 @@
+ # to off_source/on_source and CBSMS_CBS_ENABLE to false/true.
+ : "${CBSMS_RUN_NAME:?Set fresh ETH1 source run name}"
+ : "${CBSMS_CBS_ENABLE:?Set false or true}"
+-export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_off_on_fl4t_20261016/prepared
++export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_on_fl4v_20261017/prepared
+ export CBSMS_RUN_NAME CBSMS_CBS_ENABLE
+ export ROS_LOG_DIR="${CBSMS_RUN_ROOT}/${CBSMS_RUN_NAME}/ros_logs"
+ export CBSMS_PROJECT_ROOT=/workspace/cbs_gtsam4.3
+@@ -12,7 +12,7 @@
+ export CBSMS_POST_PLAYBACK_DRAIN_SEC=25
+ export CBSMS_BAG_RATE=0.10
+ export CBSMS_SEED_CLOCK_SECS=1727775007
+-export CBSMS_ROS_MASTER_PORT=11442
++export CBSMS_ROS_MASTER_PORT=11444
+ export CBSMS_USE_EXISTING_ROS_MASTER=true
+ export CBSMS_KIMERA_MODE=stereo_shared_cpt7
+ # The recovered classic Kimera source path is "current", not experimental RIGHT.
+--- run_case_on.py FL4t
++++ run_case_on.py FL4v
+@@ -34,7 +34,7 @@
+     own.mkdir(exist_ok=False)
+     inside = '/workspace/'+str(own.relative_to('/home/yeranis/repos/V4RL'))
+     env_inside = '/workspace/'+str((ROOT/'source.env').relative_to('/home/yeranis/repos/V4RL'))
+-    master_uri = 'http://127.0.0.1:11442'
++    master_uri = 'http://127.0.0.1:11444'
+     jobs = {}
+     streams = []
+     def start(name, command):
+@@ -48,7 +48,7 @@
+             text=True, capture_output=True, check=check)
+     def stop_pid(name):
+         # The PID is recorded by this case, command must match the owned port/run.
+-        token = '11442' if name=='master' else str(source.name)
++        token = '11444' if name=='master' else str(source.name)
+         script = ('import os,signal,sys; from pathlib import Path; p=Path(sys.argv[1]); '
+           'pid=int(p.read_text()) if p.exists() else 0; c=Path("/proc/%d/cmdline"%pid); '
+           'e=Path("/proc/%d/environ"%pid); '
+@@ -60,7 +60,7 @@
+     started = time.time()
+     try:
+         assert ros('rosparam get /rosversion',check=False).returncode != 0, 'port is already in use'
+-        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11442'
++        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11444'
+         start('master',['docker','exec','cbsms_ws_gpu','setsid','--wait','bash','-lc',master_script])
+         for _ in range(60):
+             if ros('rosparam get /rosversion',check=False).returncode==0:
+--- source_runner_on.sh FL4t
++++ source_runner_on.sh FL4v
+@@ -577,7 +577,7 @@
+   "kimera_receive_cbs_beliefs=${kimera_receive_external_beliefs}" \
+   "glim_cbs_mode=${glim_cbs_mode}" \
+   "kimera_cbs_odom_factor_mode=active_window_temporary" \
+-  "experiment=gnssfgo_fixed_lag_live120_off_on_fl4t_20261016" \
++  "experiment=gnssfgo_fixed_lag_live120_on_fl4v_20261017" \
+   "glim_sensor_pair=hesai+cpt7_imu" \
+   "kimera_sensor_pair=${kimera_sensor_pair}" \
+   "glim_body_frame=cpt7_imu" \
+--- active_window.launch FL4t
++++ active_window.launch FL4v
+@@ -111,7 +111,7 @@
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_stride" value="20"/>
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_max_updates" value="40"/>
+ 
+-  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_off_on_fl4t_20261016/prepared/glim_profile.launch">
++  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_on_fl4v_20261017/prepared/glim_profile.launch">
+     <arg name="config_path" value="$(arg glim_config_path)"/>
+     <arg name="glim_node_output" value="$(arg diagnostic_node_output)"/>
+     <arg name="glim_input_imu_topic" value="$(arg glim_input_imu_topic)"/>
+--- active_window_on.launch FL4t
++++ active_window_on.launch FL4v
+@@ -111,7 +111,7 @@
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_stride" value="20"/>
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_max_updates" value="40"/>
+ 
+-  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_off_on_fl4t_20261016/prepared/glim_profile_on.launch">
++  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_on_fl4v_20261017/prepared/glim_profile_on.launch">
+     <arg name="config_path" value="$(arg glim_config_path)"/>
+     <arg name="glim_node_output" value="$(arg diagnostic_node_output)"/>
+     <arg name="glim_input_imu_topic" value="$(arg glim_input_imu_topic)"/>
+--- glim_profile.launch FL4t
++++ glim_profile.launch FL4v
+@@ -114,7 +114,7 @@
+ 		<env name="LD_LIBRARY_PATH" value="/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_provider_20261012/release_2:$(optenv LD_LIBRARY_PATH)"/>
+ 		<env name="CBS_E1B_LOCAL_UPDATE_GPU_BATCHING" value="1"/>
+         <env name="GLIM_SHARED_NATIVE_PROVIDER" value="shared_native"/>
+-        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_off_on_fl4t_20261016/prepared/live120_off_source/e1b_profile.jsonl"/>
++        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_on_fl4v_20261017/prepared/live120_off_source/e1b_profile.jsonl"/>
+ 		<param name="config_path" value="$(arg config_path)" />
+ 		<param name="glim_dump_path" value="$(arg glim_dump_path)" />
+ 		<param name="deterministic_input_event_log_path" value="$(arg glim_deterministic_input_event_log_path)" />
+--- glim_profile_on.launch FL4t
++++ glim_profile_on.launch FL4v
+@@ -114,7 +114,7 @@
+ 		<env name="LD_LIBRARY_PATH" value="/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_provider_20261012/release_2:$(optenv LD_LIBRARY_PATH)"/>
+ 		<env name="CBS_E1B_LOCAL_UPDATE_GPU_BATCHING" value="1"/>
+         <env name="GLIM_SHARED_NATIVE_PROVIDER" value="shared_native"/>
+-        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_off_on_fl4t_20261016/prepared/live120_on_source/e1b_profile.jsonl"/>
++        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_on_fl4v_20261017/prepared/live120_on_source/e1b_profile.jsonl"/>
+ 		<param name="config_path" value="$(arg config_path)" />
+ 		<param name="glim_dump_path" value="$(arg glim_dump_path)" />
+ 		<param name="deterministic_input_event_log_path" value="$(arg glim_deterministic_input_event_log_path)" />
+--- live120_off.json FL4t
++++ live120_off.json FL4v
+@@ -1,7 +1,7 @@
+ {
+   "sequence": "ETH1 first120s CBS-OFF FL4t fixed-lag WNOA matched live pilot",
+   "source_protocol": "classic",
+-  "ros_master_uri": "http://127.0.0.1:11442",
++  "ros_master_uri": "http://127.0.0.1:11444",
+   "imu_topic": "/boxi/cpt7/imu",
+   "imu_frame": "cpt7_imu",
+   "world_frame": "gnssfgo_world",
+@@ -12,18 +12,18 @@
+   "drain_timeout_wall_sec": 300,
+   "ros1_container": "cbsms_ws_gpu",
+   "receiver_container": "ubuntu-jammy-humble-nvidia",
+-  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_off_on_fl4t_20261016/prepared/receiver_fl4e.sh",
++  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_on_fl4v_20261017/prepared/receiver_fl4e.sh",
+   "sources": [
+     {
+       "id": "glim_hesai",
+-      "session": "eth1_fl4t_live120_off_20261016",
++      "session": "eth1_fl4v_live120_off_20261017",
+       "kind": "glim",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/ros_logs/*/glim_rosnode-*-stdout.log"
+     },
+     {
+       "id": "kimera_front",
+-      "session": "eth1_fl4t_live120_off_20261016",
++      "session": "eth1_fl4v_live120_off_20261017",
+       "kind": "kimera",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/estimators.log"
+--- live120_on.json FL4t
++++ live120_on.json FL4v
+@@ -1,7 +1,7 @@
+ {
+-  "sequence": "ETH1 first120s classic CBS-ON FL4t fixed-lag WNOA matched live pilot",
++  "sequence": "ETH1 first120s classic CBS-ON FL4v fixed-lag WNOA standalone ON",
+   "source_protocol": "classic",
+-  "ros_master_uri": "http://127.0.0.1:11442",
++  "ros_master_uri": "http://127.0.0.1:11444",
+   "imu_topic": "/boxi/cpt7/imu",
+   "imu_frame": "cpt7_imu",
+   "world_frame": "gnssfgo_world",
+@@ -12,18 +12,18 @@
+   "drain_timeout_wall_sec": 300,
+   "ros1_container": "cbsms_ws_gpu",
+   "receiver_container": "ubuntu-jammy-humble-nvidia",
+-  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_off_on_fl4t_20261016/prepared/receiver_fl4e.sh",
++  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_on_fl4v_20261017/prepared/receiver_fl4e.sh",
+   "sources": [
+     {
+       "id": "glim_hesai",
+-      "session": "eth1_fl4t_live120_on_20261016",
++      "session": "eth1_fl4v_live120_on_20261017",
+       "kind": "glim",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/ros_logs/*/glim_rosnode-*-stdout.log"
+     },
+     {
+       "id": "kimera_front",
+-      "session": "eth1_fl4t_live120_on_20261016",
++      "session": "eth1_fl4v_live120_on_20261017",
+       "kind": "kimera",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/estimators.log"
+--- live_receiver_protocol.py FL4t
++++ live_receiver_protocol.py FL4v
+@@ -132,7 +132,7 @@
+         raise ValueError('unknown receiver_publication_policy')
+     if policy == 'fl4a_fixed_lag_incremental':
+         # Private FL4a adapter only. No nonlinear stationarity certificate is claimed.
+-        expected = '/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_off_on_fl4t_20261016/prepared/receiver_fl4e.sh'
++        expected = '/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_fixed_lag_live120_on_fl4v_20261017/prepared/receiver_fl4e.sh'
+         if config.get('receiver_model') != 'source_wnoa' or config.get('receiver_binary') != expected:
+             raise ValueError('FL4a policy requires the pinned fixed-lag wrapper')
+         if config.get('receiver_fixed_lag_seconds') != 7 or any(key.startswith('WNOJ_') for key in environment):

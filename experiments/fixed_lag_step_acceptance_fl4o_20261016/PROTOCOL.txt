@@ -1,0 +1,43 @@
+FL4o — bounded nonlinear step acceptance, 2026-10-16
+
+One candidate: preserve native GN calculation; check true same-graph nonlinear
+cost before marginalization, including the old marginal prior in its own chart.
+If full step increases cost, backtrack in the current theta coordinates between
+the initialized previous estimate and native proposal, alpha=1/2,...,2^-16.
+Choose first finite cost decrease beyond1e-10*(1+abs(before)); accept original
+full step if cost<=before+tolerance. No acceptable step means transaction failure
+and STOP. No LM addition/sweep if this candidate fails. No covariance tuning.
+
+Step-controlled delta is stored in iSAM's theta chart, like its own dogleg
+separation of accepted delta and undamped tree. Keep factors, covariance,
+theta, cached Gaussians, variable index and tree equations unchanged by the
+acceptance operation. Clear pending delta mask; invalidate BPSAM marginal cache.
+This is NOT a stationary nonlinear solution or new covariance calibration.
+Do not use calculateBestEstimate (which forces the raw GN solve) in this candidate.
+
+Protect entire smoother update including timestamps, CBS trackers, factor slots,
+tree and estimates. Preserve SmartStereo factor POINTER identities required by
+Kimera. Snapshot mutable smart objects by value, restore them in place on failure;
+do not substitute cloned smart pointers into the production graph. Objective
+evaluations use independent clones. Unknown mutable factor classes are not
+silently declared rollback-safe. Existing source recovery/drop is not a valid
+acceptance fallback: any candidate failure/rollback/drop invalidates this capture.
+
+Synthetic prerequisites: original-prior cost; nonlinear overshoot reduction;
+invalid-cost and no-descent rejection; no input-factor mutation; exact fast-path
+parity; accepted estimate survives reads, next update, and marginalization;
+H/g/tree/covariance unchanged by acceptance; whole-wrapper and smart-cache
+rollback; source pointer identity; removal-before-prior lifecycle. Release and
+focused sanitizer checks before source capture. Preserve original build.
+
+One source capture at most: ETH1 first94s,0.10x, Kimera only, frozen450 FL4m/FL4n
+post-alignment GLIM payloads with same profile/sensors/covariances/arrival and
+backend binding IDs. No GLIM/fusion/full sequence. Exact same input checks and
+454native poses/93.59949s coverage required. Compare whole available native
+relative intervals using existing FL4m evaluator only; this is conditional
+frozen-input replay, not closed-loop CBS. No new ATE from partial prism coverage.
+Do not tune after observing result; report outcome even if failure.
+
+Save code and private runtime under new fl4o directories. Preserve all879
+protected inputs/runtime paths and previous outputs. Restore container's initial
+state. Do not promote candidate or commit/push without further user direction.
