@@ -1,0 +1,49 @@
+CP-V2 — SPX-3 rear Velodyne matched 30-second integration pair
+User authorized proceeding from CP-V1. One OFF->gates->ON->gates pair only;
+review this result before any full sequence. No automatic retries or tuning.
+
+Parent: completed CP-K27 bounded harness and CP-K28 full SPX-3 method/binaries.
+Capture physical start1730565899872888651ns, duration30s, end1730565929872888651ns.
+Use the verified quiet bag29 start, not the moving bag32 start. Read-only input
+audit derives the new selected-topic playback offset; preserve exact physical
+epochs and all original camera/CPT7 measurements. New ROS port11480, headless
+0.20x,25s drain; all three estimators co-run. Existing 8GiB launch and5GiB runtime
+reserve gates remain. Historical28s pair occupied about350MiB plus60MiB builds;
+budget1GiB for this pair and retain disk checks. No full campaign fits yet.
+
+Sensor-only changes: _anymal_velodyne.bag, /anymal/velodyne/points,
+velodyne_lidar and verified mission T_lidar_cpt7. Keep output body cpt7_imu.
+Downstream source ID glim_velodyne, same GLIM kind/peer role. Do not change
+numeric scan matching/downsampling/noise/lag/initialization settings. Native
+TimeKeeper autoconf handles signed relative point times; no invented offset.
+First partial scan lacks preceding IMU: retain native startup/warm-up, and
+check all published poses correspond to normalized scans bracketed by captured
+IMU. Stop if an unbracketed scan reaches published initialized output.
+
+Unchanged: front Alphasense stereo, CPT7,25-state CP-K9 Kimera refresh1/FL4Q0/
+retirement=remove, native IMU override unset;5s GLIM MAIN batching;CP-I1/I3
+all-LOCAL covariance every version,corrected MAIN means;classic temporary CBS,
+0.20s horizon,one pair/update,scales1 Gaussian,no health/Huber/source live_revision.
+Existing mean-only peer covariance-alignment approximation remains explicit.
+CP-K19 seven-second source_wnoa receiver,100ms independent clock,no central
+IMU/GNSS,same Qc/priors,stable-ID replacement,seal_at_absorption and same explicit
+final-partial-support EOF omission predicate. Same capped40/stride20 audits.
+
+Old capture/output/harness roots remain immutable. New prepared copies only.
+Hash parent protected files and input bags; new source/profile differences must
+be limited to the sensor allowlist and declared duration/identity. Scope-limited
+sleep inhibitors, no global power-policy edit, no persistent scheduled task.
+Owned finite controller restores originally stopped containers after jobs exit.
+
+OFF must pass existing LOCAL payload, source lifecycle and receiver conservation/
+coverage gates PLUS Velodyne runtime topic/time/frame checks before ON starts.
+30s coverage thresholds derived from300 raw camera pairs (frontend297..300),
+>=280 GLIM first beliefs/poses,>=28s GLIM/fusion span. Existing error,latency,
+retention and numerical gates unchanged. No saved-journal repeat/solver rebuild.
+
+Score original GLIM,original Kimera ROS odometry,ONLINE fusion against full-window
+shared-CPT7 IE-TC: ATE,1s t/rRPE,path,all saved coverage and gaps. Secondary common
+mask, separate DELAYED finalized trajectory. Not independent prism GT, not a
+full-sequence result, nonlinear stationarity or calibrated uncertainty claim.
+Retain full means/covariances/revisions/arrival and accepted payload histories.
+No commit/push, full sequences, data deletion, performance tuning or new method.

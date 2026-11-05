@@ -1,0 +1,42 @@
+CP-K23 — explicitly reauthorized full ETH1 OFF/ON after host sleep,2026-10-21
+
+User: "ok let's start again then?" after CP-K22 was interrupted by host suspend.
+Preserve CP-K22 and every older capture. One NEW matched OFF/ON attempt,not an
+automatic retry. Same346.32s selected-topic window,0.20x,headless25sdrain.
+New identities and ROS port11473; temporary sleep/idle/lid-switch inhibitor
+held by the one-shot comparison controller, released automatically on exit.
+No persistent OS power-setting change, recurring task, new build or tuning.
+
+Algorithm and coverage/evaluation contract EXACTLY CP-K22:
+GLIM5s,K16a MAIN batching,CP-I1/I3 all-LOCAL full covariance every version,
+corrected MAIN means; Kimera25keyframes,CP-K9 refresh1,FL4Q0,retirement remove,
+native IMU override unset. Classic temporary source CBS,not source live_revision;
+Gaussian scales1,0.20s belief horizon,unchanged mean-only covariance alignment.
+CP-K19 receiver4b08a7f5ba97f5e4ec22959df23367df79eebf5d644dc19d939747dcd4566d6e,
+seal_at_absorption: active revisions replace; known absorbed-ID revisions audit/
+expire without solver mutation; old unknown first arrivals still error. Same7s
+fixed-lag WNOA,100ms independent supports,no central IMU/GNSS,unchanged Qc/priors.
+Same native-keyframe coverage bound5.15s and frontend/backend conservation,
+no source or validation threshold changes. Preserve all actual outputs and
+report startup/internal/tail gaps; common-mask holes are not interpolated away.
+
+One-shot run_pair.py executes the already-authorized stages sequentially:
+1. Verify protected hashes, fresh roots, sleep inhibitor, both containers stopped.
+2. Start the two existing containers; run P/run_case.py full off ONCE.
+3. Require OFF capture complete; run validate_local.py off,validate_candidate.py
+   off,validate_case.py check off with evo Python. Any error stops entire pair.
+4. Run P/preflight_on.py then P/run_case_on.py full on ONCE. Same three gates ON.
+5. Run P/evaluate_fl4f.py in Noetic,then H/summarize.py once. No solver replay.
+6. Verify all owned jobs exited; restore both containers stopped. Save closeout.
+No retry, overwrite, relaxed guard, other method/sequence, commit or push.
+This is a finite execution pipeline,not a scheduler or persistent follow-up.
+
+H=/home/yeranis/repos/gnssFGO/experiments/eth1_awake_full_cpk23_20261021
+P=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared
+V=/home/yeranis/results/gnssfgo_eth1_awake_full_cpk23_20261021
+Controller writes H/status.json and per-stage logs. Never duplicate a running
+controller or manually start a stage it owns. Failure evidence is retained.
+Full-saved native GLIM,native Kimera ROS odometry,ONLINE fusion OFF/ON are primary.
+Report ATE,1s t/rRPE,path lengths,coverage,covariance/revision/expiry/timing data.
+DELAYED fixed-lag-finalized stays separate,not online/full-history. Shared-CPT7
+IE-TC is not independent prism GT. No nonlinear-stationarity certification.

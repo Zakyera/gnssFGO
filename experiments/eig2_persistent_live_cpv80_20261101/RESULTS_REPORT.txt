@@ -1,0 +1,45 @@
+CP-V80 FULL LIVE EIG-2 HESAI — DIRECT EVO METHOD1 RESULTS
+ONE full355.02s CBS-ON live capture: fresh GLIM, general-persistent Kimera, concurrent fusion.
+Live bidirectional source exchange. GLIM remains active_window_temporary; CP76 persistent Kimera.
+User explicitly accepted mixed-prior feedback: Kimera outgoing LOCAL is NOT native-only information.
+Absorbed GLIM information can return to GLIM/fusion. No independence or calibrated-likelihood claim.
+No fresh matched OFF control. CP49/CP78 are historical evidence, not this run's paired controls.
+Original EIG2 WNOA Qc x1.0 and all other frozen weights/profile/calibration. No tuning/default change.
+Method1: GLIM first-published absolute; Kimera newest absolute backend; fusion ONLINE absolute.
+Kimera absolute log rows matched to exact native header stamps; not native incremental ROS path.
+IE-TC reference shares CPT7 IMU; not independent prism GT. Same physical prism point.
+ATE: EVO SE3 alignment per curve, no scale. RPE: EVO reference-distance0.5m consecutive pairs.
+Common100ms grid; maximum interpolation gap0.5s (reference0.05s); no bridging excluded intervals.
+Supported 352.300s / 355.02s (99.234%), 3526 queries; 348 common RPE pairs.
+Reference path on common support: 188.011201m
+
+Role | ATE m | Estimated path m | Translation RPE m | Rotation RPE deg
+glim | 0.047793 | 189.9111 | 0.016789 | 0.634772
+kimera | 0.321577 | 188.5196 | 0.037245 | 0.845746
+fusion_online | 0.212067 | 201.1290 | 0.039614 | 2.279666
+fusion_delayed | 0.211257 | 187.1500 | 0.016180 | 0.670369
+
+fusion_delayed is DELAYED seven-second fixed-lag-finalized, NOT ONLINE or full-history.
+Path is estimated polyline on common support, not physical distance actually travelled.
+
+FULL SAVED (native cadence; different coverage/pair samples, not common-table substitutes)
+Product | ATE m | no-gap path m | polyline with gap chords m | rows | first/last seconds | gaps
+on_glim | 0.048002 | 193.1909 | 193.1909 | 3543 | 0.7164 / 354.9157 | 0
+on_kimera | 0.321950 | 190.0336 | 190.0567 | 1762 | 0.1999 / 354.9971 | 2
+on_fusion_online | 0.212946 | 224.3963 | 224.3963 | 3545 | 0.5854 / 354.9854 | 0
+on_fusion_delayed | 0.211210 | 188.8831 | 188.8831 | 3545 | 0.5854 / 354.9854 | 0
+
+RETAINED ENGINEERING EVIDENCE (not nonlinear stationarity/calibrated uncertainty)
+on: 1762 native Kimera / 3543 GLIM / 3545 ONLINE+3545 finalized; 5286 inserts/208416 replacements/50 pre-init exclusions/1 terminal omissions/0 pending.
+  Kimera previous-state revision max 0.216949m; >0.5m=0; >1m=0; observed paired steps=1748, missing IDs=[4, 1555, 1564, 1583, 1598, 1600, 1610, 1679, 1683, 1684, 1714, 1758, 1760].
+  Native IMU cost median 736.852 / max 7054.49; not unwhitened residual or ATE.
+  Receiver covariance payload error=0; support service p95 0.075314s; receipt-processing p95 0.022835s.
+  kimera_front: 43444 transported versions, median tr(Crot) 1.11653553e-08 rad2 / tr(Ctrans) 5.9052156e-07 m2; min eigenvalue 2.34591922e-10.
+  glim_hesai: 170309 transported versions, median tr(Crot) 6.86406166e-09 rad2 / tr(Ctrans) 1.87291852e-06 m2; min eigenvalue 1.56383563e-10.
+
+All raw logs, journals, source/receiver outputs and covariance histories retained.
+No stale/duplicate/expired receiver versions. Source mean-only covariance alignment approximation unchanged.
+Do not compare old ON/new OFF as a matched algorithm pair. Historical tables are preserved.
+Protected files and Hesai667 passed controller closeout; both containers restored; see closeout.json.
+EVO CLI/API parity max 0; TUM roundtrip max 1.78e-15; 24 direct EVO CLI invocations.
+See results.json, evaluation/commands.json, pair_indices.json, input_sha256.json and all EVO ZIPs.

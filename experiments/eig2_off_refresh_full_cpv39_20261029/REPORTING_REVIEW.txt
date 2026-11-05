@@ -1,0 +1,22 @@
+CP-V39 saved-data-only reporting review; original capture unchanged.
+The strict initial timestamp parity check FAILED before any derived file or EVO
+score was created. analyze_initial_timestamp_guard.py preserves it.
+1761native IDs/counts match, but126 keyframe timestamps differ from index1555
+(~311s), maximum by-ID shift0.5999957s;76 distinct candidate timestamps replace
+baseline selections. This is NOT declared exact keyframe/factor parity.
+Observed compressed/decompressed camera streams contain all3550 images per side,
+CPT7 contains35502 samples, and candidate native processing kept up. Kimera's
+existing keyframe selector is adaptive to disparity/features and elapsed time;
+unchanged profile does not guarantee identical selected keyframes after changed
+estimates/biases. Exact cause of late selection differences remains unproven.
+Do not hide this qualification or call incoming measurements/factor sets identical.
+
+Per PREDECLARED protocol fallback, evaluate both runs on the intersection of
+the original common mask and actual candidate support. Same100ms grid,0.5s max
+interpolation gap, prism transform, SE3 fit and direct EVO distance RPE rules.
+Seven original-valid queries at337.83645..338.43645s are unavailable because of
+a candidate keyframe gap. Report the extra omission and recompute both sides;
+do not relax gap threshold or bridge it. Report whether reference RPE pairs
+change. Full-saved results remain separate at their actual native timestamps.
+The initial strict parity check remains failed; successful supplemental scoring
+is not a retroactive pass of that check. No source rerun or estimator change.

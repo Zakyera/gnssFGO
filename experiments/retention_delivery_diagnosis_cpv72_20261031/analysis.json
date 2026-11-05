@@ -1,0 +1,199 @@
+{
+  "passed": true,
+  "diagnosis_not_experiment_pass": true,
+  "cause": "Recorded wall-paced input replay plus a hold-early-only exact-update gate does not guarantee backend queue readiness at the original update; gate aborts before optimizer use.",
+  "target": {
+    "update": 346,
+    "sender": [
+      685,
+      687
+    ],
+    "receiver": [
+      344,
+      345
+    ],
+    "capture_time_s": 69.599331232,
+    "physical_state_ns": 1730638886162877266,
+    "source_to_ns": 1730638885979307776,
+    "recorded_input_ns": 1730638886173423876,
+    "recorded_input_after_state_ms": 10.54661,
+    "recorder_received_ns": 1730638886172311607,
+    "recorder_minus_input_record_ms": -1.112269,
+    "recorder_payload_sha256": "6e82dfae19aa0aa5c62c1d7dccacbdd545205858232b94d7082feb637f0335b7",
+    "exact_payload_present": true,
+    "camera_headers": [
+      {
+        "topic": "/boxi/alphasense/front_right/image_raw/compressed",
+        "record_ns": 1730638886162877266,
+        "header_ns": 1730638886162877266
+      },
+      {
+        "topic": "/boxi/alphasense/front_left/image_raw/compressed",
+        "record_ns": 1730638886162877266,
+        "header_ns": 1730638886162877266
+      }
+    ],
+    "original_successful_alignment_log": "I1030 11:25:21.670925  4696 VioBackend.cpp:2939] KIMERA_CBS_MEAN_ALIGNMENT_ROW,346,685,687,344,345,1730638885779437056,1730638885979307776,1730638885762880966,1730638885962879166,1730638886162877266,0.0032547532300342664;0.0036645276035155785;-0.10124823545733533;0.077926476641947642;0.0080148590498494952;-0.026687217738811594,-0.0036157855402872362;0.0031925727769681654;-0.099434346844430796;0.077788572594903363;0.0064552952812151065;-0.027492995758978345,3.7766000256552461e-09:1.0036601355449353e-09:7.5939159743143121e-10:-1.4481216541155892e-08:-4.8708651001245447e-09:6.7643937331843623e-08;1.0036601355449353e-09:8.1139905266783095e-09:4.8302884835917226e-10:-9.7591952047956798e-09:-3.3982884941063383e-09:-2.9688867571153909e-08;7.5939159743143121e-10:4.8302884835917226e-10:3.0031592755373998e-09:-2.3144173520878826e-08:2.9775499933283494e-08:1.5796622641940513e-08;-1.4481216541155892e-08:-9.7591952047956798e-09:-2.3144173520878826e-08:1.0311575764868172e-06:-3.8561740021597082e-07:-3.1506365151900496e-07;-4.8708651001245447e-09:-3.3982884941063383e-09:2.9775499933283494e-08:-3.8561740021597082e-07:9.3957144045635088e-07:-1.3469201671915416e-07;6.7643937331843623e-08:-2.9688867571153909e-08:1.5796622641940513e-08:-3.1506365151900496e-07:-1.3469201671915416e-07:2.182155951724765e-06",
+    "failure_logs": [
+      "E1031 14:58:29.709933   252 VioBackend.cpp:4941] VioBackend::optimize failed in collectExternalBeliefFactors for frame 346: CPV70_DELIVERY_FAILURE: missing at target update 346 sender 685->687",
+      "E1031 14:58:29.709967   252 VioBackend.cpp:1879] VioBackend::spinOnce failed while processing backend state 1: CPV70_DELIVERY_FAILURE: missing at target update 346 sender 685->687",
+      "  what():  CPV70_DELIVERY_FAILURE: missing at target update 346 sender 685->687"
+    ]
+  },
+  "prefix": {
+    "exact_received_wire_messages": 341,
+    "exact_admitted_scheduled_beliefs": 340,
+    "exact_native_timestamps": 346,
+    "max_admitted_mean_roundtrip_error": 1.6653345369377348e-16,
+    "all_covariance_entries_exact": true,
+    "final_successful_update": 345,
+    "finite_objective_rows": 346,
+    "retirements_before_stop": 316
+  },
+  "comparison": {
+    "FL4m_94s": {
+      "rows": 450,
+      "playback_rate": 0.1,
+      "record_arrival_minus_target_sensor_ms": {
+        "minimum": -79.508333,
+        "median": -57.8939655,
+        "maximum": -41.026628
+      },
+      "later_than_target_sensor_stamp": 0,
+      "positive_rows": []
+    },
+    "CP70_60s": {
+      "rows": 292,
+      "playback_rate": 0.2,
+      "record_arrival_minus_target_sensor_ms": {
+        "minimum": -187.667395,
+        "median": -68.384037,
+        "maximum": 8.808345
+      },
+      "later_than_target_sensor_stamp": 4,
+      "positive_rows": [
+        {
+          "update": 66,
+          "sender": [
+            125,
+            127
+          ],
+          "delta_ms": 7.198583
+        },
+        {
+          "update": 106,
+          "sender": [
+            205,
+            207
+          ],
+          "delta_ms": 8.808345
+        },
+        {
+          "update": 146,
+          "sender": [
+            285,
+            287
+          ],
+          "delta_ms": 8.613154
+        },
+        {
+          "update": 166,
+          "sender": [
+            325,
+            327
+          ],
+          "delta_ms": 8.26788
+        }
+      ]
+    },
+    "CP71_full": {
+      "rows": 1743,
+      "playback_rate": 0.2,
+      "record_arrival_minus_target_sensor_ms": {
+        "minimum": -874.724875,
+        "median": -72.136452,
+        "maximum": 10.821545
+      },
+      "later_than_target_sensor_stamp": 7,
+      "positive_rows": [
+        {
+          "update": 246,
+          "sender": [
+            485,
+            487
+          ],
+          "delta_ms": 5.178124
+        },
+        {
+          "update": 286,
+          "sender": [
+            565,
+            567
+          ],
+          "delta_ms": 0.818757
+        },
+        {
+          "update": 306,
+          "sender": [
+            605,
+            607
+          ],
+          "delta_ms": 4.232863
+        },
+        {
+          "update": 346,
+          "sender": [
+            685,
+            687
+          ],
+          "delta_ms": 10.54661
+        },
+        {
+          "update": 366,
+          "sender": [
+            725,
+            727
+          ],
+          "delta_ms": 10.821545
+        },
+        {
+          "update": 566,
+          "sender": [
+            1125,
+            1127
+          ],
+          "delta_ms": 6.557493
+        },
+        {
+          "update": 746,
+          "sender": [
+            1485,
+            1487
+          ],
+          "delta_ms": 10.796085
+        }
+      ]
+    }
+  },
+  "older_FL4m_both_validated": true,
+  "older_test_exact_updates_checked_after_capture": true,
+  "runtime": {
+    "current_backend_sha256": "6e620d0f24aed055ee8f9f2f638af1b59881ff09e23ebe561614162a93d634ce",
+    "wrapper_sha256": "52a9f13b228eb1672c905056336d61a563317119790896b96452e9b94938a342",
+    "parallel_run": true,
+    "callback_wrapper_flush_nominal_wall_hz": 20,
+    "production_wrapper_unmodified": true
+  },
+  "limitations": [
+    "Recorder reception is not an acknowledgement that the Kimera callback/20Hz wrapper flush/backend enqueue completed.",
+    "Exact original/new callback receive, forwarding and backend-pop wall timestamps were not all saved; cannot allocate precise lateness to these stages.",
+    "ROS recording times use simulated clock; millisecond differences do not prove negative wall transport latency.",
+    "The failure precedes optimization at346 and RETAIN was not launched; no new retention-performance conclusion."
+  ],
+  "proposed_next": "Diagnostic-only bounded readiness/acknowledgement barrier for original scheduled inputs before solve, preserving message availability/order/payload/update/endpoints; do not skip/retimestamp/relax guards. Fixtures before any separately authorized fresh capture.",
+  "no_capture": true,
+  "no_solver": true,
+  "no_build": true,
+  "no_scoring": true,
+  "no_retry": true
+}

@@ -1,0 +1,189 @@
+CP-V35 — EIG-2 CBS-OFF diagnosis — COMPLETE,2026-10-29
+Reproducer and mechanism diagnosis complete; exact root cause / fix OPEN.
+
+Decision
+--------
+Investigating OFF first was justified. The same problematic original Kimera
+behavior reproduces exactly with Kimera alone: no GLIM, incoming belief or
+gnssFGO receiver. At the largest event the active state is also inconsistent
+with its own native IMU factors; this is not merely a Rerun drawing artifact.
+The immediate change occurs in the incremental solve, not the subsequent
+marginalization call. Large departures from linearization anchors, coupled
+with weakening retained-prior common-motion constraints, make fixed-lag
+linearization/solver consistency the leading diagnostic target. This is NOT
+yet proof of a specific implementation bug or that strengthening a prior fixes it.
+
+Saved-data result (confirmed before any replay)
+----------------------------------------------
+Original Kimera objective.csv is the FL4M copied-factor audit, NOT GLIM.
+The actual ROS launch environment names this exact output; the writer is
+CP-K9/RetirementAudit.h; all1761 row IDs match Kimera backend output IDs.
+Hesai and Velodyne OFF cost arrays are exactly equal, as are the pose histories.
+No peer retirement occurs. These are zero-incoming-belief baseline symptoms.
+
+At267.797754338s/update1337: previous pose revision4.849627m, same-update
+motion.154996m, connected absolute-history step4.979473m.
+Same graph native IMU cost before/after:384,979,407 ->1,843,633,942.
+Total cost384,985,215 ->1,843,639,405 (4.789x).
+Prior cost5,469.308 ->5,418.826; other post-update factor costs sum43.717.
+At267.997752638s/update1338 native IMU cost reaches4,221,455,915.
+These are weighted objective values, NOT metres/RMSE or covariance scales.
+The IMU cost increase is observed after the solve and BEFORE marginalization.
+It cannot be explained solely by joining first-published absolute poses.
+
+166/1761 updates increase the copied-graph total cost. Not every incremental
+Gauss-Newton update promises nonlinear descent; that fact alone is not a bug.
+The very large native-IMU inconsistency and window deformation make exact
+prior/linearization/state diagnosis necessary. Costs alone do not establish
+which component is responsible; see the new native residuals below.
+The retained smart-factor objective caveat from CP-K1 is distinct; at the
+largest event the increase is dominated by native IMU, not the visual sum.
+Low prior error is NOT proof of a weak prior: energy depends on residual,
+anchor, Hessian, constants and all coupled state variables.
+
+CP-V34 correction: aggregate original-chart native-IMU/prior objective evidence
+already exists. Its statement that saved objective evidence was absent was
+incomplete. Saved full stage states/velocities/biases/anchors do not exist.
+
+Execution and parity
+--------------------
+Private observer-only overlay under P defined in PROTOCOL.txt. Initial direct
+BPSAM fixture lacked fixed-lag re-elimination bookkeeping and failed; preserved
+under build_release/build_san. Corrected actual-wrapper fixture passes exact
+state/theta/delta/fixed-key/cache/tree equality over12 OFF visual/IMU/bias/prior
+updates in Release and ASan/UBSan; linked vendor DSOs not sanitized.
+Private backend dependency check passes. No live-factor objective/curvature
+audit or discarded shadow optimizer enabled. No production source changed.
+
+One300s original-start replay at0.20x completed, Kimera alone. Actual argv
+equals original excluding private flagfile/output directories. Original
+cameras/CPT7/calibration/25states/priors/CP-K9/FL4Q0/remove preserved.
+No GLIM/fusion/incoming beliefs/ON or tuning. Captures before solve, after
+solve and after marginalization at targeted updates; all evaluations on clones.
+Final parity (verification.json): all1498 native odometry rows and1498 cost
+rows EXACTLY match the corresponding original OFF prefix, through299.797532s.
+All37100 MAIN revision-edge payload rows also exactly match original output.
+61 targeted updates have all three stages (183 snapshots). Summed independent
+factor costs reproduce original audit costs; maximum absolute difference
+1.431e-6 on large billion-scale costs (floating summation roundoff).
+This is a faithful300s diagnostic, NOT a fresh full355.02s accuracy benchmark.
+No source retry. No new ATE/RPE or replacement of existing direct-evo scores.
+
+Native IMU and anchor evidence
+-----------------------------
+Maximum residual across native IMU factors AFTER the solve:
+time(s)    update  position(m)  rotation(deg)  velocity(m/s)  max anchor rot(deg)
+160.3986      800   0.00002184    0.0002021      0.0000552          0.2104
+200.3983     1000   0.02216545    0.0026387      0.0005212          1.4691
+267.3978     1335   0.14018243    0.0870047      0.0188161         14.6734
+267.5978     1336   0.37242763    0.2403754      0.0379936         24.4725
+267.7978     1337   0.82705281    0.2597581      0.0384928         22.9386
+267.9978     1338   0.98358695    0.3178722      0.0315304         15.8599
+282.3977     1410   0.00870082    0.0180393      0.0047358         11.4843
+293.7976     1467   0.04412456    0.0166609      0.0027784          6.6359
+
+These are UNWHITENED model-constraint residuals, not reference trajectory error
+or ATE/RPE. Position residual includes the model's position/velocity/gravity/
+bias-corrected IMU prediction, not simply raw displacement. At the peak,
+all IMU factor time spans are0.1999983--0.200000484s: no large integration-time
+gap explains the event. The saved-source input audits remain separate.
+
+At1337 position residual maximum increases0.3724 ->0.8271m during the update;
+at1338 it increases0.8271 ->0.9836m. Before-update graph lacks that cycle's new
+factors, so those maxima are not a same-factor-set cost comparison. The original
+FL4M costs above ARE evaluated on the same post-update graph before/after.
+At1337 the previous pose moves4.8496m while within-update motion is0.1550m.
+After-solve -> after-marginalization saved surviving state components are exactly
+unchanged (maximum difference0) at ALL61 inspected updates. This localizes the
+immediate pose change to the solve; it does NOT exonerate priors inherited from
+earlier marginalization or future effects of this marginalization.
+
+At1335--1338,25 of27 pre-marginalization pose anchors are fixed. Fixed anchor
+means its linearization point is locked, NOT its estimated pose is held fixed.
+Actual pose estimates may move far from that point. At1336 the largest rotation
+departure among fixed-anchor poses is19.4647deg; at1338 it is15.8599deg with
+3.4777m translation. The24.4725deg ALL-pose maximum at1336 is a newer non-fixed
+pose; do not mislabel every maximum as an old fixed-anchor pose. After-solve
+27pose count is before old-state eviction, not a changed25-state configuration.
+
+At1337 nativeIMU cost1.843633942e9, visual smart-factor cost26.6512,
+bias-between cost17.0654, marginal-prior cost5418.8256. The IMU inconsistency
+dominates. Smart-factor error/Schur-objective differences are known and retained;
+we do not use the small visual cost to claim the visual problem is solved.
+
+Retained marginal prior
+-----------------------
+All saved prior augmented information matrices reproduce their original-chart
+logged energy using the saved owning theta and SE(3) local coordinates.
+Finite common-world displacements of prior-connected states show nonzero but
+weaker anchoring later in the run. Symmetric energy increases for +/-0.1m
+translation (mean of plus/minus minus centre), x/y/z respectively:
+  160.3986s:0.185794 /0.302318 /1.458285
+  267.7978s:0.009181 /0.007441 /0.028713
+For +/-0.1rad common yaw, rotating pose AND velocity about the window centre,
+the corresponding finite energy increases are23.7717 and2.4627.
+These conditional finite prior-energy probes are not marginal covariance,
+infinitesimal Hessian eigenvalues, statistical consistency or pure prior strength.
+They do support investigating effective anchoring, but not blindly multiplying
+an initial prior or selecting a stronger weight for improved ATE.
+A purely rigid global translation/yaw explanation does not account for the
+large internal IMU inconsistency. Weak anchoring and stale linearization may
+interact; we have not separated that causal chain experimentally.
+
+Interpretation and next decision
+--------------------------------
+Confirmed: this OFF baseline's shaking is reproducible without another estimator;
+large absolute-history revisions coexist with real internal window inconsistency.
+Not supported as sole cause: Velodyne configuration, incoming GLIM frame/timing,
+or receiver WNOA. Original Hesai/Velodyne Kimera OFF are numerically identical.
+Not fully excluded: native camera/IMU calibration, initialization/bias handling,
+visual degeneracy, or a defect in our modified BPSAM/fixed-lag integration.
+This is NOT a verdict on an untouched upstream Kimera implementation.
+
+Leading hypothesis: large one-step incremental Gauss-Newton corrections are
+being computed using unsuitable/stale linearization and retained-prior charts.
+Large anchor departures and nonlinearly bad IMU residuals are consistent with
+that mechanism, but do not alone distinguish linearization error, cached-factor
+inconsistency, inadequate solve policy, or an upstream input/model trigger.
+The measurement/model weights were unchanged. No convergence/stationarity
+claim is justified by a solver return, smaller incremental error or this audit.
+
+Recommended next controlled experiment, NOT launched/implemented here:
+1. Capture a faithful full nonlinear checkpoint around onset and1335--1338,
+   including visual observations, IMU preintegration/bias parameters, cached
+   Gaussian factors and marginal prior with its owning chart.
+2. In an isolated copied graph with SAME measurements/weights and unchanged
+   original-chart marginal prior, compare the incremental step against a
+   carefully validated nonlinear solve with step/cost/gradient diagnostics.
+   Confirm cloned smart-factor objective/linearization semantics first; the
+   historic CP-K1 error-versus-Schur mismatch forbids treating arbitrary LM
+   error reduction as proof. Never unlock/re-anchor a marginalized prior naively.
+3. If the copy recovers small IMU residuals, trace cached vs freshly linearized
+   contributions and prior chart handling; only then choose one targeted fix.
+   If not, investigate input/model conflict or state observability first.
+4. Revalidate OFF before investigating added CBS-ON effects. Do not compensate
+   with WNOA tuning, smoothing or altered trajectory-output semantics.
+
+Current snapshots retain states, theta, locks, residuals/costs and prior matrices,
+NOT complete serializable nonlinear factors/preintegrations/Bayes-tree caches.
+They cannot honestly substitute for the proposed full counterfactual checkpoint.
+No new control replay, optimizer change or tuning is authorized by this report.
+
+Closeout and artifacts
+---------------------
+Capture1539.62wall seconds including drain; owned processes exit0, no cleanup
+errors. Both originally stopped containers restored to stopped. Verification:
+2871 protected original files unchanged,38 private manifest files unchanged;
+original four-case Hesai checkpoint passes all667 saved files. Final process,
+container and original RRD checks plus report hashes are in closeout.json.
+Initial faulty direct-BPSAM test fixture remains preserved; corrected wrapper
+fixtures passed before the single capture. See PREFLIGHT_NOTES.txt.
+First final validation encountered two rostopic shutdown warnings after1498
+complete CSV rows; exact nondata-line parsing repaired with no numerical row
+discard or tolerance change. See REPORTING_REPAIR.txt; original logs untouched.
+Diagnostic off_diagnosis_v2.png rendered and visually inspected; first figure
+also preserved. Raw trajectories and all old scores/RRDs remain unchanged.
+
+Primary evidence: verification.json, snapshots_final.json, diagnosis_summary.json,
+saved_cost_results.json, container_restoration.json and P/capture/snapshots/.
+Scope remains OFF diagnosis only; no CBS-ON or production fix performed.

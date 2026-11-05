@@ -1,0 +1,89 @@
+CP-V30 — ALL SEVEN METHOD-2 RERUN RECORDINGS
+Completed 2026-10-29. Visualization export only; no new experiment.
+
+DELIVERY
+/home/yeranis/results/rerun_method2_all_sequences_20261029/
+Seven self-contained .rrd files, README.txt and open_rerun.sh.
+RRDs total236,762,911bytes (225.79MiB); installed Rerun0.31.4.
+Open one using Rerun > Open / drag-and-drop. No source files, running servers,
+containers or experiment are needed to view it later. Keep/copy the RRDs.
+
+FILES
+hesai_eth1_method2.rrd       ETH1 Hesai, original CP-K23 OFF/ON
+hesai_eig2_method2.rrd       EIG-2 Hesai, original CP-K24/24A OFF/ON
+hesai_spx3_method2.rrd       SPX-3 Hesai, quiet-start CP-K28 OFF/ON
+hesai_leica2_method2.rrd     LEICA-2 Hesai, CP-K29 OFF/ON
+velodyne_spx3_method2.rrd    SPX-3 Velodyne, CP-V4 OFF/ON
+velodyne_eig2_method2.rrd    EIG-2 Velodyne, CP-V4 OFF/ON
+velodyne_leica2_method2.rrd  LEICA-2 Velodyne, CP-V4 OFF/ON
+
+PRESENTATION
+Each file has CBS OFF / CBS ON full-scene tabs and a Read me / results tab.
+Blue IE-TC reference, green GLIM method2, orange native incremental Kimera,
+red fusion method2. Same grey saved ON map backdrop in both modes.
+All113,732saved estimator points retained at native cadence, plus all native
+reference points inside each original capture window. No smoothing, thinning,
+resampling or cropping to the common mask. Gaps>500ms for estimators and>50ms
+for reference are not joined; isolated points remain visible. Full scene is
+static and visible immediately, not a short sliding window or growing trail.
+Drag to orbit/scroll to zoom; use Blueprint eye toggles to hide paths/cloud.
+The legend panel divider can be expanded if the second instruction line is
+clipped by desktop display scaling; complete instructions remain in Read me.
+
+METHOD / ALIGNMENT
+Use exactly CP-V28's already validated method2 trajectories for all three:
+accumulated SAME-update relative motion. Kimera already native incremental,
+not integrated twice. GLIM and fusion are the saved method2 reconstructions,
+not revised exports, method1 absolute histories or delayed finalized output.
+Original WNOA Qc multiplier1.0; not the0.25/.1 ablations. No new chaining or
+receiver replay was needed. The fresh CP-V29 ETH1 OFF result is not mixed with
+the old ON. Failed ARC prefixes and unavailable sequences remain excluded.
+
+Each estimator/mode uses one rigid SE3 no-scale fit from CP-V28's frozen common
+mask. All full native poses are then transformed with that same fit. The common
+body-to-prism lever and reference ENU origin are unchanged. Every common ATE
+reproduces within1e-9m; every full native path within1e-8m. Every native edge
+length is invariant within1e-10m. Maximum display float32 coordinate difference
+is3.814e-6m. No forced start coincidence or per-section fitting.
+
+CLOUD CONTEXT
+All17,534,190available saved ON points retained across364submaps:
+Hesai ETH1 7,417,594 /149; EIG-2 4,606,316 /93;
+SPX-3 23,079 /1; LEICA-2 1,070,784 /22.
+Velodyne SPX-3 121,479 /5; EIG-2 3,518,447 /76;
+LEICA-2 776,491 /18.
+Saved submap-local points use T_world_origin and the original CP-V10 ON
+first-published GLIM fit into the shared reference ENU frame. The drifting
+method2 fit is intentionally NOT applied to the corrected map. No map warping
+or rebuilding. All submap frame checks against saved IMU odometry pass below
+1mm; maximum0.499279mm (saved text precision). Map density/coverage varies.
+This is GLIM-reconstructed environment, not independent truth or a map built
+along the displayed incremental path. It can contain its own errors.
+
+VALIDATION
+verification.json: all seven RRDs decoded with exact equality for every full
+trajectory sample, gap-aware line strip and cloud point; notes/legend present.
+All819pinned original inputs/helpers unchanged. CP-V28 output hashes checked
+against its historical closeout, not merely matching aggregate scores.
+Hesai checkpoint independently PASS4cases/667files, originals=True.
+All seven default OFF native screenshots produced and visually inspected:
+complete routes, four colours, correct sensor/sequence titles, OFF/ON tabs,
+context cloud and readable colour legend. Screenshots are *_preview.png here.
+No claim that an interactive click through every ON tab was performed; ON
+data/edges were checked exactly in the RRD, using the same view configuration.
+
+The sandboxed screenshot launch initially could not connect to the X server.
+Host-display screenshot-only checks succeeded in saving all seven images,
+then each exited102 with the previously documented Rerun0.31.4 screenshot
+shutdown panic. This is not an estimator failure or corrupt recording; logs
+and receipts retained. No normal persistent viewer was launched by this task.
+Preparation's initial input-vs-output hash lookup correction is documented in
+PREPARATION_NOTES.txt; it occurred before any scene/data product was written.
+
+LIMITS / PRESERVATION
+IE-TC shares CPT7 IMU, not independent prism ground truth. Matching publication
+policy does not equalize cadence/latency/evidence age. Polyline path length is
+not physical distance travelled. No new covariance or velocity was assigned.
+No source/receiver launch, optimization, container start, package installation,
+build, settings/default promotion, old artifact deletion, commit or push.
+Future receiver diagnosis remains separate and was not started.

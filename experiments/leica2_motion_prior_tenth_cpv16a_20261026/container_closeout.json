@@ -1,0 +1,20 @@
+{
+  "owned_controller_exit_code": 0,
+  "pre_stop_processes": ["zsh", "ros2", "rmw_zenohd"],
+  "owned_receiver_build_or_validation_jobs_present_before_stop": false,
+  "containers": {
+    "ubuntu-jammy-humble-nvidia": {
+      "Status": "exited", "Running": false, "Pid": 0,
+      "ExitCode": 137, "OOMKilled": false,
+      "StartedAt": "2026-10-26T17:28:31.428019242Z",
+      "FinishedAt": "2026-10-26T17:37:55.440875506Z"
+    },
+    "cbsms_ws_gpu": {
+      "Status": "exited", "Running": false, "Pid": 0,
+      "ExitCode": 137, "OOMKilled": false,
+      "StartedAt": "2026-10-26T11:39:30.639951866Z",
+      "FinishedAt": "2026-10-26T11:41:05.006835815Z"
+    }
+  },
+  "note": "Only Humble was started. All owned jobs returned0 before docker stop. Container exit137 is shutdown status, not a receiver failure. Noetic remained stopped; existing Rerun viewer untouched. Failed pre-build CP-V16 also restored containers before this fresh setup-only correction."
+}

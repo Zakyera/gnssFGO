@@ -1,0 +1,25 @@
+2026-10-20. Preserve k16f_source_1; do not overwrite or call it a passing8s test.
+
+The single source attempt stopped in the diagnostic observer at update1,
+before its actual/companion optimization, on CPU input clone equality at tol0.
+All owned jobs exited; diagnostic node code93 is intentional fail-stop.
+No optimizer mismatch is evidenced by this assertion.
+
+Focused CPU-only proof using the frozen native IMU implementation:
+factor.equals(factor,0)=false; factor.equals(clone,0)=false;
+both with positive1e-15=true; complete Gaussian equation difference0.
+GTSAM's ManifoldPreintegration::equals uses abs(deltaTij difference)<tol.
+Thus zero tolerance is invalid even for the exact same object.
+
+Correct only observer clone sanity tolerance to1e-15 and add real ImuFactor,
+velocity and bias variables to its three-update plumbing fixture. Existing
+Gaussian, state, covariance and exact GPU input/runtime gates are UNCHANGED.
+Frozen estimator libraries/profiles/model/preprocessing remain unchanged.
+
+The earlier smoke fixture omitted IMU and therefore missed this diagnostic
+bug. One initial smoke command used an unavailable container path; it executed
+nothing. The copied, mount-corrected original smoke then passed before capture.
+
+A fresh root k16f_source_2 may hold the corrected observer build/plumbing test.
+One further8s SOURCE attempt requires the requested user approval; no automatic
+source retry, no overwrite of original failure, no Kimera/fuser or full sequence.

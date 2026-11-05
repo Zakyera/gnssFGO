@@ -1,0 +1,155 @@
+CP-V4 Velodyne campaign — FINISHED WITH ONE FAILED CASE, 2026-10-24.
+FINAL: SPX-3/EIG-2/LEICA-2 full matched pairs complete; ARC-5 OFF failed
+numerically, ON never launched. SNOW-3 startup blocked; ETH1/SPX-2/CON-1 inputs
+unavailable. No remaining safe authorized captures. Follow-up PAUSED. Read
+RESULTS_REPORT.txt and FINAL_AUDIT.txt; chronological milestones follow below.
+User explicitly authorized overnight sequential full matched CBS-OFF/ON runs.
+Read PROTOCOL.txt and campaign.json; no captures started at report creation.
+CP-V3 SPX-3 full preparation is subsumed by this freshly named campaign; do not
+launch a second SPX-3 pair from the old CP-V3 report.
+
+00:07:39local: finite campaign controller started once, PID441787; launcher
+PID441780, launch_cli_repair.json/campaign_cli_repair.log are current. Earlier
+00:06 launcher failed before any container/controller/capture because GNOME
+requires separate CLI option values. Original launch.json/campaign.log kept;
+exact infrastructure-only correction in PRELAUNCH_REVIEW.txt. No source retry.
+SPX-3 OFF capture launched00:07:55local, then four gates before ON. Prepared
+next pairs: EIG-2/LEICA-2/ARC-5. SNOW-3 input/startup blocked; ETH1/SPX-2/CON-1
+required input bags missing. Read individual prepared.json for full usable
+duration and startup/tail exclusions. ARC-5 usable401.29s, not sensor-only tail.
+Experiment-only five-minute app follow-up enabled, quiet on unchanged state.
+Report/printed duration labels corrected before capture; receipt retained.
+No estimator/model/settings changes. Retain all original/native/ONLINE/delayed
+trajectories, covariance/revision/payload/timing evidence and failed artifacts.
+
+Initial SPX-3 OFF live check: effective_mode_check.json and
+velodyne_startup.json both pass before playback. Velodyne topic/body/extrinsic,
+deskew/signed-time handling, exact source profiles and frozen CBS/covariance
+settings verified. Receiver observed both sources (990 GLIM/123 Kimera versions),
+48 ONLINE poses, queued0, output_age0.09s at selected-time+5.37s. No failed.txt.
+This is startup evidence only, not a full-run outcome or accuracy claim.
+
+00:28local milestone: SPX-3 full197.02s OFF completed; all four saved gates
+passed00:26:08 (Velodyne sensor time, LOCAL covariance provenance, source
+lifecycle, receiver accounting/coverage). Controller alone launched ON00:26:24.
+ON effective-mode/sensor startup checks pass; both source streams and ONLINE
+fusion advancing, queued0 at22.6s. No failed artifact; no duplicate work.
+OFF final transport:1965 ONLINE poses,116775 belief versions,queued0. Accuracy
+comparison remains pending completion/validation/scoring of matched ON.
+
+00:45:58local: SPX-3 full matched pair COMPLETED, both captures/eight gates,
+evaluation and closeout pass.2847protected hashes unchanged, both containers
+restored stopped before next mission. See spx3/RESULTS_REPORT.txt/results.json.
+Full-saved ATE OFF/ON(m): native GLIM0.050405/0.053729, native Kimera
+0.483414/0.376635, ONLINE fusion0.128743/0.112111. DELAYED finalized separately
+0.130321/0.110282. Saved spans196.000/196.698--196.798/196.400s of197.02s
+capture. Common-mask191.799817s supported in195.099814s envelope confirms
+the ATE direction. One terminal Kimera OFF factor omitted under frozen EOF
+predicate; ON zero. Not zero-factor-loss. IE-TC shares CPT7. CBS improves Kimera
+and fusion ATE here but slightly worsens native GLIM ATE; fusion translation
+RPE worsens, so not an across-metric improvement. No tuning or source retry.
+
+01:19local milestone: EIG-2 full355.02s OFF completed and all four gates passed
+01:18:09. Existing controller launched matched ON01:18:31; effective-mode and
+Velodyne startup checks pass, both sources/fusion advancing. OFF final transport
+3545 ONLINE poses,213494belief versions,queued0. Matched accuracy remains pending
+ON completion; no duplicate stages, source retry or parameter changes.
+
+01:50:50local: EIG-2 full355.02s matched OFF/ON COMPLETED; eight gates,
+evaluation and closeout pass,2847protected hashes unchanged; no terminal EOF
+omissions in either mode. Native saved spans354.000/354.697s,ONLINE354.400s.
+Full-saved ATE OFF/ON(m): nativeGLIM0.283734/0.330320, nativeKimera
+1.882644/1.802880,ONLINEfusion0.534328/0.886053. DELAYED finalized separately
+0.526644/0.883560. Thus this sequence does not share SPX-3's fusion ATE gain.
+ONLINE polyline lengths299.811/255.326m are much longer than~188.126m reference;
+DELAYED lengths191.050/189.436m are distinct. Preserve this behavior for later
+analysis; no tuning/retry selected from accuracy. Full metrics and covariance/
+revision/timing data in eig2/RESULTS_REPORT.txt/results.json.
+Controller safely closed EIG-2 and launched LEICA-2 OFF01:51:04local. Both
+sources/fusion advancing; matched LEICA-2 results not yet available.
+
+02:29local milestone: LEICA-2 full428.75s OFF completed and all four gates
+passed02:28:31. Existing controller launched matched ON02:28:44; effective-mode
+and Velodyne startup checks pass, both sources and ONLINE fusion advancing.
+OFF final transport4282 ONLINE poses,253524belief versions,queued0; no failure
+marker. ON accuracy remains pending completion/validation/scoring. No duplicate
+stage, source retry, setting change or guard relaxation; ARC-5 remains queued.
+
+03:07:15local: LEICA-2 full428.75s matched OFF/ON COMPLETED; eight gates,
+scoring and closeout pass,2850protected files unchanged; zero terminal omissions.
+Full-saved ATE OFF/ON(m): nativeGLIM2.828135/0.861349, nativeKimera
+1.097081/2.584159, ONLINEfusion2.000424/1.828658. DELAYED finalized separately
+2.000564/1.831814. GLIM improves substantially, Kimera worsens; fusion ATE
+improves modestly. Same ATE directions on common mask. This is not evidence
+that every estimator or metric universally improves under CBS.
+All saved poses scored: GLIM4279each/spans427.799s,Kimera1937/1936 spanning
+426.896s,ONLINE4282each/spans428.100s. Common3850queries cover384.599633s
+in389.699628s envelope; sparse stationary-tail Kimera keyframes/gaps disclosed.
+ONLINE path280.154/235.137m differs from DELAYED204.797/205.890m. IE-TC shares
+CPT7; uncertainty-alignment approximation and expired-revision policy unchanged.
+Full covariance/revision/payload/timing evidence: leica2/RESULTS_REPORT.txt and
+results.json. Both containers restored stopped before the next case; no retry.
+ARC-5 OFF launched03:07:27 by existing controller, PID494891, requested401.29s;
+effective-mode and Velodyne startup checks pass, both sources/fusion advancing.
+SNOW-3 remains input/startup blocked; no estimator settings changed to force it.
+
+03:40:32local final controller closeout: ARC-5 OFF stopped03:39:37 on receiver
+FL4A_STREAM_FAILURE / GTSAM IndeterminantLinearSystemException near x3758,
+around380.6s of requested401.29s. ONLINE prefix3801poses/span380.0s is NOT a full
+result. Transport Broken pipe follows receiver exit; it is not the root error.
+No ON capture, validation/scoring of this failed pair, numerical retry or tuning.
+ARC-5 closeout passes/2850protected files unchanged/containers restored exited.
+Precise numerical cause is unresolved; detecting variable x3758 is not proof
+that this pose or a specific source caused the failure. No timeout reported.
+Campaign finished with three valid pairs, one failed prepared pair and the
+preflight/missing-input omissions. All24 completed-pair gates pass; protected
+counts2847/2847/2850 unchanged. Hesai checkpoint667files/originals verifies.
+Host process check found no owned controllers/receiver jobs; both containers
+exited. Free16.56GiB. Experiment-only follow-up disabled through app (PAUSED).
+Metrics and compact coverage/covariance/timing summaries in RESULTS_REPORT.txt;
+exact failure/closeout evidence in FINAL_AUDIT.txt. No commits/push/default
+promotion/deletion/extra experiments. Saved raw histories and failed prefix kept.
+
+Campaign stopped 2026-10-24T03:40:32.749704+03:00
+{
+  "outcomes": {
+    "spx3": {
+      "state": "complete",
+      "finished": "2026-10-24T00:45:58.908909+03:00",
+      "report": "/home/yeranis/repos/gnssFGO/experiments/velodyne_full_campaign_cpv4_20261024/spx3/RESULTS_REPORT.txt"
+    },
+    "eig2": {
+      "state": "complete",
+      "finished": "2026-10-24T01:50:50.197990+03:00",
+      "report": "/home/yeranis/repos/gnssFGO/experiments/velodyne_full_campaign_cpv4_20261024/eig2/RESULTS_REPORT.txt"
+    },
+    "leica2": {
+      "state": "complete",
+      "finished": "2026-10-24T03:07:15.220461+03:00",
+      "report": "/home/yeranis/repos/gnssFGO/experiments/velodyne_full_campaign_cpv4_20261024/leica2/RESULTS_REPORT.txt"
+    },
+    "snow3": {
+      "state": "blocked",
+      "evidence": "/home/yeranis/repos/gnssFGO/experiments/velodyne_full_campaign_cpv4_20261024/snow3/blocked.json"
+    },
+    "arc5": {
+      "state": "failed",
+      "returncode": 1,
+      "finished": "2026-10-24T03:40:32.523444+03:00",
+      "evidence": {
+        "state": "failed",
+        "stage": "capture_off",
+        "updated": "2026-10-24T03:40:32.517851+03:00",
+        "pid": 494891,
+        "failure": {
+          "stage": "capture_off",
+          "error": "CalledProcessError(1, ['python3', '/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc5_velodyne_full_cpv4_20261024/prepared/run_case.py', 'full', 'off'])",
+          "at": "2026-10-24T03:39:37.045759+03:00"
+        },
+        "cleanup_error": null
+      }
+    }
+  },
+  "error": null
+}
+See RESULTS_REPORT.txt.

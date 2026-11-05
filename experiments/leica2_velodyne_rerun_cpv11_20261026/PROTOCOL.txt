@@ -1,0 +1,21 @@
+CP-V11: Leica-2 Velodyne first-published trajectories in Rerun
+2026-10-26. User-requested saved-data visualization, not an estimator experiment.
+
+Original CP-V4 OFF and ON only; no rejected CP-V6A/CP-V9 candidates.
+GLIM glim_odometry.csv, Kimera kimera_odometry.csv, fusion online_trajectory.tum.
+Reference IE-TC /boxi/inertial_explorer/tc/odometry, shared CPT7, not independent
+prism ground truth. Transform all poses to the same prism point with the saved
+lever arm. Reuse CP-V10 common-mask no-scale SE(3) fits, apply each SINGLE rigid
+transform to ALL native trajectory points. Origin shift for display precision.
+Do not smooth, replace or decimate native estimator vertices. Split lines at
+gaps >0.5s (reference >0.05s), retain isolated samples. No new common-mask-only
+restriction on full views; explicitly disclose startup/tail/gap coverage.
+
+Rerun overview OFF/ON, zoomable original points, temporal ten-second detail,
+fusion per-support displacement versus reference at the same timestamps.
+Any selected high-excess-length window must be labelled as selected, not typical.
+Original inputs pinned and rechecked. Verify RRD and inspect rendered output.
+No containers/source replay/builds/estimator changes, tuning, deletion or push.
+This shows the connected first-publication path, NOT the latest corrected graph
+trajectory and NOT physical drone zigzagging. Finalized fusion and refined GLIM
+remain separate products, intentionally absent from this visualization.

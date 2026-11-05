@@ -1,0 +1,55 @@
+CP-V66 -- matched EIG-2 Hesai 60-second retirement observation
+2026-10-31. User explicitly requested 60 seconds each, including actual zigzags.
+
+SCOPE
+One OFF and one ON capture, each 60 sensor seconds from the original quiet
+start (bag offset5.7s),0.20x,25s drain. No live retention-policy change. Preserve
+the full startup history; do not initialize in the middle of a moving sequence.
+Frozen CP-V49/CP-V40/CP-K9 source and CP-K19 receiver settings, weights, physical
+models, covariance, frames, guards and native smart-factor behavior unchanged.
+Only a private passive observer/serialization extension is permitted. No
+production rebuild, default promotion, deletion, push or automatic source retry.
+
+CAPTURE SELECTION
+Record all ordinary logs for60s. Save four native phases at updates28..35
+(pre-retirement controls and first removals), and200..298 (approximately40..60s,
+including the original first >0.5m correction at295/~59.4s). Selection is frozen
+before launch and independent of candidate benefit. At most107updates x4=428
+snapshots per mode (424 if final index297, as the short-prefix cadence predicts).
+Exact expected
+counts are checked against completed native updates, never silently padded.
+Capture before ordinary, after ordinary, after refresh, after marginalization;
+record exact removal and newly inserted slot receipts. No extra optimization or
+evaluation of live factor objects. Immutable prior anchors/functions must be
+serialized, not reset to current values. Fixture byte roundtrip, multi-state
+function/derivative parity, repeated retirement/marginalization nonmutation,
+observer-disabled parity and Release/ASan/UBSan gates precede source launch.
+
+STORAGE / EXECUTION
+Require18GiB before capture and preserve5GiB runtime reserve. Conservative budget:
+856snapshots at8MiB ~=6.7GiB, pair logs/receiver <=3GiB, private build <=2GiB,
+reserve5GiB. Stop on existing guards; never delete evidence to make room.
+Run OFF then all sensor/LOCAL/lifecycle/receiver/snapshot gates, then ON and the
+same gates. Use fresh roots and one owned controller, restore originally stopped
+containers and verify protected inputs and four-sequence667-file checkpoint.
+No competing stage, second source launch, scoring or downstream full campaign.
+
+CAUSAL FOLLOW-THROUGH
+CP-V65's same-checkpoint2x2 remains the test: old removed/retained x new peer
+included/omitted. Exactly ordinary+refresh; retained outgoing factors exist only
+before marginalization. Each event starts independently from its native saved
+state. A must reproduce native equations/states first. No independently evolved
+60s retention trajectory is substituted for a controlled event contrast.
+Report all first-removal controls28..35 plus the THREE largest previous-state
+translation revisions in the recorded200..298 window, selected before viewing
+any counterfactual. Use the same native ordinary linearization values in all
+arms (record their difference from initialized estimates), preserving native
+prior anchors when promoted for refresh. A must match both equations and states
+at ordinary and refresh; otherwise stop the native causal stage. No claimed
+removal causality from timing correlation alone, and no
+full-sequence cure from one-event results. If60s does not reproduce a substantial
+zigzag, report that limitation; do not automatically extend/retry or tune.
+
+Outputs and status distinguish build readiness, capture completion and causal
+analysis completion. Method1 first-publication behavior is the target; not
+physical drone motion. This diagnostic is not a new EVO ATE/RPE result.

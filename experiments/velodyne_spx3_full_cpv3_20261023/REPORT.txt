@@ -1,0 +1,51 @@
+CP-V3 — SUPERSEDED UNLAUNCHED PREPARATION; DO NOT LAUNCH
+2026-10-24: user authorized the broader CP-V4 overnight campaign. Its isolated
+SPX-3 pair replaces this unlaunched preparation. Read
+../velodyne_full_campaign_cpv4_20261024/REPORT.txt and status.json. Do not
+duplicate a SPX-3 capture here. Historical storage evidence follows.
+
+CP-V3 — FULL SPX-3 VELODYNE OFF/ON: STORAGE RESOLVED, NOT LAUNCHED
+2026-10-23. User authorized proceeding after completed CP-V2 integration pair.
+
+Update23:40local: separately authorized CP-C1 targeted old-repeat cleanup
+recovered5.43GiB, free~14.15GiB. Storage prerequisite is now resolved, subject
+to fresh availability/preflight at actual preparation. No full capture or
+harness generation was performed during cleanup. Original evidence below
+records why the first attempt to prepare was stopped, not the current space.
+
+Intended experiment: one matched full197.02s OFF/ON pair, quiet bag29..226.02,
+physical1730565899872888651..1730566096892888651ns,0.20x,headless25s drain.
+Reuse completed CP-V2 Velodyne sensor profiles/private binaries and current
+classic temporary CBS/all-LOCAL covariance/7sWNOA model without tuning.
+Use same physical journey as completed Hesai CP-K28, not the longer Velodyne
+tail. Fresh output roots required; OFF gates must pass before ON.
+
+Prelaunch storage check (no estimator/container started):
+- Available filesystem bytes9505058816 (~8.85GiB),99% used.
+- /home/yeranis and /tmp share the same ext4 filesystem; no other mounted
+  data filesystem found. EFI is not a data/output destination.
+- Preserved CP-V2 matched30s run occupies453853184bytes in its run tree.
+  Its OFF source33783808bytes plus receiver159096832bytes.
+- Preserved CP-K28 matched197.02s Hesai run occupies2906079232bytes.
+  Its OFF source248676352bytes plus receiver1155600384bytes:
+  total1404276736bytes (~1.31GiB), excluding shared harness/private-build files.
+- Existing CP-V2 run_case.py:32 and run_case_on.py:33 require >8GiB free
+  before EACH launch. Runtime reserve remains >5GiB.
+
+The current free space passes the initial8GiB check but is projected to fall
+to roughly7.5GiB after full OFF, blocking ON before the pair can complete.
+Thus no partial OFF was launched. Do not lower guards or delete/relocate prior
+artifacts merely to continue. The pair's total forecast(~2.7GiB) is not enough
+on its own: the separate ON admission threshold also applies.
+
+Next prerequisite: make at least12GiB free (about3.2GiB additional at inspection,
+recommend freeing4GiB for margin), or provide a suitable output drive and
+explicitly authorize scoped destination/mount preparation. No storage move,
+deletion, compression or experiment-log reduction is authorized or performed.
+After storage is resolved, recheck current availability and prepare isolated
+CP-V3 copies with duration/identity-only changes from CP-V2. Preserve all
+source/model/coverage/error/retention/EOF policies; retain full covariance,
+revision/payload/timing and original/native/ONLINE/delayed trajectory evidence.
+
+No new harness, capture, validation, scoring, build, retry, automation or push.
+CP-V2 and the completed Hesai results remain untouched. No algorithm failure.

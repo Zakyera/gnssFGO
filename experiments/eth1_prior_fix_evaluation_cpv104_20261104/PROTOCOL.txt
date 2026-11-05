@@ -1,0 +1,48 @@
+CP-V104 — saved-only accuracy evaluation of corrected CP103 ON
+Authorized by the user's "yes proceed" after the CP103 status report.
+
+No sensor capture, receiver replay, optimization, build, container startup,
+installation, deletion, settings change, or old-output edit. New outputs only
+in this fresh supplemental directory. CP103/102/101/99/95/91 remain immutable.
+Do not run any archived controller, evaluator main(), or post-closeout script.
+
+Reuse the established CP88/84 Method1 parsers, geometry and direct EVO helpers,
+without changing them. Kimera means are first/newest absolute backend states
+joined to exact native message header timestamps; NOT incremental ROS poses.
+GLIM first-published odometry and fusion ONLINE are primary. DELAYED 7-second
+fixed-lag-finalized fusion is separate, NOT ONLINE or full-history smoothing.
+Convert every trajectory and IE-TC reference to the same physical AP20 prism
+using the author calibration from the pinned split-IMU input audit. This is
+IE-TC-based evaluation, not a comparison to Leica measurements.
+
+Compare CP103 corrected ON to CP95 live OFF/ON and CP91 source-only ON.
+The primary intersection contains eleven curves: three estimators for each
+of CP95 OFF, CP95 ON and CP103 ON, plus GLIM/Kimera for CP91 ON. Evaluate the
+three delayed fusion curves on that SAME mask; they must not shrink it.
+100 ms integer-nanosecond grid, source interpolation gaps <=0.5 s, reference
+gaps <=0.05 s; no bridging missing intervals. Retain the missing right image
+at203.898841154s and sparse Kimera keyframe tail. Record exact masks/pairs.
+EVO1.36.3 direct CLI SE3/no-scale ATE, reference-distance delta0.5m consecutive
+translation/rotation RPE, segmented path lengths. Pool RPE errors from the
+individual contiguous segments; no distance pair crosses a gap. Verify CLI
+archives against EVO API and reread saved error arrays/statistics.
+
+New full-saved native-cadence scoring is CP103 only, distinct from common-mask
+scores. Reuse verified CP95/91 full-saved archives where shown, explicitly
+labeling them historical/reused. Record per-curve coverage, gaps, supported
+path/reference length and the full polyline including gap chords separately.
+If the new common mask equals an old mask, verify reproduction of its scores.
+
+CP103 has a changed Kimera backend and is ON-only; CP95 OFF is a historical
+baseline, not a fresh same-binary OFF control. CP91 was source-only, so compute
+no fusion value for it. Exclude failed CP99 ON entirely. No claim that this
+comparison isolates the correction's causal effect, proves randomness, solves
+GLIM ATE, or calibrates uncertainty. IE-TC shares CPT7 and is not independent
+prism GT; path is an estimated polyline, not physical travel. Persistent peer
+correlation/native-only outgoing FALSE and experimental Alpha noise remain.
+
+Admission: verify CP103/95/91 terminal hashes, current pinned8120 inputs and
+saved frame/coverage/receiver gates; confirm no active experiment/evaluator and
+containers stopped before starting. Preserve used inputs before/after. Finish
+with a separate saved archive verification, terminal output manifest and the
+Hesai667 checkpoint check. No heartbeat required for this finite saved-data job.

@@ -1,0 +1,43 @@
+CP-V85 — ETH1 separate-IMU source qualification, CBS OFF, 60 seconds
+User authorization: "ok start trying out this scenario" (GLIM CPT7 / Kimera Alphasense).
+One fresh, isolated 60-second source-only capture, offset0, rate0.20x, drain25s.
+No CBS ON, fusion, full run, new sequence, parameter sweep or automatic retry.
+GLIM: Hesai+CPT7, unchanged CP-K23 ETH1 sensor profile and CP82 current binary.
+Kimera: original front stereo, Alphasense IMU/body; current CP76/CP40/CP-K9
+binary, native smart factors25states, FL4Q0, native IMU override unset.
+CBS publish remains enabled; BOTH receive switches false, zero external inserts.
+Both persistent selectors retained but inactive. No temporary/persistent comparison.
+
+Kimera calibration changes ONLY: camera T_BS from CPT7 body to Alphasense body
+using the mission tf_minimal; identity IMU T_BS,200Hz, published author Allan
+white-noise densities and bias random walks. All other profile entries retained.
+Author source pinned at grand_tour_box commit3dcc98fc15694f9a96d7b9ecfc60097de8d1c914:
+box_calibration/box_calibration/calibration/allan_variances/alphasense/imu.yaml
+Its density^2*200 formula reproduces this bag's per-sample covariances; verified
+against box_utils/box_auto/python/box_auto/scripts/calibration/update_imu_intrinsics.py.
+Not tuned to trajectory metrics; author calibration is not a new covariance
+consistency certificate. Preserve gaps/clipping, do not edit input data.
+
+Preflight: author TF/profile agreement, proper rotations, stereo invariance,
+ordered finite IMU/header coverage, quiet startup, documented noise provenance,
+new paths/port11587, no competing estimator jobs, original containers stopped.
+Storage:2GiB conservative short-source allowance +8GiB reserve before capture;
+5GiB runtime floor, no deletion. Pin existing CP84/protected and Hesai667 evidence.
+Save exact effective params, process-loaded libraries, native output/covariance/
+revision logs, sensor receipt stamps and new process identity receipts.
+Only start after preflight passes; any failure closes safely and retains evidence.
+
+Evaluation: Method1 GLIM first absolute publications; Kimera newest absolute
+backend poses identified by native output IDs/exact header timestamps, not its
+incremental ROS positions. Convert both to the SAME prism physical point using
+the respective author body-to-prism transform. IE-TC is a shared-CPT7 reference,
+not independent prism GT. EVO1.36.3 only for ATE and reference-distance0.5m RPE,
+SE3 alignment without scale, common100ms mask plus native cadence separately.
+No smoothing, gap bridging (>0.5s), refined/finalized scoring, or new fusion claim.
+Estimate path means sample polyline, not physical travel.
+
+This first gate deliberately excludes fusion: its log adapter currently assumes
+central-body beliefs. No mislabelling Alphasense beliefs as CPT7. Frame conversion
+and wire covariance must be qualified before subsequent fusion/CBS-ON integration.
+Separate IMUs remove identical raw inertial samples, NOT peer feedback correlation.
+No build, default promotion, deletion, commit or push. Restore stopped containers.

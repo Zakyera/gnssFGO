@@ -1,0 +1,74 @@
+CP-V41 — BOUNDED EIG-2 VELODYNE CBS-ON: ALL INTEGRATION GATES PASSED
+
+ONE30.0s original-start5.7s capture,0.20x,25s drain. Native GLIM, CP-V40
+corrected Kimera and ONLINE source_wnoa fusion ran concurrently. Private Kimera
+SHA750b8c8ffed61d186ec8f071d4f58f068c9b63baccefcc9fc37803d77a118f06.
+Effective pre-playback process maps/selectors verified: CPV40=1/CPV38=0,
+CP-K9=1/FL4Q0/remove/25states. Original sensor profiles/calibration, Gaussian
+scale1, GLIM5s/MAIN batching/LOCAL every version, receiver7s/Qc x1.0/100ms
+supports/priors/EOF policy unchanged. No stronger weights or model tuning.
+
+Scope: bounded runtime admission, NOT full-sequence accuracy or a matched
+corrected OFF/ON comparison. No ATE/RPE scoring executed. Neither live delivery
+nor incremental equation checks establish nonlinear stationarity or calibrated
+covariance. This does not prove CBS-ON improves accuracy; full comparison pending.
+
+PASSED RECEIPTS
+Sensor timing:300raw scans;291GLIM poses over29.0010s, normalized timestamp
+max error2.384e-7s; all published scans IMU-bracketed. Native warmup omits initial
+scans; final included raw index298.3000CPT7 samples span29.9900s.300selected
+stereo pairs,298frontend processed within frozen startup allowance;148Kimera
+native outputs over29.5997s, no post-startup gaps above0.20001s.
+
+Source lifecycle:142GLIM-to-Kimera and143Kimera-to-GLIM injections,118scheduled
+Kimera retirements and118CP-K9 prior-refresh records, max cached-equation error
+1.4484e-10. No captured source recovery/rollback/CPV40 guard failure. No tuning
+or source retry. Internal IMU factor cost median889.28/max7221.79 remains an
+ON objective diagnostic, NOT RMSE or proof that the full ON pathology is fixed.
+
+LOCAL payloads:290GLIM IDs/12899versions (12609revisions);146Kimera IDs/
+3350versions and3350LOCAL queries. All16249belief version payloads and per-source
+ordering conserved exactly into receiver events, dense covariances unchanged.
+LOCAL provenance verified by pinned provider route/per-version rows; not an
+independent matrix dump/calibration test for every live revision.
+
+Receiver:19250events,434insertions+15765replacements+50before-initialization
+exclusions=16249received.0duplicates/stale/expired/unsupported-at-end,0pending.
+295ONLINE and295DELAYED fixed-lag-finalized outputs,71retained supports,
+175peak slots. Final partial clock cell10.024ms; no clock extension or EOF
+insertion.50initial exclusions remain explicit; do not claim zero omissions.
+Transport peak queue34; monitored peak backlog6. Receipt-to-processing p95
+0.02406s/max0.06429s; receiver support-cycle p950.09558s/max0.13592s. These
+are0.20x workload measurements, not a real-time capability certificate.
+
+Validation files are under:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_on_refresh_smoke_cpv41_20261029/prepared/full_on_source/
+  velodyne_validation.json,local_provenance.json,candidate_validation.json
+/home/yeranis/results/eig2_on_refresh_smoke_cpv41_20261029/on/validation.json
+Source/control/receiver journals and all covariances/revisions retained beside
+the source. complete.json and closeout.json certify this BOUNDED capture.
+
+CLEANUP / INTEGRITY
+All source/receiver/ROS owned jobs exited; both originally stopped containers
+restored. Launcher120021/controller120028 absent on final host check. Scoped
+inhibitor exited.6184protected files unchanged; four-sequence Hesai checkpoint
+667files/originals verifies. Existing Rerun viewer unchanged. No deletion/push.
+PRELAUNCH_REVIEW.txt preserves a metadata-label correction; no capture retry.
+
+FULL MATCHED PAIR: NOT LAUNCHED — STORAGE ADMISSION FAILED
+full_pair_storage_forecast.json records actual original allocated sizes:
+OFF2686763008bytes, ON2750488576bytes (~5.06GiB pair). Available10568798208bytes
+(9.84GiB). Even repeating those exact sizes leaves only7.34GiB before ON,
+below the unchanged8GiB launch gate. With25% growth headroom the pair needs
+12165273600bytes (11.33GiB) initially,1.49GiB more than currently available.
+Free at least2GiB more (3GiB recommended) or select another output filesystem
+before the full corrected OFF/ON pair. No storage guards relaxed, partial full
+pair launched, evidence deleted, or output silently redirected.
+
+NEXT AUTHORIZED WORK, ONCE SPACE EXISTS
+Prepare a NEW full355.02s EIG-2 Velodyne matched OFF then ON with this exact
+CP-V40 backend in BOTH modes and otherwise frozen settings. Gate OFF before
+ON; score direct EVO Method1 ATE/0.5m reference-distance translation+rotation
+RPE/path/common coverage and revisions, with Method2 separately if requested.
+Do not use old ON versus new OFF as the matched algorithm comparison. Do not
+rerun CP-V41, change Qc, or promote production defaults from this smoke result.

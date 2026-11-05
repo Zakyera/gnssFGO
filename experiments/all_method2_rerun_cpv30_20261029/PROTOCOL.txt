@@ -1,0 +1,34 @@
+CP-V30: saved Rerun method-2 scenes, 2026-10-29
+
+User requests all sequences' method-2 trajectories in reusable RRD files.
+Scope: seven original CP-V28 matched pairs, four Hesai and three Velodyne.
+Use existing validated method-2 products, not new chaining/replays/estimator runs.
+Do not mix the separate fresh ETH1 CP-V29 OFF capture with an old ON capture.
+Original Qc1.0, not the Leica-2 Qc0.25/0.1 ablations. Failed ARC prefixes excluded.
+
+Each standalone RRD has CBS OFF and ON full-scene tabs, four trajectories:
+IE-TC reference blue, GLIM method2 green, native incremental Kimera orange,
+fusion method2 red. All native saved points, no smoothing or resampling.
+Preserve publication gaps: >500ms estimator / >50ms reference unconnected.
+Keep isolated samples visible. No covariance or velocity invented.
+Use CP-V28's common-prism comparison and one SE3 no-scale rigid fit per product
+from its frozen common mask; the displayed full native trajectories are NOT
+cropped to the mask. Independently reproduce reported common ATE and native
+path lengths before export. Retain exact timestamps and alignment metadata.
+
+Grey point clouds use all available saved ON GLIM submaps as environment only.
+Transform their original native GLIM-world coordinates with the original
+CP-V10 ON first-published rigid fit into the SAME reference ENU frame/origin.
+Do not apply method2's drift-dependent fit to the corrected map, warp the map,
+or suggest a refined cloud is independent truth or the incremental trajectory.
+Validate saved submap frames against original IMU odometry. Record coverage:
+all saved submaps does not imply a complete environment map of the mission.
+
+Output: /home/yeranis/results/rerun_method2_all_sequences_20261029/
+Seven .rrd files, README.txt and reusable local opener. Supporting arrays,
+provenance, checks and scripts here. Exclusive creation; preserve old outputs.
+Use installed evo/Rerun environments. No installation, containers, builds,
+tuning, source/receiver replay, deletion, commits or pushes. Pin inputs and
+verify their hashes afterward. Decode every RRD and compare every path vertex,
+line segment and cloud point exactly. Inspect representative native rendering.
+IE-TC shares CPT7; no independent prism-GT or equal-latency claim.

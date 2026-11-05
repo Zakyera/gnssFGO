@@ -1,0 +1,139 @@
+CP-K6 — fresh native equations with an immutable marginal prior
+2026-10-19. SYNTHETIC NUMERICAL GATE PASSED; NOT A KIMERA REPAIR CERTIFICATE.
+
+Outcome
+-------
+There is a mathematically consistent way to evaluate surviving native IMU
+equations at a corrected state while retaining the native marginal prior's
+original coordinates and information. The test validates that operation; it
+does NOT implement it in Kimera's incremental backend or demonstrate that it
+fixes CP-K5. No dataset, source estimator, fusion or trajectory scoring ran.
+
+This reuses FL4p's OriginalChartPrior.h unchanged. The new work is a coupled
+Pose3/velocity/bias/IMU regression, including real iSAM2 external-factor removal
+and marginalization. It is not a new optimizer or a revival of FL4q.
+
+Why this gate, rather than another sequence
+-----------------------------------------
+FL4n already ruled out the proposed old-chart cache/assembly mismatch. FL4p
+showed that at update89 the surviving boundary IMU's old-chart model differed
+strongly from its current-state derivative, while the latter agreed with
+finite differences. CP-K4b separated the ordinary OFF backend from FL4q's
+additional smart-factor acceptance failure. CP-K5 then showed temporary ON
+can still reach the existing staged-residual rollback with ordinary iSAM2.
+Those are separate observations. CP-K6 does not prove that one stale factor
+alone caused CP-K5's entire trajectory or that standard GTSAM is defective.
+
+Exact small fixture
+-------------------
+Three states, each Pose3, velocity and ConstantBias; two actual local GTSAM
+manifold-preintegrated ImuFactors, two bias-between factors, and pose/velocity/
+bias priors on state0. Ten synthetic 20ms IMU samples per interval, gravity9.81.
+One disagreeing dense-covariance temporary BetweenFactor<Pose3>(x0,x1).
+The precise constants and prescribed state displacements are in test.cpp;
+they were set before execution, not fitted to ETH1 or selected for ATE.
+
+Native iSAM2 inserts all factors, removes the external factor by its actual
+factor slot, then marginalizes x0/v0/b0. There are three genuine fixed boundary
+keys afterward, two surviving native factors, and no external pose factor.
+Relinearization is disabled ONLY in this fixture's elimination stage to hold
+the input chart fixed for the independent reference; this is not a proposed
+production setting. Test displacements are explicitly prescribed, not a
+reproduction of Kimera's saved state or a claimed optimizer convergence path.
+
+The native-only Schur result is checked against independent dense Eigen LDLT
+elimination of the same whitened equations, including Hessian, RHS and constant.
+Keeping the external factor during elimination is a negative control only.
+Current-state checks use four nonzero displacements (scales .25,.5,1,-.75)
+and zero displacement, two finite-difference steps (1e-6,5e-7), all30 surviving
+tangent coordinates. Only native IMU/bias and original-prior factors remain.
+
+Mathematics and what is preserved
+--------------------------------
+Keep the marginal's original anchor theta and Gaussian coefficients H,eta,c:
+  d(X) = Local(theta,X)
+  E_prior(X) = 0.5*d(X)' H d(X) - eta' d(X) + 0.5*c.
+At current X*, let d0=Local(theta,X*) and
+  J = derivative of Local(theta,Retract(X*,epsilon)) at epsilon=0.
+The prior's local Gaussian in the current tangent has
+  H* = J' H J
+  eta* = J' (eta - H d0)
+  c* = d0' H d0 - 2 eta' d0 + c.
+Fresh native factors must be expressed in the SAME tangent as that local model.
+
+The original anchor and coefficients never change. This preserves the saved
+prior ENERGY as a function of X and its first derivative. H* is the transported
+Gauss-Newton approximation, not the exact nonlinear Hessian including chart
+curvature. It does not recreate the original eliminated nonlinear measurements.
+Simply resetting theta to X* while retaining H,eta,c is wrong: the negative
+control changes energy. Simply clearing iSAM2's fixed-variable flags is not
+validated either. The existing reference helper uses numerical chart Jacobians;
+CP-K6 is not a performance benchmark or production implementation.
+
+Results (relative errors normalized by 1 + reference norm)
+--------------------------------------------------------
+Native Schur vs dense H/RHS/constant:                 2.504305e-14
+Actual iSAM2 removed-peer prior vs native dense:      1.864217e-14
+Maximum original-prior energy discrepancy:          0
+Maximum fresh full gradient vs finite differences:  2.669651e-10
+Maximum native IMU/bias gradient vs FD:              9.305763e-11
+Old-model gradient mismatch at zero displacement:   2.578964e-11
+Old-model mismatch at nonzero displacements:         .002544--.011046
+Wrong anchor-reset prior energy change:              2.582326
+Retained-peer control information-matrix change:     .049416 (normalized)
+
+All predeclared numerical gates pass. The nonzero stale-model discrepancy
+here is modest; this synthetic test does NOT reproduce FL4p's enormous runtime
+discrepancy or prove an entire nonlinear solve will converge after refresh.
+
+Two Release executions produce byte-identical metric outputs. Focused ASan/
+UBSan passes; installed vendor DSOs are uninstrumented and leak detection is
+disabled. Anchors, prior coefficients, native equations at original inputs and
+the external factor's error are unchanged after all queries. Removal-before-
+marginalization excludes the explicit external factor's information in this
+fixed-chart fixture. State/linearization choices may still carry past CBS
+influence; this is NOT a statistical-independence or no-double-counting proof.
+
+Build history and isolation
+---------------------------
+release_a1 failed compilation before execution because this new harness omitted
+GTSAM's bundled Eigen include directory. That build-harness include was corrected
+to match the installed library; no model, input, tolerance or estimator changed.
+release_a2 compiled, linked and passed twice; san_a1 compiled, linked and passed.
+The installed libgtsam.so.4.3a1 is used, not a rebuilt GTSAM/CBS/Kimera binary.
+No source/default/guard/covariance setting changed. Protected inputs/builds are
+checked in validation.json. Containers are restored to their original stopped
+state after the test jobs exit. No commit or push.
+
+Decision / smallest next integration requirement
+-----------------------------------------------
+This closes only the mathematical coordinate/information gate. A separate,
+isolated incremental integration is still required before any sequence replay:
+
+1. Preserve each generated marginal prior with its own immutable original
+   anchor and coefficients throughout later marginalization/slot lifecycles.
+2. Refresh retained native nonlinear equations at the actual current state,
+   and explicitly put ALL equations used together into consistent coordinates.
+   The integration must reconcile iSAM2 theta/delta/cached factors/fixed keys;
+   changing the covariance, merely forceFullSolve, or blindly unfixing anchors
+   is not that operation. Prefer a narrow incremental path, not a global
+   optimizer/landmark wrapper replacing ordinary Kimera updates.
+3. Demonstrate that actual incremental removal/update reproduces this dense
+   local system, keeps the no-CBS-retirement path unchanged, and does not alter
+   native smart-factor lifecycle behavior. This is a linearization-policy
+   candidate, NOT evidence that historical GTSAM fixed-lag semantics were a bug.
+
+Only after that integration gate should one previously localized short prefix
+be considered. Full ETH1 OFF/ON remains blocked; no automatic replay is
+authorized by this report. Smart-factor consistency, nonlinear convergence,
+performance and long-sequence stability are not certified here.
+
+Evidence
+--------
+H = /home/yeranis/repos/gnssFGO/experiments/kimera_prior_refresh_cpk6_20261019
+R = /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/kimera_prior_refresh_cpk6_20261019
+H/PROTOCOL.txt, test.cpp, prepare.py, build.py, final_checks.py, validation.json.
+R/OriginalChartPrior.h (unchanged FL4p reference), protected_before.json,
+inputs.json, release_a1/compile.log, release_a2/commands.json and run0/run1.log,
+san_a1/commands.json and run0.log; dependency paths and passed.json in each
+successful build directory. validation.json records final code/helper hashes.

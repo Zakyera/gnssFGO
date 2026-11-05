@@ -1,0 +1,81 @@
+{
+  "passed": true,
+  "scope": "Private header candidate; no deployed estimator or live capture",
+  "exact_anchor_cases": 1100,
+  "prior_cp100_cases_rechecked": 1098,
+  "baseline_rejections": 126,
+  "candidate_rejections": 0,
+  "moved_anchor_comparisons": 66660,
+  "moved_linearization_relative_error": 0.0,
+  "moved_objective_difference": 0.0,
+  "negative_controls": 15,
+  "example": {
+    "case": "synthetic_nearby_shape2_index20",
+    "baseline_error": 1.5081297469405463e-08,
+    "baseline_rejected": true,
+    "candidate_error": 0
+  },
+  "baseline_error_reproduction_max_absolute_difference": 0,
+  "synthetic_lifecycle": [
+    {
+      "candidate": false,
+      "origin": 0.0,
+      "boundaries": 15,
+      "promotions": 15
+    },
+    {
+      "candidate": true,
+      "origin": 0.0,
+      "boundaries": 15,
+      "promotions": 15
+    },
+    {
+      "candidate": true,
+      "origin": 82.15889280701087,
+      "boundaries": 15,
+      "promotions": 15
+    },
+    {
+      "candidate": true,
+      "origin": 1000.0,
+      "boundaries": 15,
+      "promotions": 15
+    }
+  ],
+  "synthetic_near_origin_baseline_pose_difference": 3.4211388289180104e-49,
+  "harness_correction": {
+    "initial_failure_preserved": true,
+    "candidate_headers_unchanged": true,
+    "cause": "Test demanded bitwise equality to unsymmetrized raw matrix instead of stored Gaussian.",
+    "raw_vs_stored_relative_error": 1.8024912967481876e-17
+  },
+  "lifecycle_harness_correction": {
+    "failed_stages_preserved": true,
+    "baseline_crashed_before_first_marginal_prior": true,
+    "cause": "Absolute key-index ordering groups violated CCOLAMD range under incremental subsets; test now uses 0 oldest / 1 remaining.",
+    "corrected_fixture_checks_leaf_and_retained_key_counts": true,
+    "gdb_unavailable_no_installation": true,
+    "asan_attempt_inconclusive": true
+  },
+  "diagnostics": {
+    "summary_has_separate_errors_slot_keys": true,
+    "typed_exception_retains_matrices_anchor": true,
+    "typed_fixture_export_verified": true,
+    "live_matrix_export_handler_installed": false
+  },
+  "unchanged": {
+    "threshold": 1e-08,
+    "original_cache_check": true,
+    "moved_anchor_code": true,
+    "estimator_binaries": true,
+    "settings": true
+  },
+  "limits": [
+    "Actual CP99 failed theta/prior was not recorded; historical cause remains unproven.",
+    "Synthetic iSAM2 lifecycle is not the full Kimera/CBS backend integration or a live sequence.",
+    "The fast path uses exact value equality after validation, never a near-anchor epsilon.",
+    "Failure matrix/anchor fields are accessible to a typed handler; only summary appears automatically in standard exception logs.",
+    "No covariance calibration, GLIM ATE causality, timing or full-run success claim."
+  ],
+  "next_step": "Separate private Kimera/CBS integration build and regression validation; deploy or launch a live run only after explicit approval."
+}

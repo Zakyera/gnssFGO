@@ -1,0 +1,34 @@
+2026-10-28 CP-V28 storage-only continuation review
+
+Original replay.py stopped BEFORE launching Hesai EIG-2 ON at its SSD >8GiB
+guard. Three completed cases (ETH1 OFF/ON, EIG-2 OFF) passed every parity gate,
+were fully archived and verified. Original replay_failed.txt, progress, launch,
+finish and archives are retained. Original finalizer exited at the detected
+failure without scoring, starting a replay or touching a container.
+docker top after failure shows only the container's original zsh entrypoint;
+there is no owned replay/controller active.
+
+Cause: the task started with only about8.05GiB SSD free. New GLIM products were
+staged in RAM, but unrelated filesystem growth still crossed8GiB. The actual
+replay output filesystem is tmpfs, which has >5.8GiB free after the three cases.
+The SSD8GiB guard inherited from on-disk replay is not the correct capacity
+test for this RAM-staged workflow. This is a storage preflight correction, not
+permission to discard data or to relax any numerical/event/parity acceptance.
+
+Continue ONLY the nine unstarted cases in a fresh explicit tmpfs attempt root,
+using the IDENTICAL executable, arguments, environment and original journals.
+Do not retry any completed case. Verify all original input pins and existing
+three archive/publication hashes before continuing. Keep both attempt receipts.
+
+Capacity checks: before each remaining replay require >2.75GiB free on the
+actual tmpfs output filesystem, and SSD headroom after all retained archives
+PLUS a conservative220MiB archive/publication budget per unstarted case must
+remain >4GiB. Existing archives are114--120MB each. Check actual sizes after
+each case; stop without retry if either condition fails. Final persistent copy
+uses actual bytes and must leave >4GiB. All archived member hashes are verified
+before deleting ONLY a new replay's duplicate RAM working tree. Preserve failed
+evidence. Restore the staged GLIM products before scoring and closeout.
+
+No source rerun/build/model/parameter/evaluation-mask change. Existing math and
+parity guards are unchanged. Original PROTOCOL.txt and replay.py stay immutable;
+this supplemental record documents the infrastructure-only capacity correction.

@@ -1,0 +1,65 @@
+CP-K16h — paced, lossless sixty-second identical-input correctness gate
+2026-10-20. Explicit user "Ok proceed" after K16g diagnostic pacing proposal.
+
+ONE new GLIM-only OFF diagnostic in k16h_source_1. Preserve K16f success and
+K16g failure unchanged. No Kimera, fuser, inbound CBS, tuning or promotion.
+Reuse the exact K16g sixty-second paired observer DSO and K16a/CP-I1/CP-I3
+estimator binaries, profiles, solver equations and numerical/lifecycle gates.
+Do not rebuild the observer or an estimator. Compile only a private input driver.
+
+Reuse GlimROS direct-input methods, existing point conversion/TimeKeeper and
+wait_for_odometry_idle, as in the existing glim_rosbag driver. Merge the two
+original bags in record-time order within the identical sixty-second window.
+No invented samples, extra IMU tail, dropped scans or changed timestamps.
+Preflight checks actual normalized scan-end IMU coverage before source launch.
+Do not use unnormalized absolute per-point times as a relative duration.
+
+One scan may be outstanding in the estimator. Feed following IMU until its physical
+end is covered, then require its existing on_insert_frame callback followed
+by the idle barrier before releasing more records. The callback acknowledgement
+avoids the brief queue-transfer zero-workload race, including initialization
+frames that have no optimized output. Never wait for a scan before feeding its
+required IMU. Initial read-only preflight found another LiDAR record before
+the previous scan's covering IMU. Preserve that failed preflight: the existing
+glim_rosbag strict-next-scan assumption is unsuitable for this bag ordering.
+Before any source capture, buffer those LiDAR records (maximum10; fail beyond
+it), never enqueue two scans in the estimator. This preserves each stream's
+exact records/order but defers LiDAR insertion relative to IMU across streams.
+Save the expected dispatch plan in a new coverage_2 preflight; require actual
+insert events to equal it. The comparison remains same prepared inputs between
+solver histories, not identical thread scheduling to the old ROS capture.
+The second read-only preflight found final scan598 extends about21ms past
+the last selected IMU. Preserve this preflight too. The original ROSnode
+already calls wait(true) at bag end; AsyncOdometryEstimation::join sets
+end_of_sequence, allowing the terminal scan to finish with selected IMU.
+Match that existing terminal behavior, not a new integration rule or extra
+IMU tail. coverage_3 must show597 fully covered scans and exactly this one
+terminal scan (<100ms uncovered, its start covered). All598 must complete.
+Record native_eos explicitly in pace.csv. Numerical/lifecycle gates unchanged.
+The private driver build1 compile error and preflight assumptions are retained;
+no estimator run took place during these preparation corrections.
+
+Simulated clock follows original record time; wall pacing is completion-driven,
+NOT fixed0.20x or a speed benchmark. Record all direct input events, per-scan
+acknowledgements, raw passive receipts and native outputs. Keep original source
+and batched companion independent with identical prepared factor inputs.
+All original covariance/state/Gaussian/inlier/cache checks stay unchanged.
+
+Before launch: immutable input/profile/build hashes, no competing processes,
+read-only coverage preflight, isolated driver build, sealed harness manifest.
+No source smoke/retry: the unchanged observer already passed its existing
+plumbing gate. Per-scan watchdog180wallseconds, whole diagnostic3600seconds;
+these guard the exhaustive checker, not throughput or estimator acceptance.
+
+Afterward require all598Hesai/5986IMU actual insert events and acknowledgements,
+consecutive paired updates spanning>58.5s,>500retirement updates,>40000pair
+queries,<=51active poses,>=590native outputs spanning>58.8s,tail<.3s and no
+missing native sequence IDs. Same K16g numerical bounds and LOCAL provenance,
+provider-to-wire equality, finite SPD, exact effective settings/library maps.
+Only new diagnostic log parameter and output/recording paths may differ.
+All jobs must exit cleanly; preserve failure and stop without automatic retry.
+
+Verify2026protected/7pinned files and five source fingerprints before/after.
+Restore originally-stopped containers after owned work finishes. Save report,
+result and ledger; no push, default promotion or subsequent experiment.
+Separate Kimera11.10s history/7s receiver retention remains unresolved.

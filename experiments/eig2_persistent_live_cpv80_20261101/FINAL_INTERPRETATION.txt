@@ -1,0 +1,95 @@
+CP-V80 — SUPPLEMENTAL FINAL INTERPRETATION, 2026-11-01
+==================================================
+This supplement reads the completed controller results. It does not replace
+REPORT.txt, results.json, complete.json, or any pinned output. No capture,
+validation, evaluation, solver, or weight change was made during closeout.
+
+OUTCOME
+Full 355.02s EIG-2 Hesai live CBS-ON finished at02:54:46 local. GLIM remained
+active_window_temporary; Kimera used CP76 general persistent; concurrent gnssFGO
+used the original7s WNOA Qc x1.0.1744 injections were observed in each direction.
+This is actual fresh live feedback, unlike CP78's conditional saved-belief replay.
+There is no fresh OFF control, so no newly matched OFF/ON improvement is claimed.
+
+Method1 uses the first/newest absolute publication, not finalized hindsight or
+increment accumulation. Kimera absolute backend rows were matched to all1762
+exact native timestamps. EVO1.36.3 supplies all ATE/RPE; SE3 alignment, no scale;
+reference-distance delta0.5m translation/rotation RPE. IE-TC shares CPT7 and is
+NOT independent prism ground truth. Paths are estimated polylines, not travel.
+
+FULL SAVED — native cadence, native support, no gap chords
+Product        ATE m     tRPE m    rRPE deg   Path m     Reference m
+GLIM           .048002   .018141    .574969   193.1909   188.0976
+Kimera         .321950   .044498    .733095   190.0336   186.6052
+Fusion ONLINE  .212946   .052010   3.151577   224.3963   188.1258
+
+Separate delayed product, NOT ONLINE/full-history:
+Fusion DELAYED .211210   .016378    .667703   188.8831   188.1258
+
+Coverage: GLIM3543rows,0.716397..354.915713s,354.199316s supported(99.7688%);
+Kimera1762rows,0.199946..354.997129s,353.197194s supported(99.4866%);
+fusion3545ONLINE+3545finalized,0.585384..354.985384s,354.4s(99.8254%).
+Kimera gaps0.599996/0.999993s are not bridged. Its including-gap-chord polyline
+is190.0567m, not the190.0336m no-gap value above. Native RPE pair counts349/
+327/348 respectively; native cadence and reference support differ by output.
+
+COMMON100ms MASK —3526queries,352.3s/355.02s(99.2338%),348RPEpairs
+Product        ATE m     tRPE m    rRPE deg   Path m     Reference m
+GLIM           .047793   .016789    .634772   189.9111   188.0112
+Kimera         .321577   .037245    .845746   188.5196   188.0112
+Fusion ONLINE  .212067   .039614   2.279666   201.1290   188.0112
+Separate delayed product:
+Fusion DELAYED .211257   .016180    .670369   187.1500   188.0112
+16queries excluded; no interpolation across gaps>0.5s or reference gaps>0.05s.
+The common-grid path samples different positions/cadence than native paths.
+Do not silently substitute the smaller common ONLINE path for its native path.
+
+WHAT THIS SUPPORTS
+Kimera's live persistent output remains close to CP78 persistent replay:
+full-saved ATE.321950 vs.319811m, path190.0336 vs189.8771m, previous-state
+revisionp95.031687 vs.031256m. CP78 is historical context, not a matched live
+control. The severe temporary-run zigzag signature did not recur at comparable
+scale in these retained statistics. No stronger weights or output smoothing
+was used. This is not proof of globally correct CBS, isolation of retention
+alone, a new OFF/ON comparison, or performance on another sequence/sensor.
+
+ONLINE fusion still needs separate attention:224.3963m vs188.1258m reference
+(19.28% excess) at native timestamps, despite.212946m ATE. DELAYED path is
+188.8831m(+0.40%) with similar ATE, but it cannot replace ONLINE performance.
+Neither value demonstrates physical vehicle motion. No further test is launched.
+
+REVISIONS, TIMING, PAYLOADS AND OMISSIONS
+Kimera1748paired steps: previous-state translation revision median.007663m,
+p95.031687m,max.216949m,none>0.5m/1m; rotationp95.422113deg,max3.28056deg.
+13missing step IDs:4,1555,1564,1583,1598,1600,1610,1679,1683,1684,1714,1758,1760.
+These are not nonlinear stationarity checks. Explicit persistent absorption
+counts were not logged; do not infer them from the zero temporary retirements.
+Kimera optimize mean249.563ms,p95480.473ms,max563.219ms; receiver support-service
+p9575.314ms,receipt-to-processingp9522.835ms. Measured at0.20x, not real-time proof.
+Native IMU cost median736.852/max7054.49 is whitened factor cost, not pose error.
+
+All213753transported covariance versions conserved exactly; payload error0.
+GLIM170309versions/3541IDs, Kimera43444versions/1748IDs. Median covariance traces:
+               rotation rad2     translation m2      minimum eigenvalue
+GLIM           6.86406166e-9      1.87291852e-6        1.56383563e-10
+Kimera         1.11653553e-8      5.90521560e-7        2.34591922e-10
+These aggregate transported marginals do not establish calibrated uncertainty,
+relative factor strength, independence or comparability across state/baseline
+samples. Source mean-only covariance alignment approximation remains unchanged.
+Receiver5286inserts/208416replacements,50pre-init exclusions,1terminalunsupported
+Kimera version1760->1761,0pending/stale/duplicate/expired. The terminal cell
+lacks the next100ms support; no future clock/state was fabricated. Not zero loss.
+
+Accepted limitation remains: Kimera outgoing LOCAL excludes explicit peer
+factors but contains absorbed GLIM information in its marginal prior. Returning
+this to GLIM/fusion may correlate or double-count evidence. Native-only outgoing
+information provenance is FALSE, not repaired by payload conservation passing.
+
+CLOSEOUT
+All capture/report stage receipts exit0;24EVOarchives checked, CLI/API error0,
+TUM roundtrip max1.78e-15. Supplemental host audit03:01:14 verifies1617protected
+hashes,192CP80terminal output hashes,218CP78terminal hashes and all667original
+Hesai checkpoint entries.20checked process identities absent, including launcher,
+supervisor/controller, source/receiver/bag and stages; both initially-stopped
+containers restored stopped. See post_closeout.json. No retries, new experiments,
+builds, tuning, default promotion, deletion, or push.

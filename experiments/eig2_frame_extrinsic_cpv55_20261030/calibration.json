@@ -1,0 +1,434 @@
+{
+  "passed": true,
+  "static_edges": 64,
+  "static_messages_transform_observations": 4928,
+  "static_max_change": 0.0,
+  "transforms": {
+    "alphasense_front_left": {
+      "T_body_sensor": [
+        [
+          -0.0007977038225004187,
+          -0.1719294153307197,
+          0.9851089481943855,
+          0.3695621856737892
+        ],
+        [
+          0.9998320382497031,
+          -0.018174559006492043,
+          -0.00236234933138625,
+          -0.10105041483527426
+        ],
+        [
+          0.018310078046134364,
+          0.9849416031161219,
+          0.17191503568038502,
+          0.06776662670501207
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "path": [
+        "cpt7_imu",
+        "box_base",
+        "alphasense_base",
+        "alphasense_front_left"
+      ],
+      "lever_arm_m": 0.38907545683754674
+    },
+    "alphasense_front_right": {
+      "T_body_sensor": [
+        [
+          -0.0006947417750559944,
+          -0.17148944104295946,
+          0.9851857129214976,
+          0.36837190506131845
+        ],
+        [
+          0.9999966536206291,
+          0.002335946885409306,
+          0.0011118002032563627,
+          0.009019595234238183
+        ],
+        [
+          -0.0024920034930565626,
+          0.985183188530398,
+          0.17148724429434603,
+          0.06911408870802833
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "path": [
+        "cpt7_imu",
+        "box_base",
+        "alphasense_base",
+        "alphasense_front_right"
+      ],
+      "lever_arm_m": 0.3749079497618525
+    },
+    "hesai_lidar": {
+      "T_body_sensor": [
+        [
+          0.006337677996823881,
+          -0.999979693819562,
+          0.0006676721826023718,
+          0.30252311281815153
+        ],
+        [
+          -0.9999103641277753,
+          -0.006329360956600256,
+          0.011798427850385075,
+          -0.042546924756587536
+        ],
+        [
+          -0.011793962331135891,
+          -0.0007423869718084222,
+          -0.9999301732191683,
+          -0.012840842673182529
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "path": [
+        "cpt7_imu",
+        "box_base",
+        "hesai_lidar"
+      ],
+      "lever_arm_m": 0.3057701127252044
+    },
+    "velodyne_lidar": {
+      "T_body_sensor": [
+        [
+          -1.0000000000000002,
+          -4.440892098500627e-16,
+          0.0,
+          -0.3864038000000001
+        ],
+        [
+          -4.4408920842707267e-16,
+          0.9999999967957115,
+          8.005358970774515e-05,
+          -0.0361097487304262
+        ],
+        [
+          -3.555093539897365e-20,
+          8.005358970774515e-05,
+          -0.9999999967957115,
+          0.1217761096751965
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "path": [
+        "cpt7_imu",
+        "box_base",
+        "base",
+        "velodyne_lidar"
+      ],
+      "lever_arm_m": 0.406744676050517
+    },
+    "cpt7_imu": {
+      "T_body_sensor": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "path": [
+        "cpt7_imu"
+      ],
+      "lever_arm_m": 0.0
+    }
+  },
+  "checks": [
+    {
+      "case": "Hesai_CP49",
+      "item": "T_lidar_imu",
+      "error": {
+        "rotation_deg": 1.7052106214679574e-08,
+        "translation_m": 2.015415730255123e-10,
+        "max_matrix": 2.9758489162451385e-10
+      }
+    },
+    {
+      "case": "Hesai_CP49",
+      "item": "LeftCamera_T_BS",
+      "error": {
+        "rotation_deg": 1.335831065928509e-10,
+        "translation_m": 5.319417812213934e-13,
+        "max_matrix": 1.934365861933074e-12
+      }
+    },
+    {
+      "case": "Hesai_CP49",
+      "item": "RightCamera_T_BS",
+      "error": {
+        "rotation_deg": 1.2379855961449315e-10,
+        "translation_m": 4.632663893539392e-13,
+        "max_matrix": 1.893437229921746e-12
+      }
+    },
+    {
+      "case": "Hesai_CP49",
+      "item": "IMU_T_BS",
+      "error": {
+        "rotation_deg": 0.0,
+        "translation_m": 0.0,
+        "max_matrix": 0.0
+      }
+    },
+    {
+      "case": "Hesai_CP54",
+      "item": "T_lidar_imu",
+      "error": {
+        "rotation_deg": 1.7052106214679574e-08,
+        "translation_m": 2.015415730255123e-10,
+        "max_matrix": 2.9758489162451385e-10
+      }
+    },
+    {
+      "case": "Hesai_CP54",
+      "item": "LeftCamera_T_BS",
+      "error": {
+        "rotation_deg": 1.335831065928509e-10,
+        "translation_m": 5.319417812213934e-13,
+        "max_matrix": 1.934365861933074e-12
+      }
+    },
+    {
+      "case": "Hesai_CP54",
+      "item": "RightCamera_T_BS",
+      "error": {
+        "rotation_deg": 1.2379855961449315e-10,
+        "translation_m": 4.632663893539392e-13,
+        "max_matrix": 1.893437229921746e-12
+      }
+    },
+    {
+      "case": "Hesai_CP54",
+      "item": "IMU_T_BS",
+      "error": {
+        "rotation_deg": 0.0,
+        "translation_m": 0.0,
+        "max_matrix": 0.0
+      }
+    },
+    {
+      "case": "Velodyne_CPV4",
+      "item": "T_lidar_imu",
+      "error": {
+        "rotation_deg": 1.3070360970969726e-11,
+        "translation_m": 1.734723475976807e-16,
+        "max_matrix": 2.2812037903195e-13
+      }
+    },
+    {
+      "case": "Velodyne_CPV4",
+      "item": "LeftCamera_T_BS",
+      "error": {
+        "rotation_deg": 1.335831065928509e-10,
+        "translation_m": 5.319417812213934e-13,
+        "max_matrix": 1.934365861933074e-12
+      }
+    },
+    {
+      "case": "Velodyne_CPV4",
+      "item": "RightCamera_T_BS",
+      "error": {
+        "rotation_deg": 1.2379855961449315e-10,
+        "translation_m": 4.632663893539392e-13,
+        "max_matrix": 1.893437229921746e-12
+      }
+    },
+    {
+      "case": "Velodyne_CPV4",
+      "item": "IMU_T_BS",
+      "error": {
+        "rotation_deg": 0.0,
+        "translation_m": 0.0,
+        "max_matrix": 0.0
+      }
+    }
+  ],
+  "stereo_left_T_right": [
+    [
+      0.9997836178521163,
+      0.020511133390051353,
+      0.0034656718812239506,
+      0.11007714414379981
+    ],
+    [
+      -0.020509529555753612,
+      0.9997895336035858,
+      -0.0004976887839296645,
+      -0.00046865825768304444
+    ],
+    [
+      -0.0034751506347857545,
+      0.0004265017930830763,
+      0.999993870693359,
+      -0.0012009309185740946
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "stereo_baseline_m": 0.11008469257116796,
+  "camera_T_lidar": {
+    "hesai_lidar": [
+      [
+        -0.9999634213935965,
+        -0.005544203405267307,
+        -0.0065128859511872925,
+        0.05707121199935232
+      ],
+      [
+        0.005466932475974761,
+        0.171309749631023,
+        -0.9852020515258072,
+        -0.06893093664463021
+      ],
+      [
+        0.006577881430618962,
+        -0.9852016197154555,
+        -0.17127317357346858,
+        -0.08003663220367302
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "velodyne_lidar": [
+      [
+        0.0007977038224999749,
+        0.9998335008334283,
+        -0.01823003784369689,
+        0.06652171336177136
+      ],
+      [
+        0.17192941533071973,
+        -0.01809571083727349,
+        -0.9849430548987747,
+        0.18198870869888867
+      ],
+      [
+        -0.9851089481943858,
+        -0.002348586908086089,
+        -0.17191522424406377,
+        -0.7355772273650927
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  "input_sha256": {
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/datasets/GrandTour/EIG-2/2024-11-03-13-59-54_tf_minimal.bag": "a5dad9fdc6eacfa8bae1e3617a0956fc7f89a28be7d316b44e8d9909d2030fbb",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eig2_velodyne_full_cpv4_20261024/prepared/input_profiles/glim_config/config_ros.json": "123981fa96be5ee1be3d213f12afd37be92eed92b744da1a63c1643aea6d215f",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/input_profiles/glim_config/config_sensors.json": "4727c6247db81d7317ceda5e43b60249598c7e32834c54bab35cc0b3d1afe449",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/input_profiles/glim_config/config_ros.json": "42060569a566fcdaf44f7c47b8f0f115cffe18e7055c43f8d8dc65c7ca2fdf1b",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/input_profiles/kimera_profile/LeftCameraParams.yaml": "e41263a165b75dc80e9bccbd884a79e555b84f129674c143c55706a2e3c0a7a2",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/input_profiles/kimera_profile/RightCameraParams.yaml": "a3ea74b0f5220774090ef9166e0b9b14e3143ffe7480a632409f627f1de08393",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/input_profiles/kimera_profile/ImuParams.yaml": "5ad9440e467332fb7bbf17768513245f87034c0e14a8baba9dffc910e12e5014",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/full_off_source/resolved_kimera_params.yaml": "1cce6b04b3dd66f262cbe54e0b91acd5f000f7b479642cc929a3ea54d008f9de",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/full_off_source/resolved_glim_params.yaml": "ce1414d00a9ccac5b1531d512deaf349b0ca41433e11e3b94e709f4b0a647568",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/full_off_source/kimera_profile/LeftCameraParams.yaml": "e41263a165b75dc80e9bccbd884a79e555b84f129674c143c55706a2e3c0a7a2",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/full_off_source/kimera_profile/RightCameraParams.yaml": "a3ea74b0f5220774090ef9166e0b9b14e3143ffe7480a632409f627f1de08393",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/full_off_source/kimera_profile/ImuParams.yaml": "5ad9440e467332fb7bbf17768513245f87034c0e14a8baba9dffc910e12e5014",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/full_off_source/glim_config/config_sensors.json": "4727c6247db81d7317ceda5e43b60249598c7e32834c54bab35cc0b3d1afe449",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/full_off_source/glim_config/config_ros.json": "42060569a566fcdaf44f7c47b8f0f115cffe18e7055c43f8d8dc65c7ca2fdf1b",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/full_on_source/resolved_kimera_params.yaml": "4fb6167b040fdab541b40b9c826d888d610957afc980ec7fa20af33ae2fc4e2d",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/full_on_source/resolved_glim_params.yaml": "a2c1ed44aed8540f33194767a61cc34dc68143fce215e07aaa781b211e0115ec",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/full_on_source/kimera_profile/LeftCameraParams.yaml": "e41263a165b75dc80e9bccbd884a79e555b84f129674c143c55706a2e3c0a7a2",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/full_on_source/kimera_profile/RightCameraParams.yaml": "a3ea74b0f5220774090ef9166e0b9b14e3143ffe7480a632409f627f1de08393",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/full_on_source/kimera_profile/ImuParams.yaml": "5ad9440e467332fb7bbf17768513245f87034c0e14a8baba9dffc910e12e5014",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/full_on_source/glim_config/config_sensors.json": "4727c6247db81d7317ceda5e43b60249598c7e32834c54bab35cc0b3d1afe449",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/full_on_source/glim_config/config_ros.json": "42060569a566fcdaf44f7c47b8f0f115cffe18e7055c43f8d8dc65c7ca2fdf1b",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_glim_first_edge_cpv54_20261030/prepared/input_profiles/glim_config/config_sensors.json": "4727c6247db81d7317ceda5e43b60249598c7e32834c54bab35cc0b3d1afe449",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_glim_first_edge_cpv54_20261030/prepared/input_profiles/glim_config/config_ros.json": "42060569a566fcdaf44f7c47b8f0f115cffe18e7055c43f8d8dc65c7ca2fdf1b",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_glim_first_edge_cpv54_20261030/prepared/input_profiles/kimera_profile/LeftCameraParams.yaml": "e41263a165b75dc80e9bccbd884a79e555b84f129674c143c55706a2e3c0a7a2",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_glim_first_edge_cpv54_20261030/prepared/input_profiles/kimera_profile/RightCameraParams.yaml": "a3ea74b0f5220774090ef9166e0b9b14e3143ffe7480a632409f627f1de08393",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_glim_first_edge_cpv54_20261030/prepared/input_profiles/kimera_profile/ImuParams.yaml": "5ad9440e467332fb7bbf17768513245f87034c0e14a8baba9dffc910e12e5014",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_glim_first_edge_cpv54_20261030/prepared/full_off_source/resolved_kimera_params.yaml": "229d5d01c5275630ad71cd8485f30e28a6fd3fe24b8512b736527c19640166cb",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_glim_first_edge_cpv54_20261030/prepared/full_off_source/resolved_glim_params.yaml": "77b00d976b31f9cf1259132d0130127f93fba9541994f41930f1efe1d088e118",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_glim_first_edge_cpv54_20261030/prepared/full_off_source/kimera_profile/LeftCameraParams.yaml": "e41263a165b75dc80e9bccbd884a79e555b84f129674c143c55706a2e3c0a7a2",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_glim_first_edge_cpv54_20261030/prepared/full_off_source/kimera_profile/RightCameraParams.yaml": "a3ea74b0f5220774090ef9166e0b9b14e3143ffe7480a632409f627f1de08393",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_glim_first_edge_cpv54_20261030/prepared/full_off_source/kimera_profile/ImuParams.yaml": "5ad9440e467332fb7bbf17768513245f87034c0e14a8baba9dffc910e12e5014",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_glim_first_edge_cpv54_20261030/prepared/full_off_source/glim_config/config_sensors.json": "4727c6247db81d7317ceda5e43b60249598c7e32834c54bab35cc0b3d1afe449",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_glim_first_edge_cpv54_20261030/prepared/full_off_source/glim_config/config_ros.json": "42060569a566fcdaf44f7c47b8f0f115cffe18e7055c43f8d8dc65c7ca2fdf1b",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_glim_first_edge_cpv54_20261030/prepared/full_on_source/resolved_kimera_params.yaml": "0960e3d9d0ba200147c19a07e8b4579129f6be56e9858962b4a6db9d8088d30c",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_glim_first_edge_cpv54_20261030/prepared/full_on_source/resolved_glim_params.yaml": "a672806fbb59830cc7dc3304598be9224e674cab4016cbf4287575b0af5da44c",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_glim_first_edge_cpv54_20261030/prepared/full_on_source/kimera_profile/LeftCameraParams.yaml": "e41263a165b75dc80e9bccbd884a79e555b84f129674c143c55706a2e3c0a7a2",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_glim_first_edge_cpv54_20261030/prepared/full_on_source/kimera_profile/RightCameraParams.yaml": "a3ea74b0f5220774090ef9166e0b9b14e3143ffe7480a632409f627f1de08393",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_glim_first_edge_cpv54_20261030/prepared/full_on_source/kimera_profile/ImuParams.yaml": "5ad9440e467332fb7bbf17768513245f87034c0e14a8baba9dffc910e12e5014",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_glim_first_edge_cpv54_20261030/prepared/full_on_source/glim_config/config_sensors.json": "4727c6247db81d7317ceda5e43b60249598c7e32834c54bab35cc0b3d1afe449",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_glim_first_edge_cpv54_20261030/prepared/full_on_source/glim_config/config_ros.json": "42060569a566fcdaf44f7c47b8f0f115cffe18e7055c43f8d8dc65c7ca2fdf1b",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eig2_velodyne_full_cpv4_20261024/prepared/input_profiles/glim_config/config_sensors.json": "c1f070aff9418f965741b28fa1e56709ab3f713bf623fe0fbe0c9b8fee282e68",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eig2_velodyne_full_cpv4_20261024/prepared/input_profiles/kimera_profile/LeftCameraParams.yaml": "e41263a165b75dc80e9bccbd884a79e555b84f129674c143c55706a2e3c0a7a2",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eig2_velodyne_full_cpv4_20261024/prepared/input_profiles/kimera_profile/RightCameraParams.yaml": "a3ea74b0f5220774090ef9166e0b9b14e3143ffe7480a632409f627f1de08393",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eig2_velodyne_full_cpv4_20261024/prepared/input_profiles/kimera_profile/ImuParams.yaml": "5ad9440e467332fb7bbf17768513245f87034c0e14a8baba9dffc910e12e5014",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eig2_velodyne_full_cpv4_20261024/prepared/full_off_source/resolved_kimera_params.yaml": "191a44ca8f739ff061a460f1cabd4468ab88b5a3a0061bc5ee991ccf25519bdc",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eig2_velodyne_full_cpv4_20261024/prepared/full_off_source/resolved_glim_params.yaml": "002c3de3b4942a8f52d69be39c12ff15e7dfe86d3042dc7eff4c04e4bc858b5a",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eig2_velodyne_full_cpv4_20261024/prepared/full_off_source/kimera_profile/LeftCameraParams.yaml": "e41263a165b75dc80e9bccbd884a79e555b84f129674c143c55706a2e3c0a7a2",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eig2_velodyne_full_cpv4_20261024/prepared/full_off_source/kimera_profile/RightCameraParams.yaml": "a3ea74b0f5220774090ef9166e0b9b14e3143ffe7480a632409f627f1de08393",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eig2_velodyne_full_cpv4_20261024/prepared/full_off_source/kimera_profile/ImuParams.yaml": "5ad9440e467332fb7bbf17768513245f87034c0e14a8baba9dffc910e12e5014",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eig2_velodyne_full_cpv4_20261024/prepared/full_off_source/glim_config/config_sensors.json": "c1f070aff9418f965741b28fa1e56709ab3f713bf623fe0fbe0c9b8fee282e68",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eig2_velodyne_full_cpv4_20261024/prepared/full_off_source/glim_config/config_ros.json": "123981fa96be5ee1be3d213f12afd37be92eed92b744da1a63c1643aea6d215f",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eig2_velodyne_full_cpv4_20261024/prepared/full_on_source/resolved_kimera_params.yaml": "0a2b2a3a7dc580e906a3f74e6313fdfebc5ed516a2b0255ce900aec21ecbf20e",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eig2_velodyne_full_cpv4_20261024/prepared/full_on_source/resolved_glim_params.yaml": "bf624287f0bc6da30b27907739e373fcb55326ba65858bf118d6844763d2593d",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eig2_velodyne_full_cpv4_20261024/prepared/full_on_source/kimera_profile/LeftCameraParams.yaml": "e41263a165b75dc80e9bccbd884a79e555b84f129674c143c55706a2e3c0a7a2",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eig2_velodyne_full_cpv4_20261024/prepared/full_on_source/kimera_profile/RightCameraParams.yaml": "a3ea74b0f5220774090ef9166e0b9b14e3143ffe7480a632409f627f1de08393",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eig2_velodyne_full_cpv4_20261024/prepared/full_on_source/kimera_profile/ImuParams.yaml": "5ad9440e467332fb7bbf17768513245f87034c0e14a8baba9dffc910e12e5014",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eig2_velodyne_full_cpv4_20261024/prepared/full_on_source/glim_config/config_sensors.json": "c1f070aff9418f965741b28fa1e56709ab3f713bf623fe0fbe0c9b8fee282e68",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eig2_velodyne_full_cpv4_20261024/prepared/full_on_source/glim_config/config_ros.json": "123981fa96be5ee1be3d213f12afd37be92eed92b744da1a63c1643aea6d215f"
+  },
+  "limits": [
+    "Author static TF consistency, not independent physical calibration.",
+    "Saved input profiles and resolved runtime contract; no assertion every historical source file is binary-identical."
+  ]
+}

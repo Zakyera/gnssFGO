@@ -1,0 +1,25 @@
+Read-only scope note, before scientific checkpoint analysis
+=========================================================
+The captured CP-K9 wrapper calls cpk9PromotePriorCharts only inside the
+enabled AND nonempty scheduled temporary-peer-removal branch. The private
+incremental_fixed_lag_bpsam_smoother.h lines232--239 show this condition.
+NativePriorRefresh.h and the original CP-K9 REPORT.txt explicitly document
+that ordinary OFF preserves the old path. Thus CPK9_PRIOR_REFRESH=1 is NOT
+evidence of per-cycle nonlinear prior refresh in OFF. No incoming factor or
+retirement means no activation of this conversion.
+
+The new live hook only clones and serializes. It does not promote/unlock,
+reanchor, optimize, or feed its independently reconstructed graph back.
+The offline OriginalChartPrior retains the captured Gaussian and its original
+anchor. Its coordinate Jacobian is evaluated at the current trial state.
+This tests an alternative nonlinear treatment of the retained approximation;
+it does not recover eliminated nonlinear information or certify a live fix.
+
+Smart-factor caveat: the conditional explicit-landmark objective is initialized
+with the original smart-factor triangulated/cached points and cost. It retains
+the measurements and noise but fixes which visual factors are initially active
+for each starting point. Native activity after the solve and landmark distance
+policy violations are counted separately. The two starts need not have the
+same initial active set. Native and joint final objective values are distinct.
+No result may be called an all-native-factor optimum merely because its joint
+cost decreases or its bounded optimizer returns.

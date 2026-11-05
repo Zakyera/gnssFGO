@@ -1,0 +1,27 @@
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/local_revision_covariance_cpi1_20261019/cbs_bridge.cpp
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/glim_persistent_compat_cpv82_20261101/cbs_bridge.cpp
+@@ -1,4 +1,5 @@
+ #include "RevisionCovariance.h"
++#include "PersistentCompatibility.h"
+ #include "LocalUpdateBatching.h"
+ #include "RuntimeProfile.h"
+ #include <glim_ros/cbs_bridge.hpp>
+@@ -682,13 +683,17 @@
+       mode_ == Mode::ActiveWindowTemporary;
+   const bool native_provider = shared_native::providerEnabled();
+   shared_native::validateRevisionCovariance(shared_native::revisionCovariancePolicy(), native_provider);
+-  if (native_provider && (mode_ != Mode::ActiveWindowTemporary ||
++  const bool persistent_compat = cpv82::persistentCompatibility();
++  if (native_provider && ((mode_ != Mode::ActiveWindowTemporary &&
++      !(persistent_compat && mode_ == Mode::InjectPersistent)) ||
+       outgoing_marginal_source_ != OutgoingMarginalSource::Direct || live_revision_enable_ ||
+       outgoing_odom_covariance_mode_ != "schur_relative_between"))
+     throw std::runtime_error("shared-native provider unsupported CBS configuration");
+   ROS_INFO_STREAM("SHARED_NATIVE_PROVIDER_SETUP enabled=" << native_provider
+       << " independent_local=" << (sidecar_required && !native_provider)
+       << " revision_covariance=" << shared_native::revisionCovarianceName(shared_native::revisionCovariancePolicy()));
++  ROS_INFO_STREAM("CPV82_GLIM_PERSISTENT_COMPAT enabled=" << persistent_compat
++      << " persistent_mode=" << (mode_ == Mode::InjectPersistent));
+   if (sidecar_required && !native_provider) {
+     sidecar_ = std::make_unique<cbs::IncrementalFixedLagBpsamSmoother>(
+         smoother_lag_sec_, bpsam_params);

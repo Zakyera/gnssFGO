@@ -1,0 +1,47 @@
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_prior_live120_cpk11_20261020/prepared/validate_candidate.py
++++ in-memory corrected checker
+@@ -13,7 +13,7 @@
+ S = R / f"live120_{mode}_source"
+ assert (R / f"live120_{mode}_control/complete.json").exists()
+ assert not (R / f"live120_{mode}_control/failed.txt").exists()
+-assert not (S / "candidate_validation.json").exists()
++assert not (S / "candidate_node_log_validation.json").exists()
+ assert not (S / "acceptance.csv").exists(), "obsolete FL4q executed"
+ with (S / "objective.csv").open() as f:
+     rows = [[float(x) for x in row] for row in csv.reader(f)]
+@@ -23,7 +23,13 @@
+ assert all(len(r) == 10 and all(map(math.isfinite, r)) for r in rows)
+ assert [r[0] for r in rows] == list(range(len(rows)))
+ assert all(r[1] == 0 for r in rows), "not ordinary incremental mode"
+-log = (S / "estimators.log").read_text()
++import re
++node_logs = list(S.glob("ros_logs/*/kimera_vio_ros-kimera_vio_ros_node-*-stdout.log"))
++assert len(node_logs) == 1, node_logs
++launcher_log = (S / "estimators.log").read_text()
++node_log = re.sub(r"\x1b\[[0-9;]*m", "", node_logs[0].read_text())
++assert "CPK9_PRIOR_REFRESH," not in launcher_log, "avoid duplicate diagnostic streams"
++log = launcher_log + "\n" + node_log
+ for token in ("FL4Q", "CPK9 ", "active_window_rollback",
+               "active_window_retry_local_update_", "Smoother recovery",
+               "Persistent BPSAM recovery", "process has died", "terminate called",
+@@ -68,6 +74,19 @@
+     stationarity_certified=False, obsolete_FL4q_executed=False,
+     candidate_sha256=want,
+     note="CP-K9 equation/lifecycle gate; cost increases are observational.")
+-with (S / "candidate_validation.json").open("x") as f:
++# Strengthen accounting to every update, not just the total.
++by_update = {int(p["time"]): p["retired"] for p in promotions}
++assert len(by_update) == len(promotions)
++assert all(by_update.get(int(r[0]), 0) == r[2] for r in rows)
++result["validation_correction"] = dict(
++    reason="CP-K9 diagnostics are in actual Kimera node stdout, not launcher log",
++    original_validator_sha256=ORIGINAL_SHA,
++    corrected_checker_sha256=CORRECTED_CHECKER_SHA,
++    actual_node_log=str(node_logs[0]),
++    actual_node_log_sha256=hashlib.sha256(node_logs[0].read_bytes()).hexdigest(),
++    every_update_retirement_matches=True,
++    original_failed_check_preserved=True,
++    estimator_or_threshold_changes=False)
++with (S / "candidate_node_log_validation.json").open("x") as f:
+     json.dump(result, f, indent=2)
+ print(json.dumps(result, indent=2))

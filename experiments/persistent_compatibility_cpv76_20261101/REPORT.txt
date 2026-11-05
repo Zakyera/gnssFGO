@@ -1,0 +1,110 @@
+CP-V76 -- GENERAL PERSISTENT WITH CORRECTED KIMERA
+2026-11-01. Private compatibility implementation; synthetic validation only.
+
+Scope
+The user approved the next compatibility step after CP75. No sensor replay,
+GLIM/fusion launch, tuning or default promotion is part of this task. This uses
+the current existing cbs_odom_factor_mode=persistent admission/replacement code,
+NOT active_window_temporary + FL4M_RETIREMENT=retain. It does not reproduce the
+unarchived September binary exactly and does not prove an accuracy improvement.
+
+Implementation
+Fresh private root W/runs/persistent_compatibility_cpv76_20261101, where
+W=/home/yeranis/repos/V4RL/cbs_gtsam4.3. CP73 sources copied; production sources
+and devel libraries untouched. Existing private libcbs.so reused byte-exact.
+
+1. Explicit CPV76_PERSISTENT_COMPAT=1 requires explicit Persistent mode,
+   CPK9_PRIOR_REFRESH=1, CPV40_REFRESH=1, CPV38_OFF_REFRESH=0, FL4Q_ENABLE=0,
+   CPV69_RETAIN_COMPAT unset/0 and FL4M_RETIREMENT=remove. The latter selector
+   is inert in general Persistent mode; it must not ambiguously select RETAIN.
+   Unsupported modes still reject. The old corrected path stays unchanged
+   when CPV76 is unset/0. No new data members / BPSAM ABI-layout change.
+2. Mode-aware checks use real persistent slots, not fabricated active-window
+   maps. Validate slot/pointer/endpoint ownership, unique receiver/source edges,
+   Gaussian payloads and the existing corrected residual bound.
+3. Before ordinary solve, capture expected pending/native replacement outcome.
+   After ordinary solve, check exact peer identities, original dense covariance
+   and means, surviving pointers, absence of replaced factors and preservation
+   of native factors. Unexpected loss of native factors, including a recovery
+   that removes them, is rejected within the outer rollback transaction.
+4. CP-K9 still preserves the marginal prior's original function; CP40 still
+   performs one ordinary update plus one native current-state refresh, without
+   second ingestion. Refresh also rechecks unchanged persistent payloads and
+   surviving nonprior pointers. No stronger weights or additional solve loop.
+5. Capture persistent slots immediately before native marginalization. Verify
+   each factor touching an expired endpoint is consumed exactly once, surviving
+   factors remain, tracking is bounded, retired states leave and no factors have
+   dangling endpoints. Information enters the ordinary fixed-lag prior.
+
+Build / test evidence so far
+build_initial failed at compilation: nested test-header main macro collided
+with the new test entry point. No solver ran in that attempt. Its source copy,
+commands, log and stopped-container cleanup are preserved. Only the private
+test function name was corrected; no numerical guard was weakened.
+
+build_fixture1 Release native fixture passed. It includes inherited corrected
+OFF and temporary REMOVE/RETAIN fixtures and the new persistent cases:
+- Nine negative opt-in/mode/prerequisite checks.
+- Six pending/active version, competing receiver match and sender-rebinding
+  cases: no factor stacking; actual accepted mean and dense covariance checked.
+  Negative payload and residual checks also reject.
+- Thirteen-update native IMU/bias/smart-stereo lifecycle, including active
+  replacement and nine actual marginalization boundaries. Post-boundary peer
+  tracking stays at two factors in this fixture; active-window maps stay empty.
+- Nine injected exceptions across first insertion, active replacement and a
+  later marginalizing update: ordinary step, post-commit refresh and completion
+  of marginalization. State, chart, delta, tree, factor pointers, timestamps,
+  fixed locks, pending/active bookkeeping and smart caches restore exactly.
+- Repeated clean, fault/retry and passive-observed outputs agree exactly.
+- Independent persistent Schur relative error 1.5027393657111168e-16;
+  boundary state change 9.3620402441554801e-19; displaced original-prior
+  function relative error zero, over nine boundaries.
+- Extension-disabled old/new comparison exact for OFF and temporary ON states,
+  cached equations and Bayes tree. Baseline comparison uses CP66 private headers
+  with the same copied private libcbs dependency, as in the inherited harness.
+
+Completion -- 2026-11-01 00:14 local
+PASS: Release, ASan+UBSan, extension-disabled exact parity, private backend
+compile/link and ldd -r dependency checks. Sanitized fixture produced the same
+reported Schur/boundary/prior metrics and passed all inherited/new cases.
+Only private headers/test code is instrumented; vendor libraries are not.
+The new backend compilation took 65.70s; link 0.71s. These are build times, not
+estimator throughput measurements. Existing inherited diagnostic-header compiler
+warnings remain; no new warning in the compatibility extension was reported.
+
+Private library SHA-256:
+libkimera_vio.so b7d6829da6c2c5a0edbe3d7092ba109fa29d24a60b2bb5395b05dd629fa1cee8
+libcbs.so        82f85c2a307a9d9a849b2b8f09bb5c1e026ad80a4ef0a633c903d30cca712476
+The latter is unchanged from CP73, not the default devel libcbs.so.
+Exact compilation commands, source hashes/copies and per-stage receipts are in
+W/runs/persistent_compatibility_cpv76_20261101/{release,san,backend}_fixture1/.
+Host supervision/cleanup receipts: build_fixture1/. Failed initial build and
+initial_source_snapshot are preserved separately; no old evidence overwritten.
+
+verification_fixture1.json: 41 predecessor inputs and 544 CP73 output hashes
+unchanged; four-sequence Hesai checkpoint PASS (667 files, originals verified).
+Production CBS and Kimera git worktrees clean. Both originally stopped
+containers restored stopped. Owned docker-exec jobs 66335/66960/67225 exited;
+supervising command also returned exit zero. No source capture/replay, default
+promotion, weight/model change, deletion or push. The implementation/testing
+step is complete; the proposed 60s sensor comparison has NOT been launched.
+
+Limits and next decision
+These are controlled native synthetic tests, not EIG-2 measurements. Vendor
+shared libraries are not sanitizer-instrumented. Generic injected exceptions
+exercise outer rollback, not every possible internal solver-recovery branch.
+The native robot-key factor-removal recovery implementation is not rewritten;
+the compatibility wrapper checks for unexpected factor loss after ordinary
+update. No claim of exhaustive recovery coverage or nonlinear stationarity.
+
+CP67 mixed-prior LOCAL-export limitation remains: retaining peer information in
+the prior does not give native-information-only outgoing covariance. Do not use
+this result as certification of unrestricted live bidirectional CBS.
+
+After passing all gates, the next proposed experiment is a separately approved
+60s EIG-2 Hesai one-way comparison: corrected temporary versus general
+persistent, complete original incoming wire stream, native timestamp matching,
+same alignment/timing/weights, no outgoing peer consumer. Do not use the old
+accepted-only prealigned stream or force old backend update IDs. It tests the
+whole persistent policy, not retirement alone. Use Method 1 and EVO ATE/0.5m
+RPE/path length/coverage and previous-pose revisions. No automatic full rerun.

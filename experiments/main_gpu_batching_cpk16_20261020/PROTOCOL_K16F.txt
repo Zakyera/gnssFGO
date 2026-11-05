@@ -1,0 +1,44 @@
+CP-K16f — bounded, identical-prepared-input real MAIN replay gate
+2026-10-20. Authorized by user "Proceed" after proposed6--8s gate.
+
+One8s ETH1 GLIM-only capture, frozen CP-K14 source settings,0.20x,25s drain.
+No Kimera/fuser/inbound CBS, production edits, sampler/thread changes, tuning,
+library rebuild, promotion, full sequence, commit/push or automation.
+
+Use a removable diagnostic observer around actual MAIN update. Before each
+update, independently copy its prepared CPU/GPU factors (exact device arrays,
+voxel hash layout, inlier/cache state), new Values, timestamps and removals.
+Replay that same input immediately through a separately owned MAIN wrapper
+with its own solver, factors and shared-native LOCAL provider. Preserve graph
+history across updates through the first5s window retirement.
+
+The unchanged K16a DSO contains the original disabled route and enabled route.
+The actual source uses its disabled route; the companion uses enabled batching.
+A diagnostic thread-local requested() interposer selects only the companion,
+without changing process-wide environment/settings or other optimizers.
+Original CP-I3 versus disabled-candidate parity was already checked in K16b;
+this gate does not pretend to load two incompatible solver DSOs in one process.
+Source feedback uses only actual synchronous results. Companion input is the
+same prepared source stream, not a second stochastic preprocessing run.
+
+Compare every actual wrapper update: full pose/velocity/bias Values and theta,
+Gaussian caches including marginalized priors, slots/IDs/keys and result counts,
+GPU inlier/cache state, shared-native conservation and epoch covariance,
+corrected MAIN means and full joint/dense relative LOCAL covariances for every
+retained i->i+2 pair. Check initial independent device snapshots exactly and
+retain source input/output/revision/provenance logs. No timing claim: diagnostics
+synchronize GPU and duplicate work. No ATE or whole-system readiness claim.
+
+Inherited same-input gates: pose/velocity/bias<=1e-9,orientation<=1e-10rad;
+Gaussian1e-8+1e-6*maxabs(reference); full covariance1e-10+1e-6*maxabs(reference).
+Factor identities/order, retirement decisions and GPU runtime state exact.
+No fallback/provider reset/nonfinite values. First mismatch is preserved and
+stops the test; no relaxed tolerance or automatic source retry.
+This is arithmetic/lifecycle equivalence along one real prepared-input history,
+not proof of all possible CBS-ON schedules or a nonlinear stationarity claim.
+
+Fresh runtime root k16f_source_1; observer only compiled in existing container.
+Require input/protected/build fingerprints unchanged before and after.
+Require no existing owned/competing work; restore originally stopped containers
+only after cleanup. Report and STOP; Kimera11.10s/7s retention contract remains
+a separate unresolved issue and is not changed by this gate.

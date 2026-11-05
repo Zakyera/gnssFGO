@@ -1,0 +1,64 @@
+CP-V32 — ALL SEVEN PAIRS: METHOD1 / METHOD2 WITH EVO DISTANCE RPE
+Completed 2026-10-29. Original baseline Qc1.0. Saved-data evaluation only.
+
+All ATE and RPE values in these NEW tables are computed directly by evo1.36.3.
+ATE: evo_ape translation RMSE after one whole-common-mask SE3 fit, no scale.
+RPE: evo_rpe translation/rotation RMSE, delta0.5m along the reference path,
+consecutive pairs, no alignment. Exact same reference pairs across all methods,
+estimators and OFF/ON within each sensor/mission. No pair crosses a masked gap.
+Evo distance selection operates on sampled poses; actual intervals can exceed
+0.5m. This is not exact spatial resampling or overlapping --all_pairs.
+
+Estimated path: sum evo path_length over valid common segments, not physical
+travel or full-native-cadence path length. Both added RPE columns show OFF→ON.
+Positive ATE improvement means lower ON error. All metrics: lower is better.
+Counts/coverage are below; do not label these matched-mask scores full coverage.
+All historical ATE/path values reproduce within numerical precision; the NEW
+provenance is direct evo scoring, not custom formulas plus evo cross-checks.
+
+METHOD 1 — NEWEST ABSOLUTE OUTPUTS
+GLIM first-published MAIN, Kimera recovered absolute backend, fusion ONLINE.
+Kimera here is NOT native incremental ROS. Older points are not replaced.
+
+HESAI
+
+| Sequence | Estimator | ATE OFF (m) | ATE ON (m) | ATE improvement | Estimated path OFF → ON (m) | RPE translation OFF → ON (m) | RPE rotation OFF → ON (°) |
+|---|---|---:|---:|---:|---|---|---|
+| ETH1 | GLIM | 0.0415 | 0.0387 | +6.6% | 202.86 → 202.67 | 0.0184 → 0.0150 | 0.349 → 0.334 |
+| ETH1 | Kimera | 4.2092 | 1.6060 | +61.8% | 628.98 → 782.32 | 1.8024 → 0.8891 | 1.259 → 2.859 |
+| ETH1 | Fusion | 0.1679 | 0.1045 | +37.8% | 223.24 → 216.30 | 0.0659 → 0.0371 | 2.041 → 1.933 |
+| EIG-2 | GLIM | 0.0516 | 0.0444 | +13.9% | 189.78 → 189.90 | 0.0195 → 0.0163 | 0.638 → 0.632 |
+| EIG-2 | Kimera | 2.3101 | 1.1013 | +52.3% | 290.32 → 361.73 | 0.4529 → 0.3553 | 1.667 → 1.713 |
+| EIG-2 | Fusion | 0.1655 | 0.1346 | +18.7% | 201.53 → 200.50 | 0.0418 → 0.0361 | 2.280 → 2.219 |
+| SPX-3 | GLIM | 0.0167 | 0.0171 | -2.8% | 90.96 → 91.21 | 0.0068 → 0.0069 | 0.259 → 0.257 |
+| SPX-3 | Kimera | 0.3618 | 0.2211 | +38.9% | 102.60 → 99.11 | 0.1519 → 0.1256 | 0.711 → 1.479 |
+| SPX-3 | Fusion | 0.0421 | 0.0380 | +9.7% | 94.14 → 94.16 | 0.0301 → 0.0275 | 1.458 → 1.413 |
+| LEICA-2 | GLIM | 0.4949 | 0.4974 | -0.5% | 205.87 → 205.62 | 0.0218 → 0.0168 | 0.415 → 0.316 |
+| LEICA-2 | Kimera | 1.0058 | 0.7732 | +23.1% | 203.23 → 218.95 | 0.0361 → 0.0674 | 0.504 → 0.715 |
+| LEICA-2 | Fusion | 0.6604 | 0.5200 | +21.3% | 220.28 → 217.45 | 0.0317 → 0.0300 | 1.469 → 1.422 |
+
+VELODYNE
+
+| Sequence | Estimator | ATE OFF (m) | ATE ON (m) | ATE improvement | Estimated path OFF → ON (m) | RPE translation OFF → ON (m) | RPE rotation OFF → ON (°) |
+|---|---|---:|---:|---:|---|---|---|
+| SPX-3 | GLIM | 0.0524 | 0.0581 | -10.9% | 91.74 → 92.10 | 0.0277 → 0.0303 | 0.453 → 0.352 |
+| SPX-3 | Kimera | 0.3616 | 0.2714 | +25.0% | 102.60 → 119.31 | 0.1519 → 0.2131 | 0.711 → 1.868 |
+| SPX-3 | Fusion | 0.1246 | 0.1097 | +12.0% | 94.27 → 94.58 | 0.0376 → 0.0414 | 1.430 → 1.354 |
+| EIG-2 | GLIM | 0.2901 | 0.3335 | -15.0% | 205.07 → 202.50 | 0.1070 → 0.0768 | 0.886 → 0.816 |
+| EIG-2 | Kimera | 2.3078 | 1.8010 | +22.0% | 290.38 → 790.17 | 0.4542 → 1.0619 | 1.664 → 5.072 |
+| EIG-2 | Fusion | 0.5309 | 0.8843 | -66.6% | 213.75 → 210.83 | 0.0733 → 0.0913 | 1.919 → 1.851 |
+| LEICA-2 | GLIM | 2.7822 | 0.8489 | +69.5% | 206.50 → 207.64 | 0.0963 → 0.0436 | 1.330 → 0.555 |
+| LEICA-2 | Kimera | 1.0054 | 1.5324 | -52.4% | 203.22 → 374.13 | 0.0361 → 0.3190 | 0.504 → 1.610 |
+| LEICA-2 | Fusion | 2.0060 | 1.8680 | +6.9% | 277.60 → 233.00 | 0.0606 → 0.0523 | 3.031 → 1.716 |
+
+COMMON COVERAGE
+
+| Sensor / sequence | Supported / capture (s) | Supported (%) | Reference path (m) | RPE pairs | Actual distance range (m) |
+|---|---:|---:|---:|---:|---|
+| hesai_eth1 | 296.7 / 346.32 | 85.7% | 201.38 | 365 | 0.500561–0.593297 |
+| hesai_eig2 | 352.3 / 355.02 | 99.2% | 188.01 | 348 | 0.500141–0.601406 |
+| hesai_spx3 | 191.7 / 197.02 | 97.3% | 90.77 | 167 | 0.500311–0.613720 |
+| hesai_leica2 | 385.0 / 428.75 | 89.8% | 205.91 | 378 | 0.500095–0.593272 |
+| velodyne_spx3 | 192.0 / 197.02 | 97.5% | 90.77 | 167 | 0.500311–0.613720 |
+| velodyne_eig2 | 353.1 / 355.02 | 99.5% | 188.02 | 349 | 0.500141–0.601406 |
+| velodyne_leica2 | 384.6 / 428.75 | 89.7% | 205.91 | 378 | 0.500095–0.593272 |

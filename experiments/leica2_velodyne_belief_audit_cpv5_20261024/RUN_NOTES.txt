@@ -1,0 +1,11 @@
+Analysis implementation notes (no source experiment rerun)
+--------------------------------------------------------
+First analysis invocation read/scored journals but stopped before creating any
+outputs at a peer first-publication covariance equality assertion. Read-only
+inspection established all1905 G2K factors match source revision0; K2G has1905
+revision0 plus8 revision1 factors, all matching recorded exported mean and full
+covariance. Classic temporary insertion does not guarantee that every selected
+message is revision0. This was an analysis assumption, not an estimator failure.
+The script now joins those actual exported versions and preserves their exact
+revision/event provenance, without loosening covariance equality or changing
+the dataset/estimator. No prior output overwritten; source artifacts untouched.

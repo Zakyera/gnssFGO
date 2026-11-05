@@ -1,0 +1,28 @@
+CP-V108 FRESH FULL EIG-2 SPLIT-IMU LIVE OFF/ON + FUSION
+GLIM Hesai+CPT7/HG4930; Kimera stereo+Alphasense IMU. Both persistent in ON; both reception OFF in OFF.
+Receiver7s source_wnoa Qc x1.0; actual live arrival/revision journals, no reconstructed replay.
+Method1 EVO1.36.3 SE3/no-scale ATE; reference-distance delta0.5m RPE, same physical prism.
+Six-curve COMMON100ms: 353.000s/355.02s, 3532rows, 349RPEpairs.
+Estimator | ATE OFF -> ON m | improvement | tRPE OFF -> ON m | rRPE OFF -> ON deg | estimated path OFF -> ON m | reference path m
+glim | 0.046328 -> 0.047447 | -2.42% | 0.019707 -> 0.017653 | 0.638466 -> 0.634358 | 189.7889 -> 189.7217 | 188.0137
+kimera | 3.189958 -> 0.366042 | +88.53% | 0.358022 -> 0.043514 | 0.907520 -> 0.868306 | 237.8221 -> 187.4987 | 188.0137
+fusion_online | 0.083176 -> 0.134650 | -61.89% | 0.039580 -> 0.041280 | 1.996855 -> 2.018519 | 201.2903 -> 198.5043 | 188.0137
+fusion_delayed | 0.078442 -> 0.132310 | -68.67% | 0.018001 -> 0.018698 | 0.671155 -> 0.663871 | 186.7931 -> 187.0396 | 188.0137
+
+FULL-SAVED native cadence: different support and reference-distance pair samples; do not replace common-mask comparison.
+Product | ATE m | tRPE m | rRPE deg | segmented estimated/reference path m | rows | supported seconds | first/last seconds | gaps
+off_glim | 0.046492 | 0.020313 | 0.578104 | 192.1784 / 188.0976 | 3543 | 354.1993 | 0.7164 / 354.9157 | 0
+off_kimera | 3.197040 | 0.363622 | 0.747603 | 246.0363 / 186.6136 | 1763 | 353.8972 | 0.1999 / 354.8971 | 1
+off_fusion_online | 0.085702 | 0.050267 | 2.635927 | 223.9456 / 188.1258 | 3545 | 354.4000 | 0.5854 / 354.9854 | 0
+off_fusion_delayed | 0.078444 | 0.017770 | 0.652307 | 188.2508 / 188.1258 | 3545 | 354.4000 | 0.5854 / 354.9854 | 0
+on_glim | 0.047602 | 0.017945 | 0.574679 | 192.7878 / 188.0976 | 3543 | 354.1993 | 0.7164 / 354.9157 | 0
+on_kimera | 0.365911 | 0.042721 | 0.695035 | 188.3769 / 186.6069 | 1762 | 353.7972 | 0.1999 / 354.9971 | 1
+on_fusion_online | 0.135921 | 0.048716 | 2.645876 | 218.4264 / 188.1258 | 3545 | 354.4000 | 0.5854 / 354.9854 | 0
+on_fusion_delayed | 0.132332 | 0.017395 | 0.645272 | 188.5280 / 188.1258 | 3545 | 354.4000 | 0.5854 / 354.9854 | 0
+
+DELAYED is seven-second fixed-lag-finalized, NOT ONLINE. Paths are estimated polylines, not physical travel.
+IE-TC shares CPT7. Separate IMUs do not remove persistent feedback correlation. Native-only outgoing information remains FALSE.
+Alpha bias RW is an experimental candidate, not certified calibration. Numerical checks are not nonlinear stationarity/health certification.
+All3550 raw stereo pairs matched; actual native keyframe gaps retained; no interpolation across >0.5s.
+Full revision/timing/native+transport covariance/payload/EOF summaries and omissions: results.json.
+Both arms are fresh EIG-2 captures with the same corrected private Kimera binary.

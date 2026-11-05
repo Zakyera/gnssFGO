@@ -1,0 +1,35 @@
+CP-V40 — CBS-ON REFRESH ENGINEERING ADMISSION: PASSED, PRIVATE ONLY
+
+ONE extra native current-state GN step, as CP-V38, now supports classic sender-
+computed relative active_window_temporary CBS. Native smart factors, original
+marginal-prior function, noises/weights and defaults unchanged. CPV40_REFRESH=1
+is explicit; simultaneous CPV38 rejects. No layout/ABI members changed; original
+libcbs.so identical. Private backend SHA256:
+750b8c8ffed61d186ec8f071d4f58f068c9b63baccefcc9fc37803d77a118f06.
+
+Ordinary BPSAM admission/solve/retirement unchanged. Extra step calls native
+ISAM2, not BPSAM::update: no duplicate belief processing/lifecycle counting.
+Original staged residual bounds and active2.0 guard rechecked after refresh,
+with exact slot/key ownership. Extra-step failure triggers whole-wrapper
+rollback. No retries, stronger weights, dropped guards or production promotion.
+
+Release twice deterministic; ASan/UBSan pass (vendor DSOs uninstrumented).
+Disabled OFF/ON pose/covariance dumps exactly match previous backend. Enabled
+OFF exactly matches successful CP-V38. Actual ON admission, pending/active
+duplicates, nine marginalizations/retirements and native smart identity pass.
+Injected faults at first/mature ON refresh and after marginalization restore
+state/theta/delta, prior locks/timestamps, factor slots/pointers, pending/active
+CBS data/counters, smart caches and LOCAL covariance exactly.
+
+ON independent GN relative state error1.114e-16; original-prior function error0;
+fresh/cache/tree equations3.989e-16; next peer-removed Schur2.200e-14. Independent
+peer-excluded LOCAL12x12 covariance error<=2.619e-12, finite/SPD, nonzero cross
+blocks. Not calibration, independence, nonlinear stationarity or dataset accuracy.
+
+Two failed fault-injection fixtures preserved. INITIAL_TEST_REVIEW.txt explains
+wrong stage assumptions. Candidate implementation/numeric tolerances unchanged
+from first compile. closeout.json verifies5966protected files,667Hesai checkpoint
+files/originals, owned jobs exited, both originally stopped containers restored.
+Existing Method1 Rerun viewer untouched. No source capture in this gate.
+Next authorized stage: fresh bounded EIG-2 Velodyne ON check; full matched
+corrected OFF/ON only after safety AND storage checks pass.

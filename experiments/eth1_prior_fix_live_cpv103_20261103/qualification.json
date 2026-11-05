@@ -1,0 +1,546 @@
+{
+  "passed": true,
+  "full_input_window_s": 346.32,
+  "source_coverage": {
+    "passed": true,
+    "requested_s": 346.32,
+    "input_receipts": {
+      "/boxi/cpt7/imu": {
+        "rows": 34618,
+        "first_ns": 1727775008003475000,
+        "last_ns": 1727775354173534000,
+        "all_raw_stamps_equal": true
+      },
+      "/boxi/alphasense/imu": {
+        "rows": 69186,
+        "first_ns": 1727775007990930309,
+        "last_ns": 1727775354175039913,
+        "all_raw_stamps_equal": true
+      }
+    },
+    "both_receivers_on": true,
+    "external_injections": {
+      "G2K_queued": 1472,
+      "G2K_persistent": 1472,
+      "K2G_persistent": 1472
+    },
+    "raw_unmatched_camera_headers": {
+      "left_only_ns": [
+        1727775211754237463
+      ],
+      "right_only_ns": []
+    },
+    "frontend": {
+      "received_pairs": 3463,
+      "preinitialization": 3,
+      "processed": 3460,
+      "terminal_unsupported": 0,
+      "terminal_camera_after_last_imu_ms": -21.570899999999998
+    },
+    "backend_rows": 1492,
+    "limits": "Native counters and exact timestamps, not an instrumented per-frame branch trace",
+    "native_glim": {
+      "rows": 3455,
+      "start_s": 1727775008.675043,
+      "end_s": 1727775354.074655,
+      "span_s": 345.39961194992065,
+      "maximum_pose_gap_s": 0.10099005699157715,
+      "post_startup_max_gap_s": 0.10099005699157715,
+      "start_after_first_imu_s": 0.6715681552886963,
+      "tail_behind_last_imu_s": 0.09887909889221191,
+      "path_length_m": 201.9412874480023,
+      "gaps_over_1s": [],
+      "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+    },
+    "native_kimera": {
+      "rows": 1492,
+      "start_s": 1727775008.1553955,
+      "end_s": 1727775351.7534823,
+      "span_s": 343.59808683395386,
+      "maximum_pose_gap_s": 5.0999755859375,
+      "post_startup_max_gap_s": 5.0999755859375,
+      "start_after_first_imu_s": 0.16446495056152344,
+      "tail_behind_last_imu_s": 2.421557664871216,
+      "path_length_m": 201.4864227293317,
+      "gaps_over_1s": [
+        {
+          "before_index": 1,
+          "after_index": 2,
+          "start_s": 1727775008.3553946,
+          "end_s": 1727775011.5553737,
+          "gap_s": 3.199979066848755
+        },
+        {
+          "before_index": 1482,
+          "after_index": 1483,
+          "start_s": 1727775309.6537054,
+          "end_s": 1727775310.953699,
+          "gap_s": 1.2999937534332275
+        },
+        {
+          "before_index": 1483,
+          "after_index": 1484,
+          "start_s": 1727775310.953699,
+          "end_s": 1727775316.0536723,
+          "gap_s": 5.099973201751709
+        },
+        {
+          "before_index": 1484,
+          "after_index": 1485,
+          "start_s": 1727775316.0536723,
+          "end_s": 1727775321.153648,
+          "gap_s": 5.0999755859375
+        },
+        {
+          "before_index": 1485,
+          "after_index": 1486,
+          "start_s": 1727775321.153648,
+          "end_s": 1727775326.2536213,
+          "gap_s": 5.099973440170288
+        },
+        {
+          "before_index": 1486,
+          "after_index": 1487,
+          "start_s": 1727775326.2536213,
+          "end_s": 1727775331.3535907,
+          "gap_s": 5.099969387054443
+        },
+        {
+          "before_index": 1487,
+          "after_index": 1488,
+          "start_s": 1727775331.3535907,
+          "end_s": 1727775336.453565,
+          "gap_s": 5.099974155426025
+        },
+        {
+          "before_index": 1488,
+          "after_index": 1489,
+          "start_s": 1727775336.453565,
+          "end_s": 1727775341.5535376,
+          "gap_s": 5.099972724914551
+        },
+        {
+          "before_index": 1489,
+          "after_index": 1490,
+          "start_s": 1727775341.5535376,
+          "end_s": 1727775346.65351,
+          "gap_s": 5.099972486495972
+        },
+        {
+          "before_index": 1490,
+          "after_index": 1491,
+          "start_s": 1727775346.65351,
+          "end_s": 1727775351.7534823,
+          "gap_s": 5.099972248077393
+        }
+      ],
+      "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+    }
+  },
+  "receiver_validation": {
+    "passed": true,
+    "validation_contract": "finite_recording_eof_cpk24a",
+    "terminal_boundary": {
+      "passed": true,
+      "contract": "finite_recording_terminal_cell_only",
+      "original_zero_unsupported_gate_passed": true,
+      "excluded_versions": 0,
+      "final_partial_cell_ns": 90059000,
+      "details": [],
+      "state_clock_not_extended": true,
+      "captured_outputs_unchanged": true,
+      "omission_not_recovered": true
+    },
+    "source_coverage": {
+      "passed": true,
+      "requested_s": 346.32,
+      "input_receipts": {
+        "/boxi/cpt7/imu": {
+          "rows": 34618,
+          "first_ns": 1727775008003475000,
+          "last_ns": 1727775354173534000,
+          "all_raw_stamps_equal": true
+        },
+        "/boxi/alphasense/imu": {
+          "rows": 69186,
+          "first_ns": 1727775007990930309,
+          "last_ns": 1727775354175039913,
+          "all_raw_stamps_equal": true
+        }
+      },
+      "both_receivers_on": true,
+      "external_injections": {
+        "G2K_queued": 1472,
+        "G2K_persistent": 1472,
+        "K2G_persistent": 1472
+      },
+      "raw_unmatched_camera_headers": {
+        "left_only_ns": [
+          1727775211754237463
+        ],
+        "right_only_ns": []
+      },
+      "frontend": {
+        "received_pairs": 3463,
+        "preinitialization": 3,
+        "processed": 3460,
+        "terminal_unsupported": 0,
+        "terminal_camera_after_last_imu_ms": -21.570899999999998
+      },
+      "backend_rows": 1492,
+      "limits": "Native counters and exact timestamps, not an instrumented per-frame branch trace",
+      "native_glim": {
+        "rows": 3455,
+        "start_s": 1727775008.675043,
+        "end_s": 1727775354.074655,
+        "span_s": 345.39961194992065,
+        "maximum_pose_gap_s": 0.10099005699157715,
+        "post_startup_max_gap_s": 0.10099005699157715,
+        "start_after_first_imu_s": 0.6715681552886963,
+        "tail_behind_last_imu_s": 0.09887909889221191,
+        "path_length_m": 201.9412874480023,
+        "gaps_over_1s": [],
+        "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+      },
+      "native_kimera": {
+        "rows": 1492,
+        "start_s": 1727775008.1553955,
+        "end_s": 1727775351.7534823,
+        "span_s": 343.59808683395386,
+        "maximum_pose_gap_s": 5.0999755859375,
+        "post_startup_max_gap_s": 5.0999755859375,
+        "start_after_first_imu_s": 0.16446495056152344,
+        "tail_behind_last_imu_s": 2.421557664871216,
+        "path_length_m": 201.4864227293317,
+        "gaps_over_1s": [
+          {
+            "before_index": 1,
+            "after_index": 2,
+            "start_s": 1727775008.3553946,
+            "end_s": 1727775011.5553737,
+            "gap_s": 3.199979066848755
+          },
+          {
+            "before_index": 1482,
+            "after_index": 1483,
+            "start_s": 1727775309.6537054,
+            "end_s": 1727775310.953699,
+            "gap_s": 1.2999937534332275
+          },
+          {
+            "before_index": 1483,
+            "after_index": 1484,
+            "start_s": 1727775310.953699,
+            "end_s": 1727775316.0536723,
+            "gap_s": 5.099973201751709
+          },
+          {
+            "before_index": 1484,
+            "after_index": 1485,
+            "start_s": 1727775316.0536723,
+            "end_s": 1727775321.153648,
+            "gap_s": 5.0999755859375
+          },
+          {
+            "before_index": 1485,
+            "after_index": 1486,
+            "start_s": 1727775321.153648,
+            "end_s": 1727775326.2536213,
+            "gap_s": 5.099973440170288
+          },
+          {
+            "before_index": 1486,
+            "after_index": 1487,
+            "start_s": 1727775326.2536213,
+            "end_s": 1727775331.3535907,
+            "gap_s": 5.099969387054443
+          },
+          {
+            "before_index": 1487,
+            "after_index": 1488,
+            "start_s": 1727775331.3535907,
+            "end_s": 1727775336.453565,
+            "gap_s": 5.099974155426025
+          },
+          {
+            "before_index": 1488,
+            "after_index": 1489,
+            "start_s": 1727775336.453565,
+            "end_s": 1727775341.5535376,
+            "gap_s": 5.099972724914551
+          },
+          {
+            "before_index": 1489,
+            "after_index": 1490,
+            "start_s": 1727775341.5535376,
+            "end_s": 1727775346.65351,
+            "gap_s": 5.099972486495972
+          },
+          {
+            "before_index": 1490,
+            "after_index": 1491,
+            "start_s": 1727775346.65351,
+            "end_s": 1727775351.7534823,
+            "gap_s": 5.099972248077393
+          }
+        ],
+        "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+      }
+    },
+    "transport": {
+      "imu": 34618,
+      "duplicate_imu": 0,
+      "imu_clock_lag_events": 33720,
+      "max_imu_clock_lag_ns": 2201303,
+      "belief_clock_lag_events": 0,
+      "max_belief_clock_lag_ns": 0,
+      "beliefs": 202995,
+      "duplicates": 0,
+      "published_poses": 3456,
+      "max_queue": 48,
+      "sources": {
+        "glim_hesai": 166249,
+        "kimera_front": 36746
+      }
+    },
+    "summary": {
+      "complete": true,
+      "model": "source_wnoa_fixed_lag",
+      "lag_seconds": 7,
+      "stationarity": "not_checked_incremental_policy",
+      "events": 237614,
+      "received": 202995,
+      "absorbed_revision_policy": "seal_at_absorption",
+      "expired": 134,
+      "expired_duplicate": 0,
+      "expired_stale": 0,
+      "duplicate": 0,
+      "stale": 0,
+      "inserted": 4924,
+      "replaced": 197912,
+      "excluded": 25,
+      "unsupported_end": 0,
+      "absorbed": 4857,
+      "active": 67,
+      "pending_at_end": 0,
+      "publications": 3456,
+      "finalized": 3456,
+      "retained_supports": 71,
+      "peak_slots": 174
+    },
+    "actions": {
+      "before_initialization": 25,
+      "insert": 4924,
+      "replace": 197912,
+      "expired_revision": 134
+    },
+    "expiry": {
+      "passed": true,
+      "policy": "seal_at_absorption",
+      "expired": {
+        "versions": 134,
+        "ids": 21,
+        "changes": {
+          "endpoint_age_s": {
+            "n": 134,
+            "median": 25.171538444000003,
+            "rms": 28.288997262708317,
+            "p95": 45.116657584,
+            "max": 46.444639517000006
+          },
+          "since_absorption_s": {
+            "n": 134,
+            "median": 18.141730994,
+            "rms": 22.055685244554944,
+            "p95": 38.086848069000006,
+            "max": 39.414836417000004
+          },
+          "version_jump": {
+            "n": 134,
+            "median": 4.0,
+            "rms": 4.72607880758694,
+            "p95": 8.0,
+            "max": 8.0
+          },
+          "translation_change_m": {
+            "n": 134,
+            "median": 8.719218965884306e-06,
+            "rms": 0.00013672089631524433,
+            "p95": 0.0005373872306079239,
+            "max": 0.0005489988712753215
+          },
+          "rotation_change_rad": {
+            "n": 134,
+            "median": 1.1089422458371812e-06,
+            "rms": 4.922261311648886e-06,
+            "p95": 1.42728162405378e-05,
+            "max": 1.4784170649902894e-05
+          },
+          "rotation_trace_ratio": {
+            "n": 134,
+            "median": 0.9876316553689986,
+            "rms": 0.9760346993316762,
+            "p95": 0.9959787155422422,
+            "max": 0.9975039740572049
+          },
+          "translation_trace_ratio": {
+            "n": 134,
+            "median": 0.9760192439553184,
+            "rms": 0.9622797989808554,
+            "p95": 0.9959508910697734,
+            "max": 0.9970887500350348
+          },
+          "full_covariance_relative_frobenius": {
+            "n": 134,
+            "median": 0.030713079401641218,
+            "rms": 0.06458986805996698,
+            "p95": 0.15034238610559536,
+            "max": 0.1709846563804749
+          }
+        }
+      },
+      "by_source": {
+        "kimera_front": {
+          "received_versions": 36746,
+          "received_ids": 1473,
+          "expired_fraction": 0.0036466554182768194,
+          "versions": 134,
+          "ids": 21,
+          "changes": {
+            "endpoint_age_s": {
+              "n": 134,
+              "median": 25.171538444000003,
+              "rms": 28.288997262708317,
+              "p95": 45.116657584,
+              "max": 46.444639517000006
+            },
+            "since_absorption_s": {
+              "n": 134,
+              "median": 18.141730994,
+              "rms": 22.055685244554944,
+              "p95": 38.086848069000006,
+              "max": 39.414836417000004
+            },
+            "version_jump": {
+              "n": 134,
+              "median": 4.0,
+              "rms": 4.72607880758694,
+              "p95": 8.0,
+              "max": 8.0
+            },
+            "translation_change_m": {
+              "n": 134,
+              "median": 8.719218965884306e-06,
+              "rms": 0.00013672089631524433,
+              "p95": 0.0005373872306079239,
+              "max": 0.0005489988712753215
+            },
+            "rotation_change_rad": {
+              "n": 134,
+              "median": 1.1089422458371812e-06,
+              "rms": 4.922261311648886e-06,
+              "p95": 1.42728162405378e-05,
+              "max": 1.4784170649902894e-05
+            },
+            "rotation_trace_ratio": {
+              "n": 134,
+              "median": 0.9876316553689986,
+              "rms": 0.9760346993316762,
+              "p95": 0.9959787155422422,
+              "max": 0.9975039740572049
+            },
+            "translation_trace_ratio": {
+              "n": 134,
+              "median": 0.9760192439553184,
+              "rms": 0.9622797989808554,
+              "p95": 0.9959508910697734,
+              "max": 0.9970887500350348
+            },
+            "full_covariance_relative_frobenius": {
+              "n": 134,
+              "median": 0.030713079401641218,
+              "rms": 0.06458986805996698,
+              "p95": 0.15034238610559536,
+              "max": 0.1709846563804749
+            }
+          }
+        },
+        "glim_hesai": {
+          "received_versions": 166249,
+          "received_ids": 3452,
+          "expired_fraction": 0.0,
+          "versions": 0,
+          "ids": 0,
+          "changes": {
+            "endpoint_age_s": {
+              "n": 0
+            },
+            "since_absorption_s": {
+              "n": 0
+            },
+            "version_jump": {
+              "n": 0
+            },
+            "translation_change_m": {
+              "n": 0
+            },
+            "rotation_change_rad": {
+              "n": 0
+            },
+            "rotation_trace_ratio": {
+              "n": 0
+            },
+            "translation_trace_ratio": {
+              "n": 0
+            },
+            "full_covariance_relative_frobenius": {
+              "n": 0
+            }
+          }
+        }
+      },
+      "reference_rows_not_receipts": 134,
+      "caveat": "Changes vs last accepted belief, NOT GT errors or proof that omitted corrections are harmless."
+    },
+    "mean_log_roundtrip_error": 2.236232032881702e-14,
+    "covariance_payload_error": 0.0,
+    "online_path_m": 218.9020206648697,
+    "finalized_path_m": 201.65027412522312,
+    "fused_span_s": 345.5,
+    "support_cycle_seconds": {
+      "n": 3456,
+      "mean": 0.05266633460677084,
+      "median": 0.049948994,
+      "p95": 0.07442913200000001,
+      "max": 0.133467626
+    },
+    "receipt_to_processing_seconds": {
+      "n": 237614,
+      "mean": 0.011097879000694404,
+      "median": 0.010978590500000001,
+      "p95": 0.024391306,
+      "max": 0.10131852100000001
+    },
+    "monitor_output_age_s": {
+      "n": 879,
+      "mean": 0.049605826903299205,
+      "median": 0.050034,
+      "p95": 0.090054,
+      "max": 0.100108952
+    },
+    "published_during_source": 3456,
+    "max_monitor_queue": 9,
+    "protected_unchanged": 8120,
+    "claim": "fresh live 0.2x full346.32-second ETH1 split-IMU capture; fixed-lag incremental without stationarity certificate"
+  },
+  "frame_validation": "/home/yeranis/repos/gnssFGO/experiments/eth1_prior_fix_live_cpv103_20261103/frame_on.json",
+  "prior_failure_archives": 0,
+  "correction": "/home/yeranis/repos/gnssFGO/experiments/prior_anchor_integration_cpv102_20261103/complete.json",
+  "same_scientific_settings": true,
+  "changed_backend": true,
+  "no_failure_in_this_realization": true,
+  "historic_cp99_cause_proven": false,
+  "no_new_OFF": true,
+  "no_evo_scoring": true,
+  "no_health_calibration_or_randomness_certificate": true
+}

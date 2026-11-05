@@ -1,0 +1,125 @@
+CP-K21 — COMPLETED: one full standalone ETH1 Kimera capture at0.50x.
+2026-10-21. No GLIM,gnssFGO,GNSS,EKF or visualization was run. No retry.
+
+Main conclusion
+===============
+Kimera processed the full346.32s playback and shut down cleanly, including the
+previous307s failure location. The5.099973322s native-odometry interval recurs
+at EXACTLY the same endpoint timestamps and output sequence numbers as CP-K18.
+It is not a5s optimizer stall or a5s camera outage. During this interval the
+frontend continues processing images; the backend deliberately receives no new
+keyframe. The source's configured keyframe-selection/low-disparity behavior
+explains the observed sparse output. No keyframe-policy modification was made.
+
+This corrects the earlier interpretation: absent native odometry rows are not
+automatically missing camera data or a malfunctioning Kimera pipeline. The
+combined-run failure involved receiver retention/finalization assumptions and
+source revisions spanning more than its7s retained history. Standalone success
+does NOT itself validate CP-K19 finalization or a new full-system OFF/ON run.
+CP-K20 remains prepared/unlaunched pending an explicit coverage/reporting choice.
+
+Execution and identity
+======================
+P=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/kimera_eth1_full_rate050_cpk21_20261021
+Capture=P/capture; analysis=P/analysis.json; derived poses=P/native_odometry.csv.
+Same CP-K9 DSO SHA256:
+be637ad745f73bf12596d3bf06754f56ed7bcadfdb8b4792b94c4fcfee62aad9.
+Same25-state ETH1 stereo/CPT7 profile and flags as CP-K17/K18. Effective loaded
+DSO/environment/receive=false/publish=true checked before playback. Preserved
+CPK9_PRIOR_REFRESH=1,FL4Q_ENABLE=0,FL4M_RETIREMENT=remove,native IMU override unset.
+Outgoing LOCAL covariance/revision diagnostics remained enabled; no external
+belief inputs. All28 preparation hashes unchanged after capture/analysis.
+346.32s selected-topic playback at0.50x,25s drain; total controller731.73s.
+Both playback_complete.json and capture_complete.json exist; no failed.txt.
+
+The gap, localized
+==================
+seq1483:1727775309953703785ns (bag302.098307476s)
+seq1484:1727775315053677107ns (bag307.198280798s)
+Between them:50 compressed AND50 raw images on EACH camera,510 IMU messages.
+10 periodic frontend snapshots advance from3022 to3067 processed-frame calls;
+backend count stays1484 and keyframe count1483. Frontend continues at5frames
+per wall second as expected for10Hz images played at0.5x.
+Backend spin durations on the bounding updates:67.6861 and65.3126ms, not5s.
+Both bounds log 'Low mono disparity' and 'adding zero velocity and no motion
+factors'. Shared-CPT7 IE-TC endpoint motion is0.000987m and0.005397degrees,
+consistent with the rig being nearly stationary in this part of the sequence.
+Eight~5.1s intervals recur from bag302.098 through342.898s. No backlog bursts.
+
+Code/settings explanation (read-only inspection)
+===============================================
+P/kimera_profile/FrontendParams.yaml:64-69 sets min time0.19s,max time5.0s,
+max disparity1000,minNumberFeatures0,disparityThreshold0.5.
+W=/home/yeranis/repos/V4RL/cbs_gtsam4.3
+W/src/Kimera-VIO/src/frontend/VisionImuFrontendParams.cpp:88-96 converts the
+time settings from seconds to nanoseconds.
+W/src/Kimera-VIO/src/frontend/VisionImuFrontend.cpp:175-231,
+VisionImuFrontend::shouldBeKeyframe: sustained LOW_DISPARITY does not satisfy
+the usual disparity trigger; maximum elapsed time can trigger a new keyframe.
+At the recorded camera cadence50 intervals are slightly LESS than5.0s, so
+the next image crosses the threshold at~5.1s. This matches the observed epochs.
+W/src/Kimera-VIO/src/pipeline/StereoImuPipeline.cpp:95-113 sends ONLY keyframes
+to the backend. W/src/Kimera-VIO-ROS/src/KimeraVioRos.cpp:1218-1304 publishes
+native odometry from backend output with that keyframe's timestamp.
+W/src/Kimera-VIO/src/frontend/Tracker.cpp:360-375 logs LOW_DISPARITY;
+W/src/Kimera-VIO/src/backend/VioBackend.cpp:3913-3940 adds existing no-motion
+and zero-velocity factors for that status.
+Individual shouldBeKeyframe reason VLOGs were not enabled: precise max-time
+branch attribution combines code/profile,epochs,low-disparity logs and continued
+frontend counters, not a newly instrumented per-frame predicate trace.
+
+Throughput (wall milliseconds,1492 backend updates)
+=================================================
+                                      median       p95         max
+Entire backend spin                    74.200      93.185      141.757
+Optimize incl outgoing work            73.341      92.060      140.903
+Main smoother update                   21.583      31.581       48.042
+Outgoing belief/covariance work         48.463      56.763       97.619
+ROS backend callback                     .016        .018         .057
+Periodic queue samples: backend/frontend queue max1; right input queue max4
+at startup. Full frontend timer max105ms;1491 selected keyframes plus initial
+backend output. No matched recovery/fatal/rollback/smoother-not-ok log lines.
+Observer odometry receipt age median73.10ms,p9583.43ms,max123.26ms in SIMULATED
+time, not wall computation time. Low rates of publication are distinct from
+arrival latency. No claim of full-system0.5x or general1x capacity.
+
+Trajectory result (native Kimera only, all1492 saved poses)
+=========================================================
+ATE RMSE                      4.496229m
+1-second translation RPE       .440356m
+1-second rotation RPE          .567768degrees
+Trajectory length             196.006964m (prism lever-arm frame)
+Reference length              201.031089m at the SAME saved timestamps
+Saved pose span               342.598092s (bag0.299999--342.898091s)
+RPE pairs                     2946
+
+Existing score_saved evaluator reused; no new alignment or estimator method.
+Reference: /boxi/inertial_explorer/tc/odometry from ETH1 CPT7 IE-TC. It shares
+the CPT7 IMU; NOT independent prism GT. ATE uses per-path no-scale SE3 alignment
+with existing CPT7-to-prism lever arm, evaluated at every saved native pose.
+No short prism-coverage substitute. ATE is sampled at irregular keyframe times,
+not uniformly over346.32s. 1sRPE excludes endpoints requiring interpolation
+across gaps>0.5s. Path lengths connect saved poses, including gap chords.
+Startup before first pose0.300s; an internal startup interval3.200s; eight
+late5.1s keyframe intervals; last-pose-to-playback-end3.422s. These are reported,
+not silently filled. Full playback does not mean dense full-duration odometry.
+Operational success is not accuracy certification: native drift remains large.
+
+Inputs, retained evidence and closeout
+=====================================
+Observed3464left/3463right compressed frames, identical raw stamp lists on each
+side,34618IMU messages;1492native poses with consecutive seq0--1491. The single
+unpaired left image at1727775211754237463ns (~203.899s) is already unmatched in
+the ORIGINAL bag (short read-only bag check preserved in analysis.json); the
+right-topic gap there is0.2s. This is unrelated to the302--307s issue.
+Frontend stats topic was not advertised; do not claim it was captured. Actual
+periodic frontend/backend counters in estimators.log were used instead.
+Initial postprocessor rejected two EOF rostopic warning lines; raw log is
+unchanged, derived CSV removes ONLY those two exact non-data lines. No pose
+removed;1492/1492 rows scored. Capture was NOT repeated.
+Retained: all native poses, diagnostic ROS bag/outgoing beliefs, full revision
+means/covariances in estimator log, timing/counter logs, sensor/pose header
+receipts, process monitor, hashes and actual effective settings.
+Owned ROS/source/recorder/controller jobs exited. Noetic restored stopped;
+Humble left stopped. No model edits,rebuild,tuning,push,default promotion or
+automatic full-system follow-up. See closeout.json for final state verification.

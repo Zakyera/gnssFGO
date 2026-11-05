@@ -1,0 +1,19 @@
+CP-V85 separate-IMU OFF60 source qualification; no source launched at review.
+Raw ETH1 input audit PASS:601stereo pairs,598Hesai scans,5986CPT7/11972Alpha
+IMU samples, complete60s coverage, ordered finite IMU, quiet first second.
+Author Allan density^2*200 agrees with every Alphasense message covariance.
+Camera extrinsics agree with mission TF to7.83e-10; non-IMU profile unchanged.
+Use current CP82/CP76+CP40 private DSOs, no build or default edits.
+Both receiving flags false and explicit zero-injection gate; publish retained.
+Alpha-CPT static transform is latched via tf2_ros for preplayback availability;
+same author rigid transform, runtime matrix checked before any sensor playback.
+Headless0.20x,25sdrain; no fusion/ON/full run. New paths/port11586 only.
+Method1 uses absolute backend poses joined to exact ROS output stamps, not
+incremental positions; both bodies converted to common author prism, EVO only.
+Storage10GiB preflight/5GiB runtime, container restoration and protected/Hesai
+hash checks, finite timeout, no retry on source/solver/coverage failure.
+Review caught inherited GLIM profiler suffix full_on_source instead of off_source
+BEFORE launch. First preparation receipt/manifest/diff and old candidate launch
+preserved as *_before_path_review; corrected path then re-frozen. No sensor
+attempt was made, no algorithm or parameter changed by this path correction.
+No guarantee of full-sequence health, covariance calibration or independence.

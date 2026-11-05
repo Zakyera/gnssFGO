@@ -1,0 +1,987 @@
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/coverage_checks.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/coverage_checks.py
+@@ -28,7 +28,8 @@
+         assert role == 'native_glim'
+         assert span >= duration-2, (role, 'truncated coverage', span, duration)
+         assert -.1 <= tail <= .5 and -.1 <= start <= 1.5, (role, 'start/tail', start, tail)
+-        assert not len(later) or later.max() <= 1, (role, 'post-startup gap', later.max())
++        from input_coverage import check_from_prepared
++        check_from_prepared(t)
+     return dict(rows=len(t), start_s=float(t[0]), end_s=float(t[-1]), span_s=span,
+         maximum_pose_gap_s=float(gaps.max()), post_startup_max_gap_s=float(later.max()) if len(later) else None,
+         start_after_first_imu_s=start, tail_behind_last_imu_s=tail,
+@@ -76,7 +77,7 @@
+     backend = sorted(set((w, n) for w, name, n in counters if name == 'VioBackend [ms]'))
+     assert frontend and backend
+     assert all(b[1] >= a[1] for a, b in zip(frontend, frontend[1:])), 'frontend counter regressed'
+-    assert 297 <= frontend[-1][1] <= 300, ('full-window frontend incomplete', frontend[-1])
++    assert 7259 <= frontend[-1][1] <= 7262, ('full-window frontend incomplete', frontend[-1])
+     assert backend[-1][1] == len(t), ('backend final count', backend[-1], len(t))
+     evidence = []
+     for i in np.flatnonzero(np.diff(t) > 1):
+@@ -88,14 +89,14 @@
+             backend_before_ms=updates[int(i)][1], backend_after_ms=updates[int(i+1)][1],
+             low_disparity_lines=sum(w is not None and lo-.3 <= w <= hi+.3 for w in low)))
+     return dict(passed=True, logs=[str(p) for p in logs], frontend_processed=frontend[-1][1],
+-        synchronized_input_pairs_reference=300, frontend_reference_after_startup=297,
++        synchronized_input_pairs_reference=7262, frontend_reference_after_startup=7259,
+         backend_processed=backend[-1][1], sequential_native_ids=True, gaps=evidence,
+         scope='Native counters, not a new per-image receipt or branch-decision audit.')
+ 
+ 
+ def main():
+     source = Path(sys.argv[1]); duration = float(sys.argv[2]); journal = Path(sys.argv[3])
+-    assert duration == 30.0, 'This coverage contract is for the frozen full SPX-3 window'
++    assert duration == 726.38, 'This coverage contract is for the frozen full ARC-3 window'
+     profile = (source/'kimera_profile/FrontendParams.yaml').read_text()
+     assert float(re.search(r'^max_intra_keyframe_time:\s*(\S+)', profile, re.M)[1]) == KEYFRAME_LIMIT
+     imu = []
+@@ -105,11 +106,14 @@
+             if v[0] == 'I': imu.append(int(v[2])*1e-9)
+     assert len(imu) > 100 and np.all(np.diff(imu) > 0)
+     result = dict(passed=True, requested_s=duration, imu_samples=len(imu), imu_span_s=imu[-1]-imu[0],
+-                  coverage_contract='native_keyframes_cpk22', kimera_gap_bound_s=GAP_LIMIT)
++                  coverage_contract='arc3_available_inputs_cpv17', kimera_gap_bound_s=GAP_LIMIT)
+     for role, filename in [('native_glim', 'odom_imu.txt'), ('native_kimera', 'kimera_odometry.csv')]:
+         result[role] = check(*load(source/filename, role == 'native_kimera'), duration, imu[0], imu[-1], role)
+     logs = [source/'estimators.log', *source.glob('ros_logs/*/kimera_vio_ros-kimera_vio_ros_node-*-stdout.log')]
+     result['kimera_processing'] = processing(logs, load(source/'kimera_odometry.csv', True)[0])
++    from input_coverage import check_from_prepared
++    result['available_input_coverage'] = check_from_prepared(load(source/'odom_imu.txt')[0])
++    result['first_published_available_input_coverage'] = check_from_prepared(load(source/'glim_odometry.csv', True)[0])
+     with (source/'source_coverage.json').open('x') as f: json.dump(result, f, indent=2)
+     print(json.dumps(result))
+ 
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/evaluate_fl4f.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/evaluate_fl4f.py
+@@ -1,104 +1,122 @@
+-"""Score frozen FL4f2 native/as-played/finalized paths and received covariances.
++"""CP-V17 saved-only ARC-3 scoring; CP-V10 integer-time/gap-aware geometry."""
++import collections,csv,hashlib,importlib.util,json,sys
++from pathlib import Path
++sys.dont_write_bytecode=True
++import numpy as np
++ROOT=Path(__file__).resolve().parent
++OUT=ROOT/'evaluation_full'
++E=Path('/home/yeranis/repos/gnssFGO/experiments')
++spec=importlib.util.spec_from_file_location('cpv10',E/'first_published_comparison_cpv10_20261026/analyze.py')
++b=importlib.util.module_from_spec(spec);spec.loader.exec_module(b);a=b.a
++PRIMARY=('native_glim','native_kimera','fused_online')
+ 
+-Run after both matching cases validate, inside the existing ROS Noetic container.
+-IE-TC is a shared-CPT7 GNSS/INS reference, not independent prism ground truth.
+-"""
+-import collections
+-import csv
+-import hashlib
+-import json
+-import math
+-from pathlib import Path
+-import sys
++def sha(p):return a.g.sha(p)
++def source_root(mode):return ROOT
++def stat(v):return a.stat(v)
+ 
+-import numpy as np
++def on_grid(curve,reference,grid,valid=None):
++    p,r,ok=a.sample(curve,grid,500_000_000);p,r=a.prism(p,r)
++    gp,gr,gok=a.sample(reference,grid,50_000_000);gp,gr=a.prism(gp,gr)
++    mask=ok & gok if valid is None else ok & gok & valid
++    return p,r,gp,gr,mask
+ 
+-ROOT = Path(__file__).resolve().parent
+-OUT = ROOT / 'evaluation_full'
+-ON_ROOT = ROOT
+-def source_root(mode):
+-    return ON_ROOT if mode == 'on' else ROOT
+-TOOLS = Path('/workspace/cbs_gtsam4.3/src/cbsms/tools')
+-sys.path.insert(0, str(TOOLS))
+-import score_grandtour_prism as prism
+-import score_grandtour_relative_pose as rel
++def score(curve,reference,grid,valid):
++    p,r,gp,gr,mask=on_grid(curve,reference,grid,valid)
++    m,_=b.metrics(p,r,gp,gr,mask,grid)
++    ii=a.intervals(mask,1);jj=ii+1
++    # Same no-scale global alignment; step-vector errors remove fixed origin.
++    u,_,_=b.umeyama_alignment(p[mask].T,gp[mask].T,with_scale=False)
++    d=(p[jj]-p[ii])@u.T-(gp[jj]-gp[ii])
++    return dict(rows=int(mask.sum()),start_s=float(grid[mask][0]*1e-9),
++        end_s=float(grid[mask][-1]*1e-9),ATE_RMSE_m=m['ATE_RMSE_m'],
++        translation_RPE_1s_RMSE_m=m['horizons']['1']['translation_RMSE_m'],
++        rotation_RPE_1s_RMSE_deg=m['horizons']['1']['rotation_RMSE_deg'],
++        path_length_prism_m=m['path_length_m'],reference_path_length_prism_m=m['reference_path_length_m'],
++        rpe_pairs=m['horizons']['1']['pairs'],horizons=m['horizons'],
++        displacement_100ms_vector_error_m=stat(np.linalg.norm(d,axis=1)),
++        alignment_crosscheck_m=m['evo_alignment_difference_m'],
++        direct_RPE_check_max=m['direct_RPE_check_max'])
+ 
+-GT_BAG = Path('/workspace/cbs_gtsam4.3/src/datasets/GrandTour/SPX-3/2024-11-02-17-43-10_cpt7_ie_tc.bag')
+-GT_TOPIC = '/boxi/inertial_explorer/tc/odometry'
++def make_grid(first,last):
++    return np.arange(((first+a.STEP-1)//a.STEP)*a.STEP,(last//a.STEP)*a.STEP+1,a.STEP,dtype=np.int64)
+ 
+-def sha(path):
+-    h = hashlib.sha256()
+-    with path.open('rb') as stream:
+-        for block in iter(lambda: stream.read(1048576), b''):
+-            h.update(block)
+-    return h.hexdigest()
++def score_saved(curve,reference):
++    t,p,r=curve;gp,gr,ok=a.sample(reference,t,50_000_000)
++    assert ok.all(),'Saved output without reference bracket'
++    p,r=a.prism(p,r);gp,gr=a.prism(gp,gr)
++    ate,_,delta=b.ate(p,gp)
++    grid=make_grid(t[0],t[-1]);s=score(curve,reference,grid,np.ones(len(grid),bool))
++    # Full native path deliberately retains every saved point and gap chords.
++    s.update(rows=len(t),start_s=float(t[0]*1e-9),end_s=float(t[-1]*1e-9),
++        span_s=float((t[-1]-t[0])*1e-9),ATE_RMSE_m=ate,
++        path_length_prism_m=float(np.linalg.norm(np.diff(p,axis=0),axis=1).sum()),
++        reference_path_length_prism_m=float(np.linalg.norm(np.diff(gp,axis=0),axis=1).sum()),
++        gap_chords_over_half_second=int(np.sum(np.diff(t)>500_000_000)),
++        native_ATE_alignment_check_m=delta,
++        RPE_note='Per-product supported 100ms grid; reject all 1s intervals touching a gap')
++    return s
+ 
+-def stat(values):
+-    a = np.asarray(values, float)
+-    return dict(n=len(a), mean=float(a.mean()), median=float(np.median(a)),
+-                p95=float(np.percentile(a, 95)), max=float(a.max()))
+-
+-def prism_pose(pose):
+-    p, R = pose
+-    fixed_R = rel.quaternion_to_matrix(rel.CPT7_TO_PRISM_Q)
+-    return p + R @ rel.CPT7_TO_PRISM_T, R @ fixed_R
+-
+-def path_length(positions):
+-    return float(np.linalg.norm(np.diff(np.asarray(positions), axis=0), axis=1).sum())
+-
+-def score(curve, reference, times):
+-    est = [prism_pose(rel.interpolate_pose(*curve, t, .5)) for t in times]
+-    gt = [prism_pose(rel.interpolate_pose(*reference, t, .05)) for t in times]
+-    E = np.asarray([p for p, _ in est]); G = np.asarray([p for p, _ in gt])
+-    A, b = prism.rigid_kabsch(E, G)
+-    errors = np.linalg.norm(E @ A.T + b - G, axis=1)
+-    terr, rerr = [], []
+-    for i in range(len(times)-10):
+-        if abs(times[i+10]-times[i]-1.0) > 1e-4:
+-            continue
+-        et, er = rel.relative_pose(est[i], est[i+10])
+-        gt_t, gt_r = rel.relative_pose(gt[i], gt[i+10])
+-        terr.append(np.linalg.norm(et-gt_t))
+-        dR = gt_r.T @ er
+-        rerr.append(math.degrees(math.acos(float(np.clip((np.trace(dR)-1)/2, -1, 1)))))
+-    assert len(terr) >= 10
+-    return dict(rows=len(times), start_s=float(times[0]), end_s=float(times[-1]),
+-                ATE_RMSE_m=float(np.sqrt(np.mean(errors**2))),
+-                translation_RPE_1s_RMSE_m=float(np.sqrt(np.mean(np.square(terr)))),
+-                rotation_RPE_1s_RMSE_deg=float(np.sqrt(np.mean(np.square(rerr)))),
+-                path_length_prism_m=path_length(E), reference_path_length_prism_m=path_length(G),
+-                error_m=stat(errors), rpe_pairs=len(terr))
+-
+-def score_saved(curve, reference):
+-    times=curve[0]
+-    est=[prism_pose((p,rel.quaternion_to_matrix(q))) for p,q in zip(curve[1],curve[2])]
+-    gt_raw=[rel.interpolate_pose(*reference,t,.05) for t in times]
+-    assert all(p is not None for p in gt_raw), 'Some saved output rows lack IE-TC brackets'
+-    gt=[prism_pose(p) for p in gt_raw]
+-    E=np.asarray([p for p,_ in est]); G=np.asarray([p for p,_ in gt])
+-    A,b=prism.rigid_kabsch(E,G)
+-    errors=np.linalg.norm(E@A.T+b-G,axis=1)
+-    grid=np.arange(math.ceil(times[0]*10)/10,math.floor((times[-1]-1)*10)/10+1e-8,.1)
+-    terr=[];rerr=[]
+-    for t in grid:
+-        e0=rel.interpolate_pose(*curve,t,.5);e1=rel.interpolate_pose(*curve,t+1,.5)
+-        g0=rel.interpolate_pose(*reference,t,.05);g1=rel.interpolate_pose(*reference,t+1,.05)
+-        if any(x is None for x in (e0,e1,g0,g1)):
+-            continue
+-        et,er=rel.relative_pose(prism_pose(e0),prism_pose(e1))
+-        gt_t,gt_r=rel.relative_pose(prism_pose(g0),prism_pose(g1))
+-        terr.append(np.linalg.norm(et-gt_t))
+-        dR=gt_r.T@er
+-        rerr.append(math.degrees(math.acos(float(np.clip((np.trace(dR)-1)/2,-1,1)))))
+-    assert len(terr)>=10
+-    return dict(rows=len(times),start_s=float(times[0]),end_s=float(times[-1]),
+-        span_s=float(times[-1]-times[0]),
+-        ATE_RMSE_m=float(np.sqrt(np.mean(errors**2))),
+-        translation_RPE_1s_RMSE_m=float(np.sqrt(np.mean(np.square(terr)))),
+-        rotation_RPE_1s_RMSE_deg=float(np.sqrt(np.mean(np.square(rerr)))),
+-        path_length_prism_m=path_length(E),reference_path_length_prism_m=path_length(G),
+-        rpe_pairs=len(terr),error_m=stat(errors))
+-
++def main():
++    assert not OUT.exists(),'Never overwrite scoring'
++    pre=json.loads((ROOT/'input_audit.json').read_text());win=pre['window']
++    epoch=win['start_ns'];duration=win['duration_s']
++    paths={};curves={};checks={}
++    for mode in ('off','on'):
++        s=ROOT/f'full_{mode}_source';r=ROOT/f'full_{mode}_receiver/receiver'
++        for f in (ROOT/f'full_{mode}_control/complete.json',s/'complete.marker',r.parent/'complete.marker'):assert f.exists(),f
++        assert not (ROOT/f'full_{mode}_control/failed.txt').exists()
++        for role,name in [('native_glim',s/'glim_odometry.csv'),('native_kimera',s/'kimera_odometry.csv'),
++                          ('fused_online',r/'online_trajectory.tum'),('glim_refined',s/'odom_imu.txt'),
++                          ('fused_finalized',r/'finalized_trajectory.tum')]:
++            key=mode+'_'+role;paths[key]=name;curves[key]=a.load_curve(name)
++            if role=='native_glim':checks[key]=b.check_csv(name)
++    gt=Path(pre['bag_files']['cpt7_ie_tc']['path']);assert sha(gt)==pre['bag_files']['cpt7_ie_tc']['sha256']
++    ref=a.g.Reference(gt);reference=(ref.times,np.asarray(ref.poses)[:,:3,3],np.asarray(ref.poses)[:,:3,:3])
++    primary=[m+'_'+r for m in ('off','on') for r in PRIMARY]
++    grid=make_grid(max(curves[k][0][0] for k in primary),min(curves[k][0][-1] for k in primary))
++    _,_,valid=a.sample(reference,grid,50_000_000)
++    for k in primary:valid &= a.sample(curves[k],grid,500_000_000)[2]
++    results={};arrays=dict(timestamp_ns=grid,common_valid=valid)
++    for name,c in curves.items():
++        _,_,_,_,mask=on_grid(c,reference,grid,valid)
++        results[name]=dict(path=str(paths[name]),sha256=sha(paths[name]),
++            product='first-published' if name.endswith('native_glim') else
++                ('DELAYED fixed-lag-finalized' if name.endswith('fused_finalized') else
++                 'refined GLIM; secondary only' if name.endswith('glim_refined') else 'native first-published/ONLINE'),
++            full_saved_rows=len(c[0]),full_saved_span_s=float((c[0][-1]-c[0][0])*1e-9),
++            full_saved_path_length_CPT7_m=float(np.linalg.norm(np.diff(c[1],axis=0),axis=1).sum()),
++            full_saved=score_saved(c,reference),common=score(c,reference,grid,valid),
++            common_coverage=b.coverage(grid,mask,epoch,duration))
++        p,_,gp,_,_=on_grid(c,reference,grid,valid)
++        arrays[name+'_position_prism']=p
++        # Whole difficult input interval, predeclared from raw gaps, no metric-based selection.
++        lo=min(g['before_ns'] for g in pre['known_raw_gaps'] if g['gap_s']>1)-2_000_000_000
++        hi=max(g['after_ns'] for g in pre['known_raw_gaps'] if g['gap_s']>1)+2_000_000_000
++        ownmask=on_grid(c,reference,grid)[-1] & (grid>=lo)&(grid<=hi)
++        indices=a.intervals(ownmask,1)
++        # Short-window diagnostic may be sparse; no minimum-duration gate or fabricated interpolation.
++        results[name]['input_gap_cluster']=dict(start_ns=lo,end_ns=hi,supported_queries=int(ownmask.sum()),
++            supported_100ms_intervals=len(indices),note='Sparse support explicitly counted; primary is full journey')
++    coverage=b.coverage(grid,valid,epoch,duration)
++    comparison={r:dict(ATE_improvement_percent=b.improve(results['off_'+r]['common']['ATE_RMSE_m'],results['on_'+r]['common']['ATE_RMSE_m']),
++        translation_RPE1_improvement_percent=b.improve(results['off_'+r]['common']['translation_RPE_1s_RMSE_m'],results['on_'+r]['common']['translation_RPE_1s_RMSE_m'])) for r in PRIMARY}
++    report=dict(passed=True,reference=dict(path=str(gt),sha256=sha(gt),topic='/boxi/inertial_explorer/tc/odometry',
++        caveat='IE-TC shares CPT7 IMU; not independent prism ground truth'),
++        common_mask=dict(rows=int(valid.sum()),coverage=coverage,primary_products=primary,
++            timestamps_sha256=hashlib.sha256(grid[valid].astype('<i8').tobytes()).hexdigest(),
++            interpolation_gap_estimate_s=.5,interpolation_gap_reference_s=.05),
++        results=results,off_on=comparison,first_published_checks=checks,
++        covariance={m:covariances(m) for m in ('off','on')},synthetic_tests=a.tests(),
++        path_length_caveat='Full native polylines include gap chords. Common lengths sum contiguous segments only.',
++        convention='No-scale rigid SE3 ATE/prism lever arm; gap-aware integer-ns100ms grid; 1s RPE excludes every gap-crossing interval',
++        qc_multiplier_original=.25,not_a_Qc_ablation=True,
++        limitations=['Mean-only covariance alignment approximation unchanged','No nonlinear stationarity certification',
++                    'Finalized fusion is delayed, not ONLINE or full history','Original source covariances Gaussian scale1'])
++    assert all(sha(Path(p))==digest for p,digest in a.HASHES.items())
++    report['input_sha256']=dict(a.HASHES)
++    OUT.mkdir();a.save(OUT/'summary.json',report)
++    np.savez_compressed(OUT/'common_series.npz',**arrays)
++    print(json.dumps(dict(passed=True,common_coverage=coverage,off_on=comparison),indent=2))
+ def covariances(mode):
+     path = source_root(mode) / f'full_{mode}_receiver/events.csv'
+     groups = collections.defaultdict(list)
+@@ -131,61 +149,5 @@
+             first_last_translation_trace_ratio=stat([x[3]/x[2] for x in first_last if x[2]>0]) if first_last else None)
+     return result
+ 
+-def main():
+-    assert not OUT.exists(), 'Refusing to overwrite an evaluation'
+-    for mode in ('off','on'):
+-        assert (source_root(mode)/f'full_{mode}_control/complete.json').is_file()
+-        assert (source_root(mode)/f'full_{mode}_source/complete.marker').is_file()
+-        assert (source_root(mode)/f'full_{mode}_receiver/complete.marker').is_file()
+-    paths = {}
+-    for mode in ('off','on'):
+-        src = source_root(mode) / f'full_{mode}_source'
+-        rec = source_root(mode) / f'full_{mode}_receiver/receiver'
+-        paths[f'{mode}_native_glim'] = src/'odom_imu.txt'
+-        paths[f'{mode}_native_kimera'] = src/'kimera_odometry.csv'
+-        paths[f'{mode}_fused_online'] = rec/'online_trajectory.tum'
+-        paths[f'{mode}_fused_finalized'] = rec/'finalized_trajectory.tum'
+-    curves={}
+-    for name, path in paths.items():
+-        loader = rel.load_odometry_csv if name.endswith('native_kimera') else rel.load_tum
+-        curves[name] = rel.sort_unique(*loader(path))
+-        assert len(curves[name][0]) > 100
+-    t,p,q,frames,children = rel.load_reference_bag(GT_BAG,GT_TOPIC)
+-    reference = rel.sort_unique(t,p,q)
+-    assert children == ['cpt7_imu']
+-    start=max(c[0][0] for c in [*curves.values(),reference])
+-    end=min(c[0][-1] for c in [*curves.values(),reference])
+-    grid=np.arange(math.ceil(start*10)/10, math.floor(end*10)/10+1e-8,.1)
+-    times=np.asarray([stamp for stamp in grid if
+-        rel.interpolate_pose(*reference,stamp,.05) is not None and
+-        all(rel.interpolate_pose(*c,stamp,.5) is not None for c in curves.values())])
+-    assert len(times)>200 and np.all(np.diff(times)>0)
+-    segments=np.split(times,np.flatnonzero(np.diff(times)>.10001)+1)
+-    coverage=dict(grid_queries=len(grid),excluded_queries=len(grid)-len(times),
+-        envelope_s=float(times[-1]-times[0]),
+-        covered_contiguous_duration_s=float(sum(s[-1]-s[0] for s in segments)),
+-        segments=[dict(start_s=float(s[0]),end_s=float(s[-1]),rows=len(s)) for s in segments],
+-        maximum_query_gap_s=float(np.diff(times).max()))
+-    results={}
+-    for name,curve in curves.items():
+-        results[name]=dict(path=str(paths[name]),sha256=sha(paths[name]),
+-            full_saved_rows=len(curve[0]),full_saved_span_s=float(curve[0][-1]-curve[0][0]),
+-            full_saved_path_length_CPT7_m=path_length(curve[1]),
+-            full_saved=score_saved(curve,reference),
+-            common=score(curve,reference,times))
+-    report=dict(reference=dict(path=str(GT_BAG),sha256=sha(GT_BAG),topic=GT_TOPIC,
+-            frame_ids=frames,child_frame_ids=children,
+-            caveat='IE-TC GNSS/INS reference shares CPT7 IMU; not independent prism GT'),
+-        common_mask=dict(rows=len(times),start_s=float(times[0]),end_s=float(times[-1]),coverage=coverage,
+-            timestamps_sha256=hashlib.sha256(times.astype('<f8').tobytes()).hexdigest(),
+-            interpolation_gap_estimate_s=.5,interpolation_gap_reference_s=.05),
+-        path_length_caveat='Polyline through actual saved or supported queried positions; includes chords across missing intervals, not dense coverage.',
+-        convention='Per-path rigid SE(3) no-scale alignment for ATE at prism lever arm; 1s RPE in prism frame, no global alignment',
+-        results=results,covariance={mode:covariances(mode) for mode in ('off','on')})
+-    OUT.mkdir(exist_ok=False)
+-    with (OUT/'summary.json').open('x') as f:
+-        json.dump(report,f,indent=2,allow_nan=False)
+-    print(json.dumps({k:{'full_saved':v['full_saved'],'common':v['common']} for k,v in results.items()},indent=2))
++if __name__=='__main__':main()
+ 
+-if __name__=='__main__':
+-    main()
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/full_off.json
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/full_off.json
+@@ -1,7 +1,7 @@
+ {
+-  "sequence": "SPX-3 LOCAL CP-V2 Velodyne bag29-59s matched OFF",
++  "sequence": "ARC-3 LOCAL CP-V17 Velodyne physical 1731934117040035611..1731934843420035611ns matched OFF",
+   "source_protocol": "classic",
+-  "ros_master_uri": "http://127.0.0.1:11480",
++  "ros_master_uri": "http://127.0.0.1:11488",
+   "imu_topic": "/boxi/cpt7/imu",
+   "imu_frame": "cpt7_imu",
+   "world_frame": "gnssfgo_world",
+@@ -12,18 +12,18 @@
+   "drain_timeout_wall_sec": 300,
+   "ros1_container": "cbsms_ws_gpu",
+   "receiver_container": "ubuntu-jammy-humble-nvidia",
+-  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/receiver_cpk19.sh",
++  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/receiver_cpk19.sh",
+   "sources": [
+     {
+       "id": "glim_velodyne",
+-      "session": "spx3_cpv2_velodyne_off_20261023",
++      "session": "arc3_cpv17_velodyne_off_20261026",
+       "kind": "glim",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/ros_logs/*/glim_rosnode-*-stdout.log"
+     },
+     {
+       "id": "kimera_front",
+-      "session": "spx3_cpv2_velodyne_off_20261023",
++      "session": "arc3_cpv17_velodyne_off_20261026",
+       "kind": "kimera",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/estimators.log"
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/full_on.json
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/full_on.json
+@@ -1,7 +1,7 @@
+ {
+-  "sequence": "SPX-3 LOCAL CP-V2 Velodyne bag29-59s matched ON",
++  "sequence": "ARC-3 LOCAL CP-V17 Velodyne physical 1731934117040035611..1731934843420035611ns matched ON",
+   "source_protocol": "classic",
+-  "ros_master_uri": "http://127.0.0.1:11480",
++  "ros_master_uri": "http://127.0.0.1:11488",
+   "imu_topic": "/boxi/cpt7/imu",
+   "imu_frame": "cpt7_imu",
+   "world_frame": "gnssfgo_world",
+@@ -12,18 +12,18 @@
+   "drain_timeout_wall_sec": 300,
+   "ros1_container": "cbsms_ws_gpu",
+   "receiver_container": "ubuntu-jammy-humble-nvidia",
+-  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/receiver_cpk19.sh",
++  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/receiver_cpk19.sh",
+   "sources": [
+     {
+       "id": "glim_velodyne",
+-      "session": "spx3_cpv2_velodyne_on_20261023",
++      "session": "arc3_cpv17_velodyne_on_20261026",
+       "kind": "glim",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/ros_logs/*/glim_rosnode-*-stdout.log"
+     },
+     {
+       "id": "kimera_front",
+-      "session": "spx3_cpv2_velodyne_on_20261023",
++      "session": "arc3_cpv17_velodyne_on_20261026",
+       "kind": "kimera",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/estimators.log"
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/active_window.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/active_window.launch
+@@ -17,7 +17,7 @@
+   -->
+ 
+   <arg name="glim_config_path"
+-       default="/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/input_profiles/glim_config"/>
++       default="/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/input_profiles/glim_config"/>
+   <arg name="kimera_mode" default="mono"/>
+   <arg name="kimera_enable" default="true"/>
+   <arg name="kimera_params_folder"/>
+@@ -111,7 +111,7 @@
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_stride" value="20"/>
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_max_updates" value="40"/>
+ 
+-  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/glim_profile.launch">
++  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/glim_profile.launch">
+     <arg name="config_path" value="$(arg glim_config_path)"/>
+     <arg name="glim_node_output" value="$(arg diagnostic_node_output)"/>
+     <arg name="glim_input_imu_topic" value="$(arg glim_input_imu_topic)"/>
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/active_window_on.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/active_window_on.launch
+@@ -17,7 +17,7 @@
+   -->
+ 
+   <arg name="glim_config_path"
+-       default="/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/input_profiles/glim_config"/>
++       default="/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/input_profiles/glim_config"/>
+   <arg name="kimera_mode" default="mono"/>
+   <arg name="kimera_enable" default="true"/>
+   <arg name="kimera_params_folder"/>
+@@ -111,7 +111,7 @@
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_stride" value="20"/>
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_max_updates" value="40"/>
+ 
+-  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/glim_profile_on.launch">
++  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/glim_profile_on.launch">
+     <arg name="config_path" value="$(arg glim_config_path)"/>
+     <arg name="glim_node_output" value="$(arg diagnostic_node_output)"/>
+     <arg name="glim_input_imu_topic" value="$(arg glim_input_imu_topic)"/>
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/glim_profile.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/glim_profile.launch
+@@ -116,7 +116,7 @@
+         <env name="CPK16_MAIN_GPU_BATCHING" value="1"/>
+         <env name="GLIM_SHARED_NATIVE_PROVIDER" value="shared_native"/>
+         <env name="GLIM_REVISION_COVARIANCE_POLICY" value="native_local"/>
+-        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/full_off_source/e1b_profile.jsonl"/>
++        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/full_off_source/e1b_profile.jsonl"/>
+ 		<param name="config_path" value="$(arg config_path)" />
+ 		<param name="glim_dump_path" value="$(arg glim_dump_path)" />
+ 		<param name="deterministic_input_event_log_path" value="$(arg glim_deterministic_input_event_log_path)" />
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/glim_profile_on.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/glim_profile_on.launch
+@@ -116,7 +116,7 @@
+         <env name="CPK16_MAIN_GPU_BATCHING" value="1"/>
+         <env name="GLIM_SHARED_NATIVE_PROVIDER" value="shared_native"/>
+         <env name="GLIM_REVISION_COVARIANCE_POLICY" value="native_local"/>
+-        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/full_on_source/e1b_profile.jsonl"/>
++        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/full_on_source/e1b_profile.jsonl"/>
+ 		<param name="config_path" value="$(arg config_path)" />
+ 		<param name="glim_dump_path" value="$(arg glim_dump_path)" />
+ 		<param name="deterministic_input_event_log_path" value="$(arg glim_deterministic_input_event_log_path)" />
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/preflight_on.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/preflight_on.py
+@@ -2,7 +2,7 @@
+ from pathlib import Path
+ import hashlib,json
+ P=Path(__file__).resolve().parent
+-V=Path('/home/yeranis/results/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/off')
++V=Path('/home/yeranis/results/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/off')
+ def sha(p):
+  with Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+ for p in [P/'full_off_source/candidate_validation.json',P/'full_off_source/local_provenance.json',P/'full_off_source/velodyne_validation.json',
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/receiver_cpk19.sh
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/receiver_cpk19.sh
+@@ -3,5 +3,5 @@
+ set -eu
+ unset WNOJ_STRICT_PUBLICATION WNOJ_INCREMENTAL_PROFILE
+ export E2_EXACT_LINEARIZATION_CACHE=0 E2B_ENDPOINT_CACHE=0 OMP_NUM_THREADS=1
+-exec taskset -c 2 /home/yeranis/results/gnssfgo_receiver_finalization_cpk19_20261021/live \
++exec taskset -c 2 /home/yeranis/results/gnssfgo_leica2_motion_prior_quarter_cpv15_20261026/live_trace \
+   --absorbed-revision-policy seal_at_absorption "$@"
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/run_case.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/run_case.py
+@@ -33,7 +33,7 @@
+     own.mkdir(exist_ok=False)
+     inside = '/workspace/'+str(own.relative_to('/home/yeranis/repos/V4RL'))
+     env_inside = '/workspace/'+str((ROOT/'source.env').relative_to('/home/yeranis/repos/V4RL'))
+-    master_uri = 'http://127.0.0.1:11480'
++    master_uri = 'http://127.0.0.1:11488'
+     jobs = {}
+     streams = []
+     def start(name, command):
+@@ -47,7 +47,7 @@
+             text=True, capture_output=True, check=check)
+     def stop_pid(name):
+         # The PID is recorded by this case, command must match the owned port/run.
+-        token = '11480' if name=='master' else str(source.name)
++        token = '11488' if name=='master' else str(source.name)
+         script = ('import os,signal,sys; from pathlib import Path; p=Path(sys.argv[1]); '
+           'pid=int(p.read_text()) if p.exists() else 0; c=Path("/proc/%d/cmdline"%pid); '
+           'e=Path("/proc/%d/environ"%pid); '
+@@ -59,7 +59,7 @@
+     started = time.time()
+     try:
+         assert ros('rosparam get /rosversion',check=False).returncode != 0, 'port is already in use'
+-        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11480'
++        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11488'
+         start('master',['docker','exec','cbsms_ws_gpu','setsid','--wait','bash','-lc',master_script])
+         for _ in range(60):
+             if ros('rosparam get /rosversion',check=False).returncode==0:
+@@ -77,7 +77,7 @@
+             assert jobs['receiver'].poll() is None, 'receiver startup failed'
+             assert time.monotonic()<deadline, 'transport startup timeout'
+             time.sleep(.2)
+-        duration=30.0
++        duration=726.38
+         source_script = ('export CBSMS_RUN_NAME='+tag+'_source CBSMS_CBS_ENABLE='+('true' if args.mode=='on' else 'false')+
+           ' CBSMS_BAG_DURATION_SEC='+str(float(duration))+'; source '+shlex.quote(env_inside)+
+           '; echo $$ > '+shlex.quote(inside+'/source.pid')+
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/run_case_on.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/run_case_on.py
+@@ -34,7 +34,7 @@
+     own.mkdir(exist_ok=False)
+     inside = '/workspace/'+str(own.relative_to('/home/yeranis/repos/V4RL'))
+     env_inside = '/workspace/'+str((ROOT/'source.env').relative_to('/home/yeranis/repos/V4RL'))
+-    master_uri = 'http://127.0.0.1:11480'
++    master_uri = 'http://127.0.0.1:11488'
+     jobs = {}
+     streams = []
+     def start(name, command):
+@@ -48,7 +48,7 @@
+             text=True, capture_output=True, check=check)
+     def stop_pid(name):
+         # The PID is recorded by this case, command must match the owned port/run.
+-        token = '11480' if name=='master' else str(source.name)
++        token = '11488' if name=='master' else str(source.name)
+         script = ('import os,signal,sys; from pathlib import Path; p=Path(sys.argv[1]); '
+           'pid=int(p.read_text()) if p.exists() else 0; c=Path("/proc/%d/cmdline"%pid); '
+           'e=Path("/proc/%d/environ"%pid); '
+@@ -60,7 +60,7 @@
+     started = time.time()
+     try:
+         assert ros('rosparam get /rosversion',check=False).returncode != 0, 'port is already in use'
+-        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11480'
++        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11488'
+         start('master',['docker','exec','cbsms_ws_gpu','setsid','--wait','bash','-lc',master_script])
+         for _ in range(60):
+             if ros('rosparam get /rosversion',check=False).returncode==0:
+@@ -78,7 +78,7 @@
+             assert jobs['receiver'].poll() is None, 'receiver startup failed'
+             assert time.monotonic()<deadline, 'transport startup timeout'
+             time.sleep(.2)
+-        duration=30.0
++        duration=726.38
+         source_script = ('export CBSMS_RUN_NAME='+tag+'_source CBSMS_CBS_ENABLE='+('true' if args.mode=='on' else 'false')+
+           ' CBSMS_BAG_DURATION_SEC='+str(float(duration))+'; source '+shlex.quote(env_inside)+
+           '; echo $$ > '+shlex.quote(inside+'/source.pid')+
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/source.env
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/source.env
+@@ -1,18 +1,18 @@
+ # Source in the established ROS Noetic container after setting CBSMS_RUN_NAME
+ # to off_source/on_source and CBSMS_CBS_ENABLE to false/true.
+-: "${CBSMS_RUN_NAME:?Set fresh SPX-3 source run name}"
++: "${CBSMS_RUN_NAME:?Set fresh ARC-3 source run name}"
+ : "${CBSMS_CBS_ENABLE:?Set false or true}"
+-export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared
++export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared
+ export CBSMS_RUN_NAME CBSMS_CBS_ENABLE
+ export ROS_LOG_DIR="${CBSMS_RUN_ROOT}/${CBSMS_RUN_NAME}/ros_logs"
+ export CBSMS_PROJECT_ROOT=/workspace/cbs_gtsam4.3
+-export CBSMS_MISSION=2024-11-02-17-43-10
+-export CBSMS_BAG_START_SEC=29.0
+-export CBSMS_BAG_DURATION_SEC="${CBSMS_BAG_DURATION_SEC:-30.0}"
++export CBSMS_MISSION=2024-11-18-13-48-19
++export CBSMS_BAG_START_SEC=0.2
++export CBSMS_BAG_DURATION_SEC="${CBSMS_BAG_DURATION_SEC:-726.38}"
+ export CBSMS_POST_PLAYBACK_DRAIN_SEC=25
+ export CBSMS_BAG_RATE=0.20
+-export CBSMS_SEED_CLOCK_SECS=1730565898
+-export CBSMS_ROS_MASTER_PORT=11480
++export CBSMS_SEED_CLOCK_SECS=1731934116
++export CBSMS_ROS_MASTER_PORT=11488
+ export CBSMS_USE_EXISTING_ROS_MASTER=true
+ export CBSMS_KIMERA_MODE=stereo_shared_cpt7
+ # The recovered classic Kimera source path is "current", not experimental RIGHT.
+@@ -35,7 +35,7 @@
+ export CBSMS_KIMERA_RECEIVER_AUDIT_MAX_SAMPLES=40
+ export CBSMS_KIMERA_RECEIVER_AUDIT_STRIDE=20
+ export CBSMS_DIAGNOSTIC_NODE_OUTPUT=log
+-export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/input_profiles/glim_config
+-export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/input_profiles/kimera_profile
++export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/input_profiles/glim_config
++export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/input_profiles/kimera_profile
+ 
+-export CBSMS_DATASET_DIR=/workspace/cbs_gtsam4.3/src/datasets/GrandTour/SPX-3
++export CBSMS_DATASET_DIR=/workspace/cbs_gtsam4.3/src/datasets/GrandTour/ARC-3
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/source_runner.sh
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/source_runner.sh
+@@ -2,10 +2,10 @@
+ set -euo pipefail
+ 
+ project_root="${CBSMS_PROJECT_ROOT:-/workspace/cbs_gtsam4.3}"
+-dataset_dir="${CBSMS_DATASET_DIR:-${project_root}/src/datasets/GrandTour/SPX-3}"
+-mission="${CBSMS_MISSION:-2024-11-02-17-43-10}"
++dataset_dir="${CBSMS_DATASET_DIR:-${project_root}/src/datasets/GrandTour/ARC-3}"
++mission="${CBSMS_MISSION:-2024-11-18-13-48-19}"
+ duration_sec="${CBSMS_BAG_DURATION_SEC:-45.0}"
+-bag_start_sec="${CBSMS_BAG_START_SEC:-29.0}"
++bag_start_sec="${CBSMS_BAG_START_SEC:-0.2}"
+ bag_rate="${CBSMS_BAG_RATE:-0.75}"
+ post_playback_drain_sec="${CBSMS_POST_PLAYBACK_DRAIN_SEC:-25}"
+ ros_master_port="${CBSMS_ROS_MASTER_PORT:-11368}"
+@@ -43,8 +43,8 @@
+ run_dir="${run_root}/${run_name}"
+ experiment_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ launch_file="${experiment_dir}/active_window.launch"
+-[[ "${cbs_enable}" == false && "${cbs_direction}" == bidirectional && "${duration_sec}" == 30.0 && "${bag_rate}" == 0.20 && "${bag_start_sec}" == 29.0 ]] || { echo "Prepared SPX-3 bounded30.0-second 0.20x OFF fixed-lag capture only." >&2; exit 2; }
+-glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/input_profiles/glim_config}"
++[[ "${cbs_enable}" == false && "${cbs_direction}" == bidirectional && "${duration_sec}" == 726.38 && "${bag_rate}" == 0.20 && "${bag_start_sec}" == 0.2 ]] || { echo "Prepared ARC-3 full-usable726.38-second 0.20x OFF fixed-lag capture only." >&2; exit 2; }
++glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/input_profiles/glim_config}"
+ kimera_profile_source="${CBSMS_KIMERA_PROFILE_SOURCE:-}"
+ kimera_calibration_overlay="${CBSMS_KIMERA_CALIBRATION_OVERLAY:-${project_root}/src/cbsms/config/grandtour_kimera/eth1_mono_shared_cpt7}"
+ reference_bag="${CBSMS_REFERENCE_BAG:-${dataset_dir}/${mission}_ap20_prism_position.bag}"
+@@ -64,7 +64,7 @@
+ export_endpoint_audit_enable="${CBSMS_EXPORT_ENDPOINT_AUDIT_ENABLE:-false}"
+ diagnostic_node_output="${CBSMS_DIAGNOSTIC_NODE_OUTPUT:-screen}"
+ kimera_bad_update_audit_dir="${CBSMS_KIMERA_BAD_UPDATE_AUDIT_DIR:-}"
+-seed_clock_secs="${CBSMS_SEED_CLOCK_SECS:-1730565898}"
++seed_clock_secs="${CBSMS_SEED_CLOCK_SECS:-1731934116}"
+ 
+ if [[ "${cbs_enable}" != true && "${cbs_enable}" != false ]]; then
+   echo "CBSMS_CBS_ENABLE must be true or false." >&2
+@@ -503,7 +503,7 @@
+   g2k_applied_tail_gap=$((kimera_last_index - g2k_applied_max_target))
+ fi
+ 
+-min_glim_rows=280
++min_glim_rows=7008
+ # Sequential IDs, frontend completion and backend/output conservation were checked above.
+ min_kimera_rows=11
+ if (( glim_rows < min_glim_rows || kimera_rows < min_kimera_rows )); then
+@@ -579,7 +579,7 @@
+   "kimera_receive_cbs_beliefs=${kimera_receive_external_beliefs}" \
+   "glim_cbs_mode=${glim_cbs_mode}" \
+   "kimera_cbs_odom_factor_mode=active_window_temporary" \
+-  "experiment=gnssfgo_spx3_velodyne_smoke_cpv2_20261023" \
++  "experiment=gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026" \
+   "glim_sensor_pair=velodyne+cpt7_imu" \
+   "kimera_sensor_pair=${kimera_sensor_pair}" \
+   "glim_body_frame=cpt7_imu" \
+@@ -635,5 +635,5 @@
+ fi
+ 
+ touch "${run_dir}/complete.marker"
+-echo "GrandTour SPX-3 run complete: ${run_dir}"
++echo "GrandTour ARC-3 run complete: ${run_dir}"
+ echo "GLIM rows=${glim_rows}, Kimera rows=${kimera_rows}, EKF rows=${ekf_rows}, G2K messages=${g2k_messages}, G2K injected=${g2k_injected}, K2G injected=${k2g_injected}"
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/source_runner_on.sh
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/source_runner_on.sh
+@@ -2,10 +2,10 @@
+ set -euo pipefail
+ 
+ project_root="${CBSMS_PROJECT_ROOT:-/workspace/cbs_gtsam4.3}"
+-dataset_dir="${CBSMS_DATASET_DIR:-${project_root}/src/datasets/GrandTour/SPX-3}"
+-mission="${CBSMS_MISSION:-2024-11-02-17-43-10}"
++dataset_dir="${CBSMS_DATASET_DIR:-${project_root}/src/datasets/GrandTour/ARC-3}"
++mission="${CBSMS_MISSION:-2024-11-18-13-48-19}"
+ duration_sec="${CBSMS_BAG_DURATION_SEC:-45.0}"
+-bag_start_sec="${CBSMS_BAG_START_SEC:-29.0}"
++bag_start_sec="${CBSMS_BAG_START_SEC:-0.2}"
+ bag_rate="${CBSMS_BAG_RATE:-0.75}"
+ post_playback_drain_sec="${CBSMS_POST_PLAYBACK_DRAIN_SEC:-25}"
+ ros_master_port="${CBSMS_ROS_MASTER_PORT:-11368}"
+@@ -43,8 +43,8 @@
+ run_dir="${run_root}/${run_name}"
+ experiment_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ launch_file="${experiment_dir}/active_window_on.launch"
+-[[ "${cbs_enable}" == true && "${cbs_direction}" == bidirectional && "${duration_sec}" == 30.0 && "${bag_rate}" == 0.20 && "${bag_start_sec}" == 29.0 ]] || { echo "Prepared SPX-3 bounded30.0-second 0.20x classic CBS-ON fixed-lag capture only." >&2; exit 2; }
+-glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/input_profiles/glim_config}"
++[[ "${cbs_enable}" == true && "${cbs_direction}" == bidirectional && "${duration_sec}" == 726.38 && "${bag_rate}" == 0.20 && "${bag_start_sec}" == 0.2 ]] || { echo "Prepared ARC-3 full-usable726.38-second 0.20x classic CBS-ON fixed-lag capture only." >&2; exit 2; }
++glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/input_profiles/glim_config}"
+ kimera_profile_source="${CBSMS_KIMERA_PROFILE_SOURCE:-}"
+ kimera_calibration_overlay="${CBSMS_KIMERA_CALIBRATION_OVERLAY:-${project_root}/src/cbsms/config/grandtour_kimera/eth1_mono_shared_cpt7}"
+ reference_bag="${CBSMS_REFERENCE_BAG:-${dataset_dir}/${mission}_ap20_prism_position.bag}"
+@@ -64,7 +64,7 @@
+ export_endpoint_audit_enable="${CBSMS_EXPORT_ENDPOINT_AUDIT_ENABLE:-false}"
+ diagnostic_node_output="${CBSMS_DIAGNOSTIC_NODE_OUTPUT:-screen}"
+ kimera_bad_update_audit_dir="${CBSMS_KIMERA_BAD_UPDATE_AUDIT_DIR:-}"
+-seed_clock_secs="${CBSMS_SEED_CLOCK_SECS:-1730565898}"
++seed_clock_secs="${CBSMS_SEED_CLOCK_SECS:-1731934116}"
+ 
+ if [[ "${cbs_enable}" != true && "${cbs_enable}" != false ]]; then
+   echo "CBSMS_CBS_ENABLE must be true or false." >&2
+@@ -503,7 +503,7 @@
+   g2k_applied_tail_gap=$((kimera_last_index - g2k_applied_max_target))
+ fi
+ 
+-min_glim_rows=280
++min_glim_rows=7008
+ # Sequential IDs, frontend completion and backend/output conservation were checked above.
+ min_kimera_rows=11
+ if (( glim_rows < min_glim_rows || kimera_rows < min_kimera_rows )); then
+@@ -579,7 +579,7 @@
+   "kimera_receive_cbs_beliefs=${kimera_receive_external_beliefs}" \
+   "glim_cbs_mode=${glim_cbs_mode}" \
+   "kimera_cbs_odom_factor_mode=active_window_temporary" \
+-  "experiment=gnssfgo_spx3_velodyne_smoke_cpv2_20261023" \
++  "experiment=gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026" \
+   "glim_sensor_pair=velodyne+cpt7_imu" \
+   "kimera_sensor_pair=${kimera_sensor_pair}" \
+   "glim_body_frame=cpt7_imu" \
+@@ -635,5 +635,5 @@
+ fi
+ 
+ touch "${run_dir}/complete.marker"
+-echo "GrandTour SPX-3 run complete: ${run_dir}"
++echo "GrandTour ARC-3 run complete: ${run_dir}"
+ echo "GLIM rows=${glim_rows}, Kimera rows=${kimera_rows}, EKF rows=${ekf_rows}, G2K messages=${g2k_messages}, G2K injected=${g2k_injected}, K2G injected=${k2g_injected}"
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/validate_candidate.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/validate_candidate.py
+@@ -1,4 +1,4 @@
+-"""CP-V2 source lifecycle gate; no nonlinear-stationarity claim."""
++"""CP-V17 source lifecycle gate; no nonlinear-stationarity claim."""
+ import csv
+ import hashlib
+ import json
+@@ -20,7 +20,7 @@
+ with (S / "kimera_odometry.csv").open() as f:
+     poses = list(csv.DictReader(f))
+ coverage = json.loads((S / 'source_coverage.json').read_text())
+-assert coverage['passed'] and coverage['coverage_contract'] == 'native_keyframes_cpk22'
++assert coverage['passed'] and coverage['coverage_contract'] == 'arc3_available_inputs_cpv17'
+ assert coverage['kimera_processing']['passed']
+ assert len(rows) == len(poses) == coverage['kimera_processing']['backend_processed'] and len(rows) > 10
+ assert all(len(r) == 10 and all(map(math.isfinite, r)) for r in rows)
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/validate_case.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/validate_case.py
+@@ -10,8 +10,8 @@
+ REC=P/f'full_{MODE}_receiver'
+ OUT=REC/'receiver'
+ CTL=P/f'full_{MODE}_control'
+-EXE=Path('/home/yeranis/results/gnssfgo_receiver_finalization_cpk19_20261021/live')
+-RESULT=Path(f'/home/yeranis/results/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/{MODE}')
++EXE=Path('/home/yeranis/results/gnssfgo_leica2_motion_prior_quarter_cpv15_20261026/live_trace')
++RESULT=Path(f'/home/yeranis/results/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/{MODE}')
+ LIB=Path('/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib')
+ 
+ def sha(p):
+@@ -49,9 +49,9 @@
+     assert cfg['source_protocol']=='classic'
+     assert json.loads((OUT/'summary.json').read_text())['stationarity']=='not_checked_incremental_policy'
+     source_cov=json.loads((SRC/'source_coverage.json').read_text())
+-    assert source_cov['passed'] and source_cov['requested_s']==30.0
+-    assert source_cov['native_glim']['rows']>=280
+-    assert source_cov['coverage_contract']=='native_keyframes_cpk22' and source_cov['kimera_processing']['passed']
++    assert source_cov['passed'] and source_cov['requested_s']==726.38
++    assert source_cov['native_glim']['rows']>=7008
++    assert source_cov['coverage_contract']=='arc3_available_inputs_cpv17' and source_cov['kimera_processing']['passed']
+     assert source_cov['native_kimera']['rows']==source_cov['kimera_processing']['backend_processed']>10
+     metadata=(SRC/'run_metadata.txt').read_text()
+     markers=['mode=cbs_'+MODE,
+@@ -70,7 +70,7 @@
+     summary=json.loads((OUT/'summary.json').read_text())
+     assert summary['complete'] and summary['lag_seconds']==7
+     assert summary['absorbed_revision_policy']=='seal_at_absorption'
+-    assert sha(EXE)=='4b08a7f5ba97f5e4ec22959df23367df79eebf5d644dc19d939747dcd4566d6e'
++    assert sha(EXE)=='9da4f4d0a8ab76498ff3a282afd3e06af5c6a337f20ce99c2b0e07cdc2aa2ed1'
+     assert cfg['receiver_binary']==str(P/'receiver_cpk19.sh')
+     assert summary['events']==len(events)
+     assert transport['imu']==len(I) and transport['beliefs']==len(B)
+@@ -133,7 +133,7 @@
+         assert indices==list(range(len(indices))),name
+     times=[int(p['timestamp_ns']) for p in online]
+     assert all(b-a==100_000_000 for a,b in zip(times,times[1:]))
+-    assert (times[-1]-times[0])*1e-9>=28.0
++    assert (times[-1]-times[0])*1e-9>=724.38
+     assert [r[1:3] for r in online_records]==[r[1:3] for r in final_records]
+     path={}
+     for name,products in [('online',online),('finalized',final)]:
+@@ -173,7 +173,7 @@
+         monitor_output_age_s=stat(ages),published_during_source=published_during_source,
+         max_monitor_queue=max(m['queued'] for m in monitored),
+         protected_unchanged=len(manifest),
+-        claim='live 0.2x bounded30.0-second SPX-3 capture; fixed-lag incremental without stationarity certificate')
++        claim='live 0.2x full-usable726.38-second ARC-3 capture; fixed-lag incremental without stationarity certificate')
+     RESULT.mkdir(parents=True,exist_ok=False)
+     with (RESULT/'expired_details.json').open('x') as f:json.dump(audit.details,f,indent=2)
+     with (RESULT/'validation.json').open('x') as f:json.dump(result,f,indent=2)
+@@ -181,5 +181,5 @@
+ 
+ if __name__=='__main__':
+     phase=sys.argv[1]
+-    assert phase=='check', 'CP-V2 does not authorize a saved-journal solver repeat'
++    assert phase=='check', 'CP-V17 does not authorize a saved-journal solver repeat'
+     print(json.dumps(check(),indent=2))
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/validate_local.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/validate_local.py
+@@ -46,7 +46,7 @@
+   values=histories[b['i'],b['j']]
+   if not values or values[-1]!=payload:values.append(payload)
+  for (i,j),values in histories.items():expected[source,str(i),str(j)]=values
+- if kind=='glim':assert first>=280 and revisions>0 and len(provenance)==revisions and pending is None
++ if kind=='glim':assert first>=7008 and revisions>0 and len(provenance)==revisions and pending is None
+  else:assert tmp>0
+  result[kind]=dict(ids=len(histories),versions=sum(map(len,histories.values())),first=first,revised=revisions,provider_queries=queries,local_joint_queries=tmp)
+ actual=collections.defaultdict(list)
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/verify_effective.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/verify_effective.py
+@@ -10,10 +10,10 @@
+ 
+ root = Path(__file__).resolve().parent
+ source = Path(sys.argv[1])
+-assert os.environ['CBSMS_BAG_DURATION_SEC'] == '30.0'
++assert os.environ['CBSMS_BAG_DURATION_SEC'] == '726.38'
+ assert os.environ['CBSMS_BAG_RATE'] == '0.20'
+-assert os.environ['CBSMS_MISSION']=='2024-11-02-17-43-10'
+-assert os.environ['CBSMS_BAG_START_SEC']=='29.0'
++assert os.environ['CBSMS_MISSION']=='2024-11-18-13-48-19'
++assert os.environ['CBSMS_BAG_START_SEC']=='0.2'
+ enabled = os.environ['CBSMS_CBS_ENABLE'] == 'true'
+ assert os.environ['CBSMS_CBS_PROTOCOL'] == 'classic'
+ assert os.environ['CBSMS_CBS_LIVE_REVISION_ENABLE'] == 'false'
+@@ -101,7 +101,7 @@
+ assert not any('SNAPSHOT' in k or 'REAL_INPUT' in k or 'GLIM_E1_REAL_AUDIT_ROOT' == k for k in env(glim_pid))
+ assert 'e1b4a_real_input' not in glim_loaded
+ with (source/'effective_mode_check.json').open('x') as f:
+-    json.dump(dict(passed=True, checked_before_playback=True, playback_rate=0.20, requested_s=30.0, glim=expected,
++    json.dump(dict(passed=True, checked_before_playback=True, playback_rate=0.20, requested_s=726.38, glim=expected,
+                    kimera=expected_flags, kimera_candidate_env={k:env(pid)[k] for k in ('CPK9_PRIOR_REFRESH','FL4Q_ENABLE','FL4M_RETIREMENT')}, kimera_pid=pid, kimera_argv=argv,
+                    kimera_maps=loaded,glim_maps=glim_loaded,glim_revision_covariance='native_local',cached_provider_sha256='6f71292d29d974a0555abd9fda6b2370fdab81ca634a4e1343c216d2a762d2ca'), f, indent=2)
+ print('Active-window mode and unchanged Gaussian source settings verified before playback.')
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/verify_effective_on.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/verify_effective_on.py
+@@ -10,10 +10,10 @@
+ 
+ root = Path(__file__).resolve().parent
+ source = Path(sys.argv[1])
+-assert os.environ['CBSMS_BAG_DURATION_SEC'] == '30.0'
++assert os.environ['CBSMS_BAG_DURATION_SEC'] == '726.38'
+ assert os.environ['CBSMS_BAG_RATE'] == '0.20'
+-assert os.environ['CBSMS_MISSION']=='2024-11-02-17-43-10'
+-assert os.environ['CBSMS_BAG_START_SEC']=='29.0'
++assert os.environ['CBSMS_MISSION']=='2024-11-18-13-48-19'
++assert os.environ['CBSMS_BAG_START_SEC']=='0.2'
+ enabled = os.environ['CBSMS_CBS_ENABLE'] == 'true'
+ assert enabled, 'ON verifier requires CBS reception enabled'
+ assert os.environ['CBSMS_CBS_PROTOCOL'] == 'classic'
+@@ -105,7 +105,7 @@
+ assert not any('SNAPSHOT' in k or 'REAL_INPUT' in k or 'GLIM_E1_REAL_AUDIT_ROOT' == k for k in env(glim_pid))
+ assert 'e1b4a_real_input' not in glim_loaded
+ with (source/'effective_mode_check.json').open('x') as f:
+-    json.dump(dict(passed=True, checked_before_playback=True, playback_rate=0.20, requested_s=30.0, glim=expected,
++    json.dump(dict(passed=True, checked_before_playback=True, playback_rate=0.20, requested_s=726.38, glim=expected,
+                    kimera=expected_flags, kimera_candidate_env={k:env(pid)[k] for k in ('CPK9_PRIOR_REFRESH','FL4Q_ENABLE','FL4M_RETIREMENT')}, kimera_pid=pid, kimera_argv=argv,
+                    kimera_maps=loaded,glim_maps=glim_loaded,glim_revision_covariance='native_local',cached_provider_sha256='6f71292d29d974a0555abd9fda6b2370fdab81ca634a4e1343c216d2a762d2ca'), f, indent=2)
+ print('Active-window mode and unchanged Gaussian source settings verified before playback.')
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/validate_velodyne.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/validate_velodyne.py
+@@ -28,6 +28,9 @@
+  assert bad not in text,bad
+ with (S/'glim_odometry.csv').open() as f:rows=list(csv.DictReader(f))
+ assert rows and all(r['field.child_frame_id']=='cpt7_imu' for r in rows)
++from input_coverage import check_available
++check_available(poses[:,0],pre)
++check_available(np.array([int(r['field.header.stamp'])*1e-9 for r in rows]),pre)
+ meta=(S/'run_metadata.txt').read_text()
+ assert 'glim_sensor_pair=velodyne+cpt7_imu' in meta
+ report=dict(passed=True,mode=mode,raw_scans=len(clouds),published=len(poses),
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/transport_tools/live_receiver_protocol.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/transport_tools/live_receiver_protocol.py
+@@ -132,7 +132,7 @@
+         raise ValueError('unknown receiver_publication_policy')
+     if policy == 'fl4a_fixed_lag_incremental':
+         # Private FL4a adapter only. No nonlinear stationarity certificate is claimed.
+-        expected = '/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/receiver_cpk19.sh'
++        expected = '/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/receiver_cpk19.sh'
+         if config.get('receiver_model') != 'source_wnoa' or config.get('receiver_binary') != expected:
+             raise ValueError('FL4a policy requires the pinned fixed-lag wrapper')
+         if config.get('receiver_fixed_lag_seconds') != 7 or any(key.startswith('WNOJ_') for key in environment):
+--- /home/yeranis/repos/gnssFGO/experiments/velodyne_spx3_smoke_cpv2_20261023/run_pair.py
++++ /home/yeranis/repos/gnssFGO/experiments/arc3_velodyne_qcquarter_cpv17_20261026/arc3/run_pair.py
+@@ -10,8 +10,8 @@
+ import time
+ 
+ H = Path(__file__).resolve().parent
+-P = Path('/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared')
+-V = Path('/home/yeranis/results/gnssfgo_spx3_velodyne_smoke_cpv2_20261023')
++P = Path('/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared')
++V = Path('/home/yeranis/results/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026')
+ PY = '/home/yeranis/.local/share/pipx/venvs/evo/bin/python'
+ CONTAINERS = ('cbsms_ws_gpu', 'ubuntu-jammy-humble-nvidia')
+ stage = 'preflight'
+@@ -54,11 +54,11 @@
+     assert json.loads((P/'preflight/validation.json').read_text())['passed']
+     count = hashes()
+     inhibitors = subprocess.check_output(['systemd-inhibit','--list','--no-pager','--no-legend'], text=True)
+-    matches = [line for line in inhibitors.splitlines() if 'SPX3-CPV2' in line]
++    matches = [line for line in inhibitors.splitlines() if 'ARC3-CPV17' in line]
+     assert len(matches) == 1 and 'block' in matches[0]
+     assert all(token in matches[0] for token in ('sleep','idle','handle-lid-switch'))
+     session_inhibitors = subprocess.check_output(['gnome-session-inhibit','--list'], text=True)
+-    session_matches = [line for line in session_inhibitors.splitlines() if line.startswith('SPX3-CPV2:')]
++    session_matches = [line for line in session_inhibitors.splitlines() if line.startswith('ARC3-CPV17:')]
+     assert len(session_matches) == 1 and all(t in session_matches[0] for t in ('suspend','idle'))
+     initial = subprocess.check_output(['docker','inspect','-f','{{.State.Status}}',*CONTAINERS], text=True).split()
+     assert initial == ['exited','exited'], ('unexpected initial containers', initial)
+@@ -82,9 +82,8 @@
+                 step('validate_'+mode+'_'+name, [PY,str(P/arguments[0]),*arguments[1:]])
+             assert all(json.loads(path.read_text())['passed'] for path in gate_paths(mode))
+             save(mode+'_validated.json', dict(passed=True, finished=now(), gates=list(map(str,gate_paths(mode)))))
+-        script = '/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/evaluate_fl4f.py'
+-        step('evaluate', ['docker','exec','cbsms_ws_gpu','bash','-lc',
+-                         'source /opt/ros/noetic/setup.bash && python3 '+script])
++        script = '/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/evaluate_fl4f.py'
++        step('evaluate', [PY,str(P/'evaluate_fl4f.py')])
+         step('summarize', ['python3',str(H/'summarize.py')])
+         assert json.loads((H/'results.json').read_text())['passed']
+     except BaseException as exc:
+--- /home/yeranis/repos/gnssFGO/experiments/velodyne_spx3_smoke_cpv2_20261023/summarize.py
++++ /home/yeranis/repos/gnssFGO/experiments/arc3_velodyne_qcquarter_cpv17_20261026/arc3/summarize.py
+@@ -3,8 +3,8 @@
+ import collections,csv,hashlib,json,math,re,statistics
+ 
+ H=Path(__file__).resolve().parent
+-P=Path('/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared')
+-V=Path('/home/yeranis/results/gnssfgo_spx3_velodyne_smoke_cpv2_20261023')
++P=Path('/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared')
++V=Path('/home/yeranis/results/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026')
+ def load(p):return json.loads(p.read_text())
+ def sha(p):
+  with Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+@@ -28,7 +28,7 @@
+  effective=load(S/'effective_mode_check.json')
+  assert effective['cached_provider_sha256']=='6f71292d29d974a0555abd9fda6b2370fdab81ca634a4e1343c216d2a762d2ca'
+  glim_times=[float(l.split()[0]) for l in (S/'odom_imu.txt').open() if l.strip()]
+- start=1730565899.872888651;last=max(glim_times)
++ start=1731934117.040035611;last=max(glim_times)
+  logs=list(S.glob('ros_logs/*/glim_rosnode-*-stdout.log'));assert len(logs)==1
+  scans=[];queues=[]
+  for line in logs[0].open():
+@@ -39,7 +39,7 @@
+    f=fields(line,'GLIM_ASYNC_ODOM_TIMING_ROW,')
+    if f[-1]=='processed':queues.append(int(f[9]))
+  cohorts={}
+- for label,begin in [('whole',0),('after5s',5),('last20s',10.0)]:
++ for label,begin in [('whole',0),('after5s',5),('last20s',706.38)]:
+   selected=[r for r in scans if start+begin<=r[0]<=last+1e-7]
+   cohorts[label]={name:stat(r[col] for r in selected) for name,col in
+       [('scan_ms',23),('main_ms',17),('post_callback_ms',18)]}
+@@ -81,24 +81,24 @@
+  assert trees[0]==trees[1],folder
+ result=dict(passed=True,validation_contract='finite_recording_eof_cpk24a',terminal_omissions={m:c['checks']['receiver']['terminal_boundary']['excluded_versions'] for m,c in cases.items()},cases=cases,evaluation=evaluation,protected_unchanged=len(manifest),
+     identical_source_profiles=True,no_exhaustive_observer=True,no_saved_journal_repeat=True,
+-    limits='One30s rear-Velodyne integration pair, not an exhaustive batching-preservation certificate; IE-TC shares CPT7; no nonlinear stationarity claim.')
++    limits='Full usable rear-Velodyne matched pair, not an exhaustive batching-preservation certificate; IE-TC shares CPT7; no nonlinear stationarity claim.')
+ with (H/'results.json').open('x') as f:json.dump(result,f,indent=2)
+-lines=['CP-V2 matched SPX-3 batched finalized-policy bounded30.0s OFF/ON — COMPLETED',
+- 'One capture per mode,0.20x,headless. No paired observer,optimizer rebuild or tuning.',
+- 'Native GLIM / native Kimera ROS odometry / concurrent ONLINE fusion.',
++lines=['CP-V17 matched ARC-3 batched finalized-policy full-usable726.38s OFF/ON — COMPLETED',
++ 'One capture per mode,0.20x,headless. Qc0.25 in both receiver modes; source model unchanged; no rebuild.',
++ 'FIRST-PUBLISHED GLIM / native Kimera ROS odometry / concurrent ONLINE fusion.',
+  'EOF contract: only final partial-cell omissions allowed; every omission disclosed below. No fabricated support.',
+  'Terminal omissions OFF/ON: '+str(result['terminal_omissions']),
+  'Reference: full-window IE-TC shares CPT7; not independent prism GT.',
+  'Existing rigid no-scale ATE alignment and prism lever arm;1sRPE unchanged.','',
+  'FULL-SAVED OUTPUTS: every saved pose against reference; NOT a favorable short mask.',
+  'role mode ATE_m tRPE1s_m rRPE1s_deg path_prism_m span_s rows']
+-for role in ('native_glim','native_kimera','fused_online','fused_finalized'):
++for role in ('native_glim','native_kimera','fused_online','glim_refined','fused_finalized'):
+  for mode in ('off','on'):
+   r=evaluation['results'][mode+'_'+role]['full_saved']
+   lines.append(f"{role} {mode} {r['ATE_RMSE_m']:.6f} {r['translation_RPE_1s_RMSE_m']:.6f} {r['rotation_RPE_1s_RMSE_deg']:.6f} {r['path_length_prism_m']:.6f} {r['span_s']:.6f} {r['rows']}")
+-lines+=['','COMMON MASK: all sources/modes, same physical timestamps.',json.dumps(evaluation['common_mask']),
++lines+=['','COMMON MASK: six FIRST-PUBLISHED/ONLINE products; secondary products intersect this mask separately.',json.dumps(evaluation['common_mask']),
+  'role mode ATE_m tRPE1s_m rRPE1s_deg path_prism_m']
+-for role in ('native_glim','native_kimera','fused_online','fused_finalized'):
++for role in ('native_glim','native_kimera','fused_online','glim_refined','fused_finalized'):
+  for mode in ('off','on'):
+   r=evaluation['results'][mode+'_'+role]['common']
+   lines.append(f"{role} {mode} {r['ATE_RMSE_m']:.6f} {r['translation_RPE_1s_RMSE_m']:.6f} {r['rotation_RPE_1s_RMSE_deg']:.6f} {r['path_length_prism_m']:.6f}")

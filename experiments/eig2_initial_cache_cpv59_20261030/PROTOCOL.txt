@@ -1,0 +1,44 @@
+CP-V59: isolated initial factor571 triangulation-cache test, 2026-10-30
+
+Authorization: user's proceed following CP58's proposed initial-cache check.
+Stay on suspect1. No source replay, full run, production change, covariance
+weighting, guard change, factor removal, refinement intervention or suspect2.
+
+Input: immutable CP51 full_on_source/checkpoints/update_6 native snapshots.
+First CBS admission is at capture1.599933183s, GLIM5->7/Kimera4->5, factor929.
+Both arms start from exactly the saved after_ordinary.initial/theta and graph.
+A: original cached graph, one ordinary native GN step then one refresh step.
+B: same graph/state, clear ONLY smart factor571 camera-pose triangulation cache
+before the ordinary step; native triangulation/rank/depth/distance/reprojection
+rules determine its new status. Then one ordinary and one refresh native step.
+Do not clear any cache again before refresh. Do not inject a fitted landmark.
+The unchanged rules include sigma3, rank1, distance10m, reprojection3px,
+ZERO_ON_DEGENERACY, original native smart Jacobians and Schur elimination.
+
+Gates BEFORE B: original ordinary equations relative<1e-12/state<1e-6 mixed
+tangent norm; original exact-start refresh equations relative<1e-12 and chained
+refresh state<1e-5. Saved initial must equal theta; no fixed/marginal keys.
+Initial571 warm-valid/cold-degenerate is the discrepancy under test, not a
+reason to bypass rank checks. Expect visual support285->284 before ordinary.
+All355 untouched native factor Gaussians must be exactly equal at common start.
+Restoring only571 in modified snapshot must recover original serialized bytes.
+Both input snapshot files and in-memory originals must remain unchanged.
+Native solve backward residual<1e-14; this is NOT nonlinear stationarity.
+
+Build standalone private executable only, CP51 observer headers/CP40 libraries.
+Release and ASan/UBSan fixtures BEFORE saved-graph test: warm/cold cached-point
+difference on synthetic exact stereo geometry, cache-only nonmutation/restoration,
+native deterministic ordinary/refresh pose-chain solves. Vendor DSOs uninstrumented.
+Real test executes four GN steps total, not a source run or ATE scoring stage.
+Output: per-phase state revisions, common tilt, bias/velocity changes, final
+A-vs-B differences, native IMU/CBS residuals/costs, visual support and571status.
+Smart cost sums depend on rejection; not an independent merit function.
+No claim about trajectory accuracy or full-run cause from this one update.
+
+Preserve all previous artifacts/pins. Fresh output only, fail closed, no blind
+retry. Read-only snapshot inspection/linearization does not add optimizer steps.
+Both containers must start stopped; start cbsms_ws_gpu only for this private
+build/test and restore stopped. No competing source/validation/scoring jobs.
+Closeout: pins unchanged, fixtures and parity pass, owned jobs exited, both
+containers stopped, four-sequence Hesai667 original checkpoint verifies.
+Report finding and limitations, update repository ledger, then stop for decision.

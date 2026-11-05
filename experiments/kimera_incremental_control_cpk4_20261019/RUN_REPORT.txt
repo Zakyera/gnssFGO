@@ -1,0 +1,146 @@
+CP-K4b — reauthorized ordinary-incremental ETH1 Kimera-only control
+2026-10-19. COMPLETED AND VALIDATED — bounded ordinary-incremental OFF control.
+
+This is the user-authorized continuation after CP-K4's zero-playback harness
+failure (retained separately in REPORT.txt). One fresh capture; no source retry.
+Run root R=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/kimera_incremental_control_cpk4b_20261019
+Reference K=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/kimera_failed_factor_cpk1_20261019
+Protocol and protected input identities: R/PROTOCOL.txt, pre_capture_receipt.json.
+
+One111s ETH1 window,0.10x,25s drain. Native front Alphasense stereo+CPT7,
+25-state Kimera, numOptimize1, unchanged source noise/calibration/timing.
+Existing CP-K1 private libraries, no rebuild. Existing FL4Q_ENABLE=0 selector
+is the only algorithmic intervention. No GLIM, fusion, incoming CBS, ON,
+landmark-solver redesign or covariance tuning. Temporary factor-retirement
+setting remains remove but there are no peer factors to retire in this control.
+
+Preflight passed in the actual node: FL4q disabled, receivingfalse/publishingtrue,
+native IMU override unset, revision audit enabled, CP-K1 private libraries loaded.
+No GLIM/gnssFGO nodes or incoming belief publisher. Port11456. Both containers
+were initially stopped; only cbsms_ws_gpu started for this task.
+
+Result in plain words
+---------------------
+Kimera completes this111s window without the added FL4q wrapper. The prior
+stop at update531 does not occur;539 updates/native messages0--538 are saved.
+The first44 serialized native ROS messages are byte-identical to CP-K1,
+and objective rows0--43 are exactly identical. Both first differ at44, precisely
+the first FL4q replacement in CP-K1. This is a controlled backend-policy effect,
+not an assumed launch or covariance difference. No estimator code was rebuilt.
+
+The saved FL4q history had already been changed17 times before its stop. The
+ordinary control follows a different state/linearization history from44; this
+is NOT a test that merely ignores the exception at531 on the same frozen state.
+It provides direct evidence that the previous failure is not an unavoidable
+native incremental-Kimera failure on this111s section.
+
+Whole saved native trajectory (no short-prism substitution)
+---------------------------------------------------------
+                                      Ordinary control    Saved FL4q failed prefix
+Native pose count                     539                 531
+Native first-to-last span, s           110.599382           108.999394
+ATE RMSE, m                           .306224              .690236
+1s translation RPE RMSE, m             .034986              .055604
+1s rotation RPE RMSE, deg              .553292              .552970
+Prism-frame path length, m             62.096513            59.779284
+IE-TC path at these saved stamps, m    63.243896            61.737793
+CPT7-origin saved path length, m       62.105456            59.791391
+
+These two full-saved rows have DIFFERENT durations. Use the next table for
+the controlled numerical comparison, not unequal-window ATE subtraction.
+All539 ordinary and all531 retained native poses have IE-TC brackets and are
+included in their respective whole-saved ATE; no inconvenient segment removed.
+
+Identical physical comparison mask
+---------------------------------
+                                      Saved FL4q prefix    Ordinary control
+ATE RMSE, m                           .687725              .288268
+1s translation RPE RMSE, m             .055604              .033113
+1s rotation RPE RMSE, deg              .552969              .553453
+Prism-frame path length, m             59.485478            60.464069
+IE-TC reference path, m                61.728692            61.728692
+
+Mask:1057 timestamps,1727775008.2--1727775116.9998963, span108.799896s.
+32 candidate0.1s grid timestamps are unsupported across the known startup gap;
+maximum mask gap3.299997s. Both cases use exactly the same1057 stamps and1045
+one-second RPE pairs. Do not describe this mask as gap-free108.8s sampling.
+Whole-saved ATE above still includes every saved native pose.
+Translation improves in this diagnostic; rotation is almost unchanged and
+slightly worse. Do not claim improvement in every metric or a tuned solution.
+
+Evaluation convention and coverage
+----------------------------------
+Existing evaluate_fl4f.py score_saved/score functions used without changes;
+existing score_grandtour_prism and score_grandtour_relative_pose helpers.
+Original /kimera_vio_ros/odometry, not state_ or a reconstructed/fused trajectory.
+Reference /boxi/inertial_explorer/tc/odometry from
+W/src/datasets/GrandTour/2024-10-01-11-29-55_cpt7_ie_tc.bag, W=R's workspace root.
+IE-TC is GNSS/INS sharing CPT7 IMU, NOT an independent prism ground truth.
+Both poses converted using the existing CPT7-to-prism lever arm/orientation;
+ATE uses per-path rigid SE3/no-scale alignment;1sRPE no global alignment.
+Estimate/reference interpolation gap limits .5/.05s remain unchanged.
+
+Requested playback:1727775007.955396--1727775118.955396 (111s).
+Native output:1727775008.1553955--1727775118.7547777.
+Start/end gaps .200000/.200618s; largest internal gap3.199978953s during
+startup is disclosed, not filled with invented poses. New final physical time
+is1.599988s beyond the prior saved final time, not a full346s certification.
+
+Algorithmic and lifecycle checks
+--------------------------------
+- One source playback, no retry; capture+drain1143.523616wall seconds at0.10x.
+-539 finite native pose/twist/covariance messages; strictly increasing stamps.
+  Maximum quaternion norm deviation4.6574e-11. These are numerical checks,
+  not uncertainty calibration or statistical independence certification.
+- Actual process flags/environment and loaded private DSOs checked before data.
+  No incoming CBS; zero CBS retirements; zero FL4q acceptance calls/log entries.
+-13125 diagnostic relative-belief revision rows retained in kimera.log.
+- No native recovery, optimize failure, rollback, prior-chart error or crash.
+- All five owned process groups exit0; Kimera process gone; recorder closed.
+-2013 protected hashes and all prepared manifest inputs unchanged (host receipt
+  run_integrity.json). Old failed preflight and old failed source capture remain.
+- No source/controller settings changed while playback ran. Existing preflight
+  fixture result reused for these unchanged private binaries; no new sanitizer
+  run or estimator compilation is claimed.
+
+Observed objective, not a stationarity acceptance rule
+-----------------------------------------------------
+Ordinary update       Before                  After
+44                    224.25364126368507      235.37119459234654
+531                   2830.4559282884366      2827.696464598301
+538                   2788.035980609359       2776.623668668772
+
+18/539 observed steps increase the cloned-factor reported cost. At44 the
+ordinary proposal matches CP-K1's pre-fallback proposal exactly; the wrapper
+previously replaced it with127.9175040582795. The current ordinary run continues
+and has the better translational reference result on this mask. Thus demanding
+monotone value of this diagnostic objective is not equivalent to preserving
+ordinary Kimera behavior or improving trajectory accuracy. CP-K1's smart-factor
+held-landmark/reduced-model distinction still applies. No nonlinear stationarity
+claim, objective redesign, iteration tuning or production guard relaxation.
+
+Conclusion and scope boundary
+-----------------------------
+PASS for the bounded ordinary-incremental OFF control. The added FL4q policy
+was a material OFF intervention and its prior531 stop is not a general claim
+that ordinary Kimera fails there. This narrows the repair problem; it does not
+solve temporary-CBS ON's separately observed marginal-boundary/old-anchor issue.
+No ON/fusion result, all-sequence robustness,1x capacity, exact historical binary
+reproduction or full ETH1 completion follows. Current source is still our fork.
+No covariance changes or production/default promotion. CP-K2 redesign stays
+on hold. Next decision should remain confined to the existing temporary-ON
+integration evidence; do not automatically run full OFF/ON or more sequences,
+and do not use different backend policies for OFF and ON in a matched comparison.
+
+Evidence
+--------
+R/off_capture/{preflight.json,resolved_params.yaml,started.json,
+capture_complete.json,cleanup.json,outputs.bag,native.log,kimera.log,
+objective.csv,validation.json,evaluation.json}; H/run_integrity.json.
+H=/home/yeranis/repos/gnssFGO/experiments/kimera_incremental_control_cpk4_20261019.
+The new validator and exact scoring-code hash are retained; input/result SHA256s
+are in the receipts. No commits/push or follow-up experiment performed.
+Final cleanup: no owned ROS/estimator jobs remain; cbsms_ws_gpu restored to
+stopped, ubuntu-jammy-humble-nvidia remains stopped. gnssFGO HEAD unchanged
+668d4c788983722f4acad37d1495c15d03a27e18; diff --check passes. Existing dirty
+and untracked project work preserved; no clean-worktree claim.

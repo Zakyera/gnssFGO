@@ -1,0 +1,62 @@
+CP-V29 — one fresh full Hesai ETH1 CBS-OFF incremental-publication experiment
+2026-10-28. User explicitly requested a full from-scratch ETH1 run to test a
+Kimera-style incremental output implemented inside GLIM. Scope is ONE OFF run;
+no ON pair, tuning, baseline overwrite or default promotion is implied.
+
+Single hypothesis: given the same committed previous/current MAIN poses and
+initial pose, a live in-process accumulator equals CP-V28's saved-data chain.
+O[0]=X[0|0]; O[k]=O[k-1] inverse(X[k-1|k]) X[k|k].
+This is an output-only addition. Keep original absolute odometry, MAIN/LOCAL
+graphs, belief means/covariances and transport unchanged. No chained covariance
+or velocity is invented. Publish a separate PoseStamped topic in a distinct
+odometry frame, and retain full-precision paired input/output CSV evidence.
+No TF override or feedback of the accumulated pose into either estimator.
+
+Baseline: CP-K23 ETH1 full346.32s offset0, headless0.20x,25s drain, Hesai/front
+Alphasense stereo/shared CPT7, CP-K16 MAIN batching, CP-I1/I3 all-LOCAL dense
+covariance, GLIM5s, CP-K9 Kimera25states/prior-refresh1/FL4Q0/remove, native IMU
+override unset; CBS receiving OFF, existing diagnostic exports retained.
+Receiver remains CP-K19,7s WNOA,Qc1.0,independent100ms supports,no central IMU/GNSS.
+Preserve every validity/lifecycle/coverage guard and terminal omission policy.
+
+Candidate is a private copy of the pinned CP-I1 bridge, linked with the same
+saved objects/dependencies. Only add an opt-in publication observer. No global
+workspace/default/private-baseline libraries are edited. Preserve dirty files.
+
+Before capture: focused C++ known-correction, rotation/frame-equivariance,
+no-revision, invalid-input/order/duplicate and input-preservation tests; replay
+the accumulator arithmetic over saved ETH1 same-update pairs and compare with
+CP-V28 (not an estimator rerun). Require max matrix difference<1e-8. Build and
+test only in the existing Noetic container and restore its original state.
+
+Fresh capture needs a new root/session/port, exact input/profile/library pins,
+effective settings checks, own-process cleanup and scoped sleep inhibition.
+Keep CP-K23 disk admission >=8GiB and runtime reserve>5GiB. Do not launch if
+these cannot be met; no mount/permission workaround is authorized. The user
+subsequently authorized obsolete non-GrandTour output cleanup (CP-C4), completed
+with15.44GB reclaimed; no GrandTour data or dependency was deleted.
+
+Compare the live incremental CSV with an independent reconstruction from THIS
+new run's graph rows, at identical timestamps, max matrix difference<1e-8.
+Check complete native coverage and the existing source/receiver gates. Report
+new absolute and incremental ATE,1s RPE,path length on the old frozen common
+mask where supported; separately report full-saved coverage and old CP-V27/28
+reference values. New source captures may differ stochastically; agreement
+with the old trajectory is NOT a byte-equality acceptance requirement.
+IE-TC shares CPT7 and is not independent prism GT. Estimated path is not flown
+distance. No claim that this output change improves the optimizer itself.
+
+For the all-three method2 comparison only, AFTER capture and its original
+gates, run ONE saved-journal receiver observer replay in a separate new root,
+using the validated CP-V23 binary without rebuilding or tuning it. Require
+byte-identical ONLINE/finalized outputs, identical summaries/events and
+publication commits against this new concurrent receiver. This recovers
+same-update pairs unavailable in the unchanged CP-K19 publication file.
+It is reporting evidence, not a replacement source run or competing receiver.
+If parity fails, retain evidence and stop; do not substitute its metrics.
+
+H=/home/yeranis/repos/gnssFGO/experiments/eth1_live_incremental_cpv29_20261028
+B=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/glim_incremental_publisher_cpv29_20261028
+P=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_incremental_cpv29_20261028/prepared
+Current status: preparing; full source capture NOT LAUNCHED. Prior disk block
+is resolved by the separately authorized CP-C4 cleanup (~20.5GiB free).

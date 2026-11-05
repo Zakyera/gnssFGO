@@ -1,0 +1,155 @@
+CP-I1 — LOCAL covariance for GLIM downstream revisions
+2026-10-19
+=====================================================
+
+Result
+------
+Isolated GLIM implementation built and passed focused validation. No dataset,
+source estimator or receiver experiment was run. Frozen defaults/builds/results
+are unchanged. This is NOT certification of a complete all-LOCAL live system.
+Kimera's current first/revision paths both use LOCAL extraction, but its prior
+mechanism is not the separately maintained native history required literally
+by CP-D1. No new Kimera graph was introduced to conceal this distinction.
+
+Implementation (one hypothesis)
+-------------------------------
+New private build:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/local_revision_covariance_cpi1_20261019
+libglim_ros.so SHA256:
+42df73c172232a612da965bf43ead8ec454caf08434b84e2da5de74d26cdb79f
+
+Candidate selection, NOT a launch command:
+  GLIM_SHARED_NATIVE_PROVIDER=shared_native
+  GLIM_REVISION_COVARIANCE_POLICY=native_local
+Both must be verified in the actual process before any future run, together
+with the new bridge DSO and unchanged S4d libgtsam_points. Merely setting this
+environment variable on an old binary does nothing. No launch was prepared.
+
+Unset/empty/main retains the historical MAIN revision branch in the candidate.
+Unknown selector values are rejected; native_local without shared_native is
+rejected at setup. Existing shared-native checks still require temporary classic
+CBS, direct covariance publication, schur_relative_between and live_revision OFF.
+No production default promotion.
+
+Only the revision covariance branch changes. At each update and each existing
+edge the caller retains the exact current MAIN from/to poses and relative mean.
+RevisionCovariance.h invokes the SAME publicationCovariance adapter as ordinary
+first publications. It queries committed native Gaussian history, transports
+joint endpoint covariance to current charts, then applies the existing full6x6
+Schur relative extraction. It neither optimizes a second nonlinear graph nor
+reevaluates native residuals/Jacobians. All off-diagonal terms are retained.
+
+Failed LOCAL extraction throws SHARED_NATIVE_PROVIDER_FAILURE and propagates
+through the existing revision-error row. The existing diagnostic controller's
+provider-failure guard must remain enabled. There is no MAIN fallback. Query
+failure occurs before tracked revision/mean/covariance bookkeeping is changed.
+
+Means, physical timestamps, stable edge IDs, update identity, changed thresholds,
+retirement and source-to-source classic publication code are unchanged. Revision
+numbers remain monotone per ID; counts can legitimately differ because covariance
+changes now come from a different model. A separate provenance row identifies
+each emitted revised covariance policy; the existing belief wire/log schema is
+unchanged. gnssFGO code/settings are untouched.
+
+The ordinary/classic publication method and everything following it are checked
+literal-identical by prepare.py. The complete small bridge diff is archived in
+evidence/cbs_bridge.patch. No source-to-source live_revision was enabled.
+
+Validation
+----------
+- Release bridge compiles/links against pinned existing ABI/dependencies.
+- 50/50 Release and 50/50 focused ASan/UBSan GLIM/provider tests pass: 47 existing
+  lifecycle/native-Gaussian/provider tests unchanged plus3 new routing tests.
+- LOCAL revision output equals ordinary LOCAL query entry-for-entry in15 queries
+  across8 updates and multiple marginalizations, including nonzero chart deltas,
+  dense covariance, strong unadmitted peer factors, and genuinely changing native
+  covariances. Repeated same-update queries are exact. No MAIN callback in LOCAL
+  mode; no extra native factor error/linearization calls or MAIN estimate mutation.
+- Invalid policy/configuration, unavailable provider and retired endpoints fail
+  explicitly. Existing tests cover transactional native history, reset, chart,
+  rank, dense independent Schur oracle, shared IMU states, and no fallback.
+- Repeated Release numeric rows are byte-identical; existing deterministic
+  fixtures pass. This is synthetic determinism, NOT repeated real-data playback.
+- Focused sanitizer includes new helper/test code and the previously instrumented
+  provider library. Vendor GTSAM/CBS binaries are not fully instrumented; leak
+  detection disabled. No whole-ROS-process sanitizer claim.
+- 18 protected source/binary hashes pass including original S4d bridge/provider,
+  frozen FL4v Kimera DSO and FL4e receiver. Source estimator packages unchanged.
+
+Retained engineering issues, not hidden retries:
+1. Initial test suite49/50: the new fixture incorrectly demanded off-diagonal
+   covariance from isotropic native factors. Corrected the fixture to supply a
+   genuinely dense SPD native covariance; no candidate/math/threshold changes.
+   Failed log and subsequent50/50 logs retained.
+2. Kimera sanitizer link needed explicit -ldl for dladdr at the test's O0 setting.
+   Added link dependency only. Original failed link log and successful completion
+   receipt retained. This was not an estimator failure or sensor-data rerun.
+
+Kimera audit — precise scope
+----------------------------
+Actual private source:
+W/runs/fixed_lag_current_chart_fl4q_20261016/VioBackend.cpp
+where W=/home/yeranis/repos/V4RL/cbs_gtsam4.3.
+
+- Around3546: setMarginalizationGraph(LOCAL) before outgoing extraction.
+- Around3560: normal first getOdometryBeliefs.
+- Around3712: later versions invoke the same getOdometryBeliefs on that update's
+  LOCAL marginal object, not an explicit switch to MAIN like GLIM had.
+- src/cbs/src/bpsam/bpsam.cpp:2456: jointMarginalInformation uses tmp_marginals
+  when present; 2483ff constructs MAIN mean plus relative covariance; 4737ff
+  rebuilds LOCAL marginal object excluding tracked peer and anchor factors.
+- Actual private include/cbs/bpsam/incremental_fixed_lag_bpsam_smoother.h:
+  185ff finds temporary peer factors touching expiring endpoints, includes them
+  in factors_to_remove, updates ISAM, then424ff marginalizeLeaves. Saved
+  FL4M_RETIREMENT=remove is essential. Retain/persistent modes are not certified.
+
+Targeted test uses this unchanged actual FL4q wrapper and CBS library. A strong
+temporary peer edge changes MAIN covariance, while LOCAL extraction matches a
+native-only control.24 identical-physical-pair first/repeat queries across10
+updates and multiple retirements have max covariance difference0. MAIN means
+are retained; query nonmutation and retirement counts pass. Release and focused
+sanitizer both pass. This isolates explicit information at consistent means;
+it does not prove arbitrary nonlinear histories equal a counterfactual CBS-OFF
+run, or remove shared-IMU/correspondence/linearization dependence.
+
+Important distinction: Kimera's LOCAL snapshot copies the surviving main graph,
+including its marginal prior. Temporary factor removal is intended to keep
+explicit peer factors out of that prior. It does NOT maintain GLIM's separately
+evolved native-only marginal history. The synthetic fixture demonstrates no
+explicit carryover for that case, not a general independent-history certificate.
+No proven Kimera routing regression was found, so its native estimator was not
+modified. Under the literal CP-D1 independent-history contract, Kimera remains
+an outstanding certification/design item; do not label this all-source all-LOCAL.
+
+Cost and limits
+---------------
+NativeGaussianHistory.cpp:208ff currently assembles/checks/factorizes the native
+Gaussian system for EACH covariance query. Reusing it for every revision avoids
+new GPU/nonlinear evaluations but increases Gaussian query work from first-only
+to all active revised edges. No real throughput/speedup certification; the short
+synthetic test timings are not a GrandTour capacity estimate. No new caching
+scheme or optimization was smuggled into this policy patch.
+
+No ATE/RPE claim, no old-results relabeling, no tuning, covariance scaling,
+receiver/IMU/WNOA/priors/model edits, captures, commits or push. User's other dirty
+work remains. HEAD stays668d4c788983722f4acad37d1495c15d03a27e18.
+
+Next bounded decision
+---------------------
+Keep this GLIM candidate isolated. Resolve the Kimera prior contract explicitly
+(prove its temporary native-information prior lifecycle at the required level,
+or separately authorize a true native-history implementation). Then prepare ONE
+short provenance/throughput gate with exact binaries, both selectors, provider
+failure guards and saved full covariances. Do not automatically rerun ETH1/SPX/EIG
+or claim expected accuracy gains. LOCAL information remains an approximation
+around corrected means, not calibrated statistical independence.
+
+Reproduction/evidence
+---------------------
+prepare.py makes a fresh private overlay and refuses overwrite. build.py uses
+the saved exact S4d/FL4q compile/link recipes and private outputs only. Retained
+initial run: release_commands.json; corrected tests: release_v2_commands.json;
+ASan: san_commands.json + san_completion_passed.json. Evidence copied beside
+this report. verification.json pins originals and candidate. Protected binaries
+remain the recovery point. The container was used for compilation/synthetic
+tests only and restored stopped at handoff.

@@ -1,0 +1,212 @@
+CP-V39 — FULL EIG-2 KIMERA-ONLY CBS-OFF REFRESH EXPERIMENT
+Original355.02s usable window, start5.7s,0.20x,25s drain. One capture, no retry.
+Supplemental intersection analysis passed; strict timestamp parity FAILED.
+Final independent integrity/cleanup receipt: closeout.json.
+
+DECISION / WHAT THIS ESTABLISHES
+Strong positive result for this private OFF candidate on EIG-2. Both absolute
+and native causal-incremental accuracy improve, alongside disappearance of the
+large IMU inconsistency spike and much smaller active-window revisions. This is
+not merely a plotting fix or stronger prior: the estimates themselves changed.
+Common-mask ATE reductions:77.69% Method1 and74.36% Method2. Translation0.5m RPE
+improves93.19% and79.81%; Method2 rotation is essentially unchanged/slightly
+worse (.80718->.80848deg), not an improvement in every metric.
+Absolute common path290.30->186.92m versus188.01m reference; full-native absolute
+polyline332.02->188.05m versus186.63m reference at that native cadence. Keep
+these different sampling products separate; neither polyline is physical travel.
+Previous-state revision p95 .60262->.02492m, maximum4.84963->.28811m; observed
+revisions above0.5m112->0, above1m27->0. Paired MAIN diagnostic steps1744/1745,
+so these counts describe available pairs, not every possible update. Absolute
+rounding bounds and native-increment pairing checks pass.
+
+Together with CP-V35--38, this strongly implicates the retained-linearization
+interaction in our modified baseline as a major cause of the OFF pathology.
+It does not establish a general upstream Kimera bug, an all-sequence repair,
+nonlinear stationarity, or validated CBS-ON behavior. The live candidate changes
+both current-state linearization and adds one native GN step; earlier CP-V37
+old-equation controls support the chart/linearization interpretation. Original
+prior function/noise and all weights remained unchanged; production defaults
+are NOT promoted. Remaining ~0.5m ATE and local rotation errors are nonzero.
+Next decision should address reproducibility/other OFF sequence validation
+before adapting this explicitly OFF-only candidate to CBS-ON. Nothing else run.
+
+SCOPE / CANDIDATE
+Private CP-V38 opt-in: ONE additional current-state native GN refresh before
+each marginalization. Immutable original prior function/noise and native smart
+factors/IMU weights retained. Not a stronger prior and not a converged solve.
+CP-K9=1/FL4Q0/remove/25states; native IMU override unset. No GLIM/fusion,
+incoming CBS or CBS-ON. All source defaults and original runs remain unchanged.
+Original OFF Kimera traces are identical in Hesai and Velodyne runs. This is
+one camera+CPT7 experiment, not two independent LiDAR experiments or a new pair.
+
+DIRECT EVO1.36.3 — SHARED SUPPORTED SUBSET OF ORIGINAL VELODYNE EIG-2 MASK
+Method | ATE baseline -> candidate (m) | ATE improvement | path baseline -> candidate (m) | 0.5m RPE translation (m) | 0.5m RPE rotation (deg)
+1: newest absolute backend | 2.309533 -> 0.515187 | +77.69% | 290.303 -> 186.919 | 0.452902 -> 0.030823 | 1.666583 -> 0.819211
+2: native causal incremental | 1.880779 -> 0.482241 | +74.36% | 177.367 -> 185.716 | 0.088765 -> 0.017921 | 0.807183 -> 0.808480
+Coverage: 3526 common100ms queries; 352.3s /355.02s, 99.23%. Reference path 188.013m.
+RPE pairs=348 (original=349); original pair times unchanged=False.
+Original mask unchanged=False; additional unsupported queries=7.
+Same100ms grid,0.5s interpolation-gap limit and separate segments; no smoothing,
+scale fitting or gap bridging. Both sides recomputed on the SAME INTERSECTION.
+ATE uses one SE3 fit per curve. Every new evo CLI error array agrees with evo
+API. Original baseline reader/grid/prism/revision selftest passes; changed-mask
+scores must not be presented as numerically identical to old CP-V32 scores.
+Method1 keeps each newest absolute estimate once, never replacing older points.
+Method2 uses native Kimera incremental ROS unchanged, without double integration.
+Neither is a finalized active-window history or actual physical travel.
+IE-TC shares CPT7 with the estimator; NOT independent prism ground truth.
+
+FULL SAVED NATIVE OUTPUT (SEPARATE COVERAGE/CADENCE)
+Curve | ATE (m) | polyline length (m) | no-gap length (m) | ref native length (m) | rows | first..last(s)
+baseline_method1 | 2.316504 | 332.023 | 332.016 | 186.631 | 1761 | 0.199946..354.897130; gap chords=1
+candidate_method1 | 0.515120 | 188.054 | 188.052 | 186.634 | 1761 | 0.199946..354.897130; gap chords=2
+baseline_method2 | 1.882644 | 178.191 | 178.188 | 186.631 | 1761 | 0.199946..354.897130; gap chords=1
+candidate_method2 | 0.481524 | 186.353 | 186.351 | 186.634 | 1761 | 0.199946..354.897130; gap chords=2
+Candidate native keyframe IDs/count match;126late timestamps do NOT match.
+Each method uses actual timestamps, not keyframe index as physical time.
+Full capture duration does not imply every instant scored.
+
+REVISION / INTERNAL CONSISTENCY / COST — NOT ACCURACY METRICS
+baseline:
+  previous_revision_m: median=0.0163817,p95=0.602619,max=4.84963
+  absolute_step_m: median=0.11231,p95=0.63899,max=4.97947
+  same_update_motion_m: median=0.102242,p95=0.193208,max=0.236126
+  revision_rotation_deg: median=0.165487,p95=1.67426,max=24.4145
+  shape_max_m: median=0.00942032,p95=0.232129,max=1.28174
+  Previous-pose revisions >0.5m: 112; >1m: 27; missing paired steps: [4, 1556, 1558, 1560, 1562, 1564, 1580, 1595, 1597, 1607, 1676, 1680, 1682, 1712, 1757, 1759]
+  post_solve_imu_cost: median=305.407,p95=4.32474e+07,max=4.22146e+09
+  post_solve_imu_cost_after_250s: median=785949,p95=4.14958e+08,max=4.22146e+09
+  post_solve_total_cost: median=4526.61,p95=4.32543e+07,max=4.22146e+09
+  optimize_ms: median=145.105,p95=185.717,max=208.647
+  smoother_ms: median=48.376,p95=71.7438,max=83.9047
+  MAIN covariance rows=43344, first/active=1760/41584; min eigenvalue=5.61256e-10; symmetry max=0
+  Relative pose covariance traces: {"rot_trace_rad2": {"n": 43344, "mean": 3.2586193736909734e-08, "median": 2.358577301447677e-08, "p95": 9.547109678705568e-08, "maximum": 1.1999834607540381e-05}, "translation_trace_m2": {"n": 43344, "mean": 5.467934157357873e-06, "median": 7.856487800073729e-07, "p95": 2.6722771530386907e-05, "maximum": 0.0023572813087913967}}
+candidate:
+  previous_revision_m: median=0.00493066,p95=0.0249223,max=0.288107
+  absolute_step_m: median=0.107611,p95=0.199606,max=0.314863
+  same_update_motion_m: median=0.10679,p95=0.196003,max=0.233401
+  revision_rotation_deg: median=0.0589114,p95=0.199115,max=1.49538
+  shape_max_m: median=0.00319049,p95=0.0124514,max=0.083462
+  Previous-pose revisions >0.5m: 0; >1m: 0; missing paired steps: [4, 1555, 1557, 1559, 1563, 1582, 1597, 1599, 1609, 1611, 1681, 1682, 1712, 1757, 1759]
+  post_solve_imu_cost: median=0.511618,p95=2.01338,max=27.079
+  post_solve_imu_cost_after_250s: median=0.249352,p95=1.29522,max=2.15999
+  post_solve_total_cost: median=8232.84,p95=13313.5,max=14695.7
+  optimize_ms: median=96.5899,p95=123.522,max=178.937
+  smoother_ms: median=41.3822,p95=55.614,max=76.524
+  MAIN covariance rows=43369, first/active=1760/41609; min eigenvalue=1.83997e-10; symmetry max=0
+  Relative pose covariance traces: {"rot_trace_rad2": {"n": 43369, "mean": 1.6652607211764736e-08, "median": 1.4848531059584796e-08, "p95": 3.127203707247951e-08, "maximum": 1.1999834608551488e-05}, "translation_trace_m2": {"n": 43369, "mean": 9.218258902393831e-07, "median": 5.00778664625658e-07, "p95": 3.0610733492127167e-06, "maximum": 0.002357279735485197}}
+Runtime is measured at0.20x under this capture/audit workload, not a real-time
+benchmark. Old run included other estimators; compare timings with that caveat.
+The internal field post_solve_imu_cost_after_250s uses update IDs1250..1760
+(approximately the post250s portion); it is not an identical-factor comparison
+after the late keyframe schedule changes. Receipt_sensor_delay_s is measured
+in replay/simulated ROS time, NOT physical sensor latency or wall runtime.
+MAIN finite/SPD/symmetry and exact native same-update increment consistency
+are checked. These are not statistical calibration, independence or NEES.
+Legacy FL4M native-prior-only columns do NOT count OriginalChartPrior adapters;
+their zero value does not mean prior removal. Total factor cost includes them.
+No CP-V35/36 passive full-factor observer is in this DSO. No fresh unwhitened
+component-residual or complete smart-factor validity conclusion is available.
+
+TRANSPORT / OMISSIONS / REPRODUCIBILITY
+{
+  "/boxi/alphasense/front_left/image_raw/compressed": {
+    "rows": 3550,
+    "first_ns": 1730638816663493317,
+    "last_ns": 1730639171560675010,
+    "maximum_gap_s": 0.100053533,
+    "receipt_sensor_delay_s": {
+      "n": 3550,
+      "mean": 1.8469328732394406e-05,
+      "median": -0.0003029195,
+      "p95": 0.0027644262,
+      "maximum": 0.0034531770000000004
+    }
+  },
+  "/boxi/alphasense/front_right/image_raw/compressed": {
+    "rows": 3550,
+    "first_ns": 1730638816663493317,
+    "last_ns": 1730639171560675010,
+    "maximum_gap_s": 0.100053533,
+    "receipt_sensor_delay_s": {
+      "n": 3550,
+      "mean": -6.889446985915493e-05,
+      "median": -0.00039749049999999997,
+      "p95": 0.0027492204499999996,
+      "maximum": 0.003383365
+    }
+  },
+  "/boxi/cpt7/imu": {
+    "rows": 35502,
+    "first_ns": 1730638816568930000,
+    "last_ns": 1730639171579221000,
+    "maximum_gap_s": 0.010001000000000001,
+    "receipt_sensor_delay_s": {
+      "n": 35502,
+      "mean": -0.0009974318022646614,
+      "median": -0.001004806,
+      "p95": -8.281355000000005e-05,
+      "maximum": 0.00063502
+    }
+  },
+  "/grandtour/front_left/image_raw": {
+    "rows": 3550,
+    "first_ns": 1730638816663493317,
+    "last_ns": 1730639171560675010,
+    "maximum_gap_s": 0.100053533,
+    "receipt_sensor_delay_s": {
+      "n": 3550,
+      "mean": 0.0012705079247887323,
+      "median": 0.001149804,
+      "p95": 0.0031873564499999966,
+      "maximum": 0.0054665370000000005
+    }
+  },
+  "/grandtour/front_right/image_raw": {
+    "rows": 3550,
+    "first_ns": 1730638816663493317,
+    "last_ns": 1730639171560675010,
+    "maximum_gap_s": 0.100053533,
+    "receipt_sensor_delay_s": {
+      "n": 3550,
+      "mean": 0.0015058916307042255,
+      "median": 0.001352285,
+      "p95": 0.004431436199999998,
+      "maximum": 0.005375736000000001
+    }
+  },
+  "/kimera_vio_ros/odometry": {
+    "rows": 1761,
+    "first_ns": 1730638816763492417,
+    "last_ns": 1730639171460675710,
+    "maximum_gap_s": 0.7999941,
+    "receipt_sensor_delay_s": {
+      "n": 1761,
+      "mean": 0.037006540976149915,
+      "median": 0.0374181,
+      "p95": 0.044237096000000004,
+      "maximum": 0.059651060000000006
+    }
+  }
+}
+Compressed/decompressed stereo timestamp arrays agree per side. Native output
+rows and IDs match original OFF;126late timestamps differ. Native timing success
+flags all pass. Full rosbag odometry/belief recording, MAIN logs and raw costs
+are retained. Rounded absolute log poses use exact ROS header timestamps;
+each logged incremental pose is checked against native within logging bounds.
+Shutdown-only rostopic warning exclusions: [{"line": 1763, "text": "WARNING: no messages received and simulated time is active."}, {"line": 1764, "text": "Is /clock being published?"}]
+Strict original-timestamp parity failed before any score. Original failed
+analysis script and review retained.76different unique selected timestamps;
+maximum by-ID shift0.5999957s. Existing native keyframe selection depends on
+features/disparity and elapsed time, not simply a fixed5Hz clock. Sensor receipt
+streams are complete and processing kept up; exact cause of late keyframe
+selection differences is not established. No identical late factor-set claim.
+Predeclared fallback intersection excludes seven original queries at
+337.83645..338.43645s, without changing the0.5s support rule. Initial strict
+parity remains failed; supplemental scoring is not a retroactive pass.
+Preparation helper initially double-matched a duration replacement; failed
+helper/receipt retained, repaired before any container/source launch. No model,
+candidate DSO, weights or numerical gate changed to obtain better metrics.
+See results.json, comparison.png, window_events.json, evo/* archives/TUMs,
+evo_commands.json, pair_indices.json and exact capture/effective.json.
+No production/default change, CBS-ON, GLIM/fusion run, deletion, commit or push.

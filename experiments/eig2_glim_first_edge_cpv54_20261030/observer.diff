@@ -1,0 +1,23 @@
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/local_revision_covariance_cpi1_20261019/cbs_bridge.cpp
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_glim_first_edge_cpv54_20261030/cbs_bridge.cpp
+@@ -1,3 +1,4 @@
++#include "GlimObserver.h"
+ #include "RevisionCovariance.h"
+ #include "LocalUpdateBatching.h"
+ #include "RuntimeProfile.h"
+@@ -1262,6 +1263,7 @@
+   const auto total_start = TimingClock::now();
+   const auto update_timestamps_start = TimingClock::now();
+   updatePoseTimestamps(new_stamps);
++  cpv54::capture(smoother, has_last_pose_key_ ? poseIndex(last_pose_key_) : 0u, "before", &new_values, &new_factors);
+   if (native_imu_mean_bridge_)
+     native_imu_mean_bridge_->pruneBefore(
+         latestPoseStamp() - std::max(1.0, 3.0 * smoother.smootherLag()));
+@@ -1509,6 +1511,7 @@
+   const double temporary_ms = timing ? timing_elapsed_ms(temporary_start) : 0.0;
+   const auto publish_odom_start = TimingClock::now();
+   publishOdometryAndRerun(smoother);
++  cpv54::capture(smoother, has_last_pose_key_ ? poseIndex(last_pose_key_) : 0u, "after");
+   const double publish_odom_ms =
+       timing ? timing_elapsed_ms(publish_odom_start) : 0.0;
+   const auto active_diagnostics_start = TimingClock::now();

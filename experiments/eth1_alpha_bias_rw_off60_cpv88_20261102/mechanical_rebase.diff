@@ -1,0 +1,157 @@
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_off60_cpv85_20261101_attempt1/prepared/source_runner_on.sh
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_alpha_bias_rw_off60_cpv88_20261102/prepared/source_runner_on.sh
+@@ -43,8 +43,8 @@
+ run_dir="${run_root}/${run_name}"
+ experiment_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ launch_file="${experiment_dir}/active_window_on.launch"
+-[[ "${cbs_enable}" == false && "${cbs_direction}" == bidirectional && "${duration_sec}" == 60 && "${bag_rate}" == 0.20 && "${bag_start_sec}" == 0 && "${mission}" == 2024-10-01-11-29-55 && "${kimera_mode}" == stereo ]] || { echo "CP-V85 ETH1 split-IMU OFF60 only." >&2; exit 2; }
+-glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-/workspace/cbs_gtsam4.3/runs/eth1_split_imu_off60_cpv85_20261101_attempt1/prepared/input_profiles/glim_config}"
++[[ "${cbs_enable}" == false && "${cbs_direction}" == bidirectional && "${duration_sec}" == 60 && "${bag_rate}" == 0.20 && "${bag_start_sec}" == 0 && "${mission}" == 2024-10-01-11-29-55 && "${kimera_mode}" == stereo ]] || { echo "CP-V88 ETH1 split-IMU OFF60 only." >&2; exit 2; }
++glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-/workspace/cbs_gtsam4.3/runs/eth1_alpha_bias_rw_off60_cpv88_20261102/prepared/input_profiles/glim_config}"
+ kimera_profile_source="${CBSMS_KIMERA_PROFILE_SOURCE:-}"
+ kimera_calibration_overlay="${CBSMS_KIMERA_CALIBRATION_OVERLAY:-${project_root}/src/cbsms/config/grandtour_kimera/eth1_mono_shared_cpt7}"
+ reference_bag="${CBSMS_REFERENCE_BAG:-${dataset_dir}/${mission}_ap20_prism_position.bag}"
+@@ -583,7 +583,7 @@
+   "kimera_receive_cbs_beliefs=${kimera_receive_external_beliefs}" \
+   "glim_cbs_mode=${glim_cbs_mode}" \
+   "kimera_cbs_odom_factor_mode=persistent" \
+-  "experiment=eth1_split_imu_off60_cpv85_20261101_attempt1" \
++  "experiment=eth1_alpha_bias_rw_off60_cpv88_20261102" \
+   "glim_sensor_pair=hesai+cpt7_imu" \
+   "kimera_sensor_pair=${kimera_sensor_pair}" \
+   "glim_body_frame=cpt7_imu" \
+@@ -641,5 +641,5 @@
+ fi
+ 
+ touch "${run_dir}/complete.marker"
+-echo "CP-V85 ETH1 split-IMU CBS-OFF60 source run complete: ${run_dir}"
++echo "CP-V88 ETH1 split-IMU CBS-OFF60 source run complete: ${run_dir}"
+ echo "GLIM rows=${glim_rows}, Kimera rows=${kimera_rows}, EKF rows=${ekf_rows}, G2K messages=${g2k_messages}, G2K injected=${g2k_injected}, K2G injected=${k2g_injected}"
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_off60_cpv85_20261101_attempt1/prepared/source.env
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_alpha_bias_rw_off60_cpv88_20261102/prepared/source.env
+@@ -2,7 +2,7 @@
+ # to off_source/on_source and CBSMS_CBS_ENABLE to false/true.
+ : "${CBSMS_RUN_NAME:?Set fresh EIG-2 source run name}"
+ : "${CBSMS_CBS_ENABLE:?Set false or true}"
+-export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/eth1_split_imu_off60_cpv85_20261101_attempt1/prepared
++export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/eth1_alpha_bias_rw_off60_cpv88_20261102/prepared
+ export CBSMS_RUN_NAME CBSMS_CBS_ENABLE
+ export ROS_LOG_DIR="${CBSMS_RUN_ROOT}/${CBSMS_RUN_NAME}/ros_logs"
+ export CBSMS_PROJECT_ROOT=/workspace/cbs_gtsam4.3
+@@ -12,7 +12,7 @@
+ export CBSMS_POST_PLAYBACK_DRAIN_SEC=25
+ export CBSMS_BAG_RATE=0.20
+ export CBSMS_SEED_CLOCK_SECS=1727775007
+-export CBSMS_ROS_MASTER_PORT=11587
++export CBSMS_ROS_MASTER_PORT=11589
+ export CBSMS_USE_EXISTING_ROS_MASTER=false
+ export CBSMS_KIMERA_MODE=stereo
+ # The recovered classic Kimera source path is "current", not experimental RIGHT.
+@@ -35,7 +35,7 @@
+ export CBSMS_KIMERA_RECEIVER_AUDIT_MAX_SAMPLES=40
+ export CBSMS_KIMERA_RECEIVER_AUDIT_STRIDE=20
+ export CBSMS_DIAGNOSTIC_NODE_OUTPUT=log
+-export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/eth1_split_imu_off60_cpv85_20261101_attempt1/prepared/input_profiles/glim_config
+-export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/eth1_split_imu_off60_cpv85_20261101_attempt1/prepared/input_profiles/kimera_profile
++export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/eth1_alpha_bias_rw_off60_cpv88_20261102/prepared/input_profiles/glim_config
++export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/eth1_alpha_bias_rw_off60_cpv88_20261102/prepared/input_profiles/kimera_profile
+ 
+ export CBSMS_DATASET_DIR=/workspace/cbs_gtsam4.3/src/datasets/GrandTour
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_off60_cpv85_20261101_attempt1/prepared/verify_effective_on.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_alpha_bias_rw_off60_cpv88_20261102/prepared/verify_effective_on.py
+@@ -15,7 +15,7 @@
+ assert os.environ['CBSMS_MISSION']=='2024-10-01-11-29-55'
+ assert os.environ['CBSMS_BAG_START_SEC']=='0'
+ enabled = os.environ['CBSMS_CBS_ENABLE'] == 'true'
+-assert not enabled, 'CP-V85 requires BOTH source receivers disabled'
++assert not enabled, 'CP-V88 requires BOTH source receivers disabled'
+ assert os.environ['CBSMS_KIMERA_MODE'] == 'stereo'
+ assert os.environ['CBSMS_CBS_PROTOCOL'] == 'classic'
+ assert os.environ['CBSMS_CBS_LIVE_REVISION_ENABLE'] == 'false'
+@@ -52,7 +52,7 @@
+ assert kimera['cbs_external_pose_frame_id']=='cpt7_imu'
+ import tf
+ import rospy
+-rospy.init_node('cpv85_frame_preflight', anonymous=True)
++rospy.init_node('cpv88_frame_preflight', anonymous=True)
+ listener=tf.TransformListener()
+ import time
+ deadline=time.monotonic()+10
+@@ -134,4 +134,4 @@
+     json.dump(dict(passed=True, checked_before_playback=True, playback_rate=0.20, requested_s=60, glim=expected,
+                    kimera=expected_flags, kimera_native_only_outgoing_information=False, mixed_prior_feedback_user_accepted=True, kimera_candidate_env={k:env(pid)[k] for k in ('CPK9_PRIOR_REFRESH','FL4Q_ENABLE','FL4M_RETIREMENT','CPV40_REFRESH','CPV38_OFF_REFRESH','CPV76_PERSISTENT_COMPAT')}, kimera_pid=pid, kimera_argv=argv,
+                    kimera_maps=loaded,glim_maps=glim_loaded,glim_persistent_compat=env(glim_pid)['CPV82_GLIM_PERSISTENT_COMPAT'],glim_revision_covariance='native_local',cached_provider_sha256='6f71292d29d974a0555abd9fda6b2370fdab81ca634a4e1343c216d2a762d2ca'), f, indent=2)
+-print('CP-V85 split IMU topics/body transform and current private builds verified; BOTH CBS receivers OFF.')
++print('CP-V88 split IMU topics/body transform and current private builds verified; BOTH CBS receivers OFF.')
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_off60_cpv85_20261101_attempt1/prepared/active_window_on.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_alpha_bias_rw_off60_cpv88_20261102/prepared/active_window_on.launch
+@@ -17,7 +17,7 @@
+   -->
+ 
+   <arg name="glim_config_path"
+-       default="/workspace/cbs_gtsam4.3/runs/eth1_split_imu_off60_cpv85_20261101_attempt1/prepared/input_profiles/glim_config"/>
++       default="/workspace/cbs_gtsam4.3/runs/eth1_alpha_bias_rw_off60_cpv88_20261102/prepared/input_profiles/glim_config"/>
+   <arg name="kimera_mode" default="mono"/>
+   <arg name="kimera_enable" default="true"/>
+   <arg name="kimera_params_folder"/>
+@@ -111,7 +111,7 @@
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_stride" value="20"/>
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_max_updates" value="40"/>
+ 
+-  <include file="/workspace/cbs_gtsam4.3/runs/eth1_split_imu_off60_cpv85_20261101_attempt1/prepared/glim_profile_on.launch">
++  <include file="/workspace/cbs_gtsam4.3/runs/eth1_alpha_bias_rw_off60_cpv88_20261102/prepared/glim_profile_on.launch">
+     <arg name="config_path" value="$(arg glim_config_path)"/>
+     <arg name="glim_node_output" value="$(arg diagnostic_node_output)"/>
+     <arg name="glim_input_imu_topic" value="$(arg glim_input_imu_topic)"/>
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_off60_cpv85_20261101_attempt1/prepared/glim_profile_on.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_alpha_bias_rw_off60_cpv88_20261102/prepared/glim_profile_on.launch
+@@ -117,7 +117,7 @@
+         <env name="GLIM_SHARED_NATIVE_PROVIDER" value="shared_native"/>
+         <env name="CPV82_GLIM_PERSISTENT_COMPAT" value="1"/>
+         <env name="GLIM_REVISION_COVARIANCE_POLICY" value="native_local"/>
+-        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/eth1_split_imu_off60_cpv85_20261101_attempt1/prepared/off_source/e1b_profile.jsonl"/>
++        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/eth1_alpha_bias_rw_off60_cpv88_20261102/prepared/off_source/e1b_profile.jsonl"/>
+ 		<param name="config_path" value="$(arg config_path)" />
+ 		<param name="glim_dump_path" value="$(arg glim_dump_path)" />
+ 		<param name="deterministic_input_event_log_path" value="$(arg glim_deterministic_input_event_log_path)" />
+--- /home/yeranis/repos/gnssFGO/experiments/eth1_cpt7_control_off60_cpv86_20261102/controller.py
++++ /home/yeranis/repos/gnssFGO/experiments/eth1_alpha_bias_rw_off60_cpv88_20261102/controller.py
+@@ -43,7 +43,7 @@
+ failure=None;started=False
+ try:
+     status('preflight');hashes();assert shutil.disk_usage(P).free>10*1024**3
+-    inhibit=call(['systemd-inhibit','--list','--no-pager','--no-legend']);assert 'ETH1-CPV86' in inhibit
++    inhibit=call(['systemd-inhibit','--list','--no-pager','--no-legend']);assert 'ETH1-CPV88' in inhibit
+     save('inhibitors.json',dict(value=inhibit))
+     started=True;step('start_container',['docker','start','cbsms_ws_gpu'])
+     step('initial_container_jobs',['docker','top','cbsms_ws_gpu','-eo','pid,comm,args'])
+--- /home/yeranis/repos/gnssFGO/experiments/eth1_cpt7_control_off60_cpv86_20261102/launch.py
++++ /home/yeranis/repos/gnssFGO/experiments/eth1_alpha_bias_rw_off60_cpv88_20261102/launch.py
+@@ -4,7 +4,7 @@
+ H=Path(__file__).resolve().parent
+ assert json.loads((H/'prepared.json').read_text())['passed']
+ assert not (H/'start.json').exists() and not (H/'launch.json').exists()
+-command=['systemd-inhibit','--what=sleep','--mode=block','--who=ETH1-CPV86',
++command=['systemd-inhibit','--what=sleep','--mode=block','--who=ETH1-CPV88',
+          '--why=Authorized sixty-second ETH1 matched CPT7 CBS-OFF control',
+          'python3','-B',str(H/'controller.py')]
+ with (H/'launch.json').open('x') as f:
+--- /home/yeranis/repos/gnssFGO/experiments/eth1_cpt7_control_off60_cpv86_20261102/evaluate.py
++++ /home/yeranis/repos/gnssFGO/experiments/eth1_alpha_bias_rw_off60_cpv88_20261102/evaluate.py
+@@ -83,14 +83,14 @@
+     diag=dict(revisions=revision,optimize_ms=d.d39.stats(times[:,1]),covariance=dict(rows=len(mat),
+         rotation_trace_rad2=d.d39.stats(np.trace(mat[:,:3,:3],axis1=1,axis2=2)),translation_trace_m2=d.d39.stats(np.trace(mat[:,3:,3:],axis1=1,axis2=2)),calibration_claim=False))
+     supported=sum(float((grid[ii[-1]]-grid[ii[0]])*1e-9) for ii in segments)
+-    result=dict(task='CP-V86',passed=True,scope='matched current-binary ETH1 CBS-OFF60 IMU-integration control',
++    result=dict(task='CP-V88',passed=True,scope='matched current-binary ETH1 CBS-OFF60 IMU-integration control',
+         common=common,full_saved=full,common_supported_s=supported,common_coverage_percent=100*supported/60,
+         common_rows=len(ids),common_segments=info,common_RPE_pairs=len(pairs),CP85_identical_mask_and_reused_scores=reused,
+         diagnostics=diag,CP85_diagnostics=old['diagnostics'],checks=d.checks,no_CBS_ON=True,no_fusion=True,
+         limitations=['IMU topic/body/extrinsics/noise bundle, not hardware-only ablation','IE-TC shares CPT7, not independent prism GT',
+         'Native and common cadence distinct; no bridging gaps >0.5s','No bias/IMU residual trace beyond previously enabled diagnostics',
+         'Covariance consistency and nonlinear stationarity not certified'])
+-    lines=['CP-V86 ETH1 matched current-binary CPT7 versus saved Alphasense, CBS OFF60',
++    lines=['CP-V88 ETH1 matched current-binary CPT7 versus saved Alphasense, CBS OFF60',
+         'Method1 first/newest absolute at common physical prism; EVO1.36.3 SE3 no-scale ATE; reference-distance0.5m RPE.',
+         f'COMMON100ms support {supported:.3f}s /60; {len(ids)} rows, {len(pairs)} RPE pairs. CP85 scores reused={reused}.',
+         'Estimator | ATE m | tRPE m | rRPE deg | estimated path m | reference path m']

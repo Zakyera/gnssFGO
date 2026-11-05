@@ -1,0 +1,93 @@
+--- /home/yeranis/repos/gnssFGO/experiments/eig2_split_imu_live_pair_cpv108_20261104/inspect_available.py
++++ /home/yeranis/repos/gnssFGO/experiments/spx3_split_imu_live_pair_cpv111_20261104/inspect_available.py
+@@ -17,8 +17,8 @@
+ H = Path(__file__).resolve().parent
+ E = H.parent
+ W = Path('/home/yeranis/repos/V4RL/cbs_gtsam4.3')
+-D = W / 'src/datasets/GrandTour/EIG-2'
+-M = '2024-11-03-13-59-54'
++D = W / 'src/datasets/GrandTour/SPX-3'
++M = '2024-11-02-17-43-10'
+ P103 = W / 'runs/eth1_prior_fix_live_cpv103_20261103/prepared/on'
+ 
+ def sha(path):
+@@ -41,7 +41,7 @@
+                        connections=[dict(topic=c.topic, type=c.msgtype, count=c.msgcount)
+                                     for c in reader.connections])
+     inventory[suffix] = row
+-assert not inventory['alphasense_imu']['exists']
++assert inventory['alphasense_imu']['exists']
+ assert not any(c['type'] == 'sensor_msgs/msg/Imu' for c in inventory['alphasense']['connections'])
+ 
+ edges = {}
+@@ -115,7 +115,7 @@
+ dso = P103 / 'private_build/libkimera_vio.so'
+ assert sha(dso) == '985c115d3573446f65ef4ce7cc4125e514b4922fed6445ed05cbc4dbdfb70a09'
+ result = dict(created=datetime.datetime.now().astimezone().isoformat(), launch_ready=False,
+-              status='blocked_missing_original_alphasense_imu_bag', captures_started=0,
++              status='inventory_present_pending_raw_audit', captures_started=0,
+               inventory=inventory, free_bytes=shutil.disk_usage(D).free,
+               TF=dict(path=str(tf), sha256=sha(tf), static_edges=len(edges)),
+               cameras=cameras, T_alpha_cpt7=transform('alphasense_imu', 'cpt7_imu').tolist(),
+@@ -123,7 +123,7 @@
+               T_alpha_prism=transform('alphasense_imu', 'prism').tolist(),
+               T_hesai_cpt7=lidar_T.tolist(), CP103_lidar_extrinsic_max_abs=lidar_error,
+               CP103_candidate_DSO_sha256=sha(dso), preserved_terminal_outputs=seals,
+-              limitation='Inventory and calibration comparisons only; no Alpha input, full-window or launch qualification')
++              limitation='Inventory and calibration comparisons only; raw selected-window audit and launch admission still required')
+ with (H / 'available_data_review.json').open('x') as stream:
+     json.dump(result, stream, indent=2, allow_nan=False)
+ print(json.dumps(dict(status=result['status'], cameras=cameras,
+--- /home/yeranis/repos/gnssFGO/experiments/eig2_split_imu_live_pair_cpv108_20261104/audit_inputs.py
++++ /home/yeranis/repos/gnssFGO/experiments/spx3_split_imu_live_pair_cpv111_20261104/audit_inputs.py
+@@ -1,4 +1,4 @@
+-"""Exact raw EIG-2 selected-input audit; never starts an estimator."""
++"""Exact raw SPX-3 selected-input audit; never starts an estimator."""
+ import datetime, hashlib, json, sys
+ from pathlib import Path
+ import numpy as np
+@@ -6,8 +6,8 @@
+ from rosbags.highlevel import AnyReader
+ H=Path(__file__).resolve().parent
+ W=Path('/home/yeranis/repos/V4RL/cbs_gtsam4.3')
+-D=W/'src/datasets/GrandTour/EIG-2';mission='2024-11-03-13-59-54'
+-epoch=1730638816563546034;end=1730639171583546034
++D=W/'src/datasets/GrandTour/SPX-3';mission='2024-11-02-17-43-10'
++epoch=1730565899872888651;end=1730566096892888651
+ def sha(p):
+     with p.open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+ def save(name,data):
+@@ -36,10 +36,10 @@
+                     for field,k in [('angular_velocity_covariance','gyroscope_noise_density'),('linear_acceleration_covariance','accelerometer_noise_density')]:
+                         assert np.max(abs(np.asarray(getattr(m,field)).reshape(3,3)-np.eye(3)*noise[k]**2*200))<1e-15
+     print('Audited',suffix,len(headers[wanted[0]]),flush=True)
+-assert min(starts)+5700000000==epoch,'New IMU must not silently change rosbag playback epoch'
++assert min(starts)+29000000000==epoch,'New IMU must not silently change rosbag playback epoch'
+ for topic,values in headers.items():
+     ts=np.array(values,np.int64);gap=np.diff(ts)*1e-9;s=streams[topic]
+-    assert (gap>0).all() and (ts[-1]-ts[0])*1e-9>354
++    assert (gap>0).all() and (ts[-1]-ts[0])*1e-9>196
+     assert (end-ts[-1])*1e-9<.2 and ts[0]-epoch<10**9
+     s.update(frames=sorted(s['frames']),count=len(ts),first_ns=int(ts[0]),last_ns=int(ts[-1]),
+              median_period_s=float(np.median(gap)),max_gap_s=float(gap.max()),
+@@ -51,16 +51,16 @@
+     assert 9<np.linalg.norm(v[:,3:].mean(axis=0))<10.5
+     quiet[suffix]=dict(n=len(v),gyro_norm_max=float(g.max()),acc_mean=v[:,3:].mean(axis=0).tolist(),acc_std=v[:,3:].std(axis=0).tolist())
+ left=headers[topics['alphasense'][0]];right=headers[topics['alphasense'][1]];paired=sorted(set(left)&set(right))
+-assert len(left)==len(right)==len(paired)==3550
+-assert streams['/boxi/hesai/points']['count']==3551 and streams['/boxi/cpt7/imu']['count']==35502
++assert len(left)==len(right)==len(paired)==1970
++assert streams['/boxi/hesai/points']['count']==1970 and streams['/boxi/cpt7/imu']['count']==19702
+ assert abs(streams['/boxi/alphasense/imu']['median_period_s']-.005)<1e-5
+ tf=Path(prior['TF']['path']);assert sha(tf)==prior['TF']['sha256']
+ result=dict(passed=True,created=datetime.datetime.now().astimezone().isoformat(),epoch_ns=epoch,end_ns=end,
+-    playback_epoch_ns=min(starts),offset_s=5.7,duration_s=355.02,mission=mission,bag_files=bags,
++    playback_epoch_ns=min(starts),offset_s=29.0,duration_s=197.02,mission=mission,bag_files=bags,
+     streams=streams,quiet_first_second=quiet,noise=noise,noise_density_matches_raw_message_covariance=True,
+     stereo_pairs=len(paired),stereo_pair_stamps_ns=paired,
+     raw_unmatched_camera_headers=dict(left_only_ns=sorted(set(left)-set(right)),right_only_ns=sorted(set(right)-set(left))),
+     T_alphasense_cpt7=prior['T_alpha_cpt7'],T_alphasense_prism=prior['T_alpha_prism'],T_cpt7_prism=prior['T_cpt7_prism'],
+-    tf=dict(path=str(tf),sha256=sha(tf)),scope='Original raw EIG-2 split-IMU full selected window; not a calibration certification')
++    tf=dict(path=str(tf),sha256=sha(tf)),scope='Original raw SPX-3 split-IMU full selected window; not a calibration certification')
+ save('raw_input_audit.json',result);save('expected_headers.json',headers)
+ print(json.dumps(dict(passed=True,streams=streams,quiet=quiet),indent=2))

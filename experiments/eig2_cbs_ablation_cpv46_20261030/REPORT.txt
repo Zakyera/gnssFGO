@@ -1,0 +1,135 @@
+CP-V46 -- EIG-2 saved-checkpoint CBS equation ablation
+2026-10-30. COMPLETE: Jacobian correction does NOT fix the early tilt.
+
+Decision
+--------
+Do not launch a full sequence or promote the exact-Jacobian candidate on the
+basis of this test. The confirmed approximation is not the main explanation
+of the large ordinary-step window rotations in these five checkpoints.
+Removing current explicit CBS factors actually increases tilt magnitude in
+all five windows. This rejects a simple "the current incoming constraint alone
+is forcing the large tilt" account; it does not exonerate ON history or show
+that CBS is healthy over a whole mission.
+
+What was tested
+---------------
+Five independent CP-V44 after_ordinary snapshots, updates21--25. Start is
+each snapshot's initial Values, with the full newly assembled graph. Native
+smart measurements, IMU PIM, initial priors, bias factors, weights, ordering
+and elimination stay unchanged. One GN step per arm, no iterative search.
+
+A: remove explicit CBS Pose3 Between equations (17/18/19/20/21 factors).
+B: original complete graph/equations; first reproduce captured ordinary solve.
+C: B with only CBS Local/Log chain-rule Jacobians corrected. Identical residual
+and whitening, same Gaussian slot/key order. Non-CBS Gaussian factors are the
+exact same objects from the native linearization; no native equation changed.
+No global macro, production library, default or source configuration modified.
+
+A is NOT a fresh CBS-OFF run. Its initial states and visual measurements were
+produced under ON. No marginal priors/fixed keys exist here, so no explicit CBS
+is hidden in marginal priors; earlier ON influence in state/history remains.
+All three share the same starting values; arms/windows do not feed each other.
+
+Main result: common OLD-window tilt per ordinary step (degrees)
+-------------------------------------------------------------
+Update    A: CBS removed    B: original    C: exact CBS Jacobian
+ 21          10.023514        0.481628          0.509748
+ 22          11.965914        5.246367          5.246393
+ 23           9.326606        2.480813          2.487485
+ 24           9.128203        5.683449          5.719433
+ 25          15.258138       10.211820         10.182132
+
+Tilt is the tilt component of the mean common-world rotation of all old poses
+relative to the previous estimate, NOT attitude error against ground truth or
+a physical vehicle rotation. Previous old states equal their initial copies;
+~1e-6degree zero-angle roundoff in the SVD/acos report is not motion.
+Rotations have different axes: do not subtract magnitudes as vector rotations.
+Actual C-versus-B common rotation differences: .04020/.04050/.05024/.05081/
+.03002deg; maximum old-pose position differences1.21/1.79/1.94/2.32/2.97mm.
+
+Median old-state accelerometer bias change (m/s^2)
+------------------------------------------------
+Update           A                 B                 C
+ 21            1.723580          0.086995          0.091778
+ 22            2.063386          0.895434          0.895845
+ 23            1.634746          0.423787          0.424981
+ 24            1.607199          0.972617          0.978822
+ 25            2.627764          1.750038          1.744600
+
+The tilt/bias coupling persists. Original B gravity-compensation directional
+cosines remain .99688--.99928. This is diagnostic agreement with the rotation
+of gravity in body coordinates, not a claim these biases are physically real.
+
+Native-only nonlinear cost evaluated at each one-step candidate
+-------------------------------------------------------------
+Update         A                  B                  C
+ 21       263333.039           7546.230           7544.773
+ 22       628262.456          39748.633          39643.053
+ 23       183346.200           8533.437           8537.413
+ 24       144426.543          31840.354          32303.297
+ 25      1022794.021         311810.370         309180.375
+
+Native IMU contribution to those costs
+Update         A                  B                  C
+ 21       263169.640            214.726            214.118
+ 22       628086.661          32221.924          32116.188
+ 23       183135.231           1276.233           1276.976
+ 24       144215.126          23360.749          23822.851
+ 25      1022643.475         303724.439         301092.978
+
+Every arm lowers its own reported objective from the common start, but these
+are one-step results, not stationary solutions. A's remaining native cost is
+larger than B in all5; removing CBS does NOT repair this conditioned graph in
+one step. C has small mixed improvements/regressions, not a consistent remedy.
+The analysis JSON also evaluates the removed CBS residuals for A as an
+out-of-objective diagnostic. Its 'total' includes those diagnostic residuals;
+A's actual retained objective is 'native'. Do not rank unlike objective totals.
+All per-family costs, physical IMU residuals and native smart statuses retained.
+
+Smart activity changes from the common start (A/B/C):
+21:132/65/65;22:160/52/54;23:154/32/33;24:146/93/94;25:152/58/59.
+These are changes in native triangulation validity/status, not necessarily
+bugs. Native smart cost/Schur and initial pose-prior approximations are NOT
+fixed here. No conclusion about nonlinear stationarity or a converged optimum.
+
+Reproduction, safety and provenance
+----------------------------------
+All five B gates passed before A/C ran. Cached/fresh augmented Hessian relative
+difference exactly0; maximum captured ordinary step reconstruction error
+5.924441205e-8 aggregate mixed-unit tangent norm (not metres).
+All95CBS instances' exact Jacobians pass3420central finite-difference column
+checks at the actual initial values; worst normalized error8.8354e-11.
+All15linear backward residuals <=3.32e-17; this is linear solve consistency,
+not nonlinear convergence. Release and ASan/UBSan synthetic fixtures pass:
+12columns/3eps, same residual/zero-point cost, whitening/gradient sign, common
+left-frame invariance, unchanged non-CBS blocks, holes and three-arm solves.
+Vendor DSOs not sanitizer-instrumented. Sanitizer link retains inherited
+OpenCV3.4/4.2 overlink warnings; geometry fixtures invoke no image operations.
+
+Five snapshots byte-identical before/after and to original CP-V44 inputs.
+7296protected hashes preserved, including CP-V44/45 and earlier artifacts.
+Both containers restored stopped; all owned build/test/controller jobs exited.
+Final complete.json verifies the four-sequence Hesai667-file checkpoint and
+all output hashes. No source replay, ATE/RPE rescore, covariance investigation,
+new dataset, tuning, deletion or production patch. No estimator changed.
+
+Source: runs/eig2_cbs_ablation_cpv46_20261030/Ablation.cpp
+SHA256 b8988101435cc490987fc7c0eae15885a4bad9e1f464842a18c8ebe88bb39d51
+Executable SHA256
+6320aac85ae22d7f0e6caea1426290a0965dab60d7e436beae5e772b5345d842
+Absolute root: /home/yeranis/repos/V4RL/cbs_gtsam4.3/
+Results: that run's results/{parity.csv,summary.csv,update_21..25/}.
+This report's analysis.json includes all measurements and input hashes.
+
+Next proposal -- not executed or authorized by this report
+--------------------------------------------------------
+Stop pursuing this CBS-Jacobian correction as the zigzag fix. Trace how the
+ON-conditioned native graph first acquired the tilt/bias inconsistency. Start
+with the earliest saved ON transitions, checking new-state initialization and
+IMU preintegration/bias-reference consistency across revisions, alongside native
+visual-factor activity. Compare to the healthy corrected OFF behavior. Do not
+assume any of these is defective: locate a specific violated invariant or
+first divergent transition before another implementation change/full run.
+The five current-step ablations alone cannot determine whether earlier CBS
+feedback, initialization, native nonlinear behavior, or another interaction
+created the condition. They do rule out the proposed Jacobian-only fix here.

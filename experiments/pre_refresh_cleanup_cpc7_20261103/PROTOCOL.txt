@@ -1,0 +1,30 @@
+CP-C7 — USER-AUTHORIZED PRE-REFRESH RUN OUTPUT CLEANUP
+2026-11-03
+
+User: delete old runs from before the Kimera linearization-point fix.
+Boundary: CP-V38 introduced OFF refresh on 2026-10-29; CP-V39 is its full
+validation and CP-V40 extends it to ON. Preserve CP-V35--40 diagnosis/fix
+fixtures and every post-fix run. No estimator run or fusion decision here.
+
+Remove recognized obsolete generated output payloads, not entire date-named
+folders: output bags, RRDs, generated cloud maps, large raw logs and intermediate
+receiver commit/snapshot histories. Retain compact results, trajectories,
+configs, scripts, source/build/runtime dependencies, all raw datasets (including
+Livox), all post-fix outputs, exact current protected paths and checkpoint files.
+Unknown files and symlinks default to KEEP. No source/package/build cleanup.
+
+Root classification is written explicitly to scope.json before planning.
+Every removal is a regular single-link file in that reviewed scope and is
+inventoried by canonical path/device/inode/size/mtime/mode. No wildcard or broad
+recursive deletion. Files are revalidated before unlink; only empty inventoried
+subdirectories can be removed. New metadata/receipts remain outside old roots.
+
+Deletion is permanent, not Trash: moving files on the same filesystem would
+not recover space. No backup of obsolete payloads is claimed. Keep exact
+manifests and decommission notes so old replay audits are not presented as
+still reproducible. Historical reports and immutable terminal evidence stay
+unchanged; new decommission notices supersede full-payload-retention claims.
+
+Verify current pins, all 667 Hesai checkpoint copies/originals, CP89/91 terminal
+hashes, dataset metadata and retained in-scope files before/after. Host-visible
+process/container checks must show no running experiment before deletion.

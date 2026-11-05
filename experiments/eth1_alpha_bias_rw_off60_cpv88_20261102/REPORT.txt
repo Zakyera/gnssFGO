@@ -1,0 +1,93 @@
+CP-V88 COMPLETE: ETH1 Alpha bias-random-walk-only CBS-OFF60 ablation.
+2026-11-02. ONE new capture, no retry/build/full sequence/fusion/CBS-ON.
+Started15:24:18+02:00,completed15:30:56,post-closeout passed15:31:57.
+Supervisor37766/controller37768 proc_start2036654 and all exact owned stage
+identities exited. Both originally-stopped containers restored stopped.
+
+OUTCOME
+The catastrophic Alphasense translational divergence did not recur in this
+60-second test. Changing only the two bias random walks reduced common-mask
+Kimera ATE from23.192259m to0.144141m, estimated path from1323.428703m to26.190106m
+against25.304035m reference. No extrinsic/timing/white-noise/initializer/initial
+prior/rate/backend/binary/raw-input change. Both CBS receivers remainedOFF.
+This strongly supports a consequential bias-model sensitivity in this integration;
+the original very restrictive bias evolution was a major contributor to this
+failure. It does NOT prove author calibration wrong, identify an actual bias
+history, rule out residual sensor/model errors, or certify these new values.
+Larger bias random walks allow faster bias changes; they do NOT strengthen the
+bias constraint or change the measurement white-noise covariance.
+
+EXACT INTERVENTION
+Alpha accelerometer_random_walk:4.317454918100831e-5 ->0.0043.
+Alpha gyroscope_random_walk:1.8672379701877664e-6 ->0.000266.
+profile_parity.json/profile_only.diff prove exactly these two changed scalar
+lines; all other CP85 profile and private-binary bytes identical. The values
+are the existing CPT7 control's bias random walks, used as a bounded diagnostic
+intervention, NOT an Alpha calibration or selected optimum. No sweep performed.
+Pre-playback actual copied profiles,200Hz Alpha subscription/body/staticTF,
+GLIM CPT7 subscription,current private DSOs and both receive=false verified.
+
+COMMON-MASK METHOD1 EVO RESULTS
+EVO1.36.3,first/newest absolute published backend poses,not revised final history
+or native incremental ROS path. Common physical prism point,SE3/no-scale ATE.
+Reference-distance delta0.5m t/rRPE. Exactly the CP85/86 saved100ms mask:
+561 samples,56.000s/60=93.333% supported,46 identical reference-distance pairs.
+Saved controls reused only after timestamp/reference/pair identity checks.
+Estimator | ATE_RMSE_m | tRPE_RMSE_m | rRPE_RMSE_deg | path_m | reference_m
+Kimera Alpha original CP85 |23.192259|13.281672|0.932099|1323.428703|25.304035
+Kimera Alpha new CP88      |0.144141|0.074174|1.002433|26.190106|25.304035
+Kimera CPT7 saved CP86     |0.047226|0.025292|0.665586|25.219278|25.304035
+GLIM CPT7 new CP88         |0.030953|0.028651|0.541070|25.774321|25.304035
+GLIM CPT7 saved CP85       |0.047968|0.032890|0.545846|25.843993|25.304035
+Translation improved enormously; common rotational RPE did NOT improve versus
+original Alpha(0.932->1.002deg). New Alpha remains worse than the healthy CPT7
+control. GLIM settings were unchanged, but fresh-run outputs are not bitwise
+deterministic; its metric difference is not attributed to Kimera's bias change.
+
+FULL-SAVED NATIVE-CADENCE METHOD1 (SEPARATE MASKS,not comparable path intervals)
+Kimera Alpha284poses:ATE0.144665m,tRPE0.110930m,rRPE0.920750deg;
+path26.742070m vsreference25.334488m;0.299999..59.899653s;
+supported56.399676s/60=93.999%,one3.199979s startup keyframe gap NOT bridged.
+GLIM591poses:ATE0.033323m,tRPE0.028919m,rRPE0.466866deg;
+path26.155854m vsreference25.395797m;0.819647..59.819016s;
+supported58.999369s/60=98.332%,no gaps>0.5s.
+The capture covers the requested60s; that does not mean100% scored support.
+Native ROS incremental path in source_coverage.json is a different output
+contract/body point and is not substituted for these Method1 results.
+
+REVISIONS AND TIMING
+282 paired previous-state revisions; startup step2 unavailable for this audit.
+Previous-state translation revision p95/max:
+CP85 Alpha37.122535/75.824811m; CP88 Alpha0.054173/0.359724m;
+CP86 CPT7 0.017472/0.078017m. CP88 has0 revisions>0.5m versus128 in CP85.
+This confirms the improvement is present inside the active-window estimates,
+not just in an alternative plotting convention. Some corrections still remain.
+CP88 optimize mean/p95/max90.941/123.614/146.821ms;CP85 mean159.646ms;
+CP86 mean92.067ms. Not a real-time guarantee at playback0.20x.
+Native increment parity max translation1.23e-11m,rotation2.99e-11rad;
+this is an algebraic logging cross-check,NOT nonlinear stationarity.
+
+COVARIANCE / COVERAGE / OMISSIONS
+6750 logged KIMERA_CBS_REVISION_EDGE_ROW6x6 matrices finite,symmetric,SPD.
+CP88 median rotation/translation traces3.885980e-8rad2/6.230776e-7m2;
+CP85 2.588004e-8rad2/9.231094e-4m2;CP86 1.667707e-8rad2/6.735022e-7m2.
+These are retained logged covariance summaries,NOT an uncertainty-consistency
+test or comparable absolute-pose error variances. Lower reported translation
+covariance with a healthier solution does not establish statistical calibration.
+Exact raw header receipts:11972Alpha and5986CPT7,all timestamps conserved.
+601stereo pairs=3preinitialization+597processed+1terminal unsupported by future
+Alpha IMU(1.4386ms).284backend outputs,zero external belief injections.
+Actual bias trajectories/individual physical IMU residuals were not logged.
+No changes to source logging/build to manufacture those missing diagnostics.
+IE-TC shares CPT7 and is not independent prismGT; estimated path is a polyline,
+not physical travel. Distinct IMUs do not remove correlated peer feedback.
+
+VERIFICATION / NEXT DECISION
+12 new EVO CLI calls with exact CLI/API agreement,TUM roundtrip max1.48e-15.
+Post-closeout verifies3368protected files,104immutable terminal output hashes,
+34report input hashes and all667Hesai checkpoint copies/originals. Prior CP85,
+CP86 andCP87 retained. complete.json and RESULTS_REPORT.txt remain immutable;
+this REPORT.txt is the documented mutable interpretation/ledger.
+Next proposal ONLY: longer/full ETH1 CBS-OFF validation of this candidate before
+CBS-ON or more sequences. No next capture launched, no defaults promoted.
+The split-body belief/fusion adapter remains separately unqualified.

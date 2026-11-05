@@ -1,0 +1,40 @@
+FL4x — EIG-2 matched60s live OFF/ON, 2026-10-17
+================================================
+User authorized another60s GrandTour OFF/ON comparison after SPX-3 FL4w.
+Select EIG-2 mission2024-11-03-13-59-54 by local readiness; established
+start offset5.7s, end65.7s; playback0.10x, drain25s. No ATE-based selection.
+OFF must complete and pass source, receiver and deterministic replay checks
+before ON. No automatic retries, overwrites, tuning, rebuilds or method edits.
+
+Reuse frozen FL4w harness and FL4v algorithms/binaries. GLIM Hesai+CPT7,
+5s lag, shared-native Gaussian LOCAL covariance; Kimera front-stereo+CPT7,
+25states, FL4q private DSO, native IMU selector unset. Classic temporary
+active_window_temporary source CBS, not live_revision; native-IMU mean
+alignment, horizon.20s, onepair/update,stride1,receive delay0; dense
+schur_relative_between covariance,scale1,Gaussian,noHuber/health weights.
+Use retained EIG-2 OFF profile trees, verifying camera/IMU/LiDAR calibration
+and effective source flags; never substitute SPX-3/ETH1 profile by assumption.
+
+Fusion: unchanged FL4e,7s fixed-lag source_wnoa,100ms independent support
+clock after59 CPT7 samples, no central IMU/GNSS factors. Qc variances
+[.00375,.00375,.00375,.015,.015,.015]; initialXidentity,V=W=0; priorSD
+pose1e-5,velocity10,rate3. Stable-ID replacement, unchanged bounded lifecycle,
+scale1,Gaussian. Headless, source graph inspectors/presentation disabled.
+Receiver hash53c96a2b7a762800cf2291166dc78520269098684411de641b52bee6a54dc5c9;
+Kimera hash6ce24c266b0f0e2561f0c05de2a661a72d5a4d9335df7c3cdfa0a4c77af9b4ae.
+
+Fresh root gnssfgo_eig2_live60_off_on_fl4x_20261017/prepared,port11446.
+Preserve all FL4w predeclared60s guards:570GLIM/270Kimera minimum,58s span,
+source-tail/gap checks, no failures/rollbacks, exact covariance conservation,
+no pending/unsupported at end,71supports/200slots max,p95cycle<=.8s,
+queue<1000,8GiBinitial/5GiBreserve. Accepted source cost nonincrease only;
+no stationarity certificate. Both containers initially stopped; restore after.
+
+Primary comparison: original/native GLIM, original/native Kimera ROS odom,
+and ONLINE fusion against full-window IE-TC. DELAYED fixed-lag-finalized
+fusion separately. Unchanged ETH1 evaluator, only reference path adapted;
+no-scale SE3 ATE at prism lever arm and1s RPE. Report all-saved spans/counts,
+full paths and reference coverage, plus matched common-time cross-check.
+IE-TC sharesCPT7; not independent prism. No short prism subset substituted.
+Preserve source means/covariance revisions, events/receipts, runtime checks,
+profiles/hashes and effective loaded builds. Stop after comparison or failure.

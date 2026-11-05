@@ -1,0 +1,538 @@
+{
+  "case": "hesai_eig2",
+  "sensor": "Hesai",
+  "sequence": "EIG-2",
+  "original_receiver_Qc_multiplier": 1.0,
+  "epoch_ns": 1730638816563546034,
+  "timestamp_origin_ns": 1730638817300000000,
+  "common_coverage": {
+    "grid_queries": 3542,
+    "valid_queries": 3526,
+    "excluded_queries": 16,
+    "supported_s": 352.3,
+    "capture_s": 355.02,
+    "supported_capture_percent": 99.23384598050815,
+    "first_s": 0.736453966,
+    "last_s": 354.836453966,
+    "envelope_s": 354.1,
+    "start_gap_s": 0.736453966,
+    "tail_gap_s": 0.18354603399995995,
+    "segments": [
+      {
+        "first_s": 0.736453966,
+        "last_s": 337.836453966,
+        "rows": 3372
+      },
+      {
+        "first_s": 338.536453966,
+        "last_s": 353.736453966,
+        "rows": 153
+      },
+      {
+        "first_s": 354.836453966,
+        "last_s": 354.836453966,
+        "rows": 1
+      }
+    ]
+  },
+  "segments": [
+    {
+      "segment": 0,
+      "rows": 3372,
+      "pairs": 348,
+      "reference_path_m": 187.74562705134431,
+      "first_s": 0.736453966,
+      "last_s": 337.836453966,
+      "actual_min_m": 0.5001412722216969,
+      "actual_max_m": 0.6014056491729178
+    },
+    {
+      "segment": 1,
+      "rows": 153,
+      "pairs": 0,
+      "reference_path_m": 0.265573874526565,
+      "first_s": 338.536453966,
+      "last_s": 353.736453966,
+      "omission": "No evo consecutive delta0.5m pair; no bridging or relaxation."
+    },
+    {
+      "segment": 2,
+      "rows": 1,
+      "pairs": 0,
+      "reference_path_m": 0.0,
+      "first_s": 354.836453966,
+      "last_s": 354.836453966,
+      "omission": "No evo consecutive delta0.5m pair; no bridging or relaxation."
+    }
+  ],
+  "reference_path_length_m": 188.01120092587087,
+  "RPE_pairs": 348,
+  "results": {
+    "method1_off_glim": {
+      "method": "method1",
+      "mode": "off",
+      "estimator": "GLIM",
+      "ATE_RMSE_m": 0.0515766090047973,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method1_off_glim_ape.zip",
+      "path_length_m": 189.7818707519538,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.01954600372033568,
+            "mean": 0.01681646449785987,
+            "median": 0.014876332503455467,
+            "std": 0.00996256910779517,
+            "min": 0.0013619770369335032,
+            "max": 0.046822395687918884,
+            "sse": 0.1329520989795109
+          },
+          "pairs": 348,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method1_off_glim_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 0.638239239829024,
+            "mean": 0.44499718006227684,
+            "median": 0.2904233031055154,
+            "std": 0.4575224988939363,
+            "min": 0.019625762535468064,
+            "max": 3.445160481675316,
+            "sse": 141.75756588562058
+          },
+          "pairs": 348,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method1_off_glim_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method1_off_kimera": {
+      "method": "method1",
+      "mode": "off",
+      "estimator": "Kimera",
+      "ATE_RMSE_m": 2.3100508899246286,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method1_off_kimera_ape.zip",
+      "path_length_m": 290.3152525652833,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.4529021171587913,
+            "mean": 0.21592088407392318,
+            "median": 0.04868344135838981,
+            "std": 0.3981187003239749,
+            "min": 0.0025038511887032384,
+            "max": 3.1061588138025797,
+            "sse": 71.38187404896661
+          },
+          "pairs": 348,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method1_off_kimera_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 1.6665826366463772,
+            "mean": 1.002395430349714,
+            "median": 0.6724101478346406,
+            "std": 1.3314282128546033,
+            "min": 0.07998484032457898,
+            "max": 13.872642185018327,
+            "sse": 966.5691943003744
+          },
+          "pairs": 348,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method1_off_kimera_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method1_off_fusion": {
+      "method": "method1",
+      "mode": "off",
+      "estimator": "Fusion",
+      "ATE_RMSE_m": 0.1654894942774148,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method1_off_fusion_ape.zip",
+      "path_length_m": 201.53036996856562,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.04176229080707226,
+            "mean": 0.03705910271455227,
+            "median": 0.034523906616553635,
+            "std": 0.01925387855593613,
+            "min": 0.0032723833932961814,
+            "max": 0.15076939507774978,
+            "sse": 0.6069429488421563
+          },
+          "pairs": 348,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method1_off_fusion_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 2.2799069459903247,
+            "mean": 1.8363097789210443,
+            "median": 1.4807856490780307,
+            "std": 1.3512742424148676,
+            "min": 0.23713432188994474,
+            "max": 10.542853843760541,
+            "sse": 1808.8955374664754
+          },
+          "pairs": 348,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method1_off_fusion_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method1_on_glim": {
+      "method": "method1",
+      "mode": "on",
+      "estimator": "GLIM",
+      "ATE_RMSE_m": 0.044420718427770255,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method1_on_glim_ape.zip",
+      "path_length_m": 189.8978144404499,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.016346069817860215,
+            "mean": 0.014218689658193407,
+            "median": 0.012914015870183308,
+            "std": 0.008063675520154842,
+            "min": 0.0015767867670002707,
+            "max": 0.043334746097430224,
+            "sse": 0.0929835114746455
+          },
+          "pairs": 348,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method1_on_glim_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 0.6324929105039316,
+            "mean": 0.4323248540250466,
+            "median": 0.2691572786065006,
+            "std": 0.46167358862074476,
+            "min": 0.027698159006531987,
+            "max": 3.47086149756701,
+            "sse": 139.21645407953162
+          },
+          "pairs": 348,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method1_on_glim_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method1_on_kimera": {
+      "method": "method1",
+      "mode": "on",
+      "estimator": "Kimera",
+      "ATE_RMSE_m": 1.101293258576112,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method1_on_kimera_ape.zip",
+      "path_length_m": 361.72540977812474,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.35528814074363824,
+            "mean": 0.23288934531413596,
+            "median": 0.14119576525987798,
+            "std": 0.2683136518931238,
+            "min": 0.010855108845510242,
+            "max": 1.7235635469028494,
+            "sse": 43.927922707668806
+          },
+          "pairs": 348,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method1_on_kimera_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 1.7129766485135174,
+            "mean": 1.3939195271946805,
+            "median": 1.0806056848707855,
+            "std": 0.9956291227449915,
+            "min": 0.12215377287090512,
+            "max": 6.817564629745122,
+            "sse": 1021.1325714267057
+          },
+          "pairs": 348,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method1_on_kimera_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method1_on_fusion": {
+      "method": "method1",
+      "mode": "on",
+      "estimator": "Fusion",
+      "ATE_RMSE_m": 0.13456060942184445,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method1_on_fusion_ape.zip",
+      "path_length_m": 200.49712161068175,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.03611917594727152,
+            "mean": 0.03238068818478199,
+            "median": 0.030293835621442392,
+            "std": 0.016002684268268168,
+            "min": 0.0025199357091314424,
+            "max": 0.09934480183865901,
+            "sse": 0.45399901514626523
+          },
+          "pairs": 348,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method1_on_fusion_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 2.218799142819717,
+            "mean": 1.8032067436521768,
+            "median": 1.446796882482001,
+            "std": 1.292870865873628,
+            "min": 0.23394086031608308,
+            "max": 9.627102170287971,
+            "sse": 1713.228233389774
+          },
+          "pairs": 348,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method1_on_fusion_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method2_off_glim": {
+      "method": "method2",
+      "mode": "off",
+      "estimator": "GLIM",
+      "ATE_RMSE_m": 0.9991115508774102,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method2_off_glim_ape.zip",
+      "path_length_m": 189.34977672120846,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.02595836821476493,
+            "mean": 0.021169287248967352,
+            "median": 0.017815900871933125,
+            "std": 0.015023253900005371,
+            "min": 0.002190927993226437,
+            "max": 0.15928791005948534,
+            "sse": 0.2344952343699148
+          },
+          "pairs": 348,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method2_off_glim_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 0.6674313299737203,
+            "mean": 0.48459811172123757,
+            "median": 0.3438736789299739,
+            "std": 0.45894362436654473,
+            "min": 0.028047562345811933,
+            "max": 3.451052145131272,
+            "sse": 155.02167392021022
+          },
+          "pairs": 348,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method2_off_glim_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method2_off_kimera": {
+      "method": "method2",
+      "mode": "off",
+      "estimator": "Kimera",
+      "ATE_RMSE_m": 1.8810393535715324,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method2_off_kimera_ape.zip",
+      "path_length_m": 177.36692023592445,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.0887649480963677,
+            "mean": 0.046929370315566626,
+            "median": 0.0206845904825205,
+            "std": 0.0753448751564117,
+            "min": 0.0009336760761087025,
+            "max": 0.4642675412971881,
+            "sse": 2.7419671716716962
+          },
+          "pairs": 348,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method2_off_kimera_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 0.807183179162818,
+            "mean": 0.6001941560891032,
+            "median": 0.4139945586063005,
+            "std": 0.5397329522271945,
+            "min": 0.01185424877164229,
+            "max": 4.186526592750149,
+            "sse": 226.73755028374111
+          },
+          "pairs": 348,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method2_off_kimera_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method2_off_fusion": {
+      "method": "method2",
+      "mode": "off",
+      "estimator": "Fusion",
+      "ATE_RMSE_m": 2.745623479599304,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method2_off_fusion_ape.zip",
+      "path_length_m": 188.03192065300047,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.056490935140597436,
+            "mean": 0.05031130335749214,
+            "median": 0.04535014440280091,
+            "std": 0.025690436110147815,
+            "min": 0.006616891331920079,
+            "max": 0.14106557734316,
+            "sse": 1.110546562064597
+          },
+          "pairs": 348,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method2_off_fusion_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 3.2475767613992543,
+            "mean": 2.5888052502542873,
+            "median": 2.0474463074572613,
+            "std": 1.9608269167461734,
+            "min": 0.2430857066872869,
+            "max": 16.10844490178508,
+            "sse": 3670.270677770803
+          },
+          "pairs": 348,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method2_off_fusion_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method2_on_glim": {
+      "method": "method2",
+      "mode": "on",
+      "estimator": "GLIM",
+      "ATE_RMSE_m": 1.0786840412126313,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method2_on_glim_ape.zip",
+      "path_length_m": 188.9935868012211,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.0241820546800228,
+            "mean": 0.02055741318468313,
+            "median": 0.017721489074726853,
+            "std": 0.01273438383675586,
+            "min": 0.0014318864033141996,
+            "max": 0.06917142213960077,
+            "sse": 0.20350057545456918
+          },
+          "pairs": 348,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method2_on_glim_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 0.6620515348862868,
+            "mean": 0.4766234941510075,
+            "median": 0.3324963251702563,
+            "std": 0.45950220855679524,
+            "min": 0.022374625191767143,
+            "max": 3.439576098385603,
+            "sse": 152.53265772616027
+          },
+          "pairs": 348,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method2_on_glim_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method2_on_kimera": {
+      "method": "method2",
+      "mode": "on",
+      "estimator": "Kimera",
+      "ATE_RMSE_m": 0.6880014051978585,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method2_on_kimera_ape.zip",
+      "path_length_m": 185.26500748039288,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.02425270521003247,
+            "mean": 0.019795034246290966,
+            "median": 0.01623992689500278,
+            "std": 0.01401250617102109,
+            "min": 0.0022728497282330728,
+            "max": 0.11738274151828564,
+            "sse": 0.2046914110816482
+          },
+          "pairs": 348,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method2_on_kimera_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 0.8003238476606678,
+            "mean": 0.6001523466651241,
+            "median": 0.4329832931280185,
+            "std": 0.5294671112795586,
+            "min": 0.03988147849599983,
+            "max": 3.982929698485325,
+            "sse": 222.9003548747628
+          },
+          "pairs": 348,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method2_on_kimera_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method2_on_fusion": {
+      "method": "method2",
+      "mode": "on",
+      "estimator": "Fusion",
+      "ATE_RMSE_m": 1.5829095417888484,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method2_on_fusion_ape.zip",
+      "path_length_m": 189.50454647783164,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.05511554299794787,
+            "mean": 0.04633857883233238,
+            "median": 0.04079147335685481,
+            "std": 0.02984056285927524,
+            "min": 0.004369844821447377,
+            "max": 0.21262035871352153,
+            "sse": 1.0571276318256069
+          },
+          "pairs": 348,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method2_on_fusion_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 3.3422696609733444,
+            "mean": 2.5100203317357392,
+            "median": 1.8465766801943417,
+            "std": 2.2069355271362334,
+            "min": 0.2039325968086766,
+            "max": 24.904345990724604,
+            "sse": 3887.4267373586804
+          },
+          "pairs": 348,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_eig2/method2_on_fusion_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    }
+  },
+  "verification": {
+    "TUM_roundtrip_pose_max_component": 4.902744876744691e-13,
+    "CLI_API_error_max_difference": 0.0,
+    "old_ATE_max_difference_m": 6.8833827526759706e-15,
+    "old_path_max_difference_m": 0.0,
+    "historical_hashes_verified": true,
+    "masks_and_reference_identical": true
+  },
+  "original_terminal_omissions": null,
+  "new_CLI_calls": 36
+}

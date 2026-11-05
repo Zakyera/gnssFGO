@@ -1,0 +1,219 @@
+CP-V12 — LEICA-2 VELODYNE FUSION ONLINE JITTER DIAGNOSIS
+2026-10-26 | SAVED-DATA AUDIT COMPLETED; ROOT CAUSE NOT YET ISOLATED
+
+BOTTOM LINE
+The visible large zigzag is real in the first-published fusion output. Almost
+all excess path length disappears in the saved delayed fixed-lag-finalized
+output, with NO weight change. In the inspected worst-OFF ten-second interval,
+the publication error strongly alternates with the source-update schedule.
+This supports a newest-state/update-timing correction problem as the next
+diagnostic target. It does NOT establish an insufficient motion prior, a
+broken marginal prior, or one guilty source. No fix was implemented.
+
+SCOPE / IMMUTABILITY
+Original CP-V4 LEICA-2 Velodyne CBS OFF and ON only, not rejected CP-V6A/V9.
+Run root:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared
+Same 428.75s capture; all 4,282 receiver states in each mode cover
+0.484443335--428.584443335s, a 428.1s span. Startup/tail are not fabricated.
+Identical state IDs, nanosecond timestamps and 100ms edges are compared.
+Same prism lever arm, IE-TC reference and single rigid no-scale CP-V11 display
+fit per mode. Finalized output is displayed with the ONLINE fit, not locally
+realigned to hide corrections. Whole-saved ATE below separately uses each
+product's conventional full-saved rigid fit, and reproduces existing scores.
+IE-TC shares the CPT7 IMU; it is not independent prism ground truth.
+
+No source capture, receiver replay, build, model/weight/lag change, container
+start, deletion, commit or push. Open Rerun view was not changed. Original
+trajectory/measurement/covariance/timing evidence was read, not overwritten.
+
+1. WHOLE SAVED PATH: THE MAJOR ZIGZAG DOES NOT SURVIVE FINALIZATION
+
+                                        CBS OFF        CBS ON
+Reference path, same receiver times (m)  205.929085     205.929085
+Fusion ONLINE path (m)                  280.154058     235.136662
+Fusion DELAYED finalized path (m)        204.796695     205.890093
+ONLINE path excess vs reference (m)       74.224973      29.207577
+Finalized path minus reference (m)        -1.132390      -0.038992
+
+Thus the approximately 74m/29m excess is overwhelmingly a first-publication
+phenomenon. This is NOT a claim that the resulting trajectory is globally
+accurate or that there is zero remaining local jitter.
+
+Full-saved ATE RMSE, separate conventional no-scale rigid fits (metres):
+                        CBS OFF        CBS ON
+Fusion ONLINE           2.000424       1.828658
+Fusion finalized        2.000564       1.831814
+
+Global position error barely changes despite the much shorter finalized
+path. Large-scale drift/bias and high-frequency online jitter are different
+problems. A smooth-looking path alone is not a sufficient acceptance metric.
+
+Same-state ONLINE->finalized position shift (prism point):
+OFF median 3.06cm, p95 9.81cm, max 26.83cm.
+ON  median 2.84cm, p95 7.94cm, max 20.81cm.
+Small, alternating corrections can accumulate into many metres of excess
+length when consecutive first-publication points are connected.
+
+Finalization occurs around 7.100s later in SENSOR/availability time (median),
+not seven wall seconds at 0.20x playback. The EOF tail has shorter delay.
+Finalized samples are saved at their respective retirement times: they are
+NOT one simultaneous active-window snapshot, ONLINE or full-history output.
+They cannot be substituted for a real-time controller signal without latency.
+
+2. SELECTED 380--390s WINDOW
+
+This window was already selected by CP-V11 as the largest OFF 10s path excess
+among integer-start windows with complete CP-V10 common support. It is an
+inspection example, NOT a representative average or an independent holdout.
+Metric uses 100 native edges ending in (380,390]s, including the first edge
+starting just before 380s. Both modes and reference use exactly those edges.
+
+                                      CBS OFF       CBS ON
+Reference distance (m)                 1.680125      1.680125
+ONLINE distance (m)                    7.929031      3.673274
+Finalized distance (m)                 1.772692      1.816195
+Reduction of ONLINE excess length       98.52%        93.17%
+100ms displacement-vector error RMS:
+  ONLINE (cm)                            8.011         3.507
+  finalized (cm)                         0.653         0.861
+
+The displacement errors use the fixed CP-V11 global alignment, not a local
+fit to this window. Vector correction identity is verified exactly:
+  online_step - finalized_step = -(next_correction - current_correction),
+where correction = finalized_position - online_position at the SAME state.
+This identity does not assign causes to individual factors, and vector changes
+must not be confused with additive scalar path-length contributions.
+
+3. THE SOURCE-UPDATE PHASE ALTERNATES EXACTLY
+
+All 100 publication intervals in the selected window include GLIM insertions
+and revisions. Fifty also include Kimera insertions and revisions; fifty do
+not. These two categories alternate at EVERY one of the 99 boundaries.
+In EACH mode, actual immutable receiver commits show:
+  GLIM:   100 inserted IDs + 4,743 replacements = 4,843 applied versions.
+  Kimera:  50 inserted IDs + 1,200 replacements = 1,250 applied versions.
+Most cycles contain 48--49 GLIM updates; every other cycle also contains 25
+Kimera updates. These are stable-ID REPLACEMENTS, not thousands of simultaneously
+accumulated independent factors. There are no no-op/expired events in this
+selected cohort. One retirement/publication occurs each cycle as well.
+
+Latest RECEIVED source endpoint age at publication, median sensor time:
+                                      GLIM-only phase    Both-source phase
+GLIM                                  153.05ms           153.12ms
+Kimera                                188.39ms            88.39ms
+The newest available Kimera endpoint changes from older than GLIM to newer
+than GLIM every other publication. This describes evidence freshness, not
+wall-clock execution cost, endpoint interpolation accuracy or isolated cause.
+
+ONLINE-minus-finalized position offsets, comparing these two phases:
+  OFF phase means separated by 7.06cm; phase explains 62.68% of the centered
+      three-dimensional offset variance in this selected window.
+  ON  phase means separated by 1.53cm; analogous descriptive share is 8.02%.
+This is descriptive association. It is NOT the percentage caused by Kimera.
+GLIM updates occur in both groups, the graph retains both sources, revisions
+change historical states, and support addition/retirement coexist.
+
+Concrete OFF example (each row is a new published state, units cm per 100ms):
+Time(s)      Updates this interval     ONLINE step    Finalized step   Reference
+383.084443   48 GLIM + 25 Kimera          11.398          0.558          0.601
+383.184443   49 GLIM                      10.715          0.727          0.539
+383.284443   49 GLIM + 25 Kimera           9.113          0.770          0.413
+383.384443   48 GLIM                      12.190          0.268          0.362
+383.484443   49 GLIM + 25 Kimera          12.980          0.515          0.449
+383.584443   49 GLIM                      11.636          0.522          0.330
+The displacement vectors alternate direction, not just size. The subject is
+moving only millimetres in these intervals, while first publications bounce
+roughly ten centimetres. Later finalized displacement is much closer to IE-TC.
+
+4. WHAT WAS / WAS NOT TRACED
+
+The original receiver code inserts a predicted new support state, adds its
+WNOA motion factor, dispatches pending beliefs, performs retirement if needed,
+then saves the newest state. Beliefs arriving between support cycles can revise
+the graph without rewriting the preceding ONLINE row. The saved append-only
+file therefore connects states produced with different available information.
+
+Using the actual saved velocity/angular rate, an independent SE(3) exponential
+predicts 100ms ahead from the PREVIOUS SAVED first-publication state. Difference
+to the next publication in the selected window:
+  OFF median 9.35cm, p95 15.61cm, max 23.61cm.
+  ON  median 3.74cm, p95  7.72cm, max 14.23cm.
+This is NET departure from a stale saved prediction, not the actual internal
+pre-update innovation. Between publications, the previous support can already
+have been corrected. Predictions matched independent 4x4 matrix exponential
+calculations within 7.11e-15 in the checked poses.
+
+Important recording limit: commits save applied belief payloads and publication/
+retirement states, but NOT fused pre/post states for every source factor and
+NOT simultaneous snapshots of all active states. It is impossible to recover
+individual source-induced pose changes uniquely from these logs alone.
+Hence the proposed exact per-update causal trace is still OPEN. This audit
+does not silently infer missing internal states from final trajectories.
+
+5. WHAT THIS MEANS FOR THE SUPERVISOR'S PRIOR HYPOTHESIS
+
+The original receiver binary, launch wrapper, NativeSmoother and Receiver.h
+match protected capture hashes. The initial position/orientation anchor is
+already tight (sigma=1e-5 in each pose tangent component). The separate initial
+linear/angular velocity priors are much looser (sigma 10 and 3); this is not a
+claim that every startup prior is tight. The inspected problem is ~383s later.
+
+The WNOA Qc remains [.00375,.00375,.00375,.015,.015,.015] as variances, with
+rotation first. A weaker motion prior RELATIVE to source information could
+permit larger newest-state changes, so the supervisor's hypothesis remains
+plausible. However, the SAME Qc produces a much smoother delayed path, and the
+ONLINE error follows a precise alternating information schedule. We have not
+measured current factor Jacobians/information, marginal-prior conditioning or
+nonlinear stationarity. Raw Qc and source covariance traces are not comparable
+strengths because they describe different quantities and time mappings.
+
+For completeness, selected applied-version covariance trace medians (OFF):
+GLIM rotation 4.331e-8, translation 2.152e-6;
+Kimera rotation 1.437e-8, translation 5.603e-7.
+These are unmatched age-weighted revision cohorts, not independent evidence or
+proof that Kimera dominates the coupled graph. Do not use them to choose Qc.
+
+No evidence here justifies tightening the initial anchor, scaling the
+marginalization prior, or immediately tuning Qc until the picture looks smooth.
+A stronger motion prior might reduce output jitter but also suppress real
+motion. The global ATE table demonstrates why smoothness alone is insufficient.
+
+6. RECOMMENDED NEXT BOUNDED TEST — NOT EXECUTED
+
+First obtain a same-input, UNCHANGED-MODEL receiver-only diagnostic replay with
+read-only observation of one short selected interval. Saved events already
+exist; no GLIM/Kimera sensor rerun is required. Because no resumable solver
+snapshot was saved, replay must establish the original history from startup;
+only the bounded interval needs detailed observations. Do not start at 380s
+with an empty graph and call it equivalent.
+
+Validate original output/commit parity, then observe newest and previous-state
+poses before/after: each source replacement/insert, support addition/pending
+dispatch and retirement. Save simultaneous active-window snapshots, source
+residuals, WNOA residuals and marginal contribution without changing solve order.
+This separates newest-state extrapolation, update-order/linearization effects,
+historical-frame corrections and relative information weighting.
+
+Only after that evidence choose ONE intervention. If the motion factor is the
+limiting term, a separately authorized single Qc ablation should compare jitter,
+ATE/RPE and maneuver/latency response on untouched windows too. If publication
+timing or state consistency is the limiting term, address that explicitly,
+without calling a delayed output real-time. No parameter sweep is authorized.
+
+7. ARTIFACTS / CHECKS
+
+results.json: full and selected metrics; 12,311 consumed input/commit hashes.
+timeseries.npz: aligned ONLINE/finalized/reference/prediction and update counts.
+off_selected_applied.json, on_selected_applied.json: exact event/state/ID joins.
+phase_checks.json: phase/frontier/example data, independent TUM path/ATE checks,
+  capture-protected binary/header/wrapper identity and repeated hash checks.
+jitter_diagnosis.png: full selected-window height, steps and update timing.
+publication_cycle.png: 383--384s phase example; read axes (OFF/ON ranges differ).
+  Top zero is the later-finalized point, NOT ground truth; the diagnostic axis
+  is fixed from the OFF phase-mean separation, used unchanged for ON.
+Both figures visually inspected. No trajectory smoothing/decimation/local fit.
+Independent TUM+matrix lever-arm path calculation agrees within 1e-10m;
+whole-saved ATE reproduces original scores to their printed precision.
+All consumed originals rehashed unchanged. No inference of nonlinear
+stationarity, calibrated/independent covariance, or causally isolated source.

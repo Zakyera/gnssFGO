@@ -1,0 +1,29 @@
+CP-V43 — saved EIG-2 ON mechanism localization, excluding covariance
+2026-10-29. User: "dont bbother with the covariance for the moment. investigate the rest".
+
+Read-only diagnosis of completed CP-V42 corrected OFF/ON and its executed
+CP-V40 implementation. No source replay, optimizer run, build, live change,
+weight/prior change, covariance calculation/tuning, deletion or default promotion.
+Preserve completed reports, trajectories, logs and protected source artifacts.
+New outputs in this root only; repository ledger updates are separate.
+
+Questions, not assumed diagnoses:
+1. When does the ON disagreement start relative to peer insertion, marginalization,
+   retirement, recovery and the added native current-state refresh?
+2. Do relative means retain correct direction, endpoint IDs, durations and causal
+   timing? Does mean alignment alone introduce a large motion discontinuity?
+3. Does the ordinary BPSAM solve or the final post-refresh solution improve the
+   inserted edge's unweighted residual? What do existing native IMU costs show?
+4. Are large revisions predominantly rigid active-window motion, scale changes,
+   or nonrigid distortion? Do early events precede any marginalized prior?
+5. Which phase/state/factor information is missing for an exact causal verdict?
+
+Methods: inspect the exact private code and saved logs, pair by explicit update
+and receiver edge identities, reconstruct MAIN endpoint SE3 only, use existing
+revision events as an independent check. Translation/rotation disagreement is
+geometric diagnosis, NOT new ATE/RPE/NIS; no replacement scoring or smoothing.
+Never infer nonlinear stationarity from lifecycle/cache pass or decreasing cost.
+Record coverage/missing IDs and hash all analyzed input files before/after.
+Do not run historical controllers or reuse output filenames from earlier tasks.
+If complete graph/PIM/Values checkpoints are absent, report the limit and propose
+one bounded instrumented capture; do not silently launch another full sequence.

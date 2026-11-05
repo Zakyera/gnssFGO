@@ -1,0 +1,55 @@
+CP-I3 — bounded Gaussian covariance-preparation reuse
+2026-10-19
+====================================================
+One hypothesis: preparation of the same committed native Gaussian system can
+be reused across all pair queries. No covariance approximation, scale, rank
+threshold, source mean, chart transport, relative Schur mathematics, source CBS,
+receiver, lag, playback, sensor or IMU/WNOA change. No new sequence capture.
+
+Private source/build root:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/native_covariance_cache_cpi3_20261019
+Base provider: shared_linearization_s4_provider_20261012/release_2.
+Unchanged bridge: local_revision_covariance_cpi1_20261019/libglim_ros.so.
+All old source/build/results remain protected. No production promotion.
+
+Implementation contract:
+- Lazy graph assembly, identical rank certificate/fallback, COLAMD Cholesky
+  elimination once per committed epoch that has a valid query.
+- State-owned tree: new stage clears only its own copy; commit switches state;
+  abort/failed stage leaves committed state intact; reset starts empty.
+- Pose deltas and all endpoint/full relative matrices recomputed per query.
+- Failed rank/elimination cannot install a usable cache; no MAIN fallback.
+- Single-threaded owner remains the contract. This does not add concurrency.
+- theta() checks the identical validity condition without cloning an unused
+  graph; returned Values remain a copy. No mutable graph escapes to callers.
+
+Correctness gates (before performance interpretation):
+1. Inherited provider/lifecycle/revision tests unchanged.
+2. Literal original implementation compiled in a distinct test namespace.
+   Multi-pair, reverse order, nonzero charts/repeats: require entrywise equality.
+3. New epoch, retirement, explicit native removal, chart change, reset,
+   stage/commit failure and abort; no stale reuse or partial output mutation.
+4. Rank-deficient queries rejected repeatedly, no prepared cache installed.
+5. Release and focused ASan/UBSan; vendor GTSAM/CBS not fully instrumented,
+   leak detection disabled, no whole-ROS sanitizer claim.
+
+Bounded performance gate:
+Use retained ETH1 S3 native_gaussian.bin, SHA256
+25ab6edd4d33e55c6993abbaf63982b9711e2f634709d02a2b834460e258de1f.
+Replay783 committed equation snapshots with retained retirement semantics.
+At20 recorded query epochs compare retained covariance (relative1e-8 gate,
+as original journal reader), then query all available native pose i->i+2 pairs
+plus the actual retained pair. Added pairs use zero chart deltas. These are
+representative multiple queries on real equations, NOT the missing EIG-2 live
+revision stream. No claim that this reproduces CP-R1's1.02s routine.
+One warmup plus3 interleaved original/cached passes per epoch. Fresh histories
+per pass, so preparation included once; staging/parser/oracle comparisons are
+outside timed query batches. theta copy included, as observer calls it per edge.
+Require one preparation per batch, full matrix relative differences <=1e-12,
+report observed differences, batch median/p95/max and early/filled-window work.
+No compilation concurrent with timing. OMP1, same container/CPU environment.
+Do not infer whole-GLIM speed, receiver deadline safety or1x performance.
+
+Stop after report. A fresh short live throughput/provenance gate is a subsequent
+decision, not automatic continuation of the failed campaign. Do not mutate the
+failed CP-R1 prepared validator; its Kimera-log review item remains documented.

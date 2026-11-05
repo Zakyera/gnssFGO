@@ -1,0 +1,138 @@
+CP-V65 -- EIG-2 Hesai temporary-CBS retirement hypothesis
+2026-10-31. Test construction and saved-data screening; NOT a production fix.
+
+QUESTION
+Does removing an expiring external GLIM factor before marginalization cause a
+material reversal of Kimera's published pose / active-window / bias correction?
+Do not assume temporary factors are the cause, call corrections physical motion,
+or infer that every increase of native residual cost is harmful.
+
+AUTHORIZATION / BOUNDARY
+User: "we need to build a test around checking your hypothesis".
+This task builds a falsifiable protocol, executable saved-data screen, independent
+negative/positive controls and a native-checkpoint admission manifest. It does
+not launch sources, change retirement policy in a live estimator, change weights,
+rebuild production libraries or run another full sequence. Native causal arms
+remain NOT RUN until a suitable native checkpoint exists and the capture stage
+is authorized. Never substitute a pre-retirement graph as an actual expiry event.
+No deletion, push, default promotion, new dataset, trajectory smoothing or EVO
+scoring. This is not a new ATE/RPE result. Original artifacts stay immutable.
+
+FROZEN INPUTS
+Full corrected EIG-2 Hesai CP-V49; original start5.7s,355.02s,0.20x,25s drain.
+CP-V50 analysis/chronology records and its read-only parsing functions.
+CP-V51 native snapshots cover updates6..25 only, not retirement at30.
+Source mode active_window_temporary, classic not live_revision, Gaussian scale1,
+CP-V40/CP-K9 refresh, FL4Q0/remove/25states; unchanged IMU, sensors, extrinsics,
+source covariance, mean alignment, native smart factors and prior functions.
+Fusion is not the target of this test and will not be used to explain Kimera.
+
+STAGE A -- EXECUTABLE SAVED-DATA SCREEN (NO OPTIMIZATION)
+1. Reparse original logs and independently reconcile each logged slot/edge's
+   insertion and retirement; join every update to saved CP-V50 ownership rows.
+   Compute lifetimes, simultaneous insertion/removal and active-factor counts.
+   A nonempty set is NOT proof of sufficient information in every direction.
+2. For adjacent publications with the preceding state also saved in the CURRENT
+   solution, decompose translation in the same world coordinates:
+     published_step = within_current_solution_step + previous_state_revision.
+   Also verify exact rotation COMPOSITION, not addition of rotation magnitudes:
+     R_old_previous^-1 R_new_current =
+       (R_old_previous^-1 R_new_previous)(R_new_previous^-1 R_new_current).
+   No resampling, smoothing, alignment, GT or scale fitting.
+3. Count direction reversals and report correction magnitudes before and after
+   the first retirement, with OFF as descriptive context. Changes to a previous
+   estimate are not physical velocities/true bias errors. Adjacent direction
+   reversals are descriptive, not a general health classifier.
+4. Treat simultaneous insertion, removal, new camera/IMU data and marginalization
+   as confounders. Do NOT claim retirement causality from their correlation.
+5. Select early controls28,29 and first six retirement events30..35 by ledger
+   chronology, not by candidate benefit. Retain the first >0.5m previous-state
+   revision and maximum revision as later FOLLOW-UP event descriptions only.
+6. Verify original input hashes and the four-sequence667-file Hesai checkpoint.
+   Existing source containers must remain unchanged; this stage starts none.
+
+STAGE B -- NATIVE CAUSAL EXPERIMENT DESIGN (NOT RUN)
+Required: one unchanged-settings original-start short passive observation,
+covering controls28,29 and retirement updates30..35. Ten sensor seconds suffices
+for this FIRST-RETIREMENT test, not for the severe later events near59s onwards.
+No assumption of bitwise equality to CP-V49; report observer scheduling effects.
+Capture BEFORE retirement/ordinary solve, AFTER ordinary, AFTER current-state
+refresh, and AFTER marginalization. Include initialized new state, exact native
+factor slots and identities, scheduled removals, newly admitted peer factors,
+X/V/b, theta/delta, cached equations, fixed keys, smart caches and immutable
+original-chart prior coefficients AND their original anchors.
+
+PRE-CAPTURE SERIALIZER GATE
+The old CP-V51 checkpoint format recognizes native linear containers but NOT
+fl4l::OriginalChartPrior. Merely extending its update range past25 is unsafe:
+post-marginalization chart adapters must be losslessly represented first.
+Use a private diagnostic serializer/accessor only. Test byte roundtrip, original
+prior function and derivatives at multiple states, graph/cache/state nonmutation,
+observer-disabled parity, actual repeated marginalization/retirement fixtures,
+and Release + sanitizer fixtures before any source capture. Never replace a
+preserved prior by a fresh prior at the current estimate. Failed gates stop work.
+
+SAME-CHECKPOINT 2x2 CONTRAST, NO FORWARD CONTAMINATION
+All arms start from identical initialized values, native graph/cache/history and
+the same current camera/IMU observations. Existing peer factors other than the
+identified old expiring group and current new admission group are unchanged.
+
+Arm    Old expiring factor(s)    Current new peer factor(s)
+A      remove (actual policy)    include (actual policy)
+B      retain for this solve    include
+C      retain for this solve    omit
+D      remove                   omit
+
+Retain means one diagnostic solve while the outgoing endpoint still exists,
+BEFORE marginalization. B/C are NOT a persistent-CBS candidate, do not move the
+lag boundary, and must never leave dangling factors after keys are marginalized.
+Do not compare an extra removal-only solve with the normal fused update: that
+would change the solve schedule. Each arm gets exactly the native ordinary step
+and one native refresh. No extra iterations, line search, robust loss, disabled
+smart-factor gates, simultaneous Jacobian fixes or covariance rescaling.
+
+Admit counterfactuals ONLY after A reproduces the observed equations and states.
+At identical state/cache all non-target factor functions and Gaussians must be
+identical, restored target groups recover original bytes, target key validity and
+metadata must match runtime receipts, and removal/new admission groups must be
+disjoint. If direct replay does not match, stop; do not interpret another solver
+or a differently linearized graph as native retirement causality.
+
+Primary retirement contrast: A minus B (new external information held fixed).
+Insertion contrast: B minus C (old information held fixed).
+Interaction: (A-D)-(B-C), using positions in one world frame and rotations in a
+declared common tangent chart; NEVER subtract angle norms as vector effects.
+Each event is independently initialized from the original baseline checkpoint.
+These one-event branches do not establish long-horizon trajectory improvement.
+
+MEASUREMENTS / FALSIFIABILITY
+Report newest absolute output, previous-state revision, within-solve relative
+step, rigid old-window motion and remaining shape change, velocity/gyro/accel
+bias revisions, native residual costs and accepted smart identities, all both
+after ordinary and refresh. ATE is not a substitute for these event measures.
+For A's observed revision d and causal contrast e=(A-B), report projection
+dot(e,d)/dot(d,d), perpendicular remainder and both absolute magnitudes. Suppress
+ratios for near-zero d (translation<1e-6m / rotation<1e-6rad); negative projection
+means removal opposes rather than causes the observed correction.
+Predeclared screening levels: <1% of the relevant observed revision with tiny
+absolute contrast argues against material immediate influence at that event;
+>=50% positive projected contribution is strong candidate evidence of material
+influence. Intermediate/mixed cases remain inconclusive. Report every event and
+continuous measures; these levels are not universal estimator-health thresholds.
+Small early effects do NOT exclude later retirement effects. Large early effects
+do NOT prove all zigzags originate there. A controlled forward propagation would
+still be needed to establish sustained benefit of any proposed lifecycle change.
+
+WHY NOT MARGINALIZE THE PEER FACTOR INSTEAD, RIGHT AWAY?
+That changes the exported/native prior information and may feed exchanged
+information back into later beliefs. It is a separate design/consistency test,
+not a harmless retention switch. This protocol diagnoses immediate removal
+without promoting a permanent-information policy or claiming independence.
+
+OUTPUTS
+screen.py / test_screen.py: executable saved-data screen and fixture controls.
+analysis.json: full descriptive geometry/lifetime results and input hashes.
+event_manifest.json: exact selected event IDs, existing/missing native snapshots,
+native causal readiness=false when any required capture is missing.
+REPORT.txt / complete.json: actual staged status, never "causal test passed"
+when only the screen has completed.

@@ -1,0 +1,1095 @@
+{
+  "passed": true,
+  "cases": {
+    "off": {
+      "checks": {
+        "receiver": {
+          "passed": true,
+          "source_coverage": {
+            "passed": true,
+            "requested_s": 60.0,
+            "imu_samples": 5986,
+            "imu_span_s": 59.850013256073,
+            "native_glim": {
+              "rows": 591,
+              "start_s": 1727775008.675043,
+              "end_s": 1727775067.674412,
+              "span_s": 58.99936890602112,
+              "maximum_pose_gap_s": 0.10099005699157715,
+              "post_startup_max_gap_s": 0.10099005699157715,
+              "start_after_first_imu_s": 0.6715681552886963,
+              "tail_behind_last_imu_s": 0.1790761947631836,
+              "path_length_m": 25.94028983956151
+            },
+            "native_kimera": {
+              "rows": 284,
+              "start_s": 1727775008.1553955,
+              "end_s": 1727775067.75505,
+              "span_s": 59.59965443611145,
+              "maximum_pose_gap_s": 3.199979066848755,
+              "post_startup_max_gap_s": 0.2000136375427246,
+              "start_after_first_imu_s": 0.15192055702209473,
+              "tail_behind_last_imu_s": 0.09843826293945312,
+              "path_length_m": 25.22468311909808
+            }
+          },
+          "transport": {
+            "imu": 5986,
+            "duplicate_imu": 0,
+            "imu_clock_lag_events": 5893,
+            "max_imu_clock_lag_ns": 2094352,
+            "belief_clock_lag_events": 0,
+            "max_belief_clock_lag_ns": 0,
+            "beliefs": 34171,
+            "duplicates": 0,
+            "published_poses": 593,
+            "max_queue": 32,
+            "sources": {
+              "glim_hesai": 27421,
+              "kimera_front": 6750
+            }
+          },
+          "summary": {
+            "complete": true,
+            "model": "source_wnoa_fixed_lag",
+            "lag_seconds": 7,
+            "stationarity": "not_checked_incremental_policy",
+            "events": 40158,
+            "received": 34171,
+            "inserted": 870,
+            "replaced": 33276,
+            "excluded": 25,
+            "unsupported_end": 0,
+            "absorbed": 769,
+            "active": 101,
+            "pending_at_end": 0,
+            "publications": 593,
+            "finalized": 593,
+            "retained_supports": 71,
+            "peak_slots": 174
+          },
+          "actions": {
+            "before_initialization": 25,
+            "insert": 870,
+            "replace": 33276
+          },
+          "mean_log_roundtrip_error": 1.7052331768852014e-14,
+          "covariance_payload_error": 0.0,
+          "online_path_m": 30.773459567439478,
+          "finalized_path_m": 25.70654250322559,
+          "fused_span_s": 59.2,
+          "support_cycle_seconds": {
+            "n": 593,
+            "mean": 0.05311904507757167,
+            "median": 0.05564856700000003,
+            "p95": 0.07419247799999999,
+            "max": 0.09604567699999995
+          },
+          "receipt_to_processing_seconds": {
+            "n": 40158,
+            "mean": 0.011156595959908363,
+            "median": 0.011086434000000001,
+            "p95": 0.024997026000000002,
+            "max": 0.058706857
+          },
+          "monitor_output_age_s": {
+            "n": 164,
+            "mean": 0.04719710470121952,
+            "median": 0.050001,
+            "p95": 0.090007,
+            "max": 0.100012
+          },
+          "published_during_source": 593,
+          "max_monitor_queue": 3,
+          "protected_unchanged": 2097,
+          "claim": "live 0.2x 60-second ETH1 capture; fixed-lag incremental without stationarity certificate"
+        },
+        "lifecycle": {
+          "passed": true,
+          "mode": "off",
+          "native_updates": 284,
+          "source_injections": {
+            "g2k_injected": 0,
+            "k2g_injected": 0
+          },
+          "planned_retirements": 0,
+          "prior_refresh_updates": 0,
+          "max_cache_error": 0,
+          "observed_total_cost_increases": 1,
+          "imu_factor_cost": {
+            "median": 14.496886617940904,
+            "max": 1322.2512702376687,
+            "last": 2.6175304751801662
+          },
+          "stationarity_certified": false,
+          "obsolete_FL4q_executed": false,
+          "candidate_sha256": "be637ad745f73bf12596d3bf06754f56ed7bcadfdb8b4792b94c4fcfee62aad9",
+          "note": "CP-K9 equation/lifecycle gate; cost increases are observational."
+        },
+        "local": {
+          "passed": true,
+          "mode": "off",
+          "sources": {
+            "glim": {
+              "ids": 589,
+              "versions": 27421,
+              "first": 589,
+              "revised": 26832,
+              "provider_queries": 589,
+              "local_joint_queries": 0
+            },
+            "kimera": {
+              "ids": 282,
+              "versions": 6750,
+              "first": 0,
+              "revised": 0,
+              "provider_queries": 0,
+              "local_joint_queries": 6750
+            }
+          },
+          "all_payloads_exact": true,
+          "revision_provenance": "per-version native_local row plus pinned/tested provider route; no separate repeated matrix dump",
+          "limits": "native explicit information at corrected charts; not independent/calibrated likelihood"
+        }
+      },
+      "capture": {
+        "seconds": 345.57596254348755,
+        "phase": "live60",
+        "mode": "off"
+      },
+      "glim_timing": {
+        "whole": {
+          "scan_ms": {
+            "n": 590,
+            "median": 46.598447500000006,
+            "p95": 180.130493,
+            "max": 251.530599
+          },
+          "main_ms": {
+            "n": 590,
+            "median": 10.909423,
+            "p95": 26.627996,
+            "max": 32.387124
+          },
+          "post_callback_ms": {
+            "n": 590,
+            "median": 27.106855,
+            "p95": 163.487998,
+            "max": 229.232942
+          },
+          "scans_over_500ms": 0
+        },
+        "after5s": {
+          "scan_ms": {
+            "n": 549,
+            "median": 47.325453,
+            "p95": 182.613367,
+            "max": 251.530599
+          },
+          "main_ms": {
+            "n": 549,
+            "median": 12.51994,
+            "p95": 26.926765,
+            "max": 32.387124
+          },
+          "post_callback_ms": {
+            "n": 549,
+            "median": 27.612838,
+            "p95": 168.210157,
+            "max": 229.232942
+          },
+          "scans_over_500ms": 0
+        },
+        "last20s": {
+          "scan_ms": {
+            "n": 199,
+            "median": 47.410246,
+            "p95": 128.580253,
+            "max": 236.777571
+          },
+          "main_ms": {
+            "n": 199,
+            "median": 16.313849,
+            "p95": 29.953951,
+            "max": 32.387124
+          },
+          "post_callback_ms": {
+            "n": 199,
+            "median": 26.490083,
+            "p95": 117.283011,
+            "max": 214.535742
+          },
+          "scans_over_500ms": 0
+        }
+      },
+      "glim_internal_queue_max": 1,
+      "main_prepared_hits": 257232,
+      "main_sync_calls": 0,
+      "kimera_timing_after5s": {
+        "optimize_ms": {
+          "n": 275,
+          "median": 77.8977,
+          "p95": 88.2317,
+          "max": 97.7117
+        },
+        "smoother_ms": {
+          "n": 275,
+          "median": 22.5754,
+          "p95": 26.5067,
+          "max": 31.861
+        },
+        "outgoing_ms": {
+          "n": 275,
+          "median": 53.93,
+          "p95": 64.1714,
+          "max": 69.5038
+        },
+        "backend_ms": {
+          "n": 275,
+          "median": 78.6401,
+          "p95": 89.0148,
+          "max": 98.4254
+        }
+      },
+      "source_coverage": {
+        "passed": true,
+        "requested_s": 60.0,
+        "imu_samples": 5986,
+        "imu_span_s": 59.850013256073,
+        "native_glim": {
+          "rows": 591,
+          "start_s": 1727775008.675043,
+          "end_s": 1727775067.674412,
+          "span_s": 58.99936890602112,
+          "maximum_pose_gap_s": 0.10099005699157715,
+          "post_startup_max_gap_s": 0.10099005699157715,
+          "start_after_first_imu_s": 0.6715681552886963,
+          "tail_behind_last_imu_s": 0.1790761947631836,
+          "path_length_m": 25.94028983956151
+        },
+        "native_kimera": {
+          "rows": 284,
+          "start_s": 1727775008.1553955,
+          "end_s": 1727775067.75505,
+          "span_s": 59.59965443611145,
+          "maximum_pose_gap_s": 3.199979066848755,
+          "post_startup_max_gap_s": 0.2000136375427246,
+          "start_after_first_imu_s": 0.15192055702209473,
+          "tail_behind_last_imu_s": 0.09843826293945312,
+          "path_length_m": 25.22468311909808
+        }
+      }
+    },
+    "on": {
+      "checks": {
+        "receiver": {
+          "passed": true,
+          "source_coverage": {
+            "passed": true,
+            "requested_s": 60.0,
+            "imu_samples": 5986,
+            "imu_span_s": 59.850013256073,
+            "native_glim": {
+              "rows": 591,
+              "start_s": 1727775008.675043,
+              "end_s": 1727775067.674412,
+              "span_s": 58.99936890602112,
+              "maximum_pose_gap_s": 0.10099005699157715,
+              "post_startup_max_gap_s": 0.10099005699157715,
+              "start_after_first_imu_s": 0.6715681552886963,
+              "tail_behind_last_imu_s": 0.1790761947631836,
+              "path_length_m": 25.647413520529668
+            },
+            "native_kimera": {
+              "rows": 284,
+              "start_s": 1727775008.1553955,
+              "end_s": 1727775067.75505,
+              "span_s": 59.59965443611145,
+              "maximum_pose_gap_s": 3.199979066848755,
+              "post_startup_max_gap_s": 0.2000136375427246,
+              "start_after_first_imu_s": 0.15192055702209473,
+              "tail_behind_last_imu_s": 0.09843826293945312,
+              "path_length_m": 25.388318158774656
+            }
+          },
+          "transport": {
+            "imu": 5986,
+            "duplicate_imu": 0,
+            "imu_clock_lag_events": 5872,
+            "max_imu_clock_lag_ns": 2081191,
+            "belief_clock_lag_events": 0,
+            "max_belief_clock_lag_ns": 0,
+            "beliefs": 34175,
+            "duplicates": 0,
+            "published_poses": 593,
+            "max_queue": 38,
+            "sources": {
+              "glim_hesai": 27425,
+              "kimera_front": 6750
+            }
+          },
+          "summary": {
+            "complete": true,
+            "model": "source_wnoa_fixed_lag",
+            "lag_seconds": 7,
+            "stationarity": "not_checked_incremental_policy",
+            "events": 40162,
+            "received": 34175,
+            "inserted": 870,
+            "replaced": 33280,
+            "excluded": 25,
+            "unsupported_end": 0,
+            "absorbed": 769,
+            "active": 101,
+            "pending_at_end": 0,
+            "publications": 593,
+            "finalized": 593,
+            "retained_supports": 71,
+            "peak_slots": 174
+          },
+          "actions": {
+            "before_initialization": 25,
+            "insert": 870,
+            "replace": 33280
+          },
+          "mean_log_roundtrip_error": 3.117037877808926e-14,
+          "covariance_payload_error": 0.0,
+          "online_path_m": 30.033855500585496,
+          "finalized_path_m": 25.56712335308809,
+          "fused_span_s": 59.2,
+          "support_cycle_seconds": {
+            "n": 593,
+            "mean": 0.055465858011804384,
+            "median": 0.057054353000000016,
+            "p95": 0.08104450600000003,
+            "max": 0.10952448799999993
+          },
+          "receipt_to_processing_seconds": {
+            "n": 40162,
+            "mean": 0.01172631634525173,
+            "median": 0.011566712,
+            "p95": 0.026550805,
+            "max": 0.053709807000000005
+          },
+          "monitor_output_age_s": {
+            "n": 164,
+            "mean": 0.049900341481707314,
+            "median": 0.050009,
+            "p95": 0.090011,
+            "max": 0.100011
+          },
+          "published_during_source": 593,
+          "max_monitor_queue": 0,
+          "protected_unchanged": 2097,
+          "claim": "live 0.2x 60-second ETH1 capture; fixed-lag incremental without stationarity certificate"
+        },
+        "lifecycle": {
+          "passed": true,
+          "mode": "on",
+          "native_updates": 284,
+          "source_injections": {
+            "g2k_injected": 280,
+            "k2g_injected": 280
+          },
+          "planned_retirements": 256,
+          "prior_refresh_updates": 256,
+          "max_cache_error": 2.2966772136480411e-10,
+          "observed_total_cost_increases": 0,
+          "imu_factor_cost": {
+            "median": 629.414378349688,
+            "max": 28671.8160777914,
+            "last": 749.1981249180568
+          },
+          "stationarity_certified": false,
+          "obsolete_FL4q_executed": false,
+          "candidate_sha256": "be637ad745f73bf12596d3bf06754f56ed7bcadfdb8b4792b94c4fcfee62aad9",
+          "note": "CP-K9 equation/lifecycle gate; cost increases are observational."
+        },
+        "local": {
+          "passed": true,
+          "mode": "on",
+          "sources": {
+            "glim": {
+              "ids": 589,
+              "versions": 27425,
+              "first": 589,
+              "revised": 26836,
+              "provider_queries": 589,
+              "local_joint_queries": 0
+            },
+            "kimera": {
+              "ids": 282,
+              "versions": 6750,
+              "first": 0,
+              "revised": 0,
+              "provider_queries": 0,
+              "local_joint_queries": 6750
+            }
+          },
+          "all_payloads_exact": true,
+          "revision_provenance": "per-version native_local row plus pinned/tested provider route; no separate repeated matrix dump",
+          "limits": "native explicit information at corrected charts; not independent/calibrated likelihood"
+        }
+      },
+      "capture": {
+        "seconds": 345.56292033195496,
+        "phase": "live60",
+        "mode": "on"
+      },
+      "glim_timing": {
+        "whole": {
+          "scan_ms": {
+            "n": 590,
+            "median": 48.2046865,
+            "p95": 209.865997,
+            "max": 629.190395
+          },
+          "main_ms": {
+            "n": 590,
+            "median": 14.504979,
+            "p95": 27.318753,
+            "max": 35.788158
+          },
+          "post_callback_ms": {
+            "n": 590,
+            "median": 26.9076335,
+            "p95": 169.993463,
+            "max": 227.916593
+          },
+          "scans_over_500ms": 2
+        },
+        "after5s": {
+          "scan_ms": {
+            "n": 549,
+            "median": 49.416757,
+            "p95": 211.858506,
+            "max": 629.190395
+          },
+          "main_ms": {
+            "n": 549,
+            "median": 14.860739,
+            "p95": 28.030606,
+            "max": 35.788158
+          },
+          "post_callback_ms": {
+            "n": 549,
+            "median": 27.297778,
+            "p95": 172.633088,
+            "max": 227.916593
+          },
+          "scans_over_500ms": 2
+        },
+        "last20s": {
+          "scan_ms": {
+            "n": 199,
+            "median": 50.277923,
+            "p95": 159.110391,
+            "max": 629.190395
+          },
+          "main_ms": {
+            "n": 199,
+            "median": 17.873003,
+            "p95": 31.367594,
+            "max": 35.273798
+          },
+          "post_callback_ms": {
+            "n": 199,
+            "median": 26.181538,
+            "p95": 116.894392,
+            "max": 227.916593
+          },
+          "scans_over_500ms": 2
+        }
+      },
+      "glim_internal_queue_max": 1,
+      "main_prepared_hits": 321644,
+      "main_sync_calls": 0,
+      "kimera_timing_after5s": {
+        "optimize_ms": {
+          "n": 275,
+          "median": 73.9043,
+          "p95": 98.2486,
+          "max": 128.159
+        },
+        "smoother_ms": {
+          "n": 275,
+          "median": 22.3984,
+          "p95": 31.4042,
+          "max": 60.4357
+        },
+        "outgoing_ms": {
+          "n": 275,
+          "median": 50.4534,
+          "p95": 64.79,
+          "max": 78.725
+        },
+        "backend_ms": {
+          "n": 275,
+          "median": 74.6761,
+          "p95": 99.0449,
+          "max": 128.99
+        }
+      },
+      "source_coverage": {
+        "passed": true,
+        "requested_s": 60.0,
+        "imu_samples": 5986,
+        "imu_span_s": 59.850013256073,
+        "native_glim": {
+          "rows": 591,
+          "start_s": 1727775008.675043,
+          "end_s": 1727775067.674412,
+          "span_s": 58.99936890602112,
+          "maximum_pose_gap_s": 0.10099005699157715,
+          "post_startup_max_gap_s": 0.10099005699157715,
+          "start_after_first_imu_s": 0.6715681552886963,
+          "tail_behind_last_imu_s": 0.1790761947631836,
+          "path_length_m": 25.647413520529668
+        },
+        "native_kimera": {
+          "rows": 284,
+          "start_s": 1727775008.1553955,
+          "end_s": 1727775067.75505,
+          "span_s": 59.59965443611145,
+          "maximum_pose_gap_s": 3.199979066848755,
+          "post_startup_max_gap_s": 0.2000136375427246,
+          "start_after_first_imu_s": 0.15192055702209473,
+          "tail_behind_last_imu_s": 0.09843826293945312,
+          "path_length_m": 25.388318158774656
+        }
+      }
+    }
+  },
+  "evaluation": {
+    "reference": {
+      "path": "/workspace/cbs_gtsam4.3/src/datasets/GrandTour/2024-10-01-11-29-55_cpt7_ie_tc.bag",
+      "sha256": "28815a4a300624766e3ffe0e1cc0f150ac60e09e395381ca25c3e6d7e04e18e3",
+      "topic": "/boxi/inertial_explorer/tc/odometry",
+      "frame_ids": [
+        "enu_origin"
+      ],
+      "child_frame_ids": [
+        "cpt7_imu"
+      ],
+      "caveat": "IE-TC GNSS/INS reference shares CPT7 IMU; not independent prism GT"
+    },
+    "common_mask": {
+      "rows": 560,
+      "start_s": 1727775011.5999973,
+      "end_s": 1727775067.499944,
+      "timestamps_sha256": "23758d6e7a6617bcfff8c81452ccdd86fd9639d6be0c03907cbba00418c300db",
+      "interpolation_gap_estimate_s": 0.5,
+      "interpolation_gap_reference_s": 0.05
+    },
+    "convention": "Per-path rigid SE(3) no-scale alignment for ATE at prism lever arm; 1s RPE in prism frame, no global alignment",
+    "results": {
+      "off_native_glim": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_batched_live60_cpk17_20261021/prepared/live60_off_source/odom_imu.txt",
+        "sha256": "d4b6ec6d566dccec73cd17ecf2f8a3ad1b4e05a2094413dc63184e85d4b0382c",
+        "full_saved_rows": 591,
+        "full_saved_span_s": 58.99936890602112,
+        "full_saved_path_length_CPT7_m": 25.94028983956151,
+        "full_saved": {
+          "rows": 591,
+          "start_s": 1727775008.675043,
+          "end_s": 1727775067.674412,
+          "span_s": 58.99936890602112,
+          "ATE_RMSE_m": 0.045338494802069855,
+          "translation_RPE_1s_RMSE_m": 0.03285872759553603,
+          "rotation_RPE_1s_RMSE_deg": 0.5098593316274653,
+          "path_length_prism_m": 25.9020660059428,
+          "reference_path_length_prism_m": 25.395796907925522,
+          "rpe_pairs": 579,
+          "error_m": {
+            "n": 591,
+            "mean": 0.03641651846667891,
+            "median": 0.028873183346287953,
+            "p95": 0.09980508866388196,
+            "max": 0.16129909972742557
+          }
+        },
+        "common": {
+          "rows": 560,
+          "start_s": 1727775011.5999973,
+          "end_s": 1727775067.499944,
+          "ATE_RMSE_m": 0.04328286501325291,
+          "translation_RPE_1s_RMSE_m": 0.03269208942657762,
+          "rotation_RPE_1s_RMSE_deg": 0.5174055298182337,
+          "path_length_prism_m": 25.59786330940412,
+          "reference_path_length_prism_m": 25.225467554377012,
+          "error_m": {
+            "n": 560,
+            "mean": 0.03617166627656517,
+            "median": 0.03080749117835369,
+            "p95": 0.08805057367900297,
+            "max": 0.15150405577117815
+          },
+          "rpe_pairs": 550
+        }
+      },
+      "off_native_kimera": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_batched_live60_cpk17_20261021/prepared/live60_off_source/kimera_odometry.csv",
+        "sha256": "e8c12d38d62b68ee839f3ce9480c31e559ee6337a2e769cc0dcdb65f373db10f",
+        "full_saved_rows": 284,
+        "full_saved_span_s": 59.59965443611145,
+        "full_saved_path_length_CPT7_m": 25.22468311909808,
+        "full_saved": {
+          "rows": 284,
+          "start_s": 1727775008.1553955,
+          "end_s": 1727775067.75505,
+          "span_s": 59.59965443611145,
+          "ATE_RMSE_m": 0.08484218037968577,
+          "translation_RPE_1s_RMSE_m": 0.020698602806374405,
+          "rotation_RPE_1s_RMSE_deg": 0.627941591247202,
+          "path_length_prism_m": 25.17317936747372,
+          "reference_path_length_prism_m": 25.34061591406734,
+          "rpe_pairs": 551,
+          "error_m": {
+            "n": 284,
+            "mean": 0.07394048844541191,
+            "median": 0.0672689062142196,
+            "p95": 0.15803937755689265,
+            "max": 0.16118035020626412
+          }
+        },
+        "common": {
+          "rows": 560,
+          "start_s": 1727775011.5999973,
+          "end_s": 1727775067.499944,
+          "ATE_RMSE_m": 0.08406240742418285,
+          "translation_RPE_1s_RMSE_m": 0.020714076043732172,
+          "rotation_RPE_1s_RMSE_deg": 0.6281916888627318,
+          "path_length_prism_m": 24.829764583589807,
+          "reference_path_length_prism_m": 25.225467554377012,
+          "error_m": {
+            "n": 560,
+            "mean": 0.07301125280458151,
+            "median": 0.06751965323781872,
+            "p95": 0.1591736501826901,
+            "max": 0.16492782805731676
+          },
+          "rpe_pairs": 550
+        }
+      },
+      "off_fused_online": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_batched_live60_cpk17_20261021/prepared/live60_off_receiver/receiver/online_trajectory.tum",
+        "sha256": "69f4c3e4abc77bf761ad5b0da4666cf4cd56139eadf1aab752d38659b086683a",
+        "full_saved_rows": 593,
+        "full_saved_span_s": 59.19999980926514,
+        "full_saved_path_length_CPT7_m": 30.773459567439474,
+        "full_saved": {
+          "rows": 593,
+          "start_s": 1727775008.583475,
+          "end_s": 1727775067.783475,
+          "span_s": 59.19999980926514,
+          "ATE_RMSE_m": 0.057809926910582565,
+          "translation_RPE_1s_RMSE_m": 0.04487218092162283,
+          "rotation_RPE_1s_RMSE_deg": 3.0932345846998266,
+          "path_length_prism_m": 32.19739738308857,
+          "reference_path_length_prism_m": 25.49126283983574,
+          "rpe_pairs": 582,
+          "error_m": {
+            "n": 593,
+            "mean": 0.05255668095728271,
+            "median": 0.04760392681424262,
+            "p95": 0.09520417104619514,
+            "max": 0.1448069974243748
+          }
+        },
+        "common": {
+          "rows": 560,
+          "start_s": 1727775011.5999973,
+          "end_s": 1727775067.499944,
+          "ATE_RMSE_m": 0.054238154399241296,
+          "translation_RPE_1s_RMSE_m": 0.04604019530048716,
+          "rotation_RPE_1s_RMSE_deg": 3.1785506351583748,
+          "path_length_prism_m": 29.691887961469682,
+          "reference_path_length_prism_m": 25.225467554377012,
+          "error_m": {
+            "n": 560,
+            "mean": 0.04773466539949463,
+            "median": 0.041176715165640074,
+            "p95": 0.10123600129467968,
+            "max": 0.1419327145119544
+          },
+          "rpe_pairs": 550
+        }
+      },
+      "off_fused_finalized": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_batched_live60_cpk17_20261021/prepared/live60_off_receiver/receiver/finalized_trajectory.tum",
+        "sha256": "f579aac5a9e6ff8b26c9d299b41670bb10f6fce6d45be385b5620288ab43b7f0",
+        "full_saved_rows": 593,
+        "full_saved_span_s": 59.19999980926514,
+        "full_saved_path_length_CPT7_m": 25.706542503225588,
+        "full_saved": {
+          "rows": 593,
+          "start_s": 1727775008.583475,
+          "end_s": 1727775067.783475,
+          "span_s": 59.19999980926514,
+          "ATE_RMSE_m": 0.04881934760810743,
+          "translation_RPE_1s_RMSE_m": 0.017598925006637563,
+          "rotation_RPE_1s_RMSE_deg": 0.4482850366271983,
+          "path_length_prism_m": 25.689325509157886,
+          "reference_path_length_prism_m": 25.49126283983574,
+          "rpe_pairs": 582,
+          "error_m": {
+            "n": 593,
+            "mean": 0.04448775369686412,
+            "median": 0.037356295016508806,
+            "p95": 0.08554142977487439,
+            "max": 0.11181094254612331
+          }
+        },
+        "common": {
+          "rows": 560,
+          "start_s": 1727775011.5999973,
+          "end_s": 1727775067.499944,
+          "ATE_RMSE_m": 0.04605924129159415,
+          "translation_RPE_1s_RMSE_m": 0.01803430427065096,
+          "rotation_RPE_1s_RMSE_deg": 0.4587490833695226,
+          "path_length_prism_m": 25.31232764125386,
+          "reference_path_length_prism_m": 25.225467554377012,
+          "error_m": {
+            "n": 560,
+            "mean": 0.039972029376461486,
+            "median": 0.032356619716675215,
+            "p95": 0.09581025409836799,
+            "max": 0.1191767320254991
+          },
+          "rpe_pairs": 550
+        }
+      },
+      "on_native_glim": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_batched_live60_cpk17_20261021/prepared/live60_on_source/odom_imu.txt",
+        "sha256": "bb9506dc14002329ad013d6097c0a9d24ad47259b638f6a9c42547dd48159d2b",
+        "full_saved_rows": 591,
+        "full_saved_span_s": 58.99936890602112,
+        "full_saved_path_length_CPT7_m": 25.647413520529668,
+        "full_saved": {
+          "rows": 591,
+          "start_s": 1727775008.675043,
+          "end_s": 1727775067.674412,
+          "span_s": 58.99936890602112,
+          "ATE_RMSE_m": 0.02615271702056729,
+          "translation_RPE_1s_RMSE_m": 0.019406270330217103,
+          "rotation_RPE_1s_RMSE_deg": 0.4578380248530052,
+          "path_length_prism_m": 25.659150435540866,
+          "reference_path_length_prism_m": 25.395796907925522,
+          "rpe_pairs": 579,
+          "error_m": {
+            "n": 591,
+            "mean": 0.022634408527200774,
+            "median": 0.019915053428445347,
+            "p95": 0.04243717623398558,
+            "max": 0.09086801064703112
+          }
+        },
+        "common": {
+          "rows": 560,
+          "start_s": 1727775011.5999973,
+          "end_s": 1727775067.499944,
+          "ATE_RMSE_m": 0.025802924223270813,
+          "translation_RPE_1s_RMSE_m": 0.019494823582543484,
+          "rotation_RPE_1s_RMSE_deg": 0.46850424147125325,
+          "path_length_prism_m": 25.33666227116845,
+          "reference_path_length_prism_m": 25.225467554377012,
+          "error_m": {
+            "n": 560,
+            "mean": 0.022214059370885574,
+            "median": 0.019840426309528467,
+            "p95": 0.042024920695939605,
+            "max": 0.09584564637634785
+          },
+          "rpe_pairs": 550
+        }
+      },
+      "on_native_kimera": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_batched_live60_cpk17_20261021/prepared/live60_on_source/kimera_odometry.csv",
+        "sha256": "2ac6c8e6626bb2099ddae97c008f0f0d2f3ccbd43198237e065fc3e7921d5676",
+        "full_saved_rows": 284,
+        "full_saved_span_s": 59.59965443611145,
+        "full_saved_path_length_CPT7_m": 25.388318158774656,
+        "full_saved": {
+          "rows": 284,
+          "start_s": 1727775008.1553955,
+          "end_s": 1727775067.75505,
+          "span_s": 59.59965443611145,
+          "ATE_RMSE_m": 0.09245078064937945,
+          "translation_RPE_1s_RMSE_m": 0.021855087335194423,
+          "rotation_RPE_1s_RMSE_deg": 0.6635431938604883,
+          "path_length_prism_m": 25.273991279941278,
+          "reference_path_length_prism_m": 25.34061591406734,
+          "rpe_pairs": 551,
+          "error_m": {
+            "n": 284,
+            "mean": 0.08581220315208339,
+            "median": 0.09628354106256523,
+            "p95": 0.13982249745839215,
+            "max": 0.15017278783885132
+          }
+        },
+        "common": {
+          "rows": 560,
+          "start_s": 1727775011.5999973,
+          "end_s": 1727775067.499944,
+          "ATE_RMSE_m": 0.09224105871689849,
+          "translation_RPE_1s_RMSE_m": 0.021869789730772818,
+          "rotation_RPE_1s_RMSE_deg": 0.6639372775415973,
+          "path_length_prism_m": 24.92835606963766,
+          "reference_path_length_prism_m": 25.225467554377012,
+          "error_m": {
+            "n": 560,
+            "mean": 0.08546350291187821,
+            "median": 0.09487363278046092,
+            "p95": 0.13967421251495396,
+            "max": 0.15351930773695852
+          },
+          "rpe_pairs": 550
+        }
+      },
+      "on_fused_online": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_batched_live60_cpk17_20261021/prepared/live60_on_receiver/receiver/online_trajectory.tum",
+        "sha256": "8764338082e7454e10875b1e6b130de3c242ccf6832c5ffe85d35be4ad01d66f",
+        "full_saved_rows": 593,
+        "full_saved_span_s": 59.19999980926514,
+        "full_saved_path_length_CPT7_m": 30.0338555005855,
+        "full_saved": {
+          "rows": 593,
+          "start_s": 1727775008.583475,
+          "end_s": 1727775067.783475,
+          "span_s": 59.19999980926514,
+          "ATE_RMSE_m": 0.05024667991882977,
+          "translation_RPE_1s_RMSE_m": 0.04700971483665879,
+          "rotation_RPE_1s_RMSE_deg": 2.859829335920441,
+          "path_length_prism_m": 31.487482767823767,
+          "reference_path_length_prism_m": 25.49126283983574,
+          "rpe_pairs": 582,
+          "error_m": {
+            "n": 593,
+            "mean": 0.04481927506336201,
+            "median": 0.040083469394824954,
+            "p95": 0.08373963615509748,
+            "max": 0.17790130835359697
+          }
+        },
+        "common": {
+          "rows": 560,
+          "start_s": 1727775011.5999973,
+          "end_s": 1727775067.499944,
+          "ATE_RMSE_m": 0.046403180047196665,
+          "translation_RPE_1s_RMSE_m": 0.0482063537809879,
+          "rotation_RPE_1s_RMSE_deg": 2.9380768504630685,
+          "path_length_prism_m": 29.37678978155465,
+          "reference_path_length_prism_m": 25.225467554377012,
+          "error_m": {
+            "n": 560,
+            "mean": 0.04082613174825231,
+            "median": 0.03609657466738382,
+            "p95": 0.08100715240482444,
+            "max": 0.1680239997423038
+          },
+          "rpe_pairs": 550
+        }
+      },
+      "on_fused_finalized": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_batched_live60_cpk17_20261021/prepared/live60_on_receiver/receiver/finalized_trajectory.tum",
+        "sha256": "1d17e9775dd825c53a606ac9dbab109dfb9a0dea2b5fc8d510677990ce6bfb0f",
+        "full_saved_rows": 593,
+        "full_saved_span_s": 59.19999980926514,
+        "full_saved_path_length_CPT7_m": 25.567123353088085,
+        "full_saved": {
+          "rows": 593,
+          "start_s": 1727775008.583475,
+          "end_s": 1727775067.783475,
+          "span_s": 59.19999980926514,
+          "ATE_RMSE_m": 0.03474437015415782,
+          "translation_RPE_1s_RMSE_m": 0.01565906253895038,
+          "rotation_RPE_1s_RMSE_deg": 0.4356140452054347,
+          "path_length_prism_m": 25.585569362842065,
+          "reference_path_length_prism_m": 25.49126283983574,
+          "rpe_pairs": 582,
+          "error_m": {
+            "n": 593,
+            "mean": 0.030477265061869076,
+            "median": 0.02452066365095428,
+            "p95": 0.06936835116380444,
+            "max": 0.09027677849029132
+          }
+        },
+        "common": {
+          "rows": 560,
+          "start_s": 1727775011.5999973,
+          "end_s": 1727775067.499944,
+          "ATE_RMSE_m": 0.03142651994174214,
+          "translation_RPE_1s_RMSE_m": 0.015911434780724706,
+          "rotation_RPE_1s_RMSE_deg": 0.4470409113154655,
+          "path_length_prism_m": 25.21000651230889,
+          "reference_path_length_prism_m": 25.225467554377012,
+          "error_m": {
+            "n": 560,
+            "mean": 0.0271664562784605,
+            "median": 0.021145864658330887,
+            "p95": 0.05977747772515429,
+            "max": 0.09224532091712846
+          },
+          "rpe_pairs": 550
+        }
+      }
+    },
+    "covariance": {
+      "off": {
+        "kimera_front": {
+          "versions": 6750,
+          "stable_ids": 282,
+          "revised_ids": 281,
+          "rotation_trace_rad2": {
+            "n": 6750,
+            "mean": 2.0839174297475918e-08,
+            "median": 1.7330962908767305e-08,
+            "p95": 3.64172183868137e-08,
+            "max": 1.153820010534807e-05
+          },
+          "translation_trace_m2": {
+            "n": 6750,
+            "mean": 1.2866140610924786e-06,
+            "median": 6.344695262253053e-07,
+            "p95": 4.394730869531307e-06,
+            "max": 4.128286808636438e-05
+          },
+          "min_eigenvalue": 9.928940417342488e-10,
+          "max_eigenvalue": 2.450188910392407e-05,
+          "max_symmetry_error": 0.0,
+          "first_last_rotation_trace_ratio": {
+            "n": 281,
+            "mean": 0.5203551671362275,
+            "median": 0.492782540056591,
+            "p95": 0.8447081690320235,
+            "max": 1.1946572008891991
+          },
+          "first_last_translation_trace_ratio": {
+            "n": 281,
+            "mean": 0.3484647886209777,
+            "median": 0.3276145984403991,
+            "p95": 0.6124720628982004,
+            "max": 0.8868034168692044
+          }
+        },
+        "glim_hesai": {
+          "versions": 27421,
+          "stable_ids": 589,
+          "revised_ids": 588,
+          "rotation_trace_rad2": {
+            "n": 27421,
+            "mean": 1.4535227604293576e-08,
+            "median": 1.4279427860598081e-08,
+            "p95": 2.8556592489983977e-08,
+            "max": 5.5520806959210234e-08
+          },
+          "translation_trace_m2": {
+            "n": 27421,
+            "mean": 2.0868452516994108e-06,
+            "median": 2.010798089584102e-06,
+            "p95": 2.844393174768384e-06,
+            "max": 6.089885321621417e-06
+          },
+          "min_eigenvalue": 2.863220837539421e-10,
+          "max_eigenvalue": 3.6148416844334256e-06,
+          "max_symmetry_error": 0.0,
+          "first_last_rotation_trace_ratio": {
+            "n": 588,
+            "mean": 0.7806924580409705,
+            "median": 0.786705375041267,
+            "p95": 0.8446848927264656,
+            "max": 0.8935857700329601
+          },
+          "first_last_translation_trace_ratio": {
+            "n": 588,
+            "mean": 0.6045456798154073,
+            "median": 0.6104558927735397,
+            "p95": 0.6483405825063349,
+            "max": 0.6837737458134255
+          }
+        }
+      },
+      "on": {
+        "kimera_front": {
+          "versions": 6750,
+          "stable_ids": 282,
+          "revised_ids": 281,
+          "rotation_trace_rad2": {
+            "n": 6750,
+            "mean": 2.092843286767141e-08,
+            "median": 1.7863486165454746e-08,
+            "p95": 3.671277928643012e-08,
+            "max": 1.153820010534807e-05
+          },
+          "translation_trace_m2": {
+            "n": 6750,
+            "mean": 1.3172692993682268e-06,
+            "median": 6.555810640655102e-07,
+            "p95": 4.831365855033947e-06,
+            "max": 3.455494361651541e-05
+          },
+          "min_eigenvalue": 1.0991999973032651e-09,
+          "max_eigenvalue": 2.189254814157011e-05,
+          "max_symmetry_error": 0.0,
+          "first_last_rotation_trace_ratio": {
+            "n": 281,
+            "mean": 0.49122348730522675,
+            "median": 0.4567689966153185,
+            "p95": 0.8792032460922424,
+            "max": 1.2171211189068722
+          },
+          "first_last_translation_trace_ratio": {
+            "n": 281,
+            "mean": 0.3927374718454522,
+            "median": 0.2708256115708744,
+            "p95": 1.4341054145837042,
+            "max": 2.770805074938065
+          }
+        },
+        "glim_hesai": {
+          "versions": 27425,
+          "stable_ids": 589,
+          "revised_ids": 588,
+          "rotation_trace_rad2": {
+            "n": 27425,
+            "mean": 1.432717990844483e-08,
+            "median": 1.3805186434601951e-08,
+            "p95": 2.7632791593656937e-08,
+            "max": 5.425852090364413e-08
+          },
+          "translation_trace_m2": {
+            "n": 27425,
+            "mean": 2.0487436709158563e-06,
+            "median": 1.9823958392288455e-06,
+            "p95": 2.6731340382870975e-06,
+            "max": 5.801339393204747e-06
+          },
+          "min_eigenvalue": 2.8551778275503013e-10,
+          "max_eigenvalue": 3.0641074076676766e-06,
+          "max_symmetry_error": 0.0,
+          "first_last_rotation_trace_ratio": {
+            "n": 588,
+            "mean": 0.7812271657667824,
+            "median": 0.7879149028851493,
+            "p95": 0.842741435884083,
+            "max": 0.8939682135248443
+          },
+          "first_last_translation_trace_ratio": {
+            "n": 588,
+            "mean": 0.6067784949907253,
+            "median": 0.611447522731293,
+            "p95": 0.6488077823418347,
+            "max": 0.684656129261127
+          }
+        }
+      }
+    }
+  },
+  "protected_unchanged": 2097,
+  "identical_source_profiles": true,
+  "no_exhaustive_observer": true,
+  "no_saved_journal_repeat": true,
+  "limits": "One60s experimental pair, not a full batching-preservation or full-sequence certificate; IE-TC shares CPT7; no nonlinear stationarity claim."
+}

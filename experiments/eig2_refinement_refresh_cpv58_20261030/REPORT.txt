@@ -1,0 +1,112 @@
+CP-V58 — Is restoring the avoidably rejected visual support enough?
+2026-10-30. SAVED REFRESH A/B COMPLETE; NO FIX DEMONSTRATED.
+Still suspect1. No move to suspect2, full replay or production change.
+
+CONCLUSION
+==========
+Restoring the7usable newly-rejected visual factors does NOT materially reduce
+the rotational/gyro-bias response at this first-insertion refresh. Some position
+revision measures improve modestly; accel-bias revisions and native IMU cost
+increase. Thus CP57 identified real avoidable rejection, but restoring that
+subset is not sufficient to explain/cure this early disturbance. This does NOT
+rule out visual support loss later in the sequence or close suspect1 globally.
+No full-sequence fix, ATE improvement or nonlinear convergence claim is justified.
+
+EXACT INTERVENTION
+==================
+Original CP51 Hesai EIG-2 update6, first GLIM admission1.599933183s after capture
+start (bag+7.299933183s). BOTH arms begin at the identical saved POST-ORDINARY
+state feeding refresh. The preceding CBS-induced ordinary move is held fixed.
+A: original native refresh, one Gauss-Newton step.
+B: identical graph/state/priors/weights and native smart-factor elimination.
+   For25initially-valid-now-outlier factors, test CP57's original smart-L2 fitted
+   landmark at the exact same cameras against the original3px/depth/10m gates.
+   Native rank must already pass. Only7pass; replace only their invalid landmark
+   caches for this ONE native linearization. No minimax witness, distance-bound
+   fit, changed gate, cache clearing, additional iteration or factor removal.
+
+Restored slots678,705,719,897,899,911,912:5distinct geometries, all left-only
+observations (missing right measurements). The other18outlier candidates and
+all rank-rejected factors remain untouched. Already-valid factors are unchanged.
+This is a bounded landmark/support counterfactual, NOT an integrated general
+triangulation implementation. A propagated alternate history was not tested.
+
+VALIDATION BEFORE INTERPRETATION
+================================
+A reproduces the saved whole Gaussian equations EXACTLY; captured final state
+difference1.05e-10 mixed tangent norm. Passed BEFORE any B graph step.
+349untouched factor Gaussians equal exactly;7zero contributions become nonzero.
+Visual support entering solve:266A ->273B. Smart-factor functions/calibration/
+noise/parameters unchanged. Restoring only those7cached landmarks makes the
+serialized pre-solve snapshot byte-identical to the original; both original
+input snapshots serialize byte-identically before/after the experiment.
+Native linear backward residuals1.15e-17A/9.53e-18B; NOT nonlinear stationarity.
+Release and ASan/UBSan fixtures passed: valid/behind/far/outlier points, unchanged
+functions/inputs, disabled intervention parity and native solver. Vendor DSOs
+not sanitizer-instrumented. No source/production optimizer was rebuilt or run.
+
+RESULTS — OLD STATES x0..x5
+===========================
+These are revisions, NOT errors against ground truth. Maxima can be attained
+at different old states; all per-state vectors are saved in analysis.json.
+
+Refresh step ONLY                         Original A       Refined-support B
+Common old-window tilt (deg)                 .0818411           .0807904
+Maximum position revision (m)               .00405050          .00359894
+Maximum rotation revision (deg)              .0898603           .0892392
+Maximum velocity revision (m/s)             .00559403          .00485723
+Maximum accel-bias revision (m/s^2)          .01447974          .01576873
+Maximum gyro-bias revision (rad/s)          .000736483         .000752313
+
+Net from BEFORE this admission             Original A       Refined-support B
+Common old-window tilt (deg)                 .0785919           .0787225
+Maximum position revision (m)               .00572191          .00533937
+Maximum rotation revision (deg)              .3225807           .3246128
+Maximum velocity revision (m/s)             .01076055          .01084405
+Maximum accel-bias revision (m/s^2)          .02284792          .02412243
+Maximum gyro-bias revision (rad/s)           .00746094          .00746486
+
+Net max position revision decreases6.69%; max rotation increases.63%, accel-bias
+increases5.58%, gyro-bias increases.052%. Refresh-only position decreases11.15%,
+rotation decreases.69%, but accel-/gyro-bias revisions increase8.90%/2.15%.
+Do not report the modest position change alone as a successful zigzag fix.
+Across ALL x0..x6, final A-versus-B maximum difference is.86753mm/.00473642deg.
+
+POST-STEP NATIVE RESIDUAL DIAGNOSTICS
+===================================
+                                    A                 B
+Native IMU weighted cost          1.253754           1.384868
+Bias-between weighted cost       15.749331          17.065809
+CBS weighted cost                44.278872          43.486865
+CBS rotation residual(deg)         .0172161           .0168913
+CBS translation Log norm(m)        .00665862          .00655857
+
+These costs retain the original factor weights. No covariance investigation.
+Post-evaluation with the ORIGINAL native DLT rule gives267A/268Bvalid smart
+factors. That is NOT273persistent restored factors or another executed refresh.
+The counterfactual was applied once at the common starting linearization only.
+Smart-factor error sums change as rejection changes and are NOT used as a
+common continuous objective to declare optimization success.
+
+WHAT IS LEFT WITHIN SUSPECT1
+===========================
+This test narrows one branch: repairing the documented7landmark rejections at
+the first refresh does not substantially suppress the rotational/bias response.
+It does not test the initial cache-sensitive factor571, before the ordinary
+move. That requires a SEPARATE saved-checkpoint cache-only intervention; do not
+combine it with landmark refinement, changed weights or a suspect2 Jacobian fix.
+Nor have we tested persistent support-restoration through successive updates.
+The present mixed result does not justify promoting this candidate/full rerun.
+No further graph test or source capture was launched by this report.
+
+ARTIFACTS AND PRESERVATION
+==========================
+analysis.json contains all old-state/newest-state revisions, A-vs-B differences,
+native costs, original-rule support, input hashes and qualifications.
+W/runs/eig2_refinement_refresh_cpv58_20261030/results/ contains original parity,
+25decisions, A/B states, per-factor diagnostics and preserved native snapshots.
+Private sources/points/build commands/fixtures/process receipts remain retained.
+Exactly2real saved-graph GN steps; synthetic fixtures separate. No source replay,
+trajectory scoring, weights/gates/prior change, production patch, deletion/push.
+Both containers restored stopped. verification.json/complete.json record final
+protected-input and four-sequence original Hesai checkpoint verification.

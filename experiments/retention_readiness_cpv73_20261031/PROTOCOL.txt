@@ -1,0 +1,56 @@
+CP-V73 -- bounded diagnostic replay readiness, 2026-10-31
+User approved proceeding after CP72 diagnosis. Preserve all predecessor roots.
+
+One harness hypothesis: real callback-to-backend delivery may not finish before
+the original assigned update in an asynchronous replay. Add opt-in wall-clock
+readiness acknowledgement for that update, before solving it. Use condition
+variable generation notifications after actual backend enqueue, no arbitrary
+sleep, no queued-data mutex held while waiting, fixed 2000ms deadline. Only
+already received real payloads can satisfy readiness. No reads of payloads from
+schedule, backdating, changing ROS clock, moving update IDs or skipping inputs.
+No changes to VioBackend object layout, wrapper thread rate or native solver.
+Existing schedule guards still reject late/duplicate/unknown/wrong-source data
+and missing past updates; due-input timeout fails closed. Bounded accumulated
+queue, existing queue caps/retry gates and lifecycle remain. Disabled barrier
+uses the original queue/gate path. This is NOT real-time latency certification.
+
+Before native capture: Release and ASan/UBSan fixtures for delayed concurrent
+enqueue, lost-wakeup boundary, already-ready/early/no-due/disabled cases, exact
+payload/order, malformed/missing/duplicate/late/reversed/timeout and queue bounds.
+Full1743-row schedule conservation. Native CP69 compatibility, original-chart
+prior/smart-factor/ordinary+one-refresh and exact disabled-remove parity gates.
+Private compatible libcbs, private backend only; no production build/defaults.
+
+After gates, ONE fresh full EIG-2 Hesai conditional pair,355.02s,quietstart5.7s,
+0.20x,25s drain,front stereo/shared CPT7,25states,headless,port11573. Reuse CP71
+aligned_inputs.bag/frozen_inputs.json/recorded_updates.txt byte-exact:1743 saved
+accepted CP49 ON beliefs,1762 original native physical timestamps. Original
+3541 inputs include1798 unaccepted entries explicitly retained as omissions;
+original .6/1.0s native tail gaps are expected, not zero-loss claims.
+Both arms use ON input, NOT CBS-OFF versus ON. REMOVE then all strict gates,
+only then RETAIN and same gates. CP69 retain compatibility,K9=1,CP40=1,FL4Q=0,
+CP38=0,ordinary+one refresh,unchanged calibration/noise/covariance scale1;
+native IMU override unset. Existing targeted retirement selector, not a new
+general persistent mode. Original means/aligned frame/receiver bindings fixed.
+No new GLIM, fusion or returned-peer consumer. Original feedback is in saved
+inputs; conditional test only. CP67 mixed LOCAL provenance remains unresolved.
+
+Require exact wire bytes,1743 original admissions/update IDs/covariance,
+physical endpoints and1762 timestamps. A/B first30 poses exact before retirement.
+Retained absorptions must match all retirement boundaries. Any gate failure
+stops stages; no automatic retry, retuning or scoring failed prefixes as full.
+Record every update's wait duration/wakeup count/input count separately from
+optimization timing. Do not call a replay wait estimator work or throughput.
+
+Same EVO1.36.3-only Method1 first-published absolute Kimera backend ATE/no-scale
+SE3,reference-distance0.5m RPE. Full saved/common100ms separate; sourcegap<=.5s,
+referencegap<=.05s. Full paths/reference paths,coverage,40..60s and final60s
+revision/native-motion/IMU summaries. IE-TC shares CPT7,not independent prism GT;
+incremental objective checks are not nonlinear stationarity. No accuracy-based
+selection or retry. Preserve all original outputs/checkpoints/source profiles.
+
+Storage >=8GiB pre-capture,>=5GiB during. Finite exclusive controller, exact owned
+job receipts, restore both originally stopped containers, original four-sequence
+Hesai667-file verification and inherited/output hashes at closeout. No deletion,
+tuning,push or production/default promotion. Build and capture stages separately
+closed and identified; no launching archived scripts.

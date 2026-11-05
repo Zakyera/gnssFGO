@@ -1,0 +1,62 @@
+CP-K25 — full usable SPX-3 matched OFF/ON, authorized2026-10-21
+
+User requests SPX-3 similarly to completed ETH1 CP-K23 and EIG-2 CP-K24/24A.
+One fresh OFF/ON pair; no tuning, rebuild, automatic retry, promotion or push.
+Reuse exact CP-K24 pinned binaries/model, not old CP-R5 executable defaults.
+Use SPX-3's saved CP-R5 profile trees (verified identical to the current pair).
+
+Mission2024-11-02-17-43-10; Hesai /boxi/hesai/points + shared CPT7
+/boxi/cpt7/imu; Kimera Alphasense front_left/front_right stereo. Established
+32s startup offset;194.02s through final Hesai, NOT older134s crop. Exact
+record epoch1730565870872888651ns,start1730565902872888651ns,
+end1730566096892888651ns,lastHesai1730566096888473034ns. Initial32s and later
+camera/IMU-only tails excluded.1941Hesai,19402IMU,1940synchronized stereo pairs.
+Four bags hash-match retained CP-R5; stereo headers exact; IE-TC covers window.
+Frontend1937..1940 permits same0..3startup-frame allowance. Minimum GLIM1907
+uses same34scan count allowance as CP-K24; temporal duration-2s coverage still
+required. Native5s keyframe gap contract unchanged; score every saved pose.
+
+GLIM5s lag,CP-K16a MAIN GPU batching,CP-I1/CP-I3 all-LOCAL dense covariance for
+every first/revised belief,corrected MAIN means. Kimera25states,CP-K9 private DSO,
+CPK9_PRIOR_REFRESH=1,FL4Q_ENABLE=0,FL4M_RETIREMENT=remove,native IMU override
+unset. Same source Gaussian6x6scales1,schur_relative_between,classic bidirectional
+active_window_temporary,not live_revision. Horizon.20s,onepair/update,stride1,
+receive delay0. Existing native-IMU mean-only alignment covariance approximation.
+
+CP-K19 receiver:7s fixed-lag source_wnoa,independent100ms supports after59timing
+samples,no centralIMU/GNSS,unchanged Qc[.00375x3,.015x3] and priorsX1e-5,V10,W3.
+Stable-ID replacement for active factors; seal_at_absorption expires/audits
+known absorbed-ID revisions without solver mutation. Old first arrivals fail.
+No covariance scaling,health weighting,robust loss or model/topology change.
+
+Finite-recording EOF contract is declared BEFORE this capture and identical
+OFF/ON: reuse CP-K24A exact terminal-cell predicate. Endpoint must be measured
+at/before final real clock,after last support,require only the next100ms support,
+with retained start,causal arrival,EOF-only classification and exact conservation.
+No fabricated clock/support,no arbitrary-count allowance,no interior gap or
+expired-first-arrival waiver. Report every terminal omission; do not claim its
+accuracy impact is zero. Existing receiver EOF behavior unchanged. All other
+original validation checks remain. Old strict EIG-2 failure evidence untouched.
+
+Headless0.20x,25sdrain,port11475; no source graph inspectors. Same revision,
+covariance,payload and timing diagnostics. Scoped sleep/idle/lid inhibitor during
+finite controller only. No persistent power settings. Both containers initially
+stopped; start existing containers and restore stopped when no jobs remain.
+
+Pipeline OFF -> LOCAL/lifecycle/receiver gates -> ON preflight -> ON -> same
+gates -> existing full-saved/common-mask scoring -> summary -> cleanup. Refuse
+existing outputs,changed protected hashes,port conflict,duplicate controller.
+Stop on failure;no automatic retry/guard relaxation. No fresh deterministic
+solver replay or exhaustive batching observer,as in CP-K23/24.
+
+Primary results: original GLIM,original Kimera ROS odometry,concurrent fusion
+ONLINE OFF/ON ATE,1s translation/rotation RPE,path lengths,coverage. Separate
+DELAYED fixed-lag-finalized fusion,not online/full-history. Existing shared-CPT7
+IE-TC reference (not independent prismGT),rigid no-scale alignment/prism lever
+arm,gap-aware common masks. Preserve source mean/covariance/revision logs,
+timestamps and availability,full payload conservation,expiry/EOF accounting,
+runtime and launch identities. No nonlinear stationarity certification.
+
+H=/home/yeranis/repos/gnssFGO/experiments/spx3_full_cpk25_20261021
+P=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_full_cpk25_20261021/prepared
+V=/home/yeranis/results/gnssfgo_spx3_full_cpk25_20261021

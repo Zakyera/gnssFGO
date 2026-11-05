@@ -1,0 +1,121 @@
+CP-V70 -- EIG-2 HESAI: TEMPORARY REMOVAL VS RETENTION,60s EACH
+2026-10-31. Completed bounded pair; diagnostic hypothesis supported.
+
+OUTCOME
+The existing retention mode works with the privately tested corrected backend.
+With the same292 incoming beliefs at the same backend updates, retaining their
+information through marginalization substantially reduces first-publication
+zigzag, improves EVO ATE/RPE, and brings estimated path close to the reference.
+This is sustained60s evidence, not stitched one-step counterfactuals. Temporary
+factor removal is a substantial contributor HERE, not necessarily the only
+cause of every irregularity or a certified full-mission/live feedback fix.
+
+TEST IDENTITY
+Both arms consume CBS-ON beliefs: REMOVE is NOT CBS-OFF. Kimera only, original
+EIG-2 Hesai quiet start5.7s,60sensor seconds each,0.20x,25s drain, front Alphasense
+stereo/shared CPT7,25states, same native factors/noise/priors. No GLIM or fusion
+process and no returned-belief consumer. Post-aligned CP66 ON payloads frozen
+once in CP69; source feedback history is held fixed, not independent input.
+Private CP69 retained-factor compatibility reused unchanged. Existing
+active_window_temporary admission, FL4M_RETIREMENT=remove/retain; no general
+persistent-mode substitution. K9=1, CP40=1, FL4Q=0, CP38=0, ordinary+one refresh,
+immutable original prior functions, native smart factors, same guard bounds.
+No covariance/weights/model/calibration/default changes or live promotion.
+
+DELIVERY REPAIR AND VALIDATION
+New opt-in gate holds only already-arrived callback messages until their
+recorded backend-update ID; it reads NO means/covariances from its schedule.
+Missing/late/duplicate/unknown inputs fail closed. All292 wire payloads, order,
+accepted sender/receiver bindings and update IDs match in both arms; physical
+keyframe and endpoint timestamps also exact. Covariance entries unchanged;
+mean Expmap/Logmap roundtrip checked <=1e-12. Both produced298 poses on identical
+timestamps, with exact first30 logged pose rows before retirement.
+In BOTH arms sender405->407 was observed at206 and held to207; the next belief
+joined at207, reproducing the original order. No future message was synthesized.
+All268 retained absorption boundaries match actual retired-factor counts.
+No capture retries, runtime rollback/recovery or failed gates in CP70.
+CP69 failed preflight and failed timing control remain intact and FAILED.
+
+Release + focused ASan/UBSan delivery fixtures passed, including real292-row
+schedule/payload conservation and late/missing/duplicate/unknown/source rejection.
+CP69 native compatibility suite unchanged and passes: repeated absorption,
+original-prior functions, native smart identity, slot/residual guards, rollback;
+remove fixture state/cache/tree output byte-identical to CP66. Nine synthetic
+Schur boundaries <=1.34e-16 relative, continuity <=1.75e-18, prior function error0.
+Vendor DSOs not sanitizer-instrumented. These are not stationarity certificates.
+New private backend SHA256:
+6e620d0f24aed055ee8f9f2f638af1b59881ff09e23ebe561614162a93d634ce
+
+METHOD1 / EVO RESULTS
+First published absolute backend states, not native ROS incremental path,
+revised/finalized output or post-smoothed visualization. Same physical prism
+point transform on both arms/reference. Reference is IE-TC sharing CPT7, NOT
+independent prism ground truth. EVO1.36.3 only: ATE SE3/no scale; RPE consecutive
+reference-selected distance0.5m pairs. EVO CLI/API errors exactly equal;
+TUM roundtrip max1.55e-15. All results/ZIPs/commands/masks retained.
+
+FULL SAVED -- same298 native timestamps,59.599471s span, no internal gaps
+                 REMOVE       RETAIN       reduction
+ATE RMSE m       0.097695     0.062660       35.86%
+Translation RPE  0.111920     0.033203       70.33%   (m;59 matched pairs)
+Rotation RPE     2.403280     0.854870       64.43%   (degrees)
+Estimated path 41.727794    34.823199                (metres)
+Reference path 34.462534m on these timestamps. Path excess21.08% ->1.05%.
+First/last output0.199946383s /59.799417809s relative to selected capture start.
+Paths are estimated polylines, NOT a claim of physical distance flown.
+
+COMMON100ms MASK --596 queries,59.5s/60s (99.167%), zero interior exclusions
+                 REMOVE       RETAIN       reduction
+ATE RMSE m       0.088985     0.062449       29.82%
+Translation RPE  0.083220     0.030854       62.92%   (m;63 matched pairs)
+Rotation RPE     1.421097     1.064247       25.11%   (degrees)
+Estimated path 39.406009    34.554530                (metres)
+Reference path34.756967m. Both reported conventions favor retention. Differences
+between tables come from resampling and reference-distance pair selection;
+do not mix their scores, path lengths or reference lengths.
+
+REVISION MECHANISM -- NOT AN ATE/RPE METRIC
+40..60s,99 comparable previous-state revisions:
+                       REMOVE        RETAIN
+Median revision m      0.077381      0.011378
+95th percentile m      0.285475      0.037104   (87.00% smaller)
+Maximum revision m     0.639667      0.113423
+Mean native movement m 0.092180      0.091968
+Thus estimated within-update movement is almost unchanged, while movement of
+the previously published point is much smaller. This supports the proposed
+loss-of-old-information mechanism, rather than merely a different plot style.
+Whole interval revision p95 .178221 -> .033301m, max .639667 -> .113423m;
+296 paired steps, one missing revision decomposition at keyframe4 in BOTH arms.
+That diagnostic omission does NOT omit a pose from ATE/path evaluation.
+Native incremental-vs-within-update geometry agrees <=1.48e-11m/3.52e-11rad.
+REMOVE's logged xyz positions reproduce the original CP66 ON positions exactly;
+quaternion/log fields differ at <=~1e-6 rounding, not byte-exact whole outputs.
+
+WHAT HAS NOT BEEN SOLVED
+Native IMU cost does not uniformly improve: median837.77 ->882.36 and
+p955039.42 ->5210.44, with maximum5656.12 ->5739.17. Total graph objectives
+are not directly comparable after retaining different marginal information.
+Within-update cost decreases in both arms are NOT nonlinear stationarity.
+Optimize timing median77.18 ->71.30ms, p9598.01 ->89.90ms; descriptive only,
+not1x throughput certification. All source publication/revision logs retained.
+
+CP67's live bidirectional LOCAL provenance gate remains FAILED: absorbed peer
+information lives in a mixed marginal prior, even when explicit peer factors
+are excluded from outgoing covariance queries. This conditional one-way test
+does not certify returning these beliefs safely to GLIM. Do not promote retain
+to live bidirectional/default settings on this result alone.
+
+RECOMMENDATION
+Treat the retirement hypothesis as strongly supported for this EIG-2 window.
+Stop changing covariance weights or inventing additional retention modes for
+this question. The next design decision is preserving the demonstrated stable
+MAIN history without exporting absorbed peer information as native LOCAL
+information. That requires a separately authorized provenance-safe design/test;
+no such follow-up or full mission has been launched here.
+
+PRESERVATION
+Runtime controller verified8185 protected paths unchanged and both originally
+stopped containers restored after owned jobs exited. Fresh final all-artifact
+and four-sequence Hesai667 receipts are in verification.json/complete.json.
+No production edits, deletion, push or overwritten historical experiment.
+See RESULTS_REPORT.txt,results.json,report_verification.json and evaluation/.

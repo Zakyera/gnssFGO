@@ -1,0 +1,54 @@
+Selected receiver policy — 2026-10-21
+===================================
+User decision after CP-K21: keep the existing windows/model; ignore revisions
+from GLIM or Kimera for factors whose required history has expired and proceed.
+This selects the already implemented CP-K19 seal_at_absorption receiver policy
+for the next matched full-system comparison, equally in CBS-OFF and CBS-ON.
+
+Scope: downstream gnssFGO source-factor revisions, not source-to-source CBS.
+Classic active_window_temporary GLIM<->Kimera exchange stays unchanged.
+Keep Kimera25keyframes, GLIM5s, receiver7s, independent100ms supports, WNOA,
+no central IMU/GNSS, current Qc/priors/full LOCAL covariances/Gaussian scales1.
+Do not enlarge either window or retune anything as part of this decision.
+
+Rule
+----
+1. A valid revision to an active stable ID replaces its preceding factor,
+   including the revised mean and full covariance, as before.
+2. When a factor is absorbed during marginalization, seal its last accepted
+   version. Its information stays in the resulting marginalization prior.
+3. Later valid revisions to that known absorbed ID are recorded as expired
+   and ignored by the solver. Continue processing; do not recreate states,
+   reinsert a factor, refresh state timestamps or modify the prior.
+4. Apply the same rule to all source IDs, including GLIM and Kimera. Report
+   expired counts separately from accepted/replaced versions; retain payloads.
+5. Malformed/conflicting messages and unknown first arrivals on retired
+   supports remain errors. This decision concerns REVISIONS of known factors,
+   not silently ignoring all invalid inputs or weakening unrelated guards.
+
+Implementation / status
+-----------------------
+Existing candidate: experiments/receiver_finalization_cpk19_20261021/Receiver.h
+Receiver::expireSealed, used before retired-support classification in accept.
+Selector: --absorbed-revision-policy seal_at_absorption.
+Pinned binary: /home/yeranis/results/gnssfgo_receiver_finalization_cpk19_20261021/live
+SHA256:4b08a7f5ba97f5e4ec22959df23367df79eebf5d644dc19d939747dcd4566d6e.
+Prepared CP-K20 receiver_cpk19.sh already selects it for BOTH modes.
+No new solver code, rebuild, covariance change or installed default promotion
+was needed to record this decision. Base executable default remains strict;
+future intended launches must explicitly select the agreed policy.
+Focused tests and retained CP-K18 failure-prefix replay passed previously;
+full live matched OFF/ON validation is still pending. No lossless preservation
+claim: late revisions are intentionally forgone. No accuracy claim follows.
+
+Coverage is distinct from expiry
+-------------------------------
+CP-K21 proved the302--307s pose gap is consistent with normal low-disparity
+keyframe selection while images continue processing. Full capture checks and
+evaluation must distinguish native sparse keyframes from input loss or stalls,
+retain all actual poses, and report startup/internal/tail gaps explicitly.
+Do not interpolate fictitious poses through long gaps or call sparse output
+dense coverage. The prepared CP-K20 strict1s/contiguous-mask checks still need
+an explicit keyframe-aware reporting update before launch; they are not fixed
+merely by enabling the expired-revision selector. No new run started in this
+policy-recording step; preserve prepared artifacts and previous results.

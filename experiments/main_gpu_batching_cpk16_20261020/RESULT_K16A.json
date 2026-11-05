@@ -1,0 +1,168 @@
+{
+  "passed": true,
+  "protected_files": 2026,
+  "changed": [],
+  "input_changes": [],
+  "source_repository_changes": [],
+  "factor_metrics": {
+    "cpu": {
+      "comparisons": 3,
+      "max_abs": 0.0
+    },
+    "gaussian": {
+      "comparisons": 84,
+      "max_abs": 0.0
+    },
+    "joint_covariance": {
+      "comparisons": 84,
+      "max_abs": 0.0
+    },
+    "relative_covariance": {
+      "comparisons": 84,
+      "max_abs": 0.0
+    },
+    "residual": {
+      "comparisons": 84,
+      "max_abs": 0.0
+    },
+    "disabled": {
+      "comparisons": 3,
+      "max_abs": 0.0
+    },
+    "duplicate": {
+      "comparisons": 3,
+      "max_abs": 0.0
+    },
+    "pending": {
+      "comparisons": 3,
+      "max_abs": 0.0
+    },
+    "after_exception": {
+      "comparisons": 3,
+      "max_abs": 0.0
+    },
+    "unknown_gpu": {
+      "comparisons": 3,
+      "max_abs": 0.0
+    }
+  },
+  "library_sha256": "6f71292d29d974a0555abd9fda6b2370fdab81ca634a4e1343c216d2a762d2ca",
+  "receipts": {
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/release_1/checks_1/passed.json": {
+      "passed": true,
+      "tests": {
+        "main": {
+          "returncode": 0,
+          "command": [
+            "/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/release_1/test_main_batch",
+            "--gtest_filter=MainBatch*",
+            "--gtest_output=xml:/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/release_1/checks_1/main.xml"
+          ],
+          "gtest": {
+            "tests": "6",
+            "failures": "0",
+            "disabled": "0",
+            "errors": "0",
+            "time": "0.646",
+            "timestamp": "2026-10-20T13:37:40",
+            "name": "AllTests"
+          }
+        },
+        "original": {
+          "returncode": 0,
+          "command": [
+            "/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/release_1/test_main_batch",
+            "--gtest_filter=LocalLinearizer*",
+            "--gtest_output=xml:/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/release_1/checks_1/original.xml"
+          ],
+          "gtest": {
+            "tests": "15",
+            "failures": "0",
+            "disabled": "1",
+            "errors": "0",
+            "time": "0.52",
+            "timestamp": "2026-10-20T13:37:41",
+            "name": "AllTests"
+          }
+        },
+        "repeat": {
+          "returncode": 0,
+          "command": [
+            "/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/release_1/test_main_batch",
+            "--gtest_filter=MainBatch*",
+            "--gtest_output=xml:/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/release_1/checks_1/repeat.xml"
+          ],
+          "gtest": {
+            "tests": "6",
+            "failures": "0",
+            "disabled": "0",
+            "errors": "0",
+            "time": "0.68",
+            "timestamp": "2026-10-20T13:37:41",
+            "name": "AllTests"
+          }
+        }
+      },
+      "scope": "K16a only"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/ubsan_1/passed.json": {
+      "passed": true,
+      "variant": "ubsan",
+      "tests": {
+        "main": {
+          "tests": "6",
+          "failures": "0",
+          "disabled": "0",
+          "errors": "0",
+          "time": "0.681",
+          "timestamp": "2026-10-20T13:39:06",
+          "name": "AllTests"
+        },
+        "original": {
+          "tests": "15",
+          "failures": "0",
+          "disabled": "1",
+          "errors": "0",
+          "time": "0.512",
+          "timestamp": "2026-10-20T13:39:07",
+          "name": "AllTests"
+        }
+      },
+      "library_sha256": "623f952dc7cb90bf987977c3cba9d8be144811046a5af5d84ea207a518c09e0a",
+      "test_sha256": "291ccf436398feb4e570e7e28fb1e8b8024557ca1acf476ee9db8b62247a572f",
+      "scope": "K16a factor/dispatch only; no MAIN solver lifecycle, timing or dataset",
+      "sanitizer_scope": "changed host objects/tests only; reused dependencies/CUDA kernels not instrumented"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/asan_1/passed.json": {
+      "passed": true,
+      "variant": "asan",
+      "tests": {
+        "cpu": {
+          "tests": "7",
+          "failures": "0",
+          "disabled": "0",
+          "errors": "0",
+          "time": "0.016",
+          "timestamp": "2026-10-20T13:41:25",
+          "name": "AllTests"
+        }
+      },
+      "library_sha256": "f3bb0fbacd36b62a81db4ec827edbdbe4e4c2c3f02ce6c8af75cf744e7195573",
+      "test_sha256": "43928a56b2839dbe4571c4357aa74fb9b03ffc6e695fb9c4908bc3026ca0f7ab",
+      "scope": "K16a factor/dispatch only; no MAIN solver lifecycle, timing or dataset",
+      "sanitizer_scope": "changed host objects/tests only; reused dependencies/CUDA kernels not instrumented"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/abi_load.json": {
+      "command": [
+        "/usr/bin/python3",
+        "-c",
+        "\nimport ctypes,json\nfrom pathlib import Path\nctypes.CDLL('/workspace/cbs_gtsam4.3/runs/local_revision_covariance_cpi1_20261019/libglim_ros.so',mode=ctypes.RTLD_GLOBAL)\npaths=sorted(set(l.split()[-1] for l in Path('/proc/self/maps').read_text().splitlines()\n                 if 'libglim_ros.so' in l or 'libgtsam_points.so' in l or 'libgtsam_points_cuda.so' in l))\nprint(json.dumps(paths))\n"
+      ],
+      "returncode": 0,
+      "stdout": "[\"/workspace/cbs_gtsam4.3/runs/e1b_local_profile_20261012/release_2/libgtsam_points_cuda.so.1.2.1\", \"/workspace/cbs_gtsam4.3/runs/local_revision_covariance_cpi1_20261019/libglim_ros.so\", \"/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/release_1/libgtsam_points.so.1.2.1\"]\n",
+      "stderr": "",
+      "passed": true
+    }
+  },
+  "scope": "K16a factor/cache/dispatch only; K16b actual MAIN lifecycle NOT RUN; no timing/dataset"
+}

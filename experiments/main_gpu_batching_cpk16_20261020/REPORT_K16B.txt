@@ -1,0 +1,161 @@
+CP-K16b — actual MAIN lifecycle / shared-LOCAL correctness
+2026-10-20. CORRECTNESS GATE PASSED. No timing or dataset run.
+
+BOTTOM LINE
+===========
+The unchanged K16a batching candidate now passes bounded tests through actual
+MAIN ISAM2Ext and the shared-native fixed-lag wrapper, not just standalone
+factor evaluation. It preserves the tested estimates, Gaussian equations,
+marginal priors, native ownership, first/revised LOCAL covariance and GPU state.
+
+All recorded numerical differences against the original CP-I3 library were
+ZERO, including the candidate-disabled control. This is evidence for the
+tested integration/lifecycle, not a universal mathematical proof or a live
+GrandTour speed/accuracy result.
+
+The candidate still evaluates all requested LiDAR derivatives. It changes
+their scheduling to batching; it does not remove factors or skip information.
+In the attached wrapper,564 derivative requests changed from564 synchronous
+factor evaluations to564 prepared-cache consumptions, with identical outputs.
+That is activation evidence, NOT a measured speedup.
+
+FROZEN LIBRARIES
+===============
+Workspace W = /home/yeranis/repos/V4RL/cbs_gtsam4.3
+Test root R = W/runs/main_gpu_batching_cpk16_20261020
+Authoring/report H = /home/yeranis/repos/gnssFGO/experiments/main_gpu_batching_cpk16_20261020
+
+Reference: W/runs/native_covariance_cache_cpi3_20261019/release_v2/
+  libgtsam_points.so.1.2.1
+  SHA256 3f23e6115e34acc5a2f2b965b15bd4c651897c889a6c38a0a52cdb3855c0ceb7
+Candidate: R/release_1/libgtsam_points.so.1.2.1
+  SHA256 6f71292d29d974a0555abd9fda6b2370fdab81ca634a4e1343c216d2a762d2ca
+Host UBSan: existing K16a R/ubsan_1 library, not a new estimator build.
+
+K16b built only diagnostic executables. No candidate/provider/bridge/CUDA DSO
+was rebuilt or changed. Per-executable ldd receipts verify reference/candidate
+selection. The K16a ABI receipt establishes loading with the unchanged actual
+CP-I1 GLIM bridge; that receipt is reused, not claimed as a new ROS node test.
+There is no global GPU-hook registration. Independent unattached-wrapper
+control remained synchronous even while the environment selector was enabled.
+
+WHAT WAS EXERCISED
+==================
+1. Actual outer IncrementalFixedLagSmootherExtWithFallback:
+   24 synthetic arrivals;77 update calls;19 retirement updates;37 observed
+   previously removed-slot reuse occurrences. Pose, velocity and bias states;
+   native ImuFactor, native GPU VGICP and CPU constraints; explicit native
+   admission before external Pose3 factors are appended. Five peer replacement
+   updates plus temporary external removal before endpoint retirement.
+   No unexpected fallback, invalid provider, native conservation failure or
+   provider reset.
+
+   A .45s toy lag/24 arrivals makes repeated retirement observable cheaply.
+   It is NOT a change to GLIM's production lag, the gnssFGO receiver or source
+   parameters. Native IMU in this GLIM unit fixture does NOT enable central
+   IMU in gnssFGO.
+
+2. Actual direct ISAM2Ext:
+   New-factor path, full graph reorder/relinearization, affected-factor path,
+   and explicit leaf retirement. Site counters in the enabled history:
+   new25, full23, affected2. A separate three-pose partial-clique check actually
+   reaches the marginalization linearization dispatcher (site count1).
+   This avoids mistaking whole-clique cached retirement for that code path.
+
+3. Explicit mixed-cache incremental path:
+   Same fine-grained ISAM2UpdateParams requests in reference and candidate,
+   forcing incremental rather than full graph relinearization:
+     selected cached GPU factors reused:1
+     selected fresh GPU factors:4, all four consumed as prepared results.
+   A following cached-only incremental update reused3 selected GPU factors
+   and performed ZERO fresh GPU linearizations.
+   Pointer-reuse decisions, actual Gaussian ordering/slots and outputs match.
+   The requests are diagnostic path-coverage controls, not production changes.
+
+4. Actual CP-I1/CP-I3 shared-native covariance helpers:
+   278 relative-pair samples (23 first samples,255 later versions).
+   For every sample publicationCovariance and native_local revisionCovariance
+   agree exactly; complete12x12 joint and6x6 relative covariance and corrected
+   MAIN relative means match the original library.
+   Native ID/version/slot snapshots and Gaussian history match; explicit CBS
+   factors are not admitted to the native provider.
+   No MAIN covariance fallback and no GPU linearize/error call during LOCAL
+   queries. No second nonlinear LOCAL optimizer was introduced.
+   This tests the helper path, not ROS publication/arrival timing.
+   It does not assert statistical independence of shared-IMU estimators or
+   calibrated uncertainty merely because explicit CBS factors are excluded.
+
+RESULTS AND EVIDENCE
+====================
+Main/lifecycle gate:
+  R/k16b_build_5/{commands.json,reference,candidate,ubsan,*_ldd.txt}
+  R/k16b_checks_4/{passed.json,*_comparison.json,*.log,*.txt,frozen_geometry.bin}
+Mixed-cache supplement:
+  R/k16b_build_6/{commands.json,test_incremental.cpp,...}
+  R/k16b_checks_5/{passed.json,*_comparison.json,*.log,*.txt,frozen_geometry.bin}
+
+Both suites ran:
+  original library;
+  candidate explicitly disabled;
+  candidate enabled;
+  existing host-UBSan candidate enabled.
+Each ran in an independent process with exactly the same saved device geometry
+within its comparison. Frozen geometry hashes are recorded per process.
+No mutable GPU factors or solver instances are shared across comparisons.
+
+Per reference-versus-candidate comparison, combined evidence contains:
+  31,086 records;
+  1,429,185 numerical matrix/state/covariance entries;
+  1,105 exact GPU input/inlier/cache-state snapshots.
+
+Maximum observed differences:
+  pose translation / velocity / bias:0
+  orientation:0rad
+  Gaussian matrices and marginal priors:0
+  full joint / relative LOCAL covariance:0
+  corrected MAIN relative means:0
+Keys, slots, native IDs/versions, selected-variable decisions, retirement and
+cache-reuse decisions match exactly. Predeclared tolerances were not relaxed.
+
+The enabled wrapper has564 prepared hits /0 synchronous factor calls versus
+the original564 synchronous calls, with the SAME564 derivative requests.
+The independent unattached owner retains its1 synchronous call /0 hits.
+No runtime-duration statistics are used as a performance benchmark.
+
+Host UBSan reported no finding in these cases. Changed host components and
+test helpers are instrumented; reused provider/vendor objects and GPU kernels
+are not all instrumented. No CUDA-device sanitizer claim. CPU-ASan evidence
+belongs to K16a, not a new K16b GPU sanitizer run.
+
+PRE-VALIDATION HARNESS CORRECTIONS — EVIDENCE PRESERVED
+======================================================
+There were three invalid harness attempts before the completed comparison:
+ - checks_1: reference-only callback looked up pre-retirement factor identity
+   using a post-retirement slot. Corrected to saved admission identity and
+   surviving-slot verification.
+ - checks_2: independently reinserting identical CPU points produced different
+   GPU voxel layouts/reductions. Disabled candidate was rejected before the
+   enabled case ran. Corrected to one exact frozen device-geometry image.
+ - checks_3: numerical outputs/decisions matched exactly, but byte comparison
+   caught an omitted voxel-intensity buffer in that new diagnostic serializer.
+   Completed the image, rather than ignoring the difference.
+Build4 also stopped at a diagnostic FastMap initializer unsupported by this
+GTSAM version; corrected its construction. All original logs/sources remain.
+No estimator/candidate-library repair or tolerance change resulted from these
+harness corrections. No enabled-candidate numerical failure was observed.
+
+PRESERVATION / LIMITS / NEXT STEP
+================================
+INTEGRITY_K16B_FINAL.json verifies2026 protected files, pinned build inputs,
+candidate DSO and five source HEAD/status/diff fingerprints unchanged.
+Both pre-existing containers are stopped after owned jobs exited.
+No source/receiver experiment, settings/model/covariance change, tuning,
+default promotion, commit/push or heartbeat reactivation.
+
+This is sufficient to move to K16c's identical-workload timing gate IF the
+user authorizes it. It is not permission to run a dataset or full comparison.
+Only after timing should one bounded real-source acceptance check be proposed.
+The separate Kimera physical revision-history versus7s receiver-retention
+mismatch is still unresolved; GPU batching does not fix that contract.
+
+CP_K16B_MAIN_LIFECYCLE_LOCAL_PARITY_PASSED

@@ -1,0 +1,224 @@
+{
+  "scope": "Read-only source/history reconciliation; static assertions are not native runtime tests",
+  "passed": true,
+  "checks": [
+    {
+      "name": "FL4m retirement selector/audit header is byte-identical in CP66",
+      "passed": true
+    },
+    {
+      "name": "CP66 retains original FL4m scheduling branch",
+      "passed": true
+    },
+    {
+      "name": "CP-K9 selector requires remove",
+      "passed": true
+    },
+    {
+      "name": "CP-K9 core requires active-window mode",
+      "passed": true
+    },
+    {
+      "name": "CP-K9 wrapper requires retiring slots scheduled for deletion",
+      "passed": true
+    },
+    {
+      "name": "CP40 requires CP-K9 enabled",
+      "passed": true
+    },
+    {
+      "name": "CP40 requires retiring factor absent before marginalization",
+      "passed": true
+    },
+    {
+      "name": "CP40 calls base ISAM2 rather than processing beliefs twice",
+      "passed": true
+    },
+    {
+      "name": "Existing tracking commit precedes marginalization",
+      "passed": true
+    },
+    {
+      "name": "Persistent selector and cross-update match policy exist",
+      "passed": true
+    },
+    {
+      "name": "Active-window rejects already-active receiver edge",
+      "passed": true
+    },
+    {
+      "name": "Persistent pending-alternative replacement exists",
+      "passed": true
+    },
+    {
+      "name": "Relative export selects MAIN smoother LOCAL extraction",
+      "passed": true
+    },
+    {
+      "name": "LOCAL filter removes explicit tracked CBS/anchor factors",
+      "passed": true
+    },
+    {
+      "name": "CP-I2 explicitly excludes certification of retain/persistent",
+      "passed": true
+    },
+    {
+      "name": "Current CP66 private backend matches saved capture identity",
+      "passed": true
+    },
+    {
+      "name": "CP66 post-alignment log contains bounded-replay candidate inputs",
+      "passed": true
+    }
+  ],
+  "cp66_input_inventory": {
+    "aligned_rows": 292,
+    "unique_updates": 285,
+    "unique_sender_edges": 292,
+    "unique_receiver_edges": 292,
+    "first_update": 6,
+    "last_update": 297,
+    "wire_bag_present_and_hashed": true,
+    "wire_to_alignment_join_performed": false,
+    "frozen_replay_inputs_created": false,
+    "limitation": "Inventory only; arrival causality, exact payload joins and actual accepted-factor bindings still need validation."
+  },
+  "files": {
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/fixed_lag_retirement_fl4m_20261015/RetirementAudit.h": {
+      "bytes": 2192,
+      "sha256": "a838ccd4af220f4290fa56227c5e89de13cd4e8ffc5e184cce38830fc6175de4"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_retirement_capture_cpv66_20261031/RetirementAudit.h": {
+      "bytes": 2192,
+      "sha256": "a838ccd4af220f4290fa56227c5e89de13cd4e8ffc5e184cce38830fc6175de4"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/fixed_lag_retirement_fl4m_20261015/include/cbs/bpsam/incremental_fixed_lag_bpsam_smoother.h": {
+      "bytes": 62122,
+      "sha256": "c80a100decdb01c5ea403287516ce23f20bc72c5ad5e85edf1263d1986ecfef5"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_retirement_capture_cpv66_20261031/include/cbs/bpsam/incremental_fixed_lag_bpsam_smoother.h": {
+      "bytes": 65037,
+      "sha256": "a5adbea34861ba413c8d86fca45b97b1c9366cdebc67d15a9523ceaf6e64063e"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_retirement_capture_cpv66_20261031/NativePriorRefresh.h": {
+      "bytes": 3090,
+      "sha256": "87c1e361a6299e91d7b5f45627bef249110ae1d95af198f7597cc6088e5b37f7"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_retirement_capture_cpv66_20261031/include/cbs/bpsam/bpsam.h": {
+      "bytes": 31548,
+      "sha256": "f255d5c4306e4e47d1ef8a4deaf4935cdd2c9ae0e6d5aa4048badcbd68f1da55"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_retirement_capture_cpv66_20261031/OnRefresh.h": {
+      "bytes": 400,
+      "sha256": "23722f4fd521a3c9e70089fe3d567b151bbff6bd43e9f27c00f98ac7af7ddd6a"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_retirement_capture_cpv66_20261031/BpsamOnRefresh.inc": {
+      "bytes": 6600,
+      "sha256": "98b5d77564b6c832053d1f51d98979e2d1c4409c882f69806a65d90c54e56dbc"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_retirement_capture_cpv66_20261031/VioBackend.cpp": {
+      "bytes": 292865,
+      "sha256": "de1185fe77599c18cba49ea0768c6a2986d6909c19cc644b2b67a00b0da144aa"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/cbs/src/bpsam/bpsam.cpp": {
+      "bytes": 199705,
+      "sha256": "0bd469869f342ec4fc5f4db0d863196746fb4e17a1e0126a6b88bbe171bdb3b7"
+    },
+    "/home/yeranis/repos/gnssFGO/experiments/kimera_native_prior_cpi2_20261019/REPORT.txt": {
+      "bytes": 3490,
+      "sha256": "1403d0233e332e18afb9c08e8607b68346214f7b1ee94e49ef439a58097a98f6"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/fixed_lag_retirement_fl4m_20261015/test.cpp": {
+      "bytes": 2727,
+      "sha256": "4fda38c754b597bf65669ab88ef949c16511d1b95fce1088f9e0388f73f16293"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/fixed_lag_retirement_fl4m_20261015/validate.py": {
+      "bytes": 3337,
+      "sha256": "b2a7a25cf79f176ca12d70c7a60655546f2642d7e8ba9806e2284fc44db3f956"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/fixed_lag_retirement_fl4m_20261015/wrapper_final.diff": {
+      "bytes": 3328,
+      "sha256": "af99332e022362661cd0d3693aeedf94ba5ae60ecf17053586f482a76dafd417"
+    },
+    "/home/yeranis/repos/gnssFGO/experiments/fixed_lag_retirement_fl4m_20261015/prepare_inputs.py": {
+      "bytes": 2517,
+      "sha256": "dbe761929145b605b87a37edd7593b2c7c7b10dcdc6068c7e0f6135237811363"
+    },
+    "/home/yeranis/repos/gnssFGO/experiments/fixed_lag_retirement_fl4m_20261015/run_case.py": {
+      "bytes": 6416,
+      "sha256": "c00e9263e04f90c2afe8c3484d68248519a166305aecd3a071db1c54eab3086d"
+    },
+    "/home/yeranis/repos/gnssFGO/experiments/fixed_lag_retirement_fl4m_20261015/REPORT.txt": {
+      "bytes": 9423,
+      "sha256": "ada70479dc28615884709b5bf730906c29eb2abd01e476fb9ca6e6ad03857696"
+    },
+    "/home/yeranis/repos/gnssFGO/experiments/kimera_incremental_prior_cpk9_20261019/test.cpp": {
+      "bytes": 13466,
+      "sha256": "9031843ffad3fac3adc02ce94b967b0a098b273e5cb6d04ddce8379c940b97b3"
+    },
+    "/home/yeranis/repos/gnssFGO/experiments/kimera_incremental_prior_cpk9_20261019/REPORT.txt": {
+      "bytes": 7672,
+      "sha256": "42aa5c683ef31388d9b14b031cdcdff6bddef113d3dc99de51bc016b9fcaeb06"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/kimera_on_incremental_refresh_cpv40_20261029/test.cpp": {
+      "bytes": 9629,
+      "sha256": "487638ccf1a279d6460ecb3ae06e02bb1bdb675a46fbb6625b1933b3d8aa3ef6"
+    },
+    "/home/yeranis/repos/gnssFGO/experiments/kimera_on_incremental_refresh_cpv40_20261029/REPORT.txt": {
+      "bytes": 2272,
+      "sha256": "74bf951b3ac1153f210fa28e1565186a68e87389f676a821ea8fb564c8eaa7f4"
+    },
+    "/home/yeranis/repos/gnssFGO/experiments/eig2_retirement_capture_cpv66_20261031/REPORT.txt": {
+      "bytes": 7726,
+      "sha256": "e93cbf08f58fabf8c8dfcdc88369c6e80fc46cbf875c6308e52dba400bd31ded"
+    },
+    "/home/yeranis/repos/gnssFGO/experiments/eig2_retirement_capture_cpv66_20261031/complete.json": {
+      "bytes": 1141,
+      "sha256": "53bf803043e5cc504df983f7d230bf5327c726fc933c2c39f0de325c438d9a5d"
+    },
+    "/home/yeranis/repos/gnssFGO/experiments/eig2_marginal_handover_cpv67_20261031/REPORT.txt": {
+      "bytes": 7679,
+      "sha256": "45b7e8aabfb4e1851f5a12471344e35fc2a26b97e8da8835fbed86903521bce9"
+    },
+    "/home/yeranis/repos/gnssFGO/experiments/eig2_marginal_handover_cpv67_20261031/complete.json": {
+      "bytes": 1020,
+      "sha256": "b02174a48a68d26785077f7ff713aad02d8ea80a4725419447e91b016e32bc8c"
+    },
+    "/home/yeranis/repos/gnssFGO/CLASSIC_CBS_RESTORATION_AND_REVISION_COMPARISON.md": {
+      "bytes": 16648,
+      "sha256": "852556ddc46326d366483655917f3f39ca91a4833bf8b91619920298587dd504"
+    },
+    "/home/yeranis/repos/gnssFGO/GRANDTOUR_CBS_HISTORICAL_SETTINGS_AUDIT.md": {
+      "bytes": 25513,
+      "sha256": "6bd4228b69b2ff69ed65e1dd4fc589f88481fc24a4bd11f82c3d2aac68f37df1"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/cbsms/docs/CLASSIC_CBS_ON_RUNBOOK_20260925.md": {
+      "bytes": 19368,
+      "sha256": "2c418761ed30019f9d1f4a82c0707398311d0a08341c2741a5d013476261c287"
+    },
+    "/home/yeranis/repos/gnssFGO/experiments/eig2_retirement_capture_cpv66_20261031/prepared.json": {
+      "bytes": 1222,
+      "sha256": "23b09df6a31fd05eae0aa2192ad97980f73ece33ced969dff0090a8244b36719"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_retirement_capture_cpv66_20261031/prepared/private_build/libkimera_vio.so": {
+      "bytes": 15432896,
+      "sha256": "526952811bbda6dbba5dcaff183c7264c8fe7a38baed95f2b3a7e6dec5588015"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_retirement_capture_cpv66_20261031/prepared/private_build/libcbs.so": {
+      "bytes": 1514640,
+      "sha256": "82f85c2a307a9d9a849b2b8f09bb5c1e026ad80a4ef0a633c903d30cca712476"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_retirement_capture_cpv66_20261031/prepared/full_on_source/estimators.log": {
+      "bytes": 17445694,
+      "sha256": "fdbc727ebd4a6ed56c565d444aeb2cb64ade34c5d21dd12f95b2f7302c33d77a"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_retirement_capture_cpv66_20261031/prepared/full_on_source/recordings/cbs.bag": {
+      "bytes": 1128988,
+      "sha256": "100858c187a0babdca81bfb99a3b4a6ac98311f06c488d257b8faa280e1cc49e"
+    }
+  },
+  "new_runtime_compatibility_tested": false,
+  "new_source_runs": 0,
+  "estimator_builds": 0,
+  "production_changed": false
+}

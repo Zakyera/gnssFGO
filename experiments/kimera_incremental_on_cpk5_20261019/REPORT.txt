@@ -1,0 +1,137 @@
+CP-K5 — ordinary-incremental Kimera temporary-ON diagnostic
+2026-10-19. STOPPED AT THE PREDECLARED ROLLBACK GUARD; NOT A COMPLETED111s RUN.
+
+Outcome
+-------
+One authorized111s-bounded ETH1 Kimera-only playback at0.10x. The existing
+ordinary incremental backend (FL4Q_ENABLE=0, same as CP-K4b OFF) reached
+update495 and triggered active_window_rollback / staged_residual_regression.
+Last saved native timestamp1727775110.1548364, bag offset102.199440s;
+496 finite monotonic original ROS odometry outputs, first-to-last101.999441s.
+The controller stopped, as specified. No source retry, guard change, covariance
+tuning, new solver, GLIM process, fusion or full346s experiment followed.
+
+This separates two issues; it does not certify a repair:
+- CP-K4b ordinary OFF completed111s beyond the old FL4q OFF stop531.
+- Ordinary temporary-ON still encounters an existing CBS rollback. Disabling
+  FL4q alone is therefore insufficient to establish a healthy ON configuration.
+The negative result is specific to the frozen incoming GLIM stream below;
+it is not a claim that every native/classic Kimera run fails, nor a causal proof
+of a particular marginalization bug or erroneous covariance.
+
+Exact controlled setup and qualification
+---------------------------------------
+Same CP-K4b profile, nested launch and CP-K1 private Kimera/CBS DSOs. No build
+or estimator code edits. Actual flags equal OFF except output/flagfile paths;
+the ROS receive switch is enabled. FL4Q=0 in BOTH cases, FL4M_RETIREMENT=remove,
+native IMU path (KIMERA_IMU_SAMPLE_SUPPORT unset),25states,numOptimize1,
+front Alphasense stereo and CPT7. Gaussian scale1, schur_relative_between dense
+6x6, no health/robust weights,0.20s horizon,one pair/update,classic temporary
+CBS (not live_revision), native IMU mean alignment enabled, headless.
+
+Historical incoming messages were copied from
+W/runs/gnssfgo_fixed_lag_live120_on_fl4v_20261017/prepared/
+live120_on_source/recordings/cbs.bag, topic /kimera/cbs/odom_belief_in.
+W=/home/yeranis/repos/V4RL/cbs_gtsam4.3.
+Original serialized payloads and bag arrival timestamps preserved; raw sender
+means, not pre-aligned FL4m factors. Existing receiver alignment remained on.
+Source has1189revision-zero i->i+2 messages,1100scheduled in the requested111s.
+Original availability delay .101780--.218573s, no future physical endpoint.
+Original bag SHA256 ca99bef437712fb5cbb7255a1964ad552411fccff5e6e4a09dd44351d74e1876.
+Payload+record-time digest81d8b69c49f23d65800c6507064838183cc54cb1ba868e5f0d7d602f01b47bad.
+
+This is a CONDITIONAL ONE-WAY SAVED-INPUT diagnostic. The saved stream came
+from FL4v bidirectional ON with its historical Kimera backend. New Kimera did
+not influence the frozen GLIM sender; no fresh live bidirectional CBS happened.
+Historical peer first publications used the shared-native LOCAL provider;
+historical downstream MAIN revision exports were NOT consumed. Do not present
+this as a new CP-R6/all-LOCAL matched full-system run or current GLIM result.
+
+Exact failure evidence
+----------------------
+on_capture/kimera.log:139838 identifies update495, incoming source1011->1013
+bound to Kimera x493->x494. Physical receiver endpoints
+1727775109.754838482--1727775109.954837382; current update time
+1727775110.154836282. During the same update, x469->x470 removal is scheduled,
+49keys re-eliminated, force_relinearize/force_full_solve true,24CBS factors.
+
+Lines139856--139860:
+pre residual norm .14993184816036806
+post residual norm .5386485862834369
+allowed .5
+reason staged_residual_regression
+action rollback, drop newly staged factor, retry local update without it.
+The source's built-in transactional retry is preserved behavior, NOT an
+automatic experiment retry. The controller then stops on active_window_rollback.
+All five owned process groups exit0; Kimera is gone. This was not an OS/GPU
+crash or the FL4q no-decreasing-step exception. Zero FL4q calls/log entries.
+
+The existing code computes max(1.25*pre+.25,.5) in
+W/src/cbs/src/bpsam/bpsam.cpp:4590, then invokes rollback at4608.
+These are mixed relative-pose residual norms, not a covariance-normalized NIS
+or a standalone metre threshold. The logged translational components are
+.1497979218918288m before and .5386372170963165m after; rotation is much smaller.
+Do not relax this guard or infer that its rejection alone explains all drift.
+
+Earlier numerical warning
+-------------------------
+The observational post-update IMU-factor error was already growing dramatically:
+update28      271.334122
+update44      91672.094511
+update438     424123283.028805
+update463     2034294692.645745
+update494     12083171573.883106
+update495     3190006156.919335 (after built-in rollback/retry)
+OFF's maximum over its completed111s was377846.620770.
+128/496 observed total-cost increases; this observation is NOT a new stopping
+criterion, nonlinear stationarity result or a substitute for trajectory error.
+The inconsistency predates the final guard; absence of a crash was not health.
+First native output difference from OFF is update4, the first applied peer input.
+First retirement28;468total retirements by the stop. This establishes exposure
+and chronology, not proof that retirement alone causes the later instability.
+
+Payload/provenance checks
+-------------------------
+1013received messages are an exact ordered prefix of the1100scheduled inputs;
+remaining messages were not played because the controller stopped. No mutation,
+reordering or missing message within that captured prefix. New recorder clock
+vs scheduled timestamp difference ranges -1.036ms to+.045ms (ROS /clock
+sampling), median-.484ms; original playback record timestamps are unchanged.
+492logged alignment attempts match their raw source means to1.6653e-16 and
+their full dense covariances exactly (maximum absolute difference0).
+This is source-to-alignment-log equality, not proof that all attempted factors
+were retained after rollback. Existing mean-only covariance approximation is
+unchanged, not repaired or newly statistically validated in this diagnostic.
+
+No full-run accuracy claim
+-------------------------
+The complete-window validator/evaluator was prepared but NOT run because its
+completion gate failed. No111s OFF/ON ATE table is produced from this failed
+prefix; no11s prism substitution or claim of full ETH1 completion.
+Any later prefix-only scoring must be explicitly labeled as such. Planned
+evaluation remains original native ROS odometry vs shared-CPT7 IE-TC, existing
+CPT7-to-prism lever arm, SE3/no-scale ATE and1sRPE, not independent prism GT.
+
+Files and preservation
+----------------------
+H=/home/yeranis/repos/gnssFGO/experiments/kimera_incremental_on_cpk5_20261019
+R=W/runs/kimera_incremental_on_cpk5_20261019
+H:PROTOCOL.txt,prepare.py,extract_inputs.py,validate_score.py(unexecuted),
+inspect_failure.py,final_integrity.py,integrity.json,REPORT.txt.
+R:preparation.json,pre_capture_receipt.json,protected_before.json,
+input_provenance.json,raw_glim_inputs.bag,launches/profile,run_case.py;
+on_capture/{preflight.json,resolved_params.yaml,started.json,status.json,
+failed.txt,cleanup.json,outputs.bag,native.log,kimera.log,objective.csv,
+failure_evidence.json}. No complete marker/evaluation/validation success.
+
+Both previously stopped containers restored to stopped after owned jobs exit.
+No estimator code/build/tuning/default promotion, commit or push. Protected
+hashes and exact prepared inputs checked in integrity.json; HEAD remains
+668d4c788983722f4acad37d1495c15d03a27e18. Existing dirty work is preserved.
+
+Decision
+--------
+Do not launch the full matched experiment yet. The bounded ordinary-OFF
+success is genuine, but the temporary-ON integration still needs resolution.
+Keep the saved failing evidence; no new method, guard relaxation or another
+run is authorized by this report. STOPPED AS PLANNED ON FAILURE.

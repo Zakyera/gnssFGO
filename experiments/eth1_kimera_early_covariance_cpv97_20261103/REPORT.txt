@@ -1,0 +1,132 @@
+CP-V97 — EARLY KIMERA COVARIANCE DIFFERENCE, SAVED-DATA DIAGNOSIS
+2026-11-03. No new estimator run. Whole-run GLIM ATE cause remains open.
+
+Conclusion
+The large early difference is already present in Kimera's native LOCAL covariance,
+before Alpha->CPT7 conversion and insertion into GLIM. An independent saved-matrix
+calculation reproduces it. At the same event, Kimera's visual-factor population
+and effective visual information differ substantially. This is not evidence of
+an arbitrary insertion multiplier or an inversion failure. It also precedes the
+first marginalization, so absorbed peer information in a marginal prior cannot
+explain this INITIAL change. That does not exclude later persistent feedback.
+
+Scope and identifiers
+Old = CP91 attempt1, source-only CBS ON, full ETH1 split-IMU persistent.
+New = CP95 attempt3 full_on_source, with concurrent downstream fusion; authoritative
+completed report in continuation1. Settings/private binary parity is established
+by CP96. This comparison does not establish that adding fusion caused the change.
+Sequence time uses epoch1727775007855396309ns. Values below are covariance traces,
+not standard deviations. Native Alpha body and transported CPT7 body are distinct.
+
+Timeline from saved evidence
+- Before the first G2K insertion: native x2->x3 at3.899976s has exactly equal
+  LOCAL covariance, factor-group summaries and endpoint visual-factor audits.
+- At4.099975s x3->x4, native translation trace first differs: new/old0.988974.
+- At4.499973s update6, LOCAL live factor count differs:424 old versus419 new.
+- At5.499967s x10->x11, new native translation trace first falls below half old:
+  3.365464e-6 ->1.530813e-6m2, ratio0.454859.
+- At5.699967s, transported K2G trace is9.88x lower (CP96 exact same GLIM pair).
+- At7.899955s x22->x23, detailed sample1 isolates the native graph difference.
+- First differing K2G receiver binding is later, at8.299952s (CP96).
+- First Kimera pose retirement is update26,8.499951s, in both runs.
+Detailed audit sample1 is stride20, not the second consecutive injection.
+
+Matched x22->x23 event at7.899955s
+Quantity                                         CP91 old          CP95 new
+Native LOCAL translation covariance trace,m2      9.14241475e-6     6.59398787e-7
+Native LOCAL rotation covariance trace,rad2       6.28968613e-8     4.62330291e-8
+Transported/inserted K2G translation trace,m2       9.22423384e-6     6.79328692e-7
+All-factor translation trace,m2                   1.46691656e-6     4.33452737e-7
+Native LOCAL live factor count                   878               937
+Global smart-stereo factor count                 827               886
+Smart factors touching x22 or x23                 307               287
+Of these, nonzero endpoint Hessian norm            20                70
+Of these, zero endpoint Hessian norm              287               217
+Global smart-stereo Hessian trace                 7.06189004e7      2.03688730e8
+IMU factor count                                  23                23
+Bias-between factor count                         23                23
+Explicit persistent peer factor count             20                20
+Marginal prior count                               0                 0
+
+Native translation trace is13.86x lower; transported trace is13.58x lower.
+The ordinary initial priors are present: one pose, one bias, two Vector3 priors.
+Their reported Hessian traces match. There is also one native pose-between factor
+in both graphs. Bias-between Hessian trace is exactly equal; IMU group Hessian
+trace differs only about4.22e-6 relatively. These trace comparisons do not prove
+equality of their full matrices. The visual Hessian trace increases2.8843x; that
+number alone cannot predict the13.86x covariance reduction after elimination.
+
+LOCAL versus all-factor covariance
+The detailed independent graph audit excludes all explicit peer factors, then
+recomputes marginals at the current MAIN estimates. Its full6x6 LOCAL result is
+exactly equal to the first exported native matrix at both audited events in both
+runs. It is NOT the smaller all-factor covariance being mislabeled as LOCAL.
+No marginal prior exists yet at the7.9s event. However, the CURRENT STATES used
+to linearize native nonlinear factors already incorporate peer corrections.
+LOCAL does not mean a separately optimized CBS-OFF solution.
+
+Numerical checks
+Independent NumPy direct propagation H * inverse(joint_information) * H^T
+reproduces the audited covariance; relative error at the7.9s LOCAL event is
+2.12e-14 old and3.48e-14 new. Both are SPD; no jitter is used. Across all36755
+logged covariance queries in each run, all statuses are ok, all modes are
+schur_relative_between, all queries use tmp_marginals, and jitter count is zero.
+Maximum logged Schur/direct difference divided by covariance trace is2.05e-10
+old and1.65e-10 new. This is numerical consistency, not uncertainty calibration,
+nonlinear stationarity, or evidence that the native factors are all healthy.
+
+Visual mechanism: observed versus inferred
+Observed: changed numbers of smart factors and changed pose-key support multisets;
+the endpoint contribution count changes20->70 despite fewer touching factors.
+The saved BackendParams use Hessian mode, zero-on-degeneracy,10m landmark-distance
+threshold,3px dynamic outlier threshold,0.001 retriangulation threshold and
+smartNoiseSigma3. These settings are unchanged. Native smart factors can give
+zero information when triangulation/validity checks fail, and relinearization
+at a different state can change that. The exact reasons for these particular
+zero/nonzero outcomes were NOT logged; do not call all zero rows outliers.
+
+Code shows a plausible second pathway: backend updateStates sends its latest
+IMU bias to the frontend; frontend preintegrated rotation is used for tracking
+and mono/stereo geometric outlier rejection, and integration resets with the
+cached latest bias. Thus identical images/IMU samples do not by themselves force
+identical accepted visual factors when the estimated biases/timing differ.
+The pinned private backend confirms the callback. Current frontend source shows
+the consuming path but is not individually pinned in this experiment's manifest.
+We do NOT have the actual synchronized bias-used trace or saved complete feature
+measurements/landmark identities to prove this pathway caused the observed change.
+
+Do not equate smaller covariance with a worse belief
+At this event CP96 found raw relative translation error versus IE-TC decreased
+14.30->6.95mm; after native interval alignment for insertion,14.85->10.52mm.
+At5.70s it also improved. The confidence changed more than these individual
+errors, but one residual cannot calibrate a6x6 covariance. IE-TC shares CPT7
+with GLIM and is not independent prism ground truth. The aggregate GLIM ATE
+regression .041500->.053058m is real on the common mask, but its causal connection
+to these early factors is unproven; CP96 also found improved short-baseline RPE.
+
+Parser and artifact notes
+Revision logs repeat the literal first label17times per run when reusing an edge;
+analysis takes the first occurrence by endpoint IDs, not the label alone. Neither
+audited edge has this ambiguity. This is not a change to Method1 pose scoring.
+analysis.json conservatively cautions that graph size might include empty slots.
+Subsequent source inspection resolves that caution: the pinned BPSAM counter
+increments only for nonnull retained factors (bpsam.cpp:4825–4865), so the counts
+above ARE live factors. Detailed group counts independently sum to878/937.
+source_review.json records this clarification without overwriting analysis.json.
+
+Boundary and recommended next test
+We have localized the initial covariance difference to native active visual
+information, not a transport bug or marginalized prior. We have not isolated
+changed measurements versus changed linearization/triangulation, and have not
+proved which event causes the later ATE difference. Existing saved logs do not
+contain the complete native graph needed for that counterfactual.
+The next discriminating experiment would be a SHORT instrumented capture through
+about12s, saving native smart-factor measurements/IDs, triangulation status,
+linearization poses and frontend bias-used timestamps. Then use the saved graph
+to vary factor contents and linearization state separately. Do not change weights
+or launch another full sequence just to answer this question. Nothing launched.
+
+Preservation
+analysis.json, inputs_sha256.json, verification.json plus source_review.json and
+closeout.json. All221 CP91 and426 CP95 terminal output hashes and three CP96
+analysis-output manifests verified unchanged. No original artifact was edited.

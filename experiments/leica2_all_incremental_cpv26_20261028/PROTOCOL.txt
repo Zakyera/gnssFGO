@@ -1,0 +1,43 @@
+CP-V26 — LEICA-2 Velodyne, common method-2 output convention, 2026-10-28
+
+User selects method 2 for GLIM, Kimera and gnssFGO. First bounded comparison:
+full saved LEICA-2 Velodyne CP-V4 OFF/ON, original Qc1.0. No new estimator
+run, receiver replay, build, parameter change, production promotion or deletion.
+Other sequences are not claimed to have been converted by this task.
+
+GLIM: reconstruct O[k]=O[k-1] inv(X[k-1|k]) X[k|k], starting at X[0|0],
+from original GLIM_CBS_ACTIVE_POSE_ROW records. Require one complete same-update
+pair per first publication, consecutive IDs, exact current-pose agreement with
+glim_odometry.csv and preserved CSV integer timestamps. Log timestamps are
+rounded floating seconds; use only for bounded cross-check, never as replacements.
+Read the pinned CP-I1 bridge to verify log/publication order and no intervening
+MAIN optimization. Never use later revisions, retirement exports, time-horizon
+beliefs or differences of consecutive previously published absolute poses.
+
+Kimera: retain original kimera_odometry.csv. Effective no_incremental_pose=false
+and pinned implementation establish that this already chains same-update
+optimized consecutive-keyframe transformations. Do not chain this file again.
+
+Fusion: reuse CP-V23 already validated full OFF/ON chained_trajectory.tum and
+publication snapshots. Original Qc1.0, not the0.25 or0.1 motion-prior experiments.
+Do not replay the receiver or substitute a single-source diagnostic control.
+
+Validation: compare independent homogeneous-matrix and quaternion/vector chains;
+published-to-published control telescopes; each chained prism edge has the same
+length as the corresponding same-update prism edge. Retain graph-to-odometry
+correction and require exact reconstruction. Synthetic identity, known correction,
+global-frame and body-frame tests. Validate source hashes against original pins
+where available; hash all used inputs before/after. No covariance/velocity assigned
+to chained trajectories. No Rerun or UI change requested by this task.
+
+Evaluation: reuse unchanged CP-V10 reference, prism lever arm, SE(3) no-scale
+alignment per trajectory, frozen six-stream common mask and 1s RPE conventions.
+Report common-mask ATE/path/translation and rotation RPE, OFF->ON changes, and
+full-saved ATE/path/coverage separately. Reproduce previous GLIM method1, Kimera
+and fusion method2 scores. No alignment per segment or trajectory smoothing.
+Explicitly retain sparse Kimera gaps and startup/tail omissions. IE-TC shares CPT7,
+not independent prism truth. Method2 equalizes publication rule, not update
+frequency, sensor evidence age, wall-time latency or internal models.
+
+Save new products/report here, preserve originals, verify the four-sequence
+Hesai checkpoint, and record completion in AGENTS.md/runtime ledger.

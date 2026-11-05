@@ -1,0 +1,22 @@
+2026-10-29 — reporting-only environment correction, no source retry
+
+The full346.32s CBS-OFF capture completed; original LOCAL, Kimera lifecycle,
+and concurrent receiver gates all passed. Original controller then failed in
+replay_fusion.py line24 BEFORE creating replay pins, launch or any output.
+It checked CP-V23 compilation dependency paths on the host, although that
+binary was built and previously replayed inside ubuntu-jammy-humble-nvidia.
+First mismatch: host /usr/include/stdc-predef.h versus the container header;
+host boost/utility.hpp is absent.76shared /home dependencies already match.
+All1589remaining compilation headers must be checked IN the original container.
+Do not replace expected hashes or relax any parity/coverage guard.
+
+Original failed.json,status.json,logs and closeout.json remain unchanged.
+No replay process/output/launch existed when checked. Both containers stopped
+and original launcher/controller/report precheck PIDs absent. Repair starts
+only Humble, executes the SAME pinned replay_fusion.py under container Python,
+then the SAME pinned analyze.py under host scientific Python. No build,
+source run, estimator setting or output policy change. One actual reporting
+replay only. Finite repair controller has exclusive start/log receipts and
+restores the container only after it has no non-idle jobs. Supplemental
+reporting_repair_status.json/closeout supersede the original reporting failure
+only if every original guard and final scoring succeed.

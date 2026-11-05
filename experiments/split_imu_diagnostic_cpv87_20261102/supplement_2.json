@@ -1,0 +1,106 @@
+{
+  "quantization_caveat": "Supersedes the overly broad interpretation string in supplement_1.json: pure unaveraged signed16 quantization is NOT supported. The values are mostly on a tenth-count grid; averaging is a hypothesis, not verified firmware behavior. Two -39.2 values suggest clipping, but actual range/configuration remains unconfirmed.",
+  "quantization_tests": [
+    {
+      "count_subdivisions": 1,
+      "fraction_integer_within_1e_7": 0.102377770353046,
+      "max_error_counts": 0.5
+    },
+    {
+      "count_subdivisions": 2,
+      "fraction_integer_within_1e_7": 0.20522886735716672,
+      "max_error_counts": 0.40000000000873115
+    },
+    {
+      "count_subdivisions": 4,
+      "fraction_integer_within_1e_7": 0.20522886735716672,
+      "max_error_counts": 0.40000000002328306
+    },
+    {
+      "count_subdivisions": 5,
+      "fraction_integer_within_1e_7": 0.49457066488473106,
+      "max_error_counts": 0.5
+    },
+    {
+      "count_subdivisions": 10,
+      "fraction_integer_within_1e_7": 0.9999164717674573,
+      "max_error_counts": 0.4444444444425244
+    },
+    {
+      "count_subdivisions": 20,
+      "fraction_integer_within_1e_7": 0.9999164717674573,
+      "max_error_counts": 0.3333333333321207
+    },
+    {
+      "count_subdivisions": 100,
+      "fraction_integer_within_1e_7": 0.9999164717674573,
+      "max_error_counts": 0.444444444423425
+    }
+  ],
+  "initial_packet_reconstruction": {
+    "camera_stamps_ns": [
+      1727775007855396309,
+      1727775007955396009,
+      1727775008055395609,
+      1727775008155395209,
+      1727775008255394809
+    ],
+    "interval_s": [
+      0.19999930000000002,
+      0.2999989
+    ],
+    "method": "Code-equivalent border interpolation and unweighted column mean of first valid input packet; reconstructed from saved raw data, not an original saved internal bias trace.",
+    "arms": {
+      "Alphasense": {
+        "samples": 22,
+        "mean_acc_m_s2": [
+          0.2808150482419323,
+          -0.18508755351176634,
+          -9.637881988834291
+        ],
+        "mean_gyro_rad_s": [
+          -0.005588732587655208,
+          -0.006424731992101326,
+          0.00020354789939556185
+        ],
+        "gravity_angle_deg": 1.998591164451825,
+        "identity_rotation_branch": true,
+        "initial_acc_bias_m_s2": [
+          0.2808150482419323,
+          -0.18508755351176634,
+          0.17211801116570946
+        ],
+        "initial_gyro_bias_rad_s": [
+          -0.005588732587655208,
+          -0.006424731992101326,
+          0.00020354789939556185
+        ]
+      },
+      "CPT7": {
+        "samples": 12,
+        "mean_acc_m_s2": [
+          -0.10913734975934182,
+          -0.13547994148103057,
+          -9.868189792375114
+        ],
+        "mean_gyro_rad_s": [
+          0.0002346063267850939,
+          -0.0007729170749244324,
+          -6.0188343064995744e-05
+        ],
+        "gravity_angle_deg": 1.009987634611463,
+        "identity_rotation_branch": true,
+        "initial_acc_bias_m_s2": [
+          -0.10913734975934182,
+          -0.13547994148103057,
+          -0.05818979237511357
+        ],
+        "initial_gyro_bias_rad_s": [
+          0.0002346063267850939,
+          -0.0007729170749244324,
+          -6.0188343064995744e-05
+        ]
+      }
+    }
+  }
+}

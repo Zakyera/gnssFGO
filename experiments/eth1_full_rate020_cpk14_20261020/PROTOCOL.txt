@@ -1,0 +1,47 @@
+CP-K14: explicitly authorized matched full ETH1 CBS-OFF/ON at0.20x,2026-10-20.
+
+User approved proceeding after the proposed0.20x test following CP-K13's
+late-revision failure at0.30x. This is a separately authorized fresh experiment,
+not an automatic retry. Preserve CP-K13 evidence. OFF must pass four gates
+before ON; one launch per mode; fresh exclusive roots/session and port11462.
+Only playback rate, rate-based controller deadline and output identities change.
+No change to the seven-second receiver lag or its late-revision failure guard.
+
+Reuse CP-K13's exact CP-K11/K12 private binaries and ETH1 profiles:
+CP-K9 Kimera CPK9_PRIOR_REFRESH=1,FL4Q_ENABLE=0,FL4M_RETIREMENT=remove;
+source-native IMU override unset. CP-I1/CP-I3 all-LOCAL dense6x6 covariance
+every GLIM version,corrected MAIN means; Kimera LOCAL covariance.
+Classic active_window_temporary bidirectional CBS only in ON,export in both.
+No source live_revision. Hesai+CPT7 GLIM5s,front Alphasense stereo+CPT7
+Kimera25states;0.20s horizon,one pair/update,stride1,Gaussian scales1.
+Existing mean-only source alignment/covariance approximation unchanged.
+FL4e7s fixed-lag source_wnoa,independent100ms support clock,59sample startup,
+same Qc/priors,downstream stable-ID replacement,no central IMU/GNSS.
+Headless0.20x,25sdrain,no live graph inspectors or presentation.
+
+Full selected-topic window: offset0,duration346.32s,
+start1727775007855396309ns,end1727775354175396309ns.
+Last Hesai record1727775354174658060ns is included. No later camera/IMU-only
+tail. Old346.22label used another epoch; disclose initialization/tail gaps.
+
+Use existing source runtime and actual Kimera-node stdout checks unchanged.
+Validate each mode once: validate_local.py MODE;validate_case.py check MODE;
+validate_candidate.py MODE;validate_case.py repeat MODE,using existing evo
+Python. Repeat checks the saved receiver journal,not another source run.
+Do not overwrite passed/failed artifacts or duplicate controllers/validators.
+Only four passing OFF gates authorize preflight_on.py and run_case_on.py full on.
+On any failure stop,preserve evidence,and report;no retries or gate relaxation.
+
+After both validate,existing Noetic evaluate_fl4f.py and summarize.py report
+native GLIM,native Kimera ROS odometry,fusion ONLINE OFF/ON;full-saved and
+common-mask ATE,1s translation/rotation RPE,path lengths and GT coverage.
+DELAYED fixed-lag-finalized fusion is separate,not online/full-history.
+IE-TC shares CPT7,not independent prism GT. Retain all mean/covariance/revision,
+availability,payload provenance,conservation and timing evidence.
+Incremental/nonincrease/prior-cache checks do not prove nonlinear stationarity.
+
+No builds,estimator/model edits,tuning,covariance changes,health/Huber,default
+promotion,commit/push,deletion or other experiment/sequence. Let the owned
+controller clean up;stop both initially-stopped containers only after owned
+jobs finish. Update REPORT.txt and CP-K14 ledger. Disable follow-up on failure
+or completion. Run final_checks.py only after successful comparison/cleanup.

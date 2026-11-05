@@ -1,0 +1,94 @@
+CP-C7 — PRE-KIMERA-REFRESH BULK RUN CLEANUP
+2026-11-03 — COMPLETE FOR ACCESSIBLE APPROVED FILES; 30 FILES RETAINED
+
+User authorized deleting obsolete runs before the Kimera linearization-point
+fix. Boundary: CP-V38 introduced the OFF current-state refresh on October 29,
+CP-V39 validated the full sequence, and CP-V40 extended it to CBS-ON.
+CP-V35 onward diagnosis/fix evidence and all later runs were excluded.
+
+RESULT
+  Reviewed old roots:                    318
+  Roots with selected payloads:          218
+  Roots actually affected:               214
+  Generated files permanently removed:   10,292,155
+  Empty inventoried directories removed: 10,217,254
+  Removed file allocation:               182,599,901,184 bytes = 170.059 GiB
+  Net filesystem free-space increase:    224,093,913,088 bytes = 208.704 GiB
+  Available at verified completion:      229,503,025,152 bytes = 213.741 GiB
+  Permission-blocked files left intact:   30 = 137,449,472 bytes = 131.082 MiB
+
+The net free-space increase also includes freed directory/filesystem metadata
+and audit-output overhead; it is not the same quantity as deleted file sizes.
+The disk readings are snapshots, not an accounting guarantee for unrelated
+concurrent application writes. Completion was recorded at 13:21:01 local.
+
+WHAT WAS REMOVED / RETAINED
+Selected outputs were obsolete receiver commit/snapshot histories, generated
+recording bags, Rerun exports, generated point-cloud maps and large raw logs.
+No whole date-named directory was recursively deleted. Exact canonical regular
+single-link files were inventoried and identity-checked immediately before
+unlink; only empty inventoried subdirectories were removed afterward.
+
+Retained: all datasets including all nine Livox bags; code, configs, source,
+build/runtime dependencies; compact reports, tables and saved trajectories;
+post-fix runs and CP-V35+ diagnosis/fix fixtures; unknown files and symlinks;
+current pinned artifacts and all 667 Hesai checkpoint files and originals.
+Some old visualizations/raw artifacts remain because current reports or later
+experiments still reference them. This was a bulk-output cleanup, not removal
+of every file or every old folder. No estimator/fusion run, tuning, build,
+runtime configuration change, container start or ownership change occurred.
+
+PERMISSION FAILURE AND RECONCILIATION
+The first deletion executor stopped on foreign-owned revision_products files
+after removing 565 files. Its failure and exact deletion journals are preserved
+in permission_failure.json and execution_shards/. Parent directories were not
+writable by the user; noninteractive sudo required a password. No permission
+or ownership changes, administrator workaround or blind retry was attempted.
+
+A new supplemental continuation reconciled every absent target against the
+original deletion journals, rechecked every remaining identity, and excluded
+30 permission-blocked files. It removed the remaining 10,291,590 writable
+targets. All 30 blocked identities still match. See BLOCKED_FILES.txt and
+resume_permissions/shards/*_blocked.jsonl.gz. The two cleanup executors must
+not be restarted. completion.json deliberately records
+all_planned_files_deleted=false, despite the accessible cleanup passing.
+
+VERIFICATION
+  328,905 retained in-scope entries: identity checks unchanged.
+  7,644 dataset file entries: metadata unchanged, including nine Livox bags.
+  6,273 protected SHA256 entries: passed after cleanup.
+  Hesai checkpoint: PASS, 4 cases, 667 saved files, originals=True.
+  CP89 OFF immutable terminal outputs: all 148 hashes unchanged.
+  CP91 ON immutable terminal outputs: all 221 hashes unchanged.
+  CP89/CP91 complete.json hashes: unchanged against the before audit.
+
+Continuation PID84337, proc_start696018, had the exact resume.py execute
+command. It and workers84496--84499 were absent at the final host process
+check. Final host audit13:22:57 found no visible experiment jobs or open old-run
+handles; cbsms_ws_gpu and ubuntu-jammy-humble-nvidia were both stopped/exited.
+58 inaccessible host processes are explicitly reported, not silently treated
+as examined. See terminal_after.json and resume_permissions/host_after.json.
+
+ARCHIVE STATUS / RECOVERABILITY
+Deletion was permanent, NOT Trash, and no backup of removed payloads was made.
+Every affected root now has DECOMMISSIONED_CPC7.txt. Historical reports and
+immutable run receipts were not rewritten, but their earlier bulk-retention
+claims are superseded by those notices. Compact checkpoint results remain
+valid as saved historical results; exhaustive old raw-run/replay audits may
+no longer be reproducible. Never restart archived controllers automatically.
+
+EVIDENCE
+  PROTOCOL.txt, scope.json, plan.json: authorization boundary and reviewed plan.
+  targets/retained/directories.jsonl.gz: original exact inventories.
+  pins.json, protected_paths.json, datasets_before.json: preservation evidence.
+  execution_shards/: first executor's per-root manifests and deletion journals.
+  permission_failure.json: original failure, preserved.
+  resume_permissions/prepared.json: exhaustive absence/identity reconciliation.
+  resume_permissions/shards/: remaining/blocked/deleted manifests and receipts.
+  completion.json: consolidated result, identical to continuation completion.
+  terminal_before.json / terminal_after.json: immutable CP89/91 verification.
+  resume_permissions/host_after.json: post-cleanup host/container status.
+  BLOCKED_FILES.txt: exact 30 remaining permission-blocked files.
+
+The earlier CP-V94 storage shortfall is resolved. Its timing/method choice
+remains open: no fusion replay or fresh source/fusion run was launched here.

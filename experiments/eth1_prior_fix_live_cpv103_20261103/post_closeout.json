@@ -1,0 +1,186 @@
+{
+  "passed": true,
+  "finished": "2026-11-04T00:11:18.906696+02:00",
+  "experiment_passed": true,
+  "protected_files": 8120,
+  "sealed_outputs_verified": 62,
+  "containers": "/cbsms_ws_gpu exited\n/ubuntu-jammy-humble-nvidia exited\n",
+  "hesai": "PASS: 4 cases, 667 saved files; originals=True\n",
+  "owned_jobs": [
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/eth1_prior_fix_live_cpv103_20261103/start.json",
+      "pid": 104400,
+      "proc_start": "1346319",
+      "args": null,
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/eth1_prior_fix_live_cpv103_20261103/capture_on_process.json",
+      "pid": 104847,
+      "proc_start": "1347772",
+      "args": [
+        "python3",
+        "-B",
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_prior_fix_live_cpv103_20261103/prepared/run_case_on.py",
+        "full",
+        "on"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/eth1_prior_fix_live_cpv103_20261103/frame_on_process.json",
+      "pid": 120819,
+      "proc_start": "1530304",
+      "args": [
+        "/home/yeranis/.local/share/pipx/venvs/evo/bin/python",
+        "-B",
+        "/home/yeranis/repos/gnssFGO/experiments/eth1_prior_fix_live_cpv103_20261103/frame_on.py",
+        "on"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/eth1_prior_fix_live_cpv103_20261103/validate_on_source_process.json",
+      "pid": 120656,
+      "proc_start": "1527003",
+      "args": [
+        "/home/yeranis/.local/share/pipx/venvs/evo/bin/python",
+        "-B",
+        "/home/yeranis/repos/gnssFGO/experiments/eth1_prior_fix_live_cpv103_20261103/validate_source.py",
+        "on"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/eth1_prior_fix_live_cpv103_20261103/validate_on_payload_route_process.json",
+      "pid": 120680,
+      "proc_start": "1527303",
+      "args": [
+        "/home/yeranis/.local/share/pipx/venvs/evo/bin/python",
+        "-B",
+        "/home/yeranis/repos/gnssFGO/experiments/eth1_prior_fix_live_cpv103_20261103/validate_local.py",
+        "on"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/eth1_prior_fix_live_cpv103_20261103/container_adapter_import_process.json",
+      "pid": 104820,
+      "proc_start": "1347672",
+      "args": [
+        "docker",
+        "exec",
+        "cbsms_ws_gpu",
+        "python3",
+        "-B",
+        "/workspace/cbs_gtsam4.3/runs/eth1_prior_fix_live_cpv103_20261103/prepared/transport_tools/qualify_runtime.py"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/eth1_prior_fix_live_cpv103_20261103/validate_on_receiver_process.json",
+      "pid": 120709,
+      "proc_start": "1528304",
+      "args": [
+        "/home/yeranis/.local/share/pipx/venvs/evo/bin/python",
+        "-B",
+        "/home/yeranis/repos/gnssFGO/experiments/eth1_prior_fix_live_cpv103_20261103/validate_case.py",
+        "check",
+        "on"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/eth1_prior_fix_live_cpv103_20261103/restore_containers_process.json",
+      "pid": 120922,
+      "proc_start": "1530708",
+      "args": [
+        "docker",
+        "stop",
+        "cbsms_ws_gpu",
+        "ubuntu-jammy-humble-nvidia"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/eth1_prior_fix_live_cpv103_20261103/start_containers_process.json",
+      "pid": 104495,
+      "proc_start": "1347366",
+      "args": [
+        "docker",
+        "start",
+        "cbsms_ws_gpu",
+        "ubuntu-jammy-humble-nvidia"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_prior_fix_live_cpv103_20261103/prepared/full_on_control/master_process.json",
+      "pid": 105011,
+      "proc_start": "1348834",
+      "args": [
+        "docker",
+        "exec",
+        "cbsms_ws_gpu",
+        "setsid",
+        "--wait",
+        "bash",
+        "-lc",
+        "source /opt/ros/noetic/setup.bash; python3 -c 'import os,json;from pathlib import Path;p=os.getppid();Path('\"'\"'/workspace/cbs_gtsam4.3/runs/eth1_prior_fix_live_cpv103_20261103/prepared/full_on_control/master.identity.json'\"'\"').write_text(json.dumps(dict(pid=p,proc_start=Path(\"/proc/%d/stat\"%p).read_text().split()[21])))'; exec roscore -p 11622"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_prior_fix_live_cpv103_20261103/prepared/full_on_control/source_process.json",
+      "pid": 105556,
+      "proc_start": "1349076",
+      "args": [
+        "docker",
+        "exec",
+        "cbsms_ws_gpu",
+        "setsid",
+        "--wait",
+        "bash",
+        "-lc",
+        "export CBSMS_RUN_NAME=full_on_source CBSMS_CBS_ENABLE=true CBSMS_BAG_DURATION_SEC=346.32; source /workspace/cbs_gtsam4.3/runs/eth1_prior_fix_live_cpv103_20261103/prepared/on/source.env; python3 -c 'import os,json;from pathlib import Path;p=os.getppid();Path('\"'\"'/workspace/cbs_gtsam4.3/runs/eth1_prior_fix_live_cpv103_20261103/prepared/full_on_control/source.identity.json'\"'\"').write_text(json.dumps(dict(pid=p,proc_start=Path(\"/proc/%d/stat\"%p).read_text().split()[21])))'; exec bash /workspace/cbs_gtsam4.3/runs/eth1_prior_fix_live_cpv103_20261103/prepared/on/source_runner_on.sh"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_prior_fix_live_cpv103_20261103/prepared/full_on_control/receiver_process.json",
+      "pid": 105334,
+      "proc_start": "1348976",
+      "args": [
+        "python3",
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_prior_fix_live_cpv103_20261103/prepared/transport_tools/launch_grandtour_live_receiver.py",
+        "--config",
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_prior_fix_live_cpv103_20261103/prepared/full_on.json",
+        "--source-run",
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_prior_fix_live_cpv103_20261103/prepared/full_on_source",
+        "--out",
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_prior_fix_live_cpv103_20261103/prepared/full_on_receiver",
+        "--start"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/eth1_prior_fix_live_cpv103_20261103/launch.json",
+      "pid": 104398,
+      "proc_start": "1346319",
+      "args": [
+        "systemd-inhibit",
+        "--what=sleep",
+        "--mode=block",
+        "--who=ETH1-CPV103",
+        "--why=User-authorized corrected-prior ETH1 ON validation with fusion",
+        "python3",
+        "-B",
+        "/home/yeranis/repos/gnssFGO/experiments/eth1_prior_fix_live_cpv103_20261103/controller.py"
+      ],
+      "exited": true
+    }
+  ],
+  "all_owned_jobs_exited": true,
+  "source_runs_started": 1,
+  "post_audit_source_runs": 0
+}

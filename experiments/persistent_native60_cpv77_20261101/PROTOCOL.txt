@@ -1,0 +1,38 @@
+CP-V77 — EIG-2 HESAI, NATIVE-MATCHING GENERAL PERSISTENT COMPARISON
+Authorized by user “proceed/procee” following CP-V76 private compatibility gates.
+One fresh Kimera-only pair: corrected active_window_temporary/remove, then
+general persistent with CPV76_PERSISTENT_COMPAT=1. Not FL4m RETAIN, not CBS OFF/ON.
+First 60 seconds of the original quiet-start EIG-2 window, including the known
+40–60s instability. Epoch1730638816563546034ns, raw bag start offset5.7s.
+Same complete original raw incoming G->K wire messages at original record times.
+No accepted-only filtering, mean/covariance/endpoints rewrite, forced update IDs,
+CP70 delivery schedule or CP73 readiness waits. Native matching/selection/retries
+and the original causal native-IMU mean alignment remain enabled in both modes.
+Adaptive keyframes and accepted factor sets may differ: report them, do not force
+old update IDs or require equality. This tests the whole existing persistent
+policy, not retention alone. Input stream contains original ON feedback history.
+No new GLIM, fusion or outgoing peer consumer. Publishing remains unchanged for
+profile parity; inspect subscriber graph to prove no returned feedback.
+Reuse byte-identical CP76 private backend and libcbs for BOTH modes. CP-K9/CP40
+enabled, native smart factors,25states, FL4Q0, Gaussian1, health/DCS disabled;
+native IMU override unset. No rebuild, tuning, covariance change or guard relaxation.
+Only intended estimator flag difference is cbs_odom_factor_mode; only private
+compatibility environment difference is CPV76_PERSISTENT_COMPAT=0/1.
+Headless0.20x,25s drain. Exclusive temporary -> validation -> persistent ->
+validation -> saved-only EVO report. Never retry a numerical/model failure.
+Runtime guards, no rollback/recovery/fatal, exact complete serialized input order,
+finite monotonic output, first pose <=1s and last >=59s from epoch, >290 poses,
+native match/mean/covariance/binding logs and protected hashes must pass.
+Physical gaps, selection/retries/supersession and coverage must be reported.
+Method1 first-published absolute backend poses, not native recursive ROS path,
+not finalized. EVO1.36.3 ATE SE3/no-scale and reference-distance0.5m RPE translation
+and rotation. Separate full-saved native-cadence and shared100ms mask results.
+Estimated polyline path is not physical distance travelled. IE-TC shares CPT7,
+not independent prism truth. Report previous-pose revisions, timings and costs.
+Fail-closed CP76 checks cover persistent slots/replacement/marginal absorption;
+there are no new per-boundary absorption log rows, so do not invent counts.
+CP67 native-only LOCAL provenance limitation remains. No live bidirectional,
+full-mission, nonlinear-stationarity or universal-fix certificate/default promotion.
+Both initially-stopped containers must be restored, exact owned jobs exit,
+all frozen inputs and four-sequence Hesai checkpoint verify at closeout.
+Storage reserve >=8GiB prelaunch, >=5GiB runtime. No deletion or push.

@@ -1,0 +1,73 @@
+CP-V77 native-matching general persistent comparison — prepared for single launch.
+Preparation PASS:590 complete original raw wire beliefs, byte-exact; no accepted
+subset, time rewrite or saved mean substitution. Bothcontainers restored stopped.
+Private CP76 binaries unchanged. See prepared.json, PRELAUNCH_REVIEW.txt,
+protected_prelaunch.json and PROTOCOL.txt for scope, gates and limitations.
+Controller owns one exclusive temporary->validation->persistent->validation
+pair, saved EVO scoring and closeout. Consult status.json before doing work.
+Original CP70/CP71/CP73/CP76 evidence remains immutable.
+
+FINAL CONTROLLER STATUS 2026-11-01T00:38:57.743689+02:00
+{
+  "passed": true,
+  "scored": true,
+  "error": null,
+  "cleanup_error": null,
+  "integrity_error": null,
+  "containers_restored": true,
+  "protected_files": 601,
+  "completed": "2026-11-01T00:38:57.743521+02:00",
+  "controller_pid": 72061,
+  "controller_exiting": true,
+  "live_bidirectional_provenance_gate_passed": false,
+  "default_promotion": false
+}
+
+CP-V77 — EIG-2 HESAI,60s, NATIVE MATCHING: TEMPORARY vs GENERAL PERSISTENT
+Both arms have CBS-ON saved inputs; this is NOT OFF/ON or FL4m RETAIN.
+Complete original raw wire stream, native admission/retries/mean alignment.
+Same CP76 binary, original weights and25states; no new GLIM/fusion/return peer.
+Method1 first absolute Kimera backend publication; not recursive ROS incremental or finalized.
+EVO1.36.3 only: SE3/no-scale ATE; reference-distance0.5m translation/rotation RPE.
+IE-TC shares CPT7; not independent prism GT. Path is estimated polyline, not real travel.
+
+COMMON
+Mode | ATE RMSE m | path m | reference path m | tRPE m | rRPE deg | poses
+temporary | 0.084683 | 39.244902 | 34.756967 | 0.074352 | 1.405793 | 596
+persistent | 0.057071 | 34.628409 | 34.756967 | 0.027355 | 1.054627 | 596
+FULL_SAVED
+Mode | ATE RMSE m | path m | reference path m | tRPE m | rRPE deg | poses
+temporary | 0.093192 | 41.410951 | 34.462534 | 0.113062 | 2.495136 | 298
+  first 0.199946383s, last 59.799417809s, span 59.599471426s, gaps0; supported59.599471426s
+persistent | 0.057444 | 34.935135 | 34.462534 | 0.031230 | 0.889706 | 298
+  first 0.199946383s, last 59.799417809s, span 59.599471426s, gaps0; supported59.599471426s
+Common coverage: {"grid_queries": 596, "valid_queries": 596, "excluded_queries": 0, "supported_s": 59.5, "capture_s": 60.0, "supported_capture_percent": 99.16666666666667, "first_s": 0.23645396600000002, "last_s": 59.736453966000006, "envelope_s": 59.50000000000001, "start_gap_s": 0.23645396600000002, "tail_gap_s": 0.26354603399999377, "segments": [{"first_s": 0.23645396600000002, "last_s": 59.736453966000006, "rows": 596}]}
+Common ATE improvement: +32.606%
+
+TEMPORARY DIAGNOSTICS
+Raw incoming messages/beliefs: 590/590; exact payload/order/transport covariance verified.
+Aligned candidates: 292; native admission statuses: {'0': 292}
+Native decisions (events, includes retries): {"retry_timestamp_match": 6830, "sender_odom_queued": 292, "dropped_timestamp_match": 272}
+Whole previous-pose revisions: {"n": 296, "mean": 0.05794253251164898, "median": 0.0405038375064304, "p95": 0.15387692047609386, "maximum": 0.6322434806727831}
+Late40..60s previous-pose revisions: {"n": 99, "mean": 0.10249226135290704, "median": 0.07658721937322788, "p95": 0.2977089924745642, "maximum": 0.6322434806727831}
+Late40..60s same-update movement: {"n": 99, "mean": 0.09246703730322026, "median": 0.09351206453286286, "p95": 0.13530800974154275, "maximum": 0.15126637533263784}
+Costs: {"rows": 298, "total_after": {"n": 298, "mean": 71975.07845770814, "median": 44156.11640145487, "p95": 242728.19556509127, "maximum": 294899.41355356696}, "imu_after": {"n": 298, "mean": 1373.599022119144, "median": 866.6961272350809, "p95": 4955.020056584172, "maximum": 5562.189362618776}, "retirements": 268}
+Timings: {"optimize_ms": {"n": 298, "mean": 74.83684130872483, "median": 76.702, "p95": 98.22341499999995, "maximum": 171.893}, "smoother_ms": {"n": 298, "mean": 34.53643480536913, "median": 33.81625, "p95": 51.759744999999974, "maximum": 77.1353}}
+PERSISTENT DIAGNOSTICS
+Raw incoming messages/beliefs: 590/590; exact payload/order/transport covariance verified.
+Aligned candidates: 292; native admission statuses: {'0': 292}
+Native decisions (events, includes retries): {"retry_timestamp_match": 6831, "sender_odom_queued": 292, "dropped_timestamp_match": 272}
+Whole previous-pose revisions: {"n": 296, "mean": 0.011598237124964418, "median": 0.008013509501317441, "p95": 0.03224091079113521, "maximum": 0.08734680626806825}
+Late40..60s previous-pose revisions: {"n": 99, "mean": 0.014955267350515642, "median": 0.011770963559223076, "p95": 0.0422788362499922, "maximum": 0.08734680626806825}
+Late40..60s same-update movement: {"n": 99, "mean": 0.09230091540641115, "median": 0.09314496454127662, "p95": 0.1359130180934895, "maximum": 0.14919040972574493}
+Costs: {"rows": 298, "total_after": {"n": 298, "mean": 353624.70431332156, "median": 231763.54478630234, "p95": 885780.4683739903, "maximum": 955091.9359808868}, "imu_after": {"n": 298, "mean": 1438.5549207504284, "median": 915.6087551112763, "p95": 5186.23472751446, "maximum": 5644.164874502304}, "retirements": 0}
+Timings: {"optimize_ms": {"n": 298, "mean": 110.66688657046979, "median": 104.13749999999999, "p95": 170.62525, "maximum": 199.05}, "smoother_ms": {"n": 298, "mean": 66.28004346979866, "median": 60.0309, "p95": 111.03599999999994, "maximum": 140.773}}
+
+LIMITS: complete raw input does not force identical accepted factors, keyframes or callback ordering.
+General persistent changes admission/replacement as well as retirement: not a retention-only causal ablation.
+Saved stream contains original ON feedback history; no new live bidirectional inference.
+CP76 runtime slot/replacement/absorption assertions active, but no logged absorption-count claim.
+CP67 native-only LOCAL provenance gate remains failed. No default/full-mission promotion.
+No covariance tuning, stronger weights, output smoothing, nonlinear-stationarity claim or automatic next run.
+Evidence: results.json, report_verification.json, evaluation/commands.json, EVO ZIPs, per-arm validation.json.
+Integrity/container/owned-job closeout: verification.json and complete.json.

@@ -1,0 +1,102 @@
+CP-K16g — sixty-second paired diagnostic did NOT complete
+2026-10-20. One authorized attempt; no retry. Not a full60s correctness pass.
+
+Scope
+=====
+User requested: "Make sure it runs similarly for 60sec".
+Extended the passed K16f same-prepared-input diagnostic, not a new production
+CBS-OFF/ON or fusion experiment. First60s ETH1 selected-input window,0.20x,
+GLIM-only, same frozen profiles and estimator libraries. Original-disabled
+MAIN source versus independently copied enabled companion, each own LOCAL
+history; same mathematical checks and numerical thresholds.
+Only observer code changes:180->1400update guard,8.1->60.1s physical guard.
+Harness root/port/recording identity,duration/deadline changed. No estimator
+library or mathematics rebuilt/edited. Three-update IMU plumbing passed.
+Observer hash ffededfc5dd8322c83310d724309992cc53982c48ef5266d809213f8accd89b0.
+Candidate DSO hash remains
+6f71292d29d974a0555abd9fda6b2370fdab81ca634a4e1343c216d2a762d2ca.
+
+Actual stop
+===========
+Bag playback exited0. After the unchanged25s drain, the controller sent SIGINT
+to GLIM. It did not exit within45s; the controller sent SIGTERM and recorded
+"node required TERM after graceful timeout". Node exit-15; all other owned
+jobs exited0 and all jobs exited. There is NO capture_complete.json.
+No observer failure.txt or numerical mismatch was raised.
+
+434completed wrapper comparisons,140retirement updates:
+ maximum position/velocity/bias/Gaussian/full covariance differences0;
+ maximum orientation Log difference1.4304896245382014e-17rad;
+ 28786synchronous requests versus28786prepared consumptions;
+ 404398Gaussian checks,40245covariance checks,105776GPU runtime-state checks;
+ 13415retained pair queries,2156exact initialGPU snapshot checks;
+ maximum active pose count51.
+These checks span48.4000physical seconds with missing input frames. They are
+not a complete contiguous60s history or a full60s acceptance certificate.
+
+Coverage and timing evidence
+============================
+Separate sensor observer received all598Hesai and5986CPT7 messages in exact
+manifest order. This does NOT show that GLIM processed them all.
+Only228input-callback timing rows and211native outputs were saved. Native
+span44.999651s,startup gap.819647s,tail gap14.180702s;62native gaps>150ms.
+Incomplete drain plus missing intermediate frames invalidates source coverage.
+
+Instrumented MAIN root timing (217recorded source cycles):
+ first20 median33.142ms,last20 median3046.053ms,max7374.655ms.
+GLIM input-callback wait: last20 median2242.54ms,max7376.07ms,
+maximum odometry workload11.
+At0.20x,10Hz LiDAR permits500wall-ms per scan. The exhaustive checker, which
+duplicates solving and synchronously compares GPU state, Gaussian caches and
+all LOCAL pairs, exceeded this. GlimROS::insert_frame waits while workload>10
+(src/glim_ros1/src/glim_ros/glim_ros.cpp:302); points subscriber queue100
+(src/glim_ros1/src/glim_rosnode.cpp:29). The run therefore did not preserve
+all requested scans through the estimator and could not finish its drain.
+
+The nested diagnostic profiler sessions keep their subrecords in memory;
+the saved top-level root time does NOT separate exact snapshot/copy, old
+solver, candidate solver, GPU comparison and covariance-query costs. Do not
+claim one of those substages is definitively the bottleneck from this capture.
+This is an instrumented capture/load failure, not an observed arithmetic
+failure or evidence that ordinary candidate GLIM lost the earlier timing gain.
+K16d's ordinary real timing remains separate; neither test certifies full
+system throughput or fixes the Kimera retention-contract issue.
+
+Test preparation correction
+===========================
+Before build/playback, corrected a predicted retirement-count gate from>900
+to>500: retirement occurs per scan, not per wrapper call. This was not based
+on the subsequent result and did not alter any numerical limit. Preserved in
+k16g_source_1/prelaunch_count_note.txt and seal_k16g.py.
+No later gate relaxation. Full validator was NOT executed on this known
+failed capture; distinct RESULT_K16G_FAILURE.json records its evidence.
+
+Integrity and disposition
+=========================
+Before/after checks PASS:2026protected files,7pinned inputs,31prepared files
+and five source repository HEAD/status/diff fingerprints unchanged.
+Original eight-second success and first-attempt failure preserved.
+No source retry, estimator/tuning/covariance/lag change, Kimera/fuser run,
+commit/push/default promotion or automation. Container restoration is recorded
+in CLOSEOUT_K16G.txt.
+
+Next bounded correction, NOT executed:
+Make the diagnostic input paced/lossless so each scan's paired checks finish
+before advancing, using the existing blocking/idle replay machinery if suitable.
+Keep ALL arithmetic/lifecycle/covariance checks; distinguish this deliberately
+slow correctness replay from ordinary throughput. Do not merely lengthen drain
+and score the gapped capture. Inspect the actual pacing/input contract first,
+and do not automatically rerun from this report.
+Kimera11.10s revision-history versus7s receiver retention remains separate.
+
+Evidence
+========
+H=experiments/main_gpu_batching_cpk16_20261020:
+ PROTOCOL_K16G.txt,RESULT_K16G_FAILURE.json,summarize_k16g_failure.py.
+P=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/k16g_source_1:
+ extension_diff.json,prepared.json,input_manifest.json,integrity_{before,after}.json,
+ build_1/commands.json,smoke/result.json,
+ paired/{failed.txt,cleanup.json,receipts.csv,e1b_profile.jsonl,node.log},
+ paired/probe/updates.jsonl.
+
+CP_K16G_60S_GATE_NOT_COMPLETED

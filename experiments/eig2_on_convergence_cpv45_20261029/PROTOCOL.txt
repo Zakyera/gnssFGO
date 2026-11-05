@@ -1,0 +1,39 @@
+CP-V45 — saved EIG-2 ON native derivative / convergence admission
+Authorized by user's “proceed”, 2026-10-29. No covariance investigation.
+
+Read-only inputs: CP-V44 updates21--25 after_refresh/checkpoint.bin; use each
+snapshot's native graph, estimate, original noise/prior/measurements and caches.
+The other CP-V44 phases are references only. No source replay, estimator build,
+production patch, calibration/weight/model change, score, or default promotion.
+No explicit-landmark substitution and no forced smart retriangulation policy.
+
+1. Private standalone C++ audit, same native GTSAM/Expmap and serialization.
+   Release and ASan/UBSan synthetic derivative/sign/nonmutation checks precede
+   saved-data inspection. Vendor DSOs are not instrumented. Preserve inputs
+   and every output, including tooling failures. Fresh roots only.
+2. At all five captured final states, check every factor in three deterministic
+   directions at eps1e-4,1e-5,1e-6. Compare native Gaussian gradient with central
+   differences of native error on independent clones of the captured factor.
+   Log smart validity/status at center and both perturbations. Derivative
+   tolerance: 1e-5 + 1e-5*max(|analytic|,|finite_difference|). Require agreement
+   at both1e-5 and1e-6 for native convergence admission. Activity switches are
+   failures of smoothness admission, not discarded observations.
+3. For relative Pose3 factors, independently check all12 unwhitened residual
+   Jacobian columns. Compare native Jacobian and the explicit Local-after-Between
+   chain rule with central differences. This is an equation diagnostic only;
+   do not replace a factor, alter its weight, or feed a candidate to an estimator.
+4. Regardless of admission, evaluate thirteen fixed fractions (2^-j,j=0..12)
+   of ONE native GN direction from each final state. These saved-state probes
+   show existence or absence of lower reported costs, not a converged solve.
+   Save trial states, factor-family costs, smart activity changes, IMU physical
+   residuals. No line-search selection is propagated to another iteration.
+5. Only if every native derivative/smoothness gate passes, consider the planned
+   bounded safeguarded native solve (max30iterations,180s/checkpoint, identical
+   factors/weights). If admission fails, stop before iterative optimization and
+   report the precise reason. Do not call a small linear residual stationarity.
+
+Check the actual deployed headers/build switches and cached equations to avoid
+mistaking an offline reconstruction for the live mathematics. Verify protected
+CP-V44/42 artifacts and the four-sequence Hesai checkpoint. Start only the stopped
+Noetic container for standalone offline programs; restore it, leave Humble stopped.
+No cleanup/deletion or additional sequence/method campaign.

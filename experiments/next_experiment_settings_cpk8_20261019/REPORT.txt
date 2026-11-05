@@ -1,0 +1,138 @@
+CP-K8 — verified settings for the next ETH1 experiment
+2026-10-19. COMMON CONTRACT PINNED; FULL-RUN KIMERA BACKEND NOT YET VALIDATED.
+
+Decision
+--------
+Do not spend another full run discovering which launch defaults were selected.
+Use settings.lock.json as the explicit common contract and provenance record.
+It deliberately has launch_allowed=false and full_run_backend_selector=null:
+we have not identified a settings-only correction that passes BOTH long OFF
+and temporary ON. These are not placeholders to fill with an arbitrary switch.
+No launch, runtime profile, estimator code, binary or protected prior capture
+was modified. This is preparation, not a solved Kimera stability claim.
+
+Verified common settings
+------------------------
+Dataset/window target: ETH1,2024-10-01-11-29-55,bag0--346.22s through last Hesai;
+later camera/IMU-only tail excluded. No new bag/playback was performed.
+Sensors: Hesai /boxi/hesai/points; front_left + front_right Alphasense stereo;
+both source estimators use /boxi/cpt7/imu and cpt7_imu belief frame.
+Profiles: exact CP-R6 copied ETH1 trees,16GLIM+14Kimera files, hashes in lock.
+
+GLIM:5s lag; native GN, relinearize skip1/threshold.1; keep CP-I3 cached LOCAL
+queries, shared native Gaussian equations and prior GPU batching improvements.
+Kimera:25states,numOptimize1,GN(useDogLeg0),relinearize threshold.01/skip1,
+wildfire.001; preserve full frontend, camera, IMU, visual noise and initialization
+profiles. No feature-lifetime, landmark-distance, degeneracy or lag tuning.
+Native Kimera IMU override KIMERA_IMU_SAMPLE_SUPPORT UNSET, not experimentalRIGHT.
+
+Peer CBS:classic bidirectional ON; active_window_temporary; retirement remove;
+not live_revision and NOT the different temporary-linear-factor algorithm.
+0.20s horizon,0.06s horizon tolerance,one pair/update,stride1,receive delay0.
+Both sources publish in OFF/ON; only peer receiving switches false->true.
+Keep endpoint tolerances GLIM.12s/Kimera.05s and duration gate.06s/ratio.5--2.
+Mean alignment enabled as before; covariance alignment approximation unchanged.
+Full dense schur_relative_between LOCAL covariance for EVERY first/revised
+version, corrected MAIN mean, Gaussian scale1, no Huber/health weighting.
+Do not restore FL4v's earlier mixed GLIM first/revised covariance policy.
+
+Fusion:FL4e7s fixed-lag source_wnoa; independent100ms supports;59samples seed
+the clock only, NOT central IMU dynamics; no raw-IMU or GNSS factors.
+Qc diagonal VARIANCES [.00375,.00375,.00375,.015,.015,.015], [phi,rho].
+Initial identity pose,V=W=0; prior sigmas pose1e-5,velocity10,angular-rate3.
+Gaussian source scales1; existing stable-ID replacement and retention handling.
+Keep fl4a_fixed_lag_incremental publication, one OMP thread, CPU2 affinity.
+Headless0.10x,25s drain, inspectors disabled, full revision/payload/native output
+and timing diagnostics retained. Online and delayed-finalized remain separate.
+
+What the settings comparison actually checked
+--------------------------------------------
+Reference root R:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_local_cov60_cpr6_20261019/prepared
+Full-run reference P:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_local_cov_full_cpr7_20261019/prepared
+
+1. R/input_profiles, R/live60_off_source and R/live60_on_source profile trees
+   are byte-identical. P/input_profiles also matches all30files.
+2. OFF/ON effective_mode_check.json reports identical source settings except
+   GLIM receiving; resolved Kimera ROS parameters separately confirm receiving
+   false/true and publishing true in both. No source lifetime/scale difference.
+3. ALL repeated --flagfile arguments are preserved in comparison; actual
+   Kimera argv matches after replacing only mode-specific source-directory
+   names. Not a comparison that silently keeps only the last --flagfile.
+4. Loaded private DSO paths match OFF/ON. Lock records7GLIM/2Kimera private
+   library paths and hashes, not just repository HEAD or default build names.
+5. Receiver model,lag,support and environment match; session/label/output
+   identities are intentionally distinct. Qc and priors checked in
+   gnssFGO/experiments/fixed_lag_slots_fl3i_20261014/Receiver.h:21-24,258-264.
+6. CP-R6/CP-R7 are the all-LOCAL reference, not the September persistent/WNOJ/
+   central-IMU preset or FL4v's older revision covariance provenance.
+This is an effective-settings/static audit, not fresh runtime validation.
+
+Three launch traps to eliminate in future preparation
+-----------------------------------------------------
+A. P/kimera_vio_ros.launch:453 explicitly sets FL4Q_ENABLE=1 inside the node.
+   Setting FL4Q_ENABLE=0 in a parent shell alone cannot override that value.
+   CP-K4b/K5 already changed their PRIVATE nested copies and verified actual
+   process environment=0. This is a real override hazard, not evidence those
+   controls accidentally ran1. Any future backend choice must be explicit in
+   the private nested launch AND verified in the process before playback.
+B. The GLIM ROS parameter outgoing_marginal_source=direct is not sufficient
+   provenance. Actual shared_native provider + native_local revision selector
+   and CP-I3 loaded library determine the tested LOCAL path. Keep all three.
+C. active_window_temporary with cbs_use_temporary_cbs_linear_factors=false is
+   intentional. The latter is a DIFFERENT algorithm, not the enabling flag
+   for the removal-before-marginalization method. Do not "correct" it to true.
+
+Backend decision: no settings-only full-run certificate
+------------------------------------------------------
+FL4Q_ENABLE=1: this is the extra global cost-acceptance/LM/core-rebuild policy.
+It was used in completed CP-R6 matched60s and FL4v120s ON. The longer OFF failed
+at update531, localized in CP-K1 to smart-factor error/model inconsistency.
+Re-enabling it unchanged for another full OFF is not a justified correction.
+
+FL4Q_ENABLE=0: this is the ordinary incremental reference, verified in CP-K4b
+and CP-K5. Bounded111s OFF completed; temporary ON reached the old recovery
+at495 after large IMU error growth. Do not promote0 as a repaired full-run
+setting or merely suppress the recovery stop. It is the reference for any
+next isolated backend-code correction, not a new experiment to repeat now.
+
+Do not use0 in OFF and1 in ON: that would mix optimizer policy with CBS.
+Do not replace remove with retain/persistent: that changes the chosen algorithm
+and the native-information prior policy, requiring an explicit separate decision.
+Do not pick25/50/100states, more iterations, damping or covariance from ATE.
+There is no evidence here of a wrong sensor, lag, covariance scale or support
+grid that explains and repairs both backend failure modes by one switch.
+
+Next experiment admission, not another settings sweep
+----------------------------------------------------
+First require a specific corrected Kimera update/acceptance implementation
+with evidence addressing the retained failure, while preserving the common
+settings above. CP-K7 explains which existing machinery to reuse. Its actual
+build, selector and limited validation must be recorded before enabling launch.
+Do not repeat CP-K4b/CP-K5 unchanged or restart full ETH1 merely because the
+common settings file exists. No new solver implementation is selected here.
+
+Once separately admitted, use one SAME backend policy/build in OFF and ON,
+fresh roots/master/session, receiver ready before playback, loaded-DSO and
+effective-flag checks before sensors, existing stop/conservation/replay gates.
+Only complete captures qualify for full-run evaluation. Score original GLIM,
+original Kimera ROS odometry and fusion ONLINE over their full saved coverage
+and identical common masks;1sRPE/path length/startup/tail gaps. IE-TC shares
+CPT7. DELAYED fixed-lag-finalized is additional, not online/full-history output.
+
+Read-only verification
+----------------------
+python3 /home/yeranis/repos/gnssFGO/experiments/next_experiment_settings_cpk8_20261019/verify_settings.py
+checks saved input/profile/private-build hashes without running ROS or a solver.
+The same command with --require-ready deliberately exits2 while admission is
+blocked. This helper is not installed into old controllers; no existing run
+script or guard has been modified. Future preparation must honor this contract.
+
+Executed verification:52pinned files all match, zero failures. The readiness
+negative check exits2 as intended; git diff --check passes. No estimator/test
+fixture was executed. gnssFGO HEAD668d4c788983722f4acad37d1495c15d03a27e18.
+
+No build, source/fusion replay, container start, covariance change, commit/push
+or default promotion. Prior captures and dirty work preserved. The only changes
+are this preparation record, JSON lock, read-only verifier and task pointers.

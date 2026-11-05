@@ -1,0 +1,73 @@
+CP-V33 — METHOD 1 RERUN COLLECTION — COMPLETED
+2026-10-29
+
+Delivered seven self-contained RRDs in:
+/home/yeranis/results/rerun_method1_all_sequences_20261029
+Hesai ETH1, EIG-2, SPX-3, LEICA-2; Velodyne SPX-3, EIG-2, LEICA-2.
+Each contains CBS OFF / ON tabs, four FULL overlaid paths, saved ON cloud
+context, a colour legend, and a Read me / results tab. README/open_rerun.sh
+support reopening after reboot; SHA256SUMS validates the seven recordings.
+236,772,334 RRD bytes (about226MiB); no estimator/receiver execution.
+
+Correct Method 1 semantics:
+  Green: original GLIM first-published absolute MAIN poses.
+  Orange: CP-V27 recovered newest absolute Kimera backend poses, NOT its
+          native incremental ROS output. Rounded-log prism bound <=0.504mm.
+  Red: original concurrent fusion ONLINE newest-support absolute poses.
+  Blue: original full IE-TC reference converted to the common prism point.
+Historical points are not overwritten with later revisions. No accumulated
+increments and no fixed-lag-finalized trajectories appear in this collection.
+This distinction is explicit in file names, viewer titles, labels and notes.
+Original seven baseline OFF/ON pairs, Qc1.0; no fresh CP-V29 ETH1 OFF mix-in,
+Qc0.25/.1 candidates or failed ARC prefixes.
+
+Geometry and reference:
+113,732 native saved estimator points retained at original timestamps.
+No smoothing, thinning or cropping to the common evaluation interval.
+Estimate gaps >500ms and reference gaps >50ms have no connecting line;
+isolated points remain visible. Original per-case terminal omissions retained
+in JSON metadata. Full capture does not imply full common-mask coverage.
+Each estimate receives its exact CP-V32 evo APE SE3/no-scale transform, then
+the identical CP-V30 ENU-origin shift. No time-offset tuning or local fitting.
+The full reference vertices and17,534,190 saved ON cloud points are exactly
+the same as CP-V30 Method2. Clouds already represent corrected GLIM maps,
+placed using the original CP-V10 absolute ON fit, not the incremental fit.
+Same backdrop in OFF/ON; context only, partial where saved submaps are partial.
+IE-TC shares CPT7 IMU: not independent prism ground truth.
+
+EVO and scope:
+Read me / results includes direct-evo CP-V32 common-mask ATE, translation and
+rotation RPE at reference-distance delta0.5m, and common path lengths.
+Separate full-native lengths use evo PoseTrajectory3D.path_length, with both
+connected and gap-aware lengths. No custom ATE/RPE formula was used.
+Full native visualizations and common-mask table coverage are distinguished.
+Connecting publication corrections can inflate length, particularly Kimera
+absolute backend output; estimated polyline length is not physical movement.
+Same output convention is not equal latency, cadence or evidence age.
+
+Checks passed:
+* All42 native-to-common pose comparisons equal frozen CP-V27 samples exactly.
+* All42 evo APE error arrays equal CP-V32 saved evo errors exactly (maxdiff0).
+* All42 full-native paths reproduce CP-V27 lengths using evo, tolerance1e-8m.
+* SE3 proper rotation, edge invariance, timestamp/gap counts and original row
+  counts pass. Maximum float32 rendering quantization3.813e-6m.
+* Native RRD readback verifies EVERY sample, gap-aware line and cloud point
+  exactly for both OFF/ON; notes contain correct Method1/Kimera/EVO labels.
+* All132 pinned inputs unchanged, including every existing Method2 output.
+* Original four-sequence Hesai checkpoint verified by closeout.json.
+
+Visual QA:
+All seven native default CBS-OFF screenshot renders inspected: full overlays,
+correct labels, context clouds, readable legend and OFF/ON/results tabs.
+ON geometry is exact-readback verified; no separate interactive-tab visual
+audit. Rerun0.31.4 saves each screenshot then exits102 with its previously
+observed screenshot shutdown panic ('Failed to take store hub from the Viewer').
+All screenshots/logs/return-code receipts are retained; not claimed exit0.
+No persistent viewer was launched and all seven screenshot subprocesses exited.
+
+Evidence: PROTOCOL.txt, prepare.py, build.py, input_checks.json, per-case
+JSON/NPZ/build receipts, verification.json, render_receipts_host.json,
+preview PNGs, export/screenshot logs and closeout.json.
+Original experiment artifacts, Method2 RRDs and metrics were not changed.
+No source/receiver run, container, build, tuning, model/default change,
+deletion, commit or push. Further receiver diagnosis remains unstarted.

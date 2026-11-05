@@ -1,0 +1,225 @@
+CP-V14 — LEICA-2 VELODYNE, ONE STRONGER WNOA MOTION-PRIOR TEST
+2026-10-26. COMPLETED. Operational PASS; strict scientific screen FAIL.
+Decision: useful partial jitter reduction, NOT a complete fix or a promoted default.
+
+1. Answer in plain language
+
+We made the fusion's motion constraint twice as strong, without changing what
+GLIM or Kimera sent. The newest output became less jumpy in both CBS modes.
+This is a real estimator change, not trajectory smoothing after the run.
+The reduction also occurs while moving and turning, not only while stationary.
+
+However, the excessive ONLINE path is still present, and global position RMSE
+did not improve. It increased by 3.182mm OFF and 0.634mm ON (0.159%/0.035%).
+Those are small changes relative to roughly2m ATE, not evidence of a meaningful
+catastrophic regression; they nevertheless fail the predeclared no-worsening
+criterion. We have not changed that criterion after seeing the results.
+
+Interpretation: the ongoing motion-versus-source balance contributes to the
+newest-state jitter. This does NOT establish that the initial pose anchor or
+historical marginal prior is too weak. It does not establish an optimal Qc,
+calibrated source uncertainty, or a cross-sequence improvement. The larger-scale
+trajectory error remains largely unaffected. Keep the original configuration.
+
+2. Exactly what was changed
+
+One predeclared scalar: Qc_new=0.5*Qc_old in the private receiver Qc() helper.
+Old diag: [.00375,.00375,.00375,.015,.015,.015].
+New diag: [.001875,.001875,.001875,.0075,.0075,.0075].
+These are process-noise covariance parameters, NOT standard deviations or
+GLIM/Kimera published covariance. At a fixed motion residual the information
+and quadratic cost double; corresponding standard deviations divide by sqrt2.
+The initial priors were unchanged. Existing marginal priors were not manually
+rescaled; new marginals develop naturally under the changed motion model.
+
+One full saved original CP-V4 OFF journal, then one ON journal, each once.
+No source/bag reruns, extra candidate weights, sweep, numerical retries or
+default changes. Private receiver differs from the exactly reproduced CP-V13
+observer build by ONE line. Live.cpp and Trace.h are byte-identical to CP-V13.
+Seven-second lag, independent100ms supports, source_wnoa, ISAM2 policy,
+no central IMU/GNSS, source means/full dense covariances/Gaussian scale1,
+event order, stable-ID replacement/seal_at_absorption and EOF policy unchanged.
+The imported source streams still contain their original CBS-OFF/ON settings;
+we did not rerun or retune either source optimizer.
+
+Qc also enters GP interpolation. The pre-replay100-case audit explicitly
+verified scalar invariance of interpolated means/source residuals/Jacobians
+and source noise, as well as actual discrete Q scaling and doubled motion
+factor cost. Maximum differences: interpolated pose4.48e-16,
+source residual4.72e-16, Jacobian3.96e-11, doubled-cost relative error1.27e-15.
+This is a controlled change in mathematics, not a claim of unchanged dynamics.
+
+3. Primary full-saved current-time results
+
+All rows use the SAME4282states, same physical and availability timestamps,
+100ms spacing,428.1s supported span; IE-TC path205.929085m on those timestamps.
+Original -> half-Qc. Translation in metres; rotation in degrees.
+100ms vector error compares estimated displacement with reference displacement
+after one full-run rigid no-scale alignment. It is a short-step error/jitter
+proxy, not a pure high-frequency noise decomposition or physical drone motion.
+
+Metric                            CBS OFF                     CBS ON
+ATE RMSE (m)                      2.000424 -> 2.003606          1.828658 -> 1.829293
+100ms vector error RMS (cm)        5.318539 -> 4.020675          3.098770 -> 2.761858
+  reduction                       24.4026%                     10.8724%
+100ms translation RPE (m)          .053124 -> .039950            .030294 -> .026801
+100ms rotation RPE (deg)           2.985088 -> 2.344075          1.668049 -> 1.512621
+1s translation RPE (m)             .052887 -> .049484            .052738 -> .051387
+1s rotation RPE (deg)              2.425509 -> 2.060561          1.774105 -> 1.662047
+Connected ONLINE path (m)          280.154058 -> 250.946671      235.136662 -> 228.563017
+Path excess above reference       36.0439% -> 21.8607%          14.1833% -> 10.9911%
+Original excess-path removed      39.3498%                     22.5066%
+
+The new path is still45.018m OFF and22.634m ON longer than the same-time
+reference. A shorter path alone would not demonstrate higher accuracy.
+The recorded trajectory joins first publications; subsequent graph revisions
+are not substituted into those earlier points. Yet these are precisely the
+current-time outputs whose stability matters, so the residual issue remains.
+
+4. Moving, turning, and response checks
+
+Cohorts selected ONLY by reference, not by candidate improvement:
+moving: reference100ms speed>=0.2m/s,3149edges;
+turning: reference100ms angular speed>=5deg/s,2408edges.
+They overlap. Slow(<0.2m/s) comprises1132edges.
+
+100ms RPE cohort      OFF translation(m)      OFF rotation(deg)      ON translation(m)       ON rotation(deg)
+moving               .058366 -> .044042      3.308603 -> 2.595813    .033357 -> .029632        1.843569 -> 1.677747
+turning              .059584 -> .045079      3.449568 -> 2.689243    .033645 -> .029805        1.878162 -> 1.705487
+slow                 .034589 -> .025298      1.801867 -> 1.426660    .019376 -> .016552        1.033346 -> .906934
+
+Whole-run speed/angular-speed reference lag scan, +/-0.5s in20ms increments:
+both original and candidate, both modes: speed minimum+0.14s, angular minimum
++0.08s. No additional positive lag detected at this resolution. This is a
+diagnostic best matching offset, NOT measured end-to-end latency or proof of
+flight-controller responsiveness. No time shift is applied to any score.
+
+All short-step,1s and moving/turning scientific requirements passed.
+The ONLY failed predeclared requirements were ATE_no_worse, in both modes.
+No tolerance was relaxed (numerical tolerance1e-6m/degrees as frozen).
+
+5. Common-mask all-estimator context
+
+Original CP-V10 six-product common mask retained:3850valid of4264queries,
+384.6s supported in four contiguous segments;89.7026% of428.75s capture.
+First0.684928335s, last390.384928335s; startup gap0.684928335s,
+tail38.365071665s; internal gaps are excluded, NOT connected across for paths
+or RPE. Reference path on this mask205.913358m;1s RPE3810pairs.
+This common grid is different from the native fusion grid above.
+
+Product                  ATE OFF/ON(m)       1s translation OFF/ON(m)  1s rotation OFF/ON(deg)  Path OFF/ON(m)
+GLIM first-published     2.782169/.848869     .104567/.047707           1.449142/.605143         206.499628/207.641919
+Kimera native ROS        1.094234/2.585334    .028573/.062125           .406498/.536195          199.926635/200.814393
+Fusion ONLINE original   2.006010/1.867962    .055686/.055625           2.550799/1.868470        277.600025/233.001880
+Fusion ONLINE half-Qc    2.008434/1.868793    .052147/.054215           2.168091/1.750891        248.928582/226.643200
+
+The common mask confirms the same tradeoff: local errors decrease but ATE
+increases slightly. This test does not make fusion the most accurate estimator.
+The source control values above are unchanged saved results, NOT new runs.
+Do not substitute refined GLIM odom_imu.txt into this first-publication table.
+
+Full native source context (different sample times/coverage from fusion):
+GLIM OFF/ON ATE2.829284/.863203m, paths209.038271/215.463087m,
+4280samples each,0.632081331--428.530730308s, no gap chords.
+Reference on its timestamps205.872155m.
+Kimera OFF/ON ATE1.097081/2.584159m, paths200.145838/201.294269m,
+1937/1936samples,0.099937912--426.995563739s,12/13gap chords.
+Reference on its timestamps205.451489/205.458457m. Sparse-sample chords are
+not proof of travelled distance, nor equal publication latency across methods.
+
+6. DELAYED fixed-lag-finalized output — separate product
+
+Same4282timestamps as section3, but the estimates are finalized later.
+They are NOT current-time ONLINE or a full-history batch solution.
+The terminal window is finalized at EOF under the unchanged policy.
+
+Metric                       CBS OFF original -> half-Qc     CBS ON original -> half-Qc
+ATE(m)                       2.000564 -> 2.003933             1.831814 -> 1.832306
+1s translation RPE(m)        .035250 -> .035052               .029798 -> .029758
+1s rotation RPE(deg)         .580929 -> .512645               .417486 -> .403378
+Path(m)                     204.796695 -> 204.202321         205.890093 -> 205.526727
+
+Finalized paths are near reference already; stronger motion regularization
+also shortens them, slightly increasing their path deficit. Global ATE is not
+fixed by either delayed refinement or this stronger motion prior.
+Common-mask delayed results and10s/20s RPE are retained in results.json.
+
+7. Selected worst-window follow-up, not whole-run evidence
+
+The previously selected380--390s OFF problem area was NOT selected anew to
+favour this candidate. Same100edges, reference1.680125m:
+ONLINE OFF path7.929031 -> 5.941005m; ON3.673274 -> 3.234527m.
+Residual jaggedness is still clear. comparison.png bottom row shows unsmoothed
+100ms steps; top row uses a1s rolling RMS ONLY for display, not numerical scores.
+Do not use the locally aligned selected-window ATE as the global score.
+
+Observer interval379.9--390.1s,102new GLIM/51new Kimera operations per mode:
+median newest-state displacement at insertion, original -> half-Qc (cm):
+GLIM OFF3.267 -> 2.182; ON2.081 -> 1.594.
+Kimera OFF6.455 -> 5.390; ON3.723 -> 3.273.
+Candidate retirement p95 shifts0.01117cm OFF and0.00654cm ON remain much
+smaller than new-belief shifts. Not every individual update or maximum improves.
+These are conditional effects within the existing graph and event order, not
+an isolated diagnosis that one source alone is wrong. This experiment altered
+only motion Qc; source conflicts, covariance modelling, correlations and
+current-time output scheduling remain possible contributors to residual jitter.
+
+8. Coverage, integrity, and reproducibility
+
+Capture428.75s; fusion first0.484443335s, last428.584443335s,
+startup0.484443335s, tail0.165556665s. All4282saved states have reference support.
+Full428.1s represents99.8484% of capture, not100% coverage fromtime0.
+No missing/dropped source events introduced. Per-event physical/arrival times,
+publication counts, active/support bounds and source actions match baseline.
+Full payload checks normalize ONLY graph slot IDs, never source covariance,
+means, revision or identity fields. OFF/ON respectively:
+  events296400/296470; received253524/253594;
+  inserts6185/6184; replacements247118/247191;
+  expired171/169; before-initialization exclusions50/50;
+  absorbed6117/6116; active68/68; pending0/0; unsupported EOF0/0;
+  publications/finalized4282/4282each; retained supports71; peak slots175.
+All255857/255928source-containing commit payloads/actions match originals.
+
+Private binary SHA256:
+666f864401f8491d7e20e8dd8414830bbadc8077d1582066ee0748bf0bff0ad3
+Original input/private pins2875 and recorded compiler dependency pins1665
+verified after both replays. These recorded dependency files are not a claim
+of exhaustive transitive dependency capture. Both replay exit codes0.
+Replay wall durations199.789/190.817s include observer/file IO, are not a
+matched realtime throughput benchmark and do NOT authorize faster bag playback.
+Historical original outputs were exactly reproduced by CP-V13, not rerun here.
+Baseline ATE reproduces CP-V10; independent evo rigid-alignment and explicit
+SE(3) matrix RPE checks pass. No candidate model or metrics were retried.
+
+Only Humble was started; all owned jobs finished before stopping it.
+Both containers are stopped, OOMKilled=false. Container exit137 is shutdown
+status after successful jobs, not a replay failure. Rerun viewer unchanged.
+No source capture, deletion, commit/push, automation or default promotion.
+
+9. Limitations and recommendation
+
+Reference is shared-CPT7 IE-TC, NOT independent prism ground truth. Original
+mean-only covariance alignment approximation is unchanged. Replaying saved
+arrival order holds timing input fixed but does not measure live scheduling
+effects or drone control stability. No nonlinear stationarity or marginal-prior
+conditioning certificate. One sequence and one perturbation, no generalization
+or statistical confidence claim. Tiny ATE changes should not be overstated.
+
+Recommendation: retain this as evidence that the motion/source balance is a
+useful lever for jitter, not as the final setting. Before any larger Qc sweep,
+separate residual short-time source disagreement from global drift using these
+saved traces; neither a weak initial anchor nor blind covariance inflation is
+justified by this result. Any further experiment requires a new decision.
+
+Evidence index (same directory unless noted):
+PROTOCOL.txt: frozen single-test and acceptance rules.
+results.json: complete full/common/cohort/response/trace metrics and gate flags.
+comparison.png: full-run errors/path growth and selected100ms steps.
+comparison_arrays.npz: plot arrays; no hidden smoothing in metrics.
+model_audit.json, source_delta.json, binary.json: isolation/build evidence.
+off_validation.json, on_validation.json: every-event/payload/lifecycle audits.
+input_pins.json, dependency_pins.json, scoring_pins.json: reproducibility pins.
+replay_complete.json, container_closeout.json, closeout.json: completion checks.
+Original roots and candidate roots are explicit in run.py/score.py.
+Candidate full ONLINE/finalized states and traces are preserved under
+/home/yeranis/results/gnssfgo_leica2_motion_prior_cpv14_20261026/.

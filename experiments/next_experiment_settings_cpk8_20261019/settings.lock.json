@@ -1,0 +1,305 @@
+{
+  "task": "CP-K8",
+  "status": "COMMON_SETTINGS_PINNED_BACKEND_ADMISSION_BLOCKED",
+  "launch_allowed": false,
+  "purpose": "Configuration contract and provenance, NOT a launcher or a solved/full-run certification",
+  "dataset": {
+    "name": "GrandTour ETH1",
+    "mission": "2024-10-01-11-29-55",
+    "target_bag_start_s": 0,
+    "target_duration_s": 346.22,
+    "playback_rate": 0.1,
+    "drain_s": 25,
+    "clock_seed": 1727775007
+  },
+  "profiles": {
+    "glim_config": {
+      "source_directory": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_local_cov60_cpr6_20261019/prepared/input_profiles/glim_config",
+      "file_sha256": {
+        "PROFILE.md": "3c753178d7833c17136ad8a134a505763113927cdf394082d602925347b1f136",
+        "config.json": "7084990c4dadefa8629be430f65449eac23156a1df29e745ae43f5d0570360c3",
+        "config_global_mapping_cpu.json": "5b6d743717e27289cef5d1da8e94768ffe45c5f91bbe0e2d958393079f6947a5",
+        "config_global_mapping_gpu.json": "d97b8e26075fe88a73897ff94c7dce8b30fd61c38c70d048d8ac49450f82b372",
+        "config_global_mapping_pose_graph.json": "f5c466aee1c126f123b16d702bde05cf559a1b74d74d874e5bdbd0cf17c64509",
+        "config_logging.json": "a7ab34b943f1a2ad32e1082517114b3e15e2ce43dd3466373906ebf0b5e8993a",
+        "config_odometry_cpu.json": "fb8defc6f8ba06391faaa3076d50b38f5b3dc125c772d5d078764fa1ce31213d",
+        "config_odometry_ct.json": "6e209683e898659fffbc7e34f31a0ccdef2e11a1b53778a7d93f74c481ec42c8",
+        "config_odometry_gpu.json": "a9f52ab4d9c548e16d79cdb7268b6652212a46595ddc61d2e74e714da7c164d4",
+        "config_preprocess.json": "6581aedba083e77aea5f7091e9ef5fdd0916b5b467f4566fa40f8e98b7fb9001",
+        "config_ros.json": "42060569a566fcdaf44f7c47b8f0f115cffe18e7055c43f8d8dc65c7ca2fdf1b",
+        "config_sensors.json": "4727c6247db81d7317ceda5e43b60249598c7e32834c54bab35cc0b3d1afe449",
+        "config_sub_mapping_cpu.json": "a00409bb9f4d729cfd4454685056848a32cc6e5a826fb3e83191e0a065327742",
+        "config_sub_mapping_gpu.json": "ca61902a8482d1ace02edf8ae23787de7bf86748d49e6323fafc1bd8c2b57dd8",
+        "config_sub_mapping_passthrough.json": "a80420d47f8eae6ff0a8472c05c59349aad03604a8c928b74e9301efd2010168",
+        "config_viewer.json": "f6c646248a727f39792cdfc770833ee852f7866e13c573fa2f0823d982609a48"
+      },
+      "same_in_cpr6_off_on_and_cpr7": true
+    },
+    "kimera_profile": {
+      "source_directory": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_local_cov60_cpr6_20261019/prepared/input_profiles/kimera_profile",
+      "file_sha256": {
+        "BackendParams.yaml": "782ee8ade78a8b7c67d7c7919b7161fc5f4d95b48e0de47b7d452933532ae455",
+        "DisplayParams.yaml": "1bd23036478a36ff1a4251b93a09ca1dc990fee7523e1a67ce54be6fc1a4370b",
+        "FrontendParams.yaml": "bb3ac6619c57d22db6a7a337b726a3118ed361abfdae28835d1a85d9d4325fdb",
+        "ImuParams.yaml": "5ad9440e467332fb7bbf17768513245f87034c0e14a8baba9dffc910e12e5014",
+        "LcdParams.yaml": "84a7e193b7a7b79cf2197d44d8c941a47814c233849ef8c9818c3c9e031d6ba9",
+        "LeftCameraParams.yaml": "e41263a165b75dc80e9bccbd884a79e555b84f129674c143c55706a2e3c0a7a2",
+        "PROFILE.md": "6032ceb860a9655b4d811416b04730549bff4f097e289a937d6352c5269ba4b1",
+        "PipelineParams.yaml": "1f4d902cc71fabf6500c22976d9d3c03b65ba13dbc6455f835540dd4edc264e5",
+        "RightCameraParams.yaml": "a3ea74b0f5220774090ef9166e0b9b14e3143ffe7480a632409f627f1de08393",
+        "flags/Mesher.flags": "38290b6ea940149d74e3d14ad62c756d565f3ae4168bdd00c2557f169a617671",
+        "flags/RegularVioBackend.flags": "5d5691612b21556591389dc132854436849576e11391673bec48a041d5ed18ae",
+        "flags/VioBackend.flags": "5d1a38f580b4f10f0225a4927e7962c02ec988f0e7e975ce22ffc2a21da75405",
+        "flags/Visualizer3D.flags": "d9573989882599409aedc7e810573cd10b691b40f427cfac1fa54032471bbea4",
+        "flags/stereoVIOEuroc.flags": "5e5699abd2974f7f9ef13b266313da989f7519be936fc00f18966ad1daeb2804"
+      },
+      "same_in_cpr6_off_on_and_cpr7": true
+    }
+  },
+  "sensors": {
+    "lidar": "/boxi/hesai/points",
+    "left_camera_raw": "/boxi/alphasense/front_left/image_raw/compressed",
+    "right_camera_raw": "/boxi/alphasense/front_right/image_raw/compressed",
+    "imu": "/boxi/cpt7/imu",
+    "belief_body_frame": "cpt7_imu",
+    "KIMERA_IMU_SAMPLE_SUPPORT": null
+  },
+  "source_cbs": {
+    "protocol": "classic",
+    "factor_lifetime": "active_window_temporary",
+    "FL4M_RETIREMENT": "remove",
+    "source_live_revision": false,
+    "cbs_use_temporary_cbs_linear_factors": false,
+    "direction_on": "bidirectional",
+    "publish_off": true,
+    "publish_on": true,
+    "receive_off": false,
+    "receive_on": true,
+    "horizon_s": 0.2,
+    "horizon_tolerance_s": 0.06,
+    "max_pairs_per_update": 1,
+    "publish_stride": 1,
+    "receive_delay_s": 0,
+    "mean_alignment": "existing native IMU mean alignment in both sources",
+    "peer_covariance_alignment": "unchanged mean-only approximation; no new transport or bridge term",
+    "covariance_mode": "schur_relative_between",
+    "source_covariance_policy": "full dense LOCAL for every first/revised version; corrected MAIN mean",
+    "GLIM_SHARED_NATIVE_PROVIDER": "shared_native",
+    "GLIM_REVISION_COVARIANCE_POLICY": "native_local",
+    "scale_g2k": 1,
+    "scale_k2g": 1,
+    "health_weighting": false,
+    "external_robust_loss": false,
+    "timestamp_tolerance_glim_s": 0.12,
+    "timestamp_tolerance_kimera_s": 0.05,
+    "duration_gate": true,
+    "duration_tolerance_s": 0.06,
+    "duration_ratio": [
+      0.5,
+      2
+    ]
+  },
+  "glim": {
+    "lag_s": 5,
+    "dogleg": false,
+    "relinearize_skip": 1,
+    "relinearize_threshold": 0.1,
+    "native_local_query_cache": "CP-I3 release_v2; keep CPU/GPU speed improvements",
+    "outgoing_marginal_source_ros_value": "direct; actual shared_native provider override required"
+  },
+  "kimera": {
+    "nr_states": 25,
+    "numOptimize": 1,
+    "useDogLeg": 0,
+    "relinearizeThreshold": 0.01,
+    "relinearizeSkip": 1,
+    "wildfire_threshold": 0.001,
+    "linearizationMode": 0,
+    "degeneracyMode": 1,
+    "rankTolerance": 1,
+    "landmarkDistanceThreshold": 10,
+    "outlierRejection": 3,
+    "retriangulationThreshold": 0.001,
+    "smartNoiseSigma": 3,
+    "pose_guess_source": 2,
+    "use_local_smoother_for_belief_covariance": true,
+    "persistent_bpsam_covariance_sidecar": false,
+    "shadow_acceptance_audit": false,
+    "full_run_backend_selector": null,
+    "ordinary_diagnostic_reference_FL4Q_ENABLE": 0,
+    "historical_cpr6_FL4Q_ENABLE": 1,
+    "existing_guard_policy": "preserve, stop on recovery in diagnostic; never silently relax"
+  },
+  "receiver": {
+    "model": "source_wnoa",
+    "lag_s": 7,
+    "support_period_ns": 100000000,
+    "startup_clock_samples": 59,
+    "raw_imu_factors": false,
+    "gnss_factors": false,
+    "state": [
+      "Pose3",
+      "world_velocity",
+      "body_angular_rate"
+    ],
+    "Qc_diagonal_variances_phi_rho": [
+      0.00375,
+      0.00375,
+      0.00375,
+      0.015,
+      0.015,
+      0.015
+    ],
+    "prior_pose_sigmas": [
+      0.00001,
+      0.00001,
+      0.00001,
+      0.00001,
+      0.00001,
+      0.00001
+    ],
+    "prior_velocity_sigmas": [
+      10,
+      10,
+      10
+    ],
+    "prior_angular_rate_sigmas": [
+      3,
+      3,
+      3
+    ],
+    "initial_pose": "identity",
+    "initial_velocity": [
+      0,
+      0,
+      0
+    ],
+    "initial_angular_rate": [
+      0,
+      0,
+      0
+    ],
+    "source_scales": {
+      "glim": 1,
+      "kimera": 1
+    },
+    "loss": "Gaussian",
+    "stable_ID_revision_replacement": true,
+    "publication_policy": "fl4a_fixed_lag_incremental",
+    "OMP_NUM_THREADS": 1,
+    "cpu_affinity": 2
+  },
+  "capture": {
+    "headless": true,
+    "synchronous_graph_inspectors": false,
+    "source_revision_export": true,
+    "keep_native_odometry": true,
+    "keep_dense_mean_covariance_revision_arrival_histories": true,
+    "preserve_conservation_and_saved_journal_repeat_checks": true
+  },
+  "evaluation": {
+    "primary": [
+      "original GLIM",
+      "original Kimera ROS odometry",
+      "fusion ONLINE"
+    ],
+    "secondary": "fusion DELAYED fixed-lag-finalized; never call online",
+    "reference": "IE-TC shares CPT7, not independent prism",
+    "full_saved_and_common_mask": true,
+    "alignment": "existing no-scale SE3 with retained lever arm",
+    "rpe_s": 1,
+    "report_path_lengths_and_startup_tail_gaps": true
+  },
+  "historical_loaded_libraries": {
+    "glim": [
+      {
+        "host_path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/e1b4a_local_update_batching_20261012/release_2/libgtsam.so.4.3a1",
+        "container_path": "/workspace/cbs_gtsam4.3/runs/e1b4a_local_update_batching_20261012/release_2/libgtsam.so.4.3a1",
+        "sha256": "369f45866a82c40170ad7cfa83b4bc6b7f8a6f4ae22db34115daee926529bb37",
+        "role": "historical_cpr6_loaded_library"
+      },
+      {
+        "host_path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/e1b_local_profile_20261012/release_2/libcbs.so",
+        "container_path": "/workspace/cbs_gtsam4.3/runs/e1b_local_profile_20261012/release_2/libcbs.so",
+        "sha256": "622591f0c32dac529e8a841243cef576e1b058aae9732266c08d6bfd48bb2f72",
+        "role": "historical_cpr6_loaded_library"
+      },
+      {
+        "host_path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/e1b_local_profile_20261012/release_2/libe1b_profile.so",
+        "container_path": "/workspace/cbs_gtsam4.3/runs/e1b_local_profile_20261012/release_2/libe1b_profile.so",
+        "sha256": "b4a3336fd20a3e131125c9d9c8675b7bfdc8049f9cccf8a99f35dd0361c81ee2",
+        "role": "historical_cpr6_loaded_library"
+      },
+      {
+        "host_path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/e1b_local_profile_20261012/release_2/libglim.so",
+        "container_path": "/workspace/cbs_gtsam4.3/runs/e1b_local_profile_20261012/release_2/libglim.so",
+        "sha256": "ba3848e50adb498f288b59add06976ed69fb050a6afab8421f65ac05541e85de",
+        "role": "historical_cpr6_loaded_library"
+      },
+      {
+        "host_path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/e1b_local_profile_20261012/release_2/libgtsam_points_cuda.so.1.2.1",
+        "container_path": "/workspace/cbs_gtsam4.3/runs/e1b_local_profile_20261012/release_2/libgtsam_points_cuda.so.1.2.1",
+        "sha256": "310b614b78999e415098fa9178427be63ac6d2d00d188f16a94ddf30b29ef86a",
+        "role": "historical_cpr6_loaded_library"
+      },
+      {
+        "host_path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/local_revision_covariance_cpi1_20261019/libglim_ros.so",
+        "container_path": "/workspace/cbs_gtsam4.3/runs/local_revision_covariance_cpi1_20261019/libglim_ros.so",
+        "sha256": "42df73c172232a612da965bf43ead8ec454caf08434b84e2da5de74d26cdb79f",
+        "role": "historical_cpr6_loaded_library"
+      },
+      {
+        "host_path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/native_covariance_cache_cpi3_20261019/release_v2/libgtsam_points.so.1.2.1",
+        "container_path": "/workspace/cbs_gtsam4.3/runs/native_covariance_cache_cpi3_20261019/release_v2/libgtsam_points.so.1.2.1",
+        "sha256": "3f23e6115e34acc5a2f2b965b15bd4c651897c889a6c38a0a52cdb3855c0ceb7",
+        "role": "historical_cpr6_loaded_library"
+      }
+    ],
+    "kimera": [
+      {
+        "host_path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_local_cov60_cpr6_20261019/prepared/private_build/libcbs.so",
+        "container_path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_local_cov60_cpr6_20261019/prepared/private_build/libcbs.so",
+        "sha256": "82f85c2a307a9d9a849b2b8f09bb5c1e026ad80a4ef0a633c903d30cca712476",
+        "role": "historical_cpr6_loaded_library"
+      },
+      {
+        "host_path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_local_cov60_cpr6_20261019/prepared/private_build/libkimera_vio.so",
+        "container_path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_local_cov60_cpr6_20261019/prepared/private_build/libkimera_vio.so",
+        "sha256": "6ce24c266b0f0e2561f0c05de2a661a72d5a4d9335df7c3cdfa0a4c77af9b4ae",
+        "role": "historical_cpr6_loaded_library"
+      }
+    ]
+  },
+  "input_file_sha256": {
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_local_cov60_cpr6_20261019/prepared/source.env": "e195b746cdeddfc415c11e6cf0d6c9254f2aeeb6ff40493a41fd0db05e3c205c",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_local_cov60_cpr6_20261019/prepared/kimera_vio_ros.launch": "63b059d1b6bbed540058733871fbed86781962090eeadbfab0fed9de7f829aca",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_local_cov60_cpr6_20261019/prepared/glim_profile.launch": "e620fa33354a76b4d6075b7f35940360b039b25aa1888c62134fa7d98f9757dd",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_local_cov60_cpr6_20261019/prepared/receiver_fl4e.sh": "5e36f72dab0a65f325c6fad11c3547742f90e6ad63acf4297d34cbe70c8fcb05",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_local_cov60_cpr6_20261019/prepared/live60_off.json": "993f0151dc7984e8ab0ebf7ed6923f6e55534d3565287633792a40dd3fb0c59f",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_local_cov60_cpr6_20261019/prepared/live60_on.json": "08301ea3f8481437077f5d4f4a37ee3630b617de08199fb2451aeb1dcbdc662f",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_local_cov60_cpr6_20261019/prepared/live60_off_source/effective_mode_check.json": "7a34c11347d2a0b863b198b3ba2a6607ceb743a358c42d1ff7c7b5ade54e9ffd",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_local_cov60_cpr6_20261019/prepared/live60_on_source/effective_mode_check.json": "82fd0f154460fd1116d6cb6b92cf1239c95c30190abac215fc27048598078cbc",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_local_cov_full_cpr7_20261019/prepared/source.env": "a05a81140544eff9ffcf234ea3f553627c80ac2e592b99075b62d87b076b19bf",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_local_cov_full_cpr7_20261019/prepared/kimera_vio_ros.launch": "63b059d1b6bbed540058733871fbed86781962090eeadbfab0fed9de7f829aca",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_local_cov_full_cpr7_20261019/prepared/full_off.json": "0efc4a067139aeb05ed1bf1a2f8b3bbe80cc1e2240e9d82e95859e7c5a405aea",
+    "/home/yeranis/repos/gnssFGO/experiments/fixed_lag_slots_fl3i_20261014/Receiver.h": "77721325d0b7dead1f7774d44a9024775610fb77891046c22af29153cf076699",
+    "/home/yeranis/results/gnssfgo_fixed_lag_failure_fl4e_20261014/candidate_live": "53c96a2b7a762800cf2291166dc78520269098684411de641b52bee6a54dc5c9"
+  },
+  "checks": {
+    "cpr6_profiles_off_on_identical": true,
+    "cpr7_profiles_match_cpr6": true,
+    "cpr6_kimera_argv_equal_after_mode_path_normalization_preserving_repeated_flags": true,
+    "cpr6_effective_source_settings_equal_except_receive": true,
+    "cpr6_loaded_private_library_paths_equal": true
+  },
+  "blocker": "No existing Kimera backend setting validates the requested full temporary-CBS matched run. FL4Q=1 fails OFF at531; FL4Q=0 passes bounded OFF but ordinary ON needs recovery at495 after severe IMU error growth. Neither is promoted.",
+  "forbidden_shortcuts": [
+    "different OFF/ON backend policies",
+    "persistent CBS or FL4M retain without explicit method decision",
+    "covariance or lag tuning",
+    "guard bypass",
+    "shell-only override of hard-coded nested FL4Q setting",
+    "reusing existing output directories",
+    "relaunching known failure without a distinct validated change"
+  ]
+}

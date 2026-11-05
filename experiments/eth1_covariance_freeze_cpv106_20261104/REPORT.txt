@@ -1,0 +1,142 @@
+CP-V106 — saved ON covariance-revision intervention,2026-11-04
+Completed two receiver-only replays; no new sensor/source capture.
+
+RESULT
+The Kimera covariance-revision schedule makes a material causal contribution
+to fusion's ATE against IE-TC in this fixed saved ON stream. Holding only the
+covariance at each interval's first accepted full6x6 matrix improves common-
+mask ONLINE ATE44.44% and seven-second-finalized ATE52.04%. Every source mean
+revision, physical endpoint, stable ID, arrival/order and remaining receiver
+setting was preserved. The unchanged replay reproduced the original outputs
+bit-for-bit before the variant was allowed to start.
+
+This isolates the effect of the full covariance schedule on this stream; it
+does not identify which covariance block/direction is responsible, prove the
+exact source-side mechanism, or qualify freezing as a production solution.
+It is not a fresh live OFF/ON comparison. No source CBS behavior was changed.
+
+The inflated ONLINE path and short-distance RPE barely change. Therefore the
+covariance-related global accuracy problem and the ONLINE short-scale jitter
+are distinguishable problems. The intervention improves ATE, not every metric.
+
+EXPERIMENT IDENTITY / PARITY
+Original: CP103 full346.32s ETH1 live CBS-ON, with corrected-private Kimera,
+GLIM and CP-K19 fusion. Replay reads the complete regular events.csv, not FIFO,
+in its original order with original recorded arrival timestamps. Wall-clock
+execution is accelerated; this is not a latency or real-time capacity test.
+Runtime is the same existing Ubuntu container and exact receiver binary:
+4b08a7f5ba97f5e4ec22959df23367df79eebf5d644dc19d939747dcd4566d6e.
+Both replay processes loaded identical17mapped executable/library hashes.
+Original wrapper keepsCPU2, oneTBB/OpenMP thread, original cache flags,
+source_wnoa/Qcx1,7s lag,100ms CPT7 clock,59startup,priors,stable-ID replacement
+and seal_at_absorption/EOF unchanged. No central IMU or GNSS factors were added.
+
+Baseline exact parity PASSED:
+- Both3456-row ONLINE/finalized state tables and both TUM trajectories.
+- Complete summary and all211422archive commit/terminal/expired files.
+- All237614logical progress rows. Only host wallclock/service/RSS were ignored.
+- Original common and full-native CP104 direct-EVO scores/paths reproduced.
+The baseline took155.13wallseconds; the variant151.11. These are replay wall
+times, not the original live performance or a benchmark across configurations.
+
+INTERVENTION / CONSERVATION
+First accepted covariance selected from actual original insertion records for
+all1472inserted Kimera IDs and matched back to incoming revision/ordinal/time.
+Only35249Kimera covariance rows changed:35115later accepted replacements and
+134expired rows. First insertion matrices and25pre-initialization exclusions
+remain unchanged. All36746Kimera means/revisions and166249GLIM rows unchanged.
+All34618clock rows and the sole EOF row are unchanged. No endpoint snapping,
+resorting, time reconstruction, smoothing or input mean changes.
+
+Full dense6x6 cross terms preserved; no scalar scale, diagonalization or GT
+fitting. Initial matrices are SPD (minimum eigenvalue7.38997e-9), maximum
+asymmetry3.39e-21. The defined diagnostic noise model is Z_revised Exp(epsilon)
+with epsilon covariance C_first in the same right-local CPT7 body basis.
+It is NOT transport of the original posterior about a new mean; no extra sensor
+adjoint is appropriate. Synthetic right-retraction checks pass4.31e-17. The
+runtime GTSAM header selects POSE3_EXPMAP; the pinned factor uses Pose3 Local
+about the current measured relative pose and its supplied full covariance.
+
+Variant actual consumed matrices verified for36587accepted Kimera versions,
+covariance payload error0; mean Log/Exp roundtrip error2.24e-14. Summary exactly
+matches original and baseline:202995versions =4924insertions+197912replacements
++25pre-init+134expired;4857absorbed/67active,0duplicate/stale/unsupportedEOF/
+pending,3456ONLINE/3456finalized states,71retained supports,174peak slots.
+All support/publication/availability timestamps unchanged. Expiry audit passes;
+134expired revisions of21Kimera IDs remain omitted after absorption. Their
+unchanged mean differences do not establish that those omissions are harmless.
+
+COMMON-MASK SCORES — PRIMARY CONTROLLED COMPARISON
+Method1 direct EVO1.36.3, SE3/no-scale alignment at the same calibrated prism
+point, versus IE-TC. RPE delta0.5m pairs selected on REFERENCE distance.
+Original covariance revisions -> first-accepted Kimera covariance held:
+
+Output        ATE RMSE m           tRPE RMSE m          rRPE RMSE deg       Path m
+ONLINE        .09433461->.05241466  .03649227->.03660302  1.744175->1.745136  214.14590->214.05005
+DELAYED7s     .09133572->.04380850  .01282574->.01327796  .323322->.322830    201.96974->201.97134
+
+Same reference path201.37418m,2966queries,365distance pairs. Same CP104 mask,
+296.3s supported/346.32s (85.5567%),3segments. Common envelope3.744604–
+301.744604s;44.575396s end tail omitted.454of3420original grid queries excluded.
+No new mask selected to favor the intervention and no gaps filled/bridged.
+Common ATE improvement44.4375% ONLINE,52.0357% DELAYED.
+Translation RPE worsens0.3035% ONLINE and3.5259% DELAYED; rotation RPE worsens
+0.0551% ONLINE and improves0.1520% DELAYED. These are not uniform improvements.
+
+FULL-SAVED RECEIVER CADENCE — SEPARATE FROM COMMON MASK
+Each output has3456poses/345.5s support (99.7632% of346.32s), from0.728079 to
+346.228079s,100ms steps, no receiver-output gaps;366reference-distance pairs.
+Full reference path201.47755m. No source-native cadence is mixed into this table.
+
+Output        ATE RMSE m           tRPE RMSE m          rRPE RMSE deg       Path m
+ONLINE        .09503443->.05696725  .04350196->.04361617  2.435615->2.436439  222.79317->222.70192
+DELAYED7s     .09160238->.04872428  .01246380->.01282066  .268776->.266539    202.79474->202.77976
+
+Full-native ATE improves40.0562% ONLINE and46.8089% DELAYED, so the ATE finding
+is not confined to the shorter common mask. Path lengths are estimated
+polylines, not physical travel. DELAYED is7s fixed-lag-finalized, not ONLINE or
+full-history smoothing. No source GLIM/Kimera trajectory or result was rerun.
+
+INTERPRETATION AND NEXT DECISION
+CP105's late-revision confidence/error mismatch now has an intervention result:
+changing just that weighting schedule substantially improves the global
+trajectory fit in this saved stream. Random source outcomes or changed event
+timing cannot explain the difference between these two replays: all such
+inputs were held fixed and baseline reproduction was exact.
+
+This does NOT prove that every later covariance is wrong, that the initial
+matrix is calibrated, that covariance contraction alone is universally bad,
+or that persistent peer feedback is the uniquely established source of the
+problem. The first matrix can also be miscalibrated; different IMUs do not
+eliminate cross-source/overlapping-belief correlation. The intervention changes
+all6x6 directions, not translation trace alone. A principled revision/correlation
+policy needs separate development and validation; no production setting was
+changed or promoted. The earlier Kimera exact-anchor prior-preservation fix
+is a distinct issue and was neither changed nor reverted.
+
+ONLINE jitter remains: nearly unchanged path excess and short-distance RPE
+despite much better ATE. Further investigation should treat current-state
+prediction/publication behavior separately from covariance generation and
+revision weighting. No extra ablation, new sequence, source run or replay is
+automatically authorized by this result.
+
+IE-TC shares CPT7 with GLIM and is not independent Leica/prism ground truth.
+These scores do not certify true covariance calibration, nonlinear stationarity
+or estimator health. The missing right image203.898841154s and inherited source
+keyframe gaps/tail remain in the fixed saved source record.
+
+EVIDENCE / SAFETY
+PROTOCOL.txt,prepared.json,input_sha256.json,first_accepted_covariances.json:
+predeclared intervention and exact source inputs; baseline_parity.json:
+bit-identical control; validation.json/expired_details.json: actual consumption
+and omissions; results.json/evaluation/:24direct EVO CLI calls, commands and
+archives; report_verification.json:75evaluation pins, exact masks/365pairs,
+CLI/API error-array parity0,TUM roundtrip max1.69e-15.
+covariance_intervention.png displays trajectories and existing EVO error arrays.
+
+Initial host ldd rejection happened before any replay/container launch; host
+lacks Boost1.74. Original Ubuntu runtime used instead, with no installation or
+rebuild. See PREPARATION_REPAIR.txt and host/container ldd evidence. Exactly one
+baseline and one variant receiver ran, both exited0. Ubuntu restored stopped;
+cbsms stayed stopped. closeout.json/complete.json seal old evidence/protected
+and Hesai checks and exact owned process exits. All old runs remain untouched.

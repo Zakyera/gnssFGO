@@ -1,0 +1,14 @@
+CP-V16 setup failure, preserved2026-10-26.
+The controller exited1 before pin_inputs/build/model audit/any receiver replay.
+Cause: copied Python half-control verification list incorrectly included the
+quarter variable before its assignment (run.py line102). Not a model, covariance,
+dataset, solver or resource failure. failed.txt preserves the full traceback.
+The output root exists but is EMPTY; no OFF/ON output or binary was generated.
+Only start.json/source_delta.json were produced before the error. No gate relaxed.
+Owned controller exited; docker top showed only container startup daemons.
+Both containers restored stopped, Noetic never started by this task.
+Original frozen files remain unchanged. Fresh setup-only repair CP-V16A lives at
+../leica2_motion_prior_tenth_cpv16a_20261026/; same requested0.1candidate and gates.
+Its corrected half/quarter historical-check blocks were executed read-only and
+passed before launch. Receiver/Live/Trace/model-audit bytes identical to this
+attempt. This is not a source or numerical retry; no experiment ran in CP-V16.

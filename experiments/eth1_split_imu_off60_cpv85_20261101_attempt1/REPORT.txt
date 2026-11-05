@@ -1,0 +1,32 @@
+CP-V85 ETH1 split-IMU OFF60, fresh launch-only attempt1.
+PILOT FINISHED; KIMERA UNHEALTHY. Final report: report_completion_1/RESULTS_REPORT.txt
+and results.json. Original launch/validation/report failures retained separately.
+No sensor data from the original attempt; all failed evidence retained and pinned.
+GLIM CPT7 / Kimera Alphasense, source-only, no CBS ON/fusion/full campaign.
+Launched19:09:17local supervisor223871/controller223873(start10131236).
+2671protected/Hesai667/preflight PASS;12.60GBfree exceeds10GiB guard.
+Controller exclusively owns capture->coverage/zero-injection->restore->EVO.
+One actual60s playback finished; original frontend-count gate failed597<598.
+saved_report_1/source_coverage.json reconciles601received stereo pairs exactly:
+3before initialization +597processed +1terminal frame beyond last IMU by1.4386ms.
+All5986CPT7/11972Alpha IMU headers equal raw inputs element-for-element.
+No source retry. Original strict guard is still failed; supplemental endpoint
+audit passes. Containers restored19:15:45;2671protected/Hesai667 pass.
+All12EVO CLI scores produced once. Post-score diagnostic helper then wrongly
+required cpt7_imu for native Kimera input; report_completion_1 parses actual
+alphasense_imu explicitly and reuses/verifies existing EVO archives, no rescoring.
+Method1 COMMON100ms56.0s/60 (93.333%), same physical prism, EVO SE3/no scale:
+GLIM/Kimera ATE0.047968/23.192259m;0.5m tRPE0.032890/13.281672m;
+rRPE0.545846/0.932099deg; estimated paths25.843993/1323.428703m vs25.304035m.
+Full-saved native cadence ATE0.047135/24.126003m, paths26.237749/1704.070396m;
+591/284rows; no-gap support58.999369/56.399676s. Kimera startup keyframe gap
+3.199979s excluded from common sampling; raw frames nevertheless received.
+Kimera previous-state revisionp9537.122535m/max75.824811m;282pairedsteps,
+one missing step ID2. Shape revisionp955.666327m/max10.102559m. Native incremental
+parity residual4.89e-11m; source-to-export error1.44e-15, EVO CLI/API error0.
+Kimera optimize mean159.646ms/p95205.340ms.6750logged covariance matrices,
+median rotationtrace2.58800e-8rad2/translationtrace9.23109e-4m2; not calibrated.
+This establishes operational separate-IMU routing, NOT a healthy Kimera estimate.
+No CBS ON/fusion/full run or shared-vs-split causal claim. Diagnose the native
+Alphasense baseline before further integration; no tuning performed.
+IE-TC sharesCPT7, not independent prismGT; estimated polyline is not physical travel.

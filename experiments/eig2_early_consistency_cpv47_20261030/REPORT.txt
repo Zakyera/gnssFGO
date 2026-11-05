@@ -1,0 +1,193 @@
+CP-V47 -- EIG-2 CBS-ON early state / IMU consistency diagnosis
+2026-10-30. Saved-data inspection complete; root cause NOT established.
+
+DECISION
+The saved data do not show a lost revised state, missing current-bias correction
+inside GTSAM's IMU prediction, or incorrect IMU interval duration. They DO show
+a mixed-reference initialization: the new pose's rotation uses raw preintegrated
+rotation at an older integration bias, while the new velocity uses prediction
+corrected to the latest backend bias. This is a concrete, narrowly testable lead,
+not proof of the large CBS-ON oscillation's cause and not an implemented fix.
+
+No source replay, new optimization, covariance investigation, weight change,
+production modification, ATE/RPE scoring or promotion was performed. All values
+below describe existing CP-V42/44 evidence, not a new full-sequence result.
+
+1. FIRST OBSERVED DIVERGENCE
+Saved CP-V42 corrected matched OFF/ON active poses are exactly identical for
+updates1--5. They first differ at update6, 1.3999868s after first native output,
+coinciding with the first accepted GLIM belief: sender gp5->gp7, receiver x4->x5.
+That belief constrains an older edge, not the newly added x5->x6 edge.
+
+At6 the pre-solve IMU objective is exactly3771.6934590387077 in BOTH runs. After
+the ordinary solve and configured refresh, the final IMU objective is .05313657
+OFF versus1.34647549 ON. Maximum OFF/ON active pose disagreement after6 is
+8.36515mm / .390039deg. This localizes the first visible change to admission6;
+it does not, by itself, identify an erroneous factor, initialization or solver.
+
+Selected inter-update NET old-window tilt (degrees) and final IMU objective:
+update     OFF tilt    ON tilt     OFF IMU        ON IMU
+  5         .008696    .008696       .019104       .019104
+  6         .020588    .088487       .053137      1.346475
+  7         .022715    .124872       .136902      4.795769
+ 10         .024386    .395146       .308135     11.222091
+ 15         .084379    .332968       .430728     12.785004
+ 20         .284937   2.149253      1.130374    170.605864
+ 21         .148567   1.230837      1.311339    189.383520
+ 22         .609217   4.922904      2.138766    183.224483
+ 24        1.513270   7.639344      2.636640   4754.309389
+ 25         .327112  11.125647      7.840233   1419.278569
+
+These are changes in the estimated window between updates, NOT reference-based
+attitude errors, nonlinear stationarity certificates or physical flight motion.
+CP-V44's observer prefix first differs from CP-V42 ON at6 too (.264254mm /
+.005692deg at that update); its later full snapshots are not an exact replay
+of CP-V42. early_analysis.json retains both histories, source lines and hashes.
+
+2. NATIVE INITIALIZATION CHECKS: CAPTURED UPDATES21--25
+The frozen profile uses pose_guess_source=2 (STEREO), one-point stereo rotation
+guidance, addBetweenStereoFactors=0 and numOptimize=1. The configured additional
+refresh remains part of these saved runs. A stereo pose guess need not equal an
+IMU-predicted pose: disagreeing estimates alone are not a programming defect.
+
+For all five snapshots:
+- Previously revised old states enter ordinary initialization unchanged to
+  numerical tolerance (maximum local-coordinate difference1.431e-17).
+- For four available consecutive transitions, previous after_refresh equals
+  next before_ordinary to2.876e-17 aggregate local-coordinate norm.
+- New bias equals the latest backend bias exactly.
+- New velocity equals PIM.predict(previous revised NavState, latest bias)
+  exactly. Thus it is NOT computed from the stale absolute output history.
+
+The new pose's rotation, however, equals previous revised rotation multiplied
+by raw PIM.deltaRij() in every captured case (maximum discrepancy4.320e-15deg).
+It does not equal the current-bias-corrected predicted rotation:
+
+update  raw-vs-current-bias rotation  stereo-vs-IMU position  velocity difference
+               degrees                       metres             m/s
+ 21            .051770                       .019793              0
+ 22            .121525                       .031275              0
+ 23            .032530                       .010569              0
+ 24            .042255                       .024978              0
+ 25            .118708                       .066784              0
+
+The position differences are stereo initialization versus IMU prediction,
+not ground-truth errors. The raw/current rotation differences exactly account
+for the initial rotational IMU residual. They are much smaller than the later
+whole-window tilts; they must not be equated with those tilts.
+
+3. WHY THE TWO BIAS REFERENCES DIFFER
+At22--25, the newest PIM integration reference (biasHat) exactly matches the
+latest published bias from k-2, rather than the revised latest state at k-1.
+The earlier complete snapshot needed for this comparison at21 is absent.
+
+The inspected native frontend lifecycle explains this ordering: it integrates
+the interval, produces the keyframe/PIM and resets integration using the cached
+bias before that keyframe is optimized by the backend. The later backend update
+publishes a new bias. The next keyframe's raw integration therefore still has
+the older reference. This is not evidence of a thread race or lost callback.
+
+Native rotation-guided stereo uses raw deltaRij(), transformed into the camera
+frame; its stereo pose retains the supplied rotation. The backend initializes
+the pose from this stereo motion but initializes velocity using current-bias
+IMU prediction. Code inspection and the five numerical rotation identities
+agree on this mixed reference.
+
+An older biasHat is NORMAL for a stored preintegration factor when correction
+is applied. GTSAM predict()/ImuFactor do apply current-bias correction; the
+audit confirms the predicted state is self-consistent (maximum norm1.182e-17).
+The question is whether the frontend-guided pose seed becomes harmful under
+large ON bias revisions, not whether GTSAM forgot its bias correction.
+
+4. IMU PRESERVATION / TIMING / INITIAL RESIDUALS
+25 unique stored PIMs,340 appearances and315 repeated byte comparisons show
+unchanged preintegrations across captured phases and update history. All455
+inspected factor/state rows have deltaT matching their exact endpoint timestamp
+differences to1.666e-16s. This rules out an interval-duration mismatch in these
+saved factors, not every possible sensor synchronization/calibration problem.
+
+At initialization, the newest factor contributes99.915--99.989% of the total
+IMU cost across the five updates. Example25:
+phase           newest cost       rotation deg   position m    velocity m/s
+initialized     9608845.353067       .118708       .066784        0
+after ordinary    88618.659941       .009710       .008199        .026359
+after refresh        53.574008       .000086       .000166        .000373
+
+At25 the old-vs-current bias prediction difference is .032329m in position,
+.323446m/s in velocity and .118708deg in rotation. The initial velocity already
+uses the corrected prediction. Large weighted cost alone does not prove a bug;
+we have neither interpreted nor changed covariance/weights. The visible pose
+and velocity inconsistencies are retained separately from weighted objectives.
+
+5. WHAT THIS DOES NOT YET ESTABLISH
+- Full X/V/b/PIM/native graph snapshots begin at21, not at first admission6.
+  Early pose/cost chronology cannot prove the complete first causal chain.
+- No raw IMU reintegration: accuracy of first-order bias correction under the
+  larger bias changes has NOT been checked against re-integrated raw samples.
+- No runtime frontend bias-reset receipt or complete early visual-inlier
+  history (log_output=false). Native smart-factor observations saved at21--25
+  do not establish exactly how frontend matching first changed at6.
+- Current frontend/GTSAM source is hashed code-inspection evidence, separately
+  from archived CP-V40/44 backend code and saved native checkpoint results. It
+  is not asserted to be every archived compiler input of the original run.
+- Altering only a backend seed would not reprocess frontend pixels, restore
+  discarded observations or change their earlier rotation-guided selection.
+- Previous CP-V43 frame/mean routing checks and CP-V46 exact-CBS-Jacobian
+  ablation remain separate evidence. Neither is overwritten or relabelled.
+
+6. NEXT BOUNDED TEST -- PROPOSED, NOT EXECUTED/AUTHORIZED HERE
+Use these SAME five pre-ordinary saved checkpoints. Reproduce the unmodified
+ordinary step, then change ONLY the newly initialized pose rotation to the
+current-bias IMU-predicted rotation. Retain stereo translation, velocity/bias,
+all old states, native visual measurements/factors, CBS, priors and weights.
+Apply the same ordinary and configured refresh steps in both arms.
+
+Measure actual old-window tilt/state differences, native IMU residuals, native
+visual activity and objective changes. A lower initial IMU cost is expected by
+construction and is NOT sufficient success. If subsequent large tilts remain
+essentially unchanged, reject this backend-seed explanation and do not spend
+a full run on it. Even a clear improvement would only justify a bounded live
+validation; it would not prove the original first-admission cause is solved.
+
+This rotation-only comparison is narrower than switching to a wholly IMU-based
+pose guess, which would change translation too and confound the identified lead.
+No full rerun, CBS weight change or covariance work is proposed at this stage.
+
+7. IMPLEMENTATION / EVIDENCE / CLOSEOUT
+H = /home/yeranis/repos/gnssFGO/experiments/eig2_early_consistency_cpv47_20261030
+P = /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_early_consistency_cpv47_20261030
+Q = /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_on_checkpoint_cpv44_20261029
+
+H/early_analysis.json: early exact-timestamp pose/cost/admission chronology.
+H/analysis.json: combined checks, per-update initialization/residuals, hashes.
+P/attempt_api1/results/: native rows and15before/after nonmutation snapshots.
+P/rotation_join.log: direct raw/current-bias rotation identity joins.
+H/complete.json: final integrity, job/container restoration and output hashes.
+
+Initial inspector compilation failed solely because the installed GTSAM
+computeError API requires three explicit optional-Jacobian arguments. Original
+source/compiler log/failure.json are preserved. Fresh attempt_api1 adds only
+those omitted arguments; Release and ASan/UBSan geometry fixtures pass, then
+read-only native inspection completes. No failed numerical result was retried.
+The supplemental rotation join is Release-only; vendor DSOs were not sanitizer
+instrumented. Inherited OpenCV3.4/4.2 linker warnings are retained in logs.
+
+Source anchors under /home/yeranis/repos/V4RL/cbs_gtsam4.3:
+- runs/kimera_on_incremental_refresh_cpv40_20261029/VioBackend.cpp:4444--4500
+  revised previous NavState, current-bias predict and stereo pose initialization.
+- same file:5496--5537 latest optimized X/V/b and frontend bias callback.
+- src/Kimera-VIO/src/frontend/StereoVisionImuFrontend.cpp:131--154,203
+  preintegration copy, raw rotation and reset-before-keyframe-return.
+- src/Kimera-VIO/src/frontend/Tracker.cpp:622 supplied stereo rotation retained.
+- src/Kimera-VIO/include/kimera-vio/imu-frontend/ImuFrontend.h:124--142
+  bias cache and integration reset.
+- src/gtsam/gtsam/navigation/PreintegrationBase.cpp:117--151
+  prediction and factor error using corrected bias.
+- src/gtsam/gtsam/navigation/ManifoldPreintegration.cpp:112--141
+  stored-reference first-order bias correction.
+
+Final checks:7406 protected files;15native snapshot nonmutation checks;
+four-sequence Hesai checkpoint667files plus originals. Both originally stopped
+containers restored, owned inspection/build processes exited. Exact receipts
+and final verification outcome are recorded in complete.json. No algorithm fix
+or improved accuracy is claimed by this diagnostic completion.

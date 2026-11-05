@@ -1,0 +1,160 @@
+CP-V109 — Where EIG-2 CBS-ON fusion diverges from OFF
+2026-11-04. Saved CP108 data only; no estimator/receiver run, replay, new EVO
+score, covariance intervention, tuning, build, installation or deletion.
+
+BOTTOM LINE
+The ON penalty is mostly a sustained trajectory-shape/drift discrepancy, not
+one catastrophic ON spike. It persists in seven-second-finalized output.
+The most useful investigation regions are50–70s and275–310s;170–178s is another
+large accumulated-error region. Kimera's ON means are not uniformly better at
+the relative-belief level, despite the major improvement in its full trajectory.
+Matched, mature belief covariances also tighten more than the pooled median
+suggested. Both observations support a weighting/correlation concern, but this
+read-only analysis does not identify an exclusive causal mechanism.
+
+TIME AND METRIC CONTRACT
+Times are seconds after the selected EIG-2 window starts at
+1730638816563546034ns (5.7s after the bag epoch). Use +5.7s for bag-relative time.
+All trajectory-error comparisons reuse CP108's3532-row six-curve common100ms
+mask, same physical prism point, exact saved global SE3/no-scale alignments and
+EVO error arrays. No window-specific alignment or new ATE scoring.
+ONLINE whole-window ATE remains.083176073OFF/.134650440ON m. Separately,
+seven-second-fixed-lag-finalized ATE.078442387/.132309659m. Not full-history.
+Per-window RMS below is a subset of those globally aligned errors, NOT a new
+independently aligned window ATE. Invalid gaps remain invalid.
+
+ONSET: GLOBAL ALIGNMENT IS NOT A CAUSAL CLOCK
+The globally aligned curves differ even near the start. A global fit depends on
+later drift, so that alone cannot date a failure. Independent same-initial-frame
+comparison verifies identical initial ONLINE timestamp,position,quaternion:
+- ONLINE OFF/ON separation stays>1cm from7.936s through353.736s.
+- It first stays>2cm for5s at10.736s; continuously>2cm from39.236s.
+- It stays>5cm from53.136s through353.736s; finalized from53.736s.
+These are diagnostic thresholds, not significance tests or proof of onset.
+There is no single discontinuous failure at53s; separation builds over time.
+The finalized series can change earlier states using later data, so its plotted
+state timestamp is not the wall/arrival time when a correction became available.
+
+LOCALIZATION TABLE — SAVED GLOBAL POSITION ERROR RMS
+Interval(s) | ONLINE OFF->ON(m) | finalized OFF->ON(m) | interpretation
+50–70       | .086577->.126583 | .081970->.121044 | first sustained>5cm separation
+138–146     | .178778->.173663 | .129090->.150997 | shared difficult region; OFF spike larger
+170–178     | .068831->.181654 | .068280->.180967 | sustained ON excess, not a publication-only spike
+275–290     | .061697->.135345 | .062201->.139551 | late discrepancy starts growing
+298–304     | .079719->.213534 | .068672->.207127 | largest sustained ON peak
+310–350     | .026761->.136337 | .026572->.135295 | offset persists after local motion calms
+
+Exact51-sample/spanning5s ONLINE ON RMS peak at300.836s:
+ON.216663m/OFF.082852m over298.336–303.336s. Another peak175.236s:
+ON.183958/OFF.074203m over172.736–177.736s. Single-point maxima differ:
+OFF.405103m at144.136s; ON.312587m at143.036s. Therefore the worse ON ATE is
+not explained by a larger worst point. The280s-to-end region contributes39.51%
+of the net ONLINE ON-minus-OFF summed squared-error excess (38.75%finalized).
+
+AROUND THE REGIONS: ACTUAL RECEIVED BELIEFS
+Reconstructed actual first/age2.5/age4.5/final accepted-at-absorption versions;
+all10,379terminal payload markers match their received mean/full6x6 covariance.
+213742OFF/213750ON received versions accounted exactly. Paired cohorts:
+3450GLIM intervals,1615Kimera intervals; same physical endpoints in both modes,
+durations.18–.22s,endpoints3–348s, every age cutoff within.35s. Kimera has1627
+common physical intervals of1748OFF/1746ONunique: the12additional common
+intervals outside eligibility and all unmatched intervals are excluded, not filled.
+Terminal markers cover only absorbed IDs; active tail is not extrapolated.
+
+Residual convention Log(inv(Zbelief)*Z_IE), CPT7 right-local body, same endpoints.
+Translation values below are RMS tangent relative-reference discrepancies in mm,
+NOT trajectory ATE,0.5m EVO RPE, true NEES/NIS, or certified absolute accuracy.
+Covariance trace is the translation3x3 block of the full transported6x6, in mm2.
+
+Window | Kimera residual OFF->ON(mm) | mean final trace OFF->ON(mm2)
+50–70   | 2.821->4.612               | .2956->.3227
+165–180 | 6.200->5.935               | .7181->.3684
+275–290 | 2.943->4.190               | .4964->.3338
+290–310 | 5.057->5.325               | .6421->.3754
+
+At50–70s the ON first-arriving Kimera relative residual is14.133mm versus
+3.296mmOFF; revisions improve it to4.612mm, still worse than2.821mmOFF.
+GLIM final relative residual improves8.668->7.281mm there. The gauge-invariant
+5s native-trajectory relative-translation diagnostic likewise worsens for Kimera
+.0453->.1050m while GLIM is essentially unchanged. Fusion finalized5s local
+error rises.0408->.0565m. This points to a local ON Kimera mean discrepancy,
+not a general deterioration of both sources. Its final trace is slightly HIGHER
+than OFF here, so covariance reduction alone does not explain this region.
+
+At165–180s Kimera final residual improves only~4.3%, while mean trace almost
+halves. GLIM improves4.736->4.517mm. The large trajectory offset is accumulated:
+finalized5s relative error is nearly unchanged.0432->.0438m; it is not evidence
+of a new giant native jump at175s. The globally aligned ON error here is mainly
+vertical (mean z error~.173m over170–180s).
+
+At275–290s Kimera final relative residual is42.3%larger in ON, yet mean trace is
+32.8%smaller. Its ON trace falls.6479->.3338mm2 between age2.5s and final,
+while residual changes only4.256->4.190mm. GLIM improves8.628->6.225mm.
+At290–310s Kimera final error is5.3%larger and mean trace41.5%smaller.
+GLIM again improves7.761->6.295mm. This is the strongest localized evidence
+that the fused system can trust a slightly biased Kimera increment too strongly
+relative to its actual discrepancy; it does not establish the full solver's
+effective directional weight or prove causal attribution.
+
+COVARIANCE: THE POOLED SUMMARY WAS INCOMPLETE
+Across1615same Kimera intervals, median ON/OFF translation trace:
+first1.1663,age2.5s1.1030,age4.5s.7649,terminal.5955.
+Within ON, paired median age2.5s->terminal trace ratio.53754 (46.25%decrease);
+OFF.98525 (1.47%decrease). Ratio of mean traces in ON.38553 (61.45%decrease),
+distinct from median paired ratio. Over the same ON cohort reference residual
+RMS changes7.6985->7.9679mm (3.50%worse), not an improvement accompanying
+the tighter matrix. All six generalized covariance directions contract late for
+62.35%of ON intervals versus8.42%OFF; thus not only a trace bookkeeping effect.
+GLIM late trace is effectively constant and terminal ON/OFF median1.00214.
+This does not mean all covariance reduction is wrong: ON improves the severe
+Kimera OFF problem around140–150s substantially. Pooling that interval with
+the rest hides the relationship between ordinary residuals and mature weights.
+
+SOURCE REVISIONS / TRANSPORT / OMISSIONS
+The140–146s region has real large OFF Kimera revisions:4.810m at143.199s and
+5.626m at145.999s versus ON maximum.269m at143.199s. That explains why the
+largest OFF spike deserves separate treatment, not blame as the ON cause.
+No comparable catastrophic ON previous-pose revision occurs at the late peak:
+maximum.0323m in290–310s, at299.198s. Local mean discrepancies and accumulated
+drift can matter even without a reset or crash.
+Saved source/frame/payload/receiver gates pass. No expired revisions in either
+mode, no covariance payload error. Stable-ID revisions replace rather than
+stack. Cross-source/inter-ID information correlations remain unmodeled; persistent
+mixed-prior history/native-only information FALSE remains an accepted limitation.
+
+Timing does not show an obvious ON overload aligned with the late region:
+275–290s receiver queue-wait p95OFF19.41/ON19.67ms;290–310s19.58/18.89ms.
+First Kimera arrival median at290–310s.0990OFF/.1095ON simulation seconds;
+final revision age4.8954/4.9064s. These small differences do not certify that
+all arrival-order effects are irrelevant, but no large outage or expiry appears.
+The only ON unsupported EOF belief is at the recording end, after these peaks.
+Kimera's>0.5s native gaps begin after353.797sON/353.897sOFF; no gap filling.
+All3550raw stereo pairs matched. Thus neither the endpoint omission nor native
+tail gap explains the53s/175s/300s regions.
+
+WHAT IS ESTABLISHED / WHAT IS NOT
+Established: location and magnitude of discrepancies; persistence after seven-
+second finalization; local ON Kimera mean degradation in some regions; matched
+late covariance tightening without commensurate reference residual improvement.
+Not established: which persistent prior, cross-correlation, linearization,
+orientation/translation coupling or model assumption contributes how much to ATE.
+IE-TC sharesCPT7 and is not independent prismGT. Both sources show normalized
+reference discrepancies incompatible with taking these matrices as a certified
+uncertainty model; that comparison alone is not a calibration test. Incremental
+parity is not nonlinear stationarity or health certification.
+
+RECOMMENDED NEXT STEP — PROPOSAL ONLY
+Use these exact saved windows for a parity-first receiver-only controlled test:
+separate effect of revised Kimera means from its covariance schedule while
+holding all timestamps/order/IDs/GLIM/supports fixed. Any replay/intervention
+requires separate user approval. Do not tune a global covariance multiplier to
+ATE or launch another source run based on this diagnosis. A graph-provenance
+analysis is still needed to attribute tightening specifically to feedback.
+
+FILES
+fusion_error_timeline.png: error peaks and same-initial-frame separation.
+kimera_local_covariance.png: paired late trace ratios and local residuals.
+localization.json/localized.npz: saved errors,5s relative diagnostics,windows.
+belief_analysis.json/belief_cohorts.npz: received/terminal matrices and cohorts.
+findings.json: exact onset thresholds,local summaries and full-matrix tests.
+verification.json and complete.json: independent checks and original-input seals.

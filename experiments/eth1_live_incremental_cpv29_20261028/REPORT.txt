@@ -1,0 +1,69 @@
+CP-V29 — fresh full ETH1 Hesai CBS-OFF, live incremental GLIM observer
+FINAL: COMPLETED WITH EXPLICIT TERMINAL-RECEIPT ACCOUNTING,2026-10-29.
+Authoritative: final_closeout.json,verification.json,results.json,
+RESULTS_REPORT.txt. Original status.json/failed.json retain the reporting
+failure history and do NOT mean source capture failed. No source retry.
+
+Full saved, actual recorded outputs, method2 ATE RMSE / prism path metres:
+GLIM live incremental       .324791 /204.521962 (old .284405 /204.352749)
+Kimera native incremental  4.496229 /196.006964 (old4.496229 /196.006964)
+Fusion incremental         2.383948 /199.278569 (old2.245444 /199.220087)
+Reference path at these own native timestamps approximately201.03-201.48m.
+Own cadence/coverage differs. Matched old common-mask296.7s(85.6722%) retained:
+GLIM .338390/203.337336; Kimera4.500022/194.452418; fusion2.488463/197.573907.
+All values in the two preceding lists use incremental trajectories for BOTH
+RMSE and path. Reference is IE-TC/shared CPT7, not independent prism GT.
+
+Same fresh run absolute GLIM .046827m/205.011155m; fusion ONLINE absolute
+.164516m/236.813068m. Delayed finalized fusion .154099m/201.909903m, separately.
+Conclusion: live in-process incremental GLIM matches independent SAME-run
+reconstruction (max pose matrix difference2.193e-10) and actual ROS CSV exactly.
+Thus the earlier loss of absolute-pose accuracy is not fixed by relocating
+the chain calculation into GLIM. Do not attribute old/new capture differences
+to an accuracy improvement or claim the GLIM authors use this output policy.
+
+346.32s full source capture passed original LOCAL, Kimera lifecycle, receiver
+gates. GLIM recorded3454poses, Kimera1492keyframes, fusion3456supports. The
+2extra shutdown observer callbacks were not received on either GLIM ROS topic;
+bag confirms IDs0..3453exactly, no interior losses. These0.200008s of observer
+tail are kept but excluded from online metrics; see TERMINAL_RECEIPT_AUDIT.txt.
+Receiver report replay matches four outputs byte-for-byte,237463deterministic
+events and3456publication commits.1,678replay pins unchanged. No numerical retry.
+All7exported trajectories read back within4.24e-13;2,499protected files and
+30report inputs verified; four-sequence Hesai checkpoint PASS667files.
+Both containers stopped; all owned jobs exited. No ON run or default promotion.
+
+Historical preparation/progress/failed-reporting evidence follows unchanged:
+Scope and frozen settings: PROTOCOL.txt. No ON run or tuning.
+
+Private output observer built successfully; normal and ASan/UBSan tests each
+passed11,921checks including3,454saved ETH1 paired updates. Maximum matrix
+difference against independent method2 chain:1.927e-11. Vendor GTSAM was not
+sanitizer-instrumented. Original binaries/settings preserved.
+
+Prepared harness: prepared.json and harness.diff. Controller run.py is finite,
+exclusive, OFF-only, stops on any gate failure and never retries. Source run
+status and final evidence are authoritative in status.json/start.json and
+prepared/full_off_control. launch.json alone is not evidence of playback.
+
+Source capture not yet launched when this initial report was written.
+After source gates: one saved-journal reporting replay, strict byte parity,
+live GLIM vs independent same-update reconstruction and all-three scoring.
+Absolute, causal incremental and delayed finalized products remain distinct.
+No new chained covariance/velocity, no output feedback, no author-performance
+claim. IE-TC shares CPT7 and is not independent prism ground truth.
+
+2026-10-28 23:57 local — source playback CONFIRMED. ControllerPID140596,
+launcher/inhibitorPID140594; effective settings gate PASS. All three estimators
+publish; first64original and incremental GLIM ROS rows match counts/timestamps,
+Kimera20rows, fusion65publications, transport queued0. This is startup evidence,
+not full-run validation. Controller continues exclusive capture/gates/scoring.
+Initial permission-review timeout executed nothing; confirmed absent receipts
+before one successful launch retry. No duplicate source run occurred.
+
+Finished 2026-10-29T00:26:55.038669+02:00: STOPPED/FAILED
+{"failure": {"stage": "fusion_reporting_replay", "error": "AssertionError(('fusion_reporting_replay', 1))", "at": "2026-10-29T00:26:36.926470+02:00"}, "cleanup_error": null}
+No automatic retry, no ON capture, no default promotion. Sleep inhibitor releases on exit.
+
+Reporting repair 2026-10-29T00:52:34.901659+02:00: FAILED
+No source rerun or setting change. Original reporting failure retained; see reporting_repair_status.json and closeout.

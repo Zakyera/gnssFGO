@@ -1,0 +1,22 @@
+CP-V88 prelaunch review,2026-11-02.
+Single user-authorized60s ETH1 Alpha bias-random-walk-only ablation. No ON/fusion.
+New roots,port11589; no previous capture reused or overwritten.
+Preparation copied CP85 Alpha source harness/profiles/private binaries and CP86
+finite controller/coverage/evaluation ownership. All prior scripts remain parked.
+Only estimator model changes: acc biasRW .0043,gyro biasRW .000266. Freeze verifies
+every profile/binary byte against CP85, allowing exactly those two scalar lines.
+The unchanged ImuParams provenance comments refer to original CP85 calibration;
+the two new biasRW values are experimental overrides,NOT author Alpha calibration.
+Harness-only changes: fresh paths/session/port; corrected saved-input/init/EOF
+conservation (CP86 adapted to Alpha lastIMU); before-playback copied-profile check;
+saved-only evaluation of Alpha body with explicit prism transform and saved CP86
+control reuse only after timestamp/reference/pair identity. No guard relaxed.
+GLIM retains Hesai/CPT7; Kimera retains Alpha200Hz,raw calibration,timing,white
+noise,initial priors,initializer and current private binary. Both receiversOFF.
+Both containers must be stopped;10GiB initial/5GiB runtime guards; no deletion.
+Freeze validates syntax,old terminal hashes,protected files,Hesai667 and port.
+Controller owns one capture,coverage,cleanup,EVO/report. No independent stage
+competitor or source retry. On failure preserve evidence. Report-only repair
+must use a fresh supplemental root and must not repeat the source capture.
+Outcome must distinguish report-process success from estimator health. A better
+result would support bias-model sensitivity,not prove all IMU calibration correct.

@@ -1,0 +1,218 @@
+CP-V23 — Full LEICA-2 Velodyne incremental-publication comparison
+2026-10-27 | COMPLETED SAVED-JOURNAL EXPERIMENT | NOT PROMOTED
+
+1. Decision
+
+The user's incremental-output hypothesis is supported as an explanation for
+much of the visible zigzag: chaining same-update relative motions reduces
+100ms errors and excess estimated travel. But it is NOT a complete accuracy
+fix. Pure chaining loses useful accumulated graph corrections, and full-path
+ATE plus 1s translation/rotation RPE worsen in BOTH modes. A shorter path alone
+would have given the wrong acceptance decision. Original outputs are retained.
+
+No full sensor rerun was needed. One complete OFF and one complete ON receiver
+replay reconstructed the missing same-publication pose pairs from saved
+journals. Neither GLIM nor Kimera nor rosbag playback was launched.
+
+2. Scope and provenance
+
+H = /home/yeranis/repos/gnssFGO/experiments/leica2_incremental_full_cpv23_20261027
+R = /home/yeranis/results/gnssfgo_leica2_incremental_full_cpv23_20261027
+P = /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared
+
+Inputs: P/full_off_receiver/events.csv and full_on_receiver/events.csv;
+original CP-V4 saved settings, source means/covariances, event order and times.
+Original CP-K19 source_wnoa 7s/100ms, ORIGINAL Qc: rotation variances0.00375,
+translation0.015 per axis. NOT the later0.25 or0.1 Qc candidates. Independent
+support clock, no central IMU/GNSS factors, same priors/stable-ID replacement,
+seal_at_absorption and EOF policy. Covariance-alignment approximation unchanged.
+
+Private Receiver.h differs only by observer include and one call reading the
+existing publication estimate. Live.cpp byte-identical. Two poses per normal
+publication, no additional solver query/optimization or changed state. Build
+identity/source delta/commands/pins are in source_delta.json, build.json,
+binary.json, input_pins.json and dependency_pins.json. No production edit.
+
+3. Exact replay and reconstruction checks
+
+OFF/ON ONLINE states, finalized states, ONLINE TUM and finalized TUM all
+byte-identical to originals. Exact summaries and all deterministic event
+fields match:296400 OFF/296470 ON events.4282 publication commits per mode
+have identical records.txt payloads;8563 observer pose rows per mode. Both
+have4282 ONLINE and4282 finalized states; pending0, unsupported_end0,
+excluded50; expired sealed revisions171/169 (not transport loss). No new
+stationarity claim; original stationarity remains not_checked_incremental_policy.
+
+One OFF replay196.984s and one ON203.648s wall time; not a live throughput
+benchmark. The controller verified2873 input and1665 compilation-dependency
+pins after both finished. Containers restored stopped after owned jobs exited.
+The original four-sequence Hesai checkpoint verifies4 cases/667 saved files.
+closeout.json records final hashes, process/container and checkpoint checks.
+
+Let G[k]=X[k|k], and P[k]=X[k-1|k], both from publication k's SAME graph.
+O[0]=G[0]; O[k]=O[k-1] inverse(P[k]) G[k]. No future observations, delayed
+state selection, low-pass filter, extra solve or re-fit enters this chain.
+C[k]=G[k] inverse(O[k]) is retained as the graph-to-odometry correction.
+C[k] O[k]=G[k] to maximum matrix-element error1.57e-12. The published-to-
+published relative-transform control telescopes back to G within1.13e-11;
+therefore merely differencing the existing ONLINE file cannot remove jitter.
+Prism-point chained edge lengths equal same-snapshot edge lengths within
+5.65e-14m. First596 OFF poses match the earlier CP-V22A chain within4.09e-14.
+Full reconstruction checks and poses: reconstruction_checks.json,
+publication_products.npz, R/{off,on}/chained_trajectory.tum.
+
+4. Full saved interval — primary publication-policy comparison
+
+All rows use the SAME4282 physical times per mode. ATE is rigid no-scale SE(3)
+position RMSE, independently fitted over the full saved interval for EACH
+product. RPE uses relative poses at exact1s separation (4272 pairs), including
+the unchanged prism lever arm/orientation. Reference path205.929085m.
+
+CBS  Output                  ATE m     Path m      1s RPE trans m / rot deg
+OFF  Absolute graph ONLINE   2.000424  280.154058   0.052887 / 2.425509
+OFF  Chained incremental     3.786712  216.953604   0.063550 / 2.751262
+ON   Absolute graph ONLINE   1.828658  235.136662   0.052738 / 1.774105
+ON   Chained incremental     6.080933  209.648540   0.081676 / 1.933959
+
+Chaining reduces path length22.56% OFF/10.84% ON, but increases ATE89.30%/
+232.54%.1s translation RPE worsens20.16%/54.87%; rotation13.43%/9.01%.
+
+Short-horizon measurements (100ms/4281 pairs):
+CBS  Output                 100ms trans RPE cm   100ms rot RPE deg
+OFF  Absolute               5.312393             2.985088
+OFF  Chained                2.086319             1.254027
+ON   Absolute               3.029398             1.668049
+ON   Chained                1.506589             0.876957
+
+At the SAME original absolute-output alignment, 100ms displacement-vector
+error RMS falls5.319699->3.488782cm OFF and3.100521->2.124615cm ON, reductions
+34.42%/31.48%. This includes accumulated directional drift; it is distinct
+from relative-pose RPE. Moving/turning/slow cohort details are in results.json.
+Improvement at100ms does not imply improvement at1s or over the full route.
+
+5. Drift that an independently refitted trajectory can hide
+
+Rerun and comparison.png apply the ORIGINAL absolute fusion fit to BOTH
+products, separately per CBS mode; purple receives no independent alignment.
+This is a stricter display diagnostic, NOT the independently fitted ATE above.
+
+CBS  Output    Fixed-original-fit position RMSE m   Endpoint error m
+OFF  Absolute   2.009526                              2.061455
+OFF  Chained   10.753518                              6.933094
+ON   Absolute   1.833540                              1.470888
+ON   Chained    8.036648                             15.917430
+
+Common-start displacement error at the endpoint: OFF5.321682->7.352304m;
+ON4.539083->16.412787m. This subtracts each trajectory's initial position but
+retains the same original orientation; it is not an additional fitted ATE.
+At EOF the two products differ6.791893/15.583488m at the prism point and
+32.740471/24.936429degrees in orientation. These angles are differences
+BETWEEN graph and chained products, not ground-truth orientation errors.
+The OFF fixed-fit error reaches27.084m mid-run; endpoint alone understates it.
+
+6. Frozen all-estimator common mask
+
+Same CP-V10 mask for absolute/chained/native controls; no outcome-dependent
+mask or trimming.3850 supported100ms queries,384.6s connected support,
+89.7026% of428.75s capture;414 excluded from4264 candidate queries.
+Four segments:0.684928--57.584928,60.384928--195.384928,
+196.784928--304.384928,305.284928--390.384928s. The38.365072s trailing common
+gap is an evaluation-support omission, not a missing fusion tail. All native
+saved trajectories remain full in Rerun. Common reference path205.913358m.
+
+CBS  Product                 Common ATE m   Path m      1s RPE m / deg
+OFF  GLIM first-published    2.782169        206.499628  0.104567 / 1.449142
+OFF  Kimera ROS incremental  1.094234        199.926635  0.028573 / 0.406498
+OFF  Fusion absolute         2.006010        277.600025  0.055686 / 2.550799
+OFF  Fusion chained          3.482370        214.389018  0.063646 / 2.906159
+ON   GLIM first-published    0.848869        207.641919  0.047707 / 0.605143
+ON   Kimera ROS incremental  2.585334        200.814393  0.062125 / 0.536195
+ON   Fusion absolute         1.867962        233.001880  0.055625 / 1.868470
+ON   Fusion chained          5.331684        208.610605  0.085802 / 2.044541
+
+Longer common-mask relative errors also worsen.10s translation RPE OFF
+0.297395->0.554340m,ON0.251357->0.726167m;20s OFF0.485766->1.385909m,
+ON0.465994->1.444562m.10s/20s rotation errors retained in results.json.
+ATE checked independently against evo; relative transforms checked directly
+with4x4 matrices. Identity/global-transform/known-yaw/gap/exact-sample tests
+pass. Original absolute full AND common ATE reproduced with0.0m difference.
+
+7. Coverage and unchanged native full-output context
+
+Fusion saved interval0.484443335--428.584443335s, continuous428.1s support,
+99.8484% of capture. Startup0.484443335s and tail0.165556665s omitted. ALL
+4282 saved timestamps have GT brackets (100% saved-row reference coverage).
+No fusion internal gaps. Chaining uses exactly these same samples.
+
+Native full-saved values are retained from CP-V10, NOT new estimator runs:
+CBS  Product                Full ATE m  Native path m  Saved rows
+OFF  GLIM first-published   2.829284     209.038271    4280
+ON   GLIM first-published   0.863203     215.463087    4280
+OFF  Kimera ROS incremental 1.097081     200.145838    1937
+ON   Kimera ROS incremental 2.584159     201.294269    1936
+
+GLIM interval0.632081331--428.530730308s, reference-native path205.872155m.
+Kimera0.099937912--426.995563739s; full native polyline includes12/13 gap
+chords>500ms (Rerun splits these). Reference sampled at Kimera native times
+205.451489/205.458457m. Native row/reference coverage100%; coverage/gaps differ
+between estimators. Use common mask for matched all-estimator comparisons.
+
+8. DELAYED finalized output — separate, not ONLINE
+
+These original finalized outputs are byte-preserved, not a new treatment:
+CBS  Full ATE m  Path m      1s trans RPE m / rot deg  Common ATE m
+OFF  2.000564    204.796695  0.035250 / 0.580929       2.005941
+ON   1.831814    205.890093  0.029798 / 0.417486       1.871013
+
+They can revise states while inside the seven-second lag and use later
+observations relative to each state's timestamp. They are NOT a current-time
+odometry substitute or a full-history optimization. Tail EOF availability
+follows the unchanged original policy. No refined GLIM was substituted.
+
+9. Rerun and saved artifacts
+
+leica2_incremental_comparison.rrd: first two tabs OFF/ON fusion-vs-reference;
+next two add native GLIM/Kimera. BLUE reference, RED absolute graph ONLINE,
+PURPLE chained, GREEN GLIM initial, ORANGE Kimera incremental. Same776491
+saved ON Velodyne map points as CP-V11, environmental context only. All
+trajectory vertices and gap-aware edges verified exactly by RRD readback.
+No smoothing, trajectory thinning, per-segment fit or source regeneration.
+
+comparison.png: top shows error using the same original fit, middle path
+length, bottom100ms vector errors in labeled non-overlapping1s RMS bins.
+Only the diagnostic scalar errors are binned; trajectories are unfiltered.
+rerun_preview.png: native screenshot inspected. open_rerun.sh reopens the
+persistent recording after restart; no replay needed. results.json contains
+full precision scores; comparison_arrays.npz contains display data.
+
+Minor visualization-only repairs: first scene preflight compared absolute
+with old capture-relative nanoseconds and stopped before writing an RRD.
+Exact difference was the recorded epoch; add it explicitly, maintaining exact
+equality (scene_preflight_repair.txt). Sandbox screenshot could not reach X;
+preserved failure receipt/log, host-permitted screenshot succeeded. Screenshot
+process exited102 after writing image during known Rerun shutdown panic,
+same pattern as CP-V11/20; normal viewer launched separately. No replay retry.
+
+10. Interpretation and next decision
+
+The red line connects successive estimates from different graph solutions.
+It includes local movement AND revisions between publications. Purple keeps
+only same-solution movements, so it avoids many correction jumps, but does
+not inherit later corrections to its past. This is a different causal output,
+not merely a faithful smoother rendering of the same absolute trajectory.
+Kimera's incremental flag motivated a valid test, not a guarantee that fusion's
+newest-support increments have the same drift behavior as Kimera keyframes.
+
+Recommended: do NOT replace the corrected graph estimate with this pure chain
+or accept based on path length alone. Retain separate local-odometry and
+corrected-graph products plus their explicit correction transform, and decide
+which one each consumer needs. That decomposition is verified algebraically
+here; a production publisher and covariance/velocity semantics are NOT yet
+implemented or validated. No blindly copied graph covariance for chained pose.
+Any future correction-injection/delay/propagation design must test both local
+continuity and longer-horizon drift. It needs separate authorization; none
+started. This result does not prove all model/frame/timing code bug-free.
+
+IE-TC shares CPT7 with estimators; not independent prism GT. No nonlinear
+stationarity claim, sensor rerun, Qc/default change, guard relaxation, deletion,
+commit/push or new dataset/method campaign. ARC-3 remains out of scope.

@@ -1,0 +1,59 @@
+CP-I2 — Kimera native-information prior gate, 2026-10-19
+======================================================
+PASS for frozen active_window_temporary / FL4M_RETIREMENT=remove.
+No estimator/receiver binary edited; no dataset used in this gate.
+
+Proof scope
+-----------
+FL4q removes peer factors touching retiring keys BEFORE ISAM update and
+marginalizeLeaves. Surviving peer factors touch only survivor keys. GTSAM
+marginalizeLeaves summarizes incident factors, not all active factors; its
+partial-clique branch explicitly gathers factors involving retiring frontals.
+At a fixed chart, write quadratic N(m,s)+E(s): native factors/previous native
+prior N, retiring keys m, survivors s, surviving explicit peers E. The new
+native separator is Hss_N-Hsm_N Hmm_N^-1 Hms_N, with RHS
+eta_s_N-Hsm_N Hmm_N^-1 eta_m_N. E has no m block and stays a separate factor.
+Induction from the native startup prior preserves native-information history.
+LOCAL then excludes remaining E. This applies to coupled native pose/velocity/
+bias factors, not only pose-only models.
+
+CP-D1 contract3 clarification: in this specific removal mode Kimera's MAIN prior
+already carries native information at the actual charts. A second physical copy
+of that history is redundant; native provenance is the requirement. Persistent
+or retain modes are NOT certified. Corrected means, linearization, features and
+shared IMU remain correlated. This is NOT an independent/calibrated likelihood,
+nor equality to a counterfactual nonlinear CBS-OFF estimator.
+
+Test
+----
+Actual FL4q wrapper/CBS/GTSAM; isolated test copy adds read-only pre-marginal
+cached-equation/theta/peer-slot snapshots. No run binary uses this copy.
+18 updates, dense6x6 noise, nonzero rotation/translation, overlapping native edges,
+16 disagreeing peer beliefs,13 retirements,39 removed native factors,39 surviving
+peer observations,17 repeated LOCAL queries. Created prior Hessian AND RHS match
+independent dense Schur of removed native equations. Zero peer slots absorbed;
+surviving peer slots remain tracked and never touch retiring keys.
+Maximum relative H error2.6215864370873484e-16, RHS4.7680757308333552e-16;
+predeclared tolerance1e-8. Exercised relative correction norm.029324459410076519
+(mixed SE3 units). Repeated covariance difference0; queries do not mutate MAIN;
+outgoing relative means equal MAIN. Release and focused ASan/UBSan pass, including
+repeats. Vendor DSOs uninstrumented, leaks disabled; no whole-process claim.
+
+Code/evidence
+-------------
+W=/home/yeranis/repos/V4RL/cbs_gtsam4.3
+W/runs/fixed_lag_current_chart_fl4q_20261016/include/cbs/bpsam/
+incremental_fixed_lag_bpsam_smoother.h:185ff removal,270ff update,424ff marginal.
+W/src/gtsam/gtsam/nonlinear/ISAM2.cpp:535ff marginalizeLeaves,660ff incident factors.
+W/src/cbs/src/bpsam/bpsam.cpp:4737ff LOCAL filter;4838ff failure throws.
+W/runs/fixed_lag_current_chart_fl4q_20261016/VioBackend.cpp:3546 LOCAL selection,
+3560 first query,3712 revision query uses same LOCAL object in same try block.
+Evidence: W/runs/kimera_native_prior_cpi2_20261019/{release,san}_commands.json/logs.
+Test source/preparation/build scripts retained beside this report.
+
+Decision
+--------
+Permit first matched60s OFF/ON gate with CP-I1 GLIM candidate; unchanged Kimera,
+receiver/model/scales. Verify per-version provenance, loaded binaries, payload
+conservation and throughput before other sequences. Any extraction/provider/
+lifecycle error blocks certification. No old captures relabeled; no tuning.

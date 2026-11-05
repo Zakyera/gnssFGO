@@ -1,0 +1,8 @@
+Initial private audit compilation failed before selftests or saved-event load.
+Exact causes: duplicate closing brace at line124 from geometry-helper extraction;
+Eigen rejects dot() against dynamically shaped Nx1 matrix blocks at166/202.
+Preserve initial source, compile log, failure/cleanup and protected manifest.
+Both containers restored exited. Fresh attempt_vector_api removes only duplicate
+brace and uses col(n).head(n) (same entries) for dot arguments. No scientific
+result, optimizer step, source replay, threshold or production change.
+

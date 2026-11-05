@@ -1,0 +1,46 @@
+CP-V86 authorized matched ETH1 current-binary CPT7 CBS-OFF60 control.
+Launched ONCE 2026-11-02 11:15:36local, supervisor10073/controller10075,
+controller proc_start544448. Startup passed: exact private binaries, both CBS
+receiversOFF, Kimera consumes CPT7 in CPT7body. See PROTOCOL.txt.
+Admission3017protected files and all667Hesai checkpoint entries PASS.
+13.066GBfree exceeds existing10GiB start guard;5GiB runtime floor retained.
+Controller owns capture->coverage->cleanup->EVO. No duplicate stages or retry.
+
+COMPLETE 2026-11-02 11:22:13local; supplemental closeout11:22:58PASS.
+Authority: RESULTS_REPORT.txt/results.json/report_verification.json/complete.json
+and post_closeout.json. One new60s capture, no Alphasense source replay.
+Native coverage passed:601received stereo pairs=3preinit+597processed+1EOF
+camera1.569425ms after lastCPT7 sample. Both5986CPT7/11972Alpha IMU header
+sequences exactly match the raw input audit;284Kimera/591GLIM native outputs.
+Zero G2K/K2G injections. Original3.199979s startup keyframe gap remains explicit.
+
+Method1 EVO1.36.3, SE3 no scale, reference-distance0.5m RPE, same physical prism.
+COMMON100ms mask identical to CP85:56.0s/60(93.333%),561queries,46RPEpairs,
+reference estimated prism polyline25.304035m. CP85 scores reused, not rerun:
+                           ATE m       tRPE m      rRPE deg    path m
+Kimera CPT7 new             0.047226    0.025292    0.665586     25.219278
+Kimera Alphasense saved    23.192259   13.281672    0.932099   1323.428703
+GLIM CPT7 new               0.045248    0.027512    0.537466     25.788650
+GLIM CPT7 saved             0.047968    0.032890    0.545846     25.843993
+Full-saved native cadence separately: newKimera ATE.047371m,tRPE.024554m,
+rRPE.502632deg,path25.489573m vs25.334488m reference,56.399676s no-gap support.
+NewGLIM ATE.047154m,tRPE.027806m,rRPE.471057deg,path26.175111m vs25.395797m
+reference,58.999369s support. Gap chords excluded; no smoothing or finalized output.
+Kimera previous-state revisionp95.017472m/max.078017m vsCP85p9537.122535m/
+max75.824811m;0revisions>0.5m vs128.282pairedsteps,one missingdiagnosticID2.
+New shape revisionp95.012718m/max.055496m; optimize mean92.067ms/p95123.632ms
+at0.20x, not1x throughput proof.6750logged covariances: median rotationtrace
+1.6677065e-8rad2/translationtrace6.7350221e-7m2; not calibrated uncertainty.
+12newEVO CLI calls, independentAPI disagreement0,TUMroundtrip1.39e-15.
+Final audit:3017protected files,104terminal outputs,29report inputs,Hesai667PASS;
+all owned receipts/controller/supervisor exited,bothinitiallystopped containers
+restored stopped. No deletion/build/tuning/default changes.
+
+Conclusion: current Kimera can be healthy on these same ETH1 images/backend
+with validated CPT7 integration. CP85 failure is specific to the Alphasense
+integration bundle or its interaction with the estimator; this does NOT isolate
+hardware versus extrinsics/timing/noise/initialization or exclude a conditional
+backend bug. Do not infer that replacing hardware is the fix. Next investigation
+should isolate these configurations before CBS-ON or a broader campaign.
+IE-TC sharesCPT7 and is not independent prismGT; path is estimated not physical
+travel. No nonlinear-stationarity claim. No subsequent experiment launched.

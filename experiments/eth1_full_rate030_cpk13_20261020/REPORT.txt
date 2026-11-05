@@ -1,0 +1,78 @@
+CP-K13 matched full ETH1 CBS-OFF/ON at0.30x — STOPPED/FAILED OFF,2026-10-20.
+User authorized full ETH1 after CP-K12's60s speed gate.
+See PROTOCOL.txt. Reuse CP-K11/K12 settings without tuning or rebuilding.
+OFF validates before ON; preserve all native/fused covariance/revision outputs.
+The exact selected-topic epoch makes the full Hesai-supported duration346.32s,
+confirmed by read-only bag preflight. Old346.22 label had a different epoch.
+No completed full-sequence result or matched accuracy comparison. ON not run.
+
+Preparation PASS:1956protected entries;identical private binaries,profiles,
+receiver model and evaluator except output paths. Existing artifacts untouched.
+Exact query start1727775007855396309ns,end1727775354175396309ns;
+last selected Hesai record1727775354174658060ns. Headless0.30x,25sdrain.
+~40.5GiB free at launch,existing disk reserve guard unchanged.
+
+OFF launched ONCE around13:47 local Cyprus time,October20. Effective settings
+check passed BEFORE playback:requested346.32s,rate0.30,Kimera prior-refresh1/
+FL4q0/remove,GLIM native_local revisions. At13:51:12 local,~58.7bagseconds,
+5855IMU,33316belief versions,580ONLINE fusion poses;both source counters
+advance,queued0,maxqueue36,simulated outputage.060013s. No failure marker.
+ON NOT STARTED. Require OFF capture and all four validation gates before ON.
+
+The user explicitly approved the experiment-only five-minute follow-up;
+automation complete-frozen-eth1-live-wnoa-comparison now targets CP-K13 ONLY.
+Disable it on completion/failure. No retries,settings changes or other missions.
+Paths:
+H=/home/yeranis/repos/gnssFGO/experiments/eth1_full_rate030_cpk13_20261020
+P=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate030_cpk13_20261020/prepared
+V=/home/yeranis/results/gnssfgo_eth1_full_rate030_cpk13_20261020
+Use P/run_case.py full off (already launched;NEVER duplicate);
+after four OFF gates P/preflight_on.py then P/run_case_on.py full on.
+Validate with the existing evo Python and P/{validate_local,validate_case,
+validate_candidate}.py. After both modes pass,existing evaluate_fl4f.py
+inside Noetic,then H/summarize.py. Update this report/ledger;stop containers
+only after owned work exits,then H/final_checks.py. See PROTOCOL.txt.
+
+FAILURE CLOSEOUT (October20,14:10+ local inspection):
+OFF stopped at136.448862s from the first selected input,not346.32s.
+The frozen receiver reports exactly:
+  FL4A_STREAM_FAILURE revision after absorption
+Controller:receiver stopped during playback. Adapter Broken pipe and source
+coverage/insufficient-output failures are downstream of the receiver exit and
+owned shutdown;not independent proof of another source crash.
+
+First uncommitted receiver event93340 (receipt index93339):
+GLIM stable edge1286->1288,revision47,producing update1335.
+Physical endpoints1727775137274759100..1727775137475163900ns;
+arrival1727775144304258216ns. Revision46 was absorbed in commit93336.
+Oldest retained support1287 is1727775137283475000ns:the required first
+endpoint lies8.7159ms before it. The source factor cannot be replaced by the
+existing receiver after its information has already entered the marginal prior.
+The guard stops instead of reintroducing/double-counting that absorbed factor.
+
+Exact simulated-time decomposition:
+  first endpoint to producing GLIM endpoint:4.9001109s (source revision history)
+  producing GLIM endpoint to logged source record:2.1263383s
+  logged source record to adapter receipt:.003049916s
+  total first-endpoint age at arrival:7.029499116s
+Thus this capture violates the seven-second revision-retention contract.
+This is not a measured7s CPU call or a receiver queue overflow. Attribution
+of the2.126s source-side delay among GLIM computation/input buffering remains
+uninvestigated here;no speed repair or lag change is authorized by the failure.
+
+Last sampled receiver queue0,max40;last committed state has71supports,
+174slots,81active source IDs. Last accepted event93339 service6.791ms.
+Partial saved outputs after owned cleanup:
+  nativeGLIM1348poses/134.699544s;
+  nativeKimera667poses/136.199214s;
+  fusionONLINE1358poses/135.7s.
+Do not call these a complete sequence. No ATE/RPE comparison,full validation,
+deterministic replay or ON launch performed.
+
+Read-only failure_evidence.py saved exact event/absorption evidence and checked
+all1956protected hashes unchanged. No estimator/model/guard/settings edits,
+build,source retry,data deletion or push. Original artifacts retained.
+Owned controller/source/receiver jobs exited;only baseline container services
+remained before restoring both containers to stopped. Experiment-only heartbeat
+PAUSED. Failure closeout is recorded separately in failure_closeout.json;
+the all-success final_checks.py was deliberately NOT run.

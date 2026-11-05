@@ -1,0 +1,31 @@
+CP-V20 — Hesai LEICA-2 full-trajectory Rerun overlay, 2026-10-27
+
+User requests the same presentation as CP-V11 Velodyne, now for original
+Hesai LEICA-2 CP-K29. ARC-3 is out of scope. Saved data only, no new experiment.
+
+Four complete trajectories in each CBS OFF / CBS ON tab: blue IE-TC reference,
+green GLIM first-published glim_odometry.csv, orange Kimera ROS odometry,
+red fusion ONLINE. Original CP-K29 receiver (not a Qc ablation). Use all native
+saved points without smoothing/resampling/cropping; break connections across
+gaps greater than 0.5s (reference 0.05s) as in CP-V11, retain isolated points.
+
+Use existing CP-V10 Hesai LEICA-2 common-mask single no-scale SE(3) fits per
+estimator/mode, common prism point and common reference ENU origin. Apply
+each single fit to every saved trajectory point, including outside the mask.
+Full reference spans the original 428.75s usable capture. Preserve residual
+separation; no per-segment alignment, arbitrary visual offset or tuning.
+
+Grey scene is all saved CP-K29 ON Hesai submaps, placed by T_world_origin,
+then the same fixed ON GLIM fit and common origin as the first-published path.
+Same cloud in both tabs. Check lidar/IMU frame chain against saved odometry.
+This is GLIM reconstructed environment, NOT independent ground truth; refined
+submap poses do not replace the first-published GLIM path. IE-TC shares CPT7.
+Connected first publications do not describe the latest revised active window
+or prove physical drone zigzag. Native publication latencies can differ.
+
+Write fresh RRD and repeatable reopen launcher under this directory. Verify
+native counts, unchanged edge lengths, reproduced CP-V10 common ATE fits,
+exact RRD vertex/edge/cloud readback, input hashes before/after. Inspect a
+native Rerun preview if supported; open viewer without closing existing views.
+Use installed Rerun SDK 0.31.4 and existing helper/evo environments. No package
+installation, source replay, container launch, builds, deletion, commits/push.

@@ -1,0 +1,140 @@
+CP-V28 — ALL SEVEN BASELINE PAIRS: METHOD 2
+2026-10-28 | saved-data reconstruction and receiver-only replay | Qc multiplier1.0
+
+1. WHAT IS EVALUATED
+
+Every primary trajectory is accumulated same-update relative motion:
+O[0]=X[0|0]; O[k]=O[k-1] inverse(X[k-1|k]) X[k|k].
+Both the plotted/path positions AND the positions used for RMSE come from O. This is not absolute-pose RMSE paired with a different incremental plot.
+GLIM: saved same-update MAIN pose pairs reconstructed at exact native CSV timestamps.
+Kimera: original native incremental ROS odometry, unchanged and NOT integrated twice.
+Fusion: same-publication pose pairs recovered using the existing read-only CP-V23 observer binary and original saved event journals. Twelve receiver replays; completed Leica-2 Velodyne replay reused. No GLIM/Kimera/sensor rerun or new build.
+The receiver keeps original Qc1.0, seven-second fixed lag, source_wnoa,100ms supports, startup59, priors, source data, revisions, caches and EOF semantics. These are NOT Qc0.25 or0.1 results.
+CP-V27 is the separate method1 report and does not satisfy the method2 request. No CP-V27 absolute-Kimera score is used here.
+
+2. MATCHED-TIME PRIMARY RESULTS
+
+RMSE is position ATE after one rigid SE3 no-scale fit per trajectory over the complete frozen CP-V10 common mask. Same100ms queries for all six outputs within a pair. No smoothing, per-segment realignment or outcome-dependent trimming.
+Improvement =100*(OFF-ON)/OFF. Positive is better; negative is worse. Estimated path sums supported adjacent segments only, never bridging masked gaps. It is not physical distance flown.
+
+HESAI
+
+| Sequence | Estimator | RMSE OFF (m) | RMSE ON (m) | Improvement | Estimated path OFF -> ON (m) |
+|---|---|---:|---:|---:|---|
+| ETH1 | GLIM | 0.2957 | 0.4160 | -40.7% | 203.15 -> 203.25 |
+| ETH1 | Kimera | 4.5000 | 0.3407 | +92.4% | 194.45 -> 200.29 |
+| ETH1 | Fusion | 2.3348 | 0.4710 | +79.8% | 197.51 -> 203.29 |
+| EIG-2 | GLIM | 0.9991 | 1.0787 | -8.0% | 189.35 -> 188.99 |
+| EIG-2 | Kimera | 1.8810 | 0.6880 | +63.4% | 177.37 -> 185.27 |
+| EIG-2 | Fusion | 2.7456 | 1.5829 | +42.3% | 188.03 -> 189.50 |
+| SPX-3 | GLIM | 0.1252 | 0.1361 | -8.7% | 90.78 -> 90.95 |
+| SPX-3 | Kimera | 0.4824 | 0.1089 | +77.4% | 88.80 -> 90.40 |
+| SPX-3 | Fusion | 0.1746 | 0.2827 | -61.9% | 90.16 -> 90.98 |
+| LEICA-2 | GLIM | 0.6385 | 0.6503 | -1.8% | 205.48 -> 205.32 |
+| LEICA-2 | Kimera | 1.0949 | 0.4780 | +56.3% | 199.93 -> 204.45 |
+| LEICA-2 | Fusion | 0.9545 | 1.0880 | -14.0% | 203.80 -> 207.69 |
+
+VELODYNE
+
+| Sequence | Estimator | RMSE OFF (m) | RMSE ON (m) | Improvement | Estimated path OFF -> ON (m) |
+|---|---|---:|---:|---:|---|
+| SPX-3 | GLIM | 0.2583 | 0.2652 | -2.7% | 88.99 -> 89.24 |
+| SPX-3 | Kimera | 0.4821 | 0.3737 | +22.5% | 88.80 -> 88.75 |
+| SPX-3 | Fusion | 0.6531 | 0.4407 | +32.5% | 88.94 -> 89.60 |
+| EIG-2 | GLIM | 3.2658 | 2.2872 | +30.0% | 192.54 -> 190.90 |
+| EIG-2 | Kimera | 1.8796 | 1.7987 | +4.3% | 177.37 -> 183.48 |
+| EIG-2 | Fusion | 3.0183 | 2.1757 | +27.9% | 188.74 -> 186.96 |
+| LEICA-2 | GLIM | 10.1069 | 3.3311 | +67.0% | 211.47 -> 204.05 |
+| LEICA-2 | Kimera | 1.0942 | 2.5853 | -136.3% | 199.93 -> 200.81 |
+| LEICA-2 | Fusion | 3.4824 | 5.3317 | -53.1% | 214.39 -> 208.61 |
+
+3. COMMON COVERAGE AND REFERENCE LENGTH
+
+| Sensor / sequence | Capture s | Supported s (%) | Reference path m | First / last s |
+|---|---:|---|---:|---|
+| Hesai ETH1 | 346.32 | 296.7 (85.7%) | 201.38 | 3.745 / 302.045 |
+| Hesai EIG-2 | 355.02 | 352.3 (99.2%) | 188.01 | 0.736 / 354.836 |
+| Hesai SPX-3 | 197.02 | 191.7 (97.3%) | 90.77 | 1.527 / 196.727 |
+| Hesai LEICA-2 | 428.75 | 385.0 (89.8%) | 205.91 | 0.685 / 421.585 |
+| Velodyne SPX-3 | 197.02 | 192.0 (97.5%) | 90.77 | 1.527 / 196.827 |
+| Velodyne EIG-2 | 355.02 | 353.1 (99.5%) | 188.02 | 0.836 / 354.836 |
+| Velodyne LEICA-2 | 428.75 | 384.6 (89.7%) | 205.91 | 0.685 / 390.385 |
+
+Coverage is connected support duration, not last minus first. Gaps exceeding500ms in a source are not interpolated. Full saved output was retained; incomplete common coverage is not labelled a failed capture or missing-camera diagnosis.
+The reference is IE-TC GNSS/INS sharing CPT7 IMU with the estimators, not independent prism ground truth. All estimates/reference use the unchanged body-to-prism lever and orientation.
+
+4. FULL SAVED NATIVE OUTPUTS — SECONDARY, DIFFERENT SAMPLE TIMES
+
+All actual saved rows have reference support. These values include each estimator's own time span/cadence, so use section2 for matched-time comparisons. Full native polyline length includes any long-gap chord, whose count is listed.
+
+| Sensor / sequence | Estimator | RMSE OFF / ON m | Path OFF / ON m | Rows OFF / ON | Span OFF / ON s | Gaps >500ms OFF / ON |
+|---|---|---|---|---|---|---|
+| Hesai ETH1 | GLIM | 0.284405 / 0.401624 | 204.353 / 204.528 | 3454 / 3454 | 345.300 / 345.300 | 0 / 0 |
+| Hesai ETH1 | Kimera | 4.496229 / 0.340930 | 196.007 / 200.644 | 1492 / 1493 | 342.598 / 342.598 | 11 / 11 |
+| Hesai ETH1 | Fusion | 2.245444 / 0.448647 | 199.220 / 204.616 | 3456 / 3456 | 345.500 / 345.500 | 0 / 0 |
+| Hesai EIG-2 | GLIM | 1.000890 / 1.080126 | 190.894 / 190.778 | 3543 / 3543 | 354.199 / 354.199 | 0 / 0 |
+| Hesai EIG-2 | Kimera | 1.882644 / 0.688834 | 178.191 / 185.977 | 1761 / 1761 | 354.697 / 354.797 | 1 / 2 |
+| Hesai EIG-2 | Fusion | 2.746524 / 1.583890 | 191.490 / 193.064 | 3545 / 3545 | 354.400 / 354.400 | 0 / 0 |
+| Hesai SPX-3 | GLIM | 0.129598 / 0.140258 | 90.967 / 91.217 | 1962 / 1962 | 196.099 / 196.099 | 0 / 0 |
+| Hesai SPX-3 | Kimera | 0.483414 / 0.110169 | 89.092 / 90.707 | 958 / 956 | 196.798 / 196.798 | 3 / 5 |
+| Hesai SPX-3 | Fusion | 0.175253 / 0.295614 | 90.814 / 91.547 | 1965 / 1965 | 196.400 / 196.400 | 0 / 0 |
+| Hesai LEICA-2 | GLIM | 0.664966 / 0.713615 | 206.360 / 206.799 | 4279 / 4279 | 427.800 / 427.800 | 0 / 0 |
+| Hesai LEICA-2 | Kimera | 1.097081 / 0.480025 | 200.146 / 204.705 | 1937 / 1937 | 426.896 / 427.796 | 12 / 13 |
+| Hesai LEICA-2 | Fusion | 0.947294 / 1.180341 | 204.064 / 207.948 | 4282 / 4282 | 428.100 / 428.100 | 0 / 0 |
+| Velodyne SPX-3 | GLIM | 0.267720 / 0.271279 | 89.094 / 89.363 | 1962 / 1962 | 196.100 / 196.100 | 0 / 0 |
+| Velodyne SPX-3 | Kimera | 0.483414 / 0.376635 | 89.092 / 89.056 | 958 / 956 | 196.798 / 196.698 | 3 / 5 |
+| Velodyne SPX-3 | Fusion | 0.672279 / 0.464215 | 90.107 / 90.594 | 1965 / 1965 | 196.400 / 196.400 | 0 / 0 |
+| Velodyne EIG-2 | GLIM | 3.269656 / 2.288948 | 193.064 / 191.553 | 3542 / 3542 | 354.100 / 354.100 | 0 / 0 |
+| Velodyne EIG-2 | Kimera | 1.882644 / 1.802880 | 178.191 / 184.328 | 1761 / 1765 | 354.697 / 354.697 | 1 / 1 |
+| Velodyne EIG-2 | Fusion | 3.023784 / 2.180739 | 206.974 / 194.641 | 3545 / 3545 | 354.400 / 354.400 | 0 / 0 |
+| Velodyne LEICA-2 | GLIM | 11.931732 / 3.867642 | 215.098 / 208.801 | 4280 / 4280 | 427.899 / 427.899 | 0 / 0 |
+| Velodyne LEICA-2 | Kimera | 1.097081 / 2.584159 | 200.146 / 201.294 | 1937 / 1936 | 426.896 / 426.896 | 12 / 13 |
+| Velodyne LEICA-2 | Fusion | 3.786712 / 6.080933 | 216.954 / 209.649 | 4282 / 4282 | 428.100 / 428.100 | 0 / 0 |
+
+5. ONE-SECOND RELATIVE-POSE ERRORS ON THE SAME COMMON MASK
+
+| Sensor / sequence | Estimator | Translation RMSE OFF / ON m | Rotation RMSE OFF / ON deg |
+|---|---|---|---|
+| Hesai ETH1 | GLIM | 0.025409 / 0.022614 | 0.413047 / 0.397657 |
+| Hesai ETH1 | Kimera | 0.440804 / 0.019863 | 0.568332 / 0.560216 |
+| Hesai ETH1 | Fusion | 0.084143 / 0.048174 | 3.000765 / 2.769420 |
+| Hesai EIG-2 | GLIM | 0.028159 / 0.026598 | 0.685431 / 0.682245 |
+| Hesai EIG-2 | Kimera | 0.109332 / 0.025666 | 0.847692 / 0.841947 |
+| Hesai EIG-2 | Fusion | 0.063092 / 0.060089 | 3.433700 / 3.333711 |
+| Hesai SPX-3 | GLIM | 0.007331 / 0.007484 | 0.321676 / 0.307354 |
+| Hesai SPX-3 | Kimera | 0.063769 / 0.015840 | 0.484106 / 0.484121 |
+| Hesai SPX-3 | Fusion | 0.063916 / 0.060191 | 2.717068 / 2.522830 |
+| Hesai LEICA-2 | GLIM | 0.019433 / 0.016215 | 0.424662 / 0.365413 |
+| Hesai LEICA-2 | Kimera | 0.028573 / 0.019629 | 0.406443 / 0.414497 |
+| Hesai LEICA-2 | Fusion | 0.036221 / 0.033405 | 1.612907 / 1.562786 |
+| Velodyne SPX-3 | GLIM | 0.035401 / 0.035683 | 0.561325 / 0.533777 |
+| Velodyne SPX-3 | Kimera | 0.063720 / 0.049158 | 0.483727 / 0.509425 |
+| Velodyne SPX-3 | Fusion | 0.065980 / 0.073498 | 2.677625 / 2.526540 |
+| Velodyne EIG-2 | GLIM | 0.114130 / 0.090773 | 1.092759 / 1.017886 |
+| Velodyne EIG-2 | Kimera | 0.109083 / 0.101712 | 0.845763 / 1.014136 |
+| Velodyne EIG-2 | Fusion | 0.067768 / 0.100494 | 3.561271 / 2.988222 |
+| Velodyne LEICA-2 | GLIM | 0.194153 / 0.058557 | 1.443480 / 0.647576 |
+| Velodyne LEICA-2 | Kimera | 0.028573 / 0.062125 | 0.406498 / 0.536195 |
+| Velodyne LEICA-2 | Fusion | 0.063646 / 0.085802 | 2.906159 / 2.044541 |
+
+6. INTERPRETATION
+
+CBS lowers method2 common ATE in GLIM 2/7 pairs, Kimera 6/7 pairs, Fusion 4/7 pairs.
+Lowest common ATE across14modes: GLIM 6/14, Kimera 8/14, Fusion 0/14. These are single-run descriptive counts, not statistical significance.
+Method2 removes accumulated graph correction jumps from the output chain, but it also discards later corrections to already accumulated motion. Smooth/short paths can therefore drift substantially. This measures a different causal odometry output, not a mere plotting repair.
+Do not infer that GLIM authors report this derived output or that this is its standard benchmark score. No author-evaluation claim is made. Native/internal corrected graph states and fixed-lag-finalized outputs remain distinct products.
+Matching the publication convention does not equalize source cadence, evidence age, latency, lag or input information. Offline reference alignment/interpolation are evaluation operations, not causal onboard corrections.
+Kimera OFF files for shared missions are byte-identical between Hesai/Velodyne, not independent repeats; small common-score differences reflect different pair masks. Rear Velodyne also changes viewpoint. Four physical missions, seven sensor pairs.
+
+7. VALIDATION, PRESERVATION AND LIMITS
+
+All twelve replays reproduce original ONLINE/finalized state CSVs and TUMs byte-for-byte, exact summaries, all deterministic event fields and every publication commit record. Existing Leica-2 Velodyne CP-V23 parity is reused, not rerun. Runtime/dependency and input hashes are unchanged. No extra solve is performed by the observer.
+GLIM same-update rows match every native current publication to double precision, no missing pair. Exact nanosecond native timestamps replace rounded log stamps. Chaining independently agrees with quaternion/vector recurrence; telescoping/no-revision controls, global/body-frame equivariance, graph reconstruction and prism edge checks pass.
+Read back 92124 chained poses with exact timestamps. Independent evo rigid alignment maximum difference 1.56e-14m; independent matrix RPE maximum difference 1.39e-11.
+All14native Kimera full/common scores reproduce CP-V10; all Leica-2 Velodyne method2 full/common scores reproduce CP-V26. Frozen common masks/reference arrays unchanged. Per-case JSON retains1s/10s/20s RPE, full-saved details and input hashes.
+Terminal-factor omissions retained: Hesai EIG-2 ON1; Hesai SPX-3 OFF1/ON1; Velodyne SPX-3 OFF1; other successful baseline modes0. No relaxation/retry to get better metrics. ARC failed prefixes and tuning candidates excluded.
+All new bulky replay files retained losslessly in verified compressed archives. Only verified duplicate temporary RAM working trees removed; no original artifact deleted. Container/process/checkpoint closeout is recorded separately in closeout.json.
+Storage-only interruption: after three successful cases, the original controller stopped before the fourth launch because SSD free space crossed its inherited8GiB threshold. Outputs were on RAM tmpfs. The failed receipt and first three successes were preserved; a documented continuation checked actual tmpfs capacity and projected persistent SSD headroom (>4GiB), then launched only the nine never-started cases. No duplicate replay, changed estimator setting or numerical/parity guard relaxation. See STORAGE_CONTINUATION.txt.
+No new chained-output covariance or velocity is assigned; no production change, tuning, default promotion, nonlinear-stationarity certification, commit/push or source run. Keep both corrected graph and chained odometry products labelled; this table alone does not select a replacement publisher.
+
+FILES: summary.json, <case>.json/.npz, per-case method2 TUMs, GLIM/fusion publication products, reconstruction/parity receipts, verification.json, input pins, replay_evidence/*.tar.gz and member manifests, closeout.json.

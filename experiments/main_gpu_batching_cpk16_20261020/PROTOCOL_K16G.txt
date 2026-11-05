@@ -1,0 +1,49 @@
+CP-K16g — sixty-second identical-prepared-input real MAIN history
+2026-10-20. User: "Make sure it runs similarly for 60sec".
+
+Extend the passed K16f diagnostic to ONE fresh first60s ETH1 GLIM-only capture.
+Runtime root: runs/main_gpu_batching_cpk16_20261020/k16g_source_1.
+No Kimera, fusion, inbound CBS, full-sequence retry, tuning or promotion.
+
+Reuse the frozen K16f prepared scripts/profiles and unchanged K16a estimator
+DSO, CP-I1 bridge, CP-I3 LOCAL covariance path, GPU dependencies and sampler.
+Actual source uses original-disabled MAIN; independent companion uses batching.
+Same exact independently copied CPU/GPU prepared inputs, persistent separate
+solver/LOCAL histories. No feedback from companion into source.
+
+Only observer edits: update safety bound180->1400 and physical span8.1->60.1s,
+with matching diagnostic error text. Compile only this removable observer and
+unchanged three-update IMU-inclusive plumbing fixture. Inspect the exact diff.
+No comparison equations, numerical tolerances, factor selection or estimator
+binary changes. Existing failed/eight-second artifacts are immutable.
+
+Harness-only changes: new root/port11466/recording ID, selected input duration
+8->60s, bounded playback deadline90->900wallseconds. Rate0.20x and25s drain
+unchanged. Deadline admits the longer instrumented capture, not a performance
+acceptance relaxation. Restore the two originally stopped containers on exit.
+
+Every wrapper update must match K16f's complete state/theta, Gaussian caches
+and marginalized priors, IDs/slots/keys/results/retirements, GPU inliers/cache,
+LOCAL conservation and all retained i->i+2 endpoint/relative covariances.
+Numerical limits unchanged:
+ position/velocity/bias <=1e-9, orientation <=1e-10rad;
+ Gaussian <=1e-8+1e-6*maxabs(reference);
+ covariance <=1e-10+1e-6*maxabs(reference).
+Factor identities, retirement decisions and GPU runtime state exact.
+No fallback/reset/nonfinite or LOCAL GPU reevaluation.
+
+After capture require consecutive successful updates spanning>58.5physical
+seconds,>500retirement updates, bounded<=51active poses, all sensor receipt
+identities/order conserved,>=590native poses spanning>58.8s and<.3s tail gap.
+Validate first/revised LOCAL provenance, provider-to-wire equality, finite SPD
+covariance, exact effective settings and loaded library hashes. Record actual
+counts/maxima and startup/tail gaps, not merely PASS.
+Before/after check2026protected files,7pinned inputs,five source fingerprints
+and new harness manifest. Stop at any failure without retry or relaxed gate.
+
+Diagnostic duplicate solving and exhaustive GPU/covariance checks are NOT a
+speed benchmark. K16d real timing and its failed fresh stochastic-capture
+equality check remain separate evidence. This60s gate is OFF prepared-input
+correctness, not real bidirectional CBS-ON or full-system certification.
+Kimera11.10s source-history/7s receiver retention remains a separate blocker.
+Save result/report and update execution ledger. No push/automation/next method.

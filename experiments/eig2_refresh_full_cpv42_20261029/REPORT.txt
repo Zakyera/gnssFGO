@@ -1,0 +1,58 @@
+CP-V42 — full EIG-2 Velodyne matched corrected Kimera OFF/ON
+FINAL2026-10-29: BOTH FULL CAPTURES/GATES COMPLETE; DIRECT EVO REPORT COMPLETE.
+See RESULTS_REPORT.txt/results.json. Prior running notes below are historical.
+OFF capture ended20:44:30; ON ended21:15:51; clean controller exit21:16:56local.
+Both originally stopped containers restored, all owned jobs exited, no retry.
+6253protected hashes/Hesai667passed; no source/model/default changes after launch.
+
+Main conclusion: the OFF improvement is reproduced, but current-state refresh
+alone does NOT resolve the ON pathology. Method1 common ATE OFF->ON:
+GLIM0.390391->0.384648m(+1.47%); Kimera0.515187->2.073638m(-302.50%);
+fusion ONLINE0.518175->0.962769m(-85.80%). Same-support reference188.012598m;
+estimated paths GLIM204.14->204.20m, Kimera186.92->791.88m, fusion209.46->212.92m.
+Common100ms support352.3s/355.02s=99.234%,3526queries,348reference0.5m RPE pairs.
+Kimera translation RPE0.030823->1.072331m; rotation0.819211->5.622269deg.
+DELAYED fixed-lag finalized fusion is separate: ATE0.516078->0.961244m;
+paths187.57->187.33m. Not ONLINE or full-history. IE-TC shares CPT7, not
+independent prism GT. All scores/paths direct EVO1.36.3,48CLI calls; CLI/API
+errors identical, TUM roundtrip max1.7e-15. No smoothing or scale fitting.
+
+Full-native saved paths differ from common interpolated-grid paths: fusion
+ONLINE294.43->259.57m; Kimera188.05->923.27m including native gap chords.
+The common grid can attenuate high-frequency discontinuities; do not call its
+shorter length the exact unsampled published path or physical travel distance.
+Full-native ATE fusion0.521445->0.964198m; Kimera0.515120->2.111881m.
+
+Observed previous-state Kimera revision maximum0.288->7.271m, >0.5m0->475;
+supports renewed ON-specific inconsistency/instability, not a proven new cause.
+Native IMU cost median0.512->2366/max27.1->3.17e6 is internal cost, not ATE.
+G2K1744/K2G1756injections and1722retirements pass existing lifecycle checks.
+Receiver213652/213792versions,208319/208452replacements;50pre-init exclusions
+each,0expired/stale/duplicate/pending/terminal omissions; covariance payload
+error0. Native keyframe counts1761/1765, first-published GLIM3542each (saved
+odom_imu sensor-gate artifact3541each), ONLINE+finalized3545each.
+Receiver service p95 .1203/.1087s at0.20x; not real-time or stationarity proof.
+
+Decision: do not promote this ON candidate or tune weights from these results.
+Further saved ON-specific localization is a proposed next task, not launched.
+
+2026-10-29 20:13 local: LAUNCHED ONCE, OFF admission/capture stage active.
+Launcher PID139842; controller PID139849. Exact child process identities and
+completion codes are recorded in *_process.json/*_receipt.json; status.json
+is authoritative. No ON capture yet. Both containers started from exited.
+User renewed authorization to proceed to CBS-ON after storage cleanup.
+CP-V40 focused checks and CP-V41 bounded ON integration passed. Full pair
+uses the same CP-V40 backend in both modes; CP-V39 was Kimera-only OFF.
+All frozen sensors/model/Qc x1.0/covariance settings unchanged. See PROTOCOL.txt.
+Controller completes OFF and four gates before any ON; no automatic retries.
+No full corrected ON accuracy result yet. Direct EVO Method1 report follows
+successful capture/validation, with delayed output separately labeled.
+Preparation passed6253protected hashes, original raw bag/profile identity,
+full-window gates and EOF boundary selftest.37.10GiB free versus11.33GiB
+forecast. Four-sequence Hesai checkpoint667files verified before launch.
+Expected playback about30minutes per mode plus startup/validation/cleanup.
+Do not launch another controller or validation while this controller owns it.
+
+Controller finished 2026-10-29T21:16:56.152807+02:00: both captures/gates passed; EVO reporting pending
+{"failure": null, "cleanup_error": null}
+No automatic retry.

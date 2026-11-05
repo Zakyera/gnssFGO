@@ -1,0 +1,52 @@
+CP-C4 — OBSOLETE NON-GRANDTOUR OUTPUT CLEANUP — COMPLETED 2026-10-28
+
+Authorization: user explicitly requested deletion of old non-GrandTour runs
+and checks, including S3E, M3DGR and GEODE. This does not delete raw datasets,
+source code, shared builds or any GrandTour experiment.
+
+Deleted permanently (not moved to Trash):
+- Main batch: 28,867 files in 451 verified obsolete run/check roots;
+  14,256,582,656 bytes freed during deletion.
+- Additional batch: 1,802 files from old S3E Kimera debugging/comparison runs,
+  S3E/M3DGR visualization recordings, Newer College benchmark output slots,
+  and generated M3DGR diagnostic bags; 1,184,444,416 bytes freed.
+- Total: 30,669 files; 15.44 GB (14.38 GiB) reclaimed across the two batches.
+  Available space after cleanup: 22.04 GB (20.53 GiB).
+- 4,098 empty directories removed. These counts include nested directories;
+  they are not a count of independent experiments.
+
+Main-batch allocated output breakdown (rounded):
+S3E                         13.39 GB
+Boreas                       0.55 GB
+M3DGR and legacy checks       0.28 GB
+GEODE                        0.02 GB
+Additional batch             1.18 GB
+
+Safety and verification:
+- Dataset identity came from run manifests (bag/GT/launch fields), specific
+  log entries opening S3E bags, or reviewed dataset-specific stage reports.
+  Generic old folder dates alone were not treated as dataset evidence.
+- All 3,922 protected GrandTour/reference/output/dependency files verified
+  unchanged before and after BOTH batches, including resolved symlink targets.
+- Four-sequence Hesai checkpoint passed: 4 cases, 667 files, originals=True.
+- GrandTour Hesai/Velodyne runs, method-1/method-2 reports, source code,
+  active/private runtime builds, and original raw datasets were excluded.
+- Preserved the original GEODE stairs bag. Additional deleted .bag files were
+  explicitly generated diagnostic output or 20-second replay fixtures, NOT
+  the original M3DGR Outdoor01 bag. The recording script/manifests document
+  their origin in additional_plan.json.
+- Both experiment containers were stopped. No experiment, estimator build,
+  settings change, commit or push was performed as part of this cleanup.
+- Remaining old stage folders contain source/safety snapshots/configuration/
+  reports or raw input; their presence does not mean the bulky runs remain.
+- No new bulk backup was made. Deleted payloads cannot be restored from Trash;
+  any recovery would require a pre-existing independent backup or a rerun.
+
+Evidence:
+plan.json, inventory.json, deleted.jsonl, completion.json;
+additional_plan.json, additional_deleted.jsonl, additional_completion.json;
+protected_before.json. Scripts are finite, refuse repeat deletion, and check
+exact file identities immediately before unlinking. Do not re-execute them.
+
+The previously identified CP-V29 ETH1 disk admission blocker is resolved.
+CP-V29 was not launched by the cleanup; its separate preparation remains saved.

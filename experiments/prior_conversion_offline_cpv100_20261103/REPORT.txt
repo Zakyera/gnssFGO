@@ -1,0 +1,79 @@
+CP-V100: CPK9 unchanged-anchor conversion test, 2026-11-03
+
+RESULT
+The exact frozen OriginalChartPrior/CPK9 code can throw "CPK9 promotion changes
+cached prior" with an exactly identical original Gaussian and cache. Numerical
+differentiation alone perturbs the converted prior past the existing1e-8 guard.
+This is a demonstrated conversion fragility/false rejection, NOT proof of which
+comparison failed at CP99 update1476. No production correction or new run.
+
+METHOD
+Two standalone C++ diagnostic builds against CP76 release_fixture1/source_snapshot
+(dependency receipts confirm actual frozen includes) and existing GTSAM4.3 libs.
+No estimator build, optimizer step, sensor playback, ROS master or receiver.
+Known SPD priors and35 raw native marginal-prior occurrences from36 CP98 saved
+snapshots. The recorder has aggregate cache only, so each diagnostic constructs
+an identical per-prior cache to isolate representation conversion. It does NOT
+claim to recover the missing CP99 per-slot Gaussian or theta.
+
+CPK9 compares max(original/cache error, converted/cache error), normalized by
+1+norm(cache augmented information). The first error is exactly0 in every test.
+We call the original promote() function without changing its1e-8 threshold and
+verify rejection/acceptance against the separately measured second error.
+Rejection leaves original graph pointer and fixed-key set unchanged. Deliberate
+cache corruption still rejects. Clone the original Gaussian at the unchanged
+anchor as an exact mathematical control: matrix error0 in all1098 cases.
+
+OBSERVATIONS
+* First196cases:70rejections, including12synthetic and58translated saved-prior
+  stress cases. Original35untranslated saved CP98 priors all pass, maximumerror
+  1.34553e-11. Their roughly8.5-12s history is not the failed299.5s history.
+* Translating those35priors by the representative roughly82m position or128m
+  gives no rejections.1000m gives23/35,1,000,000m gives35/35. Large offsets are
+  stress controls, not the actual experiment's coordinates.
+* Follow-up bounded +/-1m world-y sweep around the representative CP99 last
+  published pose,41positions at0.05m spacing and4predeclared synthetic SPD
+  shapes:56/164reject.18saved after-marginalization priors across the same41
+  translations give0/738rejections. No failure-count population may be hidden.
+* At the exact last-published pose1475 position(8.6727899063,82.1588928070,
+  4.2726521910), with its saved orientation and a SYNTHETIC unary Pose3 prior
+  H=diag(1,1,1,1,1e6,1),eta=0,c=1:
+    original/cache error =0
+    converted/cache error =1.50812974694e-8 >1e-8 -> original guard rejects
+    self-local displacement =0
+    finite-difference Jacobian minus identity norm =1.07367964078e-8
+    exact unchanged-anchor Gaussian clone error =0
+  This is a controlled counterexample at a representative pose, NOT the
+  failed native anchor/prior. That actual state was not captured.
+* Diagnostic finite-difference step1e-4 reduces the example error to1.56853e-10;
+  step1e-7 increases it to2.60333e-7. No live step/noise/tolerance was changed.
+
+INTERPRETATION
+At the anchor, Local(anchor,Retract(anchor,h)) has identity derivative. The
+implementation nevertheless estimates this by subtracting finite-precision
+poses after1e-6 perturbations. Global-position cancellation and the prior's
+directional information can make this approximation exceed the guard. Thus
+identical scientific settings need not guarantee that every prior passes.
+This is deterministic numerical sensitivity for a given input, not proof that
+the full-run failure was randomness or that a substantive cache bug is absent.
+
+NEXT NARROW FIX TO QUALIFY
+In a PRIVATE candidate only, when every relevant value is exactly the immutable
+anchor, return a cloned original Gaussian instead of numerically estimating the
+identity chart conversion. Keep the1e-8 guard and original/cache comparison;
+retain/qualify existing behavior at moved anchors. Add separate original/cache
+and converted/cache errors, slot, keys and matrices to failure diagnostics.
+Regression-test corruption, ownership, type/dimension, transaction behavior,
+moved anchors and repeated marginalization before deployment. The current test
+has not implemented this production patch and does not authorize fresh live ON.
+
+PRESERVATION / LIMITS
+All6425original protected hashes plus CP91/95/98 terminal evidence and CP99
+failure files are checked before/after each standalone stage. First6642input
+pins; second stage additionally pins the first diagnostic outputs. Both original
+containers are restored stopped; owned stage jobs exit. No deleted/new source
+run and no modification of original OFF/ON settings, binaries or sealed results.
+The final verification receipt separately checks Hesai667copies/originals.
+See analysis.json, stage process/cleanup receipts, and new workspace results/
+and nearby_results/ matrix/anchor dumps. Missing CP99 failure details were not
+recorded; this diagnosis does not repair that evidence gap or explain ATE.

@@ -1,0 +1,30 @@
+CP-C3: user-authorized cleanup of obsolete non-GrandTour stage artifacts
+2026-10-26. User: "Clean it up" after review of the ten stage folders.
+
+Only the ten explicit stage roots in cleanup.py are in scope. Do not delete
+GrandTour runs, /results, current source trees/builds, original datasets, or
+the additional stage15/stage2b/stage2c_audit roots not reviewed with the user.
+
+Remove derived bags, old Rerun/animation recordings, bulk runtime logs and
+per-update tables, and isolated stage build products. Keep source copies,
+safety archives/patches, reports, configurations, scripts, compact results,
+analysis tables/figures, and final trajectories. Unknown files default to keep.
+Keep the original GEODE Stairs recording in stage2c_d2/stairs/source_work:
+SHA256 932a5490497634d8e0497c0013c973d804dc892d37d1c0cab661e20141be514d.
+Its byte-identical .orig.bag copy and the documented corrupt-resume copies
+are disposable. No original raw sensor dataset is to be deleted.
+
+Inventory every file/link and review the exact deletion manifest before use.
+Archive retained compact content with symlinks NOT dereferenced, verify archive
+content hashes before deletion, and retain the originals at their current paths.
+Record before/after hashes for the union of nine current experiment protected
+manifests, the CP-V8 scoring inputs, and all 14 saved live GLIM odometry files.
+Check protected paths/resolved paths do not intersect deletions. Check no owned
+source/receiver/replay/controller jobs; both containers were already stopped.
+Run the four-sequence Hesai checkpoint verifier against originals before/after.
+
+Deletion is permanent (not Trash). The compact archive is NOT a backup of
+deleted captures/builds. Old exhaustive replay and visualization that require
+removed payloads will no longer be available. Save explicit removed-file
+inventory, retained-file hashes, and actual free-space change. No experiment,
+rebuild, tuning, scoring, commit, push, or automation is authorized here.

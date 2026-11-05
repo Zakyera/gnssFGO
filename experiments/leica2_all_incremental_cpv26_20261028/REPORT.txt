@@ -1,0 +1,137 @@
+CP-V26 — ALL THREE METHOD-2 OUTPUTS, COMPLETED 2026-10-28
+======================================================
+Scope: full saved LEICA-2 Velodyne CP-V4 OFF/ON, original WNOA Qc1.0.
+No source/receiver run, build, container launch, tuning or production promotion.
+Other sequences have NOT been converted by this bounded task.
+
+1. CONCLUSION
+
+The user's suspicion is confirmed for this sequence: changing GLIM's publication
+rule to same-update incremental chaining substantially worsens its global ATE.
+On the frozen common mask, OFF2.782169->10.106881m and ON0.848869->3.331124m.
+This is a new output product, not a change or failure of the original optimizer.
+Kimera was already incremental. Fusion reuses the validated CP-V23 incremental
+products. All three now follow the same basic rule, not the same sensor/update
+cadence, information age or wall-clock latency.
+
+Within this METHOD-2 comparison, Kimera has lowest position ATE in OFF and ON.
+Fusion improves on GLIM OFF but not Kimera OFF; ON fusion is worse than both.
+CBS improves GLIM method2 strongly, but worsens Kimera and fusion method2 here.
+These are sequence-specific results; they do not establish other-sequence ranks.
+Method2 is not inherently a better global estimator: it discards historical
+graph corrections. Original method1 scores remain valid for original products.
+No mixed-convention table is labelled a uniform method2 comparison.
+
+2. PRIMARY — IDENTICAL COMMON REFERENCE TIMES, METHOD2 FOR ALL THREE
+
+Independent whole-mask rigid SE(3), NO scale fit per trajectory. Same CP-V10
+mask:3850queries,384.6s connected coverage /428.75s=89.702624%,four segments.
+Reference path205.913358m for every row. Positive improvement means lower ATE.
+
+Estimator      ATE OFF(m)  ATE ON(m)  CBS improvement    Estimated path OFF->ON(m)
+GLIM           10.106881   3.331124      +67.041%         211.473760 ->204.053076
+Kimera          1.094234   2.585334     -136.269%         199.926635 ->200.814393
+gnssFGO fusion  3.482370   5.331684      -53.105%         214.389018 ->208.610605
+
+Estimator      1s translation RPE OFF/ON(m)   1s rotation RPE OFF/ON(degrees)
+GLIM                  .194153/.058557                  1.443480/.647576
+Kimera                .028573/.062125                   .406498/.536195
+gnssFGO fusion        .063646/.085802                  2.906159/2.044541
+Each1s score has3810pairs within the unchanged contiguous-mask segments.
+10s/20s RPE retained in results.json; no after-the-fact favourable-mask selection.
+
+Common segments(s relative to capture):
+ .684928335--57.584928335;60.384928335--195.384928335;
+ 196.784928335--304.384928335;305.284928335--390.384928335.
+414queries excluded from4264. Last38.365072s not in the common mask, primarily
+because of sparse Kimera keyframe gaps. This is NOT missing GLIM/fusion tail.
+Full-saved results below preserve that tail. Grid interpolation is OFFLINE
+scoring, not a newly available causal output or added sensor observations.
+
+3. FULL-SAVED PRODUCTS — OWN NATIVE SAMPLING/COVERAGE, NOT THE COMMON TABLE
+
+Estimator      ATE OFF(m)  ATE ON(m)      Estimated path OFF->ON(m)
+GLIM           11.931732   3.867642       215.098013 ->208.800611
+Kimera          1.097081   2.584159       200.145838 ->201.294269
+gnssFGO fusion  3.786712   6.080933       216.953604 ->209.648540
+
+The previously discussed6.080933m is fusion ON FULL-SAVED. Its common-mask
+score is5.331684m. They are different coverage/sampling evaluations, not two
+implementations of method2. Both have independent no-scale rigid alignment.
+
+GLIM:4280poses each, .632081331--428.530730308s,span427.898649s;
+startup .632081331s,tail .219269692s,zero >.5s gaps. Every pose GT-supported.
+Kimera:1937OFF/1936ON, .099937912--426.995563739s,span426.895626s;
+startup .099937912s,tail1.754436261s,12OFF/13ON >.5s gap chords.
+Fusion:4282poses each, .484443335--428.584443335s,span428.1s;
+startup .484443335s,tail .165556665s,zero >.5s gaps. Every pose GT-supported.
+Kimera every saved pose is also GT-supported, but this does NOT mean dense
+continuous coverage through its gaps. Native polyline lengths bridge those
+reported sparse gaps. Reference native paths at each stream's own timestamps:
+GLIM205.872155m; Kimera205.451489/205.458457m; fusion205.929085m.
+
+4. EXACT RECONSTRUCTION AND PROVENANCE
+
+GLIM from original full_{off,on}_source/ros_logs/*/glim_rosnode-1-stdout.log
+under runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared:
+ GLIM_CBS_ACTIVE_POSE_ROW;214608rows/mode,4280updates indexed0..4279.
+ Each current X[k|k] and revised previous X[k-1|k] from SAME update.
+ No duplicate or missing pair. Current full Pose3 matches the published
+ glim_odometry.csv exactly: maximum matrix difference0 in both modes.
+ Log timestamps differ from exact CSV nanoseconds by at most50ns; the original
+ CSV integer times are retained. No time interpolation used to build the chain.
+ Pinned CP-I1 cbs_bridge.cpp:1498--1650 confirms temporary CBS application,
+ publication, then diagnostic/export reads in that same callback. Outgoing
+ routine takes const MAIN smoother; no intervening MAIN optimization. Thus
+ this is not a retirement/refined-in-the-future reconstruction.
+
+O[0]=X[0|0]; O[k]=O[k-1] inverse(X[k-1|k]) X[k|k]. Full SE(3), not translation
+addition alone. Saved graph_T_odometry = X[k|k] inverse(O[k]). No re-anchoring,
+per-segment reset, additional filtering, changed factor or extra optimization.
+
+Kimera unchanged native ROS output, no_incremental_pose=false in saved effective
+settings. Pinned VioBackend.cpp updateStates reads the previous/current poses
+from state_, composes their relative motion onto W_Pose_B_lkf_from_increments_,
+and selects it for publication. Do not chain the already chained output again.
+
+Fusion unchanged CP-V23 chained_trajectory.tum, original Qc1.0. Its hashes match
+CP-V23 reconstruction_checks.json. CP-V23 had full original receiver-output and
+event/payload parity; no replay repeated here. Not Qc0.25/.1, not single-source.
+
+5. VERIFICATION
+
+Independent normalized-quaternion/vector versus homogeneous-matrix chain:
+maximum element difference9.62e-12OFF /1.10e-11ON.
+Published-to-published differencing telescopes to original GLIM path:
+maximum8.16e-12OFF /1.21e-11ON; this is NOT method2.
+Graph correction times chained pose reconstructs graph within1.62e-12.
+Chained prism-edge length versus SAME-update edge length error <=6.22e-14m.
+Synthetic known10.0->10.1example, global-frame/body-frame equivariance and
+no-revision identity pass. Existing alignment/geometry/gap tests pass.
+Independent evo ATE agreement <=5.33e-15m for these products.
+All six unchanged method1 GLIM/method2 Kimera/method2 fusion full/common ATE
+values reproduce exactly. Twelve overlapping CP-V10 historical input pins match;
+both pinned source implementations match original protected_manifest.json.
+All used files hashed before/after; final product checks in closeout.json.
+
+EOF GLIM graph/chain prism separation28.145976m OFF /8.616191m ON; orientation
+separation27.305647/11.233180degrees. These compare OUTPUT PRODUCTS, not GT
+position/orientation errors. They confirm materially different accumulated paths.
+
+6. INTERPRETATION AND LIMITS
+
+Global graph corrections matter to GLIM here. A chain can lose their benefit
+even though every current increment is optimized. Do not generalize worse GLIM
+method2 accuracy to every sequence or claim a new bug from this result alone.
+Method2 alignment is a useful standardized output-policy test, not a complete
+latency-matched or identical-evidence estimator comparison. Kimera keyframes,
+GLIM scans and fusion100ms support predictions still have different timing.
+IE-TC shares CPT7 with both estimators; it is not independent prism ground truth.
+No chained velocity/covariance is asserted. Export policy is not a covariance
+calibration, factor-consistency or nonlinear-stationarity certificate.
+Delayed finalized fusion and revised GLIM remain separate, not substituted.
+
+Saved: results.json, inputs.json, publication_products.npz, off_glim_chained.tum,
+on_glim_chained.tum, analyze.py, PROTOCOL.txt, verify.py and closeout.json.
+Original data/reports preserved. Four-sequence Hesai checkpoint verifies.
+No next sequence, replay, tuning, default promotion, deletion, commit or push.

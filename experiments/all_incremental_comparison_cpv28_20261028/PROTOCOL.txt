@@ -1,0 +1,48 @@
+CP-V28: all seven original baseline pairs, METHOD 2, 2026-10-28
+
+Authorized request: give all results with method 2. Four Hesai pairs ETH1,
+EIG-2, SPX-3, LEICA-2 and three Velodyne pairs SPX-3, EIG-2, LEICA-2.
+No ARC cases, candidate Qc0.25/0.1, new sensor captures or new method tuning.
+CP-V27 is method1 and must not be substituted or relabelled as method2.
+
+O[0]=X[0|0]; O[k]=O[k-1] inverse(X[k-1|k]) X[k|k]. Both poses in each
+increment are from the SAME publication update. Both path and RMSE use O.
+GLIM: reconstruct from saved active-pose rows and exact native CSV times.
+Kimera: native incremental ROS odometry, no double integration.
+Fusion: existing validated CP-V23 observer binary, no rebuild. Exactly one
+saved-journal replay for each of the remaining twelve cases. Reuse completed
+LEICA-2 Velodyne CP-V23/26 products. Preserve original Qc1.0, seven-second lag,
+source_wnoa, support100ms/startup59, all priors, factors, means/covariances,
+event order, seal_at_absorption, EOF policy and cache settings.
+
+Gate every replay: identical ONLINE/finalized states and trajectories,
+identical summary, identical deterministic event fields and publication commit
+records. Observer captures existing Values only; no extra solve. Any numerical
+or parity failure stops the finite job, with evidence preserved; no blind retry.
+Pin inputs and executable/dependencies, verify after work. Only the originally
+stopped Humble container may be started for receiver execution; restore stopped.
+No source/ROS playback/GLIM/Kimera launch. No production edits/build/defaults.
+
+Storage: one explicit fresh scratch directory on /run/user/1000 tmpfs, one
+replay at a time. Preserve every new replay file in a compressed archive, verify
+every archived member against its source digest before removing ONLY that
+new scratch replay directory. Keep archives and observer CSVs in RAM until all
+replays finish. Persist with exclusive creation and verify before RAM cleanup.
+Keep >8GiB SSD free before each replay and >2.75GiB tmpfs free. Final persistent
+copy must leave >4GiB SSD free. No original artifact deletion. On failure keep
+scratch evidence; do not claim incomplete prefixes as full results.
+
+Evaluation: frozen CP-V10 per-pair common timestamp masks for matched six-way
+OFF/ON comparisons, unchanged reference/body-to-prism transform and rigid SE3
+no-scale alignment. Retain full native saved scores/coverage separately.
+ATE independently checked against evo; chain independently by quaternion/vector
+recurrence, telescoping control, frame equivariance and prism edge lengths.
+Do not bridge gaps in common-mask path/RPE. Full native polylines separately
+report gap chords. Original terminal omissions remain disclosed.
+
+Same output convention does not equalize cadence/evidence age/latency. IE-TC
+shares CPT7 with estimators and is not independent prism ground truth. No
+covariance/velocity assignment to the chained output, nonlinear stationarity
+claim or production promotion. Preserve prior reports and checkpoint. Final
+report must identify method2 explicitly and not claim physical travel from an
+estimated polyline length.

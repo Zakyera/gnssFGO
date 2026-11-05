@@ -1,0 +1,38 @@
+CP-K21 — isolated native Kimera full ETH1, 2026-10-21
+User: Run only Kimera alone at0.5 speed for the full sequence; no GLIM/no gnss.
+
+ONE fresh capture, no automatic retry. ETH1 selected-topic interval
+1727775007855396309--1727775354175396309ns,346.32s,offset0,0.50x,25s drain.
+Play only Alphasense front-left/front-right compressed images and CPT7 IMU
+from their existing bags. No Hesai bag, GLIM,gnssFGO,GNSS,EKF or visualization.
+Same CP-K9 Kimera DSO/profile as CP-K17/K18:25 states,CPT7 calibrated body,
+CPK9_PRIOR_REFRESH=1,FL4Q_ENABLE=0,FL4M_RETIREMENT=remove,native IMU override unset.
+No incoming CBS; outgoing covariance/revision diagnostics retained at same
+settings, so disabling other estimators does not silently disable local work.
+No estimator/source edits,rebuild,tuning,covariance/threshold changes.
+
+Existing launch tree copied privately; remove GLIM include and EKF include,
+force stereo_shared_cpt7,OFF receive switches and graph inspectors false.
+Private build SHA256:
+be637ad745f73bf12596d3bf06754f56ed7bcadfdb8b4792b94c4fcfee62aad9.
+Verify actual process flags/loaded DSO/profile against saved K18 OFF before
+playback. Own isolated ROS master port11471. Only existing Noetic container.
+
+Record native /kimera_vio_ros/odometry, frontend_stats, original node/backend
+logs and lightweight timestamp/sequence receipts at compressed image, raw
+image and IMU topics. Observer receipt is not proof of Kimera callback success;
+backend/frontend logs and pose epochs must be cross-checked independently.
+Full playback completion and pose coverage are separate findings. Report
+all startup/internal/tail gaps, especially the old302--307s5.1s gap. Do not
+reject a diagnostic capture merely for reproducing its target missing poses.
+Preserve failures; no automatic retry or treating a failed prefix as full.
+If immediately usable, score all saved poses vs IE-TC and1sRPE with existing
+lever arm/alignment, no interpolation across gaps>0.5s; do not call the shared
+CPT7 IE-TC reference independent prism GT. Main result is gap localization.
+
+H=/home/yeranis/repos/gnssFGO/experiments/kimera_only_full_rate050_cpk21_20261021
+P=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/kimera_eth1_full_rate050_cpk21_20261021
+Retain P/capture and exact preparation,hashes,effective flags and profile.
+Changing both rate and competing load does not prove a unique cause; no new
+OFF/ON pair or production changes follow automatically. Restore Noetic to
+stopped after owned jobs finish; leave already-stopped Humble untouched.

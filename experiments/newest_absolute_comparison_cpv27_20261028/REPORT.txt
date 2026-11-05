@@ -1,0 +1,130 @@
+CP-V27 — SEVEN-PAIR NEWEST ABSOLUTE GRAPH OUTPUT COMPARISON
+Completed 2026-10-28. Saved-data evaluation only; original receiver Qc1.0.
+
+1. MEANING OF THIS NEW EVALUATION
+
+All primary products use the newest absolute graph pose available at their output update.
+GLIM: first-published optimized MAIN poses in glim_odometry.csv, unchanged from CP-V10.
+Kimera: absolute W_Pose_B_lkf_from_state_ recovered from same-output diagnostics. This is NOT its actual incremental ROS odometry publication. No native output was replaced or relabelled.
+Fusion: original concurrent ONLINE newest-support poses, unchanged from CP-V10; no new replay.
+No fixed-lag-finalized/retirement output and no accumulating relative-motion chain enter the primary tables.
+This matches the publication rule, not cadence, evidence age, latency or fixed-lag duration.
+CP-V10 native incremental Kimera results and CP-V26 all-incremental Leica-2 remain separate valid product measurements.
+
+2. PRIMARY MATCHED-TIME POSITION ATE AND CONNECTED PUBLICATION PATH
+
+All distances in metres. Same100ms query grid and exact CP-V10 common mask for all six products within each pair. Each trajectory gets one rigid SE(3) no-scale reference fit over its complete common mask; no per-segment realignment. No smoothing.
+Improvement=100*(OFF-ON)/OFF: positive better, negative worse. Single-run descriptive differences, not significance tests.
+Path is the length of the connected published-position trace on supported grid segments, not physical distance flown. No chords across masked gaps.
+The table is NOT a claim of100% time coverage. Full-saved own-sampling values are in section4.
+
+HESAI
+
+| Sequence | Estimator | RMSE OFF m | RMSE ON m | Improvement | Estimated path OFF -> ON m |
+|---|---|---:|---:|---:|---|
+| ETH1 | GLIM | 0.0415 | 0.0387 | +6.6% | 202.86 -> 202.67 |
+| ETH1 | Kimera absolute backend | 4.2092 | 1.6060 | +61.8% | 628.98 -> 782.32 |
+| ETH1 | Fusion ONLINE | 0.1679 | 0.1045 | +37.8% | 223.24 -> 216.30 |
+| EIG-2 | GLIM | 0.0516 | 0.0444 | +13.9% | 189.78 -> 189.90 |
+| EIG-2 | Kimera absolute backend | 2.3101 | 1.1013 | +52.3% | 290.32 -> 361.73 |
+| EIG-2 | Fusion ONLINE | 0.1655 | 0.1346 | +18.7% | 201.53 -> 200.50 |
+| SPX-3 | GLIM | 0.0167 | 0.0171 | -2.8% | 90.96 -> 91.21 |
+| SPX-3 | Kimera absolute backend | 0.3618 | 0.2211 | +38.9% | 102.60 -> 99.11 |
+| SPX-3 | Fusion ONLINE | 0.0421 | 0.0380 | +9.7% | 94.14 -> 94.16 |
+| LEICA-2 | GLIM | 0.4949 | 0.4974 | -0.5% | 205.87 -> 205.62 |
+| LEICA-2 | Kimera absolute backend | 1.0058 | 0.7732 | +23.1% | 203.23 -> 218.95 |
+| LEICA-2 | Fusion ONLINE | 0.6604 | 0.5200 | +21.3% | 220.28 -> 217.45 |
+
+VELODYNE
+
+| Sequence | Estimator | RMSE OFF m | RMSE ON m | Improvement | Estimated path OFF -> ON m |
+|---|---|---:|---:|---:|---|
+| SPX-3 | GLIM | 0.0524 | 0.0581 | -10.9% | 91.74 -> 92.10 |
+| SPX-3 | Kimera absolute backend | 0.3616 | 0.2714 | +25.0% | 102.60 -> 119.31 |
+| SPX-3 | Fusion ONLINE | 0.1246 | 0.1097 | +12.0% | 94.27 -> 94.58 |
+| EIG-2 | GLIM | 0.2901 | 0.3335 | -15.0% | 205.07 -> 202.50 |
+| EIG-2 | Kimera absolute backend | 2.3078 | 1.8010 | +22.0% | 290.38 -> 790.17 |
+| EIG-2 | Fusion ONLINE | 0.5309 | 0.8843 | -66.6% | 213.75 -> 210.83 |
+| LEICA-2 | GLIM | 2.7822 | 0.8489 | +69.5% | 206.50 -> 207.64 |
+| LEICA-2 | Kimera absolute backend | 1.0054 | 1.5324 | -52.4% | 203.22 -> 374.13 |
+| LEICA-2 | Fusion ONLINE | 2.0060 | 1.8680 | +6.9% | 277.60 -> 233.00 |
+
+3. COMMON COVERAGE AND REFERENCE DISTANCE
+
+| Sensor / sequence | Capture s | Supported s (%) | Reference path m | First / last supported s |
+|---|---:|---:|---:|---|
+| Hesai ETH1 | 346.32 | 296.7 (85.7%) | 201.38 | 3.745 / 302.045 |
+| Hesai EIG-2 | 355.02 | 352.3 (99.2%) | 188.01 | 0.736 / 354.836 |
+| Hesai SPX-3 | 197.02 | 191.7 (97.3%) | 90.77 | 1.527 / 196.727 |
+| Hesai LEICA-2 | 428.75 | 385.0 (89.8%) | 205.91 | 0.685 / 421.585 |
+| Velodyne SPX-3 | 197.02 | 192.0 (97.5%) | 90.77 | 1.527 / 196.827 |
+| Velodyne EIG-2 | 355.02 | 353.1 (99.5%) | 188.02 | 0.836 / 354.836 |
+| Velodyne LEICA-2 | 428.75 | 384.6 (89.7%) | 205.91 | 0.685 / 390.385 |
+
+Supported duration is summed over connected segments, not simply last minus first. Sparse Kimera keyframes exceed the unchanged500ms interpolation bound in some intervals/tails. This is an evaluation-support limitation, not evidence that the complete capture failed or that camera data were missing.
+Small differences in Kimera OFF common scores between Hesai/Velodyne arise from different common masks; the actual OFF Kimera absolute arrays are exactly identical for each shared mission.
+
+4. FULL-SAVED OWN-SAMPLING OUTPUTS — SECONDARY
+
+Every actual saved pose is reference-supported. These values use each product's own sample times/span and are not matched-time rankings. Native path lengths join adjacent saved points, including any long-gap chords; gap counts are included. No output is called physically travelled distance.
+
+| Sensor / sequence | Estimator | ATE OFF / ON m | Path OFF / ON m | Rows OFF / ON | Span OFF / ON s | Gap chords OFF / ON |
+|---|---|---|---|---|---|---|
+| Hesai ETH1 | GLIM | 0.041080 / 0.039021 | 205.058 / 205.295 | 3454 / 3454 | 345.300 / 345.300 | 0 / 0 |
+| Hesai ETH1 | Kimera absolute backend | 4.266148 / 1.677211 | 755.449 / 988.809 | 1492 / 1493 | 342.598 / 342.598 | 11 / 11 |
+| Hesai ETH1 | Fusion ONLINE | 0.166126 / 0.103489 | 237.711 / 225.877 | 3456 / 3456 | 345.500 / 345.500 | 0 / 0 |
+| Hesai EIG-2 | GLIM | 0.051679 / 0.044643 | 192.144 / 193.166 | 3543 / 3543 | 354.199 / 354.199 | 0 / 0 |
+| Hesai EIG-2 | Kimera absolute backend | 2.316504 / 1.112895 | 332.023 / 421.394 | 1761 / 1761 | 354.697 / 354.797 | 1 / 2 |
+| Hesai EIG-2 | Fusion ONLINE | 0.167508 / 0.135765 | 225.562 / 221.246 | 3545 / 3545 | 354.400 / 354.400 | 0 / 0 |
+| Hesai SPX-3 | GLIM | 0.016722 / 0.017180 | 91.194 / 91.569 | 1962 / 1962 | 196.099 / 196.099 | 0 / 0 |
+| Hesai SPX-3 | Kimera absolute backend | 0.364567 / 0.223154 | 107.050 / 102.093 | 958 / 956 | 196.798 / 196.798 | 3 / 5 |
+| Hesai SPX-3 | Fusion ONLINE | 0.044145 / 0.040815 | 98.640 / 97.482 | 1965 / 1965 | 196.400 / 196.400 | 0 / 0 |
+| Hesai LEICA-2 | GLIM | 0.569257 / 0.570351 | 207.345 / 207.841 | 4279 / 4279 | 427.800 / 427.800 | 0 / 0 |
+| Hesai LEICA-2 | Kimera absolute backend | 1.007232 / 0.776040 | 203.892 / 221.311 | 1937 / 1937 | 426.896 / 427.796 | 12 / 13 |
+| Hesai LEICA-2 | Fusion ONLINE | 0.696970 / 0.565647 | 221.268 / 218.369 | 4282 / 4282 | 428.100 / 428.100 | 0 / 0 |
+| Velodyne SPX-3 | GLIM | 0.052088 / 0.057813 | 91.896 / 92.299 | 1962 / 1962 | 196.100 / 196.100 | 0 / 0 |
+| Velodyne SPX-3 | Kimera absolute backend | 0.364567 / 0.276530 | 107.050 / 126.953 | 958 / 956 | 196.798 / 196.698 | 3 / 5 |
+| Velodyne SPX-3 | Fusion ONLINE | 0.128743 / 0.112111 | 101.569 / 100.563 | 1965 / 1965 | 196.400 / 196.400 | 0 / 0 |
+| Velodyne EIG-2 | GLIM | 0.290192 / 0.333373 | 205.978 / 203.667 | 3542 / 3542 | 354.100 / 354.100 | 0 / 0 |
+| Velodyne EIG-2 | Kimera absolute backend | 2.316504 / 1.845464 | 332.023 / 943.679 | 1761 / 1765 | 354.697 / 354.697 | 1 / 1 |
+| Velodyne EIG-2 | Fusion ONLINE | 0.534328 / 0.886053 | 299.811 / 255.326 | 3545 / 3545 | 354.400 / 354.400 | 0 / 0 |
+| Velodyne LEICA-2 | GLIM | 2.829284 / 0.863203 | 209.038 / 215.463 | 4280 / 4280 | 427.899 / 427.899 | 0 / 0 |
+| Velodyne LEICA-2 | Kimera absolute backend | 1.007232 / 1.537043 | 203.892 / 395.255 | 1937 / 1936 | 426.896 / 426.896 | 12 / 13 |
+| Velodyne LEICA-2 | Fusion ONLINE | 2.000424 / 1.828658 | 280.154 / 235.137 | 4282 / 4282 | 428.100 / 428.100 | 0 / 0 |
+
+5. WHAT CHANGED FOR KIMERA?
+
+| Sensor / sequence | Incremental common ATE OFF / ON m | Absolute common ATE OFF / ON m |
+|---|---|---|
+| Hesai ETH1 | 4.5000 / 0.3407 | 4.2092 / 1.6060 |
+| Hesai EIG-2 | 1.8810 / 0.6880 | 2.3101 / 1.1013 |
+| Hesai SPX-3 | 0.4824 / 0.1089 | 0.3618 / 0.2211 |
+| Hesai LEICA-2 | 1.0949 / 0.4780 | 1.0058 / 0.7732 |
+| Velodyne SPX-3 | 0.4821 / 0.3737 | 0.3616 / 0.2714 |
+| Velodyne EIG-2 | 1.8796 / 1.7987 | 2.3078 / 1.8010 |
+| Velodyne LEICA-2 | 1.0942 / 2.5853 | 1.0054 / 1.5324 |
+
+Under this policy GLIM has the lowest common ATE in13/14 modes, Kimera in1/14 (Velodyne Leica-2 OFF), and fusion in0/14. CBS lowers ATE in3/7 GLIM,6/7 Kimera and6/7 fusion pairs.
+Leica-2 Velodyne still contains the important counterexample: Kimera OFF1.005375m beats GLIM2.782169m. ON improves GLIM to0.848869m but worsens Kimera to1.532446m. Fusion ON1.867962m is worse than both sources.
+Kimera absolute output is NOT uniformly better than its incremental output. ETH1 ON changes0.340734->1.606029m; Leica-2 Velodyne ON changes2.585334->1.532446m. Output policy can improve or worsen ATE.
+Absolute-history Kimera paths are very long in ETH1 and EIG-2, including782.32m Hesai ETH1 ON against201.38m matched reference and790.17m Velodyne EIG-2 ON against188.02m. These are real saved graph-publication discontinuities, not injected by an incremental reconstruction or by smoothing. They do not establish physical zigzag or the motion between two simultaneously revised active states. No specific optimizer bug or cause is diagnosed here.
+Hesai SPX-3 GLIM ON worsens by only0.465mm common ATE despite the displayed-2.8%; do not exaggerate this small absolute change.
+
+6. EXTRACTION AND VALIDATION
+
+Pinned VioBackend.cpp:1967 logs timestamp/keyframe, absolute state pose, incremental pose and a separate state-to-increment transform immediately before BackendOutput creation. The recorded flag is no_incremental_pose=false. updateStates reads the current MAIN state into W_Pose_B_lkf_from_state_; the alternate incremental branch composes same-solution between-keyframe motion.
+All21,608Kimera output rows across14runs have exactly one unique contiguous keyframe ID matching CSV header.seq. Every paired logged incremental pose matches the original ROS pose within its six-significant-digit rounding interval. The original exact nanosecond CSV header stamp is used. The coarse logged epoch stamp is NEVER used for timestamp association or scoring.
+Kimera absolute pose coordinates are rounded in the original log, not double-precision exact. Conservative maximum prism-position rounding bound0.503628mm; actual rounded-incremental-control ATE discrepancy <=0.001837mm. Treat last printed decimals as numerical reporting, not proven physical accuracy. Quaternions are normalized; no trajectory smoothing or additional solve.
+Independent graph-to-increment translation/norm/yaw diagnostics match within rounding bounds; pose ordering, quaternion ordering and frame use are checked. Exact OFF absolute arrays match across sensors on the three shared missions.
+All42unchanged GLIM/Kimera-incremental/fusion products reproduce prior full/common ATE exactly. All common masks and reference arrays are unchanged. Independent evo rigid alignment maximum difference1.29e-14m; homogeneous-matrix RPE check maximum3.91e-14. Existing identity/frame/known-angle/gap/exact-sample tests pass.
+109input SHA256 pins verified unchanged after scoring. All14source protected manifests match the pinned Kimera implementation. verification.json contains exact bounds/checks; each case JSON keeps1s/10s/20s RPE, full-saved details, omissions and input identities.
+
+7. LIMITS AND PRESERVATION
+
+Reference is IE-TC GNSS/INS with shared CPT7 IMU, not independent prism ground truth. Estimate/reference receive the same original CPT7-to-prism lever transform. Reference fitting is offline and uses the complete evaluation mask; this is not raw unaligned navigation error.
+Same publication rule does not equalize latency, native update cadence, evidence age or lag. Offline interpolation is not a newly causal streaming product. This study evaluates a saved Kimera backend output alternative; it does not change the deployed ROS publisher or CBS exchange.
+Four missions, seven sensor pairs; shared Kimera OFF data are not independent repeats. Rear Velodyne versus Hesai also changes viewpoint. No statistical significance, covariance calibration, healthy-estimator generalization or0.5x claim.
+Preserved terminal-factor omissions: Hesai EIG-2 ON1; Hesai SPX-3 OFF1/ON1; Velodyne SPX-3 OFF1. The other successful baseline modes have0. ARC-5 failed incomplete, ARC-3 separate failures and rejected tuning/projection candidates are excluded, not relabelled as full results.
+No estimator run, receiver replay, container start, build, tuning, default promotion, deletion, commit or push. Original Qc1.0 retained;0.25/.1receiver candidates are not included. Original reports/trajectories and CP-V10/CP-V26 are preserved.
+
+FILES: analyze.py, verify.py, report.py, PROTOCOL.txt, verification.json, summary.json, <case>.json and <case>.npz. NPZ includes recovered raw Kimera absolute poses/timestamps and all common-grid positions/rotations; no separate smoothing step.

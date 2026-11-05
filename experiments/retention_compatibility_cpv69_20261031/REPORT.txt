@@ -1,0 +1,105 @@
+CP-V69 -- EXISTING RETAIN COMPATIBILITY AND GATED CONDITIONAL REPLAY
+2026-10-31. PHASE1 PASS; PHASE2 ADMISSION-TIMING GATE FAILED.
+No sustained remove/retain comparison, no accuracy/fix claim, no promotion.
+
+OUTCOME
+The existing FL4m retain switch can run through repeated marginalization with
+the corrected CP-K9/CP40 backend in the private synthetic integration tests.
+We did not invent a permanent mode or disable the prior refresh. The fresh
+60s conditional REMOVE control completed, but its replay was not event-exact:
+one of292 beliefs entered one update earlier than in the frozen original.
+The controller correctly did NOT launch RETAIN. No ATE/RPE comparison is valid
+or reported. This gate failure is a replay-delivery mismatch, not a numerical
+failure or evidence that retained factors do/do not cure the trajectory.
+
+1. PRIVATE COMPATIBILITY EXTENSION
+K=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/retention_compatibility_cpv69_20261031
+Same CP66/CP51-compatible libcbs dependency, native factors, weights and solver.
+Existing active_window_temporary admission plus existing FL4M_RETIREMENT switch.
+New explicit private CPV69_RETAIN_COMPAT=1 requires CP40=1, CP-K9=1, FL4Q=0,
+CP38=0. It does NOT select general persistent (which changes admission too).
+Mode-aware checks replace remove-only assertions with retained pointer/slot/
+endpoint/residual checks, no scheduled deletion, actual marginalizing endpoint,
+native absorption exactly once and no dangling keys/tracking afterward.
+Original prior anchors/functions, owned-lock accounting, native smart identity,
+one ordinary+one refresh update and whole-update rollback are retained.
+No production source/default/profile changes. Backend SHA256:
+0a4c5bd3dc2319a95d55923d96ca1b4243ccb1e37b5cd2dcecf7b58c2747a3c4
+
+2. TEST EVIDENCE
+build_initial and K/release_initial, san_initial, backend_initial all PASS.
+Legacy CP38 OFF / CP40 ON suites pass; old CP66 versus new REMOVE output is
+byte-identical for states and cached/tree matrices (disabled_parity.json).
+13-update retained lifecycle, nine marginalizations; repeats and observer
+nonmutation exact; pre-retirement poses and covariances exact to REMOVE.
+Native smart identity, duplicate admission, slot/residual rejection intact.
+Injected extra-refresh and postmarginalization failures at updates2 and6 restore
+state, charts, delta, graph/cache/tree, timestamps, ownership and smart caches.
+Release maxima across nine retained marginal boundaries:
+  Independent dense Schur H/RHS relative difference 1.3368165053205698e-16
+  Boundary survivor-state change                  1.7436473083185305e-18
+  Displaced-state original prior function error   0
+Focused ASan/UBSan pass; vendor shared libraries are NOT sanitizer-instrumented.
+These are integration/equation checks, NOT nonlinear stationarity or accuracy.
+Retained LOCAL is explicitly mixed-history, not native-information-only.
+CP67's live bidirectional provenance gate remains FAILED.
+
+3. FROZEN INPUTS AND PRELAUNCH REPAIR
+292 unique CP66 ON post-alignment rows joined to recorded incoming wire data
+and actual accepted sender/receiver identities. Same aligned means,36 covariance
+entries, sender/receiver endpoints and recorded arrivals. No recomputed mean
+alignment in either planned arm. Saved input includes original feedback history;
+it is not statistically independent or feedback-free data. No new GLIM/fusion
+process or returned Kimera-to-GLIM consumer was launched.
+
+Initial replay/remove_capture stopped BEFORE rosbag playback/recording because
+the harness compared literal .../ros_logs/../objective.csv to .../objective.csv.
+Those resolve identically. PRELAUNCH_REPAIR.txt preserves exact evidence.
+Fresh replay_pathcheck root fixes only that path comparison and saves the
+observed preflight. Inputs copied byte-identically, not regenerated; old evidence
+and failure preserved. No estimator settings or guard thresholds changed.
+
+4. ACTUAL60s REMOVE CONTROL / TIMING GATE FAILURE
+Original quiet EIG-2 Hesai window, offset5.7s,60s at0.20x,25s drain, front stereo,
+shared CPT7,25states. Corrected private backend in REMOVE mode. Both containers
+were originally stopped and are restored. Original source profiles unchanged.
+298 Method1 backend publications and298 objective rows;268 planned retirements.
+All292 incoming wire payloads delivered in exact order. All292 accepted sender
+IDs and receiver edges match; covariance entries EXACT; maximum aligned mean
+Expmap/Logmap roundtrip difference1.6653345369377348e-16.
+291/292 backend update IDs match. One mismatch:
+  sender405->407, receiver204->205
+  original update207 at41.799580719s
+  replay update206 at41.599582672s
+  original recorded arrival1730638858175459358ns.
+Recorded replay receipt minus input bag timestamp: median -0.858044ms,
+range -2.045439ms to+0.073710ms (ROS clock/recording semantics, not wall latency).
+In the original, this belief and sender407->409 were admitted together at207;
+in replay, the first entered206 and the next entered207. Receiver endpoints,
+means and covariances did NOT change. Exact saved-event delivery was not achieved.
+See replay_diagnosis.json and replay_attempt_pathcheck/validate_remove.log.
+
+Interpretation: bag record timestamps plus asynchronous camera/backend callbacks
+do not encode the exact original admission order. The evidence establishes the
+one-update mismatch; it does not uniquely identify every scheduler contribution.
+Do not reinterpret this as an estimator covariance/extrinsic/retirement failure.
+
+5. STOP DECISION / NEXT PROPOSAL
+RETAIN was not launched. No numerical retry, relaxed timing tolerance, selected
+prefix scoring or stitched counterfactual trajectory. evaluate.py is prepared
+but NOT executed because its paired-validation prerequisite is false. No EVO
+results exist for this attempt. This is a completed60s control with a FAILED
+equivalence gate, not a valid completed pair or failed-short-prefix full result.
+
+Next proposed bounded harness change: release each already-arrived frozen belief
+at its RECORDED backend update ID, preserving payload/endpoints and verifying
+causal availability; fail if it arrives too late. Validate that scheduling gate
+with fixtures/disabled parity, then fresh60s REMOVE and RETAIN. Do not merely
+retry rosbag until timings happen to match or relax the accepted-update gate.
+This would repair the diagnostic harness, not change estimator weights/model.
+No such scheduling change or further run has been launched in CP69.
+
+Final preservation/owned-job/container/Hesai667 receipts: verification.json and
+complete.json. Original builds, captures, failed preflight and failed timing
+validation preserved. No deletion, full mission, bidirectional retention,
+covariance tuning, default promotion or push.

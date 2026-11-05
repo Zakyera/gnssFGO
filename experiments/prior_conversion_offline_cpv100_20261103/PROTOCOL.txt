@@ -1,0 +1,27 @@
+CP-V100: isolated offline CPK9 prior-conversion diagnostic
+
+Authorization: user "proceed" after the proposed offline conversion test.
+No live run, sensor playback, ROS master, receiver, optimizer replay, estimator
+rebuild, settings/tolerance change, installation or deletion is authorized.
+
+Compile one standalone diagnostic against the exact CP76 frozen header source
+and existing GTSAM libraries in the existing Noetic container. Restore its
+initial stopped state. Never link the diagnostic into an estimator. All new
+files belong to this experiment and its same-named workspace run directory.
+Preserve CP99 failure and completed OFF, CP91/95/98 and all protected evidence.
+
+Question: can OriginalChartPrior::linearize(theta) change augmented information
+enough to reject CPK9 promotion even with an exactly matching original/cache?
+Separate the original/cache and converted/cache errors. Use deterministic known
+SPD priors, a representative last-published CP99 pose (NOT its unrecorded failure
+theta), and saved CP98 native priors. CP98 stores an aggregate Gaussian cache,
+not per-slot caches; use an explicitly constructed identical per-prior cache for
+conversion isolation. This cannot certify either branch at the actual CP99 event.
+
+Controls: same pose at different world translations; diagnostic finite-difference
+step sweep; mathematically exact unchanged-anchor Gaussian clone; deliberate
+cache corruption must still reject; failed promotion must leave graph/locks
+unchanged. No tolerance relaxation. A diagnostic step sweep is not deployment.
+Archive offending matrices, keys and anchors in new files. Report all negatives
+as well as positives. No result may be called a full source run or a proven
+explanation of CP99 without the missing event data.

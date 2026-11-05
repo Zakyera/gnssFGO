@@ -1,0 +1,12 @@
+2026-10-29: setup-only dependency assertion failed after both fixture passes,
+BEFORE any EIG-2 checkpoint step. run_ablation.py/failed.json remain unchanged.
+The linker omitted unused libcbs.so through normal --as-needed behavior. The
+standalone program uses inline prior/chart helpers and native GTSAM factors,
+not the live BPSAM solver. Actual ldd shows libgtsam/libgtsam_unstable at the
+original pinned workspace paths, no unresolved libraries. This is not a
+numerical failure, source retry or reason to change the executable.
+
+continue_saved.py checks ELF NEEDED and actual loaded GTSAM identities, both
+already present in the protected input manifest; preserves completed Release
+and sanitizer fixtures/executable unchanged. Then starts only the seven
+NEVER-STARTED saved-checkpoint comparisons once. No old controller relaunch.

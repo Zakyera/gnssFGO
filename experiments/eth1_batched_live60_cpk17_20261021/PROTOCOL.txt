@@ -1,0 +1,39 @@
+CP-K17 — one matched ETH1 60-second CBS-OFF/ON performance comparison
+2026-10-21, explicitly requested by the user after stopping exhaustive K16 validation.
+
+Run the three estimators concurrently, OFF then ON, once each, headless at0.20x.
+Window: selected-topic bag offset0, duration60.0s;25s drain; ROS port11468.
+Reuse CP-K14/CP-K11 source profiles, CP-K9 private Kimera and FL4e receiver.
+ONLY estimator change from that baseline: frozen K16a isolated MAIN GPU batching
+library, CPK16_MAIN_GPU_BATCHING=1 in GLIM alone. Same candidate in OFF and ON.
+No paired companion optimizer, GPU snapshot observer, direct-input driver,
+exhaustive covariance checker, rebuild, sampler/thread/model change or tuning.
+This is an experimental accuracy/throughput comparison, not retrospective
+certification of the incomplete K16d/g/h preservation gates or default promotion.
+
+GLIM Hesai+CPT7,5s lag,CP-I1/CP-I3 all-LOCAL dense covariance every version,
+corrected MAIN means. Kimera front Alphasense stereo+CPT7,25states,
+CPK9_PRIOR_REFRESH=1,FL4Q_ENABLE=0,FL4M_RETIREMENT=remove,native IMU override unset.
+Classic active_window_temporary CBS only ON; no source live_revision.
+0.20s belief horizon,one pair/update,Gaussian scales1,no health/robust weighting.
+Preserve existing mean-only peer alignment/covariance approximation.
+Receiver FL4e7s fixed-lag source_wnoa,independent100ms supports,unchanged Qc/priors,
+no central IMU/GNSS,stable-ID mean/full-covariance revision replacement.
+Known Kimera history/receiver retention mismatch is NOT repaired here.
+
+Reuse ordinary startup loaded-library/settings checks, source coverage and
+failure guards, saved-log LOCAL provenance/lifecycle/payload conservation checks.
+Do NOT run the expensive K16 paired checker or a saved-journal repeat in this
+task. ON admission requires completed OFF plus those three saved-data checks.
+No automatic retries, overwrites, guard relaxation or full-sequence launch.
+Stop on actual failure and report the exact evidence; preserve failed prefixes.
+
+Use unchanged existing evaluator: original/native GLIM, original/native Kimera
+ROS odometry and ONLINE fusion. Score every saved pose with IE-TC reference
+sharing CPT7 (not independent prism GT), same no-scale alignment/prism lever arm.
+Report full saved ATE,1s translation/rotation RPE,path length and coverage,
+plus identical common-mask results; disclose startup gaps/no extrapolation.
+DELAYED fixed-lag-finalized fusion stays separate from ONLINE.
+Retain existing covariance/revision/event/timing logs; no Rerun load during run.
+Restore the two initially-stopped containers after owned work has exited.
+No commit/push or follow-up experiment authorized.

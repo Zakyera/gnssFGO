@@ -1,0 +1,210 @@
+CP-V19 — ARC-3 CBS ON GLIM failure investigation — 2026-10-27
+===========================================================
+SCOPE: saved CP-V18 logs/trajectories/raw-input audit and source-code inspection
+only. No estimator replay, sensor playback, build, model/settings change,
+guard relaxation, restart or retry. Original run remains a FAILED PREFIX.
+
+BOTTOM LINE
+-----------
+Two failures must be distinguished:
+1. GLIM's actual estimated motion deteriorated badly during the recorded lidar
+   outages. Kimera stayed locally much healthier, but the current CBS temporal
+   matching could not attach its short relative-motion beliefs to the sparse
+   GLIM states. Existing temporary CBS factors subsequently expired.
+2. At 513.567510711s of the admitted window, the added LOCAL covariance provider
+   failed its extraction/chart consistency guard. It invalidated itself, and
+   the experiment controller stopped the run. This was not a logged CUDA/MAIN
+   solver crash, but neither was it merely a harmless guard on a healthy path.
+
+Thus the concrete rescue limitation is temporal support during missing scans,
+not evidence that Kimera had no useful information or that GPU batching broke.
+The precise floating-point branch inside the final covariance guard was not
+recorded and cannot be certified from these artifacts alone.
+
+EXPERIMENT AND TIME BASIS
+------------------------
+CP-V18 standalone ON, same frozen rear Velodyne/front stereo/CPT7 sources,
+5s GLIM lag, 25-state Kimera, active_window_temporary CBS and CP-V15 Qc*0.25
+7s fusion receiver; 0.20x, requested726.38s. Times below are relative to
+1731934117040035611ns. Raw cloud-header times and GLIM normalized point-time
+stamps differ by approximately a scan; do not silently equate the two.
+H18: ../arc3_velodyne_on_cpv18_20261027
+P18: /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/
+     gnssfgo_arc3_velodyne_on_cpv18_20261027/prepared
+S18: P18/full_on_source; R18: P18/full_on_receiver.
+
+WHAT HAPPENED, IN ORDER
+-----------------------
+* Before the gaps, GLIM typically retained50scan states in its5s window.
+  At update5006 its largest adjacent step within the CURRENT revised window
+  was0.055m, versus0.046m in the reference at those same endpoints.
+* A roughly0.50s raw scan gap precedes the six long gaps. The long raw gaps
+  span501.864--512.064s, individually1.500--1.899s. Camera input continues
+  there; the one known absent left image is at162.698s, not here. CPT7 input
+  is continuous (full admitted-window maximum IMU gap10.001ms).
+* At normalized time503.371s, the current revised GLIM edge across1.605s
+  already reports5.005m displacement; IE-TC reports0.186m. At505.266s the next
+  edge reports14.563m versus0.336m. These are same-update revised active poses,
+  not artifacts of stitching first publications together.
+* GLIM's active scan count collapses to3--4. Its IMU integration is still
+  consuming150--189samples on the long intervals; the evidence does NOT show
+  a missing-IMU-record problem. At510.366/511.966s, final updates differ from
+  their large inertial predictions by only~11micrometres/~1nanometre in the
+  logged translation correction. Those updates are effectively uncorrected
+  dead reckoning. Logs do not isolate the underlying bias/velocity versus
+  scan-correspondence contribution, so no specific IMU/calibration defect is
+  claimed.
+* At511.966s, the CURRENT revised active window includes a30.777m edge across
+  1.600s; reference displacement is0.688m. Its neighbouring1.800s edge is
+  30.273m versus0.640m. Actual graph estimates are badly wrong, not just ONLINE.
+* At512.272s publication time, the first new usable Kimera factor is inserted
+  again, for GLIM5014->5015. Around this recovery, GLIM's first-published path
+  jumps69.411m across0.200393s, against0.084602m reference movement. The pose-
+  stage log shows a73.459m update from prediction. This is largely a correction
+  discontinuity, NOT evidence of69m physical movement. Within that same revised
+  window the newest edge is0.106m versus0.0846m, while older long-gap edges
+  remain wrong. The separate contributions of returning scans and CBS to the
+  large correction cannot be isolated without a controlled test.
+* At513.568s the LOCAL covariance publication guard fails. At that update,
+  earlier long-gap edges remain7.042m/6.882m versus0.640m/0.688m reference.
+
+WHY KIMERA DID NOT RESCUE GLIM THROUGH THE GAP
+--------------------------------------------
+The frozen source bridge attaches a Kimera relative factor to TWO existing
+GLIM pose states. It does not create intermediate GLIM states or interpolate
+onto an independent source support grid. Saved resolved parameters require:
+  endpoint tolerance0.12s; interval mismatch<=0.06s; duration ratio0.5..2;
+  duration_aware_edge; pending retry age5s.
+Kimera's usual0.20s edge cannot simply be attached across a1.5--1.9s GLIM gap:
+that would constrain the wrong physical interval.
+
+Observed, not hypothetical:
+  Last pre-outage accepted K->G factor:501.373123s.
+  Next accepted K->G factor:512.272269s. No new insertion for10.899146s.
+  Pending Kimera beliefs rise to25. Explicit external factors decrease from
+  25 to0 by507.172595s and stay0 through512.071804s.
+  A best-case geometry audit of53distinct saved Kimera edges whose endpoints
+  lie in501.4--512.1s finds52unmatchable even using ALL saved GLIM timestamps.
+  The one feasible edge is k2530->2531, ending512.094801s, matched to the
+  returning g5014->5015 states and inserted at512.272269s. This audit is not
+  a recreation of delivery order; actual insertion logs establish the hiatus.
+  A0.20s Kimera edge near507.17s matches two GLIM timestamps but they span
+  0.099533s; the duration guard correctly rejects it (error0.100465s).
+
+This is an architectural limitation of this source-to-source temporal policy
+under missing lidar states. It is distinct from the central fusion receiver,
+which DOES have independent100ms support states and continues consuming Kimera.
+Relaxing timestamps/duration checks would not be a mathematically valid repair.
+
+KIMERA AND FUSION DURING THE SAME DIFFICULT INTERVAL
+-------------------------------------------------
+Diagnostic interval500--513.55s, using each product's own saved timestamps:
+  Product            summed output chords / reference chords at same timestamps
+  GLIM first-published       210.423m /4.015m
+  Kimera ROS                   3.884m /4.136m
+  Fusion ONLINE                8.785m /4.192m
+Different sampling/endpoint coverage: these are local diagnostic chord sums,
+not a common-mask full-sequence score or physical distance travelled. GLIM's
+sum includes the large recovery jump. Kimera's largest step here is0.108m;
+fusion's is0.819m versus0.0254m reference over that same100ms interval.
+Kimera is clearly the locally healthier source in this interval. Fusion keeps
+running but is not unaffected. No claim of full-sequence accuracy/rescue.
+IE-TC is the shared-CPT7 reference, NOT independent prism ground truth.
+
+EXACT STOPPING MECHANISM AND NUMERICAL LIMITS
+-------------------------------------------
+First error (S18/estimators.log:385405--385406):
+  SHARED_NATIVE_SHADOW_FAILURE epoch=10047
+  reason=provider extraction/chart mismatch
+  GLIM_CBS_REVISION_ERROR_ROW,5018,5020,5023,...
+The failed request revises g5018->g5020 at update5023. Endpoint normalized times
+are512.993282 and513.192624s. Three previous versions of this pair were saved;
+the last passed translational covariance trace was6.484377e-6m^2, rotation
+trace6.309732e-7rad^2. That is a SHORT relative-motion covariance, not absolute
+trajectory accuracy or a certificate that old drift has disappeared.
+
+The same epoch successfully publishes g5021->g5023 and revises three other
+pairs before the failed query. There are5017successful ordinary queries and
+236307successful revisions in the source log. The provider reports resets=0.
+Source native odometry continues briefly after invalidation until controller
+cleanup. 'Provider history unavailable' errors are consequences of the first
+guard: ShadowObserver::fail marks the provider invalid and aborts its history.
+
+Source chain:
+  shared_linearization_s4_provider_20261012/release_2/source/Provider.h:21--45
+  same directory/ShadowObserver.cpp:56--65,179--193
+  native_covariance_cache_cpi3_20261019/source/NativeGaussianHistory.cpp:217--259
+  local_revision_covariance_cpi1_20261019/cbs_bridge.cpp:1497--1625
+All paths above are under /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/.
+
+The inner native-history query completed before the outer adapter guard. It
+checks rank/joint positive-definiteness and computes relative covariance without
+jitter. The outer adapter recomputes the covariance using the original endpoint
+poses, whereas the inner path reconstructed them by localCoordinates/retract.
+The adapter throws the SAME message for any of:
+  (a) outer computation requires jitter;
+  (b) nonfinite outer covariance;
+  (c) covariance disagreement greater than1e-10 relative Frobenius norm.
+The saved error records neither branch nor discrepancy nor failed12x12joint
+matrix/chart deltas. Ordinary logs store successful6x6outputs and MAIN poses,
+not the complete native Gaussian history needed to reproduce this query.
+
+There is strong evidence of numerical sensitivity after the gaps, NOT proof
+of which of those branches fired. Successful logged endpoint covariance traces
+(mixed pose units) change from~5.14e-6 median at480--500s to~4.65 after512.1s.
+For the last successful pair, projected contributions of approximately
+  +3.98042 +3.98351 -7.96388
+produce a relative trace4.92361e-5. This involves heavy cancellation. The
+ratio of absolute contribution sum to result reaches~1.4million in the tail,
+versus median2.84 before the gaps. Numbers in this decomposition are rounded
+logs, not enough precision to re-evaluate the failed guard. A chart-roundtrip/
+floating-point sensitivity problem is plausible; a certified 'false positive'
+or merely 'too strict tolerance' diagnosis would exceed the evidence.
+
+NOT A THROUGHPUT OR WNOA-STRENGTH STOP
+-------------------------------------
+At failing GLIM scan5023: total12.773ms, MAIN smoother7.452ms; regular10Hz scans
+at0.20x allow~500ms wall time. Recorded profiler aborted=0/15074rows.
+Last transport snapshot queue0, maximum49, output age30.14ms. Five payload
+duplicates were recorded/deduplicated, not the stopping cause. The receiver
+did not report the OFF run's GTSAM singularity. Last saved ONLINE file has5130
+poses through513.480857s; final transport snapshot is one publication earlier.
+No logged CUDA/OOM failure is the trigger. Lower playback speed cannot restore
+missing measurements in the bag. Receiver Qc0.25 is downstream-only: fusion
+does not feed back into GLIM, so strengthening it cannot fix this source gap.
+
+IMPLICATION / NEXT STEP (NOT EXECUTED)
+------------------------------------
+Do not launch another full run unchanged and do not simply disable the guard.
+Two separately scoped issues need treatment:
+1. Specify and test a valid gap-support mechanism so a healthy camera source
+   can constrain a lidar estimator without suitably timed scan states. Options
+   require deliberate design (e.g. inertial intermediate support states plus
+   correctly matched factors); arbitrary snapping/composing correlated beliefs
+   with naive covariance addition is not an acceptable shortcut.
+2. Isolate the covariance calculation and record the failed joint matrix,
+   endpoint/chart inputs, both outputs, jitter flags, norms and conditioning.
+   A bounded diagnostic reproduction is needed for an exact numerical repair;
+   it is NOT authorized or launched by this report. Preserve LOCAL provenance
+   and test the equations before changing an extraction method or tolerance.
+The dataset now provides evidence for an important limitation: a healthy peer
+alone is insufficient if the recipient has no compatible state-time support.
+
+EVIDENCE / CLOSEOUT
+------------------
+analyze.py and diagnosis.json: first error, successful query history, pinned
+source/binary identities, native steps versus reference, timing and transport.
+support_audit.py and support_audit.json: actual factor hiatus/expiry, active-
+window poses, raw-scan support, and best-case timestamp matching.
+Input hashes saved in each JSON. Provider.h, ShadowObserver.cpp, bridge source,
+private GLIM bridge DSO and MAIN batching DSO match CP-V18 protected manifest.
+CP-I3 NativeGaussianHistory source is separately hashed (not a direct entry in
+that manifest); preserved build/link provenance identifies its cached objects.
+Effective MAIN batching DSO SHA:
+6f71292d29d974a0555abd9fda6b2370fdab81ca634a4e1343c216d2a762d2ca
+GLIM bridge DSO SHA:
+42df73c172232a612da965bf43ead8ec454caf08434b84e2da5de74d26cdb79f
+CP-V18 closeout passes2959protected files; controller exited13:07:27+02.
+Read-only host check reconfirmed both containers exited/PID0; owned launcher,
+controller and receiver PIDs absent. No full ON validation/scoring was reached;
+OFF also failed earlier. No complete matched ARC-3 result exists.

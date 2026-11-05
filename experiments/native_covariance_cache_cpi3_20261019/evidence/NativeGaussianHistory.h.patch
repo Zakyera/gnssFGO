@@ -1,0 +1,11 @@
+--- baseline/NativeGaussianHistory.h
++++ candidate/NativeGaussianHistory.h
+@@ -49,6 +49,8 @@
+   void abort();
+   Result reset(Id new_generation);
+   Id epoch() const;
++  // Diagnostic count for the current committed epoch, not lifetime.
++  std::size_t queryPreparations() const;
+   std::size_t activeCount() const;
+   std::size_t absorbedCount() const;
+   std::size_t removedCount() const;

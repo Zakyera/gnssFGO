@@ -1,0 +1,173 @@
+CP-V51 — short Hesai EIG-2 belief-insertion observation
+COMPLETE DIAGNOSTIC; NO FIX / ROOT CAUSE NOT YET PROVED.
+One user-authorized10s matched OFF/ON prefix; unchanged estimator model.
+Final evidence: analysis.json, factor_audit.json, verification.json, complete.json.
+
+Conclusion
+----------
+We reached the actual native factors and linear solves, not just transport logs.
+The observed early CBS-ON disturbance is created mainly in the ordinary update,
+before marginalization or temporary-factor retirement. It includes coherent
+window tilt plus accelerometer/gyro bias changes. The saved ON linear systems
+are internally consistent; wrong cached equations, duplicate insertion and a
+mutating initial prior are not supported by these observed updates.
+This is a localized mechanism, NOT proof that the whole algorithm or every
+frame/time convention is correct, and NOT a discovered/fixed coding bug.
+
+Experiment / preserved settings
+------------------------------
+Original CP-V49 Hesai EIG-2 start, bag offset5.7s,10.0sensor seconds,.20x,
+25s drain, front Alphasense/shared CPT7. CP-V40 refresh in BOTH modes;
+CP-K9prior-refresh1/FL4Q0/remove/25states; native IMU override unset;
+GLIM5s MAIN/all-LOCAL corrected MAIN means; classic active_window_temporary;
+Gaussian1. Concurrent CP-K19 seven-second source-WNOA, originalQc x1.0,
+100ms supports, no centralIMU/GNSS, unchanged terminal EOF policy.
+No covariance investigation, changed weight, candidate fix or full rerun.
+New private backend SHA256:
+692197d81a75c926d46c686b7abc7fca33bb99c444c5db082bdc54616ec2446c
+Private observer is CP-V44 selection changed from21--25 to6--25, isolated
+environment names. Before ordinary / after ordinary / after extra refresh.
+Release and ASan/UBSan each passed12OFF+12ON fixture updates,60phase snapshots,
+native roundtrip, exact state/theta/delta/tree/cache/smart-cache nonmutation.
+Old CP-V40 versus observer-disabled outputs match exactly in BOTH fixture modes.
+Backend dependency checks passed. Originals and frozen settings preserved.
+
+Execution / coverage
+--------------------
+Launched ONCE14:46:18local, launcher112849/controller112856; controller started
+14:46:26. OFF gates passed before ON. Finished capture/cleanup14:50:39.
+Each mode:100input LiDAR scans/100synchronized image pairs/1000IMU samples;
+98native frontend frames,48backend outputs;92native GLIM outputs spanning9.099s,
+Kimera9.600s. Native initialization/tail omissions retained; no full355s result.
+Both modes passed sensor/LOCAL/payload/lifecycle/receiver/EOF/coverage gates.
+Receiver each:4077belief versions,134insert+3893replace+50pre-init exclusions,
+0unsupported EOF,0expired,0duplicates/stale;95ONLINE+95DELAYED finalized states.
+Finalized output is not online or full-history. No new EVO accuracy score here.
+ON full10s ledger:42G2K/43K2G insertions,18planned retirements; no recovery.
+Captured120native snapshots (60per mode); all byte-roundtrip and native factor
+error/linearization roundtrip checks passed. Recording time totaled.8561s,
+median.00707s,maximum.01903s per snapshot. Observation can affect scheduling.
+
+Actual insertion and prior identity
+----------------------------------
+OFF/ON active pose windows1--5 identical. First admission/difference is update6,
+1.599933s after capture start (bag offset7.299933s). It connects GLIM5->7 to
+Kimera x4->x5. First difference alone is an expected response, not proof of harm.
+Actual native PoseBetween measurements match frozen aligned measurements with
+maximum homogeneous-matrix element discrepancy1.445e-13. No second transform,
+reversal or accidental mean replacement appears in this observed insertion path.
+All20observed ON updates add exactly one CBS factor, no duplicate; zero CBS
+factors in OFF. At25 ON has20CBS factors; refresh adds/removes none.
+The three original x0/v0/b0 prior functions and native zero-velocity v3 prior
+are byte-identical across all120snapshots. Native no-motion x2->x3 is also
+unchanged. No prior-function corruption found in this pre-marginalization window.
+
+At first insertion, the external edge disagrees with initialized Kimera by
+.099531deg rotation and.005834m translation-log norm. After ordinary solve:
+.021341deg/.006393m; after refresh:.017216deg/.006659m. The graph substantially
+reduces angular disagreement while translation disagreement slightly increases.
+This is measured at the actual admitted factor, not a world-frame ATE claim.
+
+Which phase moves the window?
+----------------------------
+Angles below are common world-tilt revisions of the already-existing active
+poses, not absolute orientation error. Net is the composed result, not the sum
+of two angle magnitudes. Native weighted IMU costs are not RMSE or physical units.
+
+update time(s) OFF net tilt  ON ordinary tilt ON refresh tilt ON net tilt IMU cost OFF/ON after refresh
+6      1.5999   .020588deg    .042994deg       .080830deg     .078592deg    .05314 /1.25375
+21     4.5999   .148567deg   1.856695deg       .033852deg    1.860069deg   1.31134 /66.16075
+24     5.1999  1.513270deg   1.514987deg       .279696deg    1.301236deg   2.63664 /296.93295
+25     5.3999   .327112deg   2.736607deg       .107035deg    2.824514deg   7.84023 /319.69956
+
+At25, ordinary ON max old-pose change=.054758m /2.752447deg; common-shape
+residual after fitting shared rotation/translation <=.012169m. Max accelerometer
+bias change=.471361m/s^2; max gyro-bias change=.007799rad/s. Bias-change direction
+has median cosine.999708 with the gravity-compensating change
+R_after^T g - R_before^T g. This is geometric coupling evidence, not true-bias
+estimation or a formal observability proof. A common world rotation ALONE does
+not change a relative factor residual; relative-pose corrections and coupled
+pose/velocity/bias reoptimization accompany the tilt.
+At25 refresh reduces native IMU cost1873.294->319.700 while changing common tilt
+only.107deg; it does not originate that update's large2.737deg ordinary tilt.
+At6 refresh contributes more than ordinary, so it is not universally negligible.
+First marginalization26 at5.59990s; first CBS retirement30 at6.39989s. Thus later
+removal cannot cause the measured early21/25ordinary-tilt events. It remains
+possible that separate later removal issues exist; this does not test them all.
+
+Native equation checks
+----------------------
+All60ON phase snapshots: fresh native H and RHS equal stored linear cache
+exactly at its owning theta. Bayes-tree H/RHS agree within relative6.07e-16 /
+8.03e-15. Independent native linear solution versus recorded estimate <=8.89e-9
+in combined local-coordinate norm (mixed pose/velocity/bias units, NOT metres).
+Linear backward residual <=2.21e-17. Serialized gravity matches[0,0,9.81].
+No stale-cache/incorrect-linear-solve evidence in these observed ON updates.
+OFF ordinary/before phases can retain native incremental linearizations:
+fresh-vs-cache H difference up to2.31e-6relative and RHS.0481relative;
+after EVERY extra refresh both differences are zero, independent-state norm
+<=1.52e-9. Do not claim every OFF intermediate cache is freshly relinearized.
+Bayes-tree constant terms differ; constants do not change the linear minimizer.
+These are linear equation checks, NOT nonlinear stationarity or optimality.
+Native smart-factor validity/triangulation caches are retained; family-cost
+comparisons are diagnostics, not a guarantee of one smooth fixed objective.
+
+Reproduction limits
+-------------------
+OFF matches CP-V49 exactly:48native ROS publications and920logged active poses.
+ON timestamps/admission endpoints match, but measurements/states are not exactly
+identical: first source mean differs by1.480mm/.006811deg; up to update25 all
+admission IDs/times were checked. Across48outputs, native incremental ROS path
+pose difference max.026798m/.116627deg. Across920active-pose comparisons,
+max.031634m/1.241293deg. Exact CP-V49 reproduction is NOT claimed, nor is the
+specific cause of these changed values isolated. Observation adds timing cost.
+The early adverse tilt/IMU-cost behavior reproduced; this10s prefix does not
+reproduce or score the full-run metre-scale zigzags. Method1 uses newest absolute
+backend poses, not Kimera native incremental ROS output; both are distinguished.
+
+Reporting repairs / omissions
+-----------------------------
+Prelaunch port check was blocked by sandbox before any preparation/capture;
+identical preparation continued with host permission. A full-window LOCAL count
+leftover3530 was caught BEFORE launch, rebased to90 for100raw scans, original
+validator/manifest retained in prelaunch_original. No source retry occurred.
+Supplemental factor inspector first assumed only three priors; it stopped on
+the additional native zero-velocity v3 prior. Failed analysis preserved; fresh
+factor_inspection_v2 recognizes all four and verifies identical functions.
+Legacy inspection CSV family labels are broader than their names:
+peer_pose_between includes native no-motion x2->x3, even in OFF; initial_prior
+includes native v3 zero-velocity. factor_audit.json explicitly separates CBS
+from the native factor. No claim of CBS present in OFF. No estimator was changed.
+
+Decision / next proposed test (NOT launched)
+------------------------------------------
+Do not apply another cache/removal fix or stronger prior on this evidence.
+Focus on why the first few relative constraints elicit the coupled
+rotation/velocity/bias response. The next tightly controlled test should use
+the saved first-admission checkpoint and identical native visual/IMU/prior
+functions, with versus without EXACTLY the first external factor; inspect its
+six residual directions and state response. This would isolate the factor's
+effect from later divergent frontend/arrival histories. It is a proposed saved
+checkpoint ablation requiring the next decision, not a new full run or tuning.
+Semantic body-frame/time/IMU consistency is not proved solely by matching logs;
+keep it as an explicit remaining hypothesis, not a claimed detected fault.
+
+Artifacts / closeout
+-------------------
+H=experiments/eig2_hesai_insertion_cpv51_20261030:
+PROTOCOL.txt, build_* receipts, prepared.json, prelaunch_review.json,
+launch.json/start.json, capture_complete.json/closeout.json,
+analysis.json (phase costs/motion/equations), factor_audit.json (actual factors,
+native prior identity, CP-V49 differences), verification.json, complete.json.
+W/runs/eig2_hesai_insertion_cpv51_20261030/prepared/full_{off,on}_source/checkpoints
+contains the original native snapshots. inspection/{off,on} and
+factor_inspection_v2/{off,on} contain saved-only reconstruction/inspection.
+Verification covers7688protected files, original CP-V49 outputs, snapshot and
+analysis hashes, owned job exit, both originally-stopped containers restored,
+and all667copied/original files of the four-sequence Hesai checkpoint.
+No covariance study, weights/model/calibration change, deletion, promotion/push,
+new dataset or follow-on source campaign. Historical controller log follows.
+
+Controller finished 2026-10-30T14:50:39.584044+02:00: both captures/gates passed; native checkpoint analysis pending
+{"failure": null, "cleanup_error": null}
+No automatic retry.

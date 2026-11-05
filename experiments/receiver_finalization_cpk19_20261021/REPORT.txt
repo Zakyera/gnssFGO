@@ -1,0 +1,100 @@
+CP-K19 — bounded receiver finalization
+Status: PASSED focused tests and retained failed-prefix gate, 2026-10-21.
+Isolated candidate only; no fresh live run or default promotion.
+
+Root cause is the 25-state source's variable physical history exceeding the
+receiver's 7-second lag. CP-K18 failed at event214527, Kimera1459->1460rev24.
+This policy does not speed up sources or retain all future revisions. It seals
+the accepted factor at absorption and explicitly forgoes subsequent corrections.
+
+Implementation: private Receiver.h copied from frozen FL3i, unchanged FL4e
+retirement fix linked. Private Live.cpp accepts --absorbed-revision-policy
+strict (default) or seal_at_absorption. Production and frozen sources untouched.
+The prior still contains the last accepted factor version. Expired events do
+not modify solver, timestamps, priors or factor slots. Full expired payload and
+sealed reference are logged. Disk terminal metadata includes accepted endpoints,
+revision, matrix mean and full covariance. Repeated expired versions get disk
+records for conflicting-duplicate checks; historical payloads are not kept in RAM.
+Expired count includes duplicate/stale subcounts; it is not accepted count.
+Unknown expired first arrivals, invalid payloads and pending retirement remain
+errors. This is a narrow acceptance-policy change, not lossless equivalence.
+
+Focused Release lifecycle checks:182 PASS. Full X/V/W state, theta, factor/prior
+pointers, linearized whole objective and full joint covariance exact across
+expired no-ops. Strict filtered-event oracle gives identical subsequent state
+and final joint covariance. Tests include both sides of the exact lag boundary,
+fractional endpoints, repeat/conflict, malformed payload, unknown expired ID,
+archive-write rollback, fixed storage bounds and version/ID conservation.
+The unit fixture uses1s lag to test many transitions cheaply; the existing
+strict suite and saved-data replay use unchanged7s lag.
+
+Build preparation note: container Python3.10 lacks hashlib.file_digest;
+initial harness check failed before compilation or test start. Replaced only
+the harness hash implementation with streaming SHA256. No estimator build or
+source experiment was retried; original evidence and outputs remain untouched.
+
+Existing unchanged strict suite:50818 checks PASS against candidate default.
+Focused AddressSanitizer/UndefinedBehaviorSanitizer:182 checks PASS, no finding.
+Candidate I/O build and single saved CP-K18 replay PASS. Runtime150.049s is
+offline replay wall time, not live throughput certification. No accuracy tuning.
+The saved capture has214546events and no normal EOF. Diagnostic replay input
+preserves their bytes/order and appends a labeled synthetic EOF only to a new
+copy. The20events from the original failure onward are NOT the missing39s of
+the full sequence. No full-sequence or general expiration-rate claim permitted.
+
+Artifacts: /home/yeranis/results/gnssfgo_receiver_finalization_cpk19_20261021
+Protected inputs:2169 files including original receiver, source builds/profiles,
+CP-K18 journal and old receiver source. No source/covariance/lag/Qc/prior changes.
+No new ROS/GLIM/Kimera/bag run, GT tuning, automation, commit or push.
+
+SAVED-JOURNAL RESULT
+--------------------
+All214546 retained events processed, plus one explicitly synthetic EOF.
+Every186856 original committed records.txt file through event214526 is byte
+identical. Original online CSV/TUM and finalized prefix also byte-identical.
+Thus no pre-failure trajectory change is introduced by the opt-in policy.
+Original event214527 (Kimera1459->1460rev24) now expires without reinsertion.
+Nineteen late Kimera versions, nineteen different known IDs, are explicitly
+expired; one remaining tail revision still targets an active ID and is replaced.
+No GLIM expiry in the retained data. All19 expired versions are just one version
+newer than the last accepted version; endpoint ages7.535--11.133s (see JSON for
+each exact value). There are only20 retained events from failure onward: this
+does NOT estimate the late-version rate over the missing sequence tail or ON.
+
+Exact accounting:183837 received =4533inserted+179260replaced+25preinit+19expired;
+no duplicates/stale/pending/unsupported_end.4533IDs=4466absorbed+67active.
+3066ONLINE rows,3066 finalized rows after diagnostic EOF. Retained supports
+never exceed71; peak174factor slots, same limit as the failed original prefix.
+Historical disk archive grows as before; this is not bounded disk retention.
+
+Forgone correction sizes, late relative mean vs SAME ID's last accepted mean:
+Translation median0.019684mm,RMS0.035901mm,max0.071454mm.
+Rotation median1.00254e-5rad,RMS1.59053e-5rad,max3.25241e-5rad (~0.001864deg).
+Full covariance relative Frobenius change median4.0614%,max16.8714%.
+Late/sealed rotation trace ratio median0.959752; translation ratio0.990839.
+These are changes in reported beliefs, NOT ground-truth errors or proof the
+omitted corrections have negligible long-run effect. Existing covariance
+payloads/scales and current marginal priors were not altered to obtain this.
+All detailed payloads/references and per-ID diagnostics are retained.
+
+RECOVERY / NEXT BOUNDARY
+------------------------
+Original FL4e binary remains SHA256
+53c96a2b7a762800cf2291166dc78520269098684411de641b52bee6a54dc5c9.
+Private CP-K19 binary at results/gnssfgo_receiver_finalization_cpk19_20261021/live:
+4b08a7f5ba97f5e4ec22959df23367df79eebf5d644dc19d939747dcd4566d6e.
+Receiver default remains strict. Opt-in flag:
+  --absorbed-revision-policy seal_at_absorption
+receiver_cpk19.sh is an uninstalled experimental wrapper (invoke via bash).
+The linked fixed-lag retirement implementation is unchanged FL4e, not the older
+FL3i implementation; solver/update order/factor/noise mathematics are unchanged
+for all accepted events. Only known post-absorption revision admission differs.
+
+Before a separately authorized fresh matched run, its new harness must pin this
+candidate/flag equally for OFF and ON and include expired versions explicitly in
+conservation/provenance validation, rather than count them as accepted. Preserve
+all other failure/coverage guards. Existing CP-K18 scripts/results are not edited.
+Unknown first beliefs referencing retired supports can still fail, deliberately;
+pending-span failures, invalid payloads and duplicate conflicts are not hidden.
+Not a full346.32s success, CBS-ON result, nonlinear-stationarity certificate,
+lossless full-history revision equivalence or accuracy-improvement claim.

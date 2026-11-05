@@ -1,0 +1,234 @@
+CP-V21 — LEICA-2 HESAI VERSUS VELODYNE CBS-OFF JITTER AUDIT
+2026-10-27 | SAVED-DATA DIAGNOSIS COMPLETE; NO ROOT-CAUSE FIX CLAIM
+
+BOTTOM LINE
+The larger Velodyne fusion ONLINE zigzag is measurable, not just a different
+Rerun camera angle. In the first minute, identical fusion output timestamps
+give 41.249m of connected Velodyne fusion path versus 34.743m with Hesai and
+32.608m from IE-TC. The 100ms displacement-vector error RMS nearly doubles.
+
+No mismatched receiver model, changed Kimera solution, incorrect copied lidar
+extrinsic, hidden source-to-receiver mean/covariance transform, or obvious
+point-time unit/normalization error was found in the checks below. This is NOT
+proof that the implementation has no bug. The strongest remaining explanation
+is poorer short-motion lidar evidence interacting with newest-state estimation,
+its information balance, and asynchronous endpoint placement. A numerical
+interpolation/Jacobian/update issue remains possible and has not been excluded.
+
+Do not respond by simply tightening Qc again or shifting sensor timestamps.
+The next discriminating test is an unchanged-model, matched Hesai/Velodyne
+receiver diagnostic using saved journals, with first-minute operation traces
+and actual-factor numerical checks. It is proposed here, NOT executed.
+
+1. SCOPE AND EXACT INPUTS
+
+Hesai original CP-K29:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_full_cpk29_20261023/prepared
+Velodyne original CP-V4:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared
+
+OFF only; same mission 2024-11-25-16-36-19, bag offset6s,428.75s capture.
+Both have4,282 saved fusion states at identical100ms physical timestamps:
+0.484443335--428.584443335s relative to1732549034915071665ns.
+No new source capture, receiver replay, build, container start, model edit,
+Qc change, time shift, deletion, commit, push or ARC-3 work. Original receiver
+Qc is used, NOT the later0.25 or0.1 candidate. Original data remain immutable.
+
+Use the same prism point and saved CP-V10 rigid no-scale fit per case, as
+retained by CP-V20(Hesai)/CP-V11(Velodyne). Apply each ONLINE fit unchanged to
+its finalized output. No local fit, smoothing or resampling of fusion states.
+IE-TC is the reference and shares CPT7; it is NOT independent prism GT.
+The first60s cohort is declared for diagnosis, not the identified exact time
+shown in the user's screenshot. Startup/tail absence is retained, not filled.
+
+2. MEASURED PUBLICATION INSTABILITY
+
+Window       Reference   Hesai ONLINE  Velodyne ONLINE  Hesai DELAYED  Velo DELAYED
+             path(m)     path(m)       path(m)          finalized(m)   finalized(m)
+0--10s         5.409        5.716          7.945             5.380          5.444
+0--60s        32.608       34.743         41.249            32.449         32.703
+Full saved   205.929      221.268        280.154           205.175        204.797
+380--390s      1.680        2.416          7.929             1.711          1.773
+
+First60s ONLINE path excess: Hesai+6.55%, Velodyne+26.50%.
+Full-saved ONLINE path excess: Hesai+7.45%, Velodyne+36.04%.
+First60s100ms displacement-vector error RMS:2.594cm Hesai /5.015cm Velodyne.
+Full-saved same metric:2.293cm /5.320cm. This is NOT position ATE/RMSE.
+First60s uses595 identical consecutive edges ending within(0,60]s.
+
+Finalized points are later estimates of these SAME states. Their near-reference
+path length localizes much of the excess to first publication, but does not
+make the original real-time output acceptable or prove global accuracy. They
+are saved at different retirement times, not one simultaneous active-window
+snapshot, not online, and not a full-history reoptimization. Connected output
+distance is an ESTIMATED path length, not the drone's physical travel distance.
+
+3. PARAMETERS AND KIMERA: STRONG CONTROLS
+
+The actual receiver executable matches both protected manifests:
+/home/yeranis/results/gnssfgo_receiver_finalization_cpk19_20261021/live
+SHA256 4b08a7f5ba97f5e4ec22959df23367df79eebf5d644dc19d939747dcd4566d6e
+Identical receiver wrapper contents; resolved differences are run/session
+labels, copied paths and ROS port. Same7s source-WNOA,100ms supports, Qc,
+priors, stable-ID replacement, seal_at_absorption and terminal-cell policy.
+No central IMU/GNSS factors. Recorded raw IMU samples also match.
+
+Effective GLIM/Kimera settings, private covariance provider hash, playback
+rate and requested duration match. Kimera profiles are byte-identical.
+All1,937 Kimera native output timestamps/poses match numerically exactly.
+All47,605 Kimera belief payloads, including revisions, endpoints, means and
+covariances, match exactly (session IDs/arrival clock excluded). Actual Kimera
+endpoint age at EVERY fusion publication is identical in both runs.
+Arrival-clock differences are small: median1.129ms,p953.957ms,max14.495ms.
+These observations exclude changed Kimera estimates as the difference here;
+they do not exclude interaction of the same Kimera evidence with another graph.
+
+Only GLIM config_ros.json/config_sensors.json differ: lidar topic, lidar frame
+ID and T_lidar_imu calibration. Other algorithm, IMU, preprocessing and timing
+settings match. Matching settings do NOT prove they are optimal for Velodyne.
+First2s raw clouds contain about49.2--49.4k Hesai points versus18.3--18.7k
+Velodyne points, before preprocessing. This documents different input, not a
+controlled attribution of estimation error to point count or sensor hardware.
+
+4. FRAME AND PAYLOAD CHECKS
+
+Re-read all recorded static TF messages and verify unchanged edges. Reconstruct:
+Hesai: hesai_lidar -> box_base -> cpt7_imu
+Velodyne: velodyne_lidar -> base -> box_base -> cpt7_imu
+Copied T_lidar_imu matches those chains to max matrix differences
+2.976e-10 and2.281e-13 respectively. No accidental Hesai extrinsic in Velodyne,
+or obvious inverse/axis/frame-ID mismatch, was found. This checks consistency
+with recorded calibration, not independent physical calibration accuracy.
+
+Inspected GLIM path uses IMU/body poses T_world_imu for its X states and the
+lidar extrinsic for points. CBS export uses from_pose.between(to_pose), not
+unconverted world-frame positions. Both receiver source bodies are CPT7.
+Different global origins of GLIM/Kimera are not themselves an error: a common
+left world transform cancels in a relative pose T_i^-1 T_j.
+
+For EVERY first-version belief in each OFF capture, parse actual node log and
+compare to the saved receiver event: endpoints exactly equal; mean and full6x6
+covariance maximum difference0. Counts: Hesai4,277GLIM+1,909Kimera;
+Velodyne4,278GLIM+1,909Kimera. No transport rescale, extra rotation or time shift.
+Transport implementation differs only in its literal expected wrapper path;
+ROS adapter is identical. Receiver uses incoming Pose3::Expmap(mean) and full
+Gaussian covariance, with source physical endpoints handled by its model.
+
+This does not certify all internal source covariance charts or receiver
+interpolation Jacobians. The known mean-only source-to-source covariance
+alignment approximation remains, but source CBS is OFF here; it is not a
+sufficient explanation for this OFF comparison on its own.
+
+5. TIMESTAMPS: NO FOUND98ms BUG; A REAL14ms PHASE DIFFERENCE
+
+Hesai point field is absolute seconds ('timestamp'). Velodyne uses signed
+relative seconds ('time'), about-98--100ms to+1.306ms around its header.
+The inspected GLIM normalizer moves frame time to the minimum point time and
+subtracts that same minimum from each relative point time. Thus:
+ (header+minimum)+(point_offset-minimum) = header+point_offset.
+This preserves absolute point time; subtracting98ms from the frame stamp alone
+must NOT be called a98ms synchronization bug.
+
+Fresh raw-array check covers20scans per lidar in the first2s. Absolute times
+are preserved within0.239microseconds. Native timestamps match all published
+scans in that sample; six Hesai/seven Velodyne initial scans precede native
+odometry startup and are explicitly unmatched, not treated as timing failures.
+The existing Velodyne full-capture sensor audit separately checks every native
+scan's normalized time and IMU coverage. Raw bags were sampled read-only; full
+bag hashes were not repeated here. Preprocessor sorts selected points by time.
+This is not an independent end-to-end numerical certification of deskew.
+
+First60s timing, median sensor-time ages:
+                                              Hesai       Velodyne
+GLIM endpoint -> first-belief receipt          115.319ms   112.098ms
+Latest received GLIM endpoint age at fusion    138.620ms   152.402ms
+GLIM endpoint phase within100ms support cell    61.381ms    47.599ms
+
+Velodyne evidence is about13.8ms older relative to the fusion publication
+grid, but it is NOT slower from endpoint to receipt in this comparison.
+Both notions must be distinguished from CPU wall time. Exact physical output
+timestamps are identical. Publication-availability clock difference is0 at
+median/p95, maximum1.695ms. Transport queues end at0, maxima49/40; no duplicate
+or future-belief-clock events. This is not a gross accumulating backlog.
+
+At the10--12s example, Kimera freshness alternates about88/188ms in both runs,
+whereas GLIM stays near139ms(Hesai) or152ms(Velodyne). Such asynchronous phases
+can matter to newest-state interpolation/extrapolation even with valid clocks.
+The evidence does not prove the14ms difference causes the extra zigzag.
+
+6. ACTUAL SHORT-MOTION BELIEFS ARE LESS ACCURATE WITH VELODYNE
+
+First-version GLIM relative poses, approximately0.2s horizons, against IE-TC
+relative motion at the SAME endpoints as each individual belief; CPT7 body.
+There are592 GLIM beliefs per sensor in the first60s. Sensor endpoints differ
+slightly between lidars, so these are equal temporal cohorts, not identical
+timestamp pairs. No global alignment is needed for these relative-pose errors.
+
+First60s                                Hesai         Velodyne
+Relative translation error RMS          0.699cm       1.855cm
+Relative rotation error RMS             0.222deg      0.431deg
+Median translation covariance trace     3.312e-6m^2   4.523e-6m^2
+Median rotation covariance trace        3.355e-8rad^2 7.119e-8rad^2
+
+Translation RMS is2.66x larger while median translation covariance trace is
+only1.37x larger. First10s:0.454cm versus1.473cm translation RMS,0.098deg versus
+0.394deg rotation RMS. Kimera first60s relative errors are identical in both:
+0.598cm translation and0.120deg rotation,283first beliefs.
+
+This supports checking how confidently noisier/inaccurate short lidar motion
+is imposed on the newest fusion states. It does NOT establish a calibrated
+NEES, a correct covariance multiplier, or a scalar fusion weight: full matrices,
+cross terms, residual coordinates, bias, correlated sources and motion-factor
+information matter. The larger Velodyne relative error could itself arise from
+sensor/geometry limitations OR an unisolated upstream implementation issue.
+
+7. WHAT THIS ADDS TO THE PREVIOUS DIAGNOSIS
+
+CP-V13 previously traced only379.9--390.1s of Velodyne. That unchanged-model
+replay was byte-identical to original outputs and showed source insertions and
+the updated newest-state predictor dominating the jumps, tiny instantaneous
+retirement effects, and stable older states. OFF GLIM/Kimera corrections often
+pointed in the SAME direction; this is not proven two-source tug-of-war.
+Those operation-level conclusions must not be asserted for the first minute
+or Hesai without their corresponding trace. CP-V21 provides the missing sensor
+comparison/control, not that trace. It also does not prove a weak starting
+anchor/marginal prior or nonlinear stationarity of the incremental solution.
+
+8. SPECIFIC NEXT DIAGNOSTIC — PROPOSED, NOT RUN
+
+A. Reuse the observer-only CP-V13 machinery in new private output roots for
+both original OFF saved journals. Keep all payloads, order, timing, model and
+solver parameters unchanged; require exact baseline ONLINE/finalized parity.
+Trace0--60s in each, including input insertion/revision, newest pose/velocity,
+support creation and retirement. Separate older active states from the newest
+edge. Decompose jumps in vectors, not additive shares of scalar path length.
+
+B. On frozen actual factors/states around large and small jumps, check analytic
+residual Jacobians against central finite differences using the correct Pose3
+retraction; check source endpoints, interpolation fractions and SE(3) residual
+ordering. Include each actual sensor's fractional support-cell positions.
+Inspect incremental residual/gradient/conditioning evidence; do not label a
+finite-difference pass as proof of full nonlinear convergence.
+
+C. Decision: if math/frame/time consistency fails, isolate the failing case
+and repair that implementation before any tuning. If checks pass and source
+insertion repeatedly kicks the newest pose/velocity, pursue source uncertainty
+calibration versus motion/newest-state estimation as separate hypotheses.
+A frozen-factor reference solve can be considered if incremental optimization
+is implicated. No blind timestamp shift, extra covariance scale or Qc sweep.
+This is a bounded receiver/numerical diagnosis, not another full sensor run.
+
+9. ARTIFACTS AND CHECKS
+
+results.json: exact configurations, paired path/step metrics, source age/phase,
+first-version relative errors/covariance summaries and input hashes.
+frame_time_checks.json: raw static-TF chains, first2s point-time arrays summary,
+protected source/executable checks, full first-version log-to-event equality.
+timeseries.npz: aligned ONLINE/finalized/reference, ages and received counts.
+hesai_velodyne_off_timing_full_range.png: visually checked common-axis figure.
+Top:100ms output step lengths, first60s. Middle: endpoint freshness,10--12s.
+Bottom: same-state ONLINE-to-finalized correction magnitude, first60s.
+Original hesai_velodyne_off_timing.png retained; its top axis clips a few peaks
+at18cm. Use the full_range figure, which includes every plotted cohort value.
+ANALYSIS_NOTES.txt preserves an initial reporting-script assumption failure.
+final_checks.json records input/artifact hashes and checkpoint verification.

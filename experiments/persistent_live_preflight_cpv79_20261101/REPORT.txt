@@ -1,0 +1,47 @@
+CP-V79 — FULL LIVE REQUEST / READ-ONLY ADMISSION REVIEW
+2026-11-01. User requests a full live run with all estimators after CP78.
+Interpreted intended scope: full355.02s EIG-2 Hesai, GLIM + corrected persistent
+Kimera + concurrent gnssFGO, with actual live source-to-source exchange.
+NO RUN LAUNCHED. No container start, source change, build, tuning or new scoring.
+
+BLOCKER
+CP67 established that retaining peer factors through marginalization leaves
+peer information in the mixed prior. Removing explicit peer factors from a
+copy of MAIN does not remove that absorbed information. The actual LOCAL
+export failed the predeclared native-information provenance gate.
+CP76/77/78 explicitly preserve this limitation; CP78 had no return consumer.
+Its accuracy success is not a live bidirectional provenance certificate.
+
+The exact CP76 compiled source snapshot still uses smoother_->
+setMarginalizationGraph(LOCAL) at VioBackend.cpp:3570 and that same smoother's
+getOdometryBeliefs at3584/3593 and3736 (revision export). The separate pose-
+covariance sidecar is not selected in this relative-belief path. Source snapshot:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/persistent_compatibility_cpv76_20261101/backend_fixture1/source_snapshot/VioBackend.cpp
+SHA256 70da03c636c4ea50a8f3b565979779812b7f4ae5196ec3e5a9bc25c581a48c92.
+CP67/REPORT.txt supplies the native synthetic and real-boundary evidence.
+This is a provenance failure, not a calibrated estimate of actual feedback
+strength or proof that any particular live run would become unstable.
+
+DECISION REQUIRED BEFORE EXPANDING THE METHOD
+Recommended: separately authorize narrowly scoped outgoing-information repair
+and validation, assessing reuse of the existing sidecar first. Keep persistent
+MAIN inference and its weights; maintain a peer-free marginal history for the
+outgoing LOCAL information. Must validate relative-belief path, unchanged
+no-peer behavior, repeated marginalization and MAIN-mean/LOCAL-information
+chart consistency before a live run. This is not a covariance-scale adjustment.
+No implementation/design is assumed approved merely by the full-run request.
+
+Alternative requiring explicit scope choice: full live one-way GLIM->Kimera
+with both feeding fusion, no Kimera->GLIM return. That tests live delivery and
+fusion but not bidirectional CBS, and the mixed-history Kimera covariance
+limitation must still be disclosed downstream. Do not silently substitute it
+for the requested live system or label it native-only uncertainty.
+
+Existing completed CP49 provides the full live EIG-2 sensor/receiver baseline:
+Hesai, front stereo/shared CPT7,355.02s/offset5.7s,0.20x/25sdrain,GLIM5s,
+Kimera25states and CP-K19 seven-second WNOA with Qc x1.0. Do not silently import
+the LEICA-2 Qc x0.25 trial or older full-history/central-IMU runbook settings.
+Any new live protocol must explicitly freeze direction, both source factor
+modes, outgoing information policy, builds and the receiver settings; current
+review does not select a new GLIM mode or change a weight.
+CP78/CP77 and all earlier evidence remain unchanged. Monitor remains paused.

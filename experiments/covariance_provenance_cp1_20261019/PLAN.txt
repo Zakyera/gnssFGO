@@ -1,0 +1,42 @@
+Bounded covariance investigation — CP1 / CP2 / CP3
+2026-10-19
+
+Frozen basis: FL4v private source builds and 7s fixed-lag WNOA, no central
+IMU; latest EIG-2 FL4x, SPX-3 FL4w and ETH1 FL4t/FL4v recordings. No changes
+to estimator code, parameters, covariance, source CBS or frozen artifacts.
+
+CP1 — COMPLETE (2026-10-19): explain GLIM covariance provenance.
+  1. Trace the actual compiled shared-native LOCAL provider and relative
+     extraction, including native factor admission, marginal prior, charts,
+     current mean and revision identity.
+  2. Inventory retained EIG-2 and SPX-3 diagnostics. Reuse FL4z's verified
+     matched endpoints; inspect deterministic examples selected by low/high
+     first-publication reference-error quartiles in ON, plus matching OFF
+     versions. Select the median-error member of each quartile, tie by time.
+  3. Use logged endpoint/cross-covariance decomposition ONLY if genuinely
+     recorded for this provider. Do not silently use another graph's blocks.
+     Quantify paired first-to-later covariance/error evolution for uncensored
+     edges reaching 40 source-update intervals in both modes.
+  4. Report demonstrated mechanism, counterevidence and missing evidence.
+     Stop here. Missing endpoint matrices do NOT authorize another capture.
+
+CP2 — DEFERRED: covariance consistency of actual temporally aligned peer
+factors, distinct from downstream source factors. No automatic implementation.
+
+CP3 — DEFERRED: saved snapshot directional information/correction contributions
+of GLIM, Kimera, WNOA and marginal prior. Not a new full-sequence replay.
+
+Limits: no bag/source/fuser execution, build, container start, covariance sweep,
+new sequence, automatic retry or push. No repeat of completed global SPD,
+frame or performance campaigns. IE-TC is a shared-CPT7 relative reference,
+not independent noiseless truth. Covariance accuracy is not identified merely
+by its discrepancy to this reference. No proposed multiplier from ATE.
+
+Deliver CP1 report and numerical evidence, update the engineering ledger, then
+return to user before CP2/CP3. Fit no model or tuning parameter in this task.
+
+Completion: REPORT.txt, eig2_evidence.json, spx3_evidence.json, verification.json.
+Important established distinction: first publications use native-only provider;
+later revisions use MAIN covariance, as explicitly preserved in S4d. No change
+made. No full endpoint matrices or same-update dual-provider revised snapshots
+retained, so exact factor-family/error-source attribution stops at that limit.

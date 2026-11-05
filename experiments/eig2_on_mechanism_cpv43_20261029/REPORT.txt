@@ -1,0 +1,197 @@
+CP-V43 — EIG-2 corrected CBS-ON: geometry and optimizer investigation
+Saved-data diagnosis, 2026-10-29. Covariance investigation explicitly excluded.
+==========================================================================
+
+BOTTOM LINE
+The non-covariance investigation narrows the problem to how Kimera's coupled
+native/CBS graph responds to admitted relative constraints, rather than a
+large bogus position arriving over the wire. It does NOT identify a specific
+faulty equation yet. The first substantial ON tilt corrections and elevated
+native IMU cost precede any marginalization or peer-factor retirement.
+Later, the existing native objective audit records four accepted uphill
+updates, one exceeding 5.5x its own pre-solve objective. The peer-edge residual
+can improve while the overall graph objective worsens.
+
+This supports prioritizing nonlinear solve/linearization, pose-velocity-bias/
+gravity coupling, and full-objective acceptance. It does not prove that more
+iterations alone fixes the run, nor exonerate later marginal-prior behavior.
+Covariance, weights and all estimator settings were left untouched and were
+not investigated. No new capture, optimizer solve, build or ATE/RPE scoring.
+
+1. INPUTS AND EXACT JOINS
+------------------------
+Completed CP-V42 full355.02s EIG-2 Velodyne OFF/ON, CP-V40 private backend in
+both modes, original receiver WNOA Qc x1.0. Not the old uncorrected pair.
+
+Files: original MAIN endpoint logs, native Kimera odometry timestamps, objective
+CSV, per-node stdout, saved CBS bag, effective settings, executed private source
+and build receipts. analyze.py/transport_means.py produce analysis.json,
+edge_events.json, window_events.json and transport_means.json in this new root.
+Inputs are hashed before/after. Complete old outputs remain unchanged.
+
+1744 candidate edges are joined by (update, receiver-from ID, receiver-to ID),
+with sender IDs and exact endpoint timestamps checked separately. Nine updates
+contain TWO distinct delayed/admitted edges; these are not duplicate factors.
+All1744 have both saved pre-update and final MAIN endpoint poses. Reconstructed
+pre-injection geometric residual agrees with the native log to4.063e-11 in the
+reported m/degree component norms. Final residual also agrees with the rounded
+merge row where that row identifies the same edge. No nearest-update join.
+
+Window shape reconstruction covers1729OFF/1738ON transitions with complete
+previous snapshots. It covers472of475 ON revisions>0.5m; missing large-event
+IDs1556,1559,1564 are not filled in. Complete missing lists are in analysis.json.
+Four analysis-script bookkeeping/parser stops were corrected before outputs
+were written; see ANALYSIS_REPAIRS.txt. No source retry or guard relaxation.
+
+2. THE FIRST ANOMALY PRECEDES MARGINALIZATION
+-------------------------------------------
+Times are sensor seconds after the original selected capture start.
+
+Update / time     ON event                              OFF comparison
+6 / 1.600s        First admitted G2K factor; IMU cost1.346 IMU cost0.053
+19 / 4.200s       First post-solve IMU cost>100:168.18
+22 / 4.800s       Previous-pose rotation revision4.96deg 0.60deg
+24 / 5.200s       IMU cost4754.31                        IMU cost2.64
+25 / 5.400s       Previous-pose rotation revision10.95deg 0.28deg
+26 / 5.600s       FIRST pose/velocity/bias marginalization
+30 / 6.400s       FIRST temporary peer retirement and retirement prior-refresh
+
+At update25, coherent window tilt is11.126deg, with only0.353deg coherent yaw.
+This is primarily an early roll/pitch/tilt correction, not just a yaw gauge
+shift. Previous pose moves0.1404m; the newly estimated same-update movement is
+0.1084m. The corresponding OFF coherent tilt is0.327deg.
+
+There is no marginalized prior from an earlier window before update26. Therefore
+retiring a peer factor or mishandling an existing marginal prior cannot be the
+sole explanation of these EARLY events. Later spikes could have extra causes.
+All native IMU numbers here are existing weighted factor costs, not physical
+metres, RMSE, a new uncertainty analysis, or a convergence certificate.
+
+3. MEAN DIRECTION, BODY ROUTE, IDs AND TIMING
+------------------------------------------
+All3540 GLIM endpoint exports reconstruct their body-relative mean:
+  maximum translation difference2.248e-14m; rotation5.183e-13deg.
+All3540 incoming bag means match the saved GLIM export exactly.
+All1744 raw means used for Kimera alignment match the incoming message:
+  maximum component difference2.776e-16; logged source stamp difference0ns
+  after the same native double-to-nanosecond rounding.
+All1744 aligned means match the frozen factor record exactly. Receiver IDs map
+to the exact saved native keyframe stamps, increasing intervals, causal support
+and the existing50ms endpoint gate. No inversion, swapped endpoints, unexpected
+world-frame transform, or extra LiDAR extrinsic was found in this checked path.
+
+Effective Kimera IMU remapping is /boxi/cpt7/imu. Existing shared cpt7_imu body
+route is unchanged. OFF/ON saved IMU/backend/stereo camera and GLIM ROS/sensor
+profile files are byte-identical. Executed private VioBackend/refresh/smoother
+source matches its build receipt. The full per-consumer raw IMU packet/PIM
+history is NOT retained here, so these checks do not certify every integration
+or deskew equation. Different world labels map/odom are not themselves a bug
+for body-relative poses, since a common left world transform cancels in Xi^-1 Xj.
+
+Mean-only temporal correction magnitude (no uncertainty computation):
+  translation median5.863mm, p9513.446mm, max32.648mm;
+  rotation median0.394deg, p951.204deg, max3.540deg.
+This magnitude is NOT the correction's error, nor proof of a timing bug.
+
+At update25, the admitted relative motion is0.17345m /7.98661deg across the
+roughly0.2s edge. It differs from corrected OFF's SAME exact endpoint edge by
+14.002mm /0.41030deg. The temporal mean correction is9.230mm /0.47060deg.
+It does not directly request an11deg revision of all earlier poses.
+
+At the7.27084m largest previous-pose revision (update1550,310.397s), incoming
+relative motion is only11.273mm /0.04664deg. Temporal correction is1.498mm /
+0.02271deg. This is not a7m jump in the transmitted relative measurement.
+
+4. ORDINARY CBS SOLVE VERSUS ADDED REFRESH
+----------------------------------------
+The existing stdout contains the newly inserted edge residual immediately
+after BPSAM's ordinary update. MAIN snapshots provide its final residual after
+the extra native refresh and marginalization. Marginalization stages do not
+add another solve in the inspected call order; an intermediate whole-state
+snapshot would still be needed to attribute the global movement by phase.
+
+All1744 edges, unweighted geometric residual medians:
+                         rotation(deg)   translation SE3-log norm(m)
+Before update               0.290570               0.025557
+After ordinary BPSAM        0.186905               0.019099
+Final after refresh         0.187262               0.019488
+
+The extra step improves the rotational norm on772/1744 edges and translational
+norm on903/1744. This is not a cost/descent test: a coupled graph may legitimately
+trade individual factor residuals. It does show that the refresh is not simply
+eliminating the remaining peer mismatch.
+
+The refresh calls native ISAM2, not BPSAM::update, so it does not stage the same
+incoming belief a second time. Full ON logs contain1744 stage inserts and slot
+tracking entries,1722 scheduled peer removals, no observed rollback/retry/drop
+recovery. Exact slot/ownership gates in the completed run passed. This rules out
+the obvious duplicate-admission/recovery path in these logs, not all possible
+in-memory implementation errors.
+
+5. CONCRETE ACCEPTED UPHILL UPDATES
+---------------------------------
+The frozen RetirementAudit compares BEFORE and AFTER Values on clones of the
+SAME post-admission/removal graph within each update, preserving prior chart
+evaluation. These are not costs compared across different updates/topologies.
+Native smart-factor activity can change with Values; no fixed-activity or
+nonlinear-stationarity claim is made.
+
+Update time(s)   Total before     Total after      Ratio
+933   186.998       272402.22       449465.80       1.6500
+1005  201.398       339613.98       342255.84       1.0078
+1016  203.598       621024.61      3423990.41       5.5135
+1049  210.198       639653.54      1282050.25       2.0043
+
+At1016, native IMU cost351695.56 ->3174731.71. Yet the new peer-edge residual
+improves from0.39356deg/70.49mm to0.23862deg/50.99mm. Its improvement does NOT
+make the full update good. Previous pose shifts2.474m, with coherent yaw7.07deg.
+
+The implemented acceptance guards check slot ownership, finite peer residuals
+and their existing bounds, not decrease of the complete nonlinear objective.
+ONE extra undamped GN step and algebraic/lifecycle parity are not a convergence
+or descent guarantee. The cost rise is directly observed; its cause could be
+the ordinary step, the added step, nonlinear smart-factor changes, or interactions.
+The saved logs cannot separate their whole-graph costs at the intermediate state.
+OFF also has19 observed increases (previously documented); monotonicity alone is
+not a universal failure test. The very large ON increases are a localization clue,
+not proof that adding a rejection rule alone would fix the entire trajectory.
+
+6. WHAT THE LARGE ZIGZAGS REPRESENT
+---------------------------------
+For472 available ON events with previous revision>0.5m, a single rigid transform
+between shared active windows explains a median99.9703% of squared displacement.
+Remaining shape residual maximum per event has median3.699cm/p959.210cm.
+Window extent ratio median1.00112; p951.02297. Some events deform more; not every
+step is pure rigid motion, and extent ratio is not an estimated stereo scale.
+
+At update1550, coherent yaw16.837deg/tilt2.281deg accompanies the7.271m revision;
+after removing that common rigid motion, maximum shape residual is2.594cm and
+extent ratio0.99643. The new local movement itself is2.838cm. This supports
+unstable window orientation/placement, not the robot physically travelling7m
+or a belief commanding7m. Initial-publication history retains these corrections.
+
+7. REMAINING LIMIT AND NEXT DISCRIMINATING TEST
+---------------------------------------------
+CP-V42 retained endpoint poses, factor identities/means and scalar objectives,
+not complete Kimera native factor/PIM/velocity/bias/linearization checkpoints.
+It also lacks the whole-state/native IMU cost BETWEEN ordinary solve and refresh.
+Thus saved data cannot certify derivatives, solve the identical complete graph
+to convergence, or blame one of the two solve phases for the global tilt.
+
+Recommended next step: ONE new, short original-start EIG-2 ON diagnostic capture
+(about10sensor-seconds, not a full sequence), keeping CP-V40, weights, priors,
+native factors, source settings and covariance path unchanged. Capture complete
+native graph/Values/PIM/cache at updates21--25 and immediately before/after each
+of the TWO solve stages; include pose, world velocity, IMU bias and smart-factor
+validity. Preserve original prior functions. Check observer parity before using
+the data. This replay has NOT been launched by CP-V43.
+
+On saved copies, test one question: with the SAME factors and weights, is the
+published state still far from a sound nonlinear solution? Inspect unweighted
+IMU residual components and step/gradient consistency by phase. Only then decide
+whether a solver correction, state/mean handling fix, or a model investigation is
+needed. A late uphill-event checkpoint needs longer history and is a separate
+decision; the short capture cannot reproduce update1016.
+
+No confirmed line-level bug or fix is claimed. All prior campaign results remain
+frozen; report this as completed saved-data localization, not a solved CBS-ON.

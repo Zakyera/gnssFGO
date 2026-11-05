@@ -1,0 +1,338 @@
+{
+  "case": "CP-K29 LEICA-2 Hesai baseline",
+  "epoch_ns": 1732549034915071665,
+  "duration_s": 428.75,
+  "origin_reference_enu_m": [
+    -0.011483248279424,
+    -0.36318778123009515,
+    0.5967420335266643
+  ],
+  "reference": {
+    "path": "/workspace/cbs_gtsam4.3/src/datasets/GrandTour/LEICA-2/2024-11-25-16-36-19_cpt7_ie_tc.bag",
+    "sha256": "5455a1a68dfcdab7dd26fdcbd528d42982725da8bc165a0208ddcd74aac6ca64",
+    "topic": "/boxi/inertial_explorer/tc/odometry",
+    "frame_ids": [
+      "enu_origin"
+    ],
+    "child_frame_ids": [
+      "cpt7_imu"
+    ],
+    "caveat": "IE-TC GNSS/INS reference shares CPT7 IMU; not independent prism GT"
+  },
+  "common_coverage": {
+    "grid_queries": 4264,
+    "valid_queries": 3856,
+    "excluded_queries": 408,
+    "supported_s": 385.0,
+    "capture_s": 428.75,
+    "supported_capture_percent": 89.79591836734694,
+    "first_s": 0.684928335,
+    "last_s": 421.58492833500003,
+    "envelope_s": 420.90000000000003,
+    "start_gap_s": 0.684928335,
+    "tail_gap_s": 7.165071664999971,
+    "segments": [
+      {
+        "first_s": 0.684928335,
+        "last_s": 57.584928335,
+        "rows": 570
+      },
+      {
+        "first_s": 59.684928335,
+        "last_s": 59.684928335,
+        "rows": 1
+      },
+      {
+        "first_s": 60.484928335000006,
+        "last_s": 195.584928335,
+        "rows": 1352
+      },
+      {
+        "first_s": 196.68492833500002,
+        "last_s": 304.484928335,
+        "rows": 1079
+      },
+      {
+        "first_s": 305.58492833500003,
+        "last_s": 390.38492833500004,
+        "rows": 849
+      },
+      {
+        "first_s": 421.18492833500005,
+        "last_s": 421.58492833500003,
+        "rows": 5
+      }
+    ]
+  },
+  "products": {
+    "off_glim_initial": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_full_cpk29_20261023/prepared/full_off_source/glim_odometry.csv",
+      "sha256": "51d9f321a6cd9ec696c75b49d3421974a342b80b9299b586e4a9a891cdffbdd9",
+      "rows": 4279,
+      "first_s": 0.646106304,
+      "last_s": 428.445607246,
+      "span_s": 427.799500942,
+      "csv_gate": {
+        "rows": 4279,
+        "duplicate_or_nonmonotonic_stamps": 0,
+        "frames": [
+          "map"
+        ],
+        "children": [
+          "cpt7_imu"
+        ],
+        "quaternion_norm_max_error": 1.7763568394002505e-15,
+        "max_stamp_gap_s": 0.114016056
+      },
+      "alignment_rotation": [
+        [
+          0.9638824875513136,
+          -0.266315531008937,
+          0.0025667363166874714
+        ],
+        [
+          0.2663003730273033,
+          0.9638766639844943,
+          0.005088020405001108
+        ],
+        [
+          -0.003829036094198745,
+          -0.004220730926087709,
+          0.9999837618246801
+        ]
+      ],
+      "alignment_translation_m": [
+        0.33436787633628917,
+        -0.4317392697815272,
+        0.354051772840592
+      ],
+      "common_ATE_check_m": 0.49486953110459847,
+      "native_vertices": 4279,
+      "native_path_including_gap_chords_m": 207.34512388962,
+      "displayed_gap_aware_path_m": 207.34512388962,
+      "gaps_over_500ms": 0,
+      "max_float32_coordinate_error_m": 1.9068343704020663e-06
+    },
+    "off_kimera": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_full_cpk29_20261023/prepared/full_off_source/kimera_odometry.csv",
+      "sha256": "7d62d57061910d47d1a334a7cccac3c2181b3826f1a6e6e53a8ecf114fb46503",
+      "rows": 1937,
+      "first_s": 0.099937912,
+      "last_s": 426.99556373900003,
+      "span_s": 426.895625827,
+      "alignment_rotation": [
+        [
+          0.08362725646822604,
+          -0.9959766796379704,
+          0.03220148432790347
+        ],
+        [
+          -0.9955245620166183,
+          -0.08207467381547111,
+          0.04684649762473442
+        ],
+        [
+          -0.04401509283436439,
+          -0.03597501265332285,
+          -0.9983829275720693
+        ]
+      ],
+      "alignment_translation_m": [
+        1.613715549195721,
+        0.3373900594613346,
+        0.23515043420278692
+      ],
+      "common_ATE_check_m": 1.0949199873592772,
+      "native_vertices": 1937,
+      "native_path_including_gap_chords_m": 200.14583756912816,
+      "displayed_gap_aware_path_m": 200.11451000754636,
+      "gaps_over_500ms": 12,
+      "max_float32_coordinate_error_m": 1.9030741356118597e-06
+    },
+    "off_fusion_online": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_full_cpk29_20261023/prepared/full_off_receiver/receiver/online_trajectory.tum",
+      "sha256": "b96171109201059943760ab2572274be6630978a9077ff36a0f5f7dde01aa1e3",
+      "rows": 4282,
+      "first_s": 0.48444333500000003,
+      "last_s": 428.584443335,
+      "span_s": 428.1,
+      "alignment_rotation": [
+        [
+          0.04048742106098548,
+          -0.9991652110188253,
+          0.005445165336060928
+        ],
+        [
+          -0.998376983290055,
+          -0.040235831415162064,
+          0.04030480252997348
+        ],
+        [
+          -0.0400520657704436,
+          -0.007068165252543071,
+          -0.9991725942335904
+        ]
+      ],
+      "alignment_translation_m": [
+        0.9370724390625593,
+        -0.30282013059987634,
+        0.22421026898783125
+      ],
+      "common_ATE_check_m": 0.6603630187695367,
+      "native_vertices": 4282,
+      "native_path_including_gap_chords_m": 221.26806532948666,
+      "displayed_gap_aware_path_m": 221.26806532948666,
+      "gaps_over_500ms": 0,
+      "max_float32_coordinate_error_m": 1.9051345248044527e-06,
+      "reference_at_same_native_timestamps_path_m": 205.92908513096825,
+      "max_100ms_step_m": 0.1314404145193716,
+      "p95_100ms_step_m": 0.1011847823176542
+    },
+    "on_glim_initial": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_full_cpk29_20261023/prepared/full_on_source/glim_odometry.csv",
+      "sha256": "6df4ba5bfb934118d6e27fb00ba0d8677d35ba47cfd4f458f52c9a8cb5f859b2",
+      "rows": 4279,
+      "first_s": 0.646106304,
+      "last_s": 428.445607246,
+      "span_s": 427.799500942,
+      "csv_gate": {
+        "rows": 4279,
+        "duplicate_or_nonmonotonic_stamps": 0,
+        "frames": [
+          "map"
+        ],
+        "children": [
+          "cpt7_imu"
+        ],
+        "quaternion_norm_max_error": 1.3322676295501878e-15,
+        "max_stamp_gap_s": 0.114016056
+      },
+      "alignment_rotation": [
+        [
+          0.9639636786850609,
+          -0.26599773138788274,
+          0.004385552697587402
+        ],
+        [
+          0.2660086704637459,
+          0.9639682950788727,
+          -0.002124457775733859
+        ],
+        [
+          -0.0036624328080973193,
+          0.0032144951750414106,
+          0.9999881267328605
+        ]
+      ],
+      "alignment_translation_m": [
+        0.3262450155001506,
+        -0.42837186147139406,
+        0.27530688937105274
+      ],
+      "common_ATE_check_m": 0.4974367326741212,
+      "native_vertices": 4279,
+      "native_path_including_gap_chords_m": 207.84119041591615,
+      "displayed_gap_aware_path_m": 207.84119041591615,
+      "gaps_over_500ms": 0,
+      "max_float32_coordinate_error_m": 1.9059465614645887e-06
+    },
+    "on_kimera": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_full_cpk29_20261023/prepared/full_on_source/kimera_odometry.csv",
+      "sha256": "4f9dc6d4d2bd48af92f78a2660be243b7055e4e73c07e769078e4486373a6382",
+      "rows": 1937,
+      "first_s": 0.099937912,
+      "last_s": 427.895553639,
+      "span_s": 427.79561572700004,
+      "alignment_rotation": [
+        [
+          0.007722098925012154,
+          -0.9993003099483599,
+          0.036595897656761335
+        ],
+        [
+          -0.9999689642358119,
+          -0.007659751382646324,
+          0.0018435763920178875
+        ],
+        [
+          -0.0015619709822813927,
+          -0.03660899815438639,
+          -0.9993284452575052
+        ]
+      ],
+      "alignment_translation_m": [
+        0.35554877544298336,
+        -0.2037384347489848,
+        0.7201913182171727
+      ],
+      "common_ATE_check_m": 0.47797818185860097,
+      "native_vertices": 1937,
+      "native_path_including_gap_chords_m": 204.70476931042333,
+      "displayed_gap_aware_path_m": 204.64479676170248,
+      "gaps_over_500ms": 13,
+      "max_float32_coordinate_error_m": 1.8990034575949721e-06
+    },
+    "on_fusion_online": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_full_cpk29_20261023/prepared/full_on_receiver/receiver/online_trajectory.tum",
+      "sha256": "b9f74026b4e1674ecea26548d7b2b0e878de6fc8bf914d2da771782bce61ab28",
+      "rows": 4282,
+      "first_s": 0.48444333500000003,
+      "last_s": 428.584443335,
+      "span_s": 428.1,
+      "alignment_rotation": [
+        [
+          0.017762356210941136,
+          -0.9998068794000113,
+          -0.0084084841824533
+        ],
+        [
+          -0.9995759044143486,
+          -0.017951093727588876,
+          0.022929665244403048
+        ],
+        [
+          -0.02307617854135969,
+          0.007997633299560892,
+          -0.9997017194371194
+        ]
+      ],
+      "alignment_translation_m": [
+        0.5607802881327277,
+        -0.3664570183200695,
+        0.39943901756218475
+      ],
+      "common_ATE_check_m": 0.5199507623544796,
+      "native_vertices": 4282,
+      "native_path_including_gap_chords_m": 218.36867811855802,
+      "displayed_gap_aware_path_m": 218.36867811855802,
+      "gaps_over_500ms": 0,
+      "max_float32_coordinate_error_m": 1.9071962356065342e-06,
+      "reference_at_same_native_timestamps_path_m": 205.92908513096825,
+      "max_100ms_step_m": 0.13739594515463815,
+      "p95_100ms_step_m": 0.09875988343049083
+    }
+  },
+  "alignment": "single per-product SE(3), no scale, CP-V10 common mask",
+  "source_rerun": false,
+  "trajectory_resampling_or_smoothing": false,
+  "reference_native_vertices": 85750,
+  "original_inputs_unchanged": true,
+  "input_sha256": {
+    "/home/yeranis/repos/gnssFGO/experiments/leica2_hesai_rerun_cpv20_20261027/prepare.py": "7ef9eb714e90f2fb4c9894bba0be0b7c1c2911dd23503c021ac6beda8ab1d1ca",
+    "/home/yeranis/repos/gnssFGO/experiments/leica2_hesai_rerun_cpv20_20261027/PROTOCOL.txt": "8e90d7ab3e21ce64859f4a95000c2986c206eb2eff076541b13d03e1f62b13cc",
+    "/home/yeranis/repos/gnssFGO/experiments/first_published_comparison_cpv10_20261026/analyze.py": "78091650c4e9d040bfdbe3822e8fcb12405405c86dd07c564a8734c74056ab7e",
+    "/home/yeranis/repos/gnssFGO/experiments/cross_sequence_decision_cpv8_20261026/analyze.py": "03e9829282e597c99bd96f416eaea0bb587540a298e8ea30ddc86accdca9f7fb",
+    "/home/yeranis/repos/gnssFGO/experiments/leica2_drift_attribution_cpv7_20261025/analyze.py": "39cbdf58d0dafd0d2cd29d8b857fd6175314618bce358c4c2014d5ad8acf51c8",
+    "/home/yeranis/repos/gnssFGO/experiments/fixed_lag_eig2_g2k_reference_fl4y_20261017/analyze.py": "f450f8fd936426cd677b3b5eac231bcc12f7fa060f03d9c4105ce75c5ded9124",
+    "/home/yeranis/repos/gnssFGO/experiments/first_published_comparison_cpv10_20261026/outputs/hesai_leica2.json": "62b8895d4a83527f7118079f74a9e44ec3aa2f1d35ee73db242fe297258b25d4",
+    "/home/yeranis/repos/gnssFGO/experiments/first_published_comparison_cpv10_20261026/outputs/hesai_leica2.npz": "8dbcd48261d7d5f622836a7684096d8f9892aa9bc0a4cac0a605e248b4a5cf2f",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/datasets/GrandTour/LEICA-2/2024-11-25-16-36-19_cpt7_ie_tc.bag": "5455a1a68dfcdab7dd26fdcbd528d42982725da8bc165a0208ddcd74aac6ca64",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_full_cpk29_20261023/prepared/full_off_source/glim_odometry.csv": "51d9f321a6cd9ec696c75b49d3421974a342b80b9299b586e4a9a891cdffbdd9",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_full_cpk29_20261023/prepared/full_off_source/kimera_odometry.csv": "7d62d57061910d47d1a334a7cccac3c2181b3826f1a6e6e53a8ecf114fb46503",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_full_cpk29_20261023/prepared/full_off_receiver/receiver/online_trajectory.tum": "b96171109201059943760ab2572274be6630978a9077ff36a0f5f7dde01aa1e3",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_full_cpk29_20261023/prepared/full_on_source/glim_odometry.csv": "6df4ba5bfb934118d6e27fb00ba0d8677d35ba47cfd4f458f52c9a8cb5f859b2",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_full_cpk29_20261023/prepared/full_on_source/kimera_odometry.csv": "4f9dc6d4d2bd48af92f78a2660be243b7055e4e73c07e769078e4486373a6382",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_full_cpk29_20261023/prepared/full_on_receiver/receiver/online_trajectory.tum": "b9f74026b4e1674ecea26548d7b2b0e878de6fc8bf914d2da771782bce61ab28"
+  },
+  "npz_sha256": "b9df5a6322fe9c926f345c51fec154b3e98634908c2632344c21ca297afc82ac"
+}

@@ -1,0 +1,34 @@
+CP-V108 prelaunch preparation corrections — 2026-11-04
+
+All entries below occurred before launch.json/start.json, containers, source,
+receiver, or sensor playback. They are not failed captures or source retries.
+
+1. Initial copied source runner retained an ETH1 guard. Both fresh EIG-2 runners
+   now require the authorized mission2024-11-03-13-59-54, offset5.7s,
+   duration355.02s, rate0.20 and exact OFF/ON reception mode. The pre-bag simulated
+   clock seed was also set to the established EIG-2 value1730638815. Initial
+   copy_parity.json/mechanical_copy.diff remain unchanged chronological records;
+   successful final admission's profile_parity.json/final_copy.diff supersede
+   their draft destination hashes. No predecessor file was edited.
+
+2. The first final-admission invocation exited1 at admission.py line59:
+   AssertionError: live_receiver_protocol.py
+   Failed admission.py SHA256:
+   1568cc82660b9c3b51adb2f587b322b617b43f7073b9176794831c904e242a33
+   It incorrectly demanded raw byte identity for the receiver protocol helper,
+   although its exact pinned receiver-wrapper pathname necessarily names the
+   fresh run. Read-only diff found exactly one changed line: expected wrapper
+   path CP103/prepared/receiver_cpk19.sh -> CP108/prepared/receiver_cpk19.sh.
+   No functional receiver setting or protocol math differed. The admission
+   check now permits exactly one replacement of that complete pathname and
+   requires all other bytes identical. The other three transport helpers still
+   require full byte equality. No transport code was changed by this repair.
+   No prepared.json, protected manifest, launch or source receipt existed at
+   the failed check. No experimental gate was bypassed.
+
+3. Supplemental terminal auditor no longer hardcodes two source starts on a
+   failed run: it counts actual source_process.json receipts. This does not
+   change capture/cleanup/evaluation behavior.
+
+No build, installation, scientific parameter tuning, covariance intervention,
+old-run modification, data conversion or deletion was performed.

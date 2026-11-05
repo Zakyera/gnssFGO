@@ -1,0 +1,1528 @@
+{
+  "passed": true,
+  "validation_contract": "finite_recording_eof_cpk24a",
+  "terminal_omissions": {
+    "off": 0,
+    "on": 0
+  },
+  "cases": {
+    "off": {
+      "checks": {
+        "receiver": {
+          "passed": true,
+          "validation_contract": "finite_recording_eof_cpk24a",
+          "terminal_boundary": {
+            "passed": true,
+            "contract": "finite_recording_terminal_cell_only",
+            "original_zero_unsupported_gate_passed": true,
+            "excluded_versions": 0,
+            "final_partial_cell_ns": 10002000,
+            "details": [],
+            "state_clock_not_extended": true,
+            "captured_outputs_unchanged": true,
+            "omission_not_recovered": true
+          },
+          "source_coverage": {
+            "passed": true,
+            "requested_s": 30.0,
+            "imu_samples": 3000,
+            "imu_span_s": 29.990002155303955,
+            "coverage_contract": "native_keyframes_cpk22",
+            "kimera_gap_bound_s": 5.1499999999999995,
+            "native_glim": {
+              "rows": 291,
+              "start_s": 1730565900.602335,
+              "end_s": 1730565929.603644,
+              "span_s": 29.001308917999268,
+              "maximum_pose_gap_s": 0.10086488723754883,
+              "post_startup_max_gap_s": 0.10086488723754883,
+              "start_after_first_imu_s": 0.7281408309936523,
+              "tail_behind_last_imu_s": 0.26055240631103516,
+              "path_length_m": 20.893196396614044,
+              "gaps_over_1s": [],
+              "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+            },
+            "native_kimera": {
+              "rows": 141,
+              "start_s": 1730565900.0726225,
+              "end_s": 1730565929.6723633,
+              "span_s": 29.599740743637085,
+              "maximum_pose_gap_s": 1.0999915599822998,
+              "post_startup_max_gap_s": 0.20000028610229492,
+              "start_after_first_imu_s": 0.19842839241027832,
+              "tail_behind_last_imu_s": 0.1918330192565918,
+              "path_length_m": 20.56740864419296,
+              "gaps_over_1s": [
+                {
+                  "before_index": 1,
+                  "after_index": 2,
+                  "start_s": 1730565900.2726207,
+                  "end_s": 1730565901.3726122,
+                  "gap_s": 1.0999915599822998
+                }
+              ],
+              "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+            },
+            "kimera_processing": {
+              "passed": true,
+              "logs": [
+                "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/full_off_source/estimators.log",
+                "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/full_off_source/ros_logs/d279bb62-cf14-11f1-9896-3a3fbcf68aff/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log",
+                "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/full_off_source/ros_logs/latest/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log"
+              ],
+              "frontend_processed": 298,
+              "synchronized_input_pairs_reference": 300,
+              "frontend_reference_after_startup": 297,
+              "backend_processed": 141,
+              "sequential_native_ids": true,
+              "gaps": [
+                {
+                  "before_id": 1,
+                  "after_id": 2,
+                  "gap_s": 1.0999915599822998,
+                  "wall_interval_s": 5.514137029647827,
+                  "frontend_counter_first": 4,
+                  "frontend_counter_last": 13,
+                  "backend_before_ms": 1.954,
+                  "backend_after_ms": 15.4122,
+                  "low_disparity_lines": 2
+                }
+              ],
+              "scope": "Native counters, not a new per-image receipt or branch-decision audit."
+            }
+          },
+          "transport": {
+            "imu": 3000,
+            "duplicate_imu": 0,
+            "imu_clock_lag_events": 2929,
+            "max_imu_clock_lag_ns": 2103582,
+            "belief_clock_lag_events": 0,
+            "max_belief_clock_lag_ns": 0,
+            "beliefs": 16046,
+            "duplicates": 0,
+            "published_poses": 295,
+            "max_queue": 23,
+            "sources": {
+              "glim_velodyne": 12896,
+              "kimera_front": 3150
+            }
+          },
+          "summary": {
+            "complete": true,
+            "model": "source_wnoa_fixed_lag",
+            "lag_seconds": 7,
+            "stationarity": "not_checked_incremental_policy",
+            "events": 19047,
+            "received": 16046,
+            "absorbed_revision_policy": "seal_at_absorption",
+            "expired": 0,
+            "expired_duplicate": 0,
+            "expired_stale": 0,
+            "duplicate": 0,
+            "stale": 0,
+            "inserted": 427,
+            "replaced": 15594,
+            "excluded": 25,
+            "unsupported_end": 0,
+            "absorbed": 326,
+            "active": 101,
+            "pending_at_end": 0,
+            "publications": 295,
+            "finalized": 295,
+            "retained_supports": 71,
+            "peak_slots": 175
+          },
+          "actions": {
+            "before_initialization": 25,
+            "insert": 427,
+            "replace": 15594
+          },
+          "expiry": {
+            "passed": true,
+            "policy": "seal_at_absorption",
+            "expired": {
+              "versions": 0,
+              "ids": 0,
+              "changes": {
+                "endpoint_age_s": {
+                  "n": 0
+                },
+                "since_absorption_s": {
+                  "n": 0
+                },
+                "version_jump": {
+                  "n": 0
+                },
+                "translation_change_m": {
+                  "n": 0
+                },
+                "rotation_change_rad": {
+                  "n": 0
+                },
+                "rotation_trace_ratio": {
+                  "n": 0
+                },
+                "translation_trace_ratio": {
+                  "n": 0
+                },
+                "full_covariance_relative_frobenius": {
+                  "n": 0
+                }
+              }
+            },
+            "by_source": {
+              "kimera_front": {
+                "received_versions": 3150,
+                "received_ids": 138,
+                "expired_fraction": 0.0,
+                "versions": 0,
+                "ids": 0,
+                "changes": {
+                  "endpoint_age_s": {
+                    "n": 0
+                  },
+                  "since_absorption_s": {
+                    "n": 0
+                  },
+                  "version_jump": {
+                    "n": 0
+                  },
+                  "translation_change_m": {
+                    "n": 0
+                  },
+                  "rotation_change_rad": {
+                    "n": 0
+                  },
+                  "rotation_trace_ratio": {
+                    "n": 0
+                  },
+                  "translation_trace_ratio": {
+                    "n": 0
+                  },
+                  "full_covariance_relative_frobenius": {
+                    "n": 0
+                  }
+                }
+              },
+              "glim_velodyne": {
+                "received_versions": 12896,
+                "received_ids": 290,
+                "expired_fraction": 0.0,
+                "versions": 0,
+                "ids": 0,
+                "changes": {
+                  "endpoint_age_s": {
+                    "n": 0
+                  },
+                  "since_absorption_s": {
+                    "n": 0
+                  },
+                  "version_jump": {
+                    "n": 0
+                  },
+                  "translation_change_m": {
+                    "n": 0
+                  },
+                  "rotation_change_rad": {
+                    "n": 0
+                  },
+                  "rotation_trace_ratio": {
+                    "n": 0
+                  },
+                  "translation_trace_ratio": {
+                    "n": 0
+                  },
+                  "full_covariance_relative_frobenius": {
+                    "n": 0
+                  }
+                }
+              }
+            },
+            "reference_rows_not_receipts": 0,
+            "caveat": "Changes vs last accepted belief, NOT GT errors or proof that omitted corrections are harmless."
+          },
+          "mean_log_roundtrip_error": 3.5203610859735335e-14,
+          "covariance_payload_error": 0.0,
+          "online_path_m": 21.934404151592517,
+          "finalized_path_m": 20.920937700130608,
+          "fused_span_s": 29.400000000000002,
+          "support_cycle_seconds": {
+            "n": 295,
+            "mean": 0.08629536040677965,
+            "median": 0.08246893599999999,
+            "p95": 0.13389669699999998,
+            "max": 0.19403998199999994
+          },
+          "receipt_to_processing_seconds": {
+            "n": 19047,
+            "mean": 0.009779587768152466,
+            "median": 0.005617793,
+            "p95": 0.030453946000000003,
+            "max": 0.0783325
+          },
+          "monitor_output_age_s": {
+            "n": 89,
+            "mean": 0.036569243,
+            "median": 0.03,
+            "p95": 0.090001,
+            "max": 0.100001
+          },
+          "published_during_source": 295,
+          "max_monitor_queue": 4,
+          "protected_unchanged": 2770,
+          "claim": "live 0.2x bounded30.0-second SPX-3 capture; fixed-lag incremental without stationarity certificate"
+        },
+        "lifecycle": {
+          "passed": true,
+          "mode": "off",
+          "native_updates": 141,
+          "source_injections": {
+            "g2k_injected": 0,
+            "k2g_injected": 0
+          },
+          "planned_retirements": 0,
+          "prior_refresh_updates": 0,
+          "max_cache_error": 0,
+          "observed_total_cost_increases": 0,
+          "imu_factor_cost": {
+            "median": 287.70630638723804,
+            "max": 34468.060008522865,
+            "last": 717.3509030902666
+          },
+          "stationarity_certified": false,
+          "obsolete_FL4q_executed": false,
+          "candidate_sha256": "be637ad745f73bf12596d3bf06754f56ed7bcadfdb8b4792b94c4fcfee62aad9",
+          "note": "CP-K9 equation/lifecycle gate; cost increases are observational."
+        },
+        "local": {
+          "passed": true,
+          "mode": "off",
+          "sources": {
+            "glim": {
+              "ids": 290,
+              "versions": 12896,
+              "first": 290,
+              "revised": 12606,
+              "provider_queries": 290,
+              "local_joint_queries": 0
+            },
+            "kimera": {
+              "ids": 138,
+              "versions": 3150,
+              "first": 0,
+              "revised": 0,
+              "provider_queries": 0,
+              "local_joint_queries": 3150
+            }
+          },
+          "all_payloads_exact": true,
+          "revision_provenance": "per-version native_local row plus pinned/tested provider route; no separate repeated matrix dump",
+          "limits": "native explicit information at corrected charts; not independent/calibrated likelihood"
+        }
+      },
+      "capture": {
+        "seconds": 199.74415946006775,
+        "phase": "full",
+        "mode": "off"
+      },
+      "glim_timing": {
+        "whole": {
+          "scan_ms": {
+            "n": 290,
+            "median": 115.573892,
+            "p95": 380.608027,
+            "max": 490.196629
+          },
+          "main_ms": {
+            "n": 290,
+            "median": 13.097652499999999,
+            "p95": 30.870987,
+            "max": 38.933547
+          },
+          "post_callback_ms": {
+            "n": 290,
+            "median": 94.985387,
+            "p95": 358.741873,
+            "max": 457.569686
+          },
+          "scans_over_500ms": 0
+        },
+        "after5s": {
+          "scan_ms": {
+            "n": 248,
+            "median": 134.003126,
+            "p95": 385.004021,
+            "max": 490.196629
+          },
+          "main_ms": {
+            "n": 248,
+            "median": 13.8934555,
+            "p95": 32.284532,
+            "max": 38.933547
+          },
+          "post_callback_ms": {
+            "n": 248,
+            "median": 116.6964215,
+            "p95": 365.581434,
+            "max": 457.569686
+          },
+          "scans_over_500ms": 0
+        },
+        "last20s": {
+          "scan_ms": {
+            "n": 198,
+            "median": 142.85092600000002,
+            "p95": 386.666202,
+            "max": 490.196629
+          },
+          "main_ms": {
+            "n": 198,
+            "median": 15.014151,
+            "p95": 36.244868,
+            "max": 38.933547
+          },
+          "post_callback_ms": {
+            "n": 198,
+            "median": 122.42920000000001,
+            "p95": 365.581434,
+            "max": 457.569686
+          },
+          "scans_over_500ms": 0
+        }
+      },
+      "glim_internal_queue_max": 0,
+      "main_prepared_hits": 70748,
+      "main_sync_calls": 0,
+      "kimera_timing_after5s": {
+        "optimize_ms": {
+          "n": 124,
+          "median": 100.2615,
+          "p95": 122.469,
+          "max": 146.051
+        },
+        "smoother_ms": {
+          "n": 124,
+          "median": 24.2022,
+          "p95": 31.9905,
+          "max": 34.8721
+        },
+        "outgoing_ms": {
+          "n": 124,
+          "median": 77.74600000000001,
+          "p95": 91.3692,
+          "max": 111.967
+        },
+        "backend_ms": {
+          "n": 124,
+          "median": 100.729,
+          "p95": 123.162,
+          "max": 146.627
+        }
+      },
+      "source_coverage": {
+        "passed": true,
+        "requested_s": 30.0,
+        "imu_samples": 3000,
+        "imu_span_s": 29.990002155303955,
+        "coverage_contract": "native_keyframes_cpk22",
+        "kimera_gap_bound_s": 5.1499999999999995,
+        "native_glim": {
+          "rows": 291,
+          "start_s": 1730565900.602335,
+          "end_s": 1730565929.603644,
+          "span_s": 29.001308917999268,
+          "maximum_pose_gap_s": 0.10086488723754883,
+          "post_startup_max_gap_s": 0.10086488723754883,
+          "start_after_first_imu_s": 0.7281408309936523,
+          "tail_behind_last_imu_s": 0.26055240631103516,
+          "path_length_m": 20.893196396614044,
+          "gaps_over_1s": [],
+          "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+        },
+        "native_kimera": {
+          "rows": 141,
+          "start_s": 1730565900.0726225,
+          "end_s": 1730565929.6723633,
+          "span_s": 29.599740743637085,
+          "maximum_pose_gap_s": 1.0999915599822998,
+          "post_startup_max_gap_s": 0.20000028610229492,
+          "start_after_first_imu_s": 0.19842839241027832,
+          "tail_behind_last_imu_s": 0.1918330192565918,
+          "path_length_m": 20.56740864419296,
+          "gaps_over_1s": [
+            {
+              "before_index": 1,
+              "after_index": 2,
+              "start_s": 1730565900.2726207,
+              "end_s": 1730565901.3726122,
+              "gap_s": 1.0999915599822998
+            }
+          ],
+          "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+        },
+        "kimera_processing": {
+          "passed": true,
+          "logs": [
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/full_off_source/estimators.log",
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/full_off_source/ros_logs/d279bb62-cf14-11f1-9896-3a3fbcf68aff/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log",
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/full_off_source/ros_logs/latest/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log"
+          ],
+          "frontend_processed": 298,
+          "synchronized_input_pairs_reference": 300,
+          "frontend_reference_after_startup": 297,
+          "backend_processed": 141,
+          "sequential_native_ids": true,
+          "gaps": [
+            {
+              "before_id": 1,
+              "after_id": 2,
+              "gap_s": 1.0999915599822998,
+              "wall_interval_s": 5.514137029647827,
+              "frontend_counter_first": 4,
+              "frontend_counter_last": 13,
+              "backend_before_ms": 1.954,
+              "backend_after_ms": 15.4122,
+              "low_disparity_lines": 2
+            }
+          ],
+          "scope": "Native counters, not a new per-image receipt or branch-decision audit."
+        }
+      }
+    },
+    "on": {
+      "checks": {
+        "receiver": {
+          "passed": true,
+          "validation_contract": "finite_recording_eof_cpk24a",
+          "terminal_boundary": {
+            "passed": true,
+            "contract": "finite_recording_terminal_cell_only",
+            "original_zero_unsupported_gate_passed": true,
+            "excluded_versions": 0,
+            "final_partial_cell_ns": 10002000,
+            "details": [],
+            "state_clock_not_extended": true,
+            "captured_outputs_unchanged": true,
+            "omission_not_recovered": true
+          },
+          "source_coverage": {
+            "passed": true,
+            "requested_s": 30.0,
+            "imu_samples": 3000,
+            "imu_span_s": 29.990002155303955,
+            "coverage_contract": "native_keyframes_cpk22",
+            "kimera_gap_bound_s": 5.1499999999999995,
+            "native_glim": {
+              "rows": 291,
+              "start_s": 1730565900.602335,
+              "end_s": 1730565929.603644,
+              "span_s": 29.001308917999268,
+              "maximum_pose_gap_s": 0.10086488723754883,
+              "post_startup_max_gap_s": 0.10086488723754883,
+              "start_after_first_imu_s": 0.7281408309936523,
+              "tail_behind_last_imu_s": 0.26055240631103516,
+              "path_length_m": 20.912638021088284,
+              "gaps_over_1s": [],
+              "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+            },
+            "native_kimera": {
+              "rows": 141,
+              "start_s": 1730565900.0726225,
+              "end_s": 1730565929.6723633,
+              "span_s": 29.599740743637085,
+              "maximum_pose_gap_s": 1.0999915599822998,
+              "post_startup_max_gap_s": 0.20000028610229492,
+              "start_after_first_imu_s": 0.19842839241027832,
+              "tail_behind_last_imu_s": 0.1918330192565918,
+              "path_length_m": 20.489939868350177,
+              "gaps_over_1s": [
+                {
+                  "before_index": 1,
+                  "after_index": 2,
+                  "start_s": 1730565900.2726207,
+                  "end_s": 1730565901.3726122,
+                  "gap_s": 1.0999915599822998
+                }
+              ],
+              "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+            },
+            "kimera_processing": {
+              "passed": true,
+              "logs": [
+                "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/full_on_source/estimators.log",
+                "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/full_on_source/ros_logs/645681fa-cf15-11f1-874b-3a3fbcf68aff/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log",
+                "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/full_on_source/ros_logs/latest/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log"
+              ],
+              "frontend_processed": 298,
+              "synchronized_input_pairs_reference": 300,
+              "frontend_reference_after_startup": 297,
+              "backend_processed": 141,
+              "sequential_native_ids": true,
+              "gaps": [
+                {
+                  "before_id": 1,
+                  "after_id": 2,
+                  "gap_s": 1.0999915599822998,
+                  "wall_interval_s": 5.5182859897613525,
+                  "frontend_counter_first": 4,
+                  "frontend_counter_last": 13,
+                  "backend_before_ms": 1.89325,
+                  "backend_after_ms": 7.48621,
+                  "low_disparity_lines": 2
+                }
+              ],
+              "scope": "Native counters, not a new per-image receipt or branch-decision audit."
+            }
+          },
+          "transport": {
+            "imu": 3000,
+            "duplicate_imu": 0,
+            "imu_clock_lag_events": 2919,
+            "max_imu_clock_lag_ns": 2106682,
+            "belief_clock_lag_events": 0,
+            "max_belief_clock_lag_ns": 0,
+            "beliefs": 16046,
+            "duplicates": 0,
+            "published_poses": 295,
+            "max_queue": 18,
+            "sources": {
+              "glim_velodyne": 12896,
+              "kimera_front": 3150
+            }
+          },
+          "summary": {
+            "complete": true,
+            "model": "source_wnoa_fixed_lag",
+            "lag_seconds": 7,
+            "stationarity": "not_checked_incremental_policy",
+            "events": 19047,
+            "received": 16046,
+            "absorbed_revision_policy": "seal_at_absorption",
+            "expired": 0,
+            "expired_duplicate": 0,
+            "expired_stale": 0,
+            "duplicate": 0,
+            "stale": 0,
+            "inserted": 427,
+            "replaced": 15594,
+            "excluded": 25,
+            "unsupported_end": 0,
+            "absorbed": 326,
+            "active": 101,
+            "pending_at_end": 0,
+            "publications": 295,
+            "finalized": 295,
+            "retained_supports": 71,
+            "peak_slots": 175
+          },
+          "actions": {
+            "before_initialization": 25,
+            "insert": 427,
+            "replace": 15594
+          },
+          "expiry": {
+            "passed": true,
+            "policy": "seal_at_absorption",
+            "expired": {
+              "versions": 0,
+              "ids": 0,
+              "changes": {
+                "endpoint_age_s": {
+                  "n": 0
+                },
+                "since_absorption_s": {
+                  "n": 0
+                },
+                "version_jump": {
+                  "n": 0
+                },
+                "translation_change_m": {
+                  "n": 0
+                },
+                "rotation_change_rad": {
+                  "n": 0
+                },
+                "rotation_trace_ratio": {
+                  "n": 0
+                },
+                "translation_trace_ratio": {
+                  "n": 0
+                },
+                "full_covariance_relative_frobenius": {
+                  "n": 0
+                }
+              }
+            },
+            "by_source": {
+              "kimera_front": {
+                "received_versions": 3150,
+                "received_ids": 138,
+                "expired_fraction": 0.0,
+                "versions": 0,
+                "ids": 0,
+                "changes": {
+                  "endpoint_age_s": {
+                    "n": 0
+                  },
+                  "since_absorption_s": {
+                    "n": 0
+                  },
+                  "version_jump": {
+                    "n": 0
+                  },
+                  "translation_change_m": {
+                    "n": 0
+                  },
+                  "rotation_change_rad": {
+                    "n": 0
+                  },
+                  "rotation_trace_ratio": {
+                    "n": 0
+                  },
+                  "translation_trace_ratio": {
+                    "n": 0
+                  },
+                  "full_covariance_relative_frobenius": {
+                    "n": 0
+                  }
+                }
+              },
+              "glim_velodyne": {
+                "received_versions": 12896,
+                "received_ids": 290,
+                "expired_fraction": 0.0,
+                "versions": 0,
+                "ids": 0,
+                "changes": {
+                  "endpoint_age_s": {
+                    "n": 0
+                  },
+                  "since_absorption_s": {
+                    "n": 0
+                  },
+                  "version_jump": {
+                    "n": 0
+                  },
+                  "translation_change_m": {
+                    "n": 0
+                  },
+                  "rotation_change_rad": {
+                    "n": 0
+                  },
+                  "rotation_trace_ratio": {
+                    "n": 0
+                  },
+                  "translation_trace_ratio": {
+                    "n": 0
+                  },
+                  "full_covariance_relative_frobenius": {
+                    "n": 0
+                  }
+                }
+              }
+            },
+            "reference_rows_not_receipts": 0,
+            "caveat": "Changes vs last accepted belief, NOT GT errors or proof that omitted corrections are harmless."
+          },
+          "mean_log_roundtrip_error": 6.617970060851519e-15,
+          "covariance_payload_error": 0.0,
+          "online_path_m": 22.218259488358996,
+          "finalized_path_m": 20.948540332602185,
+          "fused_span_s": 29.400000000000002,
+          "support_cycle_seconds": {
+            "n": 295,
+            "mean": 0.08961148574915254,
+            "median": 0.084541293,
+            "p95": 0.15596309399999994,
+            "max": 0.18674519900000003
+          },
+          "receipt_to_processing_seconds": {
+            "n": 19047,
+            "mean": 0.011364476863915578,
+            "median": 0.006500535,
+            "p95": 0.035045901000000004,
+            "max": 0.09519313500000001
+          },
+          "monitor_output_age_s": {
+            "n": 89,
+            "mean": 0.04729818646067416,
+            "median": 0.051442941,
+            "p95": 0.092413365,
+            "max": 0.101861916
+          },
+          "published_during_source": 295,
+          "max_monitor_queue": 6,
+          "protected_unchanged": 2770,
+          "claim": "live 0.2x bounded30.0-second SPX-3 capture; fixed-lag incremental without stationarity certificate"
+        },
+        "lifecycle": {
+          "passed": true,
+          "mode": "on",
+          "native_updates": 141,
+          "source_injections": {
+            "g2k_injected": 136,
+            "k2g_injected": 138
+          },
+          "planned_retirements": 112,
+          "prior_refresh_updates": 112,
+          "max_cache_error": 1.2045979898913145e-10,
+          "observed_total_cost_increases": 0,
+          "imu_factor_cost": {
+            "median": 183.37056862289563,
+            "max": 6322.486328756493,
+            "last": 42.931990922428334
+          },
+          "stationarity_certified": false,
+          "obsolete_FL4q_executed": false,
+          "candidate_sha256": "be637ad745f73bf12596d3bf06754f56ed7bcadfdb8b4792b94c4fcfee62aad9",
+          "note": "CP-K9 equation/lifecycle gate; cost increases are observational."
+        },
+        "local": {
+          "passed": true,
+          "mode": "on",
+          "sources": {
+            "glim": {
+              "ids": 290,
+              "versions": 12896,
+              "first": 290,
+              "revised": 12606,
+              "provider_queries": 290,
+              "local_joint_queries": 0
+            },
+            "kimera": {
+              "ids": 138,
+              "versions": 3150,
+              "first": 0,
+              "revised": 0,
+              "provider_queries": 0,
+              "local_joint_queries": 3150
+            }
+          },
+          "all_payloads_exact": true,
+          "revision_provenance": "per-version native_local row plus pinned/tested provider route; no separate repeated matrix dump",
+          "limits": "native explicit information at corrected charts; not independent/calibrated likelihood"
+        }
+      },
+      "capture": {
+        "seconds": 199.00352215766907,
+        "phase": "full",
+        "mode": "on"
+      },
+      "glim_timing": {
+        "whole": {
+          "scan_ms": {
+            "n": 290,
+            "median": 112.2292825,
+            "p95": 402.535722,
+            "max": 1061.341944
+          },
+          "main_ms": {
+            "n": 290,
+            "median": 12.778466000000002,
+            "p95": 28.0456,
+            "max": 37.562649
+          },
+          "post_callback_ms": {
+            "n": 290,
+            "median": 93.12439950000001,
+            "p95": 354.095789,
+            "max": 452.916959
+          },
+          "scans_over_500ms": 6
+        },
+        "after5s": {
+          "scan_ms": {
+            "n": 248,
+            "median": 131.964237,
+            "p95": 423.175938,
+            "max": 1061.341944
+          },
+          "main_ms": {
+            "n": 248,
+            "median": 13.6297785,
+            "p95": 29.082308,
+            "max": 37.562649
+          },
+          "post_callback_ms": {
+            "n": 248,
+            "median": 118.0998845,
+            "p95": 356.541834,
+            "max": 452.916959
+          },
+          "scans_over_500ms": 6
+        },
+        "last20s": {
+          "scan_ms": {
+            "n": 198,
+            "median": 138.5288505,
+            "p95": 425.867795,
+            "max": 1061.341944
+          },
+          "main_ms": {
+            "n": 198,
+            "median": 14.148202,
+            "p95": 30.765734,
+            "max": 37.562649
+          },
+          "post_callback_ms": {
+            "n": 198,
+            "median": 120.0408425,
+            "p95": 366.619224,
+            "max": 452.916959
+          },
+          "scans_over_500ms": 5
+        }
+      },
+      "glim_internal_queue_max": 1,
+      "main_prepared_hits": 58240,
+      "main_sync_calls": 0,
+      "kimera_timing_after5s": {
+        "optimize_ms": {
+          "n": 124,
+          "median": 98.62809999999999,
+          "p95": 118.479,
+          "max": 144.009
+        },
+        "smoother_ms": {
+          "n": 124,
+          "median": 22.4984,
+          "p95": 37.9708,
+          "max": 69.5986
+        },
+        "outgoing_ms": {
+          "n": 124,
+          "median": 71.3502,
+          "p95": 91.1082,
+          "max": 101.9
+        },
+        "backend_ms": {
+          "n": 124,
+          "median": 99.36005,
+          "p95": 120.905,
+          "max": 144.662
+        }
+      },
+      "source_coverage": {
+        "passed": true,
+        "requested_s": 30.0,
+        "imu_samples": 3000,
+        "imu_span_s": 29.990002155303955,
+        "coverage_contract": "native_keyframes_cpk22",
+        "kimera_gap_bound_s": 5.1499999999999995,
+        "native_glim": {
+          "rows": 291,
+          "start_s": 1730565900.602335,
+          "end_s": 1730565929.603644,
+          "span_s": 29.001308917999268,
+          "maximum_pose_gap_s": 0.10086488723754883,
+          "post_startup_max_gap_s": 0.10086488723754883,
+          "start_after_first_imu_s": 0.7281408309936523,
+          "tail_behind_last_imu_s": 0.26055240631103516,
+          "path_length_m": 20.912638021088284,
+          "gaps_over_1s": [],
+          "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+        },
+        "native_kimera": {
+          "rows": 141,
+          "start_s": 1730565900.0726225,
+          "end_s": 1730565929.6723633,
+          "span_s": 29.599740743637085,
+          "maximum_pose_gap_s": 1.0999915599822998,
+          "post_startup_max_gap_s": 0.20000028610229492,
+          "start_after_first_imu_s": 0.19842839241027832,
+          "tail_behind_last_imu_s": 0.1918330192565918,
+          "path_length_m": 20.489939868350177,
+          "gaps_over_1s": [
+            {
+              "before_index": 1,
+              "after_index": 2,
+              "start_s": 1730565900.2726207,
+              "end_s": 1730565901.3726122,
+              "gap_s": 1.0999915599822998
+            }
+          ],
+          "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+        },
+        "kimera_processing": {
+          "passed": true,
+          "logs": [
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/full_on_source/estimators.log",
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/full_on_source/ros_logs/645681fa-cf15-11f1-874b-3a3fbcf68aff/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log",
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/full_on_source/ros_logs/latest/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log"
+          ],
+          "frontend_processed": 298,
+          "synchronized_input_pairs_reference": 300,
+          "frontend_reference_after_startup": 297,
+          "backend_processed": 141,
+          "sequential_native_ids": true,
+          "gaps": [
+            {
+              "before_id": 1,
+              "after_id": 2,
+              "gap_s": 1.0999915599822998,
+              "wall_interval_s": 5.5182859897613525,
+              "frontend_counter_first": 4,
+              "frontend_counter_last": 13,
+              "backend_before_ms": 1.89325,
+              "backend_after_ms": 7.48621,
+              "low_disparity_lines": 2
+            }
+          ],
+          "scope": "Native counters, not a new per-image receipt or branch-decision audit."
+        }
+      }
+    }
+  },
+  "evaluation": {
+    "reference": {
+      "path": "/workspace/cbs_gtsam4.3/src/datasets/GrandTour/SPX-3/2024-11-02-17-43-10_cpt7_ie_tc.bag",
+      "sha256": "563ad3681eb40ed85bb682926ea1bdafb86b038dfffa7e6413cc4e32b8fb75aa",
+      "topic": "/boxi/inertial_explorer/tc/odometry",
+      "frame_ids": [
+        "enu_origin"
+      ],
+      "child_frame_ids": [
+        "cpt7_imu"
+      ],
+      "caveat": "IE-TC GNSS/INS reference shares CPT7 IMU; not independent prism GT"
+    },
+    "common_mask": {
+      "rows": 273,
+      "start_s": 1730565901.3999994,
+      "end_s": 1730565929.4999726,
+      "coverage": {
+        "grid_queries": 289,
+        "excluded_queries": 16,
+        "envelope_s": 28.09997320175171,
+        "covered_contiguous_duration_s": 27.099974155426025,
+        "segments": [
+          {
+            "start_s": 1730565901.3999994,
+            "end_s": 1730565901.4999993,
+            "rows": 2
+          },
+          {
+            "start_s": 1730565902.4999983,
+            "end_s": 1730565929.4999726,
+            "rows": 271
+          }
+        ],
+        "maximum_query_gap_s": 0.9999990463256836
+      },
+      "timestamps_sha256": "6d60929b57bdf29b1964e831026c4db2f76006982ac5711528db77465d9820e6",
+      "interpolation_gap_estimate_s": 0.5,
+      "interpolation_gap_reference_s": 0.05
+    },
+    "path_length_caveat": "Polyline through actual saved or supported queried positions; includes chords across missing intervals, not dense coverage.",
+    "convention": "Per-path rigid SE(3) no-scale alignment for ATE at prism lever arm; 1s RPE in prism frame, no global alignment",
+    "results": {
+      "off_native_glim": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/full_off_source/odom_imu.txt",
+        "sha256": "1f37a19bf1362a1a0906626ec9593e82504469f6aa3536296edd86fc64aae821",
+        "full_saved_rows": 291,
+        "full_saved_span_s": 29.001308917999268,
+        "full_saved_path_length_CPT7_m": 20.893196396614044,
+        "full_saved": {
+          "rows": 291,
+          "start_s": 1730565900.602335,
+          "end_s": 1730565929.603644,
+          "span_s": 29.001308917999268,
+          "ATE_RMSE_m": 0.06779480003962988,
+          "translation_RPE_1s_RMSE_m": 0.04772010490062206,
+          "rotation_RPE_1s_RMSE_deg": 0.8023995965309189,
+          "path_length_prism_m": 21.197399496446273,
+          "reference_path_length_prism_m": 21.1796619031388,
+          "rpe_pairs": 279,
+          "error_m": {
+            "n": 291,
+            "mean": 0.061366496331095255,
+            "median": 0.05584396171654047,
+            "p95": 0.11452391139167717,
+            "max": 0.14640839080239662
+          }
+        },
+        "common": {
+          "rows": 273,
+          "start_s": 1730565901.3999994,
+          "end_s": 1730565929.4999726,
+          "ATE_RMSE_m": 0.0673595076701485,
+          "translation_RPE_1s_RMSE_m": 0.04887419193733827,
+          "rotation_RPE_1s_RMSE_deg": 0.8250908209953015,
+          "path_length_prism_m": 21.115292986713516,
+          "reference_path_length_prism_m": 21.09282535721014,
+          "error_m": {
+            "n": 273,
+            "mean": 0.060853935557238774,
+            "median": 0.05412385492929282,
+            "p95": 0.11507018422871096,
+            "max": 0.142986631044824
+          },
+          "rpe_pairs": 261
+        }
+      },
+      "off_native_kimera": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/full_off_source/kimera_odometry.csv",
+        "sha256": "1c7e37a40fa94cde2edf8bab2e1f718a7c92b976fd5af83d13a918d81d1102e0",
+        "full_saved_rows": 141,
+        "full_saved_span_s": 29.599740743637085,
+        "full_saved_path_length_CPT7_m": 20.56740864419296,
+        "full_saved": {
+          "rows": 141,
+          "start_s": 1730565900.0726225,
+          "end_s": 1730565929.6723633,
+          "span_s": 29.599740743637085,
+          "ATE_RMSE_m": 0.09604476733718839,
+          "translation_RPE_1s_RMSE_m": 0.03461507635662898,
+          "rotation_RPE_1s_RMSE_deg": 0.4776119021511562,
+          "path_length_prism_m": 20.837607836830674,
+          "reference_path_length_prism_m": 21.198559957051863,
+          "rpe_pairs": 262,
+          "error_m": {
+            "n": 141,
+            "mean": 0.08732324674612987,
+            "median": 0.08948494605601717,
+            "p95": 0.16330989151825998,
+            "max": 0.16961455498509406
+          }
+        },
+        "common": {
+          "rows": 273,
+          "start_s": 1730565901.3999994,
+          "end_s": 1730565929.4999726,
+          "ATE_RMSE_m": 0.09389807389494274,
+          "translation_RPE_1s_RMSE_m": 0.034680973082719266,
+          "rotation_RPE_1s_RMSE_deg": 0.478257976564101,
+          "path_length_prism_m": 20.679919899628885,
+          "reference_path_length_prism_m": 21.09282535721014,
+          "error_m": {
+            "n": 273,
+            "mean": 0.08505154963882322,
+            "median": 0.08829690103150897,
+            "p95": 0.1644467366305859,
+            "max": 0.17514777834085937
+          },
+          "rpe_pairs": 261
+        }
+      },
+      "off_fused_online": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/full_off_receiver/receiver/online_trajectory.tum",
+        "sha256": "f0f725e6c326dc6d93bfb6eea85d19daab0bb51552b41e31e0c5ae7d9cf4de7b",
+        "full_saved_rows": 295,
+        "full_saved_span_s": 29.399999856948853,
+        "full_saved_path_length_CPT7_m": 21.934404151592517,
+        "full_saved": {
+          "rows": 295,
+          "start_s": 1730565900.454194,
+          "end_s": 1730565929.854194,
+          "span_s": 29.399999856948853,
+          "ATE_RMSE_m": 0.06492215300335281,
+          "translation_RPE_1s_RMSE_m": 0.04115953563865732,
+          "rotation_RPE_1s_RMSE_deg": 1.2697937857902508,
+          "path_length_prism_m": 22.569591062524246,
+          "reference_path_length_prism_m": 21.363964917272853,
+          "rpe_pairs": 283,
+          "error_m": {
+            "n": 295,
+            "mean": 0.06097238714641009,
+            "median": 0.06128782808102863,
+            "p95": 0.0982457966993158,
+            "max": 0.13001835146815655
+          }
+        },
+        "common": {
+          "rows": 273,
+          "start_s": 1730565901.3999994,
+          "end_s": 1730565929.4999726,
+          "ATE_RMSE_m": 0.06022984231528492,
+          "translation_RPE_1s_RMSE_m": 0.042564406407178686,
+          "rotation_RPE_1s_RMSE_deg": 1.3124759569608377,
+          "path_length_prism_m": 21.32487721131276,
+          "reference_path_length_prism_m": 21.09282535721014,
+          "error_m": {
+            "n": 273,
+            "mean": 0.056203864572614615,
+            "median": 0.052869460182224985,
+            "p95": 0.09783331391813219,
+            "max": 0.11273519999864709
+          },
+          "rpe_pairs": 261
+        }
+      },
+      "off_fused_finalized": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/full_off_receiver/receiver/finalized_trajectory.tum",
+        "sha256": "5b17ce23d3498ca4d64ac468378bcfb0447cdb2913bb9c8de2741321534d3417",
+        "full_saved_rows": 295,
+        "full_saved_span_s": 29.399999856948853,
+        "full_saved_path_length_CPT7_m": 20.920937700130608,
+        "full_saved": {
+          "rows": 295,
+          "start_s": 1730565900.454194,
+          "end_s": 1730565929.854194,
+          "span_s": 29.399999856948853,
+          "ATE_RMSE_m": 0.06489919294551363,
+          "translation_RPE_1s_RMSE_m": 0.025557989878539362,
+          "rotation_RPE_1s_RMSE_deg": 0.42958962245161464,
+          "path_length_prism_m": 21.238856094002198,
+          "reference_path_length_prism_m": 21.363964917272853,
+          "rpe_pairs": 283,
+          "error_m": {
+            "n": 295,
+            "mean": 0.06355495517316269,
+            "median": 0.061533742718878334,
+            "p95": 0.0855767621466802,
+            "max": 0.09085919085104029
+          }
+        },
+        "common": {
+          "rows": 273,
+          "start_s": 1730565901.3999994,
+          "end_s": 1730565929.4999726,
+          "ATE_RMSE_m": 0.06297893427493453,
+          "translation_RPE_1s_RMSE_m": 0.026171945746522676,
+          "rotation_RPE_1s_RMSE_deg": 0.44184511534408016,
+          "path_length_prism_m": 20.967006843277442,
+          "reference_path_length_prism_m": 21.09282535721014,
+          "error_m": {
+            "n": 273,
+            "mean": 0.06117495925170285,
+            "median": 0.059699358043979925,
+            "p95": 0.08628744239725185,
+            "max": 0.10088417696110022
+          },
+          "rpe_pairs": 261
+        }
+      },
+      "on_native_glim": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/full_on_source/odom_imu.txt",
+        "sha256": "5e1e6010ea2182975e8fe89db4061d080b8d291702d2b9292feaeaaeb20fabec",
+        "full_saved_rows": 291,
+        "full_saved_span_s": 29.001308917999268,
+        "full_saved_path_length_CPT7_m": 20.912638021088284,
+        "full_saved": {
+          "rows": 291,
+          "start_s": 1730565900.602335,
+          "end_s": 1730565929.603644,
+          "span_s": 29.001308917999268,
+          "ATE_RMSE_m": 0.05535630941158329,
+          "translation_RPE_1s_RMSE_m": 0.03811899283226515,
+          "rotation_RPE_1s_RMSE_deg": 0.4216602991836598,
+          "path_length_prism_m": 21.205798711586272,
+          "reference_path_length_prism_m": 21.1796619031388,
+          "rpe_pairs": 279,
+          "error_m": {
+            "n": 291,
+            "mean": 0.05268842444241708,
+            "median": 0.05124990379044741,
+            "p95": 0.08825003594527535,
+            "max": 0.09849051391289941
+          }
+        },
+        "common": {
+          "rows": 273,
+          "start_s": 1730565901.3999994,
+          "end_s": 1730565929.4999726,
+          "ATE_RMSE_m": 0.05454153287863741,
+          "translation_RPE_1s_RMSE_m": 0.03898507157263709,
+          "rotation_RPE_1s_RMSE_deg": 0.4299240010519066,
+          "path_length_prism_m": 21.11663488613405,
+          "reference_path_length_prism_m": 21.09282535721014,
+          "error_m": {
+            "n": 273,
+            "mean": 0.05170863218950786,
+            "median": 0.049847962797551285,
+            "p95": 0.08546574671470572,
+            "max": 0.09496022081376801
+          },
+          "rpe_pairs": 261
+        }
+      },
+      "on_native_kimera": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/full_on_source/kimera_odometry.csv",
+        "sha256": "c1ec411e5090c55584a7be79c6d4b090fbea8ce044d7249ea86720f190d1f991",
+        "full_saved_rows": 141,
+        "full_saved_span_s": 29.599740743637085,
+        "full_saved_path_length_CPT7_m": 20.489939868350177,
+        "full_saved": {
+          "rows": 141,
+          "start_s": 1730565900.0726225,
+          "end_s": 1730565929.6723633,
+          "span_s": 29.599740743637085,
+          "ATE_RMSE_m": 0.17551852921342212,
+          "translation_RPE_1s_RMSE_m": 0.07513378417865688,
+          "rotation_RPE_1s_RMSE_deg": 0.5758967441588334,
+          "path_length_prism_m": 20.7563400768072,
+          "reference_path_length_prism_m": 21.198559957051863,
+          "rpe_pairs": 262,
+          "error_m": {
+            "n": 141,
+            "mean": 0.1645399315668096,
+            "median": 0.15891670136695557,
+            "p95": 0.28720109478942624,
+            "max": 0.3286377726139665
+          }
+        },
+        "common": {
+          "rows": 273,
+          "start_s": 1730565901.3999994,
+          "end_s": 1730565929.4999726,
+          "ATE_RMSE_m": 0.17507634579109826,
+          "translation_RPE_1s_RMSE_m": 0.07527742544819607,
+          "rotation_RPE_1s_RMSE_deg": 0.5767730625475785,
+          "path_length_prism_m": 20.60671011479265,
+          "reference_path_length_prism_m": 21.09282535721014,
+          "error_m": {
+            "n": 273,
+            "mean": 0.16408960316094506,
+            "median": 0.15449817426254533,
+            "p95": 0.2845864768151637,
+            "max": 0.3275237819448267
+          },
+          "rpe_pairs": 261
+        }
+      },
+      "on_fused_online": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/full_on_receiver/receiver/online_trajectory.tum",
+        "sha256": "0f418a7659480f38b1d310be7770c7be422b8319e4f9fbb58b0e4542ab327043",
+        "full_saved_rows": 295,
+        "full_saved_span_s": 29.399999856948853,
+        "full_saved_path_length_CPT7_m": 22.218259488358992,
+        "full_saved": {
+          "rows": 295,
+          "start_s": 1730565900.454194,
+          "end_s": 1730565929.854194,
+          "span_s": 29.399999856948853,
+          "ATE_RMSE_m": 0.08551031283675546,
+          "translation_RPE_1s_RMSE_m": 0.05768811611012165,
+          "rotation_RPE_1s_RMSE_deg": 1.2381790912075743,
+          "path_length_prism_m": 22.598194625822373,
+          "reference_path_length_prism_m": 21.363964917272853,
+          "rpe_pairs": 283,
+          "error_m": {
+            "n": 295,
+            "mean": 0.08022710711617115,
+            "median": 0.07916286767932301,
+            "p95": 0.13986533245039132,
+            "max": 0.19753134676755787
+          }
+        },
+        "common": {
+          "rows": 273,
+          "start_s": 1730565901.3999994,
+          "end_s": 1730565929.4999726,
+          "ATE_RMSE_m": 0.0829532038323634,
+          "translation_RPE_1s_RMSE_m": 0.05982590976221684,
+          "rotation_RPE_1s_RMSE_deg": 1.2801154164446018,
+          "path_length_prism_m": 21.448753822423974,
+          "reference_path_length_prism_m": 21.09282535721014,
+          "error_m": {
+            "n": 273,
+            "mean": 0.07758467381212125,
+            "median": 0.07205255634282644,
+            "p95": 0.13971035020005224,
+            "max": 0.18662149727849545
+          },
+          "rpe_pairs": 261
+        }
+      },
+      "on_fused_finalized": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/full_on_receiver/receiver/finalized_trajectory.tum",
+        "sha256": "bcbc1b7e8923e20a69421ad15e36d1b4db012630d78a4c560375b9c7890d81e2",
+        "full_saved_rows": 295,
+        "full_saved_span_s": 29.399999856948853,
+        "full_saved_path_length_CPT7_m": 20.948540332602185,
+        "full_saved": {
+          "rows": 295,
+          "start_s": 1730565900.454194,
+          "end_s": 1730565929.854194,
+          "span_s": 29.399999856948853,
+          "ATE_RMSE_m": 0.07107613859744455,
+          "translation_RPE_1s_RMSE_m": 0.03287448539439537,
+          "rotation_RPE_1s_RMSE_deg": 0.37179246730098386,
+          "path_length_prism_m": 21.254784201713683,
+          "reference_path_length_prism_m": 21.363964917272853,
+          "rpe_pairs": 283,
+          "error_m": {
+            "n": 295,
+            "mean": 0.06898003197272799,
+            "median": 0.065635247836044,
+            "p95": 0.09802818576862067,
+            "max": 0.11698976703859493
+          }
+        },
+        "common": {
+          "rows": 273,
+          "start_s": 1730565901.3999994,
+          "end_s": 1730565929.4999726,
+          "ATE_RMSE_m": 0.06938453240456684,
+          "translation_RPE_1s_RMSE_m": 0.033757236244595264,
+          "rotation_RPE_1s_RMSE_deg": 0.3826919679792065,
+          "path_length_prism_m": 20.962518489684552,
+          "reference_path_length_prism_m": 21.09282535721014,
+          "error_m": {
+            "n": 273,
+            "mean": 0.06679750800366833,
+            "median": 0.06315109465413897,
+            "p95": 0.10324252602755907,
+            "max": 0.11021133776073953
+          },
+          "rpe_pairs": 261
+        }
+      }
+    },
+    "covariance": {
+      "off": {
+        "kimera_front": {
+          "versions": 3150,
+          "stable_ids": 138,
+          "revised_ids": 137,
+          "rotation_trace_rad2": {
+            "n": 3150,
+            "mean": 5.999240359130475e-08,
+            "median": 5.535912506997387e-08,
+            "p95": 9.05120597839844e-08,
+            "max": 1.1538092271224543e-05
+          },
+          "translation_trace_m2": {
+            "n": 3150,
+            "mean": 9.661024986604287e-06,
+            "median": 6.042457726711012e-06,
+            "p95": 2.62713097553173e-05,
+            "max": 9.838898304685668e-05
+          },
+          "min_eigenvalue": 2.318969436987419e-09,
+          "max_eigenvalue": 7.995024091769693e-05,
+          "max_symmetry_error": 0.0,
+          "first_last_rotation_trace_ratio": {
+            "n": 137,
+            "mean": 0.6964119662253001,
+            "median": 0.7520426603644457,
+            "p95": 0.8502589762608064,
+            "max": 0.9707007083618518
+          },
+          "first_last_translation_trace_ratio": {
+            "n": 137,
+            "mean": 0.4687801407557914,
+            "median": 0.45477569667360745,
+            "p95": 0.8071843417489313,
+            "max": 1.231978835182793
+          }
+        },
+        "glim_velodyne": {
+          "versions": 12896,
+          "stable_ids": 290,
+          "revised_ids": 289,
+          "rotation_trace_rad2": {
+            "n": 12896,
+            "mean": 1.5250798440749408e-07,
+            "median": 1.230802487646389e-07,
+            "p95": 3.0702401403929635e-07,
+            "max": 5.06607918095419e-07
+          },
+          "translation_trace_m2": {
+            "n": 12896,
+            "mean": 4.139430074246645e-06,
+            "median": 3.9919213519579594e-06,
+            "p95": 5.399233496822035e-06,
+            "max": 1.3028714882958194e-05
+          },
+          "min_eigenvalue": 2.065647358589454e-09,
+          "max_eigenvalue": 6.310781027918381e-06,
+          "max_symmetry_error": 0.0,
+          "first_last_rotation_trace_ratio": {
+            "n": 289,
+            "mean": 0.7529654654605697,
+            "median": 0.7608731757790685,
+            "p95": 0.8179530763207938,
+            "max": 0.8527993260600587
+          },
+          "first_last_translation_trace_ratio": {
+            "n": 289,
+            "mean": 0.5120509903045438,
+            "median": 0.5180172684834073,
+            "p95": 0.557398370021589,
+            "max": 0.6237595089190695
+          }
+        }
+      },
+      "on": {
+        "kimera_front": {
+          "versions": 3150,
+          "stable_ids": 138,
+          "revised_ids": 137,
+          "rotation_trace_rad2": {
+            "n": 3150,
+            "mean": 6.284516746525896e-08,
+            "median": 5.9094369784754785e-08,
+            "p95": 8.860955428495883e-08,
+            "max": 1.1538092271224543e-05
+          },
+          "translation_trace_m2": {
+            "n": 3150,
+            "mean": 1.1277055999202865e-05,
+            "median": 7.876725569791942e-06,
+            "p95": 3.0246326028792933e-05,
+            "max": 8.843609882043743e-05
+          },
+          "min_eigenvalue": 2.3518947980227547e-09,
+          "max_eigenvalue": 7.231208689997373e-05,
+          "max_symmetry_error": 0.0,
+          "first_last_rotation_trace_ratio": {
+            "n": 137,
+            "mean": 0.6802707691475102,
+            "median": 0.7017603463902206,
+            "p95": 0.8669352500312287,
+            "max": 0.9515153460706067
+          },
+          "first_last_translation_trace_ratio": {
+            "n": 137,
+            "mean": 0.2552162737799899,
+            "median": 0.23948922204773782,
+            "p95": 0.45566432499433945,
+            "max": 0.6545683873531212
+          }
+        },
+        "glim_velodyne": {
+          "versions": 12896,
+          "stable_ids": 290,
+          "revised_ids": 289,
+          "rotation_trace_rad2": {
+            "n": 12896,
+            "mean": 1.5099842164867234e-07,
+            "median": 1.2239811590318403e-07,
+            "p95": 3.0758185053027676e-07,
+            "max": 5.267160167829793e-07
+          },
+          "translation_trace_m2": {
+            "n": 12896,
+            "mean": 4.116335529183992e-06,
+            "median": 3.978616540651842e-06,
+            "p95": 5.37333243593185e-06,
+            "max": 1.2726497626692924e-05
+          },
+          "min_eigenvalue": 1.6945252550439198e-09,
+          "max_eigenvalue": 6.217658060785754e-06,
+          "max_symmetry_error": 0.0,
+          "first_last_rotation_trace_ratio": {
+            "n": 289,
+            "mean": 0.7531566702693406,
+            "median": 0.7615816449666575,
+            "p95": 0.8183971553619986,
+            "max": 0.8619984244403036
+          },
+          "first_last_translation_trace_ratio": {
+            "n": 289,
+            "mean": 0.5120560431485145,
+            "median": 0.5180451094899547,
+            "p95": 0.5567812855542646,
+            "max": 0.6214756272066578
+          }
+        }
+      }
+    }
+  },
+  "protected_unchanged": 2770,
+  "identical_source_profiles": true,
+  "no_exhaustive_observer": true,
+  "no_saved_journal_repeat": true,
+  "limits": "One30s rear-Velodyne integration pair, not an exhaustive batching-preservation certificate; IE-TC shares CPT7; no nonlinear stationarity claim."
+}

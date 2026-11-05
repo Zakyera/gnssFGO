@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/home/yeranis/repos/gnssFGO/experiments/leica2_single_source_controls_cpv25_20261027/run.py", line 127, in <module>
+    try:main()
+  File "/home/yeranis/repos/gnssFGO/experiments/leica2_single_source_controls_cpv25_20261027/run.py", line 79, in main
+    pins=json.loads((H/'input_pins.json').read_text());verify(pins)
+  File "/home/yeranis/repos/gnssFGO/experiments/leica2_single_source_controls_cpv25_20261027/run.py", line 20, in verify
+    for p,digest in pins.items():assert sha(p)==digest,('input changed',p)
+  File "/home/yeranis/repos/gnssFGO/experiments/leica2_single_source_controls_cpv25_20261027/run.py", line 12, in sha
+    with Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+AttributeError: module 'hashlib' has no attribute 'file_digest'

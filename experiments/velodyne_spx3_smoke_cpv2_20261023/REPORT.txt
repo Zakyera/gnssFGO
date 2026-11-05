@@ -1,0 +1,66 @@
+CP-V2 — COMPLETED, 2026-10-23 22:14:41 local.
+Bounded SPX-3 rear Velodyne integration OFF/ON, user authorized Proceed.
+See PROTOCOL.txt. Parent Hesai experiments unchanged.
+
+Both 30-second captures and all four gates per mode passed. Original/native
+GLIM, original/native Kimera ROS odometry and ONLINE fusion ran concurrently.
+No terminal factor omissions. See RESULTS_REPORT.txt and results.json for the
+complete metrics, common-mask coverage, covariance/revision and timing evidence.
+
+FULL-SAVED OUTPUTS vs IE-TC (all saved poses, not a short prism-covered subset):
+Output                 OFF ATE(m) ON ATE(m) OFF path(m) ON path(m) span(s)
+Native GLIM Velodyne    0.067795   0.055356  21.197399   21.205799  29.001309
+Native Kimera          0.096045   0.175519  20.837608   20.756340  29.599741
+Fusion ONLINE          0.064922   0.085510  22.569591   22.598195  29.400000
+Fusion DELAYED final   0.064899   0.071076  21.238856   21.254784  29.400000
+
+Requested capture is 30 seconds; spans disclose native initialization/tail gaps.
+Kimera has one 1.10s startup pose gap, then maximum 0.20s gaps. The secondary
+common mask has 273 timestamps and 27.10s contiguous supported duration across
+a 28.10s envelope. It gives the same ATE direction. IE-TC shares CPT7 and is not
+independent prism GT. Existing no-scale rigid alignment and prism lever arm
+are unchanged. Path lengths above use that evaluated prism reference point.
+DELAYED means fixed-lag-finalized; it is neither ONLINE nor full-history.
+The existing mean-only source covariance alignment approximation is unchanged.
+
+Conclusion: Velodyne integration passes. In this short window CBS improves
+GLIM but worsens Kimera and ONLINE fusion ATE/translation RPE. This does not
+establish a full-sequence result or which source is universally healthier.
+No covariance scaling, health weighting, model tuning or estimator edit.
+
+Runtime/provenance: 300 raw clouds, 300 stereo pairs, 3000 CPT7 samples per mode;
+291 published GLIM scans, all IMU-bracketed after native startup. Normalized
+scan timestamp maximum difference 0.477 microseconds. All-LOCAL covariance
+provenance and source-to-receiver payload checks pass, maximum payload error0.
+ON received G2K136/K2G138 injections (OFF0/0). MAIN synchronous GPU calls0.
+Post-startup GLIM scan median/p95 OFF134/385ms, ON132/423ms; ON had six scans
+over500ms (max1061ms). Kimera backend median/p95 OFF101/123ms, ON99/121ms.
+Fusion support-cycle median/p95 OFF82/134ms, ON85/156ms. Queues drained.
+This validates the bounded0.20x integration, not0.5x capacity or nonlinear
+stationarity. No new deterministic receiver replay was claimed for this pair.
+
+Closeout passed: 2770 protected hashes unchanged, both originally-stopped
+containers restored stopped; finite controller exited, no failure/cleanup error.
+Hesai checkpoint reverified after completion: 667 saved files match originals.
+Trajectories, covariance/revision histories, payloads and timings are retained.
+Stop here for review; full SPX-3 needs fresh authorization and storage checks.
+
+Prepared exact30s physical window1730565899872888651..1730565929872888651ns,
+offset29,rate0.20x,port11480. Preflight300Velodyne/300stereopairs/3000IMU,
+signed point times finite,full staticTF63messages consistent<2.3e-13.
+New sensor/profile delta only T_lidar_imu,ROS point topic and LiDAR frame.
+Kimera profile/private binaries identical, receiver numerical settings identical.
+Actual prelaunch frozen manifest2770entries. Old Hesai artifacts immutable.
+Preparation-only flat-folder handling corrected before launch; see prelaunch_review.
+No estimator retry, rebuild, covariance/model tune or full sequence authorized.
+
+Finite controllerPID408471 completed OFF->four gates->ON->four gates->score->cleanup.
+Inspect status.json; do not launch duplicate work or rerun completed checks.
+Runtime guards retain8GiB launch/5GiB reserve; about9.3GiB free before launch.
+Output root:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared
+
+Controller finished 2026-10-23T22:14:41.572829+03:00: COMPLETED
+{"failure": null, "cleanup_error": null}
+Both modes and four gates each passed. See RESULTS_REPORT.txt/results.json for actual native/ONLINE/delayed metrics.
+No automatic retry. Scope-limited inhibitor releases when controller exits.

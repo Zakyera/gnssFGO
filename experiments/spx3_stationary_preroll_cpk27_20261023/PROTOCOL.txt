@@ -1,0 +1,54 @@
+CP-K27 — bounded SPX-3 stationary pre-roll test, 2026-10-23
+========================================================
+Authorization: "Ok fix it and try it in a small spx3 window. I guess this was
+the case also for eth1 and eig 2?"
+
+One hypothesis and one launch change: respect the existing stationary Kimera
+initializer by starting in earlier quiet recorded data, not at the moving
+bag32 crop. No estimator code, priors, covariance, calibration or physics edit.
+No GT input to either estimator or to source/receiver initialization.
+
+Fixed window chosen before capture: selected-topic epoch1730565870872888651ns,
+bag29.0..57.0 (28s), start1730565899872888651, end1730565927872888651ns.
+Raw front-left image differences and CPT7 gyro/acceleration corroborate quiet
+bag29..31 and movement before bag32. This is evidence for startup suitability,
+not an exact zero-velocity sensor certificate. The existing first-frame IMU
+initializer remains unchanged; it does not average the entire pre-roll.
+
+Fresh matched OFF then ON,0.20x,headless,port11477,25s drain. Same CP-K26
+private binaries and copied SPX-3 profiles; CP-K16 MAIN batching, CP-K9 Kimera,
+CP-I1/I3 all-LOCAL covariance every version, corrected MAIN relative means.
+Classic active_window_temporary source CBS, no source live_revision, Gaussian
+scales1. Receiver CP-K19 FL4e7s source_wnoa, independent100ms supports, no
+central IMU/GNSS, same Qc/priors, stable-ID replacement, seal_at_absorption.
+Existing source covariance mean-only time-alignment approximation unchanged.
+
+Native source completeness, LOCAL payload conservation, source lifecycle,
+receiver conservation/coverage/latency and existing finite-cell EOF gates
+remain. Window-specific counts become280 input stereo pairs,277..280 processed,
+>=260 GLIM poses/first beliefs,>=26s GLIM/fusion span. These are predeclared
+short-window versions of the same checks, not failure-driven relaxations.
+Stop on any capture/validation failure, no retry or launch of ON after failed
+OFF. Existing artifacts immutable, new exclusive roots. Restore both containers
+to their initially stopped state after owned processes exit. Scoped sleep
+inhibitors only; no persistent automation or host power-setting change.
+
+Evaluation: original/native GLIM, original/native Kimera ROS odometry, concurrent
+fusion ONLINE; DELAYED fixed-lag-finalized fusion separately. Full saved28s
+outputs versus available reference, disclose actual spans/gaps. Also compare
+old CP-K26 cold-start and new pre-roll paths on exactly shared bag32..57
+timestamps, no-scale ATE,1s t/rRPE,path length. Reference IE-TC shares CPT7,
+not independent prism ground truth. Never call the25s overlap the whole28s.
+
+Primary mechanism diagnostic: outgoing Kimera relative means and full LOCAL
+covariance versus reference on identical physical intervals in bag32..52,
+first publication and revisions at matched ages (5s recording tail permits
+maturation). IDs change with pre-roll: join physical timestamps, never IDs
+alone. Disclose unmatched intervals and accepted versus excluded receiver IDs.
+Do not substitute improved ATE for proof of calibrated uncertainty. Starting
+both sources earlier changes their causal history and CBS interactions; this
+does not isolate the sole contribution of the initial velocity prior.
+
+ETH1/EIG-2 same stationary initializer, but saved reference initial speeds zero;
+moving-start violation is not established there. Persist startup checks.
+No full rerun, other sequence, tuning, production promotion, commit or push.

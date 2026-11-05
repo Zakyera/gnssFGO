@@ -1,0 +1,257 @@
+CP-A2 / CP2 — EIG-2 actual aligned peer-factor covariance audit
+2026-10-19 | COMPLETE, SAVED DATA ONLY; NO FIX OR TUNING APPLIED
+=======================================================================
+
+1. Outcome in plain words
+------------------------
+There is no source-to-installed covariance substitution or accidental scale
+change in the585checked peer factors. The logs and actual construction path
+agree: each factor uses the received full LOCAL covariance, unchanged.
+
+But the MEAN is changed: each receiver shifts the incoming motion to its own
+pose timestamps using native IMU bridges. The covariance is not transformed
+along with it, and bridge uncertainty is not represented. This confirms the
+previously documented mean-only approximation in the NEW all-LOCAL capture;
+it is not a new regression caused by CP-I1/CP-I3 or the covariance reporting.
+
+That is an incomplete uncertainty model, not proof that it caused the EIG-2
+fusion degradation. Mean alignment is useful versus the wrong-time control.
+The logs do not directly retain the separate real L/R bridge transforms and
+their joint uncertainty. We therefore cannot quantify the omitted covariance,
+select a justified multiplier or claim that completing it improves trajectory
+accuracy. No optimizer, source run, covariance change or new sequence was run.
+
+2. Exact retained case / policy
+-------------------------------
+EIG-2 CP-R3 CBS-ON,60s bag window from5.7s,0.10x, all-LOCAL cached provider.
+Root:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eig2_local_cov60_on_cpr3_20261019/prepared
+
+Same temporary classic source CBS, no source-to-source live_revision; MAIN
+means plus LOCAL full6x6 covariance; Gaussian scale1,health/Huber disabled.
+Both sources retain their native IMU. The separate gnssFGO receiver has no
+central IMU factors, uses the frozen7s fixed-lag WNOA configuration and stable-ID
+revision replacement. The native source IMU bridges are NOT central IMU factors.
+
+This gate studies GLIM->Kimera and Kimera->GLIM factors, NOT the downstream
+gnssFGO factors. gnssFGO's source factors address the original source endpoint
+times through its continuous-time representation; do not transfer this peer
+mean-shift finding to that separate factor path without checking it.
+
+3. Chain-of-custody and actual installation
+------------------------------------------
+Inputs: source estimators.log and two ROS stdout logs; receiver events.csv and
+receipts.jsonl; source provenance/effective settings/candidate validation;
+completed-run marker and protected_manifest.json; CP-A1 EIG-2 results/reference.
+Reuse unchanged FL4z/FL4y parsing, SE3 geometry, reference and summary helpers.
+
+                                       GLIM->Kimera    Kimera->GLIM
+ Aligned candidate records                  292             293
+ Unique installed receiver edges            292             293
+ Validated factor-slot records              292             293
+ Exact full covariance matches              292             293
+ Source versions matched                    292             293
+ Source version at peer                     first           first
+ Independent frozen mean log                292             unavailable
+ Sampled independent pre-state/q checks       15               0
+
+All candidates in THIS capture have installed slot evidence. No queued-only
+candidate is silently scored as an installed factor. No ambiguous payload join,
+duplicate receiver edge, absent source version or dropped covariance dimension.
+GLIM stores the logged aligned mean in the constructed BetweenFactor, queues
+that same factor pointer, and validates its slot. Kimera additionally logs the
+frozen mean independently. K2G has no equivalent independent frozen-mean log;
+its check relies on the pinned construction path plus installed-slot evidence.
+Zero-initialized K2G frozen-mean/sample-check fields in results.json must not be
+read as independent numerical validations; verification.json marks availability.
+
+Maximum source-to-logged-raw transform matrix difference2.221e-16.
+Maximum installed covariance difference0 in both directions.
+Kimera independent frozen mean difference0.
+15sampled Kimera pre-update states reproduce the logged normalized squared
+residual within1.514e-11 relative; Sigma times logged information differs from
+identity by at most1.387e-14. This establishes the actual matrix entering the
+factor's residual weighting, not the source's physical statistical calibration.
+
+All logged source/receiver endpoints precede their causal bridge limit.
+GLIM->Kimera source timestamp representation differs from the raw export by
+at most168ns (double-second round trip); K2G logged export comparison0ns.
+Re-scoring G2K at exact export timestamps changes translation RMS by less than
+.000001mm and rotation RMS by less than.000001deg; not the observed issue.
+
+Receiver endpoint coverage: G2K58.399483s, K2G58.599332s inside this60s capture.
+Every installed factor is included. This is not a partial-prism11s selection.
+Shared-CPT7 IE-TC /boxi/inertial_explorer/tc/odometry covers all endpoints;
+maximum reference interpolation bracket5ms, CPT7 body, [phi,rho] right-local.
+No global ATE alignment or prism lever arm in this relative-motion test.
+
+4. Time alignment and error against the SAME receiver intervals
+--------------------------------------------------------------
+Median receiver endpoint minus source endpoint:
+ G2K start/end -16.457/-16.456ms.
+ K2G start/end -83.457/-83.439ms; some intervals instead shift about+16ms.
+These are endpoint offsets, NOT computation/arrival latency.
+
+Mean alignment changes the relative transform materially:
+                      median change          p95 change
+ G2K                  2.674mm / .19824deg     6.433mm / .58708deg
+ K2G                 13.555mm / .75414deg    28.876mm /2.88277deg
+These are changes of mean, not bridge error or an uncertainty estimate.
+
+RMS relative discrepancies against IE-TC, rho mm / rotation degrees:
+ Direction  Raw at SOURCE interval  Raw at RECEIVER interval  Actual aligned
+ G2K            10.099 / .32912          10.594 / .42839       10.140 / .33792
+ K2G             7.440 / .36174          16.030 /1.21337       10.956 / .37638
+
+The middle column is a wrong-time negative control computed from saved means,
+not a new estimator or a recommendation to disable alignment. Comparing that
+column with actual aligned uses identical receiver intervals and shows that
+alignment improves RMS in both directions. It improves per-edge translation
+on53.4%G2K/72.7%K2G and rotation on71.9%/94.5%; it need not improve every edge.
+
+The source-interval column describes a DIFFERENT physical interval. Its error
+cannot be subtracted from the aligned error to estimate bridge uncertainty.
+In particular K2G7.440->10.956mm alone is not evidence that disabling alignment
+would help; the fair unaligned-at-receiver control is16.030mm.
+
+Installed uncertainty remains EXACTLY the source uncertainty:
+ Direction  median sqrt(trace Sigma_rho)   median sqrt(trace Sigma_phi)
+ G2K                 1.584mm                         .005321deg
+ K2G                 1.368mm                         .010800deg
+sqrt(trace) is a norm uncertainty scale, not per-axis sigma or a95%radius.
+
+Actual aligned normalized reference discrepancy (full matrices, not trace
+substitution): median q_phi/q_rho/q6 is3761.37/70.34/4789.89 for G2K and
+1061.16/125.79/1591.45 for K2G. Nominal95%3D translation ellipsoid fractions
+inside are3.42%/1.71%; joint6D fractions0%/0%. These remain descriptive, NOT
+innovation NIS/true NEES: reference uncertainty and shared CPT7 correlation
+are unknown, overlapping relative edges are not independent samples.
+
+5. Exact code path and why this is not a reporting-only discrepancy
+------------------------------------------------------------------
+W=/home/yeranis/repos/V4RL/cbs_gtsam4.3
+
+K2G actual CP-I1 bridge, pinned source hash matches the completed run manifest:
+ W/runs/local_revision_covariance_cpi1_20261019/cbs_bridge.cpp
+ GlimCbsBridge::buildExternalFactor():
+ 2546-2548: load covariance and raw mean separately.
+ 2557-2571: causal, received-native-IMU bridge from active pre-update anchor.
+ 2575-2578: measured = left.compose(raw).compose(right).
+ 2579-2587: log the new mean and the unchanged covariance.
+ 2696: source scale (verified1); no enabled health/NIS inflation.
+ 2724-2727: Gaussian::Covariance(covariance), BetweenFactor with measured.
+ appendActiveWindowTemporaryFactor(),3149-3217: queues that factor, preserves
+ its mean/covariance and source identity, then records installed/slot tracking.
+
+G2K actual FL4q backend, pinned source hash matches the completed run manifest:
+ W/runs/fixed_lag_current_chart_fl4q_20261016/VioBackend.cpp
+ 2901-2904: load mean/covariance.
+ 2913-2929: native bridge using one pre-update state anchor, velocity and bias.
+ 2934-2938: replace ONLY the measured mean with left*raw*right.
+ 2939-2949: alignment record;2966-2971 independent frozen mean/covariance.
+ Installed BPSAM factor matrices and sampled information logs confirm that
+ covariance survives unchanged through receiver frame/scale/registration.
+
+Both native bridge interfaces explicitly describe themselves as nominal-only:
+ W/src/glim_ros1/include/glim_ros/cbs_native_imu_mean_bridge.hpp
+ W/src/Kimera-VIO/include/kimera-vio/imu-frontend/CbsNativeImuMeanBridge.h
+They delegate prediction to their native IMU machinery, return Pose3, and do
+not return a covariance for the composed measurement. The GLIM header is pinned
+in the run manifest. Kimera header/current bpsam.cpp were inspected and hashed
+but are not individually pinned there; authoritative covariance evidence is the
+pinned VioBackend and the retained actual factor matrices/information/slots.
+
+Thus the installed factors really use this mean-only approximation. This is
+not the former first-LOCAL/revision-MAIN reporting confusion, nor an arbitrary
+covariance switch during optimization. Repeated nonlinear linearization may
+change Jacobians/residuals; that is distinct from changing the noise matrix.
+
+6. Mathematical covariance contract
+-----------------------------------
+Let a source right-local uncertainty be Z'=Z Exp(delta_z), and the mean map be
+ A=L Z R. With L and R treated as exact constants:
+ A'=L Z Exp(delta_z) R = A Exp(Ad_(R^-1) delta_z).
+Therefore even the deterministic transport should in general be:
+ Sigma_A = J_Z Sigma_Z J_Z^T, J_Z=Ad_(R^-1).
+Simply copying Sigma_Z is exact only in special invariant/identity cases. Left
+multiplication cancels for right-local source perturbations; a large change of
+the mean alone cannot quantify the necessary J_Z correction.
+
+If L and R also have right-local perturbations, the first-order Jacobians are:
+ J_L=Ad_((Z R)^-1), J_Z=Ad_(R^-1), J_R=I.
+For the joint18D covariance of [delta_L,delta_Z,delta_R]:
+ Sigma_A = [J_L J_Z J_R] Sigma_joint [J_L J_Z J_R]^T.
+Only if the corresponding cross terms are explicitly assumed zero does this
+reduce to the familiar sum of three propagated marginal contributions.
+
+Here the bridges use receiver states/biases and shared native IMU. Independence
+is not established: left/right/source errors can be correlated. Adding arbitrary
+bridge variances while dropping all cross terms is not automatically exact or
+conservative. Transport can change covariance orientation/cross terms without
+uniformly inflating its trace. This is not a justification for scalar scaling.
+
+The current path performs neither J_Z transport nor a declared propagated
+bridge covariance. It is a deliberate mean-only approximation, not the old
+Stage4 aligned-covariance machinery from the separate EKF experiments.
+All-LOCAL provenance and complete temporal covariance propagation are different
+requirements; passing the former does not establish the latter.
+
+7. Validation and evidence limits
+---------------------------------
+New audit numerical checks passed:
+ - full real6x6 inverse vs Cholesky, worst relative difference3.103e-15;
+ - raw and aligned residuals reconstruct the same receiver-interval reference;
+ - all585first-version joins, installed slot sets, SPD matrices and hashes;
+ -30synthetic nonidentity SE3 compositions, analytic right-local Jacobians vs
+   central finite differences: maximum absolute difference1.111e-10;
+ - propagation with dense correlated18D synthetic covariance retains cross
+   terms and SPD; identity-right-bridge special case verified.
+
+Synthetic calculations validate the derivation only, not a fix in either
+estimator. No GTSAM build, estimator unit suite or trajectory rerun was performed.
+21hashed input/helper/source files remained unchanged; includes pinned manifest
+checks for both actual compiled call sites. Source/dataset artifacts preserved.
+
+The direct alignment logs contain raw Z, aligned A, Sigma and timestamps, but
+not separate actual L and R nor their joint covariance/anchor Jacobians. A=LZR
+does not uniquely identify L and R. We did not substitute GT bridges or rebuild
+native integration to invent those missing quantities. Cannot quantify the
+actual J_Z covariance change, omitted process/state uncertainty or cross terms
+from these records alone. No new logging capture is implicitly authorized.
+
+This gate makes no causal claim about how much of the fused ATE comes from
+this approximation, source mean error, reference error, correlations, or WNOA/
+marginal-prior competition. Do not infer optimizer influence from trace alone.
+
+8. Decision / bounded next step
+-------------------------------
+Transport and actual installed-noise provenance: PASS for585EIG-2 peer factors.
+Complete aligned-uncertainty contract: NOT CERTIFIED; known missing propagation.
+Attribution of accuracy loss or benefit of a covariance repair: NOT ESTABLISHED.
+
+Do not tune covariance to absorb this structural approximation. If authorized,
+the next engineering proposal should separate two questions:
+ (a) deterministic J_Z transport, testable without fitting any parameter;
+ (b) bridge uncertainty/correlation model, requiring an explicit approximation
+     and sufficient telemetry, not a blind positive variance addition.
+Keep the existing baseline untouched; first quantify the real deterministic
+transport from actual recorded L/R in an isolated diagnostic before claiming it
+matters. A small diagnostic would require separate authorization. Do not launch
+another60s/other-sequence experiment or promise accuracy improvement now.
+CP3 receiver information competition remains a separate unexecuted gate.
+
+9. Files / reproducibility
+--------------------------
+experiments/aligned_peer_covariance_cpa2_20261019/:
+ PROTOCOL.txt, analyze.py, verify.py, summary.json, verification.json, REPORT.txt.
+ results.json retains every installed factor, source identity, means/covariance,
+ receiver/source endpoints, error and input hash; ignored by Git, saved locally.
+
+Commands executed (analysis only):
+ /home/yeranis/.local/share/pipx/venvs/evo/bin/python analyze.py
+ /home/yeranis/.local/share/pipx/venvs/evo/bin/python verify.py
+Both refuse output overwrite. Existing analysis helpers/captures unmodified.
+results.json SHA256:
+ 187906dc510bb40fff1f558395309ee776a99f5ae015efcfc0015ecf832b12c5
+Verification script and individual inputs are hashed in verification/results.
+No parameter/model/source edits, new runs, commits or pushes. Stop here.

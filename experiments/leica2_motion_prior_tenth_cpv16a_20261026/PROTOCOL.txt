@@ -1,0 +1,74 @@
+CP-V16A — one receiver-only motion-prior strength ablation, 2026-10-26.
+User explicitly requested "Try0.1" after CP-V15.
+Multiplier selected BEFORE any candidate score: Qc_new=0.1*Qc_original,
+all six dimensions, .000375 rotation and .0015 translation variances. This
+multiplies original motion information by10 at fixed residual, divides original
+standard deviations by sqrt(10). It is2.5times CP-V15's motion information,
+NOT0.1times the preceding0.25candidate covariance.
+One separately authorized value, not an estimated optimum or automatic sweep.
+Compare original and existing CP-V14 Qc0.5/CP-V15 Qc0.25outputs; do not rerun them.
+
+Use unchanged CP-V13 observer/private CP-K19 implementation, change ONLY the
+return in Qc(). Initial pose/velocity/rate priors unchanged; historical marginal
+prior is NOT arbitrarily multiplied. Candidate marginals naturally develop from
+the new motion model. Same seven-second lag, 100ms supports, source_wnoa,
+no central IMU/GNSS, source payloads/full dense covariances/order/scale1,
+stable-ID replacement/seal_at_absorption, ISAM2 flags and EOF policy. Incoming
+source covariances are NOT altered. Scalar Qc scaling also reaches the shared
+GP interpolation factory: verify its means/Jacobians stay invariant, rather
+than assuming that changing this helper has only one downstream use.
+
+Before full replay: verify one-line source delta and unchanged Live.cpp/Trace.h;
+unit test actual Qc, discrete Q, tenfold motion-factor error, unchanged source
+factor mean/residual/Jacobian/noise under scalar Qc change. Private fresh build.
+One full original CP-V4 Leica-2 Velodyne OFF journal then one ON journal. Use
+original output controls, already reproduced exactly in CP-V13. No baseline
+rerun, new source capture, data/order edits, tuning sweep or numerical retry.
+Stop on operational failure; preserve failed outputs, do not relax checks.
+
+Operational gates: normal EOF, finite states, unchanged exact state IDs/physical
+and availability times, all receive/insert/replace/expire/absorb/publication and
+finalization counts, support bounds. Every committed source payload/action and
+absorption identity must match baseline, excluding solver slot numbers. Verify
+original input/private code hashes throughout. Factor-slot fill may change with
+the different numerical trajectory and is disclosed, not an output parity gate.
+Candidate state values are expected to differ. Resource floor8GiB.
+
+Scientific screen against ORIGINAL Qc, unchanged from CP-V14, predeclared before execution:
+Comparison against saved Qc0.5 and0.25 is additionally reported, not a changed threshold.
+- Full-saved fusion ONLINE age-zero 100ms displacement-vector error RMS and
+  100ms translation RPE must improve in BOTH OFF and ON.
+- Full-saved ATE and 1s translation/rotation RPE must not worsen in either mode
+  (only numerical tolerance1e-6 in metres/degrees, no percentage slack).
+- Reference-only moving (100ms speed>=0.2m/s) and turning (100ms angular speed
+  >=5deg/s) cohorts: 100ms translation/rotation RPE must not worsen, same tolerance.
+- Coverage and operational gates must pass. A speed/angular-speed reference lag
+  scan over +/-0.5s at20ms is diagnostic: disclose any increased positive delay
+  >20ms. It is not permission to shift estimator timestamps or primary scores.
+Failure of ANY scientific requirement means not an accepted improvement; retain
+all metrics and explain tradeoffs. No automatic promotion even if screen passes.
+Record the strict historical screen unchanged for continuity, but distinguish
+operational success and practical error magnitudes from a tiny ATE increase.
+
+Use same shared-CPT7 IE-TC reference, original prism lever arm, no-scale rigid
+alignment and masks. Primary full saved100ms receiver grid; additionally original
+CP-V10 six-product common mask for all-estimator context. Original first-published
+GLIM and native Kimera unchanged, their scores are controls, not new source runs.
+1s RPE SE(3) convention and gap rules unchanged. Delayed finalized results remain
+separate from ONLINE. Inspect selected380--390s as secondary, never representative
+of the whole run; moving/turning cohorts selected by reference only.
+
+Record path length, ATE,100ms/1s RPE, current-time displacement error, coverage,
+response diagnostic, selected trace changes and finalization. Interpret a shorter
+path only with accuracy/response, not as proof of a fix. Mean-only source covariance
+alignment approximation and shared-IMU limitations remain. No stationarity claim.
+No deletes/commit/push/new automation. Preserve open Rerun view. Start only stopped
+Humble container; verify owned jobs exited and restore it. Noetic stays stopped.
+
+Setup-only repair: CP-V16 stopped BEFORE pinning/build/replay with an undefined
+quarter comparison-path variable accidentally placed in the half-control check.
+Its failed.txt/run.py/start.json/source_delta.json and empty output root remain.
+This fresh CP-V16A corrects only that host harness error and adds the intended
+quarter-control pins. Same exact0.1receiver/audit/Live/Trace bytes and all gates.
+No source or numerical replay was retried; this remains the first0.1test pair.
+Both containers were restored stopped after the failed pre-build setup.

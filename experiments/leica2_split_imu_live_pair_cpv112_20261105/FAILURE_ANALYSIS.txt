@@ -1,0 +1,90 @@
+CP-V112 LEICA-2 terminal failure diagnosis, 2026-11-05.
+Supplement only. Original protocol, receipts, failed.json, REPORT.txt, source,
+receiver and logs were not overwritten. No capture/validation/scoring retry.
+
+OUTCOME
+The sole controller failed in capture_off, exit1 at01:31:27local; cleanup
+finished01:31:55. ON never started: full_on_source/receiver/control are absent.
+No qualified full OFF/ON result, no Method1/EVO scores, no comparison exists.
+
+SAVED FAILURE CHAIN
+H/failed.json: AssertionError(('capture_off',1)).
+H/capture_off.log: run_case_on.py:127 asserts source exit0 and complete.marker.
+P/full_off_control/source.log: off/coverage_control.py:12 asserts exact equality
+of saved IMU header sequence and prepared expected headers, plus monotonicity.
+P/full_off_source/rosbag.log ends Done.; the failure was after playback, not
+a controller timeout. Source complete.marker and source_coverage.json absent.
+No FATAL/IndeterminantLinearSystem/terminate/local_update_failure/CPV40 FAIL/
+Assertion-failed match was found in estimators.log. This narrow check does not
+substitute for the four source/payload/receiver/frame gates, which were not run.
+
+CONFIRMED PLAYBACK-ORIGIN MISMATCH
+The preparation audit selected the first requested topic record as epoch:
+  1732549028915071665ns.
+The earliest record across the actual bag files (an unused camera topic) is:
+  1732549028815072565ns.
+Difference:99999100ns =99.9991ms.
+The frozen source.env exports CBSMS_BAG_START_SEC=6.0 and duration428.75.
+The executed source runner passes these directly to rosbag play --start and
+--duration, together with all bags and a --topics filter (lines422-425).
+
+Expected audit interval:
+  1732549034915071665 .. 1732549463665071665ns.
+Observed all-bag-origin interval:
+  1732549034815072565 .. 1732549463565072565ns.
+Using the original CPT7 and Alpha IMU bags read-only with rosbags.Reader,
+selecting the latter interval reproduces EVERY saved header timestamp in order
+for BOTH streams, exactly. No bags were played and no estimator/receiver ran
+during this diagnosis. The recordings are monotonic and have no extra/missing
+timestamps relative to that earlier interval; this is not random packet loss.
+
+                    expected/recorded count   unexpected early / missing tail
+CPT7 IMU            42875 / 42875             10 / 10
+AlphaSense IMU      85688 / 85688             20 / 20
+
+CPT7 actual first1732549034819515000, last1732549463559886000ns.
+CPT7 omitted intended tail starts1732549463569886000 and ends1732549463659886000.
+Alpha actual first1732549034819004277, last1732549463564180204ns.
+Alpha omitted intended tail starts1732549463569176804 and ends1732549463664113104.
+The original intended last Hesai scan1732549463660625935 is later than the
+observed playback end. Therefore the planned through-last-Hesai claim is not
+established by this capture; equal counts alone cannot qualify it.
+
+The preparation-only selected-topic epoch adaptation was incomplete: the
+audit used it, but the launcher offset was not translated into rosbag's origin.
+PREPARATION_REPAIR/PROTOCOL claims about unused-topic bag beginnings are thus
+superseded by this evidence. This is a harness error, not evidence of CBS
+feedback/covariance failure, prior-preservation failure or random estimator crash.
+Do not weaken coverage checks or change expected headers to accept this run.
+
+RETAINED DIAGNOSTICS, NOT SCORES
+Receiver transport:42875IMU,253227belief versions=205622GLIM+47605Kimera,
+4282ONLINE publications, queue0/max46, duplicates0. Receiver complete.marker
+and summary.json exist, but source was rejected and subsequent gates did not
+run; receiver completion alone does not validate this arm or the pair.
+Native Kimera1937saved rows, first1732549035015009577,
+last1732549462310630904ns (427.395559239s after intended start).
+No covariance conclusions, trajectories scored as full-run, ATE/RPE/path
+numbers, frame qualification or EOF acceptance are inferred from these counts.
+
+PRESERVATION/CLOSEOUT
+Exact host identities63092(supervisor)/63094(controller), start1574815, and
+capture63624/start1576566 exited before supplemental post_closeout.py ran ONCE.
+post_closeout.json01:34:12.623042+02:00 passed:
+  all10253protected file hashes, inherited CP111/older evidence;
+  all667Hesai checkpoint copies/originals;
+  all9receipt-tracked exact owned jobs exited;
+  cbsms_ws_gpu and ubuntu-jammy-humble-nvidia restored stopped;
+  exactly1source wrapper started,0post-audit source runs.
+No complete.json exists (sealed output count0, not a successful experiment).
+All failed artifacts remain in place. No source settings/binaries or protected
+files were changed. No data deleted. Scoped heartbeat paused after notification.
+
+FUTURE BOUNDARY
+Recovery needs a fresh bounded protocol reconciling absolute selected-window
+bounds with the bag-origin-relative playback argument, validated before a new
+capture. Arithmetic translation for this frozen bag set would be6.0999991s,
+not6.0s, but no launcher was edited or new run authorized by this diagnosis.
+Do not restart this controller, replay its receiver, reuse rejected OFF as a
+qualified arm, or begin ON alone. Preserve all existing evidence and original
+strict gates. No further experiment was started.

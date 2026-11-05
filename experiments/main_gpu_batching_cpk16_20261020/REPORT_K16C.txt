@@ -1,0 +1,152 @@
+CP-K16c — identical-workload MAIN batching timing
+2026-10-20. COMPLETED / NUMERICAL AND PERFORMANCE GATES PASSED.
+
+BOTTOM LINE
+===========
+The unchanged K16a private MAIN batching candidate is substantially faster
+on the two bounded synthetic actual-solver workloads, with zero observed
+numerical/decision differences. The filled-window median falls332.019->24.867ms
+and p95 falls340.159->26.228ms: approximately13.35x median speedup.
+
+These are NOT ETH1 scan times or a whole-GLIM/live-system speedup certificate.
+The fixed benchmark cycle is one arrival update plus two empty native updates.
+Each includes synchronized CUDA completion and actual shared-native provider
+work. Input preparation, explicit calculateEstimate, output inspection and
+LOCAL covariance queries are outside the timing. This is a MAIN path benchmark,
+not a pure GPU-kernel benchmark.
+
+BASELINE / CANDIDATE
+====================
+Same immutable DSOs as K16a/K16b:
+ W=/home/yeranis/repos/V4RL/cbs_gtsam4.3
+ R=W/runs/main_gpu_batching_cpk16_20261020
+ Original W/runs/native_covariance_cache_cpi3_20261019/release_v2/
+   libgtsam_points.so.1.2.1
+   SHA256 3f23e6115e34acc5a2f2b965b15bd4c651897c889a6c38a0a52cdb3855c0ceb7
+ Candidate R/release_1/libgtsam_points.so.1.2.1
+   SHA256 6f71292d29d974a0555abd9fda6b2370fdab81ca634a4e1343c216d2a762d2ca
+No estimator/provider/bridge/CUDA DSO rebuild. Only two diagnostic executables
+compiled, one against each frozen library. Loaded-path receipts retained.
+
+TEST / MEASUREMENT
+==================
+Reused K16b actual frozen GPU geometry (864 synthetic points, .5m voxel map):
+ R/k16b_checks_4/frozen_geometry.bin
+ SHA256 eb02ad0aebc1c0c532b4d1f9a1ff16cd12e75d0b5b99deafb7c465dbe1d01c0a
+The S3 Gaussian-history fixture cannot reproduce source GPU work. No new
+real-data capture was performed or implied.
+
+Small workload:5retained pose/velocity/bias states,2GPU links/new pose,
+ .45s toy lag,7active GPU factors,32factor slots in the measured window.
+Filled workload:50retained pose/velocity/bias states,15GPU links/new pose,
+ 4.95s toy lag,630active GPU factors,848factor slots in the measured window.
+These are fixture controls, NOT production configuration changes.
+
+Actual IncrementalFixedLagSmootherExtWithFallback, native admission/provider,
+native IMU/CPU/GPU factors and temporary peer removal before marginalization.
+Three updates/cycle; both modes execute identical calls and selected work.
+Warmup fills window plus5arrivals (10/55cycles); next20cycles measured.
+Each process starts with fresh solver/factor objects and identical saved GPU
+bytes, not a shallow shared reference/candidate copy.
+
+Untimed original/disabled/enabled admission first. Then6paired repetitions,
+alternating reference/enabled first, with no overlap. CPU affinity0 and
+OMP_NUM_THREADS=1 equal. No correctness audit callback or nested profiling
+session inside timed updates; same native-provider computation remains active.
+Each call starts after cudaDeviceSynchronize; end includes another completion
+sync. All480cycles/1440actual update calls retained,1920timing rows including
+cycle sums.120cycles per workload/mode; no outlier deletion or favorable subset.
+
+Hardware: NVIDIA GeForce RTX5070Ti Laptop GPU,driver580.178.04.
+Before test: no other CUDA compute process; GPU17%/365MiB/56C/1987MHz.
+After test:17%/364MiB/55C/1897MHz. Desktop graphics remains present; clocks
+were not locked or changed. Alternating repeats reduce, not eliminate, noise.
+
+TIMING RESULTS (milliseconds, synchronized three-update cycle)
+=============================================================
+                  Original median/p95/max        Batched median/p95/max
+5-pose load        6.123 /7.037 /7.401             1.133 /1.668 /2.326
+50-pose load       332.019 /340.159 /346.231       24.867 /26.228 /31.837
+
+Candidate/original median and p95 ratios:
+ small:.184959/.237010
+ filled:.074897/.077105
+Filled paired-round median ratios:.074859,.074111,.074692,.074722,.074969,.075248.
+Filled paired-round p95 ratios:.076559,.076164,.076888,.078982,.077990,.077410.
+All6pairs support the gain. Predeclared median AND p95 <=.80 target PASS.
+
+For clarity, the single filled-window ARRIVAL update, rather than the three-call
+cycle, has median114.238->8.729ms and p95117.515->9.239ms.
+Each subsequent empty update also performs actual requested relinearization;
+"empty" means no new measurement, not zero solver work.
+
+Important timing qualification: original synchronous VGICP emits a warning per
+sync derivative; the batched cache-hit route does not. Both original behaviors
+were retained and logs used the same file sink. Thus timings include existing
+warning/dispatch cost, not just GPU computation. That cost was not separately
+measured in this gate. The protocol's excluded file I/O refers to benchmark
+output/inspection; it cannot be read as removal of built-in library logging.
+Do not attribute the entire13.35x specifically to CUDA kernel concurrency.
+No logging suppression or second performance patch was introduced.
+
+NUMERICS / WORK / MEMORY
+========================
+Original versus candidate-disabled admission matches exactly.
+Enabled admission and all12timed histories match the original audit:
+  34,022exact/numeric records and350,419numeric entries per comparison;
+  maximum state/translation/orientation/Gaussian/native-history/full joint/
+  full relative covariance differences:0.
+All update decisions, slots, key identities and final GPU-state SHA256 match.
+First/revised native-local covariance helpers agree; no MAIN covariance fallback.
+No unexpected solver fallback, invalid provider, reset or conservation failure.
+These are observed fixture results, not a universal mathematical proof.
+
+Untimed whole-history derivative requests:
+ small:679original synchronous ->679prepared hits,0candidate sync;
+ filled:89,684original synchronous ->89,684prepared hits,0candidate sync.
+Same work, no skipped derivatives. In the measured filled section each update
+requests630--660GPU derivatives (median630); small7--11(median7).
+The existing wrapper does not expose internal per-batch sizes. These are
+prepared-request totals per update, NOT claims that each is one batch.
+K16b separately covered partial-clique/mixed-cache paths; not rerun here.
+
+Process resident-memory high-water after filled workload:
+ original166.65--168.20MiB; candidate165.34--167.04MiB.
+This includes geometry, diagnostic objects, end inspection and query work,
+not an isolated optimization-allocation peak. Sampled device free-memory deltas
+range0--28.88MiB original and0--1.63MiB candidate, but are affected by allocator
+reuse and desktop activity; NOT evidence of a GPU memory reduction or true peak.
+No memory failure. No new sanitizer run; reuse K16a/K16b correctness evidence.
+
+PRESERVATION / NEXT DECISION
+============================
+INTEGRITY_K16C_BEFORE.json and INTEGRITY_K16C_FINAL.json:
+ all2026protected files, pinned inputs and five source fingerprints unchanged.
+Owned build/test jobs exited; cbsms_ws_gpu and ubuntu-jammy-humble-nvidia both
+confirmed stopped. Existing follow-up untouched/paused. No ROS/source/receiver
+run, model/guard/weight/lag/covariance edit, default promotion, commit or push.
+
+Next proposed gate, ONLY after authorization:
+ one bounded matched GLIM-only headless ETH1 source acceptance experiment,
+ first60s, original versus candidate with identical frozen sensors/profiles,
+ inputs and no source CBS receiving (no Kimera or gnssFGO). Preserve actual
+ shared-LOCAL first/revised export. Measure complete-scan/MAIN/export times,
+ effective batching, queue age and coverage; check payload/numerical behavior.
+The synthetic864-point gain cannot substitute for that real-source evidence.
+No full OFF/ON retry or playback-rate recommendation follows automatically.
+
+The separate CP-K14 Kimera count-window can span11.10physical seconds while
+the receiver retains7seconds. This source-revision/retention contract remains
+unresolved; batching does not fix it and full-sequence admission remains blocked.
+
+EVIDENCE
+========
+Authoring/report:
+ /home/yeranis/repos/gnssFGO/experiments/main_gpu_batching_cpk16_20261020/
+   PROTOCOL_K16C.txt,RESULT_K16C.json,test_timing.cpp,build_k16c.py,
+   run_k16c.py,analyze_k16c.py,integrity_k16c.py
+Immutable build/receipts/raw outputs:
+ R/k16c_build_1/{commands.json,built.json,*_ldd.txt,test_timing.cpp,...}
+ R/k16c_checks_1/{plan.json,passed.json,*_comparison.json,*.timing,*.txt,*.log}
+
+CP_K16C_SYNTHETIC_MAIN_TIMING_PASSED

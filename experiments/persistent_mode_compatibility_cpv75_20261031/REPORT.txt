@@ -1,0 +1,168 @@
+CP-V75 -- EXISTING PERSISTENT MODE WITH THE CORRECTED KIMERA BACKEND
+2026-10-31. COMPATIBILITY INSPECTION COMPLETE. NOT READY FOR A FLAG-ONLY RUN.
+
+DECISION
+The existing general persistent factor implementation is still present.
+However, the corrected CP-K9/CP40 integration currently accepts only the
+active-window factor mode, including its privately tested FL4m RETAIN variant.
+Changing only cbs_odom_factor_mode to persistent would be rejected before
+the ordinary smoother solve. Deleting that assertion would expose further
+incompatible ownership checks; it would not complete the integration.
+
+This is an integration/support limitation, not a numerical experiment proving
+that persistent factors cannot work. No build, native test, solver, capture,
+profile change or guard bypass was performed. The user authorized this check,
+not an automatic compatibility implementation or another full sequence.
+
+1. EXACT MODE IDENTITY
+The archived September EIG-2 ON launch explicitly used:
+  --cbs_odom_factor_mode=persistent
+  --cbs_use_persistent_bpsam_for_main_backend=false
+Thus the requested old factor mode is not the unrelated persistent main-backend
+or covariance-sidecar selector. The current parser still supports persistent.
+
+CP73 actually loaded its private libkimera_vio.so and libcbs.so and selected:
+  active_window_temporary; FL4M_RETIREMENT=retain;
+  CPV69_RETAIN_COMPAT=1; CPK9_PRIOR_REFRESH=1; CPV40_REFRESH=1;
+  FL4Q_ENABLE=0; CPV38_OFF_REFRESH=0.
+Its factor lifetime reuses the old retention branch, but its admission policy
+is not general persistent. Current persistent code also contains receiver-match
+and replacement changes made after the September runs. Reusing that selector
+would be a current persistent-policy experiment, not certified reproduction of
+the historical binary. The old binary identities were not fully archived.
+
+2. FIRST HARD BLOCKER: THE CORRECTED MODE CONTRACT
+In the CP73 private header, BPSAM::cpk9ValidateMode explicitly requires
+CbsOdomFactorMode::ActiveWindowTemporary, native Gauss-Newton, cached Gaussian
+factors, and no temporary-linear mode. cpv40ValidateMode calls this validator.
+The smoother invokes it at the beginning of update, before the ordinary solve.
+Therefore persistent + the enabled correction is rejected even before an
+incoming peer factor needs to be processed.
+
+Disabling CP-K9 is not a workaround: CP40 requires it. Disabling both corrections
+would abandon the backend repair whose preservation was the task's prerequisite.
+There is no inspected existing configuration switch that admits general
+persistent while preserving these corrected-mode contracts.
+
+References under W=/home/yeranis/repos/V4RL/cbs_gtsam4.3:
+  runs/retention_readiness_cpv73_20261031/include/cbs/bpsam/bpsam.h:96
+  runs/retention_readiness_cpv73_20261031/BpsamOnRefresh.inc:5
+  runs/retention_readiness_cpv73_20261031/OnRefresh.h:9
+  runs/retention_readiness_cpv73_20261031/include/cbs/bpsam/
+      incremental_fixed_lag_bpsam_smoother.h:125
+
+3. WHY ALLOWING THE ENUM ALONE IS INSUFFICIENT
+The correction's post-ordinary/post-refresh validator requires equal counts
+and consistent identities across three ownership structures:
+  active_cbs_odom_slots_
+  active_window_cbs_odom_factors_
+  active_window_cbs_odom_keys_by_receiver_
+
+General persistent registers actual factor slots but does not populate the
+active-window staged/active maps. With a persistent factor present, those
+active-window count/ownership assumptions do not describe its valid state.
+The active-window retirement and CP69 absorption receipts likewise come from
+the active-window lifecycle branch; they are not evidence that general
+persistent replacement and absorption have been validated with CP40.
+
+Persistent also permits pending/active same-edge replacements and alternative
+sender matches, with a cross-update best-timestamp-match policy in Kimera.
+Active-window mode skips already-active receiver edges. Native force-solve
+and exception/recovery branches differ as well. The outer corrected smoother
+transaction remains available, but the interaction with persistent's inner
+recovery and replacement paths needs tests, not assumptions of equivalence.
+
+The reusable correction itself promotes the prior into its immutable original
+chart and performs one extra native refresh without ingesting beliefs again.
+Nothing in this inspection proves that mathematical operation cannot support
+persistent factors. The missing work is mode-aware validation/ownership and
+integration tests while preserving that operation, not a new factor model.
+
+Source anchors:
+  CP73 BpsamOnRefresh.inc:29 (ownership),72 (refresh).
+  src/cbs/src/bpsam/bpsam.cpp:2933 (pending replacement),4037 (branch),
+      4068 (active replacement),4210 (active-window force-solve),
+      4336 (recovery),4529 (slots),4534 (active-window-only ownership).
+  CP73 VioBackend.cpp:3080 (cross-update persistent receiver matching).
+  CP73 smoother header:190 (active-window expiry),496 (retain receipts).
+Canonical bpsam.cpp still matches its CP73 protected source hash. Source-level
+reasoning is not execution of these persistent branches in the corrected build.
+
+4. EXISTING TEST COVERAGE IS NOT GENERAL-PERSISTENT CERTIFICATION
+The inherited corrected tests obtain params() from the CP-K9 fixture, which
+sets ActiveWindowTemporary. CP69/CP73 exercise REMOVE and RETAIN under that
+same mode, with immutable-prior, native-smart, rollback and Schur checks.
+Their success does not cover general persistent admission or replacement.
+
+The October 15 FL4m fixture explicitly compared retained information with
+general persistent, but it predates CP-K9/CP40. It is useful to reuse, not
+proof that the current combination is already tested. This inspection did
+not rerun either suite and makes no fresh numerical validation claim.
+
+5. IMPORTANT INPUT CORRECTION FOR A FUTURE NATIVE-MATCHING TRIAL
+The full CP73 frozen bag contains 1743 originally accepted, post-alignment
+beliefs, selected from 3541 original incoming beliefs. It omits 1798 messages
+not accepted by that original temporary-mode history and rewrites endpoints
+and means to the original accepted receiver interval. Those full-window counts
+are not the counts of a proposed 60-second crop.
+
+That bag was appropriate for the narrowly conditional fixed-admission test.
+It is not an unbiased input for testing persistent's own admission policy.
+A later native-matching trial should use the SAME complete original incoming
+wire stream over the chosen window in both arms, including messages originally
+unaccepted. Each arm performs its own native matching and the same declared
+endpoint-alignment rule, preserving physical timestamps and arrival causality.
+Do not accidentally apply alignment twice to the old pre-aligned frozen input.
+Audit accepted/rejected/retried/replaced edges and changes in coverage explicitly.
+
+The original CP49 recordings remain present and match their saved hashes. This
+audit has not prepared or validated a new replay. Its recorded stream contains
+the original run's feedback history; a future one-way replay is conditional on
+that history, not independent source data or a new live bidirectional result.
+The proposed experiment intentionally would not require equality of old backend
+update IDs. Native timestamp/duration gates must stay unchanged. No CP73 guard
+was disabled and no failed CP73 result was relabeled by this proposal.
+
+6. MINIMAL NEXT WORK -- PROPOSED, NOT IMPLEMENTED
+Use a fresh private compatibility branch/root and the existing persistent
+admission/replacement/retention code; do not resurrect old binaries wholesale.
+Extend the corrected wrapper with explicit persistent-mode invariants rather
+than deleting checks. Preserve native smart factors, immutable prior functions,
+one ordinary plus one refresh step, weights, timing guards and rollback.
+
+Required native fixture coverage before any sensor replay:
+  a. Corrected CBS-OFF and existing temporary REMOVE/RETAIN regression parity.
+  b. Persistent first insertion, repeated same sender/receiver edge, competing
+     matches, pending replacement and active-slot replacement without stacking.
+  c. Refresh leaves accepted payloads/covariances and factor identities intact,
+     does not ingest the same belief twice, and preserves the original prior
+     function at displaced states as well as the current linear equations.
+  d. Repeated persistent marginal absorption, bounded tracking, exact consumed
+     slot accounting and independent Schur/boundary checks.
+  e. Injected failures during insertion/replacement/refresh/marginalization;
+     restore state, prior ownership, pending/active maps and smart caches.
+     Expose rather than silently count an internal recovery as a clean pass.
+  f. Release and sanitizer gates using existing fixtures, with limitations
+     for uninstrumented vendor libraries stated explicitly.
+
+Only after those pass: separately authorized matched 60-second EIG-2 Hesai
+temporary versus current persistent comparison, native matching, same complete
+recorded input, no outgoing peer consumer. Method 1 EVO ATE and 0.5m RPE,
+path length, previous-pose corrections and actual coverage. No automatic full
+run, no weight tuning, and no claim that the test isolates retirement alone.
+CP67's mixed-prior LOCAL-export problem still prevents claiming safe native-
+information-only bidirectional retention. It is not solved by this check.
+
+7. PRESERVATION / VERIFICATION
+audit.json records 19 static/source/receipt checks, not 19 runtime tests.
+25 CP73 compiled-source identities verified, 544 pinned CP73 outputs unchanged,
+25 inspected inputs unchanged, including original CP49 source evidence.
+Private libraries loaded by the recorded process, independently rehashed:
+  libkimera_vio.so 141474ecf226f863c81e5f8b70df0843b80420aa2e78f74fb48729a1958169d1
+  libcbs.so        82f85c2a307a9d9a849b2b8f09bb5c1e026ad80a4ef0a633c903d30cca712476
+Production CBS/Kimera git worktrees are clean. gnssFGO's existing documentation
+and untracked experiment evidence were preserved. Authored changes are this
+audit/report directory and the required two repository ledgers only.
+No experiment controllers or native executables were launched; no containers
+were started/stopped, no builds, solver evaluations, scoring, source/default/
+model/weight changes, deletions or pushes occurred. See verification.json.

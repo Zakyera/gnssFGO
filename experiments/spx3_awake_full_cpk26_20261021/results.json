@@ -1,0 +1,1496 @@
+{
+  "passed": true,
+  "validation_contract": "finite_recording_eof_cpk24a",
+  "terminal_omissions": {
+    "off": 1,
+    "on": 1
+  },
+  "cases": {
+    "off": {
+      "checks": {
+        "receiver": {
+          "passed": true,
+          "validation_contract": "finite_recording_eof_cpk24a",
+          "terminal_boundary": {
+            "passed": true,
+            "contract": "finite_recording_terminal_cell_only",
+            "original_zero_unsupported_gate_passed": false,
+            "excluded_versions": 1,
+            "final_partial_cell_ns": 30005000,
+            "details": [
+              {
+                "last_support_ns": 1730566096854194000,
+                "next_required_support_ns": 1730566096954194000,
+                "last_clock_ns": 1730566096884199000,
+                "from_ns": 1730566096670909900,
+                "to_ns": 1730566096870908000,
+                "end_after_last_support_ms": 16.714,
+                "missing_clock_ms": 69.99499999999999,
+                "source": "kimera_front",
+                "session": "spx3_cpk26_full_off_20261021",
+                "from_id": "949",
+                "to_id": "950",
+                "revision": "0",
+                "source_ordinal": "2853",
+                "arrival_ns": 1730566096887393709,
+                "classified_event": 134260
+              }
+            ],
+            "state_clock_not_extended": true,
+            "captured_outputs_unchanged": true,
+            "omission_not_recovered": true
+          },
+          "source_coverage": {
+            "passed": true,
+            "requested_s": 194.02,
+            "imu_samples": 19402,
+            "imu_span_s": 194.01000475883484,
+            "coverage_contract": "native_keyframes_cpk22",
+            "kimera_gap_bound_s": 5.1499999999999995,
+            "native_glim": {
+              "rows": 1933,
+              "start_s": 1730565903.58883,
+              "end_s": 1730566096.788463,
+              "span_s": 193.19963312149048,
+              "maximum_pose_gap_s": 0.1013190746307373,
+              "post_startup_max_gap_s": 0.1013190746307373,
+              "start_after_first_imu_s": 0.7146358489990234,
+              "tail_behind_last_imu_s": 0.09573578834533691,
+              "path_length_m": 86.3358750389875,
+              "gaps_over_1s": [],
+              "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+            },
+            "native_kimera": {
+              "rows": 951,
+              "start_s": 1730565903.0725975,
+              "end_s": 1730566096.870908,
+              "span_s": 193.79831051826477,
+              "maximum_pose_gap_s": 0.5999934673309326,
+              "post_startup_max_gap_s": 0.5999934673309326,
+              "start_after_first_imu_s": 0.19840335845947266,
+              "tail_behind_last_imu_s": 0.013290882110595703,
+              "path_length_m": 85.4925071372898,
+              "gaps_over_1s": [],
+              "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+            },
+            "kimera_processing": {
+              "passed": true,
+              "logs": [
+                "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/full_off_source/estimators.log",
+                "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/full_off_source/ros_logs/3aa781ea-cd6e-11f1-9894-7e8225c4d31f/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log",
+                "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/full_off_source/ros_logs/latest/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log"
+              ],
+              "frontend_processed": 1939,
+              "synchronized_input_pairs_reference": 1940,
+              "frontend_reference_after_startup": 1937,
+              "backend_processed": 951,
+              "sequential_native_ids": true,
+              "gaps": [],
+              "scope": "Native counters, not a new per-image receipt or branch-decision audit."
+            }
+          },
+          "transport": {
+            "imu": 19402,
+            "duplicate_imu": 0,
+            "imu_clock_lag_events": 18929,
+            "max_imu_clock_lag_ns": 1874194000,
+            "belief_clock_lag_events": 0,
+            "max_belief_clock_lag_ns": 0,
+            "beliefs": 114857,
+            "duplicates": 0,
+            "published_poses": 1935,
+            "max_queue": 48,
+            "sources": {
+              "glim_hesai": 92057,
+              "kimera_front": 22800
+            }
+          },
+          "summary": {
+            "complete": true,
+            "model": "source_wnoa_fixed_lag",
+            "lag_seconds": 7,
+            "stationarity": "not_checked_incremental_policy",
+            "events": 134260,
+            "received": 114857,
+            "absorbed_revision_policy": "seal_at_absorption",
+            "expired": 0,
+            "expired_duplicate": 0,
+            "expired_stale": 0,
+            "duplicate": 0,
+            "stale": 0,
+            "inserted": 2851,
+            "replaced": 111955,
+            "excluded": 50,
+            "unsupported_end": 1,
+            "absorbed": 2750,
+            "active": 101,
+            "pending_at_end": 0,
+            "publications": 1935,
+            "finalized": 1935,
+            "retained_supports": 71,
+            "peak_slots": 176
+          },
+          "actions": {
+            "before_initialization": 50,
+            "insert": 2851,
+            "replace": 111955,
+            "unsupported_at_end": 1
+          },
+          "expiry": {
+            "passed": true,
+            "policy": "seal_at_absorption",
+            "expired": {
+              "versions": 0,
+              "ids": 0,
+              "changes": {
+                "endpoint_age_s": {
+                  "n": 0
+                },
+                "since_absorption_s": {
+                  "n": 0
+                },
+                "version_jump": {
+                  "n": 0
+                },
+                "translation_change_m": {
+                  "n": 0
+                },
+                "rotation_change_rad": {
+                  "n": 0
+                },
+                "rotation_trace_ratio": {
+                  "n": 0
+                },
+                "translation_trace_ratio": {
+                  "n": 0
+                },
+                "full_covariance_relative_frobenius": {
+                  "n": 0
+                }
+              }
+            },
+            "by_source": {
+              "kimera_front": {
+                "received_versions": 22800,
+                "received_ids": 924,
+                "expired_fraction": 0.0,
+                "versions": 0,
+                "ids": 0,
+                "changes": {
+                  "endpoint_age_s": {
+                    "n": 0
+                  },
+                  "since_absorption_s": {
+                    "n": 0
+                  },
+                  "version_jump": {
+                    "n": 0
+                  },
+                  "translation_change_m": {
+                    "n": 0
+                  },
+                  "rotation_change_rad": {
+                    "n": 0
+                  },
+                  "rotation_trace_ratio": {
+                    "n": 0
+                  },
+                  "translation_trace_ratio": {
+                    "n": 0
+                  },
+                  "full_covariance_relative_frobenius": {
+                    "n": 0
+                  }
+                }
+              },
+              "glim_hesai": {
+                "received_versions": 92057,
+                "received_ids": 1930,
+                "expired_fraction": 0.0,
+                "versions": 0,
+                "ids": 0,
+                "changes": {
+                  "endpoint_age_s": {
+                    "n": 0
+                  },
+                  "since_absorption_s": {
+                    "n": 0
+                  },
+                  "version_jump": {
+                    "n": 0
+                  },
+                  "translation_change_m": {
+                    "n": 0
+                  },
+                  "rotation_change_rad": {
+                    "n": 0
+                  },
+                  "rotation_trace_ratio": {
+                    "n": 0
+                  },
+                  "translation_trace_ratio": {
+                    "n": 0
+                  },
+                  "full_covariance_relative_frobenius": {
+                    "n": 0
+                  }
+                }
+              }
+            },
+            "reference_rows_not_receipts": 0,
+            "caveat": "Changes vs last accepted belief, NOT GT errors or proof that omitted corrections are harmless."
+          },
+          "mean_log_roundtrip_error": 1.5064338665382593e-14,
+          "covariance_payload_error": 0.0,
+          "online_path_m": 95.24175056672914,
+          "finalized_path_m": 86.18108208367289,
+          "fused_span_s": 193.4,
+          "support_cycle_seconds": {
+            "n": 1935,
+            "mean": 0.04787613970956072,
+            "median": 0.043687588,
+            "p95": 0.062747919,
+            "max": 0.08819876299999997
+          },
+          "receipt_to_processing_seconds": {
+            "n": 134260,
+            "mean": 0.00895916888257113,
+            "median": 0.0096593505,
+            "p95": 0.018302652000000003,
+            "max": 0.047966775
+          },
+          "monitor_output_age_s": {
+            "n": 499,
+            "mean": 0.04963652093787575,
+            "median": 0.050005,
+            "p95": 0.090005,
+            "max": 0.100062031
+          },
+          "published_during_source": 1935,
+          "max_monitor_queue": 6,
+          "protected_unchanged": 2613,
+          "claim": "live 0.2x full194.02-second SPX-3 capture; fixed-lag incremental without stationarity certificate"
+        },
+        "lifecycle": {
+          "passed": true,
+          "mode": "off",
+          "native_updates": 951,
+          "source_injections": {
+            "g2k_injected": 0,
+            "k2g_injected": 0
+          },
+          "planned_retirements": 0,
+          "prior_refresh_updates": 0,
+          "max_cache_error": 0,
+          "observed_total_cost_increases": 16,
+          "imu_factor_cost": {
+            "median": 360.4861627383789,
+            "max": 4672327.281478906,
+            "last": 0.1376980809880102
+          },
+          "stationarity_certified": false,
+          "obsolete_FL4q_executed": false,
+          "candidate_sha256": "be637ad745f73bf12596d3bf06754f56ed7bcadfdb8b4792b94c4fcfee62aad9",
+          "note": "CP-K9 equation/lifecycle gate; cost increases are observational."
+        },
+        "local": {
+          "passed": true,
+          "mode": "off",
+          "sources": {
+            "glim": {
+              "ids": 1930,
+              "versions": 92057,
+              "first": 1930,
+              "revised": 90127,
+              "provider_queries": 1930,
+              "local_joint_queries": 0
+            },
+            "kimera": {
+              "ids": 924,
+              "versions": 22800,
+              "first": 0,
+              "revised": 0,
+              "provider_queries": 0,
+              "local_joint_queries": 22800
+            }
+          },
+          "all_payloads_exact": true,
+          "revision_provenance": "per-version native_local row plus pinned/tested provider route; no separate repeated matrix dump",
+          "limits": "native explicit information at corrected charts; not independent/calibrated likelihood"
+        }
+      },
+      "capture": {
+        "seconds": 1016.4593458175659,
+        "phase": "full",
+        "mode": "off"
+      },
+      "glim_timing": {
+        "whole": {
+          "scan_ms": {
+            "n": 1932,
+            "median": 37.652834,
+            "p95": 45.385492,
+            "max": 227.969027
+          },
+          "main_ms": {
+            "n": 1932,
+            "median": 10.51848,
+            "p95": 12.256898,
+            "max": 18.029067
+          },
+          "post_callback_ms": {
+            "n": 1932,
+            "median": 23.894415000000002,
+            "p95": 31.501131,
+            "max": 213.121587
+          },
+          "scans_over_500ms": 0
+        },
+        "after5s": {
+          "scan_ms": {
+            "n": 1890,
+            "median": 37.731828,
+            "p95": 45.792275,
+            "max": 227.969027
+          },
+          "main_ms": {
+            "n": 1890,
+            "median": 10.557642000000001,
+            "p95": 12.258777,
+            "max": 18.029067
+          },
+          "post_callback_ms": {
+            "n": 1890,
+            "median": 23.9344745,
+            "p95": 31.505538,
+            "max": 213.121587
+          },
+          "scans_over_500ms": 0
+        },
+        "last20s": {
+          "scan_ms": {
+            "n": 199,
+            "median": 37.509781,
+            "p95": 42.786977,
+            "max": 52.642117
+          },
+          "main_ms": {
+            "n": 199,
+            "median": 10.270631,
+            "p95": 12.274628,
+            "max": 14.044797
+          },
+          "post_callback_ms": {
+            "n": 199,
+            "median": 23.723123,
+            "p95": 27.526379,
+            "max": 32.28688
+          },
+          "scans_over_500ms": 0
+        }
+      },
+      "glim_internal_queue_max": 1,
+      "main_prepared_hits": 890922,
+      "main_sync_calls": 0,
+      "kimera_timing_after5s": {
+        "optimize_ms": {
+          "n": 926,
+          "median": 50.6323,
+          "p95": 69.5423,
+          "max": 79.6878
+        },
+        "smoother_ms": {
+          "n": 926,
+          "median": 13.484549999999999,
+          "p95": 17.7205,
+          "max": 22.4882
+        },
+        "outgoing_ms": {
+          "n": 926,
+          "median": 34.78505,
+          "p95": 52.7779,
+          "max": 61.6678
+        },
+        "backend_ms": {
+          "n": 926,
+          "median": 51.129400000000004,
+          "p95": 70.0578,
+          "max": 80.0205
+        }
+      },
+      "source_coverage": {
+        "passed": true,
+        "requested_s": 194.02,
+        "imu_samples": 19402,
+        "imu_span_s": 194.01000475883484,
+        "coverage_contract": "native_keyframes_cpk22",
+        "kimera_gap_bound_s": 5.1499999999999995,
+        "native_glim": {
+          "rows": 1933,
+          "start_s": 1730565903.58883,
+          "end_s": 1730566096.788463,
+          "span_s": 193.19963312149048,
+          "maximum_pose_gap_s": 0.1013190746307373,
+          "post_startup_max_gap_s": 0.1013190746307373,
+          "start_after_first_imu_s": 0.7146358489990234,
+          "tail_behind_last_imu_s": 0.09573578834533691,
+          "path_length_m": 86.3358750389875,
+          "gaps_over_1s": [],
+          "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+        },
+        "native_kimera": {
+          "rows": 951,
+          "start_s": 1730565903.0725975,
+          "end_s": 1730566096.870908,
+          "span_s": 193.79831051826477,
+          "maximum_pose_gap_s": 0.5999934673309326,
+          "post_startup_max_gap_s": 0.5999934673309326,
+          "start_after_first_imu_s": 0.19840335845947266,
+          "tail_behind_last_imu_s": 0.013290882110595703,
+          "path_length_m": 85.4925071372898,
+          "gaps_over_1s": [],
+          "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+        },
+        "kimera_processing": {
+          "passed": true,
+          "logs": [
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/full_off_source/estimators.log",
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/full_off_source/ros_logs/3aa781ea-cd6e-11f1-9894-7e8225c4d31f/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log",
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/full_off_source/ros_logs/latest/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log"
+          ],
+          "frontend_processed": 1939,
+          "synchronized_input_pairs_reference": 1940,
+          "frontend_reference_after_startup": 1937,
+          "backend_processed": 951,
+          "sequential_native_ids": true,
+          "gaps": [],
+          "scope": "Native counters, not a new per-image receipt or branch-decision audit."
+        }
+      }
+    },
+    "on": {
+      "checks": {
+        "receiver": {
+          "passed": true,
+          "validation_contract": "finite_recording_eof_cpk24a",
+          "terminal_boundary": {
+            "passed": true,
+            "contract": "finite_recording_terminal_cell_only",
+            "original_zero_unsupported_gate_passed": false,
+            "excluded_versions": 1,
+            "final_partial_cell_ns": 30005000,
+            "details": [
+              {
+                "last_support_ns": 1730566096854194000,
+                "next_required_support_ns": 1730566096954194000,
+                "last_clock_ns": 1730566096884199000,
+                "from_ns": 1730566096670909900,
+                "to_ns": 1730566096870908000,
+                "end_after_last_support_ms": 16.714,
+                "missing_clock_ms": 69.99499999999999,
+                "source": "kimera_front",
+                "session": "spx3_cpk26_full_on_20261021",
+                "from_id": "948",
+                "to_id": "949",
+                "revision": "0",
+                "source_ordinal": "2855",
+                "arrival_ns": 1730566096888366426,
+                "classified_event": 134593
+              }
+            ],
+            "state_clock_not_extended": true,
+            "captured_outputs_unchanged": true,
+            "omission_not_recovered": true
+          },
+          "source_coverage": {
+            "passed": true,
+            "requested_s": 194.02,
+            "imu_samples": 19402,
+            "imu_span_s": 194.01000475883484,
+            "coverage_contract": "native_keyframes_cpk22",
+            "kimera_gap_bound_s": 5.1499999999999995,
+            "native_glim": {
+              "rows": 1933,
+              "start_s": 1730565903.58883,
+              "end_s": 1730566096.788463,
+              "span_s": 193.19963312149048,
+              "maximum_pose_gap_s": 0.1013190746307373,
+              "post_startup_max_gap_s": 0.1013190746307373,
+              "start_after_first_imu_s": 0.7146358489990234,
+              "tail_behind_last_imu_s": 0.09573578834533691,
+              "path_length_m": 86.41090015128242,
+              "gaps_over_1s": [],
+              "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+            },
+            "native_kimera": {
+              "rows": 950,
+              "start_s": 1730565903.0725975,
+              "end_s": 1730566096.870908,
+              "span_s": 193.79831051826477,
+              "maximum_pose_gap_s": 0.6999940872192383,
+              "post_startup_max_gap_s": 0.6999940872192383,
+              "start_after_first_imu_s": 0.19840335845947266,
+              "tail_behind_last_imu_s": 0.013290882110595703,
+              "path_length_m": 86.53387354118617,
+              "gaps_over_1s": [],
+              "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+            },
+            "kimera_processing": {
+              "passed": true,
+              "logs": [
+                "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/full_on_source/estimators.log",
+                "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/full_on_source/ros_logs/ac03e444-cd70-11f1-9617-7e8225c4d31f/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log",
+                "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/full_on_source/ros_logs/latest/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log"
+              ],
+              "frontend_processed": 1939,
+              "synchronized_input_pairs_reference": 1940,
+              "frontend_reference_after_startup": 1937,
+              "backend_processed": 950,
+              "sequential_native_ids": true,
+              "gaps": [],
+              "scope": "Native counters, not a new per-image receipt or branch-decision audit."
+            }
+          },
+          "transport": {
+            "imu": 19402,
+            "duplicate_imu": 0,
+            "imu_clock_lag_events": 18881,
+            "max_imu_clock_lag_ns": 2377571,
+            "belief_clock_lag_events": 0,
+            "max_belief_clock_lag_ns": 0,
+            "beliefs": 115190,
+            "duplicates": 0,
+            "published_poses": 1935,
+            "max_queue": 49,
+            "sources": {
+              "glim_hesai": 92340,
+              "kimera_front": 22850
+            }
+          },
+          "summary": {
+            "complete": true,
+            "model": "source_wnoa_fixed_lag",
+            "lag_seconds": 7,
+            "stationarity": "not_checked_incremental_policy",
+            "events": 134593,
+            "received": 115190,
+            "absorbed_revision_policy": "seal_at_absorption",
+            "expired": 0,
+            "expired_duplicate": 0,
+            "expired_stale": 0,
+            "duplicate": 0,
+            "stale": 0,
+            "inserted": 2853,
+            "replaced": 112286,
+            "excluded": 50,
+            "unsupported_end": 1,
+            "absorbed": 2752,
+            "active": 101,
+            "pending_at_end": 0,
+            "publications": 1935,
+            "finalized": 1935,
+            "retained_supports": 71,
+            "peak_slots": 176
+          },
+          "actions": {
+            "before_initialization": 50,
+            "insert": 2853,
+            "replace": 112286,
+            "unsupported_at_end": 1
+          },
+          "expiry": {
+            "passed": true,
+            "policy": "seal_at_absorption",
+            "expired": {
+              "versions": 0,
+              "ids": 0,
+              "changes": {
+                "endpoint_age_s": {
+                  "n": 0
+                },
+                "since_absorption_s": {
+                  "n": 0
+                },
+                "version_jump": {
+                  "n": 0
+                },
+                "translation_change_m": {
+                  "n": 0
+                },
+                "rotation_change_rad": {
+                  "n": 0
+                },
+                "rotation_trace_ratio": {
+                  "n": 0
+                },
+                "translation_trace_ratio": {
+                  "n": 0
+                },
+                "full_covariance_relative_frobenius": {
+                  "n": 0
+                }
+              }
+            },
+            "by_source": {
+              "kimera_front": {
+                "received_versions": 22850,
+                "received_ids": 926,
+                "expired_fraction": 0.0,
+                "versions": 0,
+                "ids": 0,
+                "changes": {
+                  "endpoint_age_s": {
+                    "n": 0
+                  },
+                  "since_absorption_s": {
+                    "n": 0
+                  },
+                  "version_jump": {
+                    "n": 0
+                  },
+                  "translation_change_m": {
+                    "n": 0
+                  },
+                  "rotation_change_rad": {
+                    "n": 0
+                  },
+                  "rotation_trace_ratio": {
+                    "n": 0
+                  },
+                  "translation_trace_ratio": {
+                    "n": 0
+                  },
+                  "full_covariance_relative_frobenius": {
+                    "n": 0
+                  }
+                }
+              },
+              "glim_hesai": {
+                "received_versions": 92340,
+                "received_ids": 1930,
+                "expired_fraction": 0.0,
+                "versions": 0,
+                "ids": 0,
+                "changes": {
+                  "endpoint_age_s": {
+                    "n": 0
+                  },
+                  "since_absorption_s": {
+                    "n": 0
+                  },
+                  "version_jump": {
+                    "n": 0
+                  },
+                  "translation_change_m": {
+                    "n": 0
+                  },
+                  "rotation_change_rad": {
+                    "n": 0
+                  },
+                  "rotation_trace_ratio": {
+                    "n": 0
+                  },
+                  "translation_trace_ratio": {
+                    "n": 0
+                  },
+                  "full_covariance_relative_frobenius": {
+                    "n": 0
+                  }
+                }
+              }
+            },
+            "reference_rows_not_receipts": 0,
+            "caveat": "Changes vs last accepted belief, NOT GT errors or proof that omitted corrections are harmless."
+          },
+          "mean_log_roundtrip_error": 1.4591897568722034e-14,
+          "covariance_payload_error": 0.0,
+          "online_path_m": 92.30641376825798,
+          "finalized_path_m": 86.36865942956399,
+          "fused_span_s": 193.4,
+          "support_cycle_seconds": {
+            "n": 1935,
+            "mean": 0.047747177905943156,
+            "median": 0.043988639,
+            "p95": 0.061377301,
+            "max": 0.07210823599999998
+          },
+          "receipt_to_processing_seconds": {
+            "n": 134593,
+            "mean": 0.009138299500761556,
+            "median": 0.009879318,
+            "p95": 0.018702370000000003,
+            "max": 0.030034275000000003
+          },
+          "monitor_output_age_s": {
+            "n": 499,
+            "mean": 0.04629357960921844,
+            "median": 0.049437878,
+            "p95": 0.090005,
+            "max": 0.10003312
+          },
+          "published_during_source": 1935,
+          "max_monitor_queue": 12,
+          "protected_unchanged": 2613,
+          "claim": "live 0.2x full194.02-second SPX-3 capture; fixed-lag incremental without stationarity certificate"
+        },
+        "lifecycle": {
+          "passed": true,
+          "mode": "on",
+          "native_updates": 950,
+          "source_injections": {
+            "g2k_injected": 922,
+            "k2g_injected": 933
+          },
+          "planned_retirements": 898,
+          "prior_refresh_updates": 898,
+          "max_cache_error": 2.7660197190901627e-10,
+          "observed_total_cost_increases": 2,
+          "imu_factor_cost": {
+            "median": 10.82561504786489,
+            "max": 4630653.454629197,
+            "last": 0.3575000103538094
+          },
+          "stationarity_certified": false,
+          "obsolete_FL4q_executed": false,
+          "candidate_sha256": "be637ad745f73bf12596d3bf06754f56ed7bcadfdb8b4792b94c4fcfee62aad9",
+          "note": "CP-K9 equation/lifecycle gate; cost increases are observational."
+        },
+        "local": {
+          "passed": true,
+          "mode": "on",
+          "sources": {
+            "glim": {
+              "ids": 1930,
+              "versions": 92340,
+              "first": 1930,
+              "revised": 90410,
+              "provider_queries": 1930,
+              "local_joint_queries": 0
+            },
+            "kimera": {
+              "ids": 926,
+              "versions": 22850,
+              "first": 0,
+              "revised": 0,
+              "provider_queries": 0,
+              "local_joint_queries": 22850
+            }
+          },
+          "all_payloads_exact": true,
+          "revision_provenance": "per-version native_local row plus pinned/tested provider route; no separate repeated matrix dump",
+          "limits": "native explicit information at corrected charts; not independent/calibrated likelihood"
+        }
+      },
+      "capture": {
+        "seconds": 1016.6084778308868,
+        "phase": "full",
+        "mode": "on"
+      },
+      "glim_timing": {
+        "whole": {
+          "scan_ms": {
+            "n": 1932,
+            "median": 36.8182405,
+            "p95": 58.801346,
+            "max": 259.09229
+          },
+          "main_ms": {
+            "n": 1932,
+            "median": 10.37312,
+            "p95": 12.381197,
+            "max": 18.749362
+          },
+          "post_callback_ms": {
+            "n": 1932,
+            "median": 22.949756999999998,
+            "p95": 28.756202,
+            "max": 197.107974
+          },
+          "scans_over_500ms": 0
+        },
+        "after5s": {
+          "scan_ms": {
+            "n": 1890,
+            "median": 36.9043425,
+            "p95": 59.713825,
+            "max": 259.09229
+          },
+          "main_ms": {
+            "n": 1890,
+            "median": 10.426645,
+            "p95": 12.410322,
+            "max": 18.749362
+          },
+          "post_callback_ms": {
+            "n": 1890,
+            "median": 22.983659,
+            "p95": 29.035793,
+            "max": 197.107974
+          },
+          "scans_over_500ms": 0
+        },
+        "last20s": {
+          "scan_ms": {
+            "n": 199,
+            "median": 37.393584,
+            "p95": 40.057668,
+            "max": 51.208634
+          },
+          "main_ms": {
+            "n": 199,
+            "median": 10.944736,
+            "p95": 12.364675,
+            "max": 18.143472
+          },
+          "post_callback_ms": {
+            "n": 199,
+            "median": 23.014994,
+            "p95": 24.47687,
+            "max": 26.595463
+          },
+          "scans_over_500ms": 0
+        }
+      },
+      "glim_internal_queue_max": 1,
+      "main_prepared_hits": 897958,
+      "main_sync_calls": 0,
+      "kimera_timing_after5s": {
+        "optimize_ms": {
+          "n": 925,
+          "median": 52.9692,
+          "p95": 72.8307,
+          "max": 105.125
+        },
+        "smoother_ms": {
+          "n": 925,
+          "median": 14.5514,
+          "p95": 19.3629,
+          "max": 47.1479
+        },
+        "outgoing_ms": {
+          "n": 925,
+          "median": 35.4042,
+          "p95": 53.4046,
+          "max": 57.6654
+        },
+        "backend_ms": {
+          "n": 925,
+          "median": 53.4498,
+          "p95": 73.5044,
+          "max": 105.928
+        }
+      },
+      "source_coverage": {
+        "passed": true,
+        "requested_s": 194.02,
+        "imu_samples": 19402,
+        "imu_span_s": 194.01000475883484,
+        "coverage_contract": "native_keyframes_cpk22",
+        "kimera_gap_bound_s": 5.1499999999999995,
+        "native_glim": {
+          "rows": 1933,
+          "start_s": 1730565903.58883,
+          "end_s": 1730566096.788463,
+          "span_s": 193.19963312149048,
+          "maximum_pose_gap_s": 0.1013190746307373,
+          "post_startup_max_gap_s": 0.1013190746307373,
+          "start_after_first_imu_s": 0.7146358489990234,
+          "tail_behind_last_imu_s": 0.09573578834533691,
+          "path_length_m": 86.41090015128242,
+          "gaps_over_1s": [],
+          "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+        },
+        "native_kimera": {
+          "rows": 950,
+          "start_s": 1730565903.0725975,
+          "end_s": 1730566096.870908,
+          "span_s": 193.79831051826477,
+          "maximum_pose_gap_s": 0.6999940872192383,
+          "post_startup_max_gap_s": 0.6999940872192383,
+          "start_after_first_imu_s": 0.19840335845947266,
+          "tail_behind_last_imu_s": 0.013290882110595703,
+          "path_length_m": 86.53387354118617,
+          "gaps_over_1s": [],
+          "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+        },
+        "kimera_processing": {
+          "passed": true,
+          "logs": [
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/full_on_source/estimators.log",
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/full_on_source/ros_logs/ac03e444-cd70-11f1-9617-7e8225c4d31f/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log",
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/full_on_source/ros_logs/latest/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log"
+          ],
+          "frontend_processed": 1939,
+          "synchronized_input_pairs_reference": 1940,
+          "frontend_reference_after_startup": 1937,
+          "backend_processed": 950,
+          "sequential_native_ids": true,
+          "gaps": [],
+          "scope": "Native counters, not a new per-image receipt or branch-decision audit."
+        }
+      }
+    }
+  },
+  "evaluation": {
+    "reference": {
+      "path": "/workspace/cbs_gtsam4.3/src/datasets/GrandTour/SPX-3/2024-11-02-17-43-10_cpt7_ie_tc.bag",
+      "sha256": "563ad3681eb40ed85bb682926ea1bdafb86b038dfffa7e6413cc4e32b8fb75aa",
+      "topic": "/boxi/inertial_explorer/tc/odometry",
+      "frame_ids": [
+        "enu_origin"
+      ],
+      "child_frame_ids": [
+        "cpt7_imu"
+      ],
+      "caveat": "IE-TC GNSS/INS reference shares CPT7 IMU; not independent prism GT"
+    },
+    "common_mask": {
+      "rows": 1913,
+      "start_s": 1730565903.6,
+      "end_s": 1730566096.6998158,
+      "coverage": {
+        "grid_queries": 1932,
+        "excluded_queries": 19,
+        "envelope_s": 193.0998158454895,
+        "covered_contiguous_duration_s": 190.899817943573,
+        "segments": [
+          {
+            "start_s": 1730565903.6,
+            "end_s": 1730566058.9998517,
+            "rows": 1555
+          },
+          {
+            "start_s": 1730566059.699851,
+            "end_s": 1730566068.2998428,
+            "rows": 87
+          },
+          {
+            "start_s": 1730566069.099842,
+            "end_s": 1730566070.4998407,
+            "rows": 15
+          },
+          {
+            "start_s": 1730566071.19984,
+            "end_s": 1730566096.6998158,
+            "rows": 256
+          }
+        ],
+        "maximum_query_gap_s": 0.7999992370605469
+      },
+      "timestamps_sha256": "386438cad2e6341beb65f57eefe412d0f1ec1f7af51fb2143968bdac7fe1ee40",
+      "interpolation_gap_estimate_s": 0.5,
+      "interpolation_gap_reference_s": 0.05
+    },
+    "path_length_caveat": "Polyline through actual saved or supported queried positions; includes chords across missing intervals, not dense coverage.",
+    "convention": "Per-path rigid SE(3) no-scale alignment for ATE at prism lever arm; 1s RPE in prism frame, no global alignment",
+    "results": {
+      "off_native_glim": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/full_off_source/odom_imu.txt",
+        "sha256": "5237191a301c1a827b302d1518f5dff300125a0b2246bb9924cf17d5d128c56c",
+        "full_saved_rows": 1933,
+        "full_saved_span_s": 193.19963312149048,
+        "full_saved_path_length_CPT7_m": 86.3358750389875,
+        "full_saved": {
+          "rows": 1933,
+          "start_s": 1730565903.58883,
+          "end_s": 1730566096.788463,
+          "span_s": 193.19963312149048,
+          "ATE_RMSE_m": 0.016896995101494856,
+          "translation_RPE_1s_RMSE_m": 0.006559414481795117,
+          "rotation_RPE_1s_RMSE_deg": 0.26454908603052,
+          "path_length_prism_m": 90.48264413603033,
+          "reference_path_length_prism_m": 90.3289698640979,
+          "rpe_pairs": 1922,
+          "error_m": {
+            "n": 1933,
+            "mean": 0.015987011361354334,
+            "median": 0.01619770820477257,
+            "p95": 0.024380451345117196,
+            "max": 0.04000662644602179
+          }
+        },
+        "common": {
+          "rows": 1913,
+          "start_s": 1730565903.6,
+          "end_s": 1730566096.6998158,
+          "ATE_RMSE_m": 0.016851742042029827,
+          "translation_RPE_1s_RMSE_m": 0.006639260332543232,
+          "rotation_RPE_1s_RMSE_deg": 0.26794946034976025,
+          "path_length_prism_m": 90.35045191585996,
+          "reference_path_length_prism_m": 90.34564963147474,
+          "error_m": {
+            "n": 1913,
+            "mean": 0.015922077820134214,
+            "median": 0.01617773103066761,
+            "p95": 0.024497759337343994,
+            "max": 0.0383186955886519
+          },
+          "rpe_pairs": 1873
+        }
+      },
+      "off_native_kimera": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/full_off_source/kimera_odometry.csv",
+        "sha256": "a01a98576df325f7501d547a75bfcf280cd899e370b2aff549e762a558a27505",
+        "full_saved_rows": 951,
+        "full_saved_span_s": 193.79831051826477,
+        "full_saved_path_length_CPT7_m": 85.4925071372898,
+        "full_saved": {
+          "rows": 951,
+          "start_s": 1730565903.0725975,
+          "end_s": 1730566096.870908,
+          "span_s": 193.79831051826477,
+          "ATE_RMSE_m": 0.5524839223243033,
+          "translation_RPE_1s_RMSE_m": 0.14463006943107903,
+          "rotation_RPE_1s_RMSE_deg": 0.5706828759159963,
+          "path_length_prism_m": 89.12583023062669,
+          "reference_path_length_prism_m": 90.2729200591424,
+          "rpe_pairs": 1916,
+          "error_m": {
+            "n": 951,
+            "mean": 0.4551643842157897,
+            "median": 0.48105830338270056,
+            "p95": 0.772332141492844,
+            "max": 2.956844808723927
+          }
+        },
+        "common": {
+          "rows": 1913,
+          "start_s": 1730565903.6,
+          "end_s": 1730566096.6998158,
+          "ATE_RMSE_m": 0.5281451480672618,
+          "translation_RPE_1s_RMSE_m": 0.1410574403917848,
+          "rotation_RPE_1s_RMSE_deg": 0.5601523822033322,
+          "path_length_prism_m": 88.6310820910778,
+          "reference_path_length_prism_m": 90.34564963147474,
+          "error_m": {
+            "n": 1913,
+            "mean": 0.44437531460949387,
+            "median": 0.47743406262876903,
+            "p95": 0.7685960930823366,
+            "max": 2.7144216928524108
+          },
+          "rpe_pairs": 1873
+        }
+      },
+      "off_fused_online": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/full_off_receiver/receiver/online_trajectory.tum",
+        "sha256": "937ba3059da0460e124889db11ca84bf7e01758e9abc2aad3924832e2de2c934",
+        "full_saved_rows": 1935,
+        "full_saved_span_s": 193.39999985694885,
+        "full_saved_path_length_CPT7_m": 95.24175056672912,
+        "full_saved": {
+          "rows": 1935,
+          "start_s": 1730565903.454194,
+          "end_s": 1730566096.854194,
+          "span_s": 193.39999985694885,
+          "ATE_RMSE_m": 0.05860252224615065,
+          "translation_RPE_1s_RMSE_m": 0.033176572614685304,
+          "rotation_RPE_1s_RMSE_deg": 1.347217798110861,
+          "path_length_prism_m": 99.67769555063514,
+          "reference_path_length_prism_m": 90.43208054256021,
+          "rpe_pairs": 1923,
+          "error_m": {
+            "n": 1935,
+            "mean": 0.053451580846213945,
+            "median": 0.05224070216786921,
+            "p95": 0.08846251804048384,
+            "max": 0.2693965865518057
+          }
+        },
+        "common": {
+          "rows": 1913,
+          "start_s": 1730565903.6,
+          "end_s": 1730566096.6998158,
+          "ATE_RMSE_m": 0.056171125533238234,
+          "translation_RPE_1s_RMSE_m": 0.03350070561856552,
+          "rotation_RPE_1s_RMSE_deg": 1.3646420615640023,
+          "path_length_prism_m": 94.09000427077913,
+          "reference_path_length_prism_m": 90.34564963147474,
+          "error_m": {
+            "n": 1913,
+            "mean": 0.0516843580896087,
+            "median": 0.05183158743206976,
+            "p95": 0.08175346717985968,
+            "max": 0.22829787644952482
+          },
+          "rpe_pairs": 1873
+        }
+      },
+      "off_fused_finalized": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/full_off_receiver/receiver/finalized_trajectory.tum",
+        "sha256": "72a00d465a156975556e2252e257dbb2904feb848cb4a2e31cbeb9c3238f9c5a",
+        "full_saved_rows": 1935,
+        "full_saved_span_s": 193.39999985694885,
+        "full_saved_path_length_CPT7_m": 86.18108208367289,
+        "full_saved": {
+          "rows": 1935,
+          "start_s": 1730565903.454194,
+          "end_s": 1730566096.854194,
+          "span_s": 193.39999985694885,
+          "ATE_RMSE_m": 0.051391891848006556,
+          "translation_RPE_1s_RMSE_m": 0.00998011465681146,
+          "rotation_RPE_1s_RMSE_deg": 0.25411372878660254,
+          "path_length_prism_m": 90.29909602397234,
+          "reference_path_length_prism_m": 90.43208054256021,
+          "rpe_pairs": 1923,
+          "error_m": {
+            "n": 1935,
+            "mean": 0.04862830371552164,
+            "median": 0.05099421743885706,
+            "p95": 0.06941172371942175,
+            "max": 0.26955381067530887
+          }
+        },
+        "common": {
+          "rows": 1913,
+          "start_s": 1730565903.6,
+          "end_s": 1730566096.6998158,
+          "ATE_RMSE_m": 0.05091374312188482,
+          "translation_RPE_1s_RMSE_m": 0.009683288797700862,
+          "rotation_RPE_1s_RMSE_deg": 0.25687655813010324,
+          "path_length_prism_m": 89.9175121996744,
+          "reference_path_length_prism_m": 90.34564963147474,
+          "error_m": {
+            "n": 1913,
+            "mean": 0.04839479710112059,
+            "median": 0.0508450435391655,
+            "p95": 0.06925456220530879,
+            "max": 0.18838343364409751
+          },
+          "rpe_pairs": 1873
+        }
+      },
+      "on_native_glim": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/full_on_source/odom_imu.txt",
+        "sha256": "89d39070d080cd703deb188d5b90ec7520bebf09463917508f611a9212e3896d",
+        "full_saved_rows": 1933,
+        "full_saved_span_s": 193.19963312149048,
+        "full_saved_path_length_CPT7_m": 86.41090015128242,
+        "full_saved": {
+          "rows": 1933,
+          "start_s": 1730565903.58883,
+          "end_s": 1730566096.788463,
+          "span_s": 193.19963312149048,
+          "ATE_RMSE_m": 0.016884926098886553,
+          "translation_RPE_1s_RMSE_m": 0.006690542942048361,
+          "rotation_RPE_1s_RMSE_deg": 0.24173568059313386,
+          "path_length_prism_m": 90.56301775559419,
+          "reference_path_length_prism_m": 90.3289698640979,
+          "rpe_pairs": 1922,
+          "error_m": {
+            "n": 1933,
+            "mean": 0.015963734122440593,
+            "median": 0.01632859617304339,
+            "p95": 0.024395799628293705,
+            "max": 0.042051095351746746
+          }
+        },
+        "common": {
+          "rows": 1913,
+          "start_s": 1730565903.6,
+          "end_s": 1730566096.6998158,
+          "ATE_RMSE_m": 0.01683507170981546,
+          "translation_RPE_1s_RMSE_m": 0.006770630128471711,
+          "rotation_RPE_1s_RMSE_deg": 0.24483560595958592,
+          "path_length_prism_m": 90.40135595975518,
+          "reference_path_length_prism_m": 90.34564963147474,
+          "error_m": {
+            "n": 1913,
+            "mean": 0.015894612420410008,
+            "median": 0.016153111468483066,
+            "p95": 0.02443584249880043,
+            "max": 0.040314496138570535
+          },
+          "rpe_pairs": 1873
+        }
+      },
+      "on_native_kimera": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/full_on_source/kimera_odometry.csv",
+        "sha256": "1a5fe8418c4fd74ca147c379f3894cb2250d12b2a8d34dd51a653b4f46ae2186",
+        "full_saved_rows": 950,
+        "full_saved_span_s": 193.79831051826477,
+        "full_saved_path_length_CPT7_m": 86.53387354118617,
+        "full_saved": {
+          "rows": 950,
+          "start_s": 1730565903.0725975,
+          "end_s": 1730566096.870908,
+          "span_s": 193.79831051826477,
+          "ATE_RMSE_m": 0.12006679890982645,
+          "translation_RPE_1s_RMSE_m": 0.024173568304197143,
+          "rotation_RPE_1s_RMSE_deg": 0.4930766565657055,
+          "path_length_prism_m": 90.61093284619366,
+          "reference_path_length_prism_m": 90.27286334801025,
+          "rpe_pairs": 1890,
+          "error_m": {
+            "n": 950,
+            "mean": 0.11063568453846799,
+            "median": 0.10187880366964888,
+            "p95": 0.1764729225570425,
+            "max": 0.4908526541943878
+          }
+        },
+        "common": {
+          "rows": 1913,
+          "start_s": 1730565903.6,
+          "end_s": 1730566096.6998158,
+          "ATE_RMSE_m": 0.11759922793011302,
+          "translation_RPE_1s_RMSE_m": 0.017971928929891898,
+          "rotation_RPE_1s_RMSE_deg": 0.48499889451119615,
+          "path_length_prism_m": 90.12656582913155,
+          "reference_path_length_prism_m": 90.34564963147474,
+          "error_m": {
+            "n": 1913,
+            "mean": 0.10927213432749314,
+            "median": 0.10093837873285812,
+            "p95": 0.17512167484937696,
+            "max": 0.34954115521321893
+          },
+          "rpe_pairs": 1873
+        }
+      },
+      "on_fused_online": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/full_on_receiver/receiver/online_trajectory.tum",
+        "sha256": "eb0a31be8e2cf15ce313bf00207777e5487cf351d5b3d5cef0d4a18d21324129",
+        "full_saved_rows": 1935,
+        "full_saved_span_s": 193.39999985694885,
+        "full_saved_path_length_CPT7_m": 92.30641376825797,
+        "full_saved": {
+          "rows": 1935,
+          "start_s": 1730565903.454194,
+          "end_s": 1730566096.854194,
+          "span_s": 193.39999985694885,
+          "ATE_RMSE_m": 0.04499148863748279,
+          "translation_RPE_1s_RMSE_m": 0.028502527198477835,
+          "rotation_RPE_1s_RMSE_deg": 1.3229601878998862,
+          "path_length_prism_m": 97.28472362823496,
+          "reference_path_length_prism_m": 90.43208054256021,
+          "rpe_pairs": 1923,
+          "error_m": {
+            "n": 1935,
+            "mean": 0.04034216324545471,
+            "median": 0.03370123631708435,
+            "p95": 0.07592696125444286,
+            "max": 0.26946401044917073
+          }
+        },
+        "common": {
+          "rows": 1913,
+          "start_s": 1730565903.6,
+          "end_s": 1730566096.6998158,
+          "ATE_RMSE_m": 0.04296432113830807,
+          "translation_RPE_1s_RMSE_m": 0.028864130028049755,
+          "rotation_RPE_1s_RMSE_deg": 1.3402989161421326,
+          "path_length_prism_m": 93.95423653649232,
+          "reference_path_length_prism_m": 90.34564963147474,
+          "error_m": {
+            "n": 1913,
+            "mean": 0.03897765422159585,
+            "median": 0.03326696204723723,
+            "p95": 0.0714620146041785,
+            "max": 0.22531608400867803
+          },
+          "rpe_pairs": 1873
+        }
+      },
+      "on_fused_finalized": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/full_on_receiver/receiver/finalized_trajectory.tum",
+        "sha256": "d6bbe280bf52aa6c7c91c3297e0c8afb1d24ee6badbccbd81d01583a9ed1b13a",
+        "full_saved_rows": 1935,
+        "full_saved_span_s": 193.39999985694885,
+        "full_saved_path_length_CPT7_m": 86.36865942956399,
+        "full_saved": {
+          "rows": 1935,
+          "start_s": 1730565903.454194,
+          "end_s": 1730566096.854194,
+          "span_s": 193.39999985694885,
+          "ATE_RMSE_m": 0.03928069213942598,
+          "translation_RPE_1s_RMSE_m": 0.008132017962167285,
+          "rotation_RPE_1s_RMSE_deg": 0.2584331582138858,
+          "path_length_prism_m": 90.51920218021732,
+          "reference_path_length_prism_m": 90.43208054256021,
+          "rpe_pairs": 1923,
+          "error_m": {
+            "n": 1935,
+            "mean": 0.036243249704922445,
+            "median": 0.032119509797741634,
+            "p95": 0.0693526089452417,
+            "max": 0.152447104150612
+          }
+        },
+        "common": {
+          "rows": 1913,
+          "start_s": 1730565903.6,
+          "end_s": 1730566096.6998158,
+          "ATE_RMSE_m": 0.03919332353639107,
+          "translation_RPE_1s_RMSE_m": 0.008047266586147744,
+          "rotation_RPE_1s_RMSE_deg": 0.2614543099537423,
+          "path_length_prism_m": 90.10999515487829,
+          "reference_path_length_prism_m": 90.34564963147474,
+          "error_m": {
+            "n": 1913,
+            "mean": 0.036275468404206396,
+            "median": 0.03233077397568191,
+            "p95": 0.06897525644255142,
+            "max": 0.1285920010961662
+          },
+          "rpe_pairs": 1873
+        }
+      }
+    },
+    "covariance": {
+      "off": {
+        "kimera_front": {
+          "versions": 22800,
+          "stable_ids": 924,
+          "revised_ids": 923,
+          "rotation_trace_rad2": {
+            "n": 22800,
+            "mean": 8.13230413761193e-08,
+            "median": 5.750391200250614e-08,
+            "p95": 1.8353790001736073e-07,
+            "max": 1.1999514634161957e-05
+          },
+          "translation_trace_m2": {
+            "n": 22800,
+            "mean": 1.4686309592669495e-05,
+            "median": 6.915671586355632e-06,
+            "p95": 4.7727070821876e-05,
+            "max": 0.003373263724912369
+          },
+          "min_eigenvalue": 7.316337477466084e-10,
+          "max_eigenvalue": 0.002821042172822127,
+          "max_symmetry_error": 0.0,
+          "first_last_rotation_trace_ratio": {
+            "n": 923,
+            "mean": 0.596463236098433,
+            "median": 0.5860649079028266,
+            "p95": 1.0513963777836843,
+            "max": 1.6895335569979784
+          },
+          "first_last_translation_trace_ratio": {
+            "n": 923,
+            "mean": 0.3783142505526062,
+            "median": 0.3172961615347237,
+            "p95": 0.9056283650087048,
+            "max": 2.1384058967844957
+          }
+        },
+        "glim_hesai": {
+          "versions": 92057,
+          "stable_ids": 1930,
+          "revised_ids": 1929,
+          "rotation_trace_rad2": {
+            "n": 92057,
+            "mean": 9.442622526605683e-08,
+            "median": 8.610948607694878e-08,
+            "p95": 1.6975496147393552e-07,
+            "max": 4.233961371034557e-07
+          },
+          "translation_trace_m2": {
+            "n": 92057,
+            "mean": 1.858509438702946e-06,
+            "median": 1.6514009855308515e-06,
+            "p95": 2.985544388875253e-06,
+            "max": 8.119753070592496e-06
+          },
+          "min_eigenvalue": 4.349388378522734e-09,
+          "max_eigenvalue": 3.827234804427153e-06,
+          "max_symmetry_error": 0.0,
+          "first_last_rotation_trace_ratio": {
+            "n": 1929,
+            "mean": 0.7944138991970874,
+            "median": 0.8061533312518309,
+            "p95": 0.8415583305980381,
+            "max": 0.8904843834464322
+          },
+          "first_last_translation_trace_ratio": {
+            "n": 1929,
+            "mean": 0.6272858647319126,
+            "median": 0.6352844205523571,
+            "p95": 0.6588197691049138,
+            "max": 0.7020540086788692
+          }
+        }
+      },
+      "on": {
+        "kimera_front": {
+          "versions": 22850,
+          "stable_ids": 926,
+          "revised_ids": 925,
+          "rotation_trace_rad2": {
+            "n": 22850,
+            "mean": 5.2676282098075204e-08,
+            "median": 4.3565503975927153e-08,
+            "p95": 8.33617840725465e-08,
+            "max": 1.1999514634161957e-05
+          },
+          "translation_trace_m2": {
+            "n": 22850,
+            "mean": 1.1420222416417943e-05,
+            "median": 4.701546759243188e-06,
+            "p95": 3.8116905475773854e-05,
+            "max": 0.0023572865873421086
+          },
+          "min_eigenvalue": 1.6681471431862742e-11,
+          "max_eigenvalue": 0.0015027070466968663,
+          "max_symmetry_error": 0.0,
+          "first_last_rotation_trace_ratio": {
+            "n": 925,
+            "mean": 0.5051167057473874,
+            "median": 0.5194157937191378,
+            "p95": 0.787502651343741,
+            "max": 0.9911117993609111
+          },
+          "first_last_translation_trace_ratio": {
+            "n": 925,
+            "mean": 0.23507023925946915,
+            "median": 0.21500382577352978,
+            "p95": 0.45328668512451087,
+            "max": 0.9674935765184712
+          }
+        },
+        "glim_hesai": {
+          "versions": 92340,
+          "stable_ids": 1930,
+          "revised_ids": 1929,
+          "rotation_trace_rad2": {
+            "n": 92340,
+            "mean": 9.549953415870337e-08,
+            "median": 8.782411667337936e-08,
+            "p95": 1.6899134885031234e-07,
+            "max": 4.4588668060527154e-07
+          },
+          "translation_trace_m2": {
+            "n": 92340,
+            "mean": 1.8557190512650369e-06,
+            "median": 1.6452931244095667e-06,
+            "p95": 2.9565876788648416e-06,
+            "max": 7.672688664223726e-06
+          },
+          "min_eigenvalue": 4.321793508064089e-09,
+          "max_eigenvalue": 3.919421812079411e-06,
+          "max_symmetry_error": 0.0,
+          "first_last_rotation_trace_ratio": {
+            "n": 1929,
+            "mean": 0.7936217713822883,
+            "median": 0.8056984313555876,
+            "p95": 0.8404882389347139,
+            "max": 0.8872217501815572
+          },
+          "first_last_translation_trace_ratio": {
+            "n": 1929,
+            "mean": 0.6279209590532874,
+            "median": 0.6356702211005528,
+            "p95": 0.6598297382364406,
+            "max": 0.7036857088803067
+          }
+        }
+      }
+    }
+  },
+  "protected_unchanged": 2613,
+  "identical_source_profiles": true,
+  "no_exhaustive_observer": true,
+  "no_saved_journal_repeat": true,
+  "limits": "One full-sequence experimental pair, not an exhaustive batching-preservation certificate; IE-TC shares CPT7; no nonlinear stationarity claim."
+}

@@ -1,0 +1,78 @@
+CP-V11 — Leica-2 Velodyne trajectories in Rerun
+COMPLETED 2026-10-26. Saved-data visualization; no estimator experiment.
+
+OPEN
+leica2_velodyne_first_published.rrd (Rerun 0.31.4, approximately 16 MB).
+Native viewer opened at 16:33 local: wrapper PID69953, native viewer PID69954.
+viewer_launch.json records the launch, localhost-only binding and 2GB cap.
+No source replay, containers, settings, binaries, covariance or old results changed.
+
+PRODUCTS AND ALIGNMENT
+Original CP-V4 Leica-2 rear-Velodyne CBS OFF/ON baseline, NOT the rejected
+rotation-weight or gravity-projection candidates. GLIM is first-published
+glim_odometry.csv, Kimera is saved ROS odometry, fusion is ONLINE append-only.
+All poses transformed to the same prism point. ONE rigid no-scale SE(3) fit
+per estimator/mode from CP-V10's common mask, applied to ALL native samples.
+These offline visualization alignments preserve all within-path distances;
+they do not correct time-varying drift or make the poses ground-truth aided.
+Reference IE-TC shares CPT7 and is not independent prism ground truth.
+
+VIEWS
+- Opening tab: selected 380--390s close-up, OFF left/ON right, XY above/XZ below.
+  Blue reference, green GLIM first-publication, orange Kimera, red fusion ONLINE.
+  Dot = original sample. Same spatial bounds per projection across modes.
+  2D vertical screen coordinate is negated so north/height appears upwards.
+  Window selected for greatest OFF 10s fusion-minus-reference path excess
+  among integer-second windows fully supported by CP-V10 common mask.
+  This is deliberately a worst-window inspection, NOT a typical-window claim.
+- Full paths (3D): zoom/orbit the complete saved trajectories, including points
+  outside the common scoring mask. No estimator smoothing, decimation or
+  resampling. Kimera gaps >0.5s split lines; isolated samples remain.
+- Scrub 10s + step lengths: drag seconds timeline; each 3D view retains the
+  preceding ten seconds. Charts show actual consecutive 100ms fusion step
+  lengths and reference displacement at the same endpoints, in metres.
+- Legend and interpretation: identities, controls and scientific caveats.
+
+OBSERVATION
+The inspected close-up visibly contains jagged/back-and-forth structure in
+the red fusion ONLINE path, stronger OFF than ON, including vertical motion.
+For the 100 fusion intervals ending within (380,390]s, accumulated displacement
+is OFF7.929m / ON3.673m; reference at the identical endpoints is1.680m.
+The first included edge straddles380s; this endpoint convention is disclosed.
+The static plot shows only vertices within [380,390]s (99 edges): OFF7.904m,
+ON3.629m. Do not present this deliberately selected interval as an average.
+
+Full saved fusion native-point path is OFF280.154m / ON235.137m, compared with
+reference205.929m at the same fusion timestamps. This verifies excess path in
+the connected published estimates, NOT physical travel distance. The full
+GLIM/Kimera plots retain their own sampling and coverage; do not compare their
+raw native path lengths as if they used identical sample rates/masks. CP-V10
+remains the source for common-mask comparison metrics.
+
+INTERPRETATION LIMIT
+This is not a snapshot of the latest revised active-window solution. ONLINE
+does not replace earlier published points; corrections can cause discontinuity
+when connecting first publications. The visualization cannot establish that
+the later revised graph trajectory or drone's physical flight zigzagged.
+No refined GLIM or finalized fusion is substituted. Kimera's saved output
+chains optimized relative motions; matching publication stage is not proof
+of equal latency. Existing mean-only covariance alignment remains unchanged.
+
+CHECKS
+recording_checks.json: PASS. Read back every timestamp, float32 vertex and
+temporal segment from the RRD, exactly matched to trajectories.npz. 20,997
+estimator samples and85,750reference samples (reference duplicated per mode).
+Gap breaks verified; no estimator points omitted.15pinned input/helper files
+unchanged before/after. Same-mask ATE fits reproduce CP-V10 within1e-9m.
+Rigid-transform edge lengths preserved within1e-10m. Maximum estimator
+float32 coordinate error after origin shift is1.906e-6m (about2micrometres).
+rerun_closeup.png is an actual Rerun screenshot, visually inspected.
+
+VIEWER/TOOL QUIRKS (not estimator failures)
+Entity whitespace produced auto-escaping warnings; saved entity paths and all
+coordinates were independently verified. Native --screenshot-to produced the
+valid screenshot, then exited102 with 'Failed to take store hub from the Viewer'
+during shutdown. The normally opened viewer remains running with empty log.
+CLI 'rrd verify' consumed one CPU for over five minutes without completing;
+only that owned verifier was stopped. We do NOT claim its success. Complete
+SDK decode/readback and native rendering passed instead. No source rerun.

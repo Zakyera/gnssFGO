@@ -1,0 +1,49 @@
+CP-K18 — full ETH1 batched matched CBS-OFF/ON, 2026-10-21
+
+User: "Let's try the full sequence before we touch kimera. Start it".
+Extend the completed CP-K17 matched60s setup; do not repair Kimera here.
+Run OFF once, then ON once ONLY after OFF capture and its three ordinary
+saved-data checks pass. No repeated source capture or automatic retry.
+Headless0.20x, selected-topic offset0, duration346.32s,25sdrain, ROS port11469.
+Window start1727775007855396309ns/end1727775354175396309ns includes the last
+Hesai record1727775354174658060ns; excludes later camera/IMU-only tails.
+
+Exact CP-K17 private binaries, input profiles, launch settings and transport.
+GLIM Hesai+CPT7,5s lag,K16a MAIN batching only in GLIM,CP-I1/CP-I3 all-LOCAL
+dense covariance every version,corrected MAIN means,shared_native provider.
+K16a gtsam_points SHA256:
+6f71292d29d974a0555abd9fda6b2370fdab81ca634a4e1343c216d2a762d2ca
+Kimera front Alphasense stereo+CPT7,25states,unchanged CP-K9 private DSO:
+CPK9_PRIOR_REFRESH=1,FL4Q_ENABLE=0,FL4M_RETIREMENT=remove,native IMU override unset.
+Classic active_window_temporary CBS only ON; no source live_revision.
+0.20s belief horizon,one pair/update,Gaussian scales1,no robust/health weighting.
+Keep existing mean-only peer alignment/covariance approximation unchanged.
+Receiver unchanged FL4e7s fixed-lag source_wnoa,independent100ms supports,
+unchanged Qc/priors,no central IMU/GNSS,stable-ID mean/full-covariance replacement.
+
+No rebuild,model/settings/tuning change,companion optimizer,GPU snapshot observer,
+exhaustive preservation checker,saved-journal repeat or default promotion.
+The known variable-history Kimera/7s receiver retention mismatch is UNCHANGED;
+stop and preserve evidence if it occurs. Do not relax guards or call a prefix
+a complete full-sequence result. ON is not allowed after OFF failure/blocker.
+
+Run root:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_batched_full_cpk18_20261021/prepared
+Validation root:
+/home/yeranis/results/gnssfgo_eth1_batched_full_cpk18_20261021
+For each completed mode run validate_local.py, validate_candidate.py and
+validate_case.py check ONCE using /home/yeranis/.local/share/pipx/venvs/evo/bin/python.
+Inspect existing passed artifacts first; never overwrite validation/capture roots.
+Admit ON using preflight_on.py, then run_case_on.py full on.
+After both pass use the existing evaluate_fl4f.py in the Noetic container,
+then summarize.py once. Its RESULTS_REPORT.txt supplements the status REPORT.txt.
+
+Report original/native GLIM,original/native Kimera ROS odometry and concurrent
+ONLINE fusion, OFF/ON ATE,1s translation/rotation RPE,path lengths,full-saved and
+common-mask coverage. DELAYED fixed-lag-finalized stays separate,not online or
+full-history. IE-TC shares CPT7,not independent prism ground truth. Disclose
+startup/internal/tail gaps and unchanged covariance alignment approximation.
+Keep all existing covariance/revision/payload/lifecycle/timing logs. No Rerun
+load during capture. No nonlinear stationarity claim from incremental checks.
+Restore both originally-stopped containers after all owned jobs exit.
+No commit/push,automatic retry,new method or other sequence.

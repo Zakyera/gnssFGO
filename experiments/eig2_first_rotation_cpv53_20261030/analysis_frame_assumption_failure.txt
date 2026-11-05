@@ -1,0 +1,18 @@
+The preserved analyze_v2.py stopped at the header assertion before outputs.
+Exactly one incoming GLIM5->7 message exists, source103 ('g'), with identical
+mean and times, but header.frame_id is 'map', not 'cpt7_imu'.
+
+This was an incorrect diagnostic assumption, not an observed change to the
+payload. Saved effective launch: glim_cbs_frame_id=map, child_frame=cpt7_imu;
+Kimera base_link_frame_id=cpt7_imu and cbs_external_pose_frame_id=cpt7_imu.
+Publisher cbs_bridge.cpp3394/3407 copies configured world header into belief.
+Native measured transform is MAIN from_pose.between(to_pose), with X=T_world_imu.
+KimeraVioRos.cpp2599 records header label; 2614 selects body conjugation from
+configured external/body frames, not the message's world header. Equal configured
+body frames take no conjugation. Exact endpoint/payload/aligned-factor matching
+is still required. The distinction is verified rather than inferring wrong
+coordinates from the map label.
+
+Fresh analyze_v3.py retains all numerical checks and replaces the incorrect
+header assumption with explicit checks of the actual world label, source and
+all four saved effective frame settings. No experiment guard/model is relaxed.

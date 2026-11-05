@@ -1,0 +1,122 @@
+CP-V9 — COMPLETED; SCIENTIFIC SCREEN FAILED (2026-10-26)
+=====================================================
+Authoritative closeout: report_repair/final.json, passed=true at13:41:35local.
+Both containers stopped;3027protected files and8captured/audit input hashes
+unchanged. No source rerun, replay, estimator build, tuning or default promotion.
+Original controller status.json/failed.json remain FAILED as historical evidence;
+they record the original reporter failure, not this completed saved-data closeout.
+Read DECISION_REPORT.txt/decision.json for the predeclared scientific decision;
+RESULTS_REPORT.txt/results.json retain full/native/ONLINE/DELAYED metrics,
+coverage,covariance,revisions,payload conservation and timing.
+
+AUDIT REPAIR VERIFIED
+The original reporter compared a floating-point rotation matrix directly to
+Exp(Log(matrix));93/1908edges failed its elementwise tolerance. The alignment
+and frozen rows store Log(measured_from_to), while the new factor logs its raw
+matrix. The tiny non-orthogonal component cannot survive the Log/Exp round trip.
+Maximum raw discrepancy3.7883e-12; orthogonality Frobenius defect9.3174e-12.
+Separately bounded polar-rotation comparison passes with ORIGINAL rtol1e-9 /
+atol1e-12: normalized maximum discrepancy1.4556e-13. No captured pose/factor
+was normalized or changed; all residual/Jacobian checks use RAW matrices.
+This is an explicit reporting representation correction, not a blanket
+tolerance increase or hidden runtime guard relaxation. See report_repair/PROTOCOL.txt.
+All1908G2K actual factors pass MCM^T,SPD,information-loss,residual and numerical
+Jacobian checks;1917K2G factors retain original full6D covariances;40capped
+actual4D audits agree. Covariance projection max error4.2352e-21, residual
+2.5822e-14, numerical Jacobian1.3281e-8 under original1e-7 absolute tolerance.
+Negative controls reject changed rotations,translation,covariance and scaling.
+Original failed validator and logs unchanged. report_repair/audit.json records
+the corrected check, raw failures and input hashes. No estimator crash occurred.
+
+FULL-SAVED ATE (metres; lower is better)
+Estimator              CBS OFF       Original CBS ON       Projected CBS ON
+Native GLIM             2.828135          .861349                .724307
+Native Kimera           1.097081         2.584159               3.949346
+Concurrent ONLINE       2.000424         1.828658               2.613159
+DELAYED finalized       2.000564         1.831814               2.617651
+Delayed is fixed-lag-finalized, NOT online or full-history.
+
+SAME-TIMESTAMP DECISION
+3850common supported queries/384.6s contiguous supported duration, unchanged
+from saved OFF/originalON baseline;389.7s envelope. Full428.75s capture completed;
+native startup/tail gaps and sparse stationary-tail keyframes remain disclosed.
+Every saved pose has reference coverage; zero terminal factor omissions.
+Common ATE originalON->candidate: GLIM.848116->.657661 (-22.46%);
+Kimera2.585334->3.937924 (+52.32%); ONLINE1.867962->2.575997 (+37.90%).
+Kimera20s total rotation RPE3.325698->2.501693deg improves24.78%, satisfying
+that one criterion. But10s/20s gravity-axis angular RPE worsen40.72%/38.47%.
+Fixed-start heading RMS improves~2.94--3.29%,absolute terminal heading improves
+~11.26--11.98% at all three anchors. Do not conflate accumulated heading with
+local10/20s heading increments. Kimera20s translation RPE.750430->.779991m.
+ATE and gravity-axis nonregression failures reject this candidate despite
+several favorable rotation metrics. Thresholds were NOT changed after scoring.
+
+TIMING / COVARIANCE
+Candidate after5s: GLIM scan median94.677/p95229.362/max741.705ms;
+32scans above500ms,internal queue max0. Kimera backend median88.088/
+p95188.815/max234.254ms. Predeclared p95 budgets pass, not a1x/0.5x claim.
+Projection setup median.147848/p95.493669/max.599486ms per inserted factor.
+206006GLIM and47655Kimera outgoing versions retained; full dense all-LOCAL
+covariances, revision histories and downstream transport remain in results.json
+and original source/receiver artifacts. Received4D factor noise is distinct
+from outgoing6D covariance traces. No uncertainty calibration claim.
+
+CONCLUSION
+Do not promote this fixed tilt-removal candidate. It improves total rotation
+RPE but does not recover Kimera's OFF position accuracy; it harms Kimera and
+ONLINEfusion global position accuracy versus originalON. This tests fixed
+gravity-separated projection, NOT an adaptive degeneracy detector or oracle
+selection of healthy degrees of freedom. The new factor also uses an exact
+Jacobian versus the original approximate BetweenFactor, as predeclared; this
+single closed-loop/stochastic-source experiment is not pure causal isolation.
+IE-TC shares CPT7; unchanged mean-only source covariance alignment remains.
+Stop here: no sweep, new run, defaults, commit or push.
+
+ORIGINAL PREPARATION / CAPTURE CHRONOLOGY (preserved below)
+--------------------------------------------------------
+User authorized the single full Leica-2 Velodyne ON projection ablation.
+See PROTOCOL.txt. Baselines remain immutable. No detector/default promotion.
+
+Private baseline rebuild exactly82f85c2a307a9d9a849b2b8f09bb5c1e026ad80a4ef0a633c903d30cca712476.
+Candidate1cb352151f192b0b9553de776be566480de7a33362f6c4f1932fbd4bbd53c8c2.
+1000dense/non-axis-aligned cases: residual projection difference0;
+numerical Jacobian max7.86e-10; world-frame invariance1.05e-15;
+information-loss minimum eigenvalue-4.75e-14(roundoff).
+Real BPSAM insertion4D/single factor,duplicate suppression,frozen M,retirement,
+independent native-only LOCAL marginal parity,CP-K9 fixed-lag/IMU/smart-factor
+rollback and deterministic repeat pass. Disabled states/covariances byte-identical
+against original libcbs. Neither installed libcbs nor Kimera/GLIM changed.
+Evidence: /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_gravity_projection_cpv9_20261026/test_final_result.json.
+
+Development history preserved: first compile needed GTSAM overload exposure;
+first synthetic lifecycle check rejected a standalone new factor type under
+existing SmartBackup whitelist. Final immutable BetweenFactor specialization
+preserves that same guarded rollback contract without editing/bypassing it.
+Old incompatible DSO/log retained. These were pre-capture implementation checks,
+not failed dataset attempts. Frozen CP-K9 Kimera DSO remains unchanged.
+Gravity from actual native IMU preintegration parameters; chart g=(Ri Rz)^T gW.
+New factor uses exact residual Jacobian; baseline approximate Jacobian unchanged.
+Raw6 observation diagnostics remain labeled distinct from actual4D factors;
+capped audit uses actual4D whitening/Hessians. No uncertainty calibration claim.
+
+Launched ONCE12:21:13local(+02:00); launcher25937/controller25944.
+Fresh run root:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared
+Validation root:
+/home/yeranis/results/gnssfgo_leica2_gravity_projection_cpv9_20261026
+3027protected files pinned;17.48GB free at preparation; no old outputs overwritten.
+Effective startup passed before playback. Three estimators advancing, initial
+receiver queue drains to0. First10actual projected factors independently checked:
+4D covariance equals MCM^T, full4x6 Jacobians, gravity read as native[0,0,9.81].
+First edge x4->x5; measured projection setup .591ms first/.083ms tenth.
+These initial rows do not imply full completion or accuracy improvement.
+Finite controller run_candidate.py owns source/gates/evaluation/summary/decision
+and cleanup. No persistent automation. Do NOT duplicate launch or any stage.
+Read status.json, full_on_control/complete.json or failed.txt for current state.
+Final intended products: RESULTS_REPORT.txt/results.json and
+DECISION_REPORT.txt/decision.json; the latter's scientific_screen_passed is
+separate from successful capture/operational checks. Baseline is not promoted.
+
+Controller finished 2026-10-26T13:00:14.549781+02:00: STOPPED/FAILED
+{"failure": {"stage": "validate_on_projection", "error": "CalledProcessError(1, ['/home/yeranis/.local/share/pipx/venvs/evo/bin/python', '/home/yeranis/repos/gnssFGO/experiments/leica2_gravity_projection_cpv9_20261026/validate_projection.py'])", "at": "2026-10-26T12:59:39.817864+02:00"}, "cleanup_error": null}
+No automatic retry. Scope-limited inhibitor releases when controller exits.

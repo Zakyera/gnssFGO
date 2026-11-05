@@ -1,0 +1,148 @@
+CP-K16f — identical prepared-input real MAIN history: PASSED
+2026-10-20. One separately authorized corrected eight-second attempt completed.
+
+Current result
+==============
+After the explicit user "Yes", launched k16f_source_2 ONCE, with the corrected
+already-built observer. The original k16f_source_1 failure below is preserved.
+No source retry beyond this authorization, estimator rebuild or tuning.
+
+The eight-second selected ETH1 input window at0.20x contained78Hesai scans and
+786CPT7 messages. All input identities/order were accounted for. The real source
+and independent companion completed143wrapper updates, including20updates with
+retirement. First retirement: update100,stamp1727775013.675051,50active poses.
+Final active poses51;417nonlinear slots. Both persistent histories agreed:
+
+  position / velocity / bias maximum difference        0
+  orientation Log maximum difference                   9.813077866773596e-18rad
+  full Gaussian matrix maximum difference              0
+  full joint and relative covariance maximum difference0
+
+The orientation value is numerical self-comparison roundoff. No acceptance
+threshold was relaxed. Factor identities/slots/keys, update decisions,
+retirements and GPU inlier/cache states matched. No fallback/reset/nonfinite
+values.627native input factors,482exact independent initial GPU snapshots,
+106286Gaussian matrix checks,25760GPU runtime checks,13476covariance checks
+across4492retained horizon-pair queries. The original route made3266synchronous
+derivative calls; the candidate consumed3266prepared results and made no
+synchronous calls. The requested derivative work was preserved.
+
+Native publication covers6.999902964s after initialization/look-ahead:
+71poses,first1727775008675043106ns,last1727775015674946070ns.
+Input-window startup gap.819646797s,tail gap.180450239s. Wrapper comparisons span
+7.099934816360474s, including the shutdown-buffered final scan. Do not describe
+this as eight seconds of published odometry.69first and2128revised beliefs
+were saved; every revised covariance has native_local provenance. First
+provider-to-wire covariance difference0,minimum exported covariance
+eigenvalue3.0657013190098235e-10,maximum symmetry error0.
+
+Interpretation and boundary
+===========================
+This passes the bounded real-input correctness gate through first retirement,
+in addition to K16b's synthetic removal/replacement/retirement checks. It is
+not a full-sequence or real CBS-ON certificate and does not promote defaults.
+The comparison is original-disabled versus enabled routes in the SAME unchanged
+K16a DSO; K16b separately checked original CP-I3 versus candidate-disabled parity.
+Independent prepared inputs and solver/LOCAL histories are described below.
+
+The capture took80.768wallseconds, including diagnostic duplication, exhaustive
+checks, startup and drain. THIS IS NOT A THROUGHPUT BENCHMARK. K16d's measured
+60s timing improvement remains separate, as does its failed fresh-capture
+numerical-equality gate. K16e located a stochastic prepared-input difference;
+neither K16e nor this short pass proves every later K16d difference harmless.
+
+Before/after integrity receipts pass:2026protected files,7pinned inputs,
+28prepared harness/profile files and five source repository fingerprints
+unchanged. Only output/config paths and diagnostic recording ID differ in
+effective parameters. All five owned processes exited0 and cleanup completed.
+Container restoration is recorded in CLOSEOUT_K16F.txt.
+No Kimera/fuser, model/covariance/sampling/lag/settings change, push, automation,
+or next source experiment. The independent Kimera11.10s revision-history versus
+7s receiver-retention problem is still unresolved.
+
+Authoritative completed evidence:
+ experiments/main_gpu_batching_cpk16_20261020/RESULT_K16F.json
+ experiments/main_gpu_batching_cpk16_20261020/authorize_k16f_2.txt
+ runs/main_gpu_batching_cpk16_20261020/k16f_source_2/integrity_before.json
+ runs/main_gpu_batching_cpk16_20261020/k16f_source_2/integrity_after.json
+ runs/main_gpu_batching_cpk16_20261020/k16f_source_2/paired/probe/updates.jsonl
+ runs/main_gpu_batching_cpk16_20261020/k16f_source_2/paired/capture_complete.json
+ runs/main_gpu_batching_cpk16_20261020/k16f_source_2/paired/cleanup.json
+
+Historical first-attempt failure and observer correction (preserved)
+==================================================================
+The following records the state BEFORE the subsequent explicit authorization
+and successful corrected attempt above. It is not the current completion status.
+
+One authorized8s GLIM-only capture was launched with the unchanged K16a DSO
+and CP-K14 profiles. It stopped in the new diagnostic observer at update1,
+before the first noninitialization optimization was compared.
+Reason: CPU factor clone sanity check called equals(...,0).
+This was MY DIAGNOSTIC ASSERTION ERROR, not an observed GLIM batching failure.
+The original failure and outputs remain at k16f_source_1/paired.
+No8s completion, retirement validation, ATE or timing result is claimed.
+
+Native GTSAM IMU preintegration equality contains:
+ abs(deltaTij_ - other.deltaTij_) < tol
+Thus tol0 rejects even a factor compared with itself.
+Focused loaded-library check confirms:
+ self_equals_zero=false; clone_equals_zero=false;
+ self_equals_positive=true; clone_equals_positive=true at1e-15;
+ entire Gaussian equation maximum difference0.
+Source reference:
+ src/gtsam/gtsam/navigation/ManifoldPreintegration.cpp::equals, lines47--49.
+The compiled-library proof, rather than this checkout alone, is authoritative.
+
+Corrected only the diagnostic CPU clone assertion to1e-15, and extended its
+three-update plumbing test to include actual ImuFactor, velocity and bias.
+Corrected observer builds under k16f_source_2; new plumbing test PASSES:
+3updates,11native input factors,2exact independent GPU input snapshots,
+5synchronous requests versus5prepared consumptions;63Gaussian matrix checks,
+3covariance checks. State/velocity/bias/Gaussian/covariance differences0;
+orientation Log self-comparison numerical floor7.12e-19rad. No retirement
+occurs in this tiny test; it does not replace the requested real8s gate.
+All original state/Gaussian/covariance limits and exact GPU gates UNCHANGED.
+
+Architecture of the prepared real check:
+Actual source runs the disabled/original route in the unchanged candidate DSO.
+Every prepared update is independently copied before optimization and replayed
+through a separate enabled MAIN wrapper, own solver and LOCAL history.
+No duplicate stochastic preprocessing, shared writable GPU factor, global
+environment switch, or feedback from the companion into the source.
+Original CP-I3 versus candidate-disabled parity remains separately evidenced
+by K16b; this is not two incompatible GTSAM libraries loaded into one process.
+The source and companion use the same frozen inputs in memory, not a new
+general-purpose persistent source replay format.
+
+No estimator/source library rebuilt; no covariance/model/sampler/lag/threshold/
+production settings, receiver or Kimera changes. No full experiment/retry,
+commit/push or automation.2026protected files,7pinned inputs and five source
+repository fingerprints unchanged (RESULT_K16F_PENDING.json).
+All failed-capture jobs exited; diagnostic code93 intentionally stops rather
+than triggering GLIM recovery. Existing containers restored stopped at closeout.
+One initial plumbing command used an unavailable container path and executed
+nothing; corrected mount path then ran normally. No hidden source rerun.
+
+Next boundary:
+User was asked to authorize ONE fresh8s attempt using corrected observer under
+k16f_source_2. It has NOT been launched. Before launch, inspect that root for
+any existing paired output and refuse duplicate/overwrite. Its corrected
+IMU-inclusive plumbing is already complete; do not repeat it.
+If authorized, input_k16f.py prepares the8s manifest and run_source_k16f.py
+launches once, using the existing Noetic environment inside cbsms_ws_gpu.
+Check every update through first5s retirement, full Gaussian/covariance/ID/
+GPU-state gates and source conservation; preserve failure and stop if any.
+
+Kimera's independent11.10s revision history versus7s receiver retention
+contract is still unresolved. No full-sequence readiness or candidate promotion.
+
+Evidence:
+ experiments/main_gpu_batching_cpk16_20261020/OBSERVER_CORRECTION_K16F.txt
+ experiments/main_gpu_batching_cpk16_20261020/RESULT_K16F_PENDING.json
+ runs/main_gpu_batching_cpk16_20261020/k16f_source_1/paired/
+ runs/main_gpu_batching_cpk16_20261020/k16f_source_1/cpu_copy_check/
+ runs/main_gpu_batching_cpk16_20261020/k16f_source_2/{build_1,smoke}/
+
+Historical status before reauthorization: CP_K16F_REAL_HISTORY_GATE_NOT_COMPLETED
+
+Current bounded gate: CP_K16F_REAL_HISTORY_GATE_PASSED

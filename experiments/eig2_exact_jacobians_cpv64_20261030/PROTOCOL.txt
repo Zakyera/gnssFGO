@@ -1,0 +1,67 @@
+CP-V64 — isolated exact nonvisual Jacobian ablations
+2026-10-30. User authorizes CP63's proposed saved-checkpoint comparison.
+
+Original CP51 EIG-2 Hesai update6 only, first CBS929 x4->x5, no marginal/fixed
+variables. Fresh private roots. Same original functions, means, dense noise,
+smart factors/caches, IMU/PIM, native no-motion206 and prior functions.
+No macro/default/vendor/production edits, source replay, full sequence,
+covariance/weight changes, deletion or push.
+
+THREE ARMS; no combined candidate:
+A = original native graph and native Jacobians.
+B = only CBS929 exact derivative of Local(measured,Between(p1,p2)), including
+    Local/Log chain. Native no-motion206 is NOT changed.
+C = only pose prior0 exact derivative of -Local(x,prior). Other priors remain
+    native. Preserve original prior FUNCTION, not re-anchor it at current x.
+
+Private derived classes override derivative calculation and clone only; base
+class residual, keys, means and noise unchanged. Serialize physical graph
+parameters/cache before linearization: candidate snapshots must match original
+bytes (serialization intentionally does not encode derivative implementation).
+At a common state and cache, non-target Gaussian factors must be identical.
+Only one target Gaussian may change in each candidate.
+
+GATES BEFORE CANDIDATE SOLVES
+Release and ASan/UBSan fixtures with nonzero rotation/translation and correlated
+Gaussian noise; exact unwhitened/whitened Jacobians against central FD at1e-5
+and1e-6, normalized<1e-6. Residual/cost equality with native<1e-12. Include
+negative control using native approximate derivatives on deliberately nonzero
+fixture residual (difference>1e-5).
+Real saved initial/postordinary/postrefresh target derivative checks at both
+eps before ANY real solve; original directional failures fromCP63 must be
+resolved for the exact target, using saved directions, normalized<1e-6.
+Recheck exact target derivative at each candidate's actual step starting state.
+
+A ordinary and chained refresh must reproduce original saved equations/state
+before running B/C: equations<1e-12relative, ordinary state<1e-6 mixed tangent,
+refresh<1e-5. Exact-saved-state refresh equation check does not optimize.
+Then exactly two native Gaussian steps per arm (ordinary+current-state refresh),
+SIX real checkpoint steps total. No extra nonlinear iterations/line search.
+Linear backward residual<1e-14 is NOT nonlinear stationarity.
+
+EXPORT / INDEPENDENT CHECKS
+Save start/end values, full Gaussian systems/deltas, native same-base comparison,
+target native/exact raw Jacobians/residual/mean/noise matrices, and per-factor
+native costs/statuses on clones (never mutate a solving graph with diagnostics).
+Independent NumPy assembly: full candidate-native equation difference must equal
+scattered target-only difference; relative<1e-10. Exact target J'WJ/-J'Wr
+assembly relative<1e-10. Independent SciPy SE3 manual residuals, right-retraction,
+finite-difference Jacobians and pose/bias revision metrics relative<1e-6 for
+Jacobians, otherwise1e-8. Record all function/covariance identities. Check native
+cost=half whitened residual norm squared relative<1e-9.
+
+Report both steps, old-state maxima and candidate-versus-original pose/velocity/
+bias changes, external/IMU/visual/bias/prior costs and visual accepted-set changes.
+Compare magnitudes to existing CP52 no-CBS control as saved context, not a new
+solve. A response reduction under1% in BOTH maximum old orientation and gyro
+bias is not a material correction of this first event; report other changes
+even then. Improvement at one checkpoint cannot prove full-run zigzag fixed or
+true accuracy. No new ATE/RPE or ground-truth/physical-bias claims.
+
+If any scientific gate fails, preserve evidence and stop; never relax a guard
+or blindly retry. A diagnosed harness-only compile/report repair, if necessary,
+must preserve failed artifacts and use a fresh explicit output attempt.
+Final verify inherited hashes, original Hesai667 files, all owned jobs exited,
+both originally-stopped containers restored; update REPORT and root ledgers.
+No further experiment authorized by this protocol.
+

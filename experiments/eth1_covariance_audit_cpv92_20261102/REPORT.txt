@@ -1,0 +1,176 @@
+CP-V92 — ETH1 split-IMU covariance audit
+2026-11-02 | SAVED-DATA ANALYSIS COMPLETE; NO ESTIMATOR OR SETTINGS CHANGES
+
+CONCLUSION
+There is evidence of excessive confidence relative to IE-TC discrepancies in
+Kimera's revised relative beliefs, especially as they mature. This is NOT a
+universal CBS-ON covariance collapse: actual first-transmitted GLIM covariances
+are almost unchanged; first-transmitted Kimera translation covariance does not
+show a general decrease. Rotation is a separate, already under-calibrated-looking
+problem in both modes. Unknown reference uncertainty/correlation prevents an
+exact claim about how much the TRUE estimator covariance is underestimated.
+No production multiplier, fault attribution or algorithm repair is justified
+from these diagnostics alone.
+
+SCOPE AND COMPARISON
+CP89 full ETH1 OFF vs CP91 attempt1 full ETH1 ON, GLIM Hesai+CPT7/HG4930 and
+Kimera Alphasense stereo+Alpha IMU. Both persistent in ON, no fusion. Same
+experimental bias model and private builds as the completed run. Historical
+shared-IMU/temporary tests are not substituted as controls.
+All original source/terminal artifacts are unchanged. Only new diagnostic files
+are written here. No ROS/container/optimizer/capture/build/tuning/replay.
+Existing Method1 ATE/path/RPE tables remain untouched. This is an audit of actual
+relative belief means/covariances, NOT differences between Method1 poses.
+
+METHOD
+Match OFF/ON by physical from/to timestamps, not source indices (one keyframe
+differs), pooled versions or transport revision numbers. Compare right-local
+6x6 covariances in CPT7 body coordinates. Kimera native Alpha means/covariances
+are conjugated/adjoint-transformed with the author's T_alpha_cpt7. Actual wire
+payloads match saved native versions within CP91 frame-audit tolerances.
+Zref = inv(T_IE(a))*T_IE(b). Residual e=Log(inv(Z_est)*Zref)=[phi,rho].
+No global alignment, fitted scale or prism lever arm enters this relative test.
+Full q=e' inv(C) e and marginal block tests preserve dense cross terms.
+EVO1.36.3 computes Euclidean translation/rotation errors at each exact belief
+interval (~0.2s), not the separate trajectory delta0.5m RPE statistic. Tangent
+rho is used for covariance whitening; its RMS differs from the EVO Cartesian
+translation RMS by <0.000005mm in the reported cohorts.
+sqrt(trace(Cblock)) is a norm uncertainty, NOT per-axis sigma or a95%bound.
+Pooled RMS norm uncertainty is sqrt(mean(trace(Cblock))). Variance changes below
+compare mean trace with mean squared residual on precisely the same population.
+Paired median trace ratios are explicitly labeled and are a different statistic.
+
+COVERAGE AND OMISSIONS
+Wire messages:3452GLIM per mode;1492KimeraOFF/1491ON. Seventeen Kimera repeated
+physical-edge publications per mode include startup and sparse-tail updates;
+first-transmitted cohorts keep only the earliest record per physical edge.
+No implication that each repeated message was inserted as a duplicate factor.
+Unique Kimera edges1475OFF/1474ON;1473match,2OFF/1ONunmatched. GLIM3452match.
+Actual first-source-update timestamps agree for all matched wire edges.
+Wire endpoint spans GLIM0.820--346.119s;Kimera0.300--300.898s. The sparse tail
+after~301s is NOT represented by new short-interval Kimera wire beliefs.
+Native rows:GLIM166226OFF/166205ON;Kimera36778OFF/36755ON. For age selection,
+162OFF/185ON Kimera revision rows lack an update timestamp in the endpoint logs;
+retain them for wire parity, exclude them from exact-age selection. No invented
+timestamps or gap interpolation. Actual covariance units remain rad2/m2.
+Fixed-age cohort3411GLIM/1435Kimera;41/38common edges excluded because an exact
+shared physical update was unavailable within every selected age bin. No long
+intervals>0.5s entered this cohort. Native graph indices are not used across modes.
+GLIM median ages0,1.001,2.001,4.002s;Kimera0,1.200,2.200,4.200s. Same edge
+cohort at all ages and exact same update time in OFF/ON. Age tolerance0.25s.
+Fixed-age endpoint spans GLIM0.820--342.019s;Kimera3.700--296.698s.
+Reference interpolation maximum bracket5ms. Adjacent/overlapping edges and
+revisions are dependent; counts are NOT independent Monte Carlo samples.
+
+1. ACTUAL FIRST-TRANSMITTED BELIEFS
+Paired median covariance trace ON/OFF; EVO relative error RMS OFF->ON:
+Source | translation variance ratio | translation error(mm) | rotation variance ratio | rotation error(deg)
+GLIM   |1.00459 (+0.46%) |9.1137->8.1322 |1.00134 (+0.13%) |.138407->.133169
+Kimera |1.01789 (+1.79%) |11.4963->7.8556 |.81396 (-18.60%) |.142900->.135467
+These medians do not show a universal covariance decrease in transmitted beliefs.
+Kimera rotation becomes more confident faster than its rotational error improves.
+Not every interval behaves like the median: Kimera first translation covariance
+is less than half its OFF value on7.88% of matched edges, and below one tenth
+on0.883%; GLIM has no such matched half/tenth reductions.
+
+2. SAME BELIEFS AFTER ~4s REFINEMENT
+Paired median covariance trace ON/OFF; EVO relative error RMS OFF->ON:
+GLIM   |translation1.00466 |7.2419->6.0598mm |rotation1.00132 |.134580->.126353deg
+Kimera |translation.36995 |9.0079->5.1145mm |rotation.66020 |.143559->.142258deg
+Thus Kimera's typical revised translation covariance is63% lower in ON than
+OFF, while rotation covariance is34% lower with virtually unchanged rotation
+error. GLIM revised covariance is essentially unchanged between modes.
+For Kimera translation, aggregate mean variance ON/OFF=.27166 and mean squared
+error ratio=.32238; normalized aggregate discrepancy is18.7% worse in ON at
+this age. Rotation is61.1% worse. This differs from paired median ratios because
+the variance distributions are skewed; do not mix those statistics.
+
+3. DOES REFINEMENT-AGE SHRINKAGE TRACK ACCURACY?
+SAME1435Kimera edges, first ->~4.2s. Mean covariance-block trace and mean squared
+reference residual; these percentages are VARIANCE changes, not sigma changes:
+Mode/block | variance change | squared-error change | error/variance deterioration
+OFF translation | -79.57% | -40.02% |2.94x
+ON  translation | -93.69% | -58.59% |6.56x
+OFF rotation    | -29.66% | -0.76%  |1.41x
+ON  rotation    | -43.73% | +8.62%  |1.93x
+The main warning is confidence tightening faster than observed accuracy improves.
+Kimera ON translation EVO RMS7.9479->5.1145mm but reported RMS norm uncertainty
+4.6145->1.1593mm. Rotation EVO RMS.136497->.142258deg while reported RMS norm
+uncertainty.0135469->.0101619deg. Lower ATE does not establish calibrated beliefs.
+
+Strongest clean plateau: Kimera ON~2.2s->~4.2s translation variance -68.37%,
+squared reference error -0.020%; EVO RMS5.1150->5.1145mm. Rotation variance
+-20.11%,squared error -0.0075%. After~1.2s, means barely improve while covariance
+continues tightening. OFF also has a mismatch:~2.2s->4.2s translation variance
+-15.79% while squared error INCREASES14.97%. Not solely a CBS-ON phenomenon.
+
+GLIM age0->~4s translation mean variance falls~40.5% in both modes; squared
+error falls37.5%OFF/45.1%ON. This tracks translation improvement much better.
+Its rotation variance falls~23%,squared error6.6%OFF/11.0%ON, so rotational
+reference discrepancy also fails to match the full confidence increase.
+
+4. NOMINAL ELLIPSOIDS: DESCRIPTIVE, NOT TRUE NEES CALIBRATION
+Fraction within nominal95%3D marginal ellipsoid, OFF->ON:
+Source/stage | translation | rotation
+GLIM first  |18.54%->22.86% |10.78%->11.62%
+GLIM ~4s    |16.36%->20.17% |7.94%->6.71%
+Kimera first|43.58%->43.79% |11.61%->5.16%
+Kimera ~4.2s|23.14%->11.50% |8.50%->2.58%
+The revised Kimera ON covariances describe an ellipsoid containing substantially
+fewer IE-TC discrepancies than OFF. Do not call these percentages true95%
+coverage rejection probabilities or fit a multiplier from them.
+
+5. MISSION TIME VS BELIEF AGE
+Time-bin summaries in analysis.json use30s bins of the edge endpoint, not age.
+GLIM ON/OFF median traces stay close to1 throughout. Kimera's~4s covariance
+reduction is strongest on edges from60--240s; translation median ON/OFF ratios
+there range.178--.437, rather than an unbounded monotone collapse over mission.
+Example60--90s mature Kimera normalized translation discrepancy worsens3.63x;
+90--120s2.54x,210--240s2.96x.240--270s instead improves to.406x. Sequence-wide
+averages hide these differences. Endpoint times are not wall-clock receipt time.
+
+6. INTERPRETATION AND NEXT PROPOSED CHECK
+Evidence supports investigating the revised Kimera covariance's calibration and
+history conditioning. It does NOT establish permanent beliefs as the unique
+cause. More constraints normally shrink Hessian-based covariance; model bias,
+unmodeled correlations and reference errors can prevent matching accuracy gains.
+Persistent marginal priors carry peer history in this actual configuration;
+filtering visible peer factors cannot establish native-only information. Different
+IMUs remove one shared raw input, not persistent feedback correlation.
+Corrected MAIN means plus LOCAL covariance are also a declared approximation,
+not an exact posterior covariance for that corrected estimate.
+Next proposed saved-data check: localize the2.2--4.2s covariance drop on a few
+identified Kimera edges against marginalization/peer-prior absorption and exact
+covariance-provider provenance. If necessary evidence is absent, request a
+bounded instrumented test; do not infer the missing Hessians or change weights.
+No next capture or tuning is authorized or launched by this report.
+
+LIMITATIONS
+IE-TC shares CPT7 with GLIM; ON Kimera can inherit correlated information.
+Unknown reference covariance and cross-correlation mean discrepancy covariance
+is not simply sender covariance. e' inv(C) e is normalized reference discrepancy,
+NOT NIS or true NEES against independent noiseless ground truth. The much larger
+rotational discrepancy could include reference/model/timing error. We cannot
+attribute its entire magnitude to an incorrect estimator covariance.
+Source first/revised beliefs are distinct from receiver-time-aligned injected
+factors. Existing mean-only temporal covariance approximation is not repaired or
+qualified here. Absolute trajectory ATE is not the error of a relative belief.
+AP20 has no orientation and is not silently used as6DoF truth. No global fit or
+independence certification. Numerical SPD is necessary but not calibration.
+
+VERIFICATION AND ARTIFACTS
+analyze.py / PROTOCOL.txt: reproducible saved-only method.
+analysis.json: cohorts, paired ratios, covariance/error summaries and time bins.
+selected_records.npz: exact matched means/full covariances/residuals/endpoints.
+covariance_revision_age.png: inspected scientific figure; no trajectory smoothing.
+verify_and_plot.py / verification.json: independent eigen-whitening vs Cholesky/
+dense-solve agreement max3.40e-12, exact paired endpoints/update times, same-age
+cohorts, SE3 Exp/Log vs matrix exponential and synthetic ellipsoid/frame tests.
+All13inputs unchanged; all148CP89 and221CP91 immutable terminal hashes unchanged.
+Analysis parser initially stopped on sparse-update and repeated-wire assumptions;
+resolved by explicitly excluding unknown ages while retaining all payload versions
+for parity and deduplicating only the first-publication cohort. No source rerun,
+guard relaxation, original-data edit or silently ignored parse error occurred.
+GTSAM convention references:
+https://borglab.github.io/gtsam/betweenfactor/
+https://gtsam.org/2021/02/23/uncertainties-part2.html

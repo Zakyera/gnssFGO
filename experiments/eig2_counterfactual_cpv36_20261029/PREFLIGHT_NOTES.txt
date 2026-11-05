@@ -1,0 +1,29 @@
+First release fixture compile failed before any dataset run. Two preparation
+errors: literal backslash-n insertion, and taking upstream smart header instead
+of the pinned CP-K9 header containing existing diagnostic/cache methods. Also
+added the missing complete GaussianFactorGraph include. Failed compile log and
+commands remain in build_release_wrapper. wrapper2 also failed because a broad
+newline repair damaged a native C++ string; the wrapper was then regenerated
+from the exact CP-K9 source with only the observer include and call insertion.
+No numerical/model setting or guard changed. No dataset capture launched.
+
+wrapper3 release passed; sanitizer exposed Boost serialization singleton UB
+during startup. The manual attempt avoided polymorphic noise serialization,
+passed release but still hit the same Boost singleton issue for Eigen types.
+Replaced diagnostic IO with explicit native-byte field serialization instead
+of suppressing sanitizer checks. The first native attempt rejected its own
+new archive because the reader still expected the old version string.
+native2 release and ASan/UBSan both PASS:12 updates with exact live state,
+theta, delta, fixed-key, linear-cache and tree equality; independent full-factor
+readback has unchanged strict error/linearization tolerances. No vendor DSO
+sanitizer coverage is claimed. Failed attempt directories/logs remain intact.
+
+Offline attempt1 failed compilation on the LM damping setter API; corrected.
+Attempt2 exposed incorrectly unstacked visual Jacobian blocks; corrected by
+embedding each3-row camera block in the full residual-row matrix. Attempt3
+passed the old archive fixture. Final offline4 and offline4san pass using
+native2 checkpoints, including joint-objective directional derivative gates.
+The native smart-factor derivative mismatch remains a reported diagnostic,
+not silently accepted as a mathematically consistent nonlinear objective.
+Per-start failures remain failures and prevent optimization of that start;
+the other independent starting point may still be inspected, without retry.

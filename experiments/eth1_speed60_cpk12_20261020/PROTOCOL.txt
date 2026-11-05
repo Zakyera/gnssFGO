@@ -1,0 +1,32 @@
+CP-K12: one explicitly authorized ETH1 CBS-ON 60-second speed trial,2026-10-20.
+
+User: "try 0.3 for 60sec just to check".
+One fresh live GLIM + Kimera + gnssFGO run, bag offset0 duration60s, playback
+0.30x, headless,25s drain. No CBS-OFF/full-sequence run or automatic retry.
+CP-K11 completed matched120s provides the exact binaries/settings reference.
+Same CP-K9 private Kimera,CPK9_PRIOR_REFRESH=1,FL4Q_ENABLE=0,remove; native
+source IMU override unset. Same CP-I1/CP-I3 all-LOCAL dense covariance and MAIN
+means,classic active_window_temporary CBS,scales1,no source live_revision.
+Same Hesai/CPT7 and front Alphasense stereo/CPT7 profiles,GLIM5s/Kimera25states.
+Same FL4e7s source_wnoa,independent100ms supports,Qc/priors,stable-ID replacement,
+no central IMU/GNSS,no robust/health weighting,no tuning or estimator rebuild.
+
+Only duration/rate/session/path/port and duration-dependent coverage counts
+change. Reuse original transport,coverage,validation helpers. New harness
+corrects CP-K11's known diagnostic-log route before launch: runtime error
+scan and Kimera lifecycle validator include actual node stdout. Same numerical
+thresholds,with per-update retirement equality. Preserve old frozen artifacts.
+
+Fresh port11460. Refuse duplicate outputs. Verify effective playback settings,
+private loaded libraries/profiles before playback. Stop on existing runtime
+guard or validation failure; never retry or call a partial capture successful.
+Validate LOCAL payload conservation,complete60s source/fusion coverage,prior
+refresh lifecycle,receiver accounting,deterministic saved-journal replay.
+Report measured scan/backend/support service and queue/arrival/output-age tails;
+compare timing with saved CP-K11 first60s where available. Successful completion
+alone does not certify full ETH1,0.5x,1x or nonlinear stationarity. Accuracy is
+not a speed acceptance criterion. Retain native and online/finalized trajectories,
+means/full-covariances/revisions. Any DELAYED output stays separately labeled.
+
+Restore both initially-stopped containers after owned work exits. No commits,
+push,default promotion,next speed or full-sequence run.

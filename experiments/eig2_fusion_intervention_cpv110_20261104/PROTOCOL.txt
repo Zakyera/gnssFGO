@@ -1,0 +1,54 @@
+CP-V110 — authorized CP108 saved-stream regional mean/covariance intervention
+User approved the CP109 proposed controlled test on2026-11-04.
+One baseline plus exactly three variants, sequential, no source runs or retries.
+No tuning sweep, build/install, deletion, source/profile/global binary change.
+Use original CP-K19 executable/wrapper/runtime,7s source_wnoa/Qcx1, independent
+100ms support clock,59startup samples,same priors/replacement/seal_at_absorption
+and finite EOF behavior. No central IMU/GNSS factors. Both containers initially
+must be stopped; only Ubuntu receiver container may start, restored afterwards.
+
+Actual CP108 ON events.csv (regular file, NEVER FIFO) is the complete ordered
+input, with recorded arrivals, IDs, revisions, endpoints and clock/EOF unchanged.
+This is accelerated wall-clock saved replay, not fresh live CBS OFF/ON.
+Only Kimera stable IDs with BOTH physical endpoints within50–70s or275–310s
+of the selected EIG-2 window are eligible. For each, identify the last actually
+accepted revision whose observed arrival minus endpoint<=2.5s. Require anchor
+age>=2.15s; no future information and no cross-ID substitution.
+
+Factorial cases (one each, only after baseline bit parity passes):
+baseline: unchanged original stream.
+hold_cov: after age2.5s, hold eligible full6x6 covariance at its anchor value;
+          retain ALL original revised means.
+hold_mean: after age2.5s, hold eligible relative-pose mean at its anchor;
+           retain ALL original revised full6x6 covariance matrices.
+hold_both: apply both holds at the same per-ID anchor.
+Outside eligible IDs/late revisions, every token stays byte-identical. Preserve
+every revision event even when both values are held, same stable-ID replacement.
+The anchor must be accepted in the original commits and match input tokens.
+
+Covariances use right-local CPT7 residual coordinates, rotation then translation.
+Changing means while holding numeric covariance explicitly creates a synthetic
+noise model about that mean; this is not transport of the original posterior.
+No additional sensor conversion, diagonalization, scaling, gating or robust loss.
+Full cross terms/SPD and retraction-coordinate checks before optimization.
+
+Admission: CP1088873protected pins,383sealed outputs,CP109sealed outputs and
+all667Hesai originals/copies unchanged. Freeze wrapper/config/binary/runtime
+identities and entire original receiver archive. Require>25GiB free,5GiB runtime
+floor; each receiver<=1200wallseconds. No competing source/receiver/evaluator.
+Baseline must exactly reproduce CSV/TUM/summary/archive and logical progress;
+ignore only wall processing time,service duration,RSS. Stop at any mismatch.
+Variants must preserve lifecycle counts,publication/availability timestamps,
+1unsupported final Kimera EOF/50pre-init/0expired; audit actual consumed matrices
+and mean payloads. Check exact owned process/start exit and container restoration.
+
+Evaluation after all replays: Method1 EVO1.36.3 SE3/no-scale versusIE-TC at prism,
+same frozen CP1083532row common100ms mask/349reference-distance0.5mRPE pairs;
+ONLINE and7s-finalized separate; full-native3545states separately. Baseline must
+reproduce CP108. Report per-window error using BOTH each variant's global fit
+and frozen baseline alignment, plus gauge-invariant5s relative diagnostics.
+This prevents global realignment from looking like a purely local improvement.
+Mean/covariance interaction is descriptive for this one fixed stream; no claim
+that holding revisions calibrates uncertainty or fixes persistent correlation.
+IE-TC sharesCPT7,not independent prismGT; estimated polyline is not travel.
+No SPX3/LEICA2 or next experiment, automatic retries, further ablations or tuning.

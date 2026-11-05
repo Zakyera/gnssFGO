@@ -1,0 +1,54 @@
+CP-V99 terminal failure review, 2026-11-03. Supplemental; original evidence unchanged.
+
+OUTCOME
+The full 346.32-second OFF arm completed and all four saved source/payload,
+receiver and frame gates passed at 20:40:50 local. ON began once afterwards,
+but failed before full duration. No second complete OFF/ON comparison exists.
+No scientific EVO evaluation or repeat_comparison was launched. Do not use
+the partial ON trajectory as a full-sequence result or score it against full OFF.
+
+PRIMARY SAVED FAILURE
+full_on_source/estimators.log line245364:
+  E1103 19:06:10.476913 VioBackend.cpp:5913 CPK9 promotion changes cached prior
+Container log time is UTC; local failure time is21:06:10. The error occurs in
+Kimera update1476, whose logged current-state timestamp is1727775307353716285ns.
+Relative to input epoch1727775007855396309ns, this is299.498319976s.
+The preceding received GLIM belief is g2983->g2985, mapped to k1474->k1475.
+This adjacency is not proof that that particular incoming belief caused failure.
+The backend catches the exception, emits no output, and shuts down. The
+controller detects CPK9 and aborts the owned capture. Later source coverage
+assertions/missing completion evidence are consequences, not the original error.
+
+WHAT THE CHECK MEANS
+The CP76 release source snapshot NativePriorRefresh.h is verified against its
+saved sources.json digest. Before replacing linear-container prior wrappers or
+clearing fixed-key locks, promote() compares augmented information matrices:
+  (1) original container Gaussian versus cached Gaussian;
+  (2) immutable-origin wrapper linearized at theta versus cached Gaussian.
+The maximum Frobenius norm difference divided by (1+norm(cached matrix)) must
+not exceed1e-8. The observed exception means this threshold was exceeded.
+The failing magnitude, prior slot and which comparison failed are NOT logged.
+No replacements/fixed.clear from this promotion call execute after this throw;
+this does not imply the entire surrounding optimizer update was rolled back.
+This is an observed estimator/prior-preservation guard failure under unchanged
+settings, not an EVO/reporting failure or merely a different RMSE realization.
+It does not yet establish a substantive prior change versus numerical-tolerance
+failure, nor prove covariance miscalibration, feedback cause or repeatability.
+
+CLEANUP AND PRESERVATION
+Original controller failure remains at capture_on, with cleanup_error=null.
+Controller closeout passed at21:07:04local. Supplemental failure_post_closeout.json
+independently verifies all17 recorded host process identities exited, both
+originally stopped containers restored stopped/PID0, all6425 protected files,
+426 CP95 terminal outputs,38 CP98 terminal outputs, and all667 Hesai checkpoint
+files with originals. It records and rechecks hashes of13 failure/terminal files.
+The full OFF and partial ON data are preserved. No retry, capture, scoring,
+tuning, build, installation, deletion or source/receiver setting change was made.
+The success-only post_closeout.py was not run: CP99 has no complete.json.
+
+Next diagnostic, if separately authorized: isolate which of the two cached-prior
+comparisons failed and its magnitude, first using saved evidence. Do not relax
+the guard or rerun the full pair merely to obtain a score. OFF must not be repeated
+without new authorization. Experimental Alpha calibration, accepted persistent
+peer correlation/native-only outgoing FALSE, and IE-TC reference limitations
+remain unchanged; this failed repeat cannot resolve the prior ATE variability.

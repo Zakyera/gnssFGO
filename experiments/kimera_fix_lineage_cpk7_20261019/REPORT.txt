@@ -1,0 +1,179 @@
+CP-K7 — existing temporary-CBS fixes: implemented, enabled, and still unresolved
+2026-10-19. CODE / HISTORY AUDIT COMPLETE. Documentation only; no new experiment.
+
+Conclusion
+----------
+The user remembers correctly: temporary-CBS lifecycle and safeguards were
+implemented and tested months ago. Those safeguards have NOT disappeared.
+The latest CP-K5 event exercised the June rollback/retry implementation;
+Kimera continued through that update, then our experiment controller stopped
+on the recovery log. It was not a process crash or a newly missing removal fix.
+However, IMU-factor error was already very large before recovery, so this is
+not evidence of a healthy full run and does not justify bypassing the guard.
+
+Three different claims must remain separate:
+1. Temporary factors are removed before marginalization: implemented/tested.
+2. A bad staged update can be rolled back: implemented and observed in CP-K5.
+3. All subsequent nonlinear updates remain numerically healthy: NOT established.
+Neither explicit factor removal nor bounded covariance proves statistical
+independence: earlier state and linearization choices can retain CBS influence.
+
+Roots used below
+----------------
+W=/home/yeranis/repos/V4RL/cbs_gtsam4.3
+G=/home/yeranis/repos/gnssFGO
+Q=W/runs/fixed_lag_current_chart_fl4q_20261016
+K1=W/runs/kimera_failed_factor_cpk1_20261019
+K4=W/runs/kimera_incremental_control_cpk4b_20261019
+K5=W/runs/kimera_incremental_on_cpk5_20261019
+K6=W/runs/kimera_prior_refresh_cpk6_20261019
+All evidence is local code, git history, retained preflights/logs and reports.
+
+1. Fix lineage and actual status
+-------------------------------
+June19 temporary lifecycle / defensive update:
+  CBS commit5cc2073b introduced the active-window machinery, endpoint
+  re-elimination, forced relinearization/full solve, and residual threshold.
+  Commit928f9ca0d80b0ba7045064a9ab429f422ed4e585, "Stabilize active-window CBS
+  odometry factors", added drop-before-stage and rollback/retry safeguards.
+  Current W/src/cbs/src/bpsam/bpsam.cpp still contains these exact operations:
+  retry helper3688, prefilter3856, force flags4232-4233, threshold4588-4590,
+  staged-residual rollback4608-4609. git blame assigns these to those commits.
+  Status: present, active, and exercised by the latest ordinary ON diagnostic.
+
+July lifecycle tests and fixed-lag diagnosis:
+  docs/2026-07-09_m3dgr_cbs_handoff.md:307-345 (under W/src/cbsms) records
+  Dynamic01 temporary mode in BOTH sources: GLIM119 queued/106 removals,
+  Kimera106 staged/106 removals scheduled. This tested factor lifetime, not
+  universal nonlinear stability. Timing/key-density issues were still listed.
+  docs/2026-07-20_kimera_fixed_lag_marginalization_audit.md and
+  docs/2026-07-29_m3dgr_cbs_persistent_handoff.md:835-920 document native-prior
+  preservation, fixed linearization anchors, large active-window revisions,
+  and related behavior in stock Kimera with CBS OFF. The July handoff explicitly
+  says no production solver change was selected; repeated GN/Dogleg/line-search
+  studies were diagnostics. Some later successful configurations were
+  PERSISTENT, not temporary. Do not call every historical successful run an
+  identical temporary-mode validation.
+  Status: important existing diagnosis, not a forgotten universal repair.
+
+October16 FL4q current-state fallback / original-prior preservation:
+  Already implemented: current-state native equations, immutable original-chart
+  prior wrapper, LM fallback and iSAM core rebuild preserving slots/ownership.
+  G/experiments/fixed_lag_current_chart_fl4q_20261016/CurrentChartFallback.h:
+  enabled16-21; anchored prior28-36; select51-87; accepted rebuild124-146.
+  Sibling CoreRebuild.inc:8-43 reconstructs the core at accepted Values, resets
+  delta and checks slots. Q/include/cbs/bpsam/incremental_fixed_lag_bpsam_smoother.h:
+  283 calls this after ordinary update whenever enabled, even CBS-OFF.
+  Status: enabled in frozen FL4v and CP-R6/CP-R7; deliberately DISABLED in
+  CP-K4b/CP-K5 controls. It has not been deleted or accidentally omitted.
+  It is an added optimizer policy, not unchanged classic Kimera or logging.
+  It passed short tests and the FL4v120s ON capture, but failed longer OFF.
+
+CP-K1 failed-factor instrumentation:
+  Its private fallback differs from Q by failure diagnostics and trial recording;
+  the acceptance inequalities and rebuild algorithm are unchanged. The prior
+  helper is byte-identical. CP-K1 reproduced531 native outputs from the earlier
+  OFF failure, localizing its new acceptance problem to smart-stereo factor
+  error versus its Schur-eliminated model. IMU/bias/prior derivatives agreed
+  at that specific failure. This is distinct from the old-anchor ON evidence.
+  Status: diagnostic build, NOT a repair.
+
+CP-K2 conditional-landmark candidate:
+  Saved-factor gate failed on2/173 valid factors; not integrated, follow-up
+  redesign on hold. Do not describe it as a deployed fix or silently revive it.
+
+CP-K6 original-prior/native refresh fixture:
+  A valid additional regression: actual iSAM2 removal/marginalization versus
+  dense Schur, plus fresh IMU/prior derivatives. It reuses the SAME original-
+  chart helper already used by FL4q. Therefore the broad idea of refreshing
+  equations while preserving the prior is NOT a newly discovered solution.
+  Status: passed synthetic regression, no new incremental Kimera integration.
+  It does not solve the smart-factor acceptance mismatch or certify convergence.
+
+2. Actual enabled path in the last two controls
+----------------------------------------------
+K4/off_capture/preflight.json and K5/on_capture/preflight.json both record:
+  passed=true, FL4Q_ENABLE=0, FL4M_RETIREMENT=remove,
+  KIMERA_CBS_REVISION_AUDIT=1.
+Their process maps both identify K1/private_build/libkimera_vio.so and libcbs.so
+(container prefix /workspace/cbs_gtsam4.3). Thus the disabled selector is
+verified from actual running-process preflight, not inferred from a YAML default.
+CP-K4b completed111s OFF; CP-K5 was bounded to111s but stopped near102.2s.
+CP-K5 was one-way replay of saved FL4v GLIM messages, not a fresh bidirectional
+run. Its success or failure cannot be reported as a new full-system ON result.
+
+Checksums inspected in this audit:
+  K1/private_build/libkimera_vio.so
+  33470d262478054140f83d6f0a314e0ec851e2162e3daf2bf1eb7885790e43f4
+  K1/private_build/libcbs.so
+  82f85c2a307a9d9a849b2b8f09bb5c1e026ad80a4ef0a633c903d30cca712476
+  OriginalChartPrior.h in Q, K1 and K6, all identical:
+  7b8284c2722df71fb20c7af4db55c55e719075b03a95e6d4aa2deaf2a84c2f12
+The private diagnostic binary is not claimed bit-identical to the earlier
+FL4v binary; the shared algorithm and added diagnostics were inspected.
+
+3. Precisely what stopped CP-K5
+------------------------------
+K5/on_capture/kimera.log:139838-139870, update495:
+  newly staged incoming edge x493->x494;
+  residual norm .149931848 -> .538648586;
+  existing allowed norm max(1.25*pre+.25,.5) = .5;
+  June safeguard rolls back, drops the staged factor and retries without it;
+  preserved_active=24; output/merge row for update495 follows at139862.
+The norm mixes the existing relative-pose coordinates; it is not a normalized
+NIS or a standalone metre threshold.
+
+K5/run_case.py:81-82 treats the text "active_window_rollback" as an experiment
+failure and stops. K5/on_capture/cleanup.json records all five owned returncodes
+0 and kimera_process_gone=true. Source recovery and controller stop are distinct.
+
+This correction does not mean "just let it continue". The saved observational
+IMU error was already1.2083e10 at update494; recovery at495 did not establish
+stable long-term behavior. No counterfactual continuation was run. Do not remove
+the guard, invent a completed111s result, or equate process survival with health.
+
+4. Why the June force flags do not eliminate the later issue
+-----------------------------------------------------------
+W/src/gtsam/gtsam/nonlinear/ISAM2.cpp:733-742 adds marginal LinearContainerFactors
+and marks their keys in fixedVariables_. ISAM2-impl.h:382-387 applies the
+forceFullSolve threshold, then excludes those fixed keys from relinearization.
+Therefore forcing an update/full solve is not a current-chart refresh of all
+boundary factors. These are fixed LINEARIZATION anchors, not frozen estimated
+robot poses. This was already understood in July; the code does not establish
+a new GTSAM bug. Simply unfixing keys or resetting prior anchors would change
+the represented prior and is not an authorized repair.
+
+FL4p's localized old-chart IMU discrepancy and CP-K5's late IMU growth remain
+relevant, but are not proof that one factor alone caused every CP-K5 failure.
+CP-K1 shows a different problem when the global fallback is enabled. Keep the
+two mechanisms separate rather than calling both "temporary-factor removal".
+
+5. Decision: reuse existing work, do not start another generic solver
+-------------------------------------------------------------------
+No evidence found that the June safeguards were accidentally removed. No
+evidence that a universal July solver repair existed and was lost. October's
+fallback exists, but its extra acceptance policy also changes ordinary OFF.
+The next code decision must resolve integration/acceptance of an existing
+current-state refresh with Kimera's native smart-factor semantics, not re-create
+OriginalChartPrior or another generic LM/core-rebuild wrapper.
+
+The scope of any future candidate must be explicit: preserve the original
+prior, retain native smart-factor lifetime/noise, and avoid silently replacing
+ordinary OFF updates with a different global acceptance policy. CP-K6 is a
+regression reference, not proof that such an integration is already solved.
+CP-K2 redesign stays on hold. This audit selects NO new implementation and
+authorizes NO replay; full matched ETH1 remains unvalidated.
+
+Do not re-run the July Schur check, FL4n cache comparison, CP-K1 failure capture,
+or CP-K6 fixture merely to rediscover their conclusions. First require a
+specific code difference and a distinct acceptance question. GLIM LOCAL speed/
+covariance work and the gnssFGO seven-second WNOA receiver are separate and
+unchanged by this Kimera audit.
+
+Preservation
+------------
+Only this report, AGENTS.md pointers and the CP-K7 ledger were edited. No source,
+launch, profile, covariance, guard, binary, capture or prior report was changed.
+No build, container startup, ROS process, estimator/replay, commit or push.
+Existing dirty work preserved; no clean-worktree claim. gnssFGO HEAD remains
+668d4c788983722f4acad37d1495c15d03a27e18. Prior results retain their exact scope.

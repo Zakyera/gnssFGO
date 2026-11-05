@@ -1,0 +1,581 @@
+{
+  "case": "hesai_leica2",
+  "sensor": "Hesai",
+  "sequence": "LEICA-2",
+  "method": 1,
+  "original_receiver_Qc_multiplier": 1.0,
+  "epoch_ns": 1732549034915071665,
+  "duration_s": 428.75,
+  "origin_enu_m": [
+    -0.011483248279424,
+    -0.36318778123009515,
+    0.5967420335266643
+  ],
+  "reference": {
+    "path": "/workspace/cbs_gtsam4.3/src/datasets/GrandTour/LEICA-2/2024-11-25-16-36-19_cpt7_ie_tc.bag",
+    "sha256": "5455a1a68dfcdab7dd26fdcbd528d42982725da8bc165a0208ddcd74aac6ca64",
+    "topic": "/boxi/inertial_explorer/tc/odometry",
+    "frame_ids": [
+      "enu_origin"
+    ],
+    "child_frame_ids": [
+      "cpt7_imu"
+    ],
+    "caveat": "IE-TC GNSS/INS reference shares CPT7 IMU; not independent prism GT"
+  },
+  "reference_vertices": 85750,
+  "products": {
+    "off_glim": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_full_cpk29_20261023/prepared/full_off_source/glim_odometry.csv",
+      "sha256": "51d9f321a6cd9ec696c75b49d3421974a342b80b9299b586e4a9a891cdffbdd9",
+      "product": "glim_initial",
+      "rows": 4279,
+      "alignment_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_leica2/method1_off_glim_ape.zip",
+      "alignment_SE3": [
+        [
+          0.9638824875513136,
+          -0.266315531008937,
+          0.0025667363166874714,
+          0.33436787633628917
+        ],
+        [
+          0.2663003730273033,
+          0.9638766639844943,
+          0.005088020405001108,
+          -0.4317392697815272
+        ],
+        [
+          -0.003829036094198745,
+          -0.004220730926087709,
+          0.9999837618246801,
+          0.354051772840592
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "common_ATE_m": 0.49486953110459847,
+      "common_path_m": 205.869722746521,
+      "common_RPE_translation_m": 0.021758391768472125,
+      "common_RPE_rotation_deg": 0.4149364190157803,
+      "common_RPE_pairs": 378,
+      "path_with_gap_chords_m": 207.34512388961997,
+      "displayed_gap_aware_path_m": 207.34512388961997,
+      "gaps_over_500ms": 0,
+      "max_float32_error_m": 1.9068343704020663e-06,
+      "common_pose_max_difference_m": 0.0,
+      "evo_error_max_difference_m": 0.0,
+      "first_s": 0.646106304,
+      "last_s": 428.445607246
+    },
+    "off_kimera": {
+      "path": "/home/yeranis/repos/gnssFGO/experiments/newest_absolute_comparison_cpv27_20261028/hesai_leica2.npz",
+      "sha256": "c685f26984e37789f00a0c593c49ab4400e41ba287e490330c812bc4f07d3c56",
+      "product": "recovered absolute backend, NOT native incremental ROS",
+      "rows": 1937,
+      "alignment_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_leica2/method1_off_kimera_ape.zip",
+      "alignment_SE3": [
+        [
+          0.08112152711271939,
+          -0.9966920212559346,
+          0.004930781242443535,
+          1.4376995867885984
+        ],
+        [
+          -0.9967005797222942,
+          -0.08110687180672169,
+          0.0031031801382339647,
+          0.09225191037457492
+        ],
+        [
+          -0.002692994642159826,
+          -0.005166247234546663,
+          -0.9999830286906717,
+          0.26722482523526125
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "common_ATE_m": 1.0057859874279564,
+      "common_path_m": 203.22726360185575,
+      "common_RPE_translation_m": 0.036100479604564216,
+      "common_RPE_rotation_deg": 0.5035279719793138,
+      "common_RPE_pairs": 378,
+      "path_with_gap_chords_m": 203.8918432440522,
+      "displayed_gap_aware_path_m": 203.75647954809244,
+      "gaps_over_500ms": 12,
+      "max_float32_error_m": 1.9010892344795138e-06,
+      "common_pose_max_difference_m": 0.0,
+      "evo_error_max_difference_m": 0.0,
+      "first_s": 0.099937912,
+      "last_s": 426.99556373900003
+    },
+    "off_fusion": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_full_cpk29_20261023/prepared/full_off_receiver/receiver/online_trajectory.tum",
+      "sha256": "b96171109201059943760ab2572274be6630978a9077ff36a0f5f7dde01aa1e3",
+      "product": "fusion_online",
+      "rows": 4282,
+      "alignment_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_leica2/method1_off_fusion_ape.zip",
+      "alignment_SE3": [
+        [
+          0.04048742106098548,
+          -0.9991652110188253,
+          0.005445165336060928,
+          0.9370724390625593
+        ],
+        [
+          -0.998376983290055,
+          -0.040235831415162064,
+          0.04030480252997348,
+          -0.30282013059987634
+        ],
+        [
+          -0.0400520657704436,
+          -0.007068165252543071,
+          -0.9991725942335904,
+          0.22421026898783125
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "common_ATE_m": 0.6603630187695367,
+      "common_path_m": 220.2768014606916,
+      "common_RPE_translation_m": 0.03171357783524726,
+      "common_RPE_rotation_deg": 1.4691770582119739,
+      "common_RPE_pairs": 378,
+      "path_with_gap_chords_m": 221.26806532948655,
+      "displayed_gap_aware_path_m": 221.26806532948655,
+      "gaps_over_500ms": 0,
+      "max_float32_error_m": 1.9051345248044527e-06,
+      "common_pose_max_difference_m": 0.0,
+      "evo_error_max_difference_m": 0.0,
+      "first_s": 0.48444333500000003,
+      "last_s": 428.584443335
+    },
+    "on_glim": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_full_cpk29_20261023/prepared/full_on_source/glim_odometry.csv",
+      "sha256": "6df4ba5bfb934118d6e27fb00ba0d8677d35ba47cfd4f458f52c9a8cb5f859b2",
+      "product": "glim_initial",
+      "rows": 4279,
+      "alignment_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_leica2/method1_on_glim_ape.zip",
+      "alignment_SE3": [
+        [
+          0.9639636786850609,
+          -0.26599773138788274,
+          0.004385552697587402,
+          0.3262450155001506
+        ],
+        [
+          0.2660086704637459,
+          0.9639682950788727,
+          -0.002124457775733859,
+          -0.42837186147139406
+        ],
+        [
+          -0.0036624328080973193,
+          0.0032144951750414106,
+          0.9999881267328605,
+          0.27530688937105274
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "common_ATE_m": 0.4974367326741212,
+      "common_path_m": 205.61829216534002,
+      "common_RPE_translation_m": 0.01677909676733562,
+      "common_RPE_rotation_deg": 0.3163512173167189,
+      "common_RPE_pairs": 378,
+      "path_with_gap_chords_m": 207.8411904159163,
+      "displayed_gap_aware_path_m": 207.8411904159163,
+      "gaps_over_500ms": 0,
+      "max_float32_error_m": 1.9059465614645887e-06,
+      "common_pose_max_difference_m": 0.0,
+      "evo_error_max_difference_m": 0.0,
+      "first_s": 0.646106304,
+      "last_s": 428.445607246
+    },
+    "on_kimera": {
+      "path": "/home/yeranis/repos/gnssFGO/experiments/newest_absolute_comparison_cpv27_20261028/hesai_leica2.npz",
+      "sha256": "c685f26984e37789f00a0c593c49ab4400e41ba287e490330c812bc4f07d3c56",
+      "product": "recovered absolute backend, NOT native incremental ROS",
+      "rows": 1937,
+      "alignment_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_leica2/method1_on_kimera_ape.zip",
+      "alignment_SE3": [
+        [
+          0.0540236906715894,
+          -0.9985338121810476,
+          -0.003415666465639117,
+          1.091474410162478
+        ],
+        [
+          -0.9985337873560803,
+          -0.05403478296325004,
+          0.0032431062943670793,
+          -0.13069771971335342
+        ],
+        [
+          -0.0034229160875683716,
+          0.0032354538010178164,
+          -0.9999889076805597,
+          0.2965974871585964
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "common_ATE_m": 0.7731756298467252,
+      "common_path_m": 218.9531995445609,
+      "common_RPE_translation_m": 0.06738106777544467,
+      "common_RPE_rotation_deg": 0.7145841361675328,
+      "common_RPE_pairs": 378,
+      "path_with_gap_chords_m": 221.31083322436183,
+      "displayed_gap_aware_path_m": 221.1740044125157,
+      "gaps_over_500ms": 13,
+      "max_float32_error_m": 1.904896691939939e-06,
+      "common_pose_max_difference_m": 0.0,
+      "evo_error_max_difference_m": 0.0,
+      "first_s": 0.099937912,
+      "last_s": 427.895553639
+    },
+    "on_fusion": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_full_cpk29_20261023/prepared/full_on_receiver/receiver/online_trajectory.tum",
+      "sha256": "b9f74026b4e1674ecea26548d7b2b0e878de6fc8bf914d2da771782bce61ab28",
+      "product": "fusion_online",
+      "rows": 4282,
+      "alignment_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_leica2/method1_on_fusion_ape.zip",
+      "alignment_SE3": [
+        [
+          0.017762356210941136,
+          -0.9998068794000113,
+          -0.0084084841824533,
+          0.5607802881327277
+        ],
+        [
+          -0.9995759044143486,
+          -0.017951093727588876,
+          0.022929665244403048,
+          -0.3664570183200695
+        ],
+        [
+          -0.02307617854135969,
+          0.007997633299560892,
+          -0.9997017194371194,
+          0.39943901756218475
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "common_ATE_m": 0.5199507623544796,
+      "common_path_m": 217.45263958986857,
+      "common_RPE_translation_m": 0.030047674535269076,
+      "common_RPE_rotation_deg": 1.4220828429407306,
+      "common_RPE_pairs": 378,
+      "path_with_gap_chords_m": 218.36867811855805,
+      "displayed_gap_aware_path_m": 218.36867811855805,
+      "gaps_over_500ms": 0,
+      "max_float32_error_m": 1.9071962356065342e-06,
+      "common_pose_max_difference_m": 0.0,
+      "evo_error_max_difference_m": 0.0,
+      "first_s": 0.48444333500000003,
+      "last_s": 428.584443335
+    }
+  },
+  "common_coverage": {
+    "grid_queries": 4264,
+    "valid_queries": 3856,
+    "excluded_queries": 408,
+    "supported_s": 385.0,
+    "capture_s": 428.75,
+    "supported_capture_percent": 89.79591836734694,
+    "first_s": 0.684928335,
+    "last_s": 421.58492833500003,
+    "envelope_s": 420.90000000000003,
+    "start_gap_s": 0.684928335,
+    "tail_gap_s": 7.165071664999971,
+    "segments": [
+      {
+        "first_s": 0.684928335,
+        "last_s": 57.584928335,
+        "rows": 570
+      },
+      {
+        "first_s": 59.684928335,
+        "last_s": 59.684928335,
+        "rows": 1
+      },
+      {
+        "first_s": 60.484928335000006,
+        "last_s": 195.584928335,
+        "rows": 1352
+      },
+      {
+        "first_s": 196.68492833500002,
+        "last_s": 304.484928335,
+        "rows": 1079
+      },
+      {
+        "first_s": 305.58492833500003,
+        "last_s": 390.38492833500004,
+        "rows": 849
+      },
+      {
+        "first_s": 421.18492833500005,
+        "last_s": 421.58492833500003,
+        "rows": 5
+      }
+    ]
+  },
+  "terminal_omissions": {
+    "off": 0,
+    "on": 0
+  },
+  "kimera_reconstruction_checks": {
+    "off": {
+      "rows": 1937,
+      "first_keyframe": 0,
+      "last_keyframe": 1936,
+      "every_id_unique_contiguous_and_matches_csv": true,
+      "exact_header_stamps_used": true,
+      "rounded_log_timestamps_not_used": true,
+      "every_increment_pose_within_log_rounding_bounds": true,
+      "increment_position_max_difference_m": 6.889296797004849e-05,
+      "increment_quaternion_max_component_difference": 4.999847931230761e-07,
+      "graph_quaternion_norm_max_error": 6.723064729374784e-07,
+      "graph_prism_position_rounding_bound_m": 7.182084378436684e-05,
+      "graph_rotation_rounding_bound_rad": 2.000010000058334e-05,
+      "logged_no_incremental_pose": false,
+      "graph_vs_increment_position_max_m": 1.961571990767609,
+      "source_log": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_full_cpk29_20261023/prepared/full_off_source/estimators.log",
+      "rounded_incremental_common_ATE_difference_m": 1.0003335297881222e-06,
+      "rounded_incremental_full_ATE_difference_m": 1.053704283826562e-06
+    },
+    "on": {
+      "rows": 1937,
+      "first_keyframe": 0,
+      "last_keyframe": 1936,
+      "every_id_unique_contiguous_and_matches_csv": true,
+      "exact_header_stamps_used": true,
+      "rounded_log_timestamps_not_used": true,
+      "every_increment_pose_within_log_rounding_bounds": true,
+      "increment_position_max_difference_m": 6.78656186428392e-05,
+      "increment_quaternion_max_component_difference": 4.999968007401989e-07,
+      "graph_quaternion_norm_max_error": 6.746841572091711e-07,
+      "graph_prism_position_rounding_bound_m": 7.182084389934668e-05,
+      "graph_rotation_rounding_bound_rad": 2.000010000058334e-05,
+      "logged_no_incremental_pose": false,
+      "graph_vs_increment_position_max_m": 2.1992146606752607,
+      "source_log": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_full_cpk29_20261023/prepared/full_on_source/estimators.log",
+      "rounded_incremental_common_ATE_difference_m": 1.2916168184995414e-07,
+      "rounded_incremental_full_ATE_difference_m": 1.3304809953762486e-07
+    }
+  },
+  "cloud_path": "/home/yeranis/repos/gnssFGO/experiments/all_method2_rerun_cpv30_20261029/hesai_leica2_cloud.npz",
+  "cloud_points": 1070784,
+  "submaps": [
+    {
+      "id": "000000",
+      "points": 50000,
+      "frame_check_m": 5.129891916805063e-07,
+      "first_s": 0.6461060047149658,
+      "last_s": 3.6460981369018555
+    },
+    {
+      "id": "000001",
+      "points": 50000,
+      "frame_check_m": 6.182814698624972e-07,
+      "first_s": 3.7459800243377686,
+      "last_s": 5.2461769580841064
+    },
+    {
+      "id": "000002",
+      "points": 50000,
+      "frame_check_m": 4.107237118156974e-06,
+      "first_s": 5.345808029174805,
+      "last_s": 6.745698928833008
+    },
+    {
+      "id": "000003",
+      "points": 50000,
+      "frame_check_m": 7.610008704862857e-07,
+      "first_s": 6.8455541133880615,
+      "last_s": 8.245980978012085
+    },
+    {
+      "id": "000004",
+      "points": 50000,
+      "frame_check_m": 8.178645637457302e-07,
+      "first_s": 8.345979928970337,
+      "last_s": 10.045905113220215
+    },
+    {
+      "id": "000005",
+      "points": 50000,
+      "frame_check_m": 3.194559796870249e-06,
+      "first_s": 10.145762920379639,
+      "last_s": 13.84512710571289
+    },
+    {
+      "id": "000006",
+      "points": 50000,
+      "frame_check_m": 1.3644469816324222e-06,
+      "first_s": 13.945318937301636,
+      "last_s": 16.445083141326904
+    },
+    {
+      "id": "000007",
+      "points": 50000,
+      "frame_check_m": 4.4700732412321256e-06,
+      "first_s": 16.54516100883484,
+      "last_s": 18.544800996780396
+    },
+    {
+      "id": "000008",
+      "points": 50000,
+      "frame_check_m": 2.5134558306582672e-06,
+      "first_s": 18.644860982894897,
+      "last_s": 20.345160961151123
+    },
+    {
+      "id": "000009",
+      "points": 50000,
+      "frame_check_m": 3.8183067407656016e-06,
+      "first_s": 20.444958925247192,
+      "last_s": 22.34583306312561
+    },
+    {
+      "id": "000010",
+      "points": 50000,
+      "frame_check_m": 1.5437346910216174e-06,
+      "first_s": 22.445868968963623,
+      "last_s": 24.14565896987915
+    },
+    {
+      "id": "000011",
+      "points": 50000,
+      "frame_check_m": 3.5863546712832238e-06,
+      "first_s": 24.24575710296631,
+      "last_s": 25.84617805480957
+    },
+    {
+      "id": "000012",
+      "points": 50000,
+      "frame_check_m": 5.822292666935083e-07,
+      "first_s": 25.9462411403656,
+      "last_s": 27.44574499130249
+    },
+    {
+      "id": "000013",
+      "points": 50000,
+      "frame_check_m": 3.66855953441475e-06,
+      "first_s": 27.545570135116577,
+      "last_s": 40.24606800079346
+    },
+    {
+      "id": "000014",
+      "points": 50000,
+      "frame_check_m": 4.945120158900759e-06,
+      "first_s": 40.34604096412659,
+      "last_s": 97.14604902267456
+    },
+    {
+      "id": "000015",
+      "points": 50000,
+      "frame_check_m": 4.64229394874968e-05,
+      "first_s": 97.24603915214539,
+      "last_s": 129.44523692131042
+    },
+    {
+      "id": "000016",
+      "points": 50000,
+      "frame_check_m": 4.906832338137811e-06,
+      "first_s": 129.54524898529053,
+      "last_s": 166.44591403007507
+    },
+    {
+      "id": "000017",
+      "points": 50000,
+      "frame_check_m": 4.6032399910774684e-05,
+      "first_s": 166.54571294784546,
+      "last_s": 215.44562911987305
+    },
+    {
+      "id": "000018",
+      "points": 50000,
+      "frame_check_m": 1.8713191978563677e-05,
+      "first_s": 215.54559993743896,
+      "last_s": 241.84593415260315
+    },
+    {
+      "id": "000019",
+      "points": 40409,
+      "frame_check_m": 1.6474813137044583e-05,
+      "first_s": 241.94570302963257,
+      "last_s": 315.24527192115784
+    },
+    {
+      "id": "000020",
+      "points": 50000,
+      "frame_check_m": 9.94629613858276e-06,
+      "first_s": 315.3454689979553,
+      "last_s": 372.2457540035248
+    },
+    {
+      "id": "000021",
+      "points": 30375,
+      "frame_check_m": 2.6290429175661993e-05,
+      "first_s": 372.3456289768219,
+      "last_s": 428.5455861091614
+    }
+  ],
+  "cloud_alignment": {
+    "source": "CP-V10 ON first-published fit, not method2 fit",
+    "rotation": [
+      [
+        0.9639636786850609,
+        -0.26599773138788274,
+        0.004385552697587402
+      ],
+      [
+        0.2660086704637459,
+        0.9639682950788727,
+        -0.002124457775733859
+      ],
+      [
+        -0.0036624328080973193,
+        0.0032144951750414106,
+        0.9999881267328605
+      ]
+    ],
+    "translation_m": [
+      0.3262450155001506,
+      -0.42837186147139406,
+      0.27530688937105274
+    ]
+  },
+  "trajectory_npz_sha256": "a90f22fe8555cab74c7eba85a9e25bbc25efa6c450038b6b0dbbf940eba09e5e",
+  "cloud_npz_sha256": "56db14fbd49382b3d85d77222551820b72154253aecb148bf5be1766ee381f55",
+  "reference_and_cloud_identical_to_method2": true,
+  "evo_version": "v1.36.3"
+}

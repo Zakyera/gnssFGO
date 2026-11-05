@@ -1,0 +1,146 @@
+CP-V37 — EIG-2 CBS-OFF native-factor relinearization ablation
+2026-10-29. Comparison COMPLETE; no live repair or accuracy rescore.
+
+DECISION
+========
+Refreshing current-state linearization is sufficient to greatly reduce the
+observed internal IMU inconsistency at these saved checkpoints, WITHOUT stronger
+weights, explicit-landmark substitution, damping or repeated optimization.
+All seven single native-factor steps reduce maximum IMU position residual,
+maximum IMU rotation/velocity residual and native total reported cost.
+Re-solving the original stored-theta equations leaves the bad behavior nearly
+unchanged. This substantially strengthens the retained-linearization hypothesis
+and removes the CP-V36 joint-landmark/damping/iteration confounds for this effect.
+
+It does NOT identify which factor family's relinearization is essential, prove
+the origin of the baseline problem, establish nonlinear stationarity, or show a
+smooth/accurate live trajectory. Original prior-coordinate transport and native
+factor refresh are tested together. Smart retriangulation/validity decisions
+can change through the unchanged native policy. No production fix is installed.
+
+EXACT SCOPE
+===========
+Seven CP-V36 after-solve checkpoints:800,934,1000,1335,1336,1337,1338.
+Control: native Gaussian graph at original stored theta, one direct solve.
+Treatment: all native factors linearized at the captured current estimate,
+one undamped Gaussian solve and one retraction. Same explicit key ordering and
+native Cholesky elimination in both branches; not incremental tree ordering.
+No new measurements, source/receiver playback, GLIM, incoming CBS or CBS-ON.
+No repeated nonlinear iteration, line search, damping, weight/guard tuning or retry.
+The single relinearize/solve/retract operation is one Gauss-Newton step; the
+results.json nonlinear_iterations=0 field denotes no additional iterative loop,
+not an absence of that explicitly recorded single step.
+
+ALL985--1133 nonnull native factors retained per checkpoint, including all
+932--1080 native smart stereo factors and unchanged IMU/bias factors. Original
+smart observations/calibrations/noise/parameters/caches are cloned, not manually
+cleared or forced valid. Native triangulation/validity rules are retained.
+The original marginal Gaussian and owning anchor remain immutable. The existing
+OriginalChartPrior adapter evaluates exactly the original retained-prior
+function and transports its Jacobian into the current state coordinates. It
+does not restore eliminated nonlinear factors or reanchor the prior function.
+
+MAIN RESULT — INTERNAL CONSTRAINT RESIDUAL, NOT ATE/RPE
+=====================================================
+Maximum unwhitened native IMU position-constraint residual across active factors.
+Each row is an independent saved window, NOT consecutive points of a new path.
+
+ update  approx time(s)  captured(m)   one refresh(m)  reduction
+   800       160.4       .000021835    .000005900      72.98%
+   934       187.2       .005743967    .000017728      99.69%
+  1000       200.4       .022165453    .000071567      99.68%
+  1335       267.4       .140182429    .005842611      95.83%
+  1336       267.6       .372427626    .061713421      83.43%
+  1337       267.8       .827052806    .027509880      96.67%
+  1338       268.0       .983586947    .061229798      93.77%
+
+At267.8s IMU rotation residual .259758 -> .008014deg and velocity residual
+.038493 -> .002558m/s. Native IMU cost1.843633942e9 ->2.136116425e6;
+native total cost1.843639405e9 ->2.141558339e6. Prior cost5418.825581 ->
+5406.226843: its function/weight did not change, its evaluated state did.
+Native smart cost26.651191 ->29.085376 worsens at this checkpoint. Neither
+small visual cost nor total cost reduction is a smart-factor stationarity test.
+
+CONTROL / MATHEMATICAL CHECKS
+============================
+Fresh original equations at stored theta equal the saved cache exactly for all
+seven checkpoints (relative difference0). Directly solving them reproduces the
+captured estimate within maximum0.000036665m pose translation and0.000091862deg
+rotation. Thus more accurate back-substitution of the same old model is not the
+explanation for the large treatment improvement. Original residual .827052806m
+becomes .827052680m in the stored control, versus .027509880m after refresh.
+
+Both branches solve their own Gaussian equations accurately: maximum scaled
+normal-equation residual1.650e-10; refreshed branch maximum1.040e-10. These are
+LINEAR solve checks, not nonlinear gradient/stationarity certificates.
+Forty-two finite-state prior energy/directional-derivative checks pass on the
+real checkpoints, including theta/current and finite perturbations. Maximum
+energy relative error0; derivative tolerances fixed in PROTOCOL.txt before data.
+Release and ASan/UBSan synthetic native-smart/IMU/marginal fixtures pass for
+original and deliberately displaced estimates. Linked vendor DSOs are not
+sanitized. Every input snapshot serializes byte-identically before/after use.
+Independent output accounting confirms same slots/factor types/counts, cost
+sums, and captured costs matching CP-V36. Full details in results.json.
+
+IMPORTANT LIMITS / ADVERSE EFFECTS
+================================
+One refresh leaves5.8--61.7mm peak-event position-constraint residuals; it does
+not reach the much smaller qualified multi-iteration CP-V36 diagnostic values.
+It can move the existing window substantially:
+
+ update   max pose shift(m)   max rotation change(deg)   valid smart before/after
+   800         .061873                  .380030                 357/356
+   934         .071242                  .382007                 227/227
+  1000         .425519                  .461395                 145/173
+  1335         .775122                 4.136766                  81/93
+  1336        2.966750                19.098348                  76/111
+  1337        1.941287                 3.841141                  61/67
+  1338        3.174604                 7.935369                  37/48
+
+These are ESTIMATE CORRECTIONS, not physical travel or reference errors.
+Native smart validity changes total11/0/48/22/71/16/21 respectively. Both gains
+and losses are recorded; native guards remain active and no factors are removed
+from the diagnostic graph. Native visual cost increases at four checkpoints.
+There is no proof that every correction improves position relative to IE-TC,
+that one refresh per live cycle suffices, or that a full run would remain stable.
+The known native smart-factor error/Schur derivative caveat still applies.
+
+The seven checkpoints omit live incremental history/cache/retirement integration
+after the intervention. No new output covariance, full RMSE, EVO metric, path
+length, CBS benefit or upstream Kimera performance claim is made. Old method1/
+method2 tables and Rerun trajectories are unchanged. This is evidence about our
+modified fixed-lag baseline, not a verdict on untouched upstream Kimera.
+
+SETUP REPAIR AND PRESERVATION
+============================
+Initial controller passed both fixture builds but stopped BEFORE all dataset
+steps on a dependency assertion expecting unused libcbs.so. ELF/ldd establish
+normal linker --as-needed omission. PREFLIGHT_REPAIR.txt records the correction;
+failed.json/run_ablation.py/restoration.json remain historical. continue_saved.py
+checked actual original pinned GTSAM dependencies and ran each NEVER-started
+checkpoint once using the unchanged executable. No source or numerical retry.
+finished.json and continuation_restoration.json are authoritative completion.
+Both initially stopped containers restored; no source/production build touched.
+Final hashes, original Hesai checkpoint and RRD checks are in closeout.json.
+
+NEXT DECISION — NOT IMPLEMENTED OR LAUNCHED
+=========================================
+Do not strengthen priors or proceed to CBS-ON from this result. A useful next
+gate would be a private incremental OFF integration of original-prior-preserving
+refresh with native factors, first tested on synthetic marginalization,
+fixed-key ownership, cache/tree, covariance and rollback invariants. A bounded
+live test would require a separate decision after those gates. The large late
+corrections and remaining residuals preclude calling this a ready online fix.
+
+ARTIFACTS
+=========
+H=/home/yeranis/repos/gnssFGO/experiments/eig2_native_refresh_cpv37_20261029
+P=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_native_refresh_cpv37_20261029
+H/PROTOCOL.txt: predeclared scope, hypotheses, thresholds and limitations.
+H/results.json: full seven-checkpoint summaries, movements and validity changes.
+P/NativeRefresh.cpp: standalone source, no live estimator use.
+P/build_release and build_sanitizer: commands, logs, original/displaced fixtures.
+P/results/update_*: factors, native costs/residuals, prior checks, equations,
+  state values/movements, nonmutation snapshots and branch completion markers.
+H/protected_before.json and implementation_before.json: immutable input pins.
+H/closeout.json: final independent verification and exact artifact identities.

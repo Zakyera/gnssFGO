@@ -1,0 +1,6 @@
+Initial saved-data parser stopped before writing analysis outputs:
+KeyError (0,0,1,0). It incorrectly treated receiver ordinal as native update ID.
+The frozen adapter assigns ordinal per stable edge and normalizes revisions;
+native rows can repeat source revision zero. Corrected the diagnostic join to
+ordered versions within the same native edge, verifying every full covariance
+against the received matrix. No source, receiver, old artifact or setting changed.

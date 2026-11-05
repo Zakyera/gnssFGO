@@ -1,0 +1,192 @@
+CP-K27 PREPARATION — 2026-10-23
+One isolated28s SPX-3 OFF/ON startup pre-roll experiment authorized.
+Read PROTOCOL.txt; no result claimed before capture and validation.
+
+Controller finished 2026-10-23T14:41:25.304943+03:00: COMPLETED
+{"failure": null, "cleanup_error": null}
+Both modes and three gates each passed. See RESULTS_REPORT.txt/results.json for actual native/ONLINE/delayed metrics.
+No automatic retry. Scope-limited inhibitor releases when controller exits.
+
+FINAL STARTUP REPAIR RESULT — COMPLETED 2026-10-23
+================================================
+The bounded startup repair works in the intended sense: the same three moving
+Kimera intervals that previously retained43--95mm translation errors now have
+1.4--2.4mm errors at the SAME revision age. This was achieved by starting the
+unchanged estimators3s earlier in quiet recorded data. No covariance scaling,
+prior change, estimator patch, rebuild or ground-truth initialization was used.
+It is not proof that every covariance is calibrated or that CBS-ON must beat
+OFF in fusion. Both new captures and all source/receiver gates passed once.
+
+What changed / what did not
+--------------------------
+Old CP-K26 SPX-3 crop began at bag32, with Kimera assuming zero velocity while
+the reference speed at its first pose was0.39051m/s (+/-20ms difference).
+CP-K27 starts at bag29, captures28s through bag57,0.20x. First Kimera pose is
+bag29.199734s; reference speed is0 at both +/-20ms and +/-50ms resolution.
+Raw image/IMU checks independently support a quiet bag29..31 period: adjacent
+320x240 grayscale mean differences median~.23/255 versus1.16/255 at bag32;
+gyro norm median~.0067--.0069rad/s versus.1178rad/s at bag32. These are quiet
+sensor observations, not a proof of exactly zero physical motion.
+
+Kimera still uses autoInitialize=1, initialVelocitySigma=.001m/s; its native
+initializer uses the initial IMU sample window, NOT a new3s averaging method.
+Both sources and receiver started earlier. Additional causal history, startup
+orientation/bias effects, source graph state and CBS interactions also change.
+Thus this tests launch/startup validity, not a pure initial-velocity-prior
+ablation or proof that velocity alone caused every original error.
+
+CP-K26 private binaries/profiles byte-identical: MAIN batching, all-LOCAL dense
+covariance every version, corrected MAIN means, CP-K9 Kimera25states,
+classic active_window_temporary CBS, Gaussian scales1, native mean-only source
+time-alignment covariance approximation. Receiver unchanged7s no-central-IMU
+source_wnoa, independent100ms clock, stable-ID replacement, seal_at_absorption.
+No source live_revision, health weighting, GNSS, robust loss, tuning or rebuild.
+Source/control folder names retain full_* for harness compatibility; this is
+only a28s capture, NOT a full-sequence rerun.
+
+Was the same moving-start mistake present in ETH1 and EIG-2?
+---------------------------------------------------------
+The same stationary initializer was used, but the saved reference does NOT
+show the moving-start violation at their first poses:
+
+Reference capture       first Kimera stamp(ns)    speed +/-20ms / +/-50ms(m/s)
+ETH1 CP-K23             1727775008155395209        0 / 0
+EIG-2 CP-K24            1730638816763492417        0 / 0
+SPX-3 CP-K26 old        1730565903072597379        .390512 / .389088
+SPX-3 CP-K27 pre-roll   1730565900072622273        0 / 0
+
+OFF/ON first stamps and autoInitialize/velocity-prior settings match in each
+sequence. Zero reference differences are finite-resolution evidence, not a
+general initialization or covariance certificate. Do not attribute other
+ETH1/EIG-2 problems to this SPX-3 moving crop without separate evidence.
+
+Primary result: EXACT physical relative intervals, same revision age
+------------------------------------------------------------------
+Old IDs0->1,1->2,2->3 map to new IDs7->8,8->9,9->10. The integer native
+timestamps match exactly. Wire timestamp rounding is checked within1000ns.
+Errors use Log(Z^-1 * Tref_i^-1*Tref_j), rotation then translation, at CPT7.
+Values below are translation error norms in mm, NOT whole-trajectory ATE.
+
+Physical interval     OFF old -> pre-roll     ON old -> pre-roll
+32.199709--32.399707s      79.325 ->1.998         68.782 ->2.346
+32.399707--32.599705s      86.806 ->1.409         55.795 ->1.861
+32.599705--32.799704s      94.542 ->1.684         43.185 ->1.908
+
+All are revision24, age4.79996s. For the third interval the ON reported
+sqrt(trace(Sigma_translation)) is1.610mm old vs2.156mm pre-roll, while error
+falls43.185->1.908mm. The matrices changed naturally with source estimation;
+no manually altered covariance was inserted.
+
+At first publication the same three OFF errors fall87.074/88.854/159.847mm
+to3.363/2.718/2.901mm; ON to1.594/2.760/4.433mm. ON now has prior CBS history,
+whereas the old three first versions preceded its first injection.
+
+Broader predeclared cohort: all99 EXACT shared Kimera intervals inside
+bag32..52, with matched revision ages and recorded5s maturation tail:
+
+Stage                     OFF old -> pre-roll    ON old -> pre-roll
+First translation RMS mm      79.875 ->8.711         25.784 ->5.476
+Age~4s translation RMS mm     55.921 ->4.864         11.325 ->2.720
+Age~4.8s translation RMS mm   53.176 ->4.628         11.878 ->2.894
+Age~4.8s rotation RMS deg       .16070->.12489         .12508->.12338
+
+No missing matched intervals in this99-edge cohort; all four cohorts have99.
+The old two earliest IDs were before receiver initialization and never
+installed; all corresponding new intervals are receiver-eligible. This also
+means the receiver graph histories differ. Do not attribute the fused ATE
+change exclusively to the old2->3 factor or treat old excluded payloads as
+formerly installed constraints.
+
+Important remaining limitation: covariance is NOT certified calibrated
+---------------------------------------------------------------------
+Pre-roll revised rotation RMS remains~.123--.125deg versus RMS reported
+sqrt(trace(Sigma_rotation))~.0116--.0123deg over these99edges. Full6D
+reference-whitened norm median remains21.20OFF/24.75ON. Reference uncertainty,
+calibration, model error, and shared CPT7 data are not modeled in that statistic.
+These are not optimizer residuals, NIS or a hypothesis-test certificate.
+The strong startup translation outliers are largely removed; broader rotational
+uncertainty/error mismatch remains. No universal covariance multiplier follows.
+
+Original/native trajectories and live fusion: full new capture
+-------------------------------------------------------------
+ALL saved poses are scored against bracketed IE-TC, not just a favorable short
+common segment. Existing rigid no-scale ATE with prism lever arm;1s RPE.
+Path length below is the prism-point polyline; raw CPT7 paths also retained.
+
+Role/mode         ATE(m)   tRPE1s(m) rRPE1s(deg) path(m)   span(s) rows
+native GLIM OFF   .006806    .006139    .243019   19.623808 27.100135 272
+native GLIM ON    .006487    .005785    .205818   19.628738 27.100135 272
+native Kimera OFF .097535    .034620    .474550   19.178505 27.599759 131
+native Kimera ON  .032109    .019979    .488770   19.518215 27.599759 131
+fusion ONLINE OFF .024035   .025940   1.298778   20.414664 27.400000 275
+fusion ONLINE ON  .024241   .025064   1.300749   20.286599 27.400000 275
+
+DELAYED fixed-lag-finalized, not online or full-history:
+OFF ATE.010748m,tRPE.007420m,rRPE.245570deg,path19.741525m.
+ON  ATE.012002m,tRPE.007448m,rRPE.236026deg,path19.748481m.
+
+Same-window cold-start vs pre-roll comparison
+-------------------------------------------
+All12 native/ONLINE curves evaluated at the SAME240 physical timestamps,
+bag32.727111..56.627089s (23.899977s contiguous),230one-second RPE pairs,
+reference path19.001710m. No missing queries inside this shared grid. It is
+NOT the whole28s capture; the full-saved results are given above. Cold delayed
+final poses are intentionally excluded because that old run has later future
+information. Host reference reader reproduces the existing Noetic evaluator
+within7.83e-7 in the scored ATE/tRPE/rRPE values before this comparison.
+
+Role            OFF cold -> pre-roll ATE(m)     ON cold -> pre-roll ATE(m)
+native GLIM             .006546 ->.006396             .006629 ->.005811
+native Kimera           .559753 ->.089231             .055326 ->.032873
+fusion ONLINE           .047504 ->.020104             .031046 ->.020785
+
+The new ONLINE ON score is still slightly worse than new OFF. This is a
+startup repair test, not an experiment designed to force ON superiority.
+Both modes improve relative to the prior moving-start capture on the exact
+shared grid, especially native Kimera OFF.
+
+Coverage and engineering checks
+-------------------------------
+Each:2800IMU records span27.990002s;278of280stereo pairs processed (normal
+startup allowance);131sequential Kimera backend outputs,272GLIM outputs,
+275online/finalized receiver supports. Kimera starts+.198428s afterfirstIMU
+and ends.191815s behindlastIMU; GLIM+.715003s/.174864stail. One1.10s Kimera
+startup keyframe gap has continuing frontend progress; not a missing camera
+stream. Full-saved ATE covers every actual output. The new OFF/ON common
+interpolation mask has253queries,25.10s supported over26.10s envelope,17excluded
+queries due to startup/keyframe interpolation; it is not dense28s coverage.
+
+OFF/ON:14654/14677received versions,397insertions each,14232/14255replacements,
+25before-initialization exclusions each,296absorbed/101active each. No expired,
+stale,duplicate,unsupported-EOF or pending versions. Every covariance payload
+exactly conserved, including every GLIM LOCAL revision. GLIM270IDs each,
+Kimera128IDs each. ON126G->K/127K->G injections,102prior-refresh retirements,
+maximum cache error1.64e-10. OFF no injections. No recovery/retry or stationarity
+claim. No new deterministic saved-journal replay was run.
+
+Receiver support-cycle p95 OFF/ON66.45/65.39ms; maxima88.97/73.77ms.
+Peak transport queue42/46, drained to0. Bounded71supports/175peakslots.
+2688protected hashes pass, source profiles identical, both originally-stopped
+containers restored stopped; scoped sleep inhibitors released. No code/default
+promotion, old artifact modification, full rerun, commit or push.
+
+Decision / reuse
+----------------
+For this SPX-3 recording, use a validated quiet pre-roll before the old bag32
+analysis boundary when testing initialization-sensitive uncertainty. Do not
+blindly copy29s into other missions or initialize a stationary-only estimator
+at an arbitrary moving crop. This is a successful bounded launch correction;
+the historical full CP-K26 result remains historical, not retroactively fixed.
+Any full corrected SPX-3 rerun requires a new user decision. ETH1/EIG-2 initial
+reference checks do not call for changing their launch boundaries.
+
+Evidence
+--------
+PROTOCOL.txt; harness.diff; preflight/input hashes under prepared/;
+RESULTS_REPORT.txt/results.json contain detailed coverage,timing,covariance;
+startup_comparison.json contains all99matched intervals at3ages,full means and
+6x6matrices,previous-three-edge comparison,raw sensor context,trajectory scores,
+reference brackets<=5ms,and analysis/input hashes. analyze_preroll.py reproduces
+the read-only comparison (exclusive outputs; do not overwrite existing result).
+Prepared run root:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_stationary_preroll_cpk27_20261023/prepared

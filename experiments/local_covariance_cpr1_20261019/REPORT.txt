@@ -1,0 +1,104 @@
+CP-R1 — authorized sequential60s LOCAL covariance campaign, 2026-10-19
+====================================================================
+Status: CAMPAIGN STOPPED — first EIG-2 CBS-OFF failed after14.280s.
+No valid60s result; no ATE/RPE computed. No ON, SPX-3 or ETH1 launched.
+No tuning, automatic retry or default promotion. Both containers restored stopped.
+
+Gate: CP-I2 prior proof + dense nonzero-disagreement fixture passed Release and
+focused sanitizers. See ../kimera_native_prior_cpi2_20261019/REPORT.txt.
+New candidate only GLIM downstream revision covariance (CP-I1); exact existing
+Kimera/receiver and classic temporary source exchange. Corrected MAIN means
+preserved; LOCAL uncertainty is native information, not statistical independence.
+
+Run root:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eig2_local_cov60_cpr1_20261019/prepared
+Dedicated port11447; EIG-2 mission2024-11-03-13-59-54, offset5.7s,duration60s,
+0.10x,headless. PROTOCOL.txt defines preserved guards and interpretation.
+
+Preparation reused frozen FL4x harness/profiles/input hashes,1354 protected
+files; exact CP-I1 bridge hash42df73c172232a612da965bf43ead8ec454caf08434b84e2da5de74d26cdb79f.
+Actual loaded bridge/provider checked separately (provider still frozen S4d).
+Both process selectors must be present before playback; Kimera must not inherit
+them. Frozen code/profiles/old captures unchanged.17.06GB free at preparation.
+Prelaunch validator review corrected an expectation: first publications have a
+separate provider matrix dump; revisions have explicit native_local provenance
+and the pinned/tested route, but no redundant provider matrix dump. Source and
+prepared validator pinned before capture; preflight/finalize.json retains diff
+hashes/reason. No source code or acceptance threshold changed in this review.
+
+Remaining order: completed OFF -> source/provenance/receiver/deterministic gates
+-> ON preflight -> one ON -> same validations -> full-saved/common-grid scoring.
+Only then prepare/run SPX-3 and ETH1 sequentially. Any failed gate stops campaign,
+no automatic retries. Preserve native GLIM/native Kimera/ONLINE and DELAYED fusion
+as distinct outputs; no11s prism substitution. No accuracy claim while running.
+
+Actual failure (stop condition reached)
+--------------------------------------
+Receiver log: FL4A_STREAM_FAILURE revision after absorption.
+At one-based journal event7120, GLIM edge65->67 revision47 (source update114)
+arrived at1730638830849118092ns. Revision46 had already been absorbed by commit
+7118 at1730638830848941000ns. New version arrived0.000177092s after absorption.
+Physical edge:1730638823779011000 ->1730638823978884900ns.
+Age from first endpoint7.070107092s, from last6.870233192s. The receiver retains
+7s and needs the first endpoint's bracketing support, so last-endpoint age alone
+does not make a revision admissible. State/support/lifecycle logic was unchanged.
+Last successful commit7119;138online poses;71retained supports,166factor slots.
+
+Cause supported by timing/code, not covariance-accuracy speculation
+------------------------------------------------------------------
+The producing GLIM update's latest endpoint was2.169068192s behind arrival.
+The requested older edge was4.901038900s behind that latest source endpoint.
+These sum to7.070107092s: source-window age plus processing lag exhausted the
+receiver retention budget. Queue at last transport sample0,peak11. Receiver
+per-event service median.000473s,p95.001582s,max.027400s over7119committed events.
+The transport broken pipe and source coverage failure were consequences of
+receiver exit/controller shutdown, not the first failure.
+
+GLIM profiler Context::Revision (RuntimeProfile.h enum4), root wall seconds:
+Same64source timestamps after5s warmup and no later than producing update114:
+                         median       mean         p95        max
+CP-I1 LOCAL revisions     1.024278     1.222852     2.046901   2.103611
+Frozen MAIN revisions      .041550      .054297      .116658    .151621
+Paired per-update ratio median27.8296. This is the revision-export routine,
+NOT total GLIM runtime and not a guaranteed27.8x whole-estimator slowdown.
+The JSON audit also retains a76-row shared-stamp cohort including shutdown
+drain; its median.897s should not be confused with the pre-failure64-row cohort.
+
+Known mechanism, now seen in live operation:
+CP-I1 RevisionCovariance.h calls publicationCovariance for each active revised
+edge. NativeGaussianHistory.cpp:208ff rebuilds rank check and Gaussian
+factorization per query. Native history is shared, but its expensive Gaussian
+query work is NOT reused across edges in the same update. This does not redo
+GPU/nonlinear LiDAR equations; it is repeated CPU Gaussian covariance work.
+No cache/model change made during or after this run.
+
+What passed / what did not
+-------------------------
+- Synthetic Kimera native-prior gate passed; no change to Kimera estimator.
+- Effective settings and split loaded GLIM bridge/provider verified BEFORE
+  playback; correct native_local selector and exact private binary.
+-1354protected hashes unchanged after failure, including old runs/configs.
+- Full60s coverage, complete provenance/conservation and deterministic receiver
+  replay gates NOT reached. Partial counts:116native GLIM poses/11.4998s,
+  71native Kimera poses/14.1999s,138fusion poses. Do not score/report as60s.
+- No new ON capture or other-sequence capture. No live all-LOCAL certification.
+- Future validation-script review item: Kimera payloads are in estimators.log,
+  whereas LOCAL joint-query telemetry is in its ROS stdout log. The prepared
+  validate_local.py reads only stdout for both and must be corrected in a NEW
+  preparation before a future successful capture. It was never executed here
+  and did not cause the estimator failure; frozen failed-run files not edited.
+
+Next bounded engineering proposal, not implemented/authorized by this report:
+Reuse one committed native Gaussian factorization per source update for all
+revision covariance queries, preserving per-pair chart transport, full6x6
+Schur extraction and fail-closed invalidation. Prove exact covariance equality
+and epoch/retirement invalidation before retry. Do not extend lag, drop revisions,
+change covariance values or slow playback merely to hide this cost.
+
+Evidence
+--------
+eig2_off_failure.json and failure_audit.py: exact event/absorption/timing data.
+Run root live60_off_receiver/{events.csv,receipts.jsonl,receiver.log};
+receiver/archive/commits/{7118,7119}; live60_off_source/e1b_profile.jsonl.
+No commit/push requested in this task; gnssFGO HEAD remains
+668d4c788983722f4acad37d1495c15d03a27e18. Existing dirty work preserved.

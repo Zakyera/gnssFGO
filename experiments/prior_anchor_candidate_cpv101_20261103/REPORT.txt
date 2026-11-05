@@ -1,0 +1,88 @@
+CP-V101 — PRIVATE EXACT-ANCHOR CANDIDATE: OFFLINE REGRESSION PASSED
+2026-11-03
+
+Authoritative successful stage: qualification_v3/passed.json and tests.log.
+Final preservation/exit seal: complete.json. Earlier failed stages below are
+preserved; the root failed.json is the initial harness assertion, not the final
+qualification status. No live source run or deployed estimator change occurred.
+
+WHAT CHANGED
+Only two private candidate headers under:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/prior_anchor_candidate_cpv101_20261103/candidate
+
+OriginalChartPrior validates the values first, then returns a cloned original
+Gaussian when every relevant value equals its immutable anchor at ZERO tolerance.
+It does not reset an anchor, loosen a tolerance, remove a prior, or change noise.
+For moved values the complete old finite-difference code remains unchanged.
+NativePriorRefresh retains both original/cache and converted/cache comparisons,
+the normalized1e-8 guard, key/ownership checks and all-before-commit transaction.
+Failure now reports the separate errors, slot and keys; a typed exception also
+retains all three augmented matrices and the exact relevant anchor values.
+There are no success-path file writes. A production matrix-export catch handler
+has NOT yet been installed: standard exception logging would show the summary,
+while a typed handler is needed to save the matrices/anchor. The fixture tested
+this extraction. This candidate is not yet a deployed Kimera/CBS shared library.
+
+RESULTS
+1100 exact-anchor cases: 1098 CP100 cases plus two mixed Pose3/velocity/bias
+cases (dense Hessian/nonzero gradient and constant; Jacobian-factor variant).
+Frozen baseline:126 false rejections. Candidate:0; coefficient error exactly0.
+All1098 CP100 baseline errors and accept/reject decisions reproduced exactly.
+This includes all35 original saved CP98 native priors and translated controls.
+Large-offset stress cases remain stress cases, not actual capture coordinates.
+
+At the last published CP99 pose1475 with the same SYNTHETIC anisotropic prior,
+baseline converted/cache error1.5081297469405463e-8 becomes exactly0. The real
+failed CP99 prior/theta was not logged; this is not a reconstruction of it.
+
+66660 moved-state comparisons (one relevant variable at a time; perturbations
+1e-12,0.02,0.1): candidate/frozen augmented-information difference exactly0 and
+original-chart objective difference exactly0. Relevant value changes were
+asserted, so the tiny-movement cases did not silently take the equality branch.
+Clone non-aliasing, immutable anchor/coefficients, idempotent promotion, extra
+irrelevant values, sparse slots and empty graph were checked.
+
+15 negative controls pass: missing/wrong-type/wrong-dimension/nonfinite values,
+cache shape/null/key/dimension/nonfinite/corruption, ownership/unexplained locks,
+unsupported pre-anchored promotion, and late-slot corruption. Failure leaves
+all graph pointers and locks unchanged, including a valid earlier replacement.
+Deliberately corrupted cache STILL rejects; threshold remains1e-8.
+
+Four synthetic iSAM2 lifecycle checks each pass15 marginalization/promotion
+boundaries: frozen baseline at origin0; candidate at0,82.15889280701087 and1000.
+Leaf validity, retained key count, finite covariance and released locks checked.
+Near-origin baseline/candidate maximum pose-local difference3.4211388289180104e-49.
+These are small synthetic optimizer fixtures, NOT saved-trajectory replay,
+full Kimera/CBS integration, nonlinear stationarity or a live sequence test.
+
+TEST-HARNESS FAILURES AND CORRECTIONS — ALL PRESERVED
+1. Initial test incorrectly demanded bitwise equality to a raw unsymmetrized
+   assembly rather than its stored Gaussian (relative difference1.80249e-17).
+   v2 compares against the stored Gaussian; candidate headers did not change.
+2. v2 crashed in its synthetic lifecycle. Native traces isolated the SAME crash
+   in frozen baseline at k3, before any marginal prior existed or conversion
+   could run. The harness used absolute key indices as ordering groups; these
+   violate CCOLAMD's documented range under incremental subsets. v3 uses the
+   ordinary0-oldest/1-rest grouping and asserts leaf/retained-key conditions.
+   Both baseline and candidate now pass. No production ordering change was made.
+3. GDB was absent; no installation was performed. A separate ASAN attempt was
+   inconclusive (DEADLYSIGNAL only). Both failed debug receipts are preserved.
+   Native trace evidence, original assertion/segfault outputs and all scripts
+   remain in their original directories. Final v3 pins those earlier artifacts.
+
+PRESERVATION AND LIMITS
+qualification_v3 pins7052 inputs, including initial6857 inputs and all prior
+failed/debug outputs. complete.json verifies these, the original6425 protected
+files, CP100/98/95/91 terminal evidence, CP99 failure evidence, Hesai667 copied
+and original checkpoint entries, exact owned job exits and both originally
+stopped containers restored stopped. No data deletion, settings change, live
+capture, receiver run, estimator DSO rebuild/replacement or installation.
+
+We have corrected and qualified the reproduced numerical false-rejection
+mechanism in an isolated candidate. We have NOT proven the actual CP99 cause,
+explained GLIM ATE changes, calibrated uncertainty, or certified a full-run fix.
+
+NEXT SEPARATE STAGE
+Private Kimera/CBS integration build, wire the typed failure archive into the
+backend, and run bounded integration regressions before any live deployment.
+Do not restart CP99, repeat its saved OFF, or launch a full ON automatically.

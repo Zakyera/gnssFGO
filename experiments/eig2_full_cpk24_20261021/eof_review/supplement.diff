@@ -1,0 +1,88 @@
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eig2_full_cpk24_20261021/prepared/validate_case.py
++++ /home/yeranis/repos/gnssFGO/experiments/eig2_full_cpk24_20261021/eof_review/validate_case_eof.py
+@@ -1,8 +1,10 @@
+ """Validate the one completed live OFF pilot and its deterministic journal replay."""
+ import collections, csv, hashlib, json, math, os, shlex, statistics, subprocess, sys, time
+ from pathlib import Path
++sys.path.insert(0,'/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eig2_full_cpk24_20261021/prepared')
+ from expiry_audit import ExpiryAudit
+-P=Path(__file__).resolve().parent
++from eof_boundary import audit_eof
++P=Path('/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eig2_full_cpk24_20261021/prepared')
+ MODE=sys.argv[2] if len(sys.argv)>2 else 'off'
+ assert MODE in ('off','on')
+ SRC=P/f'full_{MODE}_source'
+@@ -10,7 +12,7 @@
+ OUT=REC/'receiver'
+ CTL=P/f'full_{MODE}_control'
+ EXE=Path('/home/yeranis/results/gnssfgo_receiver_finalization_cpk19_20261021/live')
+-RESULT=Path(f'/home/yeranis/results/gnssfgo_eig2_full_cpk24_20261021/{MODE}')
++RESULT=Path(f'/home/yeranis/results/gnssfgo_eig2_full_cpk24_20261021/eof_review/{MODE}')
+ LIB=Path('/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib')
+ 
+ def sha(p):
+@@ -107,7 +109,7 @@
+     assert cov_error==0 and mean_error<1e-12
+     assert action['insert']==summary['inserted'] and action['replace']==summary['replaced']
+     assert action['before_initialization']==summary['excluded']
+-    assert action['unsupported_at_end']==summary['unsupported_end']==0
++    boundary=audit_eof(P,MODE,summary,action,online_records,events)
+     assert absorbed==summary['absorbed']
+     assert summary['received']==sum(action.values())
+     assert len(online_records)==summary['publications']
+@@ -164,7 +166,7 @@
+     ages=[m['output_age_seconds'] for m in monitored if m.get('output_age_seconds') is not None]
+     assert ages
+     assert max(m['queued'] for m in monitored)<1000
+-    result=dict(passed=True,source_coverage=source_cov,transport=transport,
++    result=dict(passed=True,validation_contract='finite_recording_eof_cpk24a',terminal_boundary=boundary,source_coverage=source_cov,transport=transport,
+         summary=summary,actions=dict(action),expiry=expiry,mean_log_roundtrip_error=mean_error,
+         covariance_payload_error=cov_error,online_path_m=path['online'],
+         finalized_path_m=path['finalized'],fused_span_s=(times[-1]-times[0])*1e-9,
+--- /home/yeranis/repos/gnssFGO/experiments/eig2_full_cpk24_20261021/summarize.py
++++ /home/yeranis/repos/gnssFGO/experiments/eig2_full_cpk24_20261021/eof_review/summarize_eof.py
+@@ -2,9 +2,9 @@
+ from pathlib import Path
+ import collections,csv,hashlib,json,math,re,statistics
+ 
+-H=Path(__file__).resolve().parent
++H=Path('/home/yeranis/repos/gnssFGO/experiments/eig2_full_cpk24_20261021')
+ P=Path('/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eig2_full_cpk24_20261021/prepared')
+-V=Path('/home/yeranis/results/gnssfgo_eig2_full_cpk24_20261021')
++V=Path('/home/yeranis/results/gnssfgo_eig2_full_cpk24_20261021/eof_review')
+ def load(p):return json.loads(p.read_text())
+ def sha(p):
+  with Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+@@ -14,7 +14,7 @@
+ def fields(line,marker):
+  return re.sub(r'\x1b\[[0-9;]*m','',line).split(marker,1)[1].strip().split(',')
+ 
+-assert not (H/'results.json').exists()
++assert not (H/'results_eof_review.json').exists()
+ manifest=load(P/'protected_manifest.json')
+ for p,w in manifest.items():assert sha(p)==w,p
+ evaluation=load(P/'evaluation_full/summary.json')
+@@ -79,12 +79,13 @@
+   d=P/f'full_{mode}_source'/folder
+   trees.append({str(p.relative_to(d)):sha(p) for p in d.rglob('*') if p.is_file()})
+  assert trees[0]==trees[1],folder
+-result=dict(passed=True,cases=cases,evaluation=evaluation,protected_unchanged=len(manifest),
++result=dict(passed=True,validation_contract='finite_recording_eof_cpk24a',original_strict_on_gate_passed=False,cases=cases,evaluation=evaluation,protected_unchanged=len(manifest),
+     identical_source_profiles=True,no_exhaustive_observer=True,no_saved_journal_repeat=True,
+     limits='One full-sequence experimental pair, not an exhaustive batching-preservation certificate; IE-TC shares CPT7; no nonlinear stationarity claim.')
+-with (H/'results.json').open('x') as f:json.dump(result,f,indent=2)
+-lines=['CP-K24 matched EIG-2 batched finalized-policy full355.02s OFF/ON — COMPLETED',
++with (H/'results_eof_review.json').open('x') as f:json.dump(result,f,indent=2)
++lines=['CP-K24 matched EIG-2 batched finalized-policy full355.02s OFF/ON — SCORED WITH EXPLICIT TERMINAL-FACTOR EXCLUSION',
+  'One capture per mode,0.20x,headless. No paired observer,optimizer rebuild or tuning.',
++ 'Original ON zero-unsupported gate failed; supplemental terminal-cell accounting passes. One final Kimera factor was not incorporated; trajectories unchanged.',
+  'Native GLIM / native Kimera ROS odometry / concurrent ONLINE fusion.',
+  'Reference: full-window IE-TC shares CPT7; not independent prism GT.',
+  'Existing rigid no-scale ATE alignment and prism lever arm;1sRPE unchanged.','',
+@@ -117,5 +118,5 @@
+  'forgone mean/covariance changes are included in checks.receiver.expiry above.',
+  'These changes are not GT errors; the late corrections were not incorporated.',
+  'Raw source means,covariances,revisions,events,profiles,hashes and timing retained under:',str(P)]
+-with (H/'RESULTS_REPORT.txt').open('x') as f:f.write('\n'.join(lines)+'\n')
++with (H/'RESULTS_REPORT_EOF_REVIEW.txt').open('x') as f:f.write('\n'.join(lines)+'\n')
+ print('\n'.join(lines[:14]))

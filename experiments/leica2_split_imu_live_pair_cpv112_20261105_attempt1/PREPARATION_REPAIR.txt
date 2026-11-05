@@ -1,0 +1,22 @@
+Attempt1 preparation record. No containers, master, source or receiver started.
+Original failed CP112 remains byte-identical and frozen.
+
+Initial mechanical copy used unrestricted port string substitution11651/11652.
+This accidentally changed matching digits inside copied expected timestamps and
+floating-point conversion fixtures. The host adapter bit-parity assertion and
+host exact-window timestamp assertion rejected the copies BEFORE admission.
+The initial mechanical_copy.diff retains the unintended modifications.
+
+prepare_attempt.py now restricts port substitution to numeric token boundaries.
+Do not execute preparation again in the existing root. repair_staging.py saves
+all erroneous new JSON in preparation_rejected_json and restores the staging
+JSON from immutable originals with only bounded path/session/port changes.
+All six input_audit/expected_headers JSON files and conversion fixture must be
+byte-identical to original CP112. Original test scripts and validator_test.json
+are retained; preflight_tests_v2.py writes a separate schema test receipt.
+Successful new tests and final repaired_copy.diff supersede the rejected copies.
+
+This is a staging-copy correction, not a sensor attempt/retry, tuning, source
+change, expected-header relaxation or change to any old evidence. The intended
+physical window and scientific settings remain unchanged. Final admission
+and actual Noetic checks are mandatory before the one fresh OFF/ON pair.

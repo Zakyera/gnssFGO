@@ -1,0 +1,107 @@
+CP-V54 native GLIM first-edge passive observation -- CAPTURE/ANALYSIS COMPLETE
+User authorized short unchanged-settings diagnostic, not full run or tuning.
+See PROTOCOL.txt. Final verification.json / complete.json are closeout authority.
+
+FINDING
+GLIM's own contemporaneous gyro bias does NOT reconcile the first relative
+rotation with its IMU prediction. Over native GLIM5->7 (0.199967146s), its joint
+LiDAR/IMU solution differs from its OWN current-bias IMU prediction by 0.119420deg
+OFF and 0.115709deg ON. The discrepancy already exists without external beliefs.
+This is actual native estimator disagreement, not a rotation difference invented
+by export or receiver alignment. It does NOT prove GLIM wrong or a coding bug.
+Optimizers may legitimately trade off conflicting measurements and priors.
+
+EVENT AND COMPARISON (rotation discrepancies in degrees)
+                                             CBS OFF       CBS ON
+Joint GLIM vs its own current-bias IMU         0.119420      0.115709
+Joint GLIM vs creation-bias IMU               0.119720      0.116003
+Joint GLIM vs gyro using CP51 Kimera bias     0.104548      0.100391
+Change in gyro prediction from bias choice    0.022960      0.022960
+Native adjacent IMU residual, edge5->6        0.051560      0.046728
+Native adjacent IMU residual, edge6->7        0.067944      0.069177
+Newest absolute pose's joint correction      0.069358      0.071226
+
+The last row is a different quantity: change of newest pose during update7,
+not the final relative5->7 residual. Both endpoints can move. Angle magnitudes
+are not additive; do not subtract these rows to allocate percentages of cause.
+Both raw-gyro comparisons in this table use GLIM's exact native RIGHT-sample
+support. CP-V53 used Kimera's camera-border/LEFT-held support; do not confuse
+small integration-convention differences with endpoint time alignment.
+
+ON relative rotation vectors (degrees, body-frame rotation vectors, NOT Euler):
+GLIM joint:       [-0.007080, -0.004285, -0.078120]
+GLIM own IMU:     [+0.104143, +0.003886, -0.047278]
+Gyro/Kimera bias: [+0.085429, -0.006685, -0.039203]
+
+GLIM ON contemporaneous gyro biases at endpoint5/6, rad/s:
+[0.0000469643, 0.00000298172, 0.0000108452]
+[0.0000498251, 0.00000326446, 0.0000117690]
+Previously saved CP51 Kimera pre-update b4 reference, rad/s:
+[0.0016816331, 0.0009258782, -0.0006935324]
+The two estimators do estimate different biases, but GLIM's own bias leaves
+approximately0.116deg disagreement. The Kimera comparison uses CP51's recorded
+bias, explicitly not a newly extracted CP54 Kimera bias. No bias fitting.
+
+REPRODUCTION / WHAT IS ACTUALLY MEASURED
+44 GLIM readouts: updates0..10 before/after,22 per mode;110 native IMU-factor
+observations per mode. Pose/velocity/bias and native PIM biasHat/deltaR/prediction/
+unwhitened residual retained. No live LiDAR/GPU factor evaluation or linearization
+was added. Raw CPT7 integration reproduces each measured PIM rotation within
+1.67e-17deg; current-bias native correction vs full raw reintegration <3.37e-14deg.
+Native pose5/7 relative rotation matches the exported belief to <1e-10deg.
+This strongly validates the measured IMU calculation, not gyro ground truth.
+
+Native GPU GLIM has no independent LiDAR-only pose in this configuration.
+Thus this report measures JOINT-posterior versus IMU disagreement and the native
+IMU-factor residual. It does NOT claim an isolated LiDAR-only residual, LiDAR
+factor cost decomposition, nonlinear stationarity, or which sensor is correct.
+The joint correction can include LiDAR, IMU, initialization priors and (ON) CBS.
+
+First ON admission is still Kimera update6,1.599933183s after capture start:
+GLIM5->7 into Kimera4->5; sender1730638817779974912..1730638817979942144ns,
+receiver1730638817763483017..1730638817963481117ns, causal1730638818163479217ns.
+GLIM ON had already received K2G x4->x6 before export. OFF is the no-CBS control.
+This is a fresh observation, not bitwise CP51 replay: exported native rotation
+changes versus CP51 are0.001375deg OFF and0.000765deg ON. First admission identities
+and times match. Extra logging can affect scheduling; no zero-observer-effect claim.
+
+BUILD / GATES / RETENTION
+Only three passive hook/include additions to private frozen CPI1 bridge source;
+no core GLIM rebuild. New libglim_ros.so SHA256:
+d64bbb84f3bb2c7efe05ec1c8b422291c968bc5736ea53f6f2e01cf55159e0cc
+CP51 Kimera observer/CP40 refresh binary unchanged; profiles byte-identical,
+classic active_window_temporary,Gaussian1,MAIN batching,CPK19 7s WNOA Qc x1,
+independent100ms supports,no central IMU/GNSS,0.20x,25s drain unchanged.
+Release and ASan/UBSan fixtures pass exact input/PIM identity, zero-residual native
+prediction, deterministic encoding and4-step optimizer parity. Failed initial
+fixture used PIM.equals(...,0), whose strict deltaT<tol fails even identical PIMs;
+debug failure preserved. V3 exact serialization passed Release but hit Boost
+singleton UBSan during test setup. V4 uses exact round-trip numerical fingerprints
+of PIM state/Jacobians and covariance; no sanitizer suppressed or observer change.
+Covariance is fingerprinted ONLY for nonmutation, not analyzed or rescaled.
+
+OFF/ON sensor-time,LOCAL provenance,candidate lifecycle,receiver,60 Kimera snapshots
+per mode and22 GLIM readouts per mode all pass. Native readout time excluding file
+write: mean0.1645/0.1528ms OFF/ON, max0.374/0.319ms. Existing capped audits unchanged.
+Transport both modes4077 beliefs (3227GLIM,850Kimera),95published receiver poses,
+zero duplicate beliefs,zero remaining queue; peakqueue29OFF/24ON. Input1000IMU;
+clock-lag counters975/974 with max2.069/2.059ms retained, zero belief-clock-lag events.
+These are10s diagnostic prefixes, NOT full-sequence results or new EVO ATE/RPE.
+No estimator tuning, production fix, default promotion, deletion, push or retries.
+
+CONCLUSION / NEXT DECISION
+The previously proposed bias explanation is insufficient for this event. A small
+rotation disagreement already exists within GLIM OFF, and survives its actual
+bias correction. This supports the user's point that two estimators can genuinely
+disagree. It does not explain, by itself, Kimera's amplified CBS-ON response.
+The next question is whether that response is the intended coupled graph optimum
+or an update/linearization inconsistency; do not assume GLIM must agree with gyro,
+and do not launch another full run or change weights from this result.
+
+Evidence: analysis.json, prepared.json, observer.diff, harness.diff,
+off_glim_observer.json,on_glim_observer.json, per-mode validation receipts,
+capture_complete.json, closeout.json. Original controller completion entry follows.
+
+Controller finished 2026-10-30T16:46:26.589289+02:00: both captures/gates passed; native checkpoint analysis pending
+{"failure": null, "cleanup_error": null}
+No automatic retry.

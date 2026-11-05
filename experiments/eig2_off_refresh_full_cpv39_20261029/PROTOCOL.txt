@@ -1,0 +1,51 @@
+CP-V39 — one FULL EIG-2 Kimera-only CBS-OFF current-state refresh test
+User authorization 2026-10-29: "let's try it and run it then full again".
+Full original usable355.02s window, original5.7s bag start,0.20x,25s drain.
+One capture only. No numerical retry, tuning, CBS-ON, GLIM or fusion replay.
+
+HYPOTHESIS / ONLY ESTIMATOR CHANGE
+Use the tested private CP-V38 libkimera_vio.so, SHA256
+560ad4e82323e91db43eae606bafcd3ecec6ccbd85dcf271fb84a7f50658ecf4,
+with CPV38_OFF_REFRESH=1. Each normal update gets ONE extra native current-state
+GN refresh before marginalization, preserving the immutable original prior
+function/noise, native smart factors, measurements, weights and validity rules.
+No stronger prior, covariance multiplier, convergence loop, damping or rebuild.
+Native GTSAM may internally reeliminate the active graph. Extra step diagnostics
+are not merged into the normal per-update iSAM2 counts. No stationarity claim.
+
+CONTROLS
+Original EIG-2 cameras/shared CPT7, cpt7_imu frame, exact saved OFF profile and
+flags; CP-K9=1/FL4Q0/remove/25states, native IMU override unset. Original incoming
+beliefs OFF and outgoing audit MAIN beliefs ON; no peer publishers/GLIM/receiver.
+Hesai/Velodyne original OFF Kimera records are identical: this isolated replay
+contains no LiDAR and is not a new three-estimator or matched OFF/ON campaign.
+Explicit selector, loaded private DSOs, actual argv/environment/ROS parameters
+must pass before playback. Pin old data, candidate, launch/profile and inputs.
+
+ADMISSION / STOP / CLEANUP
+Fresh exclusive H and P roots, one controller lock/start/capture; no overwrite.
+Preflight >=8GiB free, runtime >=5GiB; own all processes in separate groups and
+record PIDs. Original containers both stopped: start Noetic only, restore after
+owned jobs exit; Humble untouched. Stop on crash/recovery/rollback/guard/storage
+failure.2300s in-container watchdog/2500s host timeout; no blind retry.
+Keep all failures/prefixes; never describe failed or incomplete output as full.
+Protected source runs/RRDs/Hesai667-file checkpoint must verify on closeout.
+
+EVALUATION PREDECLARED
+Full capture coverage/header counts/native finite states and covariance/lifecycle
+payload checks first. Compare to original CP-V4 OFF, keeping saved evidence.
+Use direct evo1.36.3 for ATE and reference-distance delta0.5m RPE. Preserve old
+CP-V32 Velodyne EIG-2 common mask/pairs when candidate covers them; otherwise
+explicitly report candidate omissions and a separately identified intersection.
+Method1=newest absolute backend states, not revised historical snapshot.
+Method2=native Kimera incremental ROS trajectory, no second integration.
+Same prism transform/SE3 no-scale alignment; full-native lengths separately
+from common-mask lengths, neither is physical travelled distance.
+IE-TC is shared-CPT7 reference, not independent prism ground truth.
+Compare window revisions, publication jumps, native timing/backlog and FL4M IMU
+cost. Legacy native-prior-only columns do not count OriginalChartPrior adapters;
+the total includes them. Do not claim prior removal/weakening from that column.
+This DSO has no CP-V35/36 passive full-factor observer; no fresh unwhitened
+component-residual/complete-smart-validity claims without supporting evidence.
+Smoothness/internal cost alone cannot establish accuracy or a fixed root cause.
+No production edits/default promotion/deletion/commit/push; stop after report.

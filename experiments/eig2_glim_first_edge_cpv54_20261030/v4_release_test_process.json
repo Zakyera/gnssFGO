@@ -1,0 +1,17 @@
+{
+  "pid": 156942,
+  "command": [
+    "docker",
+    "exec",
+    "-w",
+    "/workspace/cbs_gtsam4.3/build/glim_ros",
+    "-e",
+    "LD_LIBRARY_PATH=/workspace/cbs_gtsam4.3/devel/lib:/workspace/cbs_gtsam4.3/devel:/opt/ros/noetic/lib:/usr/local/cuda/lib64",
+    "-e",
+    "ASAN_OPTIONS=detect_leaks=0",
+    "-e",
+    "UBSAN_OPTIONS=halt_on_error=1",
+    "cbsms_ws_gpu",
+    "/workspace/cbs_gtsam4.3/runs/eig2_glim_first_edge_cpv54_20261030/test_v4_release"
+  ]
+}

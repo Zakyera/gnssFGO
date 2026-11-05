@@ -1,0 +1,40 @@
+CP-V56 — first Hesai belief insertion: native visual support audit
+Authorized 2026-10-30: check the remaining suspects one at a time.
+This task checks suspect 1 only. No source replay or graph optimization.
+
+Use original CP-V51 update6 native OFF/ON ordinary and refresh checkpoints,
+with identical observations/calibration/weights and native smart-factor rules.
+Before any new analysis require exact serialized input nonmutation and native
+fresh/cached ON equation parity <1e-12 relative. OFF intermediate equations may
+retain incremental linearization; report their discrepancy, do not relax a gate
+or claim they are all fresh. OFF refresh parity is required <1e-12.
+
+For every smart factor in update6, inspect saved cache status, native linearize
+status and nonzero Gaussian contribution at the owning theta; separately inspect
+post-step status at estimate. Never call post-step error counts the live solver
+active-row count. Compare the common initial ON/OFF functions/values and known
+CP-V52 saved no-first-factor result; no rerun of that ablation.
+
+Audit warm/cold triangulation status and Gaussian matrices at each fixed state.
+Independently reconstruct stereo-to-mono camera observations, triangulated point,
+maximum reprojection error, far-point and cheirality gates using native numeric
+parameters, without disabling guards. Require status parity; preserve failures.
+Follow the observed initial -> ordinary -> refresh state path at 17 fixed
+fractions per segment (diagnostic samples, never accepted optimization steps).
+Apply one nonidentity rigid world-coordinate transform to cold evaluations:
+status must agree and valid-point equivariance <1e-6 m; report numerical error.
+This tests representation invariance, NOT gravity/gauge observability of the
+whole inertial graph. Keep all body extrinsics unchanged.
+
+Release and ASan/UBSan synthetic stereo fixtures must check valid, outlier,
+missing-right measurement handling, stale-cache detection, rigid gauge and input
+nonmutation. No instrumenting existing shared libraries; retain that limitation.
+No covariance investigation/tuning, prior changes, altered gates, landmark model
+substitution, new accuracy scores, production patches, deletion or push.
+
+Fresh H/W roots only. Preserve previous artifacts. Pin inherited9952protected
+files plus selected native inputs/build provenance and prior CP55 artifacts.
+Require stopped containers and >=4GiB space before private diagnostic build;
+restore originally-stopped containers and verify original four-case667-file
+Hesai checkpoint, owned process exit, and all pins at closeout. Publish the
+finding and limitations before moving on to suspect2/3.

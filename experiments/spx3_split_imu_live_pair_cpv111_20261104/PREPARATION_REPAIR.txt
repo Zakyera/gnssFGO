@@ -1,0 +1,21 @@
+CP-V111 prelaunch observations — 2026-11-04
+
+The first exact-file download CLI invocation placed the variadic file ID before
+options. The CLI group did not parse --dest and exited1 "destination: Aborted."
+before any destination file existed. Reading the installed CLI showed its
+group callback syntax; the next invocation places options before the same exact
+file ID, retains --no-overwrite and --yes. No credential files were inspected,
+no account/login was changed, no alternate data was substituted, and no source
+or receiver was started. This is a CLI invocation correction, not a sensor retry.
+
+The original bag then downloaded and server hash verification passed: one file,
+3.38MB, no overwrite, corruption or partial data.
+
+Initial raw audit read1971Hesai/19702CPT7/39370Alpha/1970stereo then failed at
+an incorrectly copied1970Hesai expectation. Historical CP-K28 bag_preflight.json
+independently pins1971Hesai in exactly the same nanosecond window. Corrected
+the preparation audit to require that historical count and matching bounds;
+no timing/window/data/numerical threshold changed. Initial audit preserved as
+audit_inputs_initial.py SHA256d41008db74b200284ca01ca4e4c69afc4a4043ac546c9c13a280738c4f36514d.
+No raw_input_audit/prepared/start/source output existed at this preparation
+failure. It is not an estimator failure or source retry.

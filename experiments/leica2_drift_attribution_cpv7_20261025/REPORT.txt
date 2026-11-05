@@ -1,0 +1,217 @@
+CP-V7 — LEICA-2 saved-data drift attribution — COMPLETED 2026-10-25
+================================================================
+
+BOTTOM LINE
+The rotation-variance10 candidate trades reduced tilt error for increased,
+accumulating heading drift. The problem is not explained by a single bad
+belief or by a universally wrong scalar covariance ratio. GLIM's incoming
+rotation is not uniformly worse than Kimera's: its heading component is
+healthier in aggregate while its tilt components are substantially worse.
+
+This is an observed directional tradeoff and a plausible explanation of the
+failed treatment, NOT an isolated proof of which factor caused each drift
+increment. Reject the candidate as an overall improvement. Keep the original
+baseline frozen. No new coefficient, one-way experiment or estimator repair
+was implemented/authorized in this task.
+
+WHAT WAS DONE
+Only read the saved CP-V4 OFF/original ON and CP-V6A variance10 ON captures.
+No source run, solver replay, container operation, model/settings/calibration
+edit, build, deletion, commit, push or automation. New analysis artifacts live
+only in this directory; AGENTS.md/runtime ledger receive completion pointers.
+
+Sources are native GLIM, native Kimera ROS odometry and concurrent ONLINE
+fusion. DELAYED fixed-lag-finalized fusion is not used or substituted here.
+Original full-saved ATE results remain unchanged, metres:
+                         OFF        Original ON     Variance10 ON
+GLIM                     2.828135       .861349         .713107
+Kimera                   1.097081      2.584159         4.430475
+Fusion ONLINE            2.000424      1.828658         2.934918
+
+1. SHORT-INTERVAL IMPROVEMENT DOES NOT SURVIVE IN ROTATION
+--------------------------------------------------------
+Gap-aware common-mask Kimera RPE, translation m / rotation degrees:
+Interval      OFF                  Original ON          Variance10 ON
+ 1 s          .028573 / .406498    .062125 / .536195     .051022 / .473135
+ 5 s          .124028 / .475783    .225174 / 1.273958    .193692 / 1.188686
+10 s          .231711 / .648563    .398361 / 2.008376    .354961 / 2.122724
+20 s          .426659 / 1.036665   .750430 / 3.325698    .640802 / 3.828350
+
+Exact translation values are in outputs/metrics.json; rounded table above.
+Candidate vs original: rotation improves11.76% at1s, but worsens5.69% at10s
+and15.11% at20s. Translation RPE remains lower at all four horizons, despite
+worse global position ATE. Relative translation resets the starting orientation
+of each interval and is not an accumulated global-position error measurement.
+
+Counts are3810/3650/3450/3050 intervals at1/5/10/20s. All modes/roles share
+each horizon's timestamps, and no interval bridges a common-mask hole.
+To remove changing-cohort ambiguity, also score exactly the same3050STARTS
+at every horizon. Original/candidate rotation RMS then is:
+1s .530280/.483167;5s1.217034/1.235923;10s1.956310/2.194616;
+20s3.325698/3.828350. The1s gain and10/20s deterioration persist. The exact
+apparent crossover at5s depends on the cohort; do not claim a sharp threshold.
+Overlapping intervals are descriptive samples, not independent experiments.
+
+Other sources, per-horizon all-valid rotation RMS degrees at1/5/10/20s:
+GLIM OFF          1.3615 /3.9584 /5.6997 /8.1138
+GLIM original ON   .5919 /1.5683 /2.4410 /3.5855
+GLIM variance10    .7034 /2.0138 /3.3532 /5.2302
+Fusion OFF        2.5508 /2.9620 /3.0120 /3.6281
+Fusion originalON 1.8685 /2.1396 /2.5380 /3.4461
+Fusion variance10 1.9144 /2.0778 /2.4745 /3.4425
+All translation metrics and signed diagnostics are retained in metrics.json.
+GLIM's improved best-fit ATE is also NOT an all-metric improvement: its RPE
+is worse at all four tested horizons. Do not select treatment by ATE alone.
+
+2. THE EXTRA DRIFT IS PRIMARILY HEADING, NOT ONE CATASTROPHIC EDGE
+---------------------------------------------------------------
+Align each path ONCE to the reference pose at common time0.684928s. Do not
+fit the rest of the trajectory or reset after gaps. At the last supported
+common time390.384928s (NOT end of the428.75s capture):
+                                  OFF       Original ON     Variance10 ON
+Kimera heading error, degrees    -13.352       -21.310          -36.542
+Kimera position drift, m           1.977         3.869           10.136
+Fusion ONLINE position drift, m    3.984         3.596            6.638
+
+Kimera RMS signed-angle discrepancies over the common mask, degrees:
+                                  OFF       Original ON     Variance10 ON
+Roll                               .422         5.230            2.632
+Pitch                              .442         6.111            3.274
+Heading                           6.893        11.133           19.878
+These are fixed-start orientation errors, not relative1s errors or best-fit
+position ATE. Reference frame is enu_origin; heading is about its vertical Z.
+CPT7 roll/pitch/yaw differences are wrapped Euler differences; max reference
+pitch magnitude5.06deg, away from Euler singularities. SO(3) log components
+are saved separately and confirm the heading result.
+
+Fixed30s bins localize repeated losses. Examples of supported heading change
+within each bin (OFF / original ON / candidate, degrees):
+ 60--90s    -.544 / -1.303 / -4.688
+ 90--120s   -.786 / -1.363 / -4.255
+240--270s  -1.990 / -3.740 /-10.301
+360--390s  -1.583 /  +.407 / -5.260
+All13predeclared bins, including improvements, are in directional_checks.json.
+Gaps inside a bin are excluded, not crossed by invented increments.
+Largest candidate100ms heading-error step is1.586deg. The largest1% of its
+absolute steps account for only4.88% of total absolute variation and sum to
+POSITIVE .476deg, whereas all supported steps sum to NEGATIVE37.785deg.
+Thus this is not a few largest jumps producing the observed negative drift.
+This descriptive check does not identify a gyro bias or an optimizer fault.
+
+Starting at+1s or+5s instead gives candidate terminal heading-36.550/-36.905deg
+and position10.134/10.011m; original-21.313/-21.380deg,3.868/3.796m.
+The ordering is not an artifact of one initial pose. No secondary alignment
+was used to improve the reported primary scores.
+
+3. ACTUAL INCOMING BELIEFS EXPLAIN WHY ROTATION SHOULD NOT BE ONE NUMBER
+---------------------------------------------------------------------
+1905original and1908candidate G2K factors were joined to actual installed
+covariance matrices and verified Kimera pre/post-update same-edge snapshots.
+Raw upstream frozen covariance was NOT mistaken for applied covariance.
+All candidate applied rotation blocks are10x; translation/cross blocks remain
+unchanged. Max applied-covariance discrepancy0; max runtime pre-state check
+4.55e-11. No inferred pre-state from asynchronous native output.
+
+Original/candidate have1384EXACT matching physical receiver endpoint pairs.
+On these intervals, angular error RMS, degrees:
+                       Original ON                    Variance10 ON
+                   Incoming G   Kimera pre        Incoming G   Kimera pre
+Tilt components       .318318     .116079            .324360     .096388
+Heading               .057903     .078852            .067687     .083118
+
+Tilt is the norm of the two horizontal components of the angular error log
+in ENU. Heading is independently checked as the projected CPT7-X yaw angle,
+not merely renaming the third local covariance coordinate. Incoming GLIM
+heading is better on62.50% of these original intervals, but its tilt is better
+on only12.86%. Candidate fractions60.77% and6.43%, respectively.
+Whole per-run cohorts confirm the directional finding: incoming/pre tilt RMS
+.317803/.115702 original and.323472/.097245 candidate; vertical angular
+component RMS .059097/.079445 and.069601/.084402.
+
+Pre-to-post matched error RMS:
+Original heading .078852->.072926deg, tilt .116079->.131473deg.
+Candidate heading .083118->.081770deg, tilt .096388->.099248deg.
+This is ASSOCIATION with the full update, not isolated CBS contribution:
+native factors, prior, retirement, past feedback and all measurements act too.
+
+Angular uncertainty projected from the actual right-local angular marginal
+into nominal predicted ENU axes, matched-cohort RMS scales in degrees:
+                       Original ON                    Variance10 ON
+                   Incoming G   Kimera pre        Incoming G   Kimera pre
+Vertical std          .014782     .008121            .047097     .007482
+Tilt norm             .017151     .007837            .054157     .007549
+The10x covariance treatment weakens both components, although their errors
+have different relationships to Kimera's. This is not a propagated residual
+covariance or a confidence probability. The untouched dense cross blocks can
+still change conditional translation information when the rotation block is
+inflated; do not claim translational optimizer influence is unchanged.
+Incoming directional covariance/error rank remains weak: original heading-
+like .118,tilt .072; candidate .214,.080. These do not justify a reliable
+per-belief gate, fitted multiplier or a formal calibration claim.
+
+Important selection limit: matching1384pairs excludes521original/524candidate
+records. The matched cohort has no records in fixed210--300s bins because
+the keyframe endpoints differ, NOT because cameras are missing. We therefore
+do not claim an exactly paired factor-level cause for the large240--270s
+trajectory drift. Separate all-factor30s bins retain both runs there.
+
+INTERPRETATION AND STOPPING DECISION
+The evidence is consistent with weakening a useful heading constraint while
+reducing harmful tilt influence. It explains why total short-interval rotation
+RMS alone was an inadequate design target. It does NOT prove a simple
+tilt-only multiplier will solve the problem, or that all original ON drift
+comes from GLIM covariance: original ON already has worse heading than OFF.
+Bidirectional feedback and changed state/mean histories matter. One realized
+candidate capture is not repeated-trial causal/statistical certification.
+
+Do not blanket discard GLIM->Kimera or choose another global rotation scale
+from this result. The next DESIGN question is direction-aware trust (tilt vs
+heading), with long-horizon/global safeguards. Any implementable direction
+must come from online-estimated gravity/state, never evaluation ground truth.
+No coefficient, gate, one-way run or directional candidate is approved here.
+This bounded audit is complete; stop, retain the baseline, discuss next choice.
+
+COVERAGE, REFERENCE AND REPRODUCIBILITY
+All three captures were428.75s. The shared100ms grid has4262queries,3850valid
+and412excluded. Four supported segments, seconds after capture start:
+  .684928--57.584928;60.384928--195.384928;
+196.784928--304.384928;305.284928--390.384928.
+Supported duration384.6s in a389.7s envelope. Native stationary-tail5.1s gaps
+are NOT interpolated; do not call390.385s the recording end or full GT coverage.
+Estimate interpolation bracket<=.5s, reference<=.05s; no extrapolation.
+All nine full-saved ATE values independently reproduced within7.01e-9m.
+Reference is IE-TC using shared CPT7, not independent prism/noiseless GT.
+Same CPT7-to-prism lever arm as established trajectory scores. Relative-factor
+diagnostics use exact CPT7 receiver endpoints, no covariance interpolation.
+Existing mean-only source covariance alignment approximation unchanged; LOCAL
+does not prove source/reference independence or remove feedback correlation.
+No nonlinear stationarity, cross-time covariance, NEES/NIS or generalization
+claim. Long-horizon covariance cannot be reconstructed by summing edge traces.
+
+19input files hashed before/after main analysis, including reference, nine
+trajectories, source logs, geometry helper and saved reference scores. Synthetic
+SE(3), global rigid-transform invariance, known yaw-rate, exact-sample and gap
+exclusion tests pass. Original CP-V5 incoming/pre rotation RMS reproduced
+within1e-10degrees. Supplement preserves original outputs and records hashes.
+The only analysis startup correction was SciPy single-axis batch Euler shape;
+it occurred in synthetic tests before any real-data work/output creation.
+
+Files:
+PROTOCOL.txt,analyze.py,supplement.py — reproducible analysis, no estimator calls.
+outputs/metrics.json — all nine paths/horizons/bins/coverage and factor checks.
+outputs/directional_checks.json — same-start horizon control, directional
+  uncertainty/error, matched-cohort gaps, anchor and increment controls.
+outputs/time_series.npz — exact masks/time-series and all RPE endpoint indices.
+outputs/peer_records.jsonl.gz — applied/raw/pre covariance, means and errors.
+outputs/verification.json — tests/input SHA256; closeout.json — final checks.
+
+FIGURES AND HOW TO READ
+02_accumulated_drift.png: start here. Purple heading falls progressively below
+orange, and position drift grows; these are fixed-start, NOT best-fit ATE.
+05_directional_errors.png: incoming GLIM is worse on tilt but better on heading.
+01_horizons.png: purple Kimera rotation is lower at1s but higher at10/20s;
+translation stays lower. Cohort-size control described above.
+03_orientation.png: candidate roll/pitch shrink while heading deteriorates.
+04_incoming_beliefs.png: descriptive30s all-factor bins, actual error vs applied
+norm scale and full-update association. Last390--420s bin is sparse (three
+original/two candidate factors), so do not infer a late gain from that endpoint.

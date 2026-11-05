@@ -1,0 +1,163 @@
+CP-V105 — why does the latest fusion result worsen?
+Saved-data diagnosis, 2026-11-04. No capture or receiver replay was run.
+
+CONCLUSION
+There is a concrete confidence-versus-error mismatch in the revised Kimera
+beliefs actually consumed by fusion. It is a strong candidate mechanism, not
+yet a demonstrated cause of the trajectory regression. Initial belief
+covariances alone miss this effect. No production correction is qualified.
+
+There are two distinguishable issues:
+1. ONLINE publication has short-scale motion/orientation fluctuations and a
+   longer estimated polyline. Fixed-lag finalization substantially reduces it.
+2. The ON accuracy degradation persists after finalization, so publication
+   jitter alone cannot explain it. The weighting of revised, correlated
+   relative beliefs is the leading hypothesis for the persistent component.
+
+COMPARISON AND EXISTING SCORES
+OFF is the saved CP95 live OFF; ON is corrected-private-backend CP103 live ON.
+The receiver and scientific settings are unchanged, but the Kimera binary and
+realization differ. This is NOT a new same-binary matched OFF/ON experiment or
+a causal test of the prior fix. No new trajectory scoring/alignment was done.
+The following are sealed CP104 direct EVO1.36.3 Method1 SE3/no-scale results
+against IE-TC at the calibrated prism point, on its existing common mask:
+
+                         OFF ATE m       ON ATE m
+GLIM                     0.039496708      0.038280152
+Kimera                   0.737605208      0.192637042
+ONLINE fusion            0.061503791      0.094334608
+DELAYED7s-finalized       0.056428431      0.091335715
+
+The existing mask contains2966rows,296.3s supported duration (85.56% of346.32s),
+3segments, ending301.744604s; no gaps were filled. Common-mask ON prism paths
+are214.14590m ONLINE and201.96974m DELAYED versus201.37418m reference. Separate
+full-native ON prism paths are222.79317m ONLINE and202.79474m DELAYED versus
+201.47755m reference. These are estimated polylines, not physical travel; do
+not mix cadences/support or substitute raw body-point paths. DELAYED is seven-
+second fixed-lag-finalized output, not ONLINE or full-history smoothing.
+
+WHERE THE ADDITIONAL ERROR APPEARS
+Using the already-saved EVO error arrays and alignments,69.4345% of the net
+additional ONLINE squared error is in the first90s; DELAYED is70.0513%.
+For30–60s, ONLINE error RMS is0.05471->0.13101m;60–90s is0.04569->0.12683m.
+Reference-frame Y contributes70.67% of ON ONLINE error energy and73.93% of
+DELAYED error energy. This is localization after whole-mask alignment, not
+proof of a causal onset time. It does not point to the sparse final tail as
+the sole explanation of the observed common-mask regression.
+
+ACTUAL REVISED BELIEFS, NOT JUST FIRST WIRE EXPORTS
+Read actual receiver events and the exact last-accepted payload saved at
+absorption. Terminal markers were matched back to received revision/ordinal,
+arrival, mean and full6x6 covariance. Late expired revisions are not confused
+with the covariance actually absorbed. Exact physical endpoints are paired
+across OFF/ON rather than assuming matching native keyframe IDs.
+
+For Kimera,1454 identical approximately0.2s intervals are present at all four
+ages in both runs. Of1472 physically matched edges,1471 meet the endpoint
+3–300s/length0.18–0.22s eligibility rule;17 lack the required fixed-age/terminal
+support. GLIM has2970 eligible same-stage intervals,0excluded. Age-cutoff
+samples are the latest arrivals no more than0.35s before2.5s or4.5s. All
+matrices remain full6x6 right-local CPT7 covariance, including cross terms.
+
+Kimera ON, same1454 intervals at every row:
+Median age   Mean tr(C_translation) m^2   Reported norm mm   IE-TC discrepancy mm
+0.054s       2.027821298e-5               4.5031             8.0710
+2.450s       3.720729979e-6               1.9289             5.1310
+4.445s       1.097139092e-6               1.0474             5.1414
+4.845s       7.158658848e-7               0.8461             5.1416
+
+Reported norm = sqrt(mean trace of the3x3 translation covariance block), not
+a per-axis standard deviation or confidence bound. Discrepancy is RMS of the
+translation tangent component of Log(inv(Z_belief)*Z_IE) at the same endpoints.
+It is a relative-belief reference discrepancy, not trajectory0.5m RPE, true
+error, NEES or NIS. IE-TC reference covariance/correlation is not known here.
+
+Between2.45s and4.85s, the mean translation variance decreases80.7601%, while
+mean squared reference discrepancy increases0.4148% (essentially a plateau).
+The means improve early, but later covariance contraction has no comparable
+reference-discrepancy improvement on this same cohort.
+
+Paired median ON/OFF translation trace ratios:
+                    first       age2.5      age4.5      last accepted
+Kimera              1.01264     0.80013     0.31701     0.21224
+GLIM                1.00675     1.00460     1.00454     1.00454
+
+Thus Kimera's first matrices remain near the OFF scale; its last accepted
+matrices have about79% lower translation variance in the paired-median sense.
+GLIM does not show a comparable mode-dependent contraction. For Kimera's
+terminal cohort, the aggregate mean variance ratio is0.15006, versus0.33040
+for mean squared reference discrepancy: discrepancy/variance grows2.20184x.
+This aggregate ratio is distinct from the paired-median trace ratio0.21224.
+Terminal Kimera discrepancy improves8.9450->5.1416mm, but reported norm
+shrinks2.1842->0.8461mm. Better means can coexist with excessive confidence.
+Rotation similarly tightens: mean terminal variance ratio0.58079 while mean
+squared rotational reference discrepancy ratio0.99554 is essentially flat.
+These observations warrant testing overconfidence; they do not certify OFF
+or GLIM covariance calibration, which also show reference discrepancies.
+
+TIMING / CONFIGURATION / PAYLOAD CHECKS
+Receiver scientific configs are exactly equal after removing only sequence,
+session, log paths, master URI and private-wrapper path identifiers. Wrapper
+bytes are equal. Transport/adapter code is equal except the expected wrapper
+absolute path. Full-covariance frame conversion has not changed.
+Compiled receiver source hashes match Receiver.h/Live.cpp and the same binary:
+4b08a7f5ba97f5e4ec22959df23367df79eebf5d644dc19d939747dcd4566d6e.
+
+First-arrival median lag OFF/ON: GLIM0.118985/0.119251s;
+Kimera0.053554/0.054106s. At ONLINE publication, the typical most recent
+received source endpoint is about0.209s old for GLIM and0.130s for Kimera in
+both runs. Queue wait median OFF/ON0.010811/0.010245s, p950.024241/0.023865s.
+There are occasional larger waits, but no large systematic backlog increase.
+Median same-gauge ONLINE->finalized prism correction is0.02226/0.02215m;
+orientation correction is1.128/1.110degrees OFF/ON. Publication fluctuation
+and causal prediction lag exist in both runs; neither alone explains why ON
+remains worse after finalization.
+
+Both saved frame/payload/lifecycle gates pass: covariance payload error0,
+duplicate/stale0, unsupportedEOF/pending0. OFF202999received versions comprise
+4926insertions+197911replacements+25pre-init+137expired. ON202995 comprise
+4924insertions+197912replacements+25pre-init+134expired. These omissions remain
+accounted; there is no zero-omission claim. Missing right image203.898841154s,
+native Kimera gaps and sparse tail remain. Passing integrity gates is not
+proof of nonlinear stationarity, estimator health or calibrated uncertainty.
+
+WHY THIS COULD AFFECT FUSION
+The pinned Receiver.h dispatch uses the supplied full covariance directly in
+noiseModel::Gaussian::Covariance, replacing the previous factor for a revision.
+It does not simply accumulate every revision as another factor. However,
+distinct source/overlapping relative-belief factors do not carry joint
+cross-factor covariance. Both persistent sources carry peer history, so
+different IMUs do not make their beliefs independent. Increasing confidence
+in revised correlated information can give that information too much influence.
+Full matrix directions, geometry, overlapping intervals and marginalization
+matter; trace ratios alone are NOT exact factor-weight or influence ratios.
+
+NEXT DISCRIMINATING TEST — PROPOSED, NOT RUN
+A bounded receiver-only saved-event intervention is preferable to another
+sensor rerun for isolating this hypothesis:
+1. Reproduce the unchanged ON stream with its exact recorded event order,
+   timing, binary/configuration and EOF policy; require output parity first.
+2. In a separately labelled diagnostic variant, preserve all mean revisions,
+   endpoints, IDs, arrivals/order and GLIM payloads, but hold each Kimera
+   interval's covariance at its first accepted full6x6 matrix. Check tangent-
+   frame consistency explicitly; no fitted scale, diagonalization or GT tuning.
+3. Compare ONLINE and DELAYED on the same fixed evaluation mask/conventions.
+If results improve, that isolates a contribution from the revision covariance
+schedule. It would not itself establish calibrated covariance, repair feedback
+correlation, justify production freezing or eliminate all alternative causes.
+This needs separate authorization; no replay or changed optimization has begun.
+
+VERIFICATION AND LIMITS
+verification.json independently checks35392matrices with eigen-whitening
+(relative discrepancy1.46e-13), covariance traces and error-array norm parity,
+same physical cohorts, code/config identity and saved frame/payload gates.
+Input SHA256 maps pin every diagnostic input. closeout.json/complete.json
+record final input/protected/historical-output/checkpoint checks separately.
+All original evidence is immutable. No source or receiver run, new EVO call,
+scientific tuning, build, installation, deletion or global deployment occurred.
+
+The confidence/error mismatch is demonstrated on these saved cohorts; its
+causal contribution to fusion ATE is NOT yet demonstrated. IE-TC shares CPT7,
+is not independent Leica/prism truth, and has unknown reference uncertainty.
+The changed Kimera backend/new realization remains a comparison limitation.
+The earlier prior-preservation fix and this uncertainty hypothesis are distinct.

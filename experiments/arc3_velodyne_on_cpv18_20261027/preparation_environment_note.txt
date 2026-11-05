@@ -1,0 +1,7 @@
+2026-10-27: first preparation invocation was inside the restricted filesystem/
+network sandbox. The read-only port-availability bind raised PermissionError
+at prepare.py socket.socket(), before P.mkdir(), any prepared output, any
+container start, or any capture. Protected CP-V17 hashes had verified first.
+Rerun the unchanged preparation with host permission to test the local port.
+This is an environment-only prelaunch correction, not a source retry, new
+attempt to improve numerical results, or changed estimator/guard.

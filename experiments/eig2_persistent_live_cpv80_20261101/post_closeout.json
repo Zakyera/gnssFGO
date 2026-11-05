@@ -1,0 +1,315 @@
+{
+  "observed": "2026-11-01T03:01:14.659895+02:00",
+  "scope": "Supplement only: hashes, receipt exits, container state; no validation/scoring replay",
+  "complete_sha256": "23421703c1b85331e9d6a08bcaac64e890eee8f521f818de8423d29c933d85ab",
+  "protected": {
+    "passed": true,
+    "checked": 1617,
+    "errors": []
+  },
+  "terminal_outputs": {
+    "passed": true,
+    "checked": 192,
+    "errors": []
+  },
+  "cp78_complete_sha256": "794435e503dbb08c316517ae15396a2ed2c0dcb1131b17008e7054e5424b9966",
+  "cp78_terminal_outputs": {
+    "passed": true,
+    "checked": 218,
+    "errors": []
+  },
+  "processes": [
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/eig2_persistent_live_cpv80_20261101/start.json",
+      "pid": 128698,
+      "exists": false,
+      "owned_alive": false,
+      "expected_start": "4094100",
+      "expected_command": null
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/eig2_persistent_live_cpv80_20261101/capture_on_process.json",
+      "pid": 129010,
+      "exists": false,
+      "owned_alive": false,
+      "expected_start": "4095042",
+      "expected_command": [
+        "python3",
+        "-B",
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_persistent_live_cpv80_20261101/prepared/run_case_on.py",
+        "full",
+        "on"
+      ]
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/eig2_persistent_live_cpv80_20261101/evaluate_process.json",
+      "pid": 136845,
+      "exists": false,
+      "owned_alive": false,
+      "expected_start": "4281988",
+      "expected_command": [
+        "/home/yeranis/.local/share/pipx/venvs/evo/bin/python",
+        "-B",
+        "/home/yeranis/repos/gnssFGO/experiments/eig2_persistent_live_cpv80_20261101/evaluate.py"
+      ]
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/eig2_persistent_live_cpv80_20261101/preflight_on_process.json",
+      "pid": 128762,
+      "exists": false,
+      "owned_alive": false,
+      "expected_start": "4094553",
+      "expected_command": [
+        "python3",
+        "-B",
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_persistent_live_cpv80_20261101/prepared/preflight_on.py"
+      ]
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/eig2_persistent_live_cpv80_20261101/restore_containers_process.json",
+      "pid": 136743,
+      "exists": false,
+      "owned_alive": false,
+      "expected_start": "4280519",
+      "expected_command": [
+        "docker",
+        "stop",
+        "cbsms_ws_gpu",
+        "ubuntu-jammy-humble-nvidia"
+      ]
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/eig2_persistent_live_cpv80_20261101/start_containers_process.json",
+      "pid": 128811,
+      "exists": false,
+      "owned_alive": false,
+      "expected_start": "4095007",
+      "expected_command": [
+        "docker",
+        "start",
+        "cbsms_ws_gpu",
+        "ubuntu-jammy-humble-nvidia"
+      ]
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/eig2_persistent_live_cpv80_20261101/validate_on_candidate_process.json",
+      "pid": 136655,
+      "exists": false,
+      "owned_alive": false,
+      "expected_start": "4278807",
+      "expected_command": [
+        "/home/yeranis/.local/share/pipx/venvs/evo/bin/python",
+        "-B",
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_persistent_live_cpv80_20261101/prepared/validate_candidate.py",
+        "on"
+      ]
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/eig2_persistent_live_cpv80_20261101/validate_on_payload_route_process.json",
+      "pid": 136628,
+      "exists": false,
+      "owned_alive": false,
+      "expected_start": "4277966",
+      "expected_command": [
+        "/home/yeranis/.local/share/pipx/venvs/evo/bin/python",
+        "-B",
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_persistent_live_cpv80_20261101/prepared/validate_local.py",
+        "on"
+      ]
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/eig2_persistent_live_cpv80_20261101/validate_on_receiver_process.json",
+      "pid": 136658,
+      "exists": false,
+      "owned_alive": false,
+      "expected_start": "4278920",
+      "expected_command": [
+        "/home/yeranis/.local/share/pipx/venvs/evo/bin/python",
+        "-B",
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_persistent_live_cpv80_20261101/prepared/validate_case.py",
+        "check",
+        "on"
+      ]
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/eig2_persistent_live_cpv80_20261101/validate_on_sensor_process.json",
+      "pid": 136627,
+      "exists": false,
+      "owned_alive": false,
+      "expected_start": "4277960",
+      "expected_command": [
+        "/home/yeranis/.local/share/pipx/venvs/evo/bin/python",
+        "-B",
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_persistent_live_cpv80_20261101/prepared/validate_hesai.py",
+        "on"
+      ]
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/eig2_persistent_live_cpv80_20261101/verify_report_process.json",
+      "pid": 136916,
+      "exists": false,
+      "owned_alive": false,
+      "expected_start": "4283617",
+      "expected_command": [
+        "/home/yeranis/.local/share/pipx/venvs/evo/bin/python",
+        "-B",
+        "/home/yeranis/repos/gnssFGO/experiments/eig2_persistent_live_cpv80_20261101/verify_report.py"
+      ]
+    },
+    {
+      "receipt": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_persistent_live_cpv80_20261101/prepared/full_on_control/master_process.json",
+      "pid": 129080,
+      "exists": false,
+      "owned_alive": false,
+      "expected_start": "4095529",
+      "expected_command": [
+        "docker",
+        "exec",
+        "cbsms_ws_gpu",
+        "setsid",
+        "--wait",
+        "bash",
+        "-lc",
+        "source /opt/ros/noetic/setup.bash; echo $$ > /workspace/cbs_gtsam4.3/runs/eig2_persistent_live_cpv80_20261101/prepared/full_on_control/master.pid; exec roscore -p 11580"
+      ]
+    },
+    {
+      "receipt": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_persistent_live_cpv80_20261101/prepared/full_on_control/receiver_process.json",
+      "pid": 129407,
+      "exists": false,
+      "owned_alive": false,
+      "expected_start": "4095664",
+      "expected_command": [
+        "python3",
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_persistent_live_cpv80_20261101/prepared/transport_tools/launch_grandtour_live_receiver.py",
+        "--config",
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_persistent_live_cpv80_20261101/prepared/full_on.json",
+        "--source-run",
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_persistent_live_cpv80_20261101/prepared/full_on_source",
+        "--out",
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_persistent_live_cpv80_20261101/prepared/full_on_receiver",
+        "--start"
+      ]
+    },
+    {
+      "receipt": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_persistent_live_cpv80_20261101/prepared/full_on_control/source_process.json",
+      "pid": 129638,
+      "exists": false,
+      "owned_alive": false,
+      "expected_start": "4095744",
+      "expected_command": [
+        "docker",
+        "exec",
+        "cbsms_ws_gpu",
+        "setsid",
+        "--wait",
+        "bash",
+        "-lc",
+        "export CBSMS_RUN_NAME=full_on_source CBSMS_CBS_ENABLE=true CBSMS_BAG_DURATION_SEC=355.02; source /workspace/cbs_gtsam4.3/runs/eig2_persistent_live_cpv80_20261101/prepared/source.env; echo $$ > /workspace/cbs_gtsam4.3/runs/eig2_persistent_live_cpv80_20261101/prepared/full_on_control/source.pid; exec bash /workspace/cbs_gtsam4.3/runs/eig2_persistent_live_cpv80_20261101/prepared/source_runner_on.sh"
+      ]
+    },
+    {
+      "role": "launcher",
+      "pid": 128695,
+      "exists": false,
+      "owned_alive": false,
+      "expected_start": null,
+      "expected_command": null
+    },
+    {
+      "role": "supervisor",
+      "pid": 128696,
+      "exists": false,
+      "owned_alive": false,
+      "expected_start": null,
+      "expected_command": null
+    },
+    {
+      "role": "GLIM_startup_observation",
+      "pid": 129798,
+      "exists": false,
+      "owned_alive": false,
+      "expected_start": null,
+      "expected_command": null
+    },
+    {
+      "role": "Kimera_startup_observation",
+      "pid": 129801,
+      "exists": false,
+      "owned_alive": false,
+      "expected_start": null,
+      "expected_command": null
+    },
+    {
+      "role": "receiver_startup_observation",
+      "pid": 129583,
+      "exists": false,
+      "owned_alive": false,
+      "expected_start": null,
+      "expected_command": null
+    },
+    {
+      "role": "bag_startup_observation",
+      "pid": 130028,
+      "exists": false,
+      "owned_alive": false,
+      "expected_start": null,
+      "expected_command": null
+    }
+  ],
+  "containers": [
+    "/cbsms_ws_gpu exited",
+    "/ubuntu-jammy-humble-nvidia exited"
+  ],
+  "containers_restored": true,
+  "hesai_checkpoint": "PASS: 4 cases, 667 saved files; originals=True",
+  "stage_receipts": {
+    "/home/yeranis/repos/gnssFGO/experiments/eig2_persistent_live_cpv80_20261101/capture_on_receipt.json": {
+      "exit": 0,
+      "end_ns": 1793494425053471011
+    },
+    "/home/yeranis/repos/gnssFGO/experiments/eig2_persistent_live_cpv80_20261101/evaluate_receipt.json": {
+      "exit": 0,
+      "end_ns": 1793494481626242828
+    },
+    "/home/yeranis/repos/gnssFGO/experiments/eig2_persistent_live_cpv80_20261101/preflight_on_receipt.json": {
+      "exit": 0,
+      "end_ns": 1793492595520903009
+    },
+    "/home/yeranis/repos/gnssFGO/experiments/eig2_persistent_live_cpv80_20261101/restore_containers_receipt.json": {
+      "exit": 0,
+      "end_ns": 1793494460763893336
+    },
+    "/home/yeranis/repos/gnssFGO/experiments/eig2_persistent_live_cpv80_20261101/start_containers_receipt.json": {
+      "exit": 0,
+      "end_ns": 1793492595874264029
+    },
+    "/home/yeranis/repos/gnssFGO/experiments/eig2_persistent_live_cpv80_20261101/validate_on_candidate_receipt.json": {
+      "exit": 0,
+      "end_ns": 1793494434651349578
+    },
+    "/home/yeranis/repos/gnssFGO/experiments/eig2_persistent_live_cpv80_20261101/validate_on_payload_route_receipt.json": {
+      "exit": 0,
+      "end_ns": 1793494433525441543
+    },
+    "/home/yeranis/repos/gnssFGO/experiments/eig2_persistent_live_cpv80_20261101/validate_on_receiver_receipt.json": {
+      "exit": 0,
+      "end_ns": 1793494450615800784
+    },
+    "/home/yeranis/repos/gnssFGO/experiments/eig2_persistent_live_cpv80_20261101/validate_on_sensor_receipt.json": {
+      "exit": 0,
+      "end_ns": 1793494425116010554
+    },
+    "/home/yeranis/repos/gnssFGO/experiments/eig2_persistent_live_cpv80_20261101/verify_report_receipt.json": {
+      "exit": 0,
+      "end_ns": 1793494482020006234
+    }
+  },
+  "source_cleanup": {
+    "master": 0,
+    "receiver": 0,
+    "source": 0
+  },
+  "failure_markers": [],
+  "passed": true
+}

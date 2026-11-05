@@ -1,0 +1,31 @@
+CP-V53 -- saved first-edge rotation/time/body/IMU audit, 2026-10-30
+User explicitly approves CP-V52 proposed follow-up. No live estimator/campaign.
+
+Only CP-V51 first admission at update6: GLIM5->7 into Kimera x4->x5.
+Trace native MAIN endpoint poses -> exported mean -> recorded incoming payload
+-> Kimera native-IMU endpoint alignment -> actual saved factor. Use original
+CPT7 bag angular rates and actual camera/header times, native packet support
+(interpolated image borders then held left rate), saved pre-update b4/b5 and
+PIM biasHat. Gyro is an independent computation, not independent ground truth.
+No covariance analysis/tuning, changed means, fixes, source replay or optimizer.
+
+Reconstruct SO3 integration under recorded native support; preserve exact ns
+times. Separately show raw zero-bias and recorded-bias integrations, and a
+piecewise-linear/trapezoidal integration sensitivity check; never choose bias/
+timing based on preferred result. No fitted time offset/bias or parameter sweep.
+Reconstruct both short endpoint bridges using corresponding native anchor bias.
+Require native bridge reconstruction and saved PIM check before treating raw
+integration as an exact replay. If not exact, investigate or qualify, not relax
+the gate. Current source inspection must be matched to protected build inputs.
+
+Saved PIM extraction/private diagnostic compilation allowed if needed; it must
+not invoke graph optimization. Test rotations, direction, timestamp arithmetic,
+interval coverage and concatenation on synthetic data. Preserve source frames,
+native-vs-lidar pose convention, source and receiver clocks; do not infer one
+estimator wrong solely from global ATE or uncalibrated raw gyro. Original GLIM
+full internal snapshot/bias may be unavailable; mark limitations explicitly.
+
+New exclusive root only; preserve CP-V49--52 and original four-sequence checkpoint.
+Pin inputs/code/existing outputs, no deletion/build promotion/push. Initially
+stopped containers restored if any native diagnostic uses them. Check owned jobs
+and source integrity at closeout. Report causal evidence separately from inference.

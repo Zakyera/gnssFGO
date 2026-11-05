@@ -1,0 +1,54 @@
+CP-K24 — full usable EIG-2 matched OFF/ON, 2026-10-21
+
+Authorization: user requests the same full-sequence experiment/report as the
+saved ETH1 CP-K23 reference. One fresh capture per mode; OFF must pass before ON.
+No tuning, rebuild, automatic retry, default promotion, commit or push.
+
+Template: experiments/eth1_awake_full_cpk23_20261021. Preserve CP-K23 source
+binaries and algorithm: K16a MAIN batching, CP-I1/I3 all-LOCAL dense covariance
+every GLIM version, corrected MAIN mean; CP-K9 Kimera prior refresh with
+CPK9_PRIOR_REFRESH=1, FL4Q_ENABLE=0, FL4M_RETIREMENT=remove, native IMU override
+unset. Native GLIM 5s and Kimera25 keyframes. Classic bidirectional temporary
+CBS, 0.20s horizon, one pair/update, stride1, zero receive delay, Gaussian scale1.
+No source live_revision. Existing native-IMU mean-only alignment approximation.
+Receiver CP-K19 seal_at_absorption, FL4e7s fixed-lag source_wnoa, independent
+100ms supports, stable-ID active replacement; known absorbed revisions expire
+and are audited, unknown old first arrivals still fail. No central IMU/GNSS.
+Unchanged Qc/priors/covariance/model/publication/conservation guards.
+
+EIG-2 mission2024-11-03-13-59-54, Hesai + Alphasense front_left/front_right
+stereo + shared CPT7; use the saved EIG-2 CP-R4 sensor profiles, not inferred
+settings. Profiles happen to be byte-identical to CP-K23 and are verified.
+Preserve established EIG-2 startup offset5.7s; run355.02s through last Hesai.
+This is longer than historical305s crops; do not call their windows identical.
+Selected-topic epoch1730638810863546034ns; capture start1730638816563546034ns,
+end1730639171583546034ns; final Hesai1730639171579243898ns (4.301ms before end).
+Initial5.7s and later camera/IMU-only tails excluded. Bag preflight hashed all
+four inputs, checked all selected stereo header pairs, and reference coverage.
+Selected3551Hesai,35502IMU,3550synchronized stereo pairs. Frontend expected
+3547..3550 allowing the same0..3 startup frame loss as CP-K23. Minimum GLIM
+rows3517 is CP-K23's3430 plus87 for the8.7s longer duration; identical temporal
+coverage guard duration-2s. Native5s keyframe gap limit5.15s retained; full saved
+poses scored, with unsupported interpolation gaps excluded from RPE/common mask.
+
+Headless0.20x,25s drain,port11474; no Rerun overhead. Temporary process-scoped
+sleep/idle/lid inhibitor EIG2-CPK24, released on exit; no persistent power change.
+Finite controller OFF -> LOCAL/lifecycle/receiver gates -> ON preflight -> ON
+-> same gates -> existing scoring -> summary -> cleanup. No exhaustive observer
+or saved-journal replay. Cleanup uses PID-bearing docker top (CP-K23's cleanup
+formatting error only); verify no jobs before restoring both containers stopped.
+Refuse existing artifacts, duplicate controller, changed protected files, or
+port conflict. Preserve evidence and stop on any failed capture/gate.
+
+H=/home/yeranis/repos/gnssFGO/experiments/eig2_full_cpk24_20261021
+P=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eig2_full_cpk24_20261021/prepared
+V=/home/yeranis/results/gnssfgo_eig2_full_cpk24_20261021
+
+Report original/native GLIM, original/native Kimera ROS odometry, concurrent
+fusion ONLINE OFF/ON ATE,1s translation/rotation RPE,path length and coverage.
+DELAYED fixed-lag-finalized fusion separate, never called ONLINE/full-history.
+Full-saved outputs first, then identical common mask with coverage disclosed.
+IE-TC shares CPT7 and is not independent prism ground truth. Preserve existing
+rigid no-scale ATE alignment/prism lever arm, covariance/revision/payload timing
+histories, expiry/acceptance/conservation and exact launch provenance. No claim
+of nonlinear stationarity or complete batching-preservation certification.

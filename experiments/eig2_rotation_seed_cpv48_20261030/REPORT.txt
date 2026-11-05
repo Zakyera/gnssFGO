@@ -1,0 +1,142 @@
+CP-V48 -- new-pose rotation initialization test
+2026-10-30. COMPLETE. Candidate rejected as a fix for the captured large tilts.
+
+BOTTOM LINE
+Correcting the new orientation's bias reference makes its initial IMU rotation
+residual essentially zero, but does NOT remove the large subsequent window
+rotations. After the ordinary solve plus configured refresh, all five net tilt
+magnitudes change by less than0.0035deg. The worst cases remain about9.5deg.
+This does not justify deploying this change or spending a full sequence on it.
+
+The test supports rejecting the backend rotation seed as the dominant local
+cause in these checkpoints. It does NOT prove that frontend rotation-guided
+matching, cumulative bias history or every other initialization choice is sound.
+No live fix, improved trajectory accuracy or complete root cause is claimed.
+
+1. EXACT COMPARISON
+Five independent saved CP-V44 CBS-ON windows21--25. For every window:
+A: original initial state and native graph.
+B: replace ONLY the new pose's rotation with the IMU prediction using the
+   previous revised NavState and its latest bias. Preserve new translation,
+   velocity/bias, all older states and every native graph factor/observation.
+
+Each arm receives exactly one ordinary native GN step and one native refresh.
+No new source replay, measurements, iterations-to-convergence, covariance work,
+weight changes, CBS-Jacobian correction, frontend rematching or production patch.
+Twenty experimental GN steps total, plus four synthetic fixture steps. Windows
+are independent: B at22 starts from original saved history, not B at21.
+
+2. PRIMARY RESULT: LARGE WINDOW ROTATIONS PERSIST
+Net old-window tilt from previous published window to result after BOTH steps:
+
+update  Original A (deg)  Rotation-corrected B (deg)  Tilt reduction (%)
+ 21         1.550510              1.550486                  +0.001574
+ 22         4.692479              4.691204                  +0.027167
+ 23         2.540166              2.540160                  +0.000229
+ 24         9.508939              9.511847                  -0.030585
+ 25         9.350214              9.353689                  -0.037173
+
+Positive means less tilt; negative means more. These tiny changes do not solve
+the problem. The predeclared screen -- halve every original>3deg tilt without
+creating another>3deg window -- fails for all three severe windows22/24/25.
+
+For context, ordinary-step tilt alone:
+update     Original A       Rotation-corrected B
+ 21          .481628               .481392
+ 22         5.246367              5.254171
+ 23         2.480813              2.481082
+ 24         5.683449              5.684022
+ 25        10.211820             10.233720
+
+Tilt magnitude alone is not the full orientation difference. Comparing the
+actual final A/B old states, maximum per-pose orientation difference is
+.060840deg, maximum position difference1.04697mm (both at25). At24 those are
+.002956deg/.23960mm. Thus the two outcomes are close, not merely two rotations
+of equal magnitude in substantially different directions. Full matrices and
+per-window comparisons are retained in analysis.json.
+
+These are internal inter-update window rotations, NOT attitude RMSE against
+ground truth and NOT a new full-sequence Method1/Method2 result.
+
+3. THE INTENDED CHANGE REALLY TOOK EFFECT
+New translation is bit-identical in A and B. Every other initial state is
+unchanged. New rotation changes .032530--.121525deg, as predicted by CP-V47.
+Newest IMU rotation residual becomes <=4.445e-16deg in all five B starts.
+The original A starts have .051770/.121525/.032530/.042255/.118708deg residual.
+
+Initial total IMU cost decreases in all five cases, but this is not the outcome
+we accept as success. The subsequent final IMU objectives are:
+
+update       Original A       Rotation-corrected B
+ 21           233.522510           233.512623
+ 22           209.973307           210.130153
+ 23           213.334057           213.333913
+ 24          6191.630868          6202.691063
+ 25           456.247243           466.200184
+
+Final objective/physical IMU residual summaries by factor family are retained.
+No claim that a weighted cost is a calibrated uncertainty or trajectory error.
+
+Smart-factor topology/measurements remain unchanged. Cost-evaluated native smart
+status differs between A and B for only0/0/0/1/0 factors after refresh at21--25.
+The ordinary-stage differences are0/0/0/1/2. These statuses are obtained from
+isolated cost-reporting clones; they are NOT labelled Gaussian solver activity.
+Costs never mutate the graph used for the two-step experiment.
+
+4. REPRODUCTION AND ISOLATION GATES
+All five A cases passed BEFORE any B solve:
+- Fresh ordinary native Gaussian equations equal captured cached equations
+  exactly (reported relative matrix difference0 in every window).
+- Refresh equations evaluated at captured ordinary states also match captured
+  refresh cache exactly in all five windows.
+- Original ordinary solutions reproduce captured states with maximum aggregate
+  local-coordinate difference5.925e-8 (mixed units; not metres or degrees).
+- Chained ordinary+refresh solutions reproduce captured final states with
+  maximum aggregate local-coordinate difference5.880e-8, far below1e-5 gate.
+- Native Cholesky linear backward residuals pass the1e-14 guard.
+- No fixed keys or marginal prior present in these windows; existing native
+  initial priors, smart factors and CBS approximations were not replaced.
+
+Release and ASan/UBSan fixtures passed rotation-only mutation, corrected IMU
+rotation, original-value preservation and two-step solve checks. Vendor shared
+libraries are not sanitizer-instrumented. The sanitizer link retains inherited
+OpenCV3.4/4.2 warnings; original logs are preserved. No compile/test retry needed.
+
+All10 directly reserialized ordinary/refresh snapshots remain byte-identical.
+The inherited7519-file protected manifest includes prior snapshots and artifacts.
+No production/default configuration or older run evidence was edited.
+
+5. LIMITS / DECISION
+This result is useful negative evidence: the inconsistency identified in CP-V47
+is real, but fixing just this backend rotation seed does not fix the observed
+large rotations. Do not promote it or present it as the CBS-ON bug repair.
+
+The test intentionally leaves original ON-conditioned history and already-made
+frontend selections in place. It does not rule out a cumulative frontend effect
+from earlier biased rotation guidance. It also does not test changing stereo
+translation or reintegrating raw IMU samples; those are different hypotheses.
+Complete snapshots still begin at21, whereas first OFF/ON divergence was6.
+CP-V44 differs from CP-V42 at6; neither is relabelled an exact replay of the other.
+
+No full rerun or additional experiment was launched. Any further diagnosis
+should target evidence around the first CBS admission, not assume that this
+rotation-seed change is promising because its initial residual decreased.
+
+6. REPRODUCIBILITY / CLOSEOUT
+H=/home/yeranis/repos/gnssFGO/experiments/eig2_rotation_seed_cpv48_20261030
+P=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_rotation_seed_cpv48_20261030
+
+H/PROTOCOL.txt: predeclared scope and gates.
+P/RotationSeed.cpp: isolated native experiment, not linked into an estimator.
+H/run_test.py and *_command.json: exact build/test invocations and owned PIDs.
+P/results/parity.csv,seed.csv,steps.csv: reproduction and changed-seed receipts.
+P/results/update_*/: initial/ordinary/refresh values and per-factor summaries
+for both arms, original captured values and before/after snapshot bytes.
+H/analysis.json: all five outcomes, common-rotation matrices, family costs,
+physical IMU residual summaries, smart statuses and input hashes.
+H/complete.json: final preservation/job/container/Hesai checks and output hashes.
+
+Both originally stopped containers are restored and owned build/test jobs have
+exited. Final verification checks7519protected files, all analysis inputs,
+10snapshot nonmutation pairs and the four-sequence Hesai667-file checkpoint
+including originals. Refer to complete.json for the final timestamp/receipts.

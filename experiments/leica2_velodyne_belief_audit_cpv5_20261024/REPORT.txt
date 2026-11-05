@@ -1,0 +1,291 @@
+CP-V5 — LEICA-2 VELODYNE BELIEF / COVARIANCE AUDIT
+COMPLETED 2026-10-24 — SAVED DATA ONLY, NO TUNING
+================================================
+
+Conclusion
+----------
+Yes, the covariance contains useful information. GLIM is not universally
+orders of magnitude more confident than Kimera. But relative covariance scale,
+within-source health ranking, and actual optimizer influence are three distinct
+questions. This sequence gives particularly strong evidence to examine the
+ROTATIONAL component of GLIM -> Kimera coupling separately from translation.
+
+At1905 actual installed GLIM -> Kimera factors, using identical receiver
+endpoints and verified pre-update Kimera means:
+- Incoming GLIM rotation is worse than Kimera's pre-state on83.67% of edges.
+- Incoming GLIM rotational covariance trace is larger on84.72% of edges.
+- Nevertheless, choosing whichever has the smaller rotational trace gives
+  0.17685deg error RMS, versus0.14035deg keeping Kimera's pre-state:26.0% worse.
+- Incoming GLIM rotational trace/error Spearman correlation is only0.047.
+  A larger covariance on average is not a reliable per-belief health detector.
+- Translation is different: the same offline smaller-trace choice gives
+  12.486mm RMS versus13.786mm for Kimera's pre-state:9.4% lower.
+
+These are selection diagnostics on already recorded means, NOT a newly solved
+trajectory, a proposed hard switch, or measured improvement from changing CBS.
+No coefficient is fitted and no factor removed. The evidence supports one
+future controlled G2K rotational-weight sensitivity test; it does NOT justify
+globally discarding GLIM, a universal scalar, or promoting a new setting.
+
+Scope and preserved baseline
+----------------------------
+Only completed CP-V4 LEICA-2 OFF/ON at0.20x, rear Velodyne/front Alphasense
+stereo/shared CPT7. MAIN batching, all-LOCAL dense source covariance, corrected
+MAIN means, CP-K9 Kimera, classic temporary CBS and CP-K19 7s WNOA unchanged.
+No source/fuser/replay/container/build/capture was run. No model, covariance,
+calibration, launch, guards, original evidence, or prior scores changed.
+
+Existing full-saved trajectory ATE (m), NOT recomputed by this audit:
+                         CBS OFF     CBS ON
+Native GLIM               2.828135    0.861349
+Native Kimera ROS odom    1.097081    2.584159
+Concurrent ONLINE fusion 2.000424    1.828658
+DELAYED finalized fusion 2.000564    1.831814
+See CP-V4 leica2/results.json/RESULTS_REPORT.txt for all coverage/RPE/path-length
+details. Finalized is not online or full-history. IE-TC shares CPT7 with both
+sources; it is NOT independent prism truth. No calibrated probability claim.
+
+1. Correct time/mean/covariance comparison
+----------------------------------------
+For each original source interval[a,b], compute its own reference relative
+motion Zref=Tref(a)^-1*Tref(b), then e=Log(Zbelief^-1*Zref). Rotation-first,
+right-local6D tangent. Translation results below use ||rho||, not whole-path
+ATE; Cartesian translation differences are also retained. No absolute-path
+SE3 alignment is needed for these body-relative comparisons.
+
+Reference interpolation uses position-linear/SO(3) interpolation at the exact
+endpoint timestamps, never extrapolation. Maximum used bracket5ms. Export vs
+native timestamp rounding <=387ns. This is NOT an interpolation of covariance:
+the covariance is the actual matrix of that exact recorded belief version.
+
+First publication and revision near4s are separate. Revision age uses physical
+source-update time, not arrival time or a guessed fixed number of keyframes.
+Choose the nearest common OFF/ON update epoch to endpoint+4s, within150ms.
+Actual ages3.8990..4.0995s, medians~3.9999s. Tiny negative first ages under
+0.4microseconds are decimal export/native timestamp rounding, not acausality.
+
+                             GLIM            Kimera
+First stable IDs OFF/ON      4278/4278       1909/1908
+Exact common endpoint pairs 4278            1359
+Same near4s epoch eligible   4239            1301
+Unmatched first OFF/ON          0/0          550/549
+Common without near4s          39              58
+
+First-vs-near4s tables/plots use the SAME eligible cohort:22160 samples across
+both modes/stages. All first and common-first summaries are also retained,
+so exclusions are visible. No pooling of repeated revisions as independent
+observations; no independence-based significance test on overlapping edges.
+
+GLIM eligible endpoint envelope0.8325..424.6317s; Kimera0.2999..386.3960s.
+Both have~0.20s belief intervals. GLIM and Kimera endpoints differ: their
+source tables are NOT paired cross-source winner comparisons. Actual peer
+comparisons in section4 DO use identical receiver endpoints.
+
+IMPORTANT COVERAGE LIMIT: Kimera has no eligible matched10s bins from200 to
+300s, and from390s to the end. This reflects unmatched OFF/ON physical edge
+timings and missing common near4s histories, NOT absent camera measurements.
+Do not fill/interpolate those gaps. Actual ON peer-factor analysis independently
+covers1905 G2K edges through395.696s, including200..300s.
+
+2. Translation uncertainty versus error
+---------------------------------------
+U=sqrt(trace(C_translation)) in mm: a norm scale, NOT per-axis sigma or a95%
+bound. Table uses median U and RMS actual relative error. Each source has its
+own matched OFF/ON cohort described above.
+
+Source mode     First Umed  First errorRMS   Near4s Umed  Near4s errorRMS
+GLIM OFF          2.085       28.638            1.571       21.014
+GLIM ON           2.083       13.495            1.568       11.122
+Kimera OFF        1.560        6.640            1.000        4.973
+Kimera ON         2.371       13.664            1.320        7.738
+
+GLIM's LOCAL uncertainty is almost unchanged while its corrected MAIN motion
+improves substantially in ON. Kimera's uncertainty rises with its worse ON
+motion, but not enough to make it a calibrated total-error predictor. This
+does not establish a reporting bug: LOCAL conditional covariance and a
+MAIN-corrected mean need not track total systematic error one-for-one.
+
+The earlier all-version pooled covariance comparison is still numerically
+correct (OFF GLIM/Kimera median trace ratio~2.46translation/~3.39rotation), but
+mixes ages. It cannot be used as the actual weight ratio of inserted factors.
+In the current matched FIRST ON cohort, median translation U is actually
+2.083mm GLIM versus2.371mm Kimera; the ordering changes with age/population.
+At actual G2K insertion epochs, incoming/pre-state median translation traces
+are4.534986e-6/4.728915e-6m^2, nearly equal, not a100-fold separation.
+
+Ranking: retain the most-confident half, without actually removing factors.
+Translation RMS below is selected-half / all-belief RMS (lower is better):
+
+                     First OFF  First ON  Near4s OFF  Near4s ON
+GLIM                    .546      .847       .487       .899
+Kimera                  .717      .668       .785       .771
+
+First translation Spearman(trace,error): GLIM.436OFF/.350ON;
+Kimera.638OFF/.572ON. At near4s: GLIM.351/.263; Kimera.564/.463.
+There is useful ranking; a claim that these covariances contain no health
+information would be wrong. A low normalized curve is not necessarily a more
+accurate estimator: compare the absolute RMS legend/table as well.
+
+Motion check, predeclared quiet criterion reference speed<.05m/s AND angular
+speed<2deg/s; others moving. First cohort GLIM819quiet/3420moving,
+Kimera95quiet/1206moving. Within moving edges, translation rank remains
+.383/.164 GLIM OFF/ON and.584/.511 Kimera OFF/ON. Confident-half RMS ratios
+are.572/.923 and.755/.696 respectively. Thus Kimera's translation ranking is
+not explained solely by selecting stationary motion. GLIM ON ranking is weak
+once motion is held broadly comparable. Quiet Kimera OFF rank~-0.004 with
+only95samples; do not overinterpret this small subgroup.
+
+Confident errors still exist, not just startup: GLIM ON edge2009->2011 at
+201.731s has29.055mm error with1.764mm norm scale (lowest11.91% uncertainty).
+Kimera ON497->498 at102.199s has20.330mm with1.512mm (lowest21.37%). Their
+squared-error shares are0.109%/0.170% of their respective first cohorts.
+At near4s the latter improves to9.805mm but U falls to.672mm. Full directional
+normalized discrepancies confirm mismatch; it is not only a trace artifact.
+Outliers retained, not trimmed; no new startup fix inferred from these examples.
+
+3. Rotation is a separate issue
+------------------------------
+First rotation error RMS OFF/ON: GLIM.38639/.23145deg;
+Kimera.11852/.14042deg. Near4s:.41714/.21553 and.11838/.13740deg.
+These remain own-source interval cohorts, not paired G-vs-K trials.
+
+GLIM ON rotation trace/error rank is only.101 at first and.074 near4s.
+Its most-confident half retains94.3%/98.3% of the corresponding all-belief
+rotation RMS: little discrimination. At near4s some more aggressive confidence
+fractions have WORSE error than the full cohort. Kimera rotation ranking is
+also modest (.273/.310 ON first/near4s), weaker than its translation ranking.
+A single scalar cannot fix this ordering; positive constant scaling leaves
+the within-source ranking unchanged.
+
+4. What was actually installed into Kimera
+-----------------------------------------
+All1905 G2K factors matched their exact exported revision0 mean/full6x6
+covariance, receiver matrix, frozen mean and tracked temporary slot. Covariance
+and frozen-mean differences are zero. G2K source endpoints are shifted back
+~33.6ms to the actual receiver endpoints by the frozen mean-only alignment.
+Score the logged aligned mean at those receiver timestamps, not a guessed
+bridge covariance. Covariance remains unchanged; bridge uncertainty and its
+transport are still the known approximation, not repaired by this audit.
+
+All1905 Kimera pre-states were reconstructed from the immediately preceding
+recorded MAIN revision snapshot, on the same receiver edge, and verified against
+the actual pre-injection residual. Forty explicit pre-state matrix samples
+provide an additional check. Exact same-epoch outgoing LOCAL covariance joins
+exist for those pre-states. These are not the sum/information of all optimizer
+factors, and lower trace is not a measure of the factor's actual leverage.
+
+SAME receiver intervals, CBS ON:
+                                 Translation RMS    Rotation RMS
+Incoming aligned GLIM                 13.789mm          .32325deg
+Kimera pre-update                     13.786mm          .14035deg
+Offline smaller-trace choice          12.486mm          .17685deg
+Offline perfect-error choice          10.022mm          .13212deg
+Actual Kimera post-update             11.357mm          .14986deg
+
+Perfect-error choice uses reference hindsight only as a diagnostic lower
+benchmark; it is not implementable online. Smaller-trace choice uses the two
+already recorded means independently per block; it is NOT a physically fused
+SE3 trajectory or a counterfactual estimator run. Do not interpret the9.4%
+translation reduction or26.0% rotation increase as actual fusion-run changes.
+
+Incoming GLIM is more accurate on40.73% translation /16.33% rotation edges.
+It reports lower trace on50.08% /15.28%. Smaller-trace selection picks the
+better candidate on61.89% /74.49%. The rotational74.49% is NOT a success:
+always keeping Kimera would already be correct83.67% of the time. Of291
+rotational choices favouring GLIM,233 select the worse rotation and58 the
+better one. Cost of wrong choices matters, not just count.
+
+Incoming GLIM reported RMS norm is2.261mm/.02459deg versus observed
+13.789mm/.32325deg. Kimera pre LOCAL RMS norm is2.738mm/.01132deg.
+Both are overconfident RELATIVE TO THIS REFERENCE; no true NEES/NIS or
+calibrated probabilities follow because reference/model/cross-correlation
+uncertainty is unavailable. Full-matrix reference-normalized discrepancies
+are retained; trace alone is not sufficient for calibration or influence.
+
+Before/after evidence, not causal attribution:
+- Translation error improves on70.18% of these updates, overall RMS down17.6%.
+- Rotation error worsens on59.06%, overall RMS up6.77%.
+- On58.32% of all edges, post rotation is simultaneously closer to the incoming
+  GLIM rotation and farther from the reference than the pre-state.
+- The rotation effect is not confined to startup: moving-only post-worse
+  fraction61.35%, and rotation RMS increases in each populated30s bin through
+  390s. Example at155.399s (receiver763->764): pre.11756deg, incoming.83492deg,
+  post.33215deg. Incoming/pre norm scales.01460/.01074deg. Another at26.9997s:
+  pre.09477deg, incoming.57007deg, post.29702deg; incoming trace is smaller.
+
+Each optimizer update also adds/updates native factors, handles retirement and
+prior refresh, and inherits earlier CBS history. It is not an isolated injection
+ablation. These observations SUPPORT investigating rotational influence; they
+do not prove CBS alone caused each change or quantify how much of the full-path
+ATE degradation is explained. Better immediate translation relative error can
+coexist with worse long-trajectory drift/orientation; never equate them.
+
+5. Opposite direction and alignment limitations
+----------------------------------------------
+All1913 K2G factors matched exported payloads and tracked slots:1905 revision0
+and8 revision1. Classic temporary insertion need not always consume revision0;
+this is distinct from live replacement of an installed source factor. The
+initial analyzer assumption was corrected; exact evidence in RUN_NOTES.txt.
+
+Kimera -> GLIM raw-source/aligned-receiver translation RMS13.757/16.867mm;
+rotation.14006/.14137deg. Raw and aligned have different endpoints, so their
+difference alone is not an alignment-effect estimate. Same-receiver negative
+control (raw mean without alignment) gives15.562mm/.60025deg. Alignment helps
+rotation strongly; translation is8.4% worse than that negative control in this
+sample. Do not turn this into a proposal to disable alignment. These are logged
+means, not a newly constructed bridge or transported covariance.
+
+K2G translation trace/error rank falls from.636 raw-source to.247 aligned;
+rotational rank remains~.294. Covariance magnitude alone misses the extra
+alignment uncertainty. K2G receiver endpoints have median shift~-66.3ms,
+range approximately-69.4..+37.1ms. No explicit GLIM pre-state matrices were
+retained by this logging path; no invented full pre/post K2G comparison.
+Thus the symmetric causal question for GLIM is not answered by these logs.
+
+6. Important figures and reading guide
+-------------------------------------
+outputs/actual_g2k.png — most direct plot: exact receiver intervals, incoming
+GLIM versus verified Kimera pre-state. X: reported norm scale; Y: reference
+error RMS in uncertainty bins. Rotation shows large incoming error over a
+wide confidence range. Grey diagonal is equal magnitude, not a confidence test.
+
+outputs/translation_ranking.png — first/near4s, GLIM/Kimera, OFF/ON. X: retained
+lowest-uncertainty percentage; Y: its RMS divided by all-belief RMS. Below1
+means a cleaner subset. Read absolute RMS in legend before comparing modes.
+
+outputs/rotation_ranking.png — same diagnostic for rotation. In particular,
+GLIM ON near4s barely benefits from confidence selection. Do not import the
+translation conclusion into rotation.
+
+outputs/translation_time_coverage.png —10s bins, first matched source beliefs:
+left uncertainty, right actual relative error. Grey means no eligible exact
+OFF/ON matching intervals; no interpolation. This SUPERSEDES translation_time.png,
+whose initial presentation connected across empty bins. Original retained,
+no scientific values changed. Do not use the superseded figure in a report.
+
+7. Validation, retained artifacts, and stopping point
+----------------------------------------------------
+507118 journal belief versions checked: OFF205919GLIM+47605Kimera,
+ON206031GLIM+47563Kimera. All finite, symmetric and SPD. Consecutive revisions,
+event/receipt, body-frame and native-time joins pass. Geometry and synthetic
+monotone/reverse/tied/scale-invariant ranking checks pass. Dense solve vs
+Cholesky agrees.27 original input/helper/protocol hashes unchanged after work.
+
+Maximum reconstructed pre-state residual difference4.55e-11; explicit pre-state
+normalized-q relative difference9.00e-11; logged C*information identity error
+1.03e-14. Independent generic matrix-log check on81 distributed actual peer
+edges differs by<=1.43e-14 in error-vector components, whitening relative
+difference<=3.78e-12. Both audit.json and supplement.json passed. Four final
+recommended figures visually inspected (plus superseded overview retained).
+
+Files: PROTOCOL.txt, analyze.py, verify_and_supplement.py, RUN_NOTES.txt;
+outputs/audit.json,summary.json,coverage.json,time_bins.json,worst_confident.json,
+peer_summary.json,supplement.json; compressed source/peer samples with full
+mean/covariance/error/version/event provenance; four recommended PNG figures.
+No baseline files or campaign outputs modified; no commits/push.
+
+Decision: stop the authorized saved-data audit here. If the user requests an
+experiment next, test ONE predeclared G2K rotational-influence change against
+the frozen baseline, preserving translation and full covariance consistency,
+then check held-out sequences before generalizing. No numerical coefficient
+selected here, no new experiment authorized/launched, no alignment fix claimed.

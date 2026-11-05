@@ -1,0 +1,311 @@
+FL4z — GLIM/Kimera uncertainty versus relative-belief quality
+Saved ETH1, SPX-3 and EIG-2 OFF/ON captures | 2026-10-17
+=================================================================
+
+Result
+------
+The covariances contain SOME quality information, especially Kimera's
+translation block. They are NOT reliable, universally calibrated measures
+of relative-belief accuracy, and a low trace does not reliably identify the
+better sender. There is no universal OFF-to-ON covariance-shrinkage factor.
+No covariance, injection policy, estimator, fusion model or run was changed.
+
+The clearest failure of a simple confidence rule is EIG-2 GLIM: its initial
+translation uncertainty is almost unchanged between lower- and higher-error
+intervals, and its uncertainty is SMALLER than on SPX-3 although its relative
+translation error is much larger. This is already present in the raw payload;
+it is not created solely by temporal mean alignment.
+
+The useful positive finding is Kimera's translation covariance: higher-error
+intervals usually have larger reported variance. This ranking signal is not
+the same as calibrated magnitude, nor does it by itself tell the receiver
+which of two disagreeing estimators is correct.
+
+1. Scope and exact products
+---------------------------
+All original runs are frozen, live co-running captures with the same FL4v
+algorithm/private builds: temporary classic source CBS, native mean alignment,
+shared-native GLIM LOCAL covariance, FL4q Kimera, FL4e7s source-WNOA receiver,
+no central IMU, full dense Gaussian covariance at scale1. Source revisions
+are diagnostic exports to gnssFGO, distinct from source-to-source classic CBS.
+
+ETH1: FL4t OFF / FL4v ON. Only endpoints and receipt availability inside the
+previous105.4s comparison interval are admitted:
+1727775011.5999973..1727775116.9998968. The OFF run failed later; this audit
+does not turn it into a completed120s experiment. One extra OFF edge has no
+ON publication before the cutoff and is excluded from both matched tables.
+Matched1050GLIM/526Kimera edges; endpoint spans105.099/105.199s respectively.
+
+SPX-3: FL4w60s,590GLIM/293Kimera matched source edges; spans59.100/59.699s.
+EIG-2: FL4x60s,590GLIM/296Kimera matched edges; spans59.100/59.599s.
+Every selected edge is about0.20s, not a1s RPE pair or a whole-path ATE.
+No data/reference gaps among selected endpoints; maximum used IE-TC bracket5ms.
+
+Primary sample: one FIRST publication per source edge, with exact OFF/ON
+physical endpoints and same originating source update. Separate secondary
+sample: the latest common source update available in BOTH modes for that
+edge, within the cutoff. This prevents unequal revision ages or the longer
+ETH1 ON future from masquerading as covariance changes. Transport revision
+numbers are not assumed to be source-update IDs. Median later revision
+counts are47GLIM/24Kimera. The active tail is right-censored, not finalized.
+
+Input roots under /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/:
+ ETH1 OFF gnssfgo_fixed_lag_live120_off_on_fl4t_20261016/prepared
+ ETH1 ON  gnssfgo_fixed_lag_live120_on_fl4v_20261017/prepared
+ SPX3     gnssfgo_spx3_live60_off_on_fl4w_20261017/prepared
+ EIG2     gnssfgo_eig2_live60_off_on_fl4x_20261017/prepared
+Read events.csv plus receipts.jsonl from live60/live120_MODE_receiver;
+read actual source alignment/injection payloads from estimators.log and
+the saved glim_rosnode stdout. No trajectory-derived substitute for a belief.
+Exact paths and SHA256s are retained in summary.json/per-sequence JSONs.
+
+2. Coordinates, units and interpretation
+---------------------------------------
+Both sources report CPT7-body relative Pose3 beliefs with [phi,rho] tangent
+ordering. Use the actual dense covariance and e=Log(Z^-1 Z_reference), the
+BetweenFactor residual convention used by the extraction machinery.
+Rotation and translation block traces are kept separate (rad^2 and m^2).
+sqrt(trace(block)) is an aggregate RMS-norm uncertainty scale, NOT a per-axis
+standard deviation, confidence radius or95% error bound.
+
+Translation error columns below are Cartesian relative-translation error
+norms. Covariance/error correlation and normalization use tangent rho;
+Cartesian and rho norms are retained separately, not silently conflated.
+Full6D normalization includes cross blocks. The3D diagnostics use genuine
+marginal blocks, not conditional covariance or a Schur complement.
+
+Reference: dataset IE-TC /boxi/inertial_explorer/tc/odometry, cpt7_imu body,
+translation interpolation plus shortest-path SO3 interpolation, exact logged
+endpoints. No global SE3 fitting, no prism lever arm, no clock adjustment.
+This reference SHARES CPT7 and is not independent noiseless ground truth.
+Reference uncertainty, temporal correlations and source/reference cross
+correlations are unknown. Consequently covariance-normalized reference errors
+are NOT innovation NIS or a rigorous true-error NEES/calibration test.
+They reveal discrepancy with the retained reference, not its unique cause.
+
+3. First-publication covariance scales and relative errors
+--------------------------------------------------------
+Reported uncertainty: median sqrt(block trace).
+Observed error: RMS over the same matched source intervals.
+All values are OFF -> ON.
+
+Sequence Source   trans uncertainty mm   trans error mm   rot uncertainty deg    rot error deg
+ETH1     GLIM       1.908 ->1.915        11.488 ->9.226     .007980 ->.008057      .172189 ->.154409
+ETH1     Kimera     2.127 ->2.275        13.856 ->6.205     .011029 ->.011560      .179266 ->.196187
+SPX-3    GLIM       1.817 ->1.840         3.497 ->4.108     .020282 ->.020525      .125563 ->.118277
+SPX-3    Kimera     4.981 ->4.233        48.858 ->15.283    .021280 ->.018342      .185580 ->.160116
+EIG-2    GLIM       1.586 ->1.586        10.827 ->10.618    .005273 ->.005299      .323863 ->.320569
+EIG-2    Kimera     1.112 ->1.395         4.357 ->7.777     .010050 ->.011038      .344597 ->.359558
+
+These are local published-belief errors, NOT native trajectory ATE and NOT
+the effect of an isolated factor. All matched exported first beliefs are
+included, including startup/tails and beliefs not accepted by the peer.
+Section6 separately scores the actual injected subset/versions.
+
+Median first-publication traces, OFF -> ON:
+Sequence Source  rotation rad^2                  translation m^2
+ETH1     GLIM    1.93994e-8 ->1.97751e-8          3.64028e-6 ->3.66840e-6
+ETH1     Kimera  3.70511e-8 ->4.07080e-8          4.52575e-6 ->5.17575e-6
+SPX-3    GLIM    1.25308e-7 ->1.28322e-7          3.30083e-6 ->3.38737e-6
+SPX-3    Kimera  1.37937e-7 ->1.02478e-7          2.48123e-5 ->1.79144e-5
+EIG-2    GLIM    8.46826e-9 ->8.55368e-9          2.51668e-6 ->2.51579e-6
+EIG-2    Kimera  3.07699e-8 ->3.71160e-8          1.23645e-6 ->1.94712e-6
+
+Matrices are finite, symmetric and strictly positive definite in all273028
+saved versions. Smallest eigenvalues by capture range1.86e-10..1.06e-9;
+maximum symmetry error0. This is not a guarantee of calibrated uncertainty
+or a universal covariance floor. No zero/singular covariance collapse found.
+
+4. OFF/ON and revision age are distinct effects
+----------------------------------------------
+Median of PAIRED ON/OFF trace ratios, not ratio of two medians:
+Sequence Source    first rot/trans       later matched-update rot/trans
+ETH1     GLIM       .98976 / .99177        .77329 / .82621
+ETH1     Kimera    1.08357 /1.16531       1.14583 /1.18598
+SPX-3    GLIM      1.04274 /1.02500        .79355 / .88725
+SPX-3    Kimera     .86699 / .87454        .77264 / .76174
+EIG-2    GLIM       .99932 / .99907        .86298 / .72166
+EIG-2    Kimera    1.21326 /1.43357       1.26999 /1.17655
+
+GLIM's initial covariance barely changes with CBS, while its later revised
+covariance is lower under ON. Kimera increases on ETH1/EIG-2 and decreases on
+SPX-3. A single CBS-ON scale compensation is not supported by these captures.
+Differences from older last-observed summaries are intentional: here both
+modes use the SAME source update, with no longer ON future or tail mismatch.
+
+Later matched-update RMS translation / rotation reference errors:
+Sequence Source     OFF mm / deg        ON mm / deg
+ETH1     GLIM       9.704 /.164293       7.475 /.146524
+ETH1     Kimera     4.935 /.179349       4.387 /.175525
+SPX-3    GLIM       2.509 /.112349       3.269 /.100708
+SPX-3    Kimera    31.756 /.139813       7.254 /.123128
+EIG-2    GLIM       7.819 /.319324       8.523 /.315370
+EIG-2    Kimera     4.391 /.344466       4.786 /.337530
+
+Later covariance can shrink without better relative accuracy. For example,
+EIG-2 revised GLIM translation worsens under ON while its paired translation
+trace falls to~.722 of OFF. This is a stronger inconsistency than an ATE-only
+comparison, but does not identify the covariance-error source by itself.
+
+5. Does covariance distinguish lower/higher error intervals?
+-----------------------------------------------------------
+Within each sequence/source/mode, rank the first-belief reference errors.
+Compare bottom and top error quartiles. These retrospective labels are NOT
+an online health detector and are not fitted injection thresholds.
+
+Translation: Spearman(covariance trace, rho error), OFF / ON:
+             ETH1                SPX-3               EIG-2
+GLIM         .055 / .128         .421 / .416          -.041 /-.016
+Kimera       .774 / .387         .750 / .518           .440 / .536
+
+High-error quartile / low-error quartile median translation variance:
+             ETH1                SPX-3               EIG-2
+GLIM        1.037 /1.095        1.719 /1.374          .996 / .995
+Kimera     40.782 /7.608       35.257 /8.389         2.000 /3.455
+
+Thus GLIM has a useful moderate ranking signal in SPX-3, little in ETH1,
+and effectively none in EIG-2. Kimera's translation covariance carries a
+useful ranking signal in all three, but absolute scale still understates
+many reference discrepancies. No p-values/independent-sample confidence
+claims: overlapping intervals and revisions are temporally correlated.
+
+Rotation rank correlations OFF / ON:
+GLIM: ETH1 -.086/.053, SPX-3 .539/.523, EIG-2 -.255/-.260.
+Kimera: ETH1 .134/-.038, SPX-3 .671/.491, EIG-2 .378/.235.
+EIG-2 GLIM rotation is particularly problematic as a confidence ranking:
+more accurate-looking covariance does not imply smaller reference error.
+
+6. Actual source-to-source injections
+------------------------------------
+Every selected aligned mean/full covariance is read from its native alignment
+log, not reconstructed from an ATE path. Counts: ETH1 525G2K/525K2G within
+the mask; SPX-3 289/292; EIG-2 292/293. Total2216 recorded aligned factors.
+All match an exported source payload. On SPX-3 two K2G factors are refreshed
+classic publications of the same edge (273->274,275->276), not its earliest
+payload. Both match an actually logged later source version exactly. Their
+logger labels are repeated 'first'; this is not source live_revision mode.
+The actual factors, not an assumed first-payload substitute, are scored here.
+
+ON injected uncertainty (median) and ALIGNED error (RMS):
+Sequence Direction  sigma trans mm / rot deg    error trans mm / rot deg
+ETH1     G2K           1.915 /.008114              9.729 /.206662
+ETH1     K2G           2.273 /.011557              7.526 /.191869
+SPX-3    G2K           1.841 /.020526              3.479 /.166765
+SPX-3    K2G           4.195 /.018274             10.349 /.131067
+EIG-2    G2K           1.587 /.005317             10.070 /.337503
+EIG-2    K2G           1.389 /.011022             11.903 /.393338
+
+Join the exact FL4y pre-injection audit to the G2K covariance:
+ EIG-2 G beats matched Kimera OFF pre-update translation on55/292 intervals.
+ Median G translation variance when better2.55027e-6, when worse2.50594e-6.
+ The worse/better ratio is.983: effectively no warning in the covariance.
+ Against the actual ON prior it wins107/292; variance ratio worse/better1.046.
+ SPX-3 G beats OFF pre-update on248/289; variance when worse/better=.779.
+ Against the actual ON prior it wins190/289; variance ratio=.944.
+Therefore even a useful within-source ranking is NOT automatically a ranking
+of sender reliability RELATIVE to the receiver on that interval.
+No new ETH1 pre-injection reconstruction was performed; its lower/higher
+error quartile analysis above uses the exact source/reference intervals.
+
+Current native temporal alignment changes the mean but leaves the supplied
+covariance unchanged: no bridge-process covariance is added and no full
+uncertainty transport for the composition is performed in these paths.
+This is a known mean-only experimental scope, not repaired by this audit.
+It matters: K2G raw->aligned translation RMS is6.200->7.526mm ETH1,
+9.689->10.349mm SPX-3,7.816->11.903mm EIG-2. These are not independent
+variances that can simply be subtracted or fitted as a correction.
+Native mean-only alignment must not be confused with the old Stage4 EKF
+bridge-covariance implementation. Raw-source mismatches remain substantial.
+
+7. Dense normalized reference discrepancies
+-------------------------------------------
+For rotation/rho use e_block^T Sigma_block^-1 e_block; for joint6D use the
+complete matrix. Nominal95% thresholds are7.8147 (3D),12.5916 (6D), for a
+correct zero-mean Gaussian error against exact truth. Here reference is NOT
+exact/independent, so fractions below these thresholds are descriptive only.
+
+First-belief fraction inside nominal3D ellipsoid, rotation / translation:
+Sequence Source    OFF                  ON
+ETH1     GLIM       0.00% /10.48%         0.19% /11.14%
+ETH1     Kimera     8.94% /34.03%         0.57% /36.12%
+SPX-3    GLIM       8.98% /63.56%         8.98% /52.37%
+SPX-3    Kimera    12.97% /23.89%         8.87% /68.60%
+EIG-2    GLIM       0.00% / 4.41%         0.00% / 6.10%
+EIG-2    Kimera     2.36% / 9.80%         1.01% / 5.41%
+
+This is strong evidence that treating the retained covariance as a calibrated
+standalone error distribution against IE-TC is not justified. It does not
+prove that all discrepancy comes from estimator overconfidence; systematic
+reference/frame/time/mean errors and unknown reference uncertainty can matter.
+In particular the rotational discrepancy is common to both sources and needs
+care before anyone fits a rotation scale. This audit applies no scale.
+
+Trace also hides directionality and cross blocks. First-belief median3x3
+rotation eigenvalue ratios range~2.1..17.8; translation~1.8..10.2. Full6D
+normalization differs from adding separately normalized marginal blocks.
+Graph influence is J^T Sigma^-1 J plus topology, current residuals and other
+factors, not1/trace. We did not rerun optimization or claim exact influence
+percentages for GLIM, Kimera or WNOA from these tables.
+
+8. What this supports, and what it does not
+------------------------------------------
+Supported: uncertainty-aware sharing is a worthwhile target, but the existing
+trace cannot yet decide 'inject / do not inject' reliably across sequences.
+Kimera's translational covariance is not devoid of information. GLIM's weak
+quality discrimination on ETH1/EIG-2 and the absolute reference/covariance
+mismatch must be understood separately from feedback or universal scaling.
+
+Not supported: one global CBS-ON shrinkage correction, GT-derived per-sequence
+gates, declaring either estimator always healthy, or treating lower covariance
+as evidence a conflicting sender must be right. Shared IMU/data, successive
+overlapping factors and previous CBS effects also violate independence
+assumptions; temporary retirement is not a proof that all correlation vanished.
+
+Before an injection policy, the bounded next diagnostic would distinguish
+local Gaussian geometric/inertial precision from unmodeled mean error, and
+check whether native quality signals add information beyond covariance.
+That is a proposal only. No weighting, gating or follow-up run is implemented.
+
+9. Validation, provenance and artifacts
+--------------------------------------
+273028 full matrices finite/symmetric/SPD;3345 matched source edges,6690
+paired stage records. Exact OFF/ON source timestamps, initial source updates
+and equal later source-update matching checked; no duplicate sampled identity.
+Dense solve agrees with Cholesky to max1.62e-14 relative error. SE3 Exp/Log
+checked against scipy matrix exponential; dense quadratic invariance under
+invertible coordinate changes and a50000-sample synthetic coverage check pass.
+Existing EIG-2/SPX-3 FL4y injected error values reproduce EXACTLY.
+All original input hashes rechecked unchanged. No estimator containers started,
+no C++ source/build/default/profile changes, no replay/trajectory rescore.
+
+During audit development GLIM's EXPORT timestamp and REVISION state-index
+fields were normalized incorrectly in the first parser draft. Cross-checking
+later-update counts exposed it before reporting results. Corrected parser
+uses the actual source state index; obsolete draft results are quarantined
+and explicitly INVALID, not scientific outputs or changed estimator evidence.
+
+Artifacts in this directory:
+ PROTOCOL.txt, analyze.py, verify.py, summarize.py, compact.py
+ summary.json: compact full numerical summaries and exact input hashes
+ eth1_results.json,spx3_results.json,eig2_results.json: all per-edge evidence
+   (large generated files kept local/ignored by Git; reproducible by script)
+ verification.json; injection_quality_groups.json
+ uncertainty_vs_reference_error.png: one six-panel scientific scatter figure
+   (visually checked; equal-norm line is not a probability boundary)
+
+Code provenance:
+ W=/home/yeranis/repos/V4RL/cbs_gtsam4.3
+ W/src/cbs/include/cbs/utils/relative_pose_covariance.h:258–400
+   compute(): BetweenFactor endpoint Jacobians and Schur-relative covariance.
+ W/runs/shared_linearization_s4_provider_20261012/driver/Provider.h:31
+   actual GLIM provider delegates to the same relative covariance machinery.
+ W/runs/fixed_lag_current_chart_fl4q_20261016/VioBackend.cpp:2899–2951
+   Kimera native mean-only alignment;3640–3762 outgoing revision audit.
+ W/runs/shared_linearization_s4_provider_20261012/release_2/overlay/cbs_bridge.cpp:2533–2576
+   GLIM native mean-only alignment.
+ Each prepared/transport_tools/live_receiver_protocol.py:28–99
+   exact serialization/deduplication; transport revisions are not source IDs.
+
+gnssFGO HEAD remains668d4c788983722f4acad37d1495c15d03a27e18.
+Existing dirty work preserved; new audit and ledger only. No commit/push.
+STOP. No run, tuning or injection-policy change authorized by this report.

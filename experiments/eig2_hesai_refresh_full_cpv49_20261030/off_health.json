@@ -1,0 +1,209 @@
+{
+  "passed": true,
+  "criterion": "Zero previous-state position revisions >0.5m, as in corrected CP-V42 OFF; not universal health proof.",
+  "method": "Method1 newest absolute backend; native cadence with gaps excluded",
+  "metrics": {
+    "ATE_RMSE_m": 0.5151198599286403,
+    "path_length_m": 188.0518233093034,
+    "RPE": {
+      "translation_m": {
+        "statistics": {
+          "rmse": 0.03133204316991319,
+          "mean": 0.019707852213444572,
+          "median": 0.015130804270371312,
+          "std": 0.024357698789793998,
+          "min": 0.001114460617212225,
+          "max": 0.32143078885258836,
+          "sse": 0.32101489584882636
+        },
+        "pairs": 327,
+        "archive": "/home/yeranis/repos/gnssFGO/experiments/eig2_hesai_refresh_full_cpv49_20261030/off_health_evaluation/kimera_off_translation_m_pooled.zip"
+      },
+      "rotation_deg": {
+        "statistics": {
+          "rmse": 0.5960004831423787,
+          "mean": 0.38036092420694284,
+          "median": 0.2064308956250233,
+          "std": 0.458848714983914,
+          "min": 0.021967948154909312,
+          "max": 3.109108064488072,
+          "sse": 116.15582032124529
+        },
+        "pairs": 327,
+        "archive": "/home/yeranis/repos/gnssFGO/experiments/eig2_hesai_refresh_full_cpv49_20261030/off_health_evaluation/kimera_off_rotation_deg_pooled.zip"
+      }
+    },
+    "rows": 1761,
+    "reference_path_length_m": 186.61117599681185,
+    "alignment": {
+      "rotation": [
+        [
+          -0.994662570845386,
+          0.10316664085499595,
+          -0.0017361952491749203
+        ],
+        [
+          0.10317663866466616,
+          0.9946363764136046,
+          -0.00728422601749564
+        ],
+        [
+          0.0009753938219322928,
+          -0.007424481767057202,
+          -0.9999719624456391
+        ]
+      ],
+      "translation": [
+        0.5482498876170538,
+        -0.41745249721536126,
+        0.3755386501001148
+      ],
+      "scale": 1.0
+    }
+  },
+  "revision": {
+    "previous_revision_m": {
+      "n": 1745,
+      "mean": 0.008265226564226553,
+      "median": 0.004930661601338086,
+      "p95": 0.024922317265871775,
+      "maximum": 0.2881071193221488
+    },
+    "absolute_step_m": {
+      "n": 1745,
+      "mean": 0.10617626335519399,
+      "median": 0.10761109582638763,
+      "p95": 0.1996063872537489,
+      "maximum": 0.3148631850182754
+    },
+    "same_update_motion_m": {
+      "n": 1745,
+      "mean": 0.10507299215891043,
+      "median": 0.10678972219421172,
+      "p95": 0.1960027935179058,
+      "maximum": 0.23340061461601558
+    },
+    "revision_rotation_deg": {
+      "n": 1745,
+      "mean": 0.07641989747027102,
+      "median": 0.05891144009297368,
+      "p95": 0.1991153302444032,
+      "maximum": 1.49538120874339
+    },
+    "rows": 1761,
+    "paired_steps": 1745,
+    "missing_step_ids": [
+      4,
+      1555,
+      1557,
+      1559,
+      1563,
+      1582,
+      1597,
+      1599,
+      1609,
+      1611,
+      1681,
+      1682,
+      1712,
+      1757,
+      1759
+    ],
+    "MAIN_counts": {
+      "KIMERA_CBS_REVISION_EDGE_ROW": 43369
+    },
+    "increment_parity_translation_max": 3.124013289853393e-10,
+    "increment_parity_rotation_max": 1.2377942239100684e-09,
+    "revisions_over_half_m": 0,
+    "revisions_over_one_m": 0,
+    "shape_max_m": {
+      "n": 1743,
+      "mean": 0.004383853695550554,
+      "median": 0.0031904890764253156,
+      "p95": 0.012451372907184396,
+      "maximum": 0.08346204126650507
+    }
+  },
+  "reconstruction": {
+    "rows": 1761,
+    "first_keyframe": 0,
+    "last_keyframe": 1760,
+    "every_id_unique_contiguous_and_matches_csv": true,
+    "exact_header_stamps_used": true,
+    "rounded_log_timestamps_not_used": true,
+    "every_increment_pose_within_log_rounding_bounds": true,
+    "increment_position_max_difference_m": 8.34543723070208e-05,
+    "increment_quaternion_max_component_difference": 4.998915197340636e-07,
+    "graph_quaternion_norm_max_error": 6.790362055975052e-07,
+    "graph_prism_position_rounding_bound_m": 8.816227280414332e-05,
+    "graph_rotation_rounding_bound_rad": 2.000010000058334e-05,
+    "logged_no_incremental_pose": false,
+    "graph_vs_increment_position_max_m": 1.147005387999554,
+    "source_log": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/full_off_source/estimators.log"
+  },
+  "evo_checks": {
+    "TUM_roundtrip_max": 1.4675760606763788e-15,
+    "CLI_API_error_max": 0.0
+  },
+  "commands": [
+    {
+      "command": [
+        "/home/yeranis/.local/bin/evo_ape",
+        "tum",
+        "/home/yeranis/repos/gnssFGO/experiments/eig2_hesai_refresh_full_cpv49_20261030/off_health_evaluation/reference.tum",
+        "/home/yeranis/repos/gnssFGO/experiments/eig2_hesai_refresh_full_cpv49_20261030/off_health_evaluation/kimera_off.tum",
+        "-r",
+        "trans_part",
+        "-c",
+        "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/ape_config.json",
+        "--save_results",
+        "/home/yeranis/repos/gnssFGO/experiments/eig2_hesai_refresh_full_cpv49_20261030/off_health_evaluation/kimera_off_ape.zip",
+        "--align"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "/home/yeranis/.local/bin/evo_rpe",
+        "tum",
+        "/home/yeranis/repos/gnssFGO/experiments/eig2_hesai_refresh_full_cpv49_20261030/off_health_evaluation/segment_0/reference.tum",
+        "/home/yeranis/repos/gnssFGO/experiments/eig2_hesai_refresh_full_cpv49_20261030/off_health_evaluation/segment_0/kimera_off.tum",
+        "-r",
+        "trans_part",
+        "-c",
+        "/home/yeranis/repos/gnssFGO/experiments/eth1_evo_rpe_distance_cpv31_20261029/evo_config.json",
+        "--save_results",
+        "/home/yeranis/repos/gnssFGO/experiments/eig2_hesai_refresh_full_cpv49_20261030/off_health_evaluation/segment_0/kimera_off_translation_m.zip",
+        "-d",
+        "0.5",
+        "-u",
+        "m",
+        "--pairs_from_reference"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "/home/yeranis/.local/bin/evo_rpe",
+        "tum",
+        "/home/yeranis/repos/gnssFGO/experiments/eig2_hesai_refresh_full_cpv49_20261030/off_health_evaluation/segment_0/reference.tum",
+        "/home/yeranis/repos/gnssFGO/experiments/eig2_hesai_refresh_full_cpv49_20261030/off_health_evaluation/segment_0/kimera_off.tum",
+        "-r",
+        "angle_deg",
+        "-c",
+        "/home/yeranis/repos/gnssFGO/experiments/eth1_evo_rpe_distance_cpv31_20261029/evo_config.json",
+        "--save_results",
+        "/home/yeranis/repos/gnssFGO/experiments/eig2_hesai_refresh_full_cpv49_20261030/off_health_evaluation/segment_0/kimera_off_rotation_deg.zip",
+        "-d",
+        "0.5",
+        "-u",
+        "m",
+        "--pairs_from_reference"
+      ],
+      "exit": 0
+    }
+  ],
+  "source_runs": 0,
+  "receiver_runs": 0,
+  "reference": "IE-TC shares CPT7; not independent prism GT"
+}

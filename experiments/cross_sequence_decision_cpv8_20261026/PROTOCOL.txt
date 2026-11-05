@@ -1,0 +1,41 @@
+CP-V8 — Cross-sequence decision report, 2026-10-26
+================================================
+User request: detailed cross-sequence decision report and justified proposal.
+Saved-data analysis only. No estimator run/replay, container operation, build,
+settings/model/calibration/covariance change, deletion, push or promotion.
+
+Baseline population: four parked Hesai pairs (ETH1 CP-K23, EIG-2 CP-K24A,
+corrected quiet-start SPX-3 CP-K28, LEICA-2 CP-K29) and three completed CP-V4
+Velodyne pairs (SPX-3, EIG-2, LEICA-2). Include ARC-5 numerical failure and
+unavailable/blocked missions in the reliability accounting, not in ATE means.
+CP-V6A variance10 is separate negative intervention evidence, not a baseline.
+
+1. Preserve and inventory original full-saved/common scores, trajectories,
+   covariance/revision summaries, coverage/EOF qualifications and timing.
+2. Reuse CP-V7 geometry to compute gap-aware per-pair common-mask ATE and
+   1/10/20s RPE for native GLIM, native Kimera and concurrent ONLINE fusion.
+   Integer 100ms grid; estimate brackets <=0.5s, reference <=0.05s;
+   no extrapolation or horizon crossing an unsupported gap. Also use the same
+   20s-supported START cohort at all horizons. Keep DELAYED separate.
+   Independently reproduce full-saved ATE and verify trajectory hashes.
+3. Apply the already-tested actual GLIM->Kimera factor/pre-state join to the
+   seven baseline ON cases where logs support it. Verify installed covariance
+   and exact pre-state; never substitute asynchronous published states.
+   Compare heading/tilt errors and uncertainty at exact receiver endpoints,
+   with 30s coverage bins. Do not invent covariance interpolation or cross-time
+   covariance. This checks generality, not isolated causal factor influence.
+4. Produce a consolidated report, figures, machine-readable metrics and one
+   justified proposal with an explicit future acceptance/stop contract.
+   A numerical tuning coefficient or future capture is NOT selected here.
+
+Reference: mission IE-TC shares CPT7; not independent prism ground truth.
+Known mean-only source covariance alignment remains. LOCAL provenance does
+not imply independence/calibration. Overlapping windows/revisions are not
+independent trials. Rear Velodyne vs Hesai changes viewpoint as well as sensor.
+Fixed-start drift is not best-fit ATE; predicted-frame angular marginal
+projections are not fully propagated residual covariances or NEES/NIS.
+
+Only new analysis outputs under this directory; no original results altered.
+Read-only input SHA256 before/after. Refuse output overwrites. Reuse existing
+validation evidence rather than rerun capture/solver gates. Document any
+analysis-only correction and retain any incomplete attempt evidence.

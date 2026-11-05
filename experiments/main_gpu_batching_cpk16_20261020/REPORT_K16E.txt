@@ -1,0 +1,171 @@
+CP-K16e — first real GPU-update discrepancy localized upstream
+2026-10-20. BOUNDED DIAGNOSIS COMPLETE; NO PRODUCTION PROMOTION.
+
+BOTTOM LINE
+===========
+The fresh live comparison did not give the two optimizers identical prepared
+LiDAR inputs. At the first optimized scan, the pose linearization points match
+exactly, but the sampled/deskewed point sets and their local geometry differ.
+On independent copies of EXACTLY the same real device inputs, original
+synchronous and batched GPU equations match EXACTLY, including inlier/cache
+state. Actual source equations also match the independent synchronous oracle.
+
+The original library itself has scheduling-dependent random-grid sampling.
+A standalone check on the actual first optimized raw scan, same data and same
+RNG reset each call, produces two different sampled sets in six calls with the
+configured two threads. One-thread diagnostic produces one set in six calls.
+No production sampling/thread setting was changed.
+
+This establishes an upstream source of run-to-run input variability, and clears
+the tested first GPU equations of the suspected batching arithmetic difference.
+It does NOT prove every later update/covariance in the60s run is identical or
+turn its failed strict preservation gate into a pass. Do not blame all of the
+old.1388m maximum discrepancy on this one test or call it harmless by default.
+
+WHAT RAN
+========
+Two fresh TWO-second GLIM-only captures, original then unchanged K16a candidate,
+at0.20x with the same CP-K14 profiles and25s drain.18Hesai/186CPT7 messages each,
+exact expected identities and physical timestamps; no Kimera/fuser/inboundCBS.
+11native outputs each, same timestamps; initialization exact.
+Window1727775007855396309..1727775009855396309ns.
+Only a removable diagnostic LD_PRELOAD observer was compiled, not an estimator
+DSO. It records/checks the two x0->x1 GPU factors of the first MAIN update.
+It forwards each actual factor call to the original loaded method.
+
+Original CP-I3 gtsam_points SHA256:
+ 3f23e6115e34acc5a2f2b965b15bd4c651897c889a6c38a0a52cdb3855c0ceb7
+Unchanged K16a candidate:
+ 6f71292d29d974a0555abd9fda6b2370fdab81ca634a4e1343c216d2a762d2ca
+Observer:
+ a4c2a4ac0078dfa70503f325d62b272476cd3be8e97e41b8edf9d47114c60955
+Same unchanged CP-I1 bridge and synchronous-compatible CUDA library.
+Actual maps and effective parameters retained. Only configuration/output paths
+and mode-specific recording ID differ from K16d.
+These synchronized diagnostic runs are NOT timing benchmarks.
+
+EXACT-INPUT RESULTS
+===================
+First optimized source timestamp1727775008775065899ns.
+Both live incoming Pose3 linearization points x0/x1: maximum difference0.
+The two GPU resolutions each examined in original and candidate captures:
+ four independent synchronous/batched checks total.
+
+For all four:
+ independent pre-evaluation snapshot state exact;
+ synchronous versus batched full augmented Hessian/RHS/constant difference0;
+ actual source-returned equation versus synchronous snapshot difference0;
+ post-evaluation inlier/cache/geometry snapshot exact.
+Inherited1e-8+1e-6*maxabs(reference) bound unchanged (actual differences ZERO).
+Original actual factors have no pending batch cache; candidate actual factors
+have one. In candidate checks the pending result is removed only from the
+diagnostic copy, so the oracle recomputes it synchronously; actual cache remains
+untouched and is consumed by the original method.
+
+The exact-copy machinery freezes device point/covariance/voxel data and mutable
+inliers/cache. It is not ordinary clone() or shared writable-factor state.
+It intentionally synchronizes and adds cost. This can affect scheduling and
+is not a new timing or complete source-replay determinism claim.
+Only first GPU equations are tested here; no full-state/CPU-factor covariance
+certificate is inferred beyond prior K16b's separately documented fixture.
+
+LIVE INPUT DIFFERENCE
+====================
+Each run's first source cloud has7676points, but only4744XYZ triples match
+exactly between runs:61.803%. This is NOT merely array order.
+Nearest point distance reference->candidate median0,p95.27953m,max.70139m.
+These are distances between different sampled surface points, NOT trajectory
+errors, registration residuals or GT errors. Index-wise/lexicographic array
+maxima in first_update_analysis.json are only raw diagnostic differences and
+must not be interpreted physically.
+
+Source point covariances/normals and target voxel data also differ.
+Accordingly actual first Gaussian equations differ across the fresh captures,
+despite agreeing exactly with the same-input synchronous oracle within each.
+First native pose difference in this new pair:.000391222476m,
+.000010622769rad; old K16d pair had.001830444086m. No GT ATE was scored.
+The discrepancy therefore exists in the prepared LiDAR data before the first
+batched GPU equation is consumed. Equal raw timestamps/counts did not freeze
+the sampling/preprocessing computation.
+
+CONCRETE ORIGINAL-SAMPLER MECHANISM
+=================================
+Loaded original CP-I3 function, not a rewritten sampler:
+ /home/yeranis/repos/V4RL/cbs_gtsam4.3/src/gtsam_points/src/gtsam_points/types/point_cloud_cpu_funcs.cpp
+ randomgrid_sampling(), lines383-384: one seeded RNG per worker;
+ lines399-403: std::sample uses mts[omp_get_thread_num()];
+ lines423-426: OpenMP guided scheduling assigns blocks dynamically.
+Different worker assignment changes which RNG sequence selects each block's
+points, even if the parent RNG begins at the same seed. Atomic output allocation
+also varies ordering before subsequent sorting. No random_device claim.
+
+Caller:
+ /home/yeranis/repos/V4RL/cbs_gtsam4.3/clean_glim_ws/src/glim/src/glim/preprocess/cloud_preprocessor.cpp
+ preprocess_impl(), lines103-106, random-grid enabled; frozen profile has
+ target10000,resolution1m,num_threads2. Header CloudPreprocessor has a
+ default-constructed mutable std::mt19937, not a guarantee of deterministic
+ parallel work assignment.
+
+Standalone confirmation, no ROS master/estimator or new bag playback:
+ raw message stamp1727775008775065899,44881XYZ points;
+ same original function,resolution1m,rate10000/44881,identical default RNG
+ reset before each of six calls per diagnostic thread count.
+ two threads:2distinct selected-index hashes,7696selected each;
+ different sets share4801indices (62.38%).
+ one thread:1selected-index hash across all6calls.
+ This probe starts RNG at its default state rather than replaying all preceding
+ scans; it demonstrates the mechanism, not exact reconstruction of the live
+7676post-filtered cloud. Only XYZ are used for sampling; ID-valued intensities
+are pass-through bookkeeping. Live and standalone point counts differ because
+the latter stops before the normal distance/crop filtering.
+
+STATUS / NEXT BOUNDARY
+=====================
+No new optimizer repair is justified by this first-update discrepancy.
+Do NOT silently change production downsampling, thread count, seed, covariance,
+weights, models or thresholds to force matching live trajectories.
+For any subsequent exact source-preservation gate, freeze/replay the prepared
+clouds and their state (or explicitly measure the reference's own variability)
+instead of requiring two fresh stochastic runs to be identical. This report
+does not authorize another run, a general replay framework or a default change.
+Keep the demonstrated K16d timing improvement separate from its failed strict
+paired preservation gate; candidate remains isolated.
+
+Kimera is unchanged and unresolved: its25-state window can span11.10s after
+a5.10s keyframe gap, whereas the receiver retains7s. Faster GLIM cannot make
+already-absorbed revisions replaceable. That source-finalization/receiver-
+retention contract remains the separate full-sequence blocker. No lag/guard
+adjustment or slower/full retry was made here.
+
+PRESERVATION / HARNESS NOTES
+===========================
+2026protected files,7pinned inputs and five estimator source repository
+HEAD/status/diff fingerprints unchanged. Both captures/jobs exit0. No retry
+of a source capture; no existing evidence overwritten.
+Two diagnostic compile errors were corrected in fresh build artifacts:
+observer CUDA include ordering; standalone sampler nonexistent convenience
+header (declaration is already in point_cloud_cpu.hpp). Failed outputs retained.
+Closeout's first parameter check incorrectly expected the reference recording
+ID to differ from the reference; exact per-mode comparison corrected after
+inspection. No estimator/numerical gate change.
+Both existing containers verified stopped after all owned jobs exited.
+No tuning, estimator rebuild, commit/push, default promotion or automation.
+
+EVIDENCE
+========
+Authoring/report:
+ /home/yeranis/repos/gnssFGO/experiments/main_gpu_batching_cpk16_20261020/
+ PROTOCOL_K16E.txt,probe_k16e.cpp,prepare_k16e.py,build_k16e.py,
+ analyze_k16e.py,sampler_k16e.cpp,run_sampler_k16e.py,close_k16e.py,
+ RESULT_K16E.json.
+Runtime:
+ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/
+ k16e_source_1/ (first observer compile failure; NO capture)
+ k16e_source_2/{reference,batched}/probe/call_{0,1}/
+   exact device arrays,input poses,original/batched/actual matrices,result.json;
+ k16e_source_2/first_update_analysis.json
+ k16e_source_2/sampler_build_2/{result.json,selected/,raw_xyz.bin}
+ plus original failed sampler_build,commands,complete/cleanup/maps/parameters,
+ sensor receipts,outputs.bag and immutable copied source/config manifests.
+
+CP_K16E_FIRST_GPU_EQUATIONS_MATCH_UPSTREAM_SAMPLING_VARIES

@@ -1,0 +1,222 @@
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/active_window.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_incremental_cpv29_20261028/prepared/active_window.launch
+@@ -111,7 +111,7 @@
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_stride" value="20"/>
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_max_updates" value="40"/>
+ 
+-  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/glim_profile.launch">
++  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_incremental_cpv29_20261028/prepared/glim_profile.launch">
+     <arg name="config_path" value="$(arg glim_config_path)"/>
+     <arg name="glim_node_output" value="$(arg diagnostic_node_output)"/>
+     <arg name="glim_input_imu_topic" value="$(arg glim_input_imu_topic)"/>
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/glim_profile.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_incremental_cpv29_20261028/prepared/glim_profile.launch
+@@ -111,12 +111,14 @@
+ 	<arg name="glim_factor_graph_inspector_entity_prefix" default="glim"/>
+ 	<arg name="glim_node_output" default="screen"/>
+ 	<node pkg="glim_ros" type="glim_rosnode" name="glim_rosnode" output="$(arg glim_node_output)">
+-		<env name="LD_LIBRARY_PATH" value="/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/release_1:/workspace/cbs_gtsam4.3/runs/local_revision_covariance_cpi1_20261019:/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_provider_20261012/release_2:$(optenv LD_LIBRARY_PATH)"/>
++		<env name="LD_LIBRARY_PATH" value="/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/release_1:/workspace/cbs_gtsam4.3/runs/glim_incremental_publisher_cpv29_20261028:/workspace/cbs_gtsam4.3/runs/shared_linearization_s4_provider_20261012/release_2:$(optenv LD_LIBRARY_PATH)"/>
+ 		<env name="CBS_E1B_LOCAL_UPDATE_GPU_BATCHING" value="1"/>
+         <env name="CPK16_MAIN_GPU_BATCHING" value="1"/>
++        <env name="GLIM_INCREMENTAL_OUTPUT_CPV29" value="1"/>
++        <env name="GLIM_INCREMENTAL_CSV_CPV29" value="$(env CBSMS_RUN_ROOT)/$(env CBSMS_RUN_NAME)/glim_incremental_pairs.csv"/>
+         <env name="GLIM_SHARED_NATIVE_PROVIDER" value="shared_native"/>
+         <env name="GLIM_REVISION_COVARIANCE_POLICY" value="native_local"/>
+-        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/full_off_source/e1b_profile.jsonl"/>
++        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_incremental_cpv29_20261028/prepared/full_off_source/e1b_profile.jsonl"/>
+ 		<param name="config_path" value="$(arg config_path)" />
+ 		<param name="glim_dump_path" value="$(arg glim_dump_path)" />
+ 		<param name="deterministic_input_event_log_path" value="$(arg glim_deterministic_input_event_log_path)" />
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/source.env
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_incremental_cpv29_20261028/prepared/source.env
+@@ -2,7 +2,7 @@
+ # to off_source/on_source and CBSMS_CBS_ENABLE to false/true.
+ : "${CBSMS_RUN_NAME:?Set fresh ETH1 source run name}"
+ : "${CBSMS_CBS_ENABLE:?Set false or true}"
+-export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared
++export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_incremental_cpv29_20261028/prepared
+ export CBSMS_RUN_NAME CBSMS_CBS_ENABLE
+ export ROS_LOG_DIR="${CBSMS_RUN_ROOT}/${CBSMS_RUN_NAME}/ros_logs"
+ export CBSMS_PROJECT_ROOT=/workspace/cbs_gtsam4.3
+@@ -12,7 +12,7 @@
+ export CBSMS_POST_PLAYBACK_DRAIN_SEC=25
+ export CBSMS_BAG_RATE=0.20
+ export CBSMS_SEED_CLOCK_SECS=1727775007
+-export CBSMS_ROS_MASTER_PORT=11473
++export CBSMS_ROS_MASTER_PORT=11529
+ export CBSMS_USE_EXISTING_ROS_MASTER=true
+ export CBSMS_KIMERA_MODE=stereo_shared_cpt7
+ # The recovered classic Kimera source path is "current", not experimental RIGHT.
+@@ -35,7 +35,7 @@
+ export CBSMS_KIMERA_RECEIVER_AUDIT_MAX_SAMPLES=40
+ export CBSMS_KIMERA_RECEIVER_AUDIT_STRIDE=20
+ export CBSMS_DIAGNOSTIC_NODE_OUTPUT=log
+-export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/input_profiles/glim_config
+-export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/input_profiles/kimera_profile
++export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_incremental_cpv29_20261028/prepared/input_profiles/glim_config
++export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_incremental_cpv29_20261028/prepared/input_profiles/kimera_profile
+ 
+ export CBSMS_DATASET_DIR=/workspace/cbs_gtsam4.3/src/datasets/GrandTour
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/source_runner.sh
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_incremental_cpv29_20261028/prepared/source_runner.sh
+@@ -386,6 +386,8 @@
+ 
+ rostopic echo -p /glim/cbs/odometry >"${run_dir}/glim_odometry.csv" &
+ recorders+=("$!"); pids+=("$!")
++rostopic echo -p /glim/incremental_pose_cpv29 >"${run_dir}/glim_incremental_ros.csv" &
++recorders+=("$!"); pids+=("$!")
+ rostopic echo -p /kimera_vio_ros/odometry >"${run_dir}/kimera_odometry.csv" &
+ recorders+=("$!"); pids+=("$!")
+ if [[ "${presentation_enable}" == true ]]; then
+@@ -398,7 +400,7 @@
+ fi
+ rosbag record --buffsize=256 -O "${run_dir}/recordings/cbs.bag" \
+   /kimera/cbs/odom_belief_in /kimera/cbs/odom_belief_out \
+-  /glim/cbs/odometry /kimera_vio_ros/odometry \
++  /glim/cbs/odometry /kimera_vio_ros/odometry /glim/incremental_pose_cpv29 \
+   /cbs_ekf/glim/twist /cbs_ekf/kimera/twist \
+   /cbs_ekf/odometry/filtered /cbs_ekf/bridge_diagnostics \
+   >"${run_dir}/cbs_recorder.log" 2>&1 &
+@@ -578,7 +580,7 @@
+   "kimera_receive_cbs_beliefs=${kimera_receive_external_beliefs}" \
+   "glim_cbs_mode=${glim_cbs_mode}" \
+   "kimera_cbs_odom_factor_mode=active_window_temporary" \
+-  "experiment=gnssfgo_eth1_awake_full_cpk23_20261021" \
++  "experiment=gnssfgo_eth1_incremental_cpv29_20261028" \
+   "glim_sensor_pair=hesai+cpt7_imu" \
+   "kimera_sensor_pair=${kimera_sensor_pair}" \
+   "glim_body_frame=cpt7_imu" \
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/full_off.json
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_incremental_cpv29_20261028/prepared/full_off.json
+@@ -1,7 +1,7 @@
+ {
+-  "sequence": "ETH1 LOCAL CP-K23 bag0-346.32s matched OFF",
++  "sequence": "ETH1 LOCAL CP-V29 bag0-346.32s matched OFF",
+   "source_protocol": "classic",
+-  "ros_master_uri": "http://127.0.0.1:11473",
++  "ros_master_uri": "http://127.0.0.1:11529",
+   "imu_topic": "/boxi/cpt7/imu",
+   "imu_frame": "cpt7_imu",
+   "world_frame": "gnssfgo_world",
+@@ -12,18 +12,18 @@
+   "drain_timeout_wall_sec": 300,
+   "ros1_container": "cbsms_ws_gpu",
+   "receiver_container": "ubuntu-jammy-humble-nvidia",
+-  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/receiver_cpk19.sh",
++  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_incremental_cpv29_20261028/prepared/receiver_cpk19.sh",
+   "sources": [
+     {
+       "id": "glim_hesai",
+-      "session": "eth1_cpk23_full_off_20261021",
++      "session": "eth1_cpv29_full_off_20261021",
+       "kind": "glim",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/ros_logs/*/glim_rosnode-*-stdout.log"
+     },
+     {
+       "id": "kimera_front",
+-      "session": "eth1_cpk23_full_off_20261021",
++      "session": "eth1_cpv29_full_off_20261021",
+       "kind": "kimera",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/estimators.log"
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/run_case.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_incremental_cpv29_20261028/prepared/run_case.py
+@@ -33,7 +33,7 @@
+     own.mkdir(exist_ok=False)
+     inside = '/workspace/'+str(own.relative_to('/home/yeranis/repos/V4RL'))
+     env_inside = '/workspace/'+str((ROOT/'source.env').relative_to('/home/yeranis/repos/V4RL'))
+-    master_uri = 'http://127.0.0.1:11473'
++    master_uri = 'http://127.0.0.1:11529'
+     jobs = {}
+     streams = []
+     def start(name, command):
+@@ -47,7 +47,7 @@
+             text=True, capture_output=True, check=check)
+     def stop_pid(name):
+         # The PID is recorded by this case, command must match the owned port/run.
+-        token = '11473' if name=='master' else str(source.name)
++        token = '11529' if name=='master' else str(source.name)
+         script = ('import os,signal,sys; from pathlib import Path; p=Path(sys.argv[1]); '
+           'pid=int(p.read_text()) if p.exists() else 0; c=Path("/proc/%d/cmdline"%pid); '
+           'e=Path("/proc/%d/environ"%pid); '
+@@ -59,7 +59,7 @@
+     started = time.time()
+     try:
+         assert ros('rosparam get /rosversion',check=False).returncode != 0, 'port is already in use'
+-        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11473'
++        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11529'
+         start('master',['docker','exec','cbsms_ws_gpu','setsid','--wait','bash','-lc',master_script])
+         for _ in range(60):
+             if ros('rosparam get /rosversion',check=False).returncode==0:
+@@ -92,7 +92,7 @@
+                 if not log.exists():continue
+                 with log.open() as f:
+                     f.seek(log_positions.get(str(log),0));chunk=f.read();log_positions[str(log)]=f.tell()
+-                for token in ['SHARED_NATIVE_SHADOW_FAILURE','SHARED_NATIVE_SHADOW_SETUP_FAILURE','SHARED_NATIVE_PROVIDER_FAILURE','CPK9 ','FL4Q','active_window_rollback','active_window_retry_local_update_','Smoother recovery','Persistent BPSAM recovery','process has died','terminate called','Segmentation fault']:
++                for token in ['CPV29_INCREMENTAL_FAILURE','SHARED_NATIVE_SHADOW_FAILURE','SHARED_NATIVE_SHADOW_SETUP_FAILURE','SHARED_NATIVE_PROVIDER_FAILURE','CPK9 ','FL4Q','active_window_rollback','active_window_retry_local_update_','Smoother recovery','Persistent BPSAM recovery','process has died','terminate called','Segmentation fault']:
+                     assert token not in chunk, token+': '+str(log)
+         while jobs['source'].poll() is None:
+             assert shutil.disk_usage(ROOT).free>5*1024**3, 'disk reserve below 5GiB'
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/map_guard.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_incremental_cpv29_20261028/prepared/map_guard.py
+@@ -30,7 +30,7 @@
+     paths = mapped_paths(maps_text)
+     expected = {}
+     for name in REQUIRED:
+-        directory = Path("/workspace/cbs_gtsam4.3/runs/local_revision_covariance_cpi1_20261019") if name == "libglim_ros.so" else (Path("/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/release_1") if name == "libgtsam_points.so.1.2.1" else library_dir)
++        directory = Path("/workspace/cbs_gtsam4.3/runs/glim_incremental_publisher_cpv29_20261028") if name == "libglim_ros.so" else (Path("/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/release_1") if name == "libgtsam_points.so.1.2.1" else library_dir)
+         target = str((directory / name).resolve(strict=True))
+         actual = {path for path in paths if Path(path).name == name}
+         if actual != {target}:
+@@ -42,7 +42,7 @@
+ def self_test(library_dir, fixture_path):
+     maps_text = Path(fixture_path).read_text()
+     expected = require_glim_libraries(maps_text, library_dir)
+-    assert expected['libglim_ros.so'] == str(Path('/workspace/cbs_gtsam4.3/runs/local_revision_covariance_cpi1_20261019') / 'libglim_ros.so')
++    assert expected['libglim_ros.so'] == str(Path('/workspace/cbs_gtsam4.3/runs/glim_incremental_publisher_cpv29_20261028') / 'libglim_ros.so')
+     for name, target in expected.items():
+         changed = maps_text.replace(target, '/tmp/unexpected/' + name)
+         assert changed != maps_text, name
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/verify_effective.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_incremental_cpv29_20261028/prepared/verify_effective.py
+@@ -93,8 +93,11 @@
+ assert 'GLIM_REVISION_COVARIANCE_POLICY' not in env(pid)
+ import hashlib
+ assert hashlib.sha256((root/'private_build/libkimera_vio.so').read_bytes()).hexdigest()=='be637ad745f73bf12596d3bf06754f56ed7bcadfdb8b4792b94c4fcfee62aad9'
+-assert hashlib.sha256(Path('/workspace/cbs_gtsam4.3/runs/local_revision_covariance_cpi1_20261019/libglim_ros.so').read_bytes()).hexdigest()=='42df73c172232a612da965bf43ead8ec454caf08434b84e2da5de74d26cdb79f'
++assert hashlib.sha256(Path('/workspace/cbs_gtsam4.3/runs/glim_incremental_publisher_cpv29_20261028/libglim_ros.so').read_bytes()).hexdigest()=='280ed25489eb48f104d4722a7f23b0282f4f791dcf3e25e8a4e1960bd3110470'
+ assert hashlib.sha256(Path('/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/release_1/libgtsam_points.so.1.2.1').read_bytes()).hexdigest()=='6f71292d29d974a0555abd9fda6b2370fdab81ca634a4e1343c216d2a762d2ca'
++assert env(glim_pid)['GLIM_INCREMENTAL_OUTPUT_CPV29']=='1'
++assert Path(env(glim_pid)['GLIM_INCREMENTAL_CSV_CPV29'])==source/'glim_incremental_pairs.csv'
++assert 'GLIM_INCREMENTAL_OUTPUT_CPV29' not in env(pid)
+ assert 'GLIM_SHARED_NATIVE_JOURNAL' not in env(glim_pid)
+ assert 'GLIM_SHARED_NATIVE_PROVIDER' not in env(pid)
+ assert 'CBS_E1B_LOCAL_UPDATE_GPU_BATCHING' not in env(pid)
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/validate_candidate.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_incremental_cpv29_20261028/prepared/validate_candidate.py
+@@ -1,4 +1,4 @@
+-"""CP-K23 source lifecycle gate; no nonlinear-stationarity claim."""
++"""CP-V29 source lifecycle gate; no nonlinear-stationarity claim."""
+ import csv
+ import hashlib
+ import json
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/validate_case.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_incremental_cpv29_20261028/prepared/validate_case.py
+@@ -10,7 +10,7 @@
+ OUT=REC/'receiver'
+ CTL=P/f'full_{MODE}_control'
+ EXE=Path('/home/yeranis/results/gnssfgo_receiver_finalization_cpk19_20261021/live')
+-RESULT=Path(f'/home/yeranis/results/gnssfgo_eth1_awake_full_cpk23_20261021/{MODE}')
++RESULT=Path(f'/home/yeranis/results/gnssfgo_eth1_incremental_cpv29_20261028/{MODE}')
+ LIB=Path('/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib')
+ 
+ def sha(p):
+@@ -180,5 +180,5 @@
+ 
+ if __name__=='__main__':
+     phase=sys.argv[1]
+-    assert phase=='check', 'CP-K23 does not authorize a saved-journal solver repeat'
++    assert phase=='check', 'CP-V29 does not authorize a saved-journal solver repeat'
+     print(json.dumps(check(),indent=2))

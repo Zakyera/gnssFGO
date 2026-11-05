@@ -1,0 +1,543 @@
+{
+  "case": "velodyne_leica2",
+  "sensor": "Velodyne",
+  "sequence": "LEICA-2",
+  "method": 1,
+  "original_receiver_Qc_multiplier": 1.0,
+  "epoch_ns": 1732549034915071665,
+  "duration_s": 428.75,
+  "origin_enu_m": [
+    -0.011483248279424,
+    -0.36318778123009515,
+    0.5967420335266643
+  ],
+  "reference": {
+    "path": "/workspace/cbs_gtsam4.3/src/datasets/GrandTour/LEICA-2/2024-11-25-16-36-19_cpt7_ie_tc.bag",
+    "sha256": "5455a1a68dfcdab7dd26fdcbd528d42982725da8bc165a0208ddcd74aac6ca64",
+    "topic": "/boxi/inertial_explorer/tc/odometry",
+    "frame_ids": [
+      "enu_origin"
+    ],
+    "child_frame_ids": [
+      "cpt7_imu"
+    ],
+    "caveat": "IE-TC GNSS/INS reference shares CPT7 IMU; not independent prism GT"
+  },
+  "reference_vertices": 85750,
+  "products": {
+    "off_glim": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_source/glim_odometry.csv",
+      "sha256": "4009e24f5541a38f7eb6859d8cb9d4be13dfc39ab28c702b46aaaed8728f9903",
+      "product": "glim_initial",
+      "rows": 4280,
+      "alignment_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method1_off_glim_ape.zip",
+      "alignment_SE3": [
+        [
+          0.9666382558281311,
+          -0.2559214819350721,
+          -0.010708755936369664,
+          0.8068061226309258
+        ],
+        [
+          0.25424446179793636,
+          0.9637095190108427,
+          -0.08138621881478406,
+          -1.4127556414108184
+        ],
+        [
+          0.031148611760814904,
+          0.07594839071400171,
+          0.9966251080187208,
+          0.7410386274486741
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "common_ATE_m": 2.7821689969285504,
+      "common_path_m": 206.49962761386917,
+      "common_RPE_translation_m": 0.09628699528446731,
+      "common_RPE_rotation_deg": 1.3300236013213877,
+      "common_RPE_pairs": 378,
+      "path_with_gap_chords_m": 209.03827098366529,
+      "displayed_gap_aware_path_m": 209.03827098366529,
+      "gaps_over_500ms": 0,
+      "max_float32_error_m": 1.905437486016126e-06,
+      "common_pose_max_difference_m": 0.0,
+      "evo_error_max_difference_m": 0.0,
+      "first_s": 0.6320813310000001,
+      "last_s": 428.53073030800005
+    },
+    "off_kimera": {
+      "path": "/home/yeranis/repos/gnssFGO/experiments/newest_absolute_comparison_cpv27_20261028/velodyne_leica2.npz",
+      "sha256": "589a19dde18a655f6975105bd83816208844ac2032d860d9c931a15473ca19b4",
+      "product": "recovered absolute backend, NOT native incremental ROS",
+      "rows": 1937,
+      "alignment_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method1_off_kimera_ape.zip",
+      "alignment_SE3": [
+        [
+          0.08110142111983852,
+          -0.9966934267696707,
+          0.004977200666362429,
+          1.4357275050078968
+        ],
+        [
+          -0.9967022516469297,
+          -0.08108669084062274,
+          0.003093562745059677,
+          0.09170685163206471
+        ],
+        [
+          -0.0026797489216154454,
+          -0.0052116794460097685,
+          -0.9999828285241047,
+          0.268581877403123
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "common_ATE_m": 1.0053748809069143,
+      "common_path_m": 203.22308033740478,
+      "common_RPE_translation_m": 0.036100479604564216,
+      "common_RPE_rotation_deg": 0.5035279719793138,
+      "common_RPE_pairs": 378,
+      "path_with_gap_chords_m": 203.8918432440522,
+      "displayed_gap_aware_path_m": 203.75647954809244,
+      "gaps_over_500ms": 12,
+      "max_float32_error_m": 1.906217093505802e-06,
+      "common_pose_max_difference_m": 0.0,
+      "evo_error_max_difference_m": 0.0,
+      "first_s": 0.099937912,
+      "last_s": 426.99556373900003
+    },
+    "off_fusion": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_receiver/receiver/online_trajectory.tum",
+      "sha256": "1ba07f8d4cf4285e03c32ef5f3e26531def78abd6114b28b9e4743708471aa23",
+      "product": "fusion_online",
+      "rows": 4282,
+      "alignment_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method1_off_fusion_ape.zip",
+      "alignment_SE3": [
+        [
+          0.11660466240886729,
+          -0.9928638165401295,
+          0.024995889859775917,
+          3.2678739899509868
+        ],
+        [
+          -0.9930581331401219,
+          -0.1161619417383604,
+          0.018491822404247665,
+          -0.2845030503976176
+        ],
+        [
+          -0.015456290265473844,
+          -0.026978604429097223,
+          -0.9995165121168771,
+          0.722727107216444
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "common_ATE_m": 2.006010451400694,
+      "common_path_m": 277.6000251338498,
+      "common_RPE_translation_m": 0.06058829058316455,
+      "common_RPE_rotation_deg": 3.030672941849979,
+      "common_RPE_pairs": 378,
+      "path_with_gap_chords_m": 280.15405784771053,
+      "displayed_gap_aware_path_m": 280.15405784771053,
+      "gaps_over_500ms": 0,
+      "max_float32_error_m": 1.9049509916158058e-06,
+      "common_pose_max_difference_m": 0.0,
+      "evo_error_max_difference_m": 0.0,
+      "first_s": 0.48444333500000003,
+      "last_s": 428.584443335
+    },
+    "on_glim": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_on_source/glim_odometry.csv",
+      "sha256": "51dc63bd3915041d6d1e3e3a6b0e5c8cd0a37111dad135713bf05dc67c425443",
+      "product": "glim_initial",
+      "rows": 4280,
+      "alignment_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method1_on_glim_ape.zip",
+      "alignment_SE3": [
+        [
+          0.9663919931983993,
+          -0.24662066355333173,
+          -0.07255869203987894,
+          0.45863760111677365
+        ],
+        [
+          0.23995705016211816,
+          0.9666402489018021,
+          -0.08959488423205937,
+          -0.43486391028015703
+        ],
+        [
+          0.0922341019337123,
+          0.06917280904788883,
+          0.9933317637772918,
+          0.40476747702638954
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "common_ATE_m": 0.848868788963257,
+      "common_path_m": 207.64191923762752,
+      "common_RPE_translation_m": 0.04363088381748289,
+      "common_RPE_rotation_deg": 0.5549989101762638,
+      "common_RPE_pairs": 378,
+      "path_with_gap_chords_m": 215.46308686073985,
+      "displayed_gap_aware_path_m": 215.46308686073985,
+      "gaps_over_500ms": 0,
+      "max_float32_error_m": 1.9051389159585597e-06,
+      "common_pose_max_difference_m": 0.0,
+      "evo_error_max_difference_m": 0.0,
+      "first_s": 0.6320813310000001,
+      "last_s": 428.53073030800005
+    },
+    "on_kimera": {
+      "path": "/home/yeranis/repos/gnssFGO/experiments/newest_absolute_comparison_cpv27_20261028/velodyne_leica2.npz",
+      "sha256": "589a19dde18a655f6975105bd83816208844ac2032d860d9c931a15473ca19b4",
+      "product": "recovered absolute backend, NOT native incremental ROS",
+      "rows": 1936,
+      "alignment_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method1_on_kimera_ape.zip",
+      "alignment_SE3": [
+        [
+          0.07838626485188312,
+          -0.9969026427376265,
+          0.006380782499570725,
+          2.3862587977378205
+        ],
+        [
+          -0.996918275091513,
+          -0.07836444617738844,
+          0.003600883762786783,
+          -0.40706828461085465
+        ],
+        [
+          -0.003089704052555921,
+          -0.0066433785115368035,
+          -0.9999731592651975,
+          0.33941503944480006
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "common_ATE_m": 1.5324455097350453,
+      "common_path_m": 374.13059479381866,
+      "common_RPE_translation_m": 0.31902905133938747,
+      "common_RPE_rotation_deg": 1.6096707846735145,
+      "common_RPE_pairs": 378,
+      "path_with_gap_chords_m": 395.2553692469793,
+      "displayed_gap_aware_path_m": 393.8077396703796,
+      "gaps_over_500ms": 13,
+      "max_float32_error_m": 1.8970307564813993e-06,
+      "common_pose_max_difference_m": 0.0,
+      "evo_error_max_difference_m": 0.0,
+      "first_s": 0.099937912,
+      "last_s": 426.99556373900003
+    },
+    "on_fusion": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_on_receiver/receiver/online_trajectory.tum",
+      "sha256": "755a14455803c00216f0fae3f52868ff5cbad4f769408bb6426b330e2a1fda99",
+      "product": "fusion_online",
+      "rows": 4282,
+      "alignment_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method1_on_fusion_ape.zip",
+      "alignment_SE3": [
+        [
+          0.0674125169737349,
+          -0.997563855096437,
+          0.017941782531297447,
+          2.9850143931444215
+        ],
+        [
+          -0.9977243762729913,
+          -0.06742451271800752,
+          -6.383893907879229e-05,
+          -0.31365377379669823
+        ],
+        [
+          0.0012733993626378938,
+          -0.017896650241700115,
+          -0.9998390312266217,
+          0.7930776309388567
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "common_ATE_m": 1.8679619777055843,
+      "common_path_m": 233.00187996933863,
+      "common_RPE_translation_m": 0.05226633060497715,
+      "common_RPE_rotation_deg": 1.7156159597520586,
+      "common_RPE_pairs": 378,
+      "path_with_gap_chords_m": 235.13666219787342,
+      "displayed_gap_aware_path_m": 235.13666219787342,
+      "gaps_over_500ms": 0,
+      "max_float32_error_m": 1.9025839321784588e-06,
+      "common_pose_max_difference_m": 0.0,
+      "evo_error_max_difference_m": 0.0,
+      "first_s": 0.48444333500000003,
+      "last_s": 428.584443335
+    }
+  },
+  "common_coverage": {
+    "grid_queries": 4264,
+    "valid_queries": 3850,
+    "excluded_queries": 414,
+    "supported_s": 384.6,
+    "capture_s": 428.75,
+    "supported_capture_percent": 89.70262390670554,
+    "first_s": 0.684928335,
+    "last_s": 390.38492833500004,
+    "envelope_s": 389.70000000000005,
+    "start_gap_s": 0.684928335,
+    "tail_gap_s": 38.36507166499996,
+    "segments": [
+      {
+        "first_s": 0.684928335,
+        "last_s": 57.584928335,
+        "rows": 570
+      },
+      {
+        "first_s": 60.384928335000005,
+        "last_s": 195.384928335,
+        "rows": 1351
+      },
+      {
+        "first_s": 196.78492833500002,
+        "last_s": 304.38492833500004,
+        "rows": 1077
+      },
+      {
+        "first_s": 305.284928335,
+        "last_s": 390.38492833500004,
+        "rows": 852
+      }
+    ]
+  },
+  "terminal_omissions": {
+    "off": 0,
+    "on": 0
+  },
+  "kimera_reconstruction_checks": {
+    "off": {
+      "rows": 1937,
+      "first_keyframe": 0,
+      "last_keyframe": 1936,
+      "every_id_unique_contiguous_and_matches_csv": true,
+      "exact_header_stamps_used": true,
+      "rounded_log_timestamps_not_used": true,
+      "every_increment_pose_within_log_rounding_bounds": true,
+      "increment_position_max_difference_m": 6.889296797004849e-05,
+      "increment_quaternion_max_component_difference": 4.999847931230761e-07,
+      "graph_quaternion_norm_max_error": 6.723064729374784e-07,
+      "graph_prism_position_rounding_bound_m": 7.182084378436684e-05,
+      "graph_rotation_rounding_bound_rad": 2.000010000058334e-05,
+      "logged_no_incremental_pose": false,
+      "graph_vs_increment_position_max_m": 1.961571990767609,
+      "source_log": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_source/estimators.log",
+      "rounded_incremental_common_ATE_difference_m": 1.0300451851463777e-06,
+      "rounded_incremental_full_ATE_difference_m": 1.053704283826562e-06
+    },
+    "on": {
+      "rows": 1936,
+      "first_keyframe": 0,
+      "last_keyframe": 1935,
+      "every_id_unique_contiguous_and_matches_csv": true,
+      "exact_header_stamps_used": true,
+      "rounded_log_timestamps_not_used": true,
+      "every_increment_pose_within_log_rounding_bounds": true,
+      "increment_position_max_difference_m": 6.979570162875675e-05,
+      "increment_quaternion_max_component_difference": 4.998167832948042e-07,
+      "graph_quaternion_norm_max_error": 6.773101406398752e-07,
+      "graph_prism_position_rounding_bound_m": 7.182084391262423e-05,
+      "graph_rotation_rounding_bound_rad": 2.000010000058334e-05,
+      "logged_no_incremental_pose": false,
+      "graph_vs_increment_position_max_m": 4.629238169097048,
+      "source_log": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_on_source/estimators.log",
+      "rounded_incremental_common_ATE_difference_m": 3.604584133398703e-07,
+      "rounded_incremental_full_ATE_difference_m": 3.869536913114757e-07
+    }
+  },
+  "cloud_path": "/home/yeranis/repos/gnssFGO/experiments/all_method2_rerun_cpv30_20261029/velodyne_leica2_cloud.npz",
+  "cloud_points": 776491,
+  "submaps": [
+    {
+      "id": "000000",
+      "points": 43504,
+      "frame_check_m": 1.9867800978124764e-07,
+      "first_s": 0.6320810317993164,
+      "last_s": 6.931811094284058
+    },
+    {
+      "id": "000001",
+      "points": 45864,
+      "frame_check_m": 1.6780337239945743e-06,
+      "first_s": 7.031343936920166,
+      "last_s": 9.732040882110596
+    },
+    {
+      "id": "000002",
+      "points": 46485,
+      "frame_check_m": 3.7742989380147072e-06,
+      "first_s": 9.831573963165283,
+      "last_s": 14.031857967376709
+    },
+    {
+      "id": "000003",
+      "points": 50000,
+      "frame_check_m": 2.75396050348153e-06,
+      "first_s": 14.131356954574585,
+      "last_s": 18.831948041915894
+    },
+    {
+      "id": "000004",
+      "points": 50000,
+      "frame_check_m": 5.013054408113635e-06,
+      "first_s": 18.93280792236328,
+      "last_s": 26.13237190246582
+    },
+    {
+      "id": "000005",
+      "points": 44552,
+      "frame_check_m": 4.186242381723969e-06,
+      "first_s": 26.231905937194824,
+      "last_s": 33.03200101852417
+    },
+    {
+      "id": "000006",
+      "points": 30089,
+      "frame_check_m": 5.226121963259278e-06,
+      "first_s": 33.132904052734375,
+      "last_s": 70.73110699653625
+    },
+    {
+      "id": "000007",
+      "points": 44961,
+      "frame_check_m": 4.0782571872203255e-05,
+      "first_s": 70.83196687698364,
+      "last_s": 119.63231110572815
+    },
+    {
+      "id": "000008",
+      "points": 47128,
+      "frame_check_m": 7.129639654738343e-06,
+      "first_s": 119.73184394836426,
+      "last_s": 135.33191394805908
+    },
+    {
+      "id": "000009",
+      "points": 50000,
+      "frame_check_m": 2.8508205904323772e-05,
+      "first_s": 135.43144702911377,
+      "last_s": 157.63129305839539
+    },
+    {
+      "id": "000010",
+      "points": 39640,
+      "frame_check_m": 4.9662709579600474e-05,
+      "first_s": 157.73215293884277,
+      "last_s": 189.13150596618652
+    },
+    {
+      "id": "000011",
+      "points": 50000,
+      "frame_check_m": 2.938086062912103e-05,
+      "first_s": 189.2323660850525,
+      "last_s": 212.93184995651245
+    },
+    {
+      "id": "000012",
+      "points": 46964,
+      "frame_check_m": 4.705605392832577e-05,
+      "first_s": 213.03271007537842,
+      "last_s": 228.03163409233093
+    },
+    {
+      "id": "000013",
+      "points": 44975,
+      "frame_check_m": 7.73309773954969e-06,
+      "first_s": 228.1311390399933,
+      "last_s": 248.53143906593323
+    },
+    {
+      "id": "000014",
+      "points": 28286,
+      "frame_check_m": 5.7182639411258684e-05,
+      "first_s": 248.63229894638062,
+      "last_s": 312.1316440105438
+    },
+    {
+      "id": "000015",
+      "points": 45682,
+      "frame_check_m": 4.048725075314216e-05,
+      "first_s": 312.23117685317993,
+      "last_s": 333.3308479785919
+    },
+    {
+      "id": "000016",
+      "points": 38724,
+      "frame_check_m": 4.402067337088949e-05,
+      "first_s": 333.4303810596466,
+      "last_s": 371.23177909851074
+    },
+    {
+      "id": "000017",
+      "points": 29637,
+      "frame_check_m": 6.8666316302530725e-06,
+      "first_s": 371.33131194114685,
+      "last_s": 428.4311969280243
+    }
+  ],
+  "cloud_alignment": {
+    "source": "CP-V10 ON first-published fit, not method2 fit",
+    "rotation": [
+      [
+        0.9663919931983993,
+        -0.24662066355333173,
+        -0.07255869203987894
+      ],
+      [
+        0.23995705016211816,
+        0.9666402489018021,
+        -0.08959488423205937
+      ],
+      [
+        0.0922341019337123,
+        0.06917280904788883,
+        0.9933317637772918
+      ]
+    ],
+    "translation_m": [
+      0.45863760111677365,
+      -0.43486391028015703,
+      0.40476747702638954
+    ]
+  },
+  "trajectory_npz_sha256": "e67b94979d94e1682935e542afb0c22e60975904f9ca69d677606ffb561372b2",
+  "cloud_npz_sha256": "0324c494e44d96d6fc3b1aecb2f232adcfe18777abaeded757ae0eac87d90802",
+  "reference_and_cloud_identical_to_method2": true,
+  "evo_version": "v1.36.3"
+}

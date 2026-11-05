@@ -1,0 +1,21 @@
+Initial saved-data parser stopped before producing outputs: the mean-alignment
+record was incorrectly assumed to have 14 fields instead of its actual 13.
+Corrected against the executed VioBackend.cpp logger: five IDs, five timestamps,
+raw mean, aligned mean, and the untouched covariance token (ignored here).
+No source replay or input mutation occurred; no estimator guard was altered.
+
+Second parser stop: nine updates contain two different admitted receiver edges,
+so update ID alone is not a unique key. Corrected joins to (update, from ID, to ID),
+with sender identities and times checked independently. Both factors are retained,
+not deduplicated or silently overwritten. Per-update merge logging contains only
+the final edge and is used for parity only when that edge matches.
+
+Third reporting stop: result construction repeated shape_max_m, already present
+in the prior events record. Kept the independently reconstructed value under its
+own field and added equality checking against the original; no tolerance change.
+All three stops occurred before new analysis JSON output files were written.
+
+Fourth reporting stop: a previous latest pose was absent from a revision-window
+snapshot (known sparse-log coverage). Added explicit missing-snapshot accounting;
+do not invent the missing pose or bridge it. Existing edge-stage records remain
+included whenever both of their exact endpoints exist. Again no output written.

@@ -1,0 +1,321 @@
+--- validate_case.py CP-R2
++++ validate_case.py CP-R4
+@@ -4,12 +4,12 @@
+ P=Path(__file__).resolve().parent
+ MODE=sys.argv[2] if len(sys.argv)>2 else 'off'
+ assert MODE == 'off'
+-SRC=P/f'live30_{MODE}_source'
+-REC=P/f'live30_{MODE}_receiver'
++SRC=P/f'live60_{MODE}_source'
++REC=P/f'live60_{MODE}_receiver'
+ OUT=REC/'receiver'
+-CTL=P/f'live30_{MODE}_control'
++CTL=P/f'live60_{MODE}_control'
+ EXE=Path('/home/yeranis/results/gnssfgo_fixed_lag_failure_fl4e_20261014/candidate_live')
+-RESULT=Path(f'/home/yeranis/results/gnssfgo_eig2_local_cov30_cpr2_20261019/{MODE}')
++RESULT=Path(f'/home/yeranis/results/gnssfgo_eig2_local_cov60_off_cpr4_20261019/{MODE}')
+ LIB=Path('/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib')
+ 
+ def sha(p):
+@@ -47,8 +47,8 @@
+     assert cfg['source_protocol']=='classic'
+     assert json.loads((OUT/'summary.json').read_text())['stationarity']=='not_checked_incremental_policy'
+     source_cov=json.loads((SRC/'source_coverage.json').read_text())
+-    assert source_cov['passed'] and source_cov['requested_s']==30
+-    assert source_cov['native_glim']['rows']>=280 and source_cov['native_kimera']['rows']>=135
++    assert source_cov['passed'] and source_cov['requested_s']==60
++    assert source_cov['native_glim']['rows']>=570 and source_cov['native_kimera']['rows']>=270
+     metadata=(SRC/'run_metadata.txt').read_text()
+     markers=['mode=cbs_'+MODE,
+              'glim_receive_cbs_beliefs='+str(MODE=='on').lower(),
+@@ -120,7 +120,7 @@
+         assert indices==list(range(len(indices))),name
+     times=[int(p['timestamp_ns']) for p in online]
+     assert all(b-a==100_000_000 for a,b in zip(times,times[1:]))
+-    assert (times[-1]-times[0])*1e-9>=28.
++    assert (times[-1]-times[0])*1e-9>=58.
+     assert [r[1:3] for r in online_records]==[r[1:3] for r in final_records]
+     path={}
+     for name,products in [('online',online),('finalized',final)]:
+--- validate_candidate.py CP-R2
++++ validate_candidate.py CP-R4
+@@ -4,13 +4,13 @@
+ import numpy as np
+ R=Path(__file__).resolve().parent
+ mode=sys.argv[1];assert mode in ['off','on']
+-S=R/f'live30_{mode}_source'
+-assert (R/f'live30_{mode}_control/complete.json').exists()
+-assert not (R/f'live30_{mode}_control/failed.txt').exists()
++S=R/f'live60_{mode}_source'
++assert (R/f'live60_{mode}_control/complete.json').exists()
++assert not (R/f'live60_{mode}_control/failed.txt').exists()
+ a=np.loadtxt(S/'acceptance.csv',delimiter=',',ndmin=2)
+ obj=np.loadtxt(S/'objective.csv',delimiter=',',ndmin=2)
+ with (S/'kimera_odometry.csv').open() as f:poses=list(csv.DictReader(f))
+-assert len(a)==len(obj)==len(poses) and len(a)>=135
++assert len(a)==len(obj)==len(poses) and len(a)>=270
+ assert np.array_equal(a[:,0],np.arange(len(a)))
+ assert np.isfinite(a).all() and np.isfinite(obj).all()
+ assert np.all(a[:,3]<=a[:,1]+1e-10*(1+np.abs(a[:,1])))
+--- source.env CP-R2
++++ source.env CP-R4
+@@ -2,17 +2,17 @@
+ # to off_source/on_source and CBSMS_CBS_ENABLE to false/true.
+ : "${CBSMS_RUN_NAME:?Set fresh ETH1 source run name}"
+ : "${CBSMS_CBS_ENABLE:?Set false or true}"
+-export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/gnssfgo_eig2_local_cov30_cpr2_20261019/prepared
++export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/gnssfgo_eig2_local_cov60_off_cpr4_20261019/prepared
+ export CBSMS_RUN_NAME CBSMS_CBS_ENABLE
+ export ROS_LOG_DIR="${CBSMS_RUN_ROOT}/${CBSMS_RUN_NAME}/ros_logs"
+ export CBSMS_PROJECT_ROOT=/workspace/cbs_gtsam4.3
+ export CBSMS_MISSION=2024-11-03-13-59-54
+ export CBSMS_BAG_START_SEC=5.7
+-export CBSMS_BAG_DURATION_SEC="${CBSMS_BAG_DURATION_SEC:-30.0}"
++export CBSMS_BAG_DURATION_SEC="${CBSMS_BAG_DURATION_SEC:-60.0}"
+ export CBSMS_POST_PLAYBACK_DRAIN_SEC=25
+ export CBSMS_BAG_RATE=0.10
+ export CBSMS_SEED_CLOCK_SECS=1730638815
+-export CBSMS_ROS_MASTER_PORT=11448
++export CBSMS_ROS_MASTER_PORT=11450
+ export CBSMS_USE_EXISTING_ROS_MASTER=true
+ export CBSMS_KIMERA_MODE=stereo_shared_cpt7
+ # The recovered classic Kimera source path is "current", not experimental RIGHT.
+@@ -35,7 +35,7 @@
+ export CBSMS_KIMERA_RECEIVER_AUDIT_MAX_SAMPLES=40
+ export CBSMS_KIMERA_RECEIVER_AUDIT_STRIDE=20
+ export CBSMS_DIAGNOSTIC_NODE_OUTPUT=log
+-export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_eig2_local_cov30_cpr2_20261019/prepared/input_profiles/glim_config
+-export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_eig2_local_cov30_cpr2_20261019/prepared/input_profiles/kimera_profile
++export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_eig2_local_cov60_off_cpr4_20261019/prepared/input_profiles/glim_config
++export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_eig2_local_cov60_off_cpr4_20261019/prepared/input_profiles/kimera_profile
+ 
+ export CBSMS_DATASET_DIR=/workspace/cbs_gtsam4.3/src/datasets/GrandTour/EIG-2
+--- run_case.py CP-R2
++++ run_case.py CP-R4
+@@ -14,7 +14,7 @@
+ 
+ def main():
+     parser = argparse.ArgumentParser()
+-    parser.add_argument('phase', choices=['live30'])
++    parser.add_argument('phase', choices=['live60'])
+     parser.add_argument('mode', choices=['off'])
+     parser.add_argument('--attempt',type=int,choices=[1],default=1)
+     args = parser.parse_args()
+@@ -33,7 +33,7 @@
+     own.mkdir(exist_ok=False)
+     inside = '/workspace/'+str(own.relative_to('/home/yeranis/repos/V4RL'))
+     env_inside = '/workspace/'+str((ROOT/'source.env').relative_to('/home/yeranis/repos/V4RL'))
+-    master_uri = 'http://127.0.0.1:11448'
++    master_uri = 'http://127.0.0.1:11450'
+     jobs = {}
+     streams = []
+     def start(name, command):
+@@ -47,7 +47,7 @@
+             text=True, capture_output=True, check=check)
+     def stop_pid(name):
+         # The PID is recorded by this case, command must match the owned port/run.
+-        token = '11448' if name=='master' else str(source.name)
++        token = '11450' if name=='master' else str(source.name)
+         script = ('import os,signal,sys; from pathlib import Path; p=Path(sys.argv[1]); '
+           'pid=int(p.read_text()) if p.exists() else 0; c=Path("/proc/%d/cmdline"%pid); '
+           'e=Path("/proc/%d/environ"%pid); '
+@@ -59,7 +59,7 @@
+     started = time.time()
+     try:
+         assert ros('rosparam get /rosversion',check=False).returncode != 0, 'port is already in use'
+-        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11448'
++        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11450'
+         start('master',['docker','exec','cbsms_ws_gpu','setsid','--wait','bash','-lc',master_script])
+         for _ in range(60):
+             if ros('rosparam get /rosversion',check=False).returncode==0:
+@@ -77,7 +77,7 @@
+             assert jobs['receiver'].poll() is None, 'receiver startup failed'
+             assert time.monotonic()<deadline, 'transport startup timeout'
+             time.sleep(.2)
+-        duration=30
++        duration=60
+         source_script = ('export CBSMS_RUN_NAME='+tag+'_source CBSMS_CBS_ENABLE='+('true' if args.mode=='on' else 'false')+
+           ' CBSMS_BAG_DURATION_SEC='+str(float(duration))+'; source '+shlex.quote(env_inside)+
+           '; echo $$ > '+shlex.quote(inside+'/source.pid')+
+--- verify_effective.py CP-R2
++++ verify_effective.py CP-R4
+@@ -10,7 +10,7 @@
+ 
+ root = Path(__file__).resolve().parent
+ source = Path(sys.argv[1])
+-assert os.environ['CBSMS_BAG_DURATION_SEC'] == '30.0'
++assert os.environ['CBSMS_BAG_DURATION_SEC'] == '60.0'
+ assert os.environ['CBSMS_MISSION']=='2024-11-03-13-59-54'
+ assert os.environ['CBSMS_BAG_START_SEC']=='5.7'
+ enabled = os.environ['CBSMS_CBS_ENABLE'] == 'true'
+--- source_runner.sh CP-R2
++++ source_runner.sh CP-R4
+@@ -43,7 +43,7 @@
+ run_dir="${run_root}/${run_name}"
+ experiment_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ launch_file="${experiment_dir}/active_window.launch"
+-[[ "${cbs_enable}" == false && "${cbs_direction}" == bidirectional && "${duration_sec}" == 30.0 && "${bag_start_sec}" == 5.7 ]] || { echo "Prepared EIG-2 30-second OFF fixed-lag capture only." >&2; exit 2; }
++[[ "${cbs_enable}" == false && "${cbs_direction}" == bidirectional && "${duration_sec}" == 60.0 && "${bag_start_sec}" == 5.7 ]] || { echo "Prepared EIG-2 60-second OFF fixed-lag capture only." >&2; exit 2; }
+ glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-${project_root}/clean_glim_ws/src/glim/config_grandtour_eth1_gpu_hesai_cpt7}"
+ kimera_profile_source="${CBSMS_KIMERA_PROFILE_SOURCE:-}"
+ kimera_calibration_overlay="${CBSMS_KIMERA_CALIBRATION_OVERLAY:-${project_root}/src/cbsms/config/grandtour_kimera/eth1_mono_shared_cpt7}"
+@@ -502,8 +502,8 @@
+   g2k_applied_tail_gap=$((kimera_last_index - g2k_applied_max_target))
+ fi
+ 
+-min_glim_rows=280
+-min_kimera_rows=135
++min_glim_rows=570
++min_kimera_rows=270
+ if (( glim_rows < min_glim_rows || kimera_rows < min_kimera_rows )); then
+   echo "Insufficient estimator output: GLIM=${glim_rows}, Kimera=${kimera_rows}." >&2
+   exit 6
+@@ -577,7 +577,7 @@
+   "kimera_receive_cbs_beliefs=${kimera_receive_external_beliefs}" \
+   "glim_cbs_mode=${glim_cbs_mode}" \
+   "kimera_cbs_odom_factor_mode=active_window_temporary" \
+-  "experiment=gnssfgo_eig2_local_cov30_cpr2_20261019" \
++  "experiment=gnssfgo_eig2_local_cov60_off_cpr4_20261019" \
+   "glim_sensor_pair=hesai+cpt7_imu" \
+   "kimera_sensor_pair=${kimera_sensor_pair}" \
+   "glim_body_frame=cpt7_imu" \
+--- active_window.launch CP-R2
++++ active_window.launch CP-R4
+@@ -111,7 +111,7 @@
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_stride" value="20"/>
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_max_updates" value="40"/>
+ 
+-  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_eig2_local_cov30_cpr2_20261019/prepared/glim_profile.launch">
++  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_eig2_local_cov60_off_cpr4_20261019/prepared/glim_profile.launch">
+     <arg name="config_path" value="$(arg glim_config_path)"/>
+     <arg name="glim_node_output" value="$(arg diagnostic_node_output)"/>
+     <arg name="glim_input_imu_topic" value="$(arg glim_input_imu_topic)"/>
+--- glim_profile.launch CP-R2
++++ glim_profile.launch CP-R4
+@@ -115,7 +115,7 @@
+ 		<env name="CBS_E1B_LOCAL_UPDATE_GPU_BATCHING" value="1"/>
+         <env name="GLIM_SHARED_NATIVE_PROVIDER" value="shared_native"/>
+         <env name="GLIM_REVISION_COVARIANCE_POLICY" value="native_local"/>
+-        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_eig2_local_cov30_cpr2_20261019/prepared/live30_off_source/e1b_profile.jsonl"/>
++        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_eig2_local_cov60_off_cpr4_20261019/prepared/live60_off_source/e1b_profile.jsonl"/>
+ 		<param name="config_path" value="$(arg config_path)" />
+ 		<param name="glim_dump_path" value="$(arg glim_dump_path)" />
+ 		<param name="deterministic_input_event_log_path" value="$(arg glim_deterministic_input_event_log_path)" />
+--- live30_off.json CP-R2
++++ live60_off.json CP-R4
+@@ -1,7 +1,7 @@
+ {
+-  "sequence": "EIG-2 LOCAL CP-R2 bag5.7-35.7s OFF",
++  "sequence": "EIG-2 LOCAL CP-R4 bag5.7-65.7s matched OFF",
+   "source_protocol": "classic",
+-  "ros_master_uri": "http://127.0.0.1:11448",
++  "ros_master_uri": "http://127.0.0.1:11450",
+   "imu_topic": "/boxi/cpt7/imu",
+   "imu_frame": "cpt7_imu",
+   "world_frame": "gnssfgo_world",
+@@ -12,18 +12,18 @@
+   "drain_timeout_wall_sec": 300,
+   "ros1_container": "cbsms_ws_gpu",
+   "receiver_container": "ubuntu-jammy-humble-nvidia",
+-  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eig2_local_cov30_cpr2_20261019/prepared/receiver_fl4e.sh",
++  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eig2_local_cov60_off_cpr4_20261019/prepared/receiver_fl4e.sh",
+   "sources": [
+     {
+       "id": "glim_hesai",
+-      "session": "eig2_cpr2_live30_off_20261019",
++      "session": "eig2_cpr4_live60_off_20261019",
+       "kind": "glim",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/ros_logs/*/glim_rosnode-*-stdout.log"
+     },
+     {
+       "id": "kimera_front",
+-      "session": "eig2_cpr2_live30_off_20261019",
++      "session": "eig2_cpr4_live60_off_20261019",
+       "kind": "kimera",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/estimators.log"
+--- validate_local.py CP-R2
++++ validate_local.py CP-R4
+@@ -6,9 +6,9 @@
+ sys.path.insert(0,str(P/'transport_tools'))
+ from live_receiver_protocol import parse_belief
+ mode=sys.argv[1];assert mode == 'off'
+-S=P/f'live30_{mode}_source';R=P/f'live30_{mode}_receiver'
+-assert (P/f'live30_{mode}_control/complete.json').exists()
+-assert not (P/f'live30_{mode}_control/failed.txt').exists()
++S=P/f'live60_{mode}_source';R=P/f'live60_{mode}_receiver'
++assert (P/f'live60_{mode}_control/complete.json').exists()
++assert not (P/f'live60_{mode}_control/failed.txt').exists()
+ effective=json.loads((S/'effective_mode_check.json').read_text())
+ assert effective['glim_revision_covariance']=='native_local'
+ expected={};result={}
+@@ -46,7 +46,7 @@
+   values=histories[b['i'],b['j']]
+   if not values or values[-1]!=payload:values.append(payload)
+  for (i,j),values in histories.items():expected[source,str(i),str(j)]=values
+- if kind=='glim':assert first>=280 and revisions>0 and len(provenance)==revisions and pending is None
++ if kind=='glim':assert first>=570 and revisions>0 and len(provenance)==revisions and pending is None
+  else:assert tmp>0
+  result[kind]=dict(ids=len(histories),versions=sum(map(len,histories.values())),first=first,revised=revisions,provider_queries=queries,local_joint_queries=tmp)
+ actual=collections.defaultdict(list)
+--- evaluator CP-R3
++++ evaluator CP-R4
+@@ -1,6 +1,6 @@
+ """Score frozen FL4f2 native/as-played/finalized paths and received covariances.
+ 
+-Run after the standalone ON case validates, inside the existing ROS Noetic container.
++Run after matching OFF validates; read already-validated ON, inside the existing ROS Noetic container.
+ IE-TC is a shared-CPT7 GNSS/INS reference, not independent prism ground truth.
+ """
+ import collections
+@@ -15,6 +15,9 @@
+ 
+ ROOT = Path(__file__).resolve().parent
+ OUT = ROOT / 'evaluation_full'
++ON_ROOT = Path('/workspace/cbs_gtsam4.3/runs/gnssfgo_eig2_local_cov60_on_cpr3_20261019/prepared')
++def source_root(mode):
++    return ON_ROOT if mode == 'on' else ROOT
+ TOOLS = Path('/workspace/cbs_gtsam4.3/src/cbsms/tools')
+ sys.path.insert(0, str(TOOLS))
+ import score_grandtour_prism as prism
+@@ -97,7 +100,7 @@
+         rpe_pairs=len(terr),error_m=stat(errors))
+ 
+ def covariances(mode):
+-    path = ROOT / f'live60_{mode}_receiver/events.csv'
++    path = source_root(mode) / f'live60_{mode}_receiver/events.csv'
+     groups = collections.defaultdict(list)
+     versions = collections.defaultdict(list)
+     with path.open(newline='') as f:
+@@ -130,14 +133,14 @@
+ 
+ def main():
+     assert not OUT.exists(), 'Refusing to overwrite an evaluation'
+-    for mode in ('on',):
+-        assert (ROOT/f'live60_{mode}_control/complete.json').is_file()
+-        assert (ROOT/f'live60_{mode}_source/complete.marker').is_file()
+-        assert (ROOT/f'live60_{mode}_receiver/complete.marker').is_file()
++    for mode in ('off','on'):
++        assert (source_root(mode)/f'live60_{mode}_control/complete.json').is_file()
++        assert (source_root(mode)/f'live60_{mode}_source/complete.marker').is_file()
++        assert (source_root(mode)/f'live60_{mode}_receiver/complete.marker').is_file()
+     paths = {}
+-    for mode in ('on',):
+-        src = ROOT / f'live60_{mode}_source'
+-        rec = ROOT / f'live60_{mode}_receiver/receiver'
++    for mode in ('off','on'):
++        src = source_root(mode) / f'live60_{mode}_source'
++        rec = source_root(mode) / f'live60_{mode}_receiver/receiver'
+         paths[f'{mode}_native_glim'] = src/'odom_imu.txt'
+         paths[f'{mode}_native_kimera'] = src/'kimera_odometry.csv'
+         paths[f'{mode}_fused_online'] = rec/'online_trajectory.tum'
+@@ -171,7 +174,7 @@
+             timestamps_sha256=hashlib.sha256(times.astype('<f8').tobytes()).hexdigest(),
+             interpolation_gap_estimate_s=.5,interpolation_gap_reference_s=.05),
+         convention='Per-path rigid SE(3) no-scale alignment for ATE at prism lever arm; 1s RPE in prism frame, no global alignment',
+-        results=results,covariance={mode:covariances(mode) for mode in ('on',)})
++        results=results,covariance={mode:covariances(mode) for mode in ('off','on')})
+     OUT.mkdir(exist_ok=False)
+     with (OUT/'summary.json').open('x') as f:
+         json.dump(report,f,indent=2,allow_nan=False)

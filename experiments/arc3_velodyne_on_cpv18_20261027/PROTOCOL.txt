@@ -1,0 +1,54 @@
+CP-V18 ARC-3 standalone CBS ON diagnostic — 2026-10-27.
+
+Explicit user authorization: "in any case, we want to see whether the one can
+solve the other ... proceed cbs on". One new ON capture only. This is a
+separately authorized diagnostic despite CP-V17 OFF failure, NOT a passed
+matched pair or permission to relabel OFF, bypass numerical guards, or retry.
+CP-V17 remains failed at approximately305.93s/726.38s; its artifacts stay intact.
+
+Question: does bidirectional CBS keep both sources and fusion healthy through
+the previous failure and recorded lidar gaps? Success is not presumed. OFF
+shows explosive Kimera estimates while GLIM stays locally smooth near306s;
+this is presently a GLIM-may-help-Kimera hypothesis, not demonstrated rescue
+of bad lidar. Exact solver singularity mechanism remains unproved.
+
+Same CP-V17 physical window start1731934117040035611/end1731934843420035611ns,
+726.38s, bag offset0.2s, headless0.20x,25s drain. Reuse its admitted input_audit
+without recropping, filling gaps, dropping difficult records or changing guards.
+Known single absent left image and70partial-time lidar scans remain. Six >1s
+lidar gaps begin around501.86s, well after OFF failure. No new source builds.
+
+Identical frozen rear Velodyne/front Alphasense stereo/shared CPT7 profiles,
+MAIN batching, GLIM5s, CP-I1/3 all-LOCAL dense covariance every version and
+corrected MAIN means; CP-K9 Kimera refresh1/FL4Q0/remove/25states/native IMU
+override unset. Classic active_window_temporary bidirectional CBS, not source
+live_revision; Gaussian source scales1, unchanged capped diagnostic load.
+CP-K19 seven-second source_wnoa receiver with verified CP-V15 Qc0.25 times
+ORIGINAL (4x motion information), independent100ms supports, no central IMU/
+GNSS, same initial priors, stable-ID replacement/seal_at_absorption/EOF policy.
+Mean-only peer covariance alignment approximation unchanged.
+
+Fresh run/validation roots gnssfgo_arc3_velodyne_on_cpv18_20261027, port11489.
+Only path/session/port and explicit ON admission differ from the prepared
+CP-V17 ON harness. The old preflight_on.py is neither edited nor executed.
+New standalone admission checks user authorization, failed OFF cleanup, frozen
+hashes, identical settings, no owned jobs, available port and storage. Every
+runtime, sensor-time, LOCAL, lifecycle and receiver gate is retained unchanged.
+No duplicates/retries, tuning, default promotion, deletions, commits or pushes.
+Stop on any numerical, integrity, cleanup or storage failure; retain prefix.
+
+Finite controller owns single ON -> sensor/local/candidate/receiver gates ->
+saved-data scoring -> cleanup. Containers originally stopped; stop them again
+only after owned work exits. No persistent automation. Preserve8GiB launch/
+5GiB runtime reserves; require16GiB before preparation for one capture+reserve.
+
+Primary outputs: first-published GLIM CSV, native Kimera ROS odometry, concurrent
+fusion ONLINE. Report full ON ATE/1s RPE/path/coverage separately from failed
+OFF prefix. OFF/ON comparison only on the shared supported prefix, with gap-
+aware integer100ms grid, <=.5s estimator/<=.05s IE-TC interpolation, no extrapolation,
+SE3 no-scale/prism lever arm. Also report earlier-failure-point survival and
+recorded-gap coverage, covariance/revision/payload/timing evidence. Refined
+GLIM and DELAYED fixed-lag-finalized fusion are separate secondary products.
+Do not call finalized online/full-history, IE-TC independent prism GT, an
+incremental consistency check nonlinear stationarity, or one success general
+robustness. If ON fails, report cause and stop without source retry.

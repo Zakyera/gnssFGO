@@ -1,0 +1,46 @@
+CP-V89: ONE full ETH1 split-IMU CBS-OFF validation,2026-11-02.
+User approved the proposed full ETH1 CBS-OFF follow-up to CP88. Extend its
+60s window to the historical full Hesai ETH1 selected-topic346.32s,offset0,
+0.20x playback,25s drain. Same GLIM Hesai+CPT7(HG4930),Kimera front Alphasense
+stereo+built-in Alpha IMU. No fusion/CBS-ON/live peer factors or another sequence.
+Alpha biasRW remains acc.0043,gyro.000266 as CP88; all profile/private-binary
+bytes identical to CP88. Preserve white measurement noise,200Hz,extrinsics,
+timestamps,initializer,initial priors,native smart25states,CP40/CPK9/CP76,
+FL4Q0/FL4Mremove and native IMU override unset. GLIM CP82/MAIN/shared_native/
+native_local all-LOCAL covariance unchanged. Both publish,both receive=false.
+No tuning,sweep,build,filter,time correction,default promotion,deletion or retry.
+
+Fresh explicit root eth1_alpha_bias_rw_full_off_cpv89_20261102,port11590.
+Input preflight reads full raw selected streams,exact header sequences,frames,
+finite IMU samples,and proves60s prefix identical to CP88. Do not change raw data.
+Full means same346.32s physical comparison window as CP-K23,not later camera/IMU
+tails after Hesai ends. All six bags/calibration dependencies remain immutable.
+Preflight storage>10GiB AND conservative forecast+5GiB reserve. Runtime5GiB
+floor; fail closed. Both containers initially stopped and must return stopped.
+One finite exclusive controller owns capture->coverage->cleanup->saved EVO.
+No stage competition.2400s source timeout/2430s ownership guard accommodates
+1731.6s playback plus startup/drain/checks. Never repeat the capture on failure.
+
+Before playback verify loaded DSOs,actual complete profiles,topics/body/staticTF,
+dur/rate and BOTH receive=false. Coverage reconciles exact input/initialization/
+processed/terminal counts using actual Alpha last IMU,all sequential backend
+outputs,terminal/gap/numerical guards. No guessed count imported from60s.
+Raw full-window inspection finds3464left/3463right,one right image absent at
+203.898841154s. Preserve/play raw data unchanged;3463timestamp-matched pairs
+agree with historical CP-K23 receipt. Explicitly report the unmatched left
+header; native paired queues and frontend conservation must still match.
+Saved Method1 EVO1.36.3 only: newest absolute GLIM and Kimera backend states,
+physical prism point via each body's correct fixed extrinsic;SE3/no-scale ATE;
+reference-distance0.5m t/rRPE. Common100ms and full-saved native cadence separate;
+never bridge gaps>0.5s or call a failed prefix a full result. Retain initial60s
+common-mask regression check versus CP88 saved scores with exact pair identity.
+CP85/86 are historical60s controls,not matched full-length controls for this run.
+Retain covariance/revision/timing diagnostics; no added observer/build.
+
+The two RW values are an experimental candidate,not certified Alpha calibration.
+Physical IMU bias histories/residuals remain unavailable. Separate IMUs do not
+remove correlation from peer feedback. Split-body belief/fusion adapter is still
+unqualified; no CBS/fusion inferred authorization. IE-TC shares CPT7,not independent
+prismGT; estimated path is not physical travel; increment parity not stationarity.
+Protect CP88 and earlier outputs/Hesai667. Terminal outputs immutable; any report
+repair must be supplemental and never rerun sources. Stop after this one run.

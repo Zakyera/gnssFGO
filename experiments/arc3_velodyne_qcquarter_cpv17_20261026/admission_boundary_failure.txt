@@ -1,0 +1,9 @@
+Prelaunch gap-aware admission v1 failed before any capture/container work.
+Window start 1731934117040035611, proposed end 1731934843410035611 ns.
+Last scan header 1731934843404066000 ns, max point offset 0.001306368038058281 s.
+Last selected IMU 1731934843401104000 ns preceded the scan's last point.
+First scan also unbracketed at startup (existing warmup exclusion applies);
+all remaining interior scans bracketed. V2 derives terminal boundary from
+audited point extent plus one 10ms IMU period, rounded to original 10ms grid.
+This extends capture by 10ms; same final LiDAR scan, no interior crop or
+IMU-bracketing gate relaxation. Original v1 script preserved, no source retry.

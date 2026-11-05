@@ -1,0 +1,24 @@
+FL4y: retained-data GLIM-to-Kimera relative reference audit,2026-10-17
+User approves checking actual injected beliefs and pre-injection estimates
+against ground truth on identical intervals, including temporal alignment.
+No estimator run/replay, covariance changes, tuning or original artifact edits.
+Primary EIG-2 FL4x; retained SPX-3 FL4w as same-build descriptive control.
+
+Use actual logged raw/aligned GLIM transforms and factor payloads, not a
+trajectory-derived proxy. Recover Kimera pre-injection states from preceding
+update revision snapshots only if recorded pre-injection matrices/residuals
+agree. Missing states must stay missing, not be replaced by later states.
+Use IE-TC /boxi/inertial_explorer/tc/odometry in CPT7 body frame on exact
+sender/receiver endpoints. IE-TC sharesCPT7 IMU; not independent prism GT.
+No global alignment of relative transforms. This local factor audit is
+distinct from existing whole-trajectory ATE/prism-lever-arm evaluation.
+
+Compare raw GLIM on sender interval; aligned GLIM on receiver interval;
+Kimera pre-injection and same-update postsolve on receiver interval. An
+oracle GT bridge L_gt*Z_raw*R_gt is diagnostic only, not a new measurement.
+Compare oracle with actual aligned mean to isolate bridge contribution.
+Check serialization/Exp/Log, exact source/factor maps,covariance equality,
+timestamps,coverage and interpolation gaps. Full covariance normalization
+is descriptive, not a calibrated innovation chi-square test.
+Report counts,RMS/median/p95,max and per-edge records;20s time bins and
+existing fallback association. No causal attribution from correlation alone.

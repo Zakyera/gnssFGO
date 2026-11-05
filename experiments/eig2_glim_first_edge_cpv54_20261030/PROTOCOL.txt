@@ -1,0 +1,27 @@
+CP-V54 -- native GLIM first-edge passive observation, 2026-10-30
+User authorizes the proposed short capture of GLIM bias, IMU prediction and
+LiDAR/IMU disagreement at CP-V51's first GLIM5->7 into Kimera4->5 event.
+Exactly one fresh 10s EIG-2 Hesai OFF then ON pair, offset5.7, rate0.20,
+25s drain; CP-V51 profiles, CP40 Kimera refresh, CP-K19 receiver Qc x1,
+classic temporary CBS and every estimator/model/calibration/weight unchanged.
+No full run, covariance study, production fix, defaults, deletion or push.
+
+Private copy of the actually used CPI1 bridge, with bounded passive observer
+for GLIM updates0..10. Record native pre/post X/V/B, IMU PIM biasHat/deltaR,
+current-bias prediction and unwhitened native IMU residual. No live GPU-factor
+error/linearize call, new factor, solver call or altered factor lifecycle.
+Native GPU GLIM has no separate LiDAR-only pose: posterior-minus-IMU is a JOINT
+optimization correction, not a pure LiDAR residual or independent truth.
+Retain CP-V51 Kimera observer and existing capped audits unchanged.
+Test helper input nonmutation and enabled/disabled optimizer parity before
+source launch. Additional readout/I/O may alter asynchronous timing; compare
+actual admission and native means to CP-V51, do not promise identical schedule.
+Record observer timing. Reject incomplete/mismatched observations; no blind retry.
+
+Fresh exclusive paths, hashes of existing protected artifacts, effective native
+library/env guards, sensor-time/LOCAL/lifecycle/receiver gates. OFF gates precede
+ON. Restore originally stopped containers, verify owned jobs exited and original
+four-sequence Hesai checkpoint. Report exact evidence versus inference, including
+whether native GLIM bias explains CP-V53's ~0.10-degree discrepancy. Raw gyro and
+estimated biases are not independent GT. A first-edge diagnostic is not a full
+zigzag root-cause proof and does not justify automatic numerical changes.

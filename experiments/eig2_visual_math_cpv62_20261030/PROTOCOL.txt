@@ -1,0 +1,57 @@
+CP-V62 — suspect2 visual Jacobian / landmark elimination audit
+2026-10-30. User explicitly authorizes parking suspect1 and moving to suspect2.
+This supersedes older ledgers' instruction not to move beyond suspect1.
+Suspect1 is parked, not universally disproved.
+
+Saved CP51 EIG-2 Hesai update6 only: initial ordinary, exact postordinary
+refresh, and final postrefresh factor state. Same original native graph,
+poses, landmarks, cache freshness, accepted tracks, calibration and weights.
+NO CP61 local triangulation candidate. No source capture/full sequence,
+production changes, covariance tuning, new weights, factor removal or guard
+relaxation. No ATE/RPE or trajectory scoring.
+
+1. Native linearize on diagnostic graph clones, recording actual used points/
+statuses. Freeze those points for visual derivative audit. For every accepted
+smart factor export native unwhitened and whitened pose/landmark Jacobians and
+RHS, camera measurements/calibration, body extrinsic/poses and native Gaussian.
+Rejected factors must remain zero. Check physical function bytes unchanged.
+2. Independent manual stereo residual (body-camera composition, left/right
+baseline, exact absent-right zero row), central pose-chart/landmark finite
+differences at h=1e-5 and1e-6. Residual relative gate1e-10; each derivative block
+relative gate1e-6 at BOTH spacings. Record absolute errors too. Whitening must
+be identical sigma3 with zero missing rows. Independent analytic pinhole
+Jacobians in NumPy additionally compared at relative1e-10.
+3. From explicit whitened pose+landmark system, independently eliminate
+landmark using SVD nullspace and normal-system Schur solve. Require full
+numerical landmark rank3 at eps*max(shape)*sigma_max, otherwise flag unresolved
+ill conditioning, never silently pass/truncate a retained landmark.
+Compare native pose Hessian and gradient separately relative1e-7 to both
+methods; measure condition number/roundoff. Native b'b constant intentionally
+omits eliminated b'E(E'E)^-1E'b: report that separately, not as a pose-update bug.
+4. Assemble independent visual H/g with unchanged nonvisual factors at initial
+and exact saved refresh state. Native equations must reproduce captured matrices
+relative1e-12. Two native saved linear solves for baseline delta reproduction
+(initial<1e-6, refresh<1e-5 mixed tangent). No chained candidate trajectory or
+additional nonlinear optimization. Independent SciPy solves compare native,
+explicit-native-Jacobian and manual-analytic-Jacobian assembled systems using
+the SAME dense solver; quantify conditioning/backward error and delta changes.
+A solution difference is diagnostic, not automatically a root cause.
+
+Fixtures before real data: Release and ASan/UBSan, nonidentity body extrinsic,
+nonzero reprojection residual, full stereo/mixed right-missing/left-only tracks,
+native derivatives vs numerical differences, explicit Schur vs native H/g.
+Wrong-extrinsic-chain and unmasked-right-row negative controls must fail.
+Fixed original synthetic point permits exact comparisons; reject classifications
+and historical native triangulation are not changed. Vendor DSOs uninstrumented.
+No scientific threshold relaxation or blind retries. If real checks disagree,
+retain all evidence and identify the exact mismatch before any implementation.
+
+Fresh exclusive roots; preserve prior hashes/snapshots. Start only cbsms_ws_gpu
+for private extraction/fixtures and restore both originally-stopped containers.
+Pin additional source/header files used to explain this build (not retrospective
+proof of historically unpinned source identity). Existing library pins preserved.
+At closeout verify historical inputs, original Hesai667 checkpoint, exited owned
+jobs and containers stopped. Update ledgers/report. Passing this bounded audit
+narrows suspect2 for this event; it does not establish nonlinear stationarity,
+future marginalization correctness, full-run health or a CBS root cause.
+

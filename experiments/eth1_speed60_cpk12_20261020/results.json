@@ -1,0 +1,382 @@
+{
+  "passed": true,
+  "capture": {
+    "seconds": 245.65576934814453,
+    "phase": "speed60",
+    "mode": "on"
+  },
+  "playback_rate": 0.3,
+  "requested_s": 60,
+  "protected_unchanged": 1886,
+  "checks": {
+    "receiver": {
+      "passed": true,
+      "source_coverage": {
+        "passed": true,
+        "requested_s": 60.0,
+        "imu_samples": 5986,
+        "imu_span_s": 59.850013256073,
+        "native_glim": {
+          "rows": 591,
+          "start_s": 1727775008.675043,
+          "end_s": 1727775067.674412,
+          "span_s": 58.99936890602112,
+          "maximum_pose_gap_s": 0.10099005699157715,
+          "post_startup_max_gap_s": 0.10099005699157715,
+          "start_after_first_imu_s": 0.6715681552886963,
+          "tail_behind_last_imu_s": 0.1790761947631836,
+          "path_length_m": 25.64361684359239
+        },
+        "native_kimera": {
+          "rows": 284,
+          "start_s": 1727775008.1553955,
+          "end_s": 1727775067.75505,
+          "span_s": 59.59965443611145,
+          "maximum_pose_gap_s": 3.199979066848755,
+          "post_startup_max_gap_s": 0.2000136375427246,
+          "start_after_first_imu_s": 0.15192055702209473,
+          "tail_behind_last_imu_s": 0.09843826293945312,
+          "path_length_m": 25.46752834281242
+        }
+      },
+      "transport": {
+        "imu": 5986,
+        "duplicate_imu": 0,
+        "imu_clock_lag_events": 5863,
+        "max_imu_clock_lag_ns": 3117072,
+        "belief_clock_lag_events": 0,
+        "max_belief_clock_lag_ns": 0,
+        "beliefs": 34159,
+        "duplicates": 0,
+        "published_poses": 593,
+        "max_queue": 42,
+        "sources": {
+          "glim_hesai": 27409,
+          "kimera_front": 6750
+        }
+      },
+      "summary": {
+        "complete": true,
+        "model": "source_wnoa_fixed_lag",
+        "lag_seconds": 7,
+        "stationarity": "not_checked_incremental_policy",
+        "events": 40146,
+        "received": 34159,
+        "inserted": 870,
+        "replaced": 33264,
+        "excluded": 25,
+        "unsupported_end": 0,
+        "absorbed": 769,
+        "active": 101,
+        "pending_at_end": 0,
+        "publications": 593,
+        "finalized": 593,
+        "retained_supports": 71,
+        "peak_slots": 174
+      },
+      "actions": {
+        "before_initialization": 25,
+        "insert": 870,
+        "replace": 33264
+      },
+      "mean_log_roundtrip_error": 2.5339756334896713e-14,
+      "covariance_payload_error": 0.0,
+      "online_path_m": 29.80565714813993,
+      "finalized_path_m": 25.55449623825156,
+      "fused_span_s": 59.2,
+      "support_cycle_seconds": {
+        "n": 593,
+        "mean": 0.05272691066441822,
+        "median": 0.05011398000000001,
+        "p95": 0.08309594700000002,
+        "max": 0.122320678
+      },
+      "receipt_to_processing_seconds": {
+        "n": 40146,
+        "mean": 0.010514398201987745,
+        "median": 0.009775186,
+        "p95": 0.025714452000000002,
+        "max": 0.052134196
+      },
+      "monitor_output_age_s": {
+        "n": 114,
+        "mean": 0.051171730842105266,
+        "median": 0.060003,
+        "p95": 0.090012,
+        "max": 0.100013
+      },
+      "published_during_source": 593,
+      "max_monitor_queue": 5,
+      "protected_unchanged": 1886,
+      "claim": "live 0.3x bounded pilot; fixed-lag incremental without stationarity certificate"
+    },
+    "repeat": {
+      "passed": true,
+      "seconds": 28.2960778340057,
+      "archive_files_byte_identical": 35521,
+      "numeric_products_byte_identical": [
+        "online_states.csv",
+        "finalized_states.csv",
+        "online_trajectory.tum",
+        "finalized_trajectory.tum",
+        "summary.json"
+      ],
+      "receiver_executable_sha256": "53c96a2b7a762800cf2291166dc78520269098684411de641b52bee6a54dc5c9"
+    },
+    "local": {
+      "passed": true,
+      "mode": "on",
+      "sources": {
+        "glim": {
+          "ids": 589,
+          "versions": 27409,
+          "first": 589,
+          "revised": 26820,
+          "provider_queries": 589,
+          "local_joint_queries": 0
+        },
+        "kimera": {
+          "ids": 282,
+          "versions": 6750,
+          "first": 0,
+          "revised": 0,
+          "provider_queries": 0,
+          "local_joint_queries": 6750
+        }
+      },
+      "all_payloads_exact": true,
+      "revision_provenance": "per-version native_local row plus pinned/tested provider route; no separate repeated matrix dump",
+      "limits": "native explicit information at corrected charts; not independent/calibrated likelihood"
+    },
+    "candidate": {
+      "passed": true,
+      "mode": "on",
+      "native_updates": 284,
+      "source_injections": {
+        "g2k_injected": 280,
+        "k2g_injected": 280
+      },
+      "planned_retirements": 256,
+      "prior_refresh_updates": 256,
+      "max_cache_error": 3.140903022265145e-10,
+      "observed_total_cost_increases": 0,
+      "imu_factor_cost": {
+        "median": 574.736757186351,
+        "max": 16677.471467163665,
+        "last": 747.1206050152232
+      },
+      "stationarity_certified": false,
+      "obsolete_FL4q_executed": false,
+      "candidate_sha256": "be637ad745f73bf12596d3bf06754f56ed7bcadfdb8b4792b94c4fcfee62aad9",
+      "note": "CP-K9 equation/lifecycle gate; cost increases are observational."
+    }
+  },
+  "timings": {
+    "rate030": {
+      "glim_scan_ms": {
+        "n": 549,
+        "mean": 192.2481799107468,
+        "median": 192.704792,
+        "p95": 366.139369,
+        "maximum": 772.427811
+      },
+      "glim_smoother_ms": {
+        "n": 549,
+        "mean": 136.23255527868852,
+        "median": 150.378855,
+        "p95": 334.322527,
+        "maximum": 383.829895
+      },
+      "glim_post_callback_ms": {
+        "n": 549,
+        "mean": 44.89366946994536,
+        "median": 23.768912,
+        "p95": 168.965974,
+        "maximum": 211.344469
+      },
+      "glim_scan_by15s_ms": {
+        "0": {
+          "n": 100,
+          "mean": 106.64391286,
+          "median": 77.60501500000001,
+          "p95": 245.49807,
+          "maximum": 308.751716
+        },
+        "15": {
+          "n": 150,
+          "mean": 180.5331748,
+          "median": 188.8260285,
+          "p95": 351.227676,
+          "maximum": 772.427811
+        },
+        "30": {
+          "n": 150,
+          "mean": 235.11246112666666,
+          "median": 198.9835235,
+          "p95": 368.562009,
+          "maximum": 608.222151
+        },
+        "45": {
+          "n": 149,
+          "mean": 218.34237648322147,
+          "median": 200.95418,
+          "p95": 392.85001,
+          "maximum": 702.718255
+        }
+      },
+      "glim_internal_queue_max": 2,
+      "glim_fraction_exceeding_333ms": 0.12386156648451731,
+      "kimera_ms": {
+        "backend": {
+          "n": 275,
+          "mean": 70.40724399999999,
+          "median": 73.395,
+          "p95": 93.3766,
+          "maximum": 119.11
+        },
+        "optimize_total": {
+          "n": 275,
+          "mean": 69.73012727272727,
+          "median": 72.6443,
+          "p95": 92.6548,
+          "maximum": 118.486
+        },
+        "smoother_update": {
+          "n": 275,
+          "mean": 24.136673454545452,
+          "median": 23.5312,
+          "p95": 34.5386,
+          "maximum": 62.805
+        },
+        "outgoing": {
+          "n": 275,
+          "mean": 43.871122400000004,
+          "median": 47.7439,
+          "p95": 61.9556,
+          "maximum": 66.9324
+        }
+      },
+      "section": "same first60s, after5s initialization; source wall timers",
+      "prefix_of120s_reference": false
+    },
+    "rate010": {
+      "glim_scan_ms": {
+        "n": 549,
+        "mean": 249.80610523315121,
+        "median": 226.476592,
+        "p95": 510.417785,
+        "maximum": 817.428742
+      },
+      "glim_smoother_ms": {
+        "n": 549,
+        "mean": 152.4483670856102,
+        "median": 145.052234,
+        "p95": 364.185425,
+        "maximum": 469.159341
+      },
+      "glim_post_callback_ms": {
+        "n": 549,
+        "mean": 83.08074473952641,
+        "median": 53.59766,
+        "p95": 300.207618,
+        "maximum": 398.123496
+      },
+      "glim_scan_by15s_ms": {
+        "0": {
+          "n": 100,
+          "mean": 194.40338628,
+          "median": 146.75982199999999,
+          "p95": 457.378639,
+          "maximum": 557.44713
+        },
+        "15": {
+          "n": 150,
+          "mean": 258.93630585333335,
+          "median": 239.61927400000002,
+          "p95": 514.494095,
+          "maximum": 634.764334
+        },
+        "30": {
+          "n": 150,
+          "mean": 291.4377456266667,
+          "median": 289.08312850000004,
+          "p95": 520.582653,
+          "maximum": 782.557409
+        },
+        "45": {
+          "n": 149,
+          "mean": 235.8866135771812,
+          "median": 202.929892,
+          "p95": 501.914142,
+          "maximum": 817.428742
+        }
+      },
+      "glim_internal_queue_max": 1,
+      "glim_fraction_exceeding_333ms": 0.18397085610200364,
+      "kimera_ms": {
+        "backend": {
+          "n": 275,
+          "mean": 110.93206654545455,
+          "median": 116.746,
+          "p95": 150.106,
+          "maximum": 188.903
+        },
+        "optimize_total": {
+          "n": 275,
+          "mean": 110.09893890909092,
+          "median": 115.969,
+          "p95": 149.048,
+          "maximum": 188.017
+        },
+        "smoother_update": {
+          "n": 275,
+          "mean": 36.13085309090909,
+          "median": 36.343,
+          "p95": 49.0031,
+          "maximum": 93.9443
+        },
+        "outgoing": {
+          "n": 275,
+          "mean": 71.68985090909091,
+          "median": 79.0303,
+          "p95": 99.6913,
+          "maximum": 108.416
+        }
+      },
+      "section": "same first60s, after5s initialization; source wall timers",
+      "prefix_of120s_reference": true
+    }
+  },
+  "source_timestamps_vs_010_prefix": {
+    "glim": {
+      "actual_count": 591,
+      "reference_count_before_cutoff": 592,
+      "identical_timestamp_prefix": true,
+      "baseline_only_tail_stamps": [
+        "1727775067.774669886"
+      ]
+    },
+    "kimera": {
+      "actual_count": 284,
+      "reference_count_before_cutoff": 284,
+      "identical_timestamp_prefix": true,
+      "baseline_only_tail_stamps": []
+    }
+  },
+  "glim_revision_first_endpoint_age_s": {
+    "n": 26820,
+    "mean": 2.7669747761026104,
+    "median": 2.7590604900000004,
+    "p95": 4.920719215,
+    "maximum": 5.332429922
+  },
+  "glim_revision_producing_update_lag_s": {
+    "n": 26820,
+    "mean": 0.1739480308192394,
+    "median": 0.167555007,
+    "p95": 0.292702247,
+    "maximum": 0.360203264
+  },
+  "minimum_glim_revision_lag_margin_s": 1.6675700779999998,
+  "limits": "One60sON test only. No full-sequence/1x/stationarity certification; faster playback changes causal availability, not bitwise source-run equivalence."
+}

@@ -1,0 +1,19 @@
+CP-K16g stopped diagnostic — closeout,2026-10-20
+
+One capture only. No60s pass; preserve RESULT_K16G_FAILURE.json and failed.txt.
+After the controller's shutdown timeout it terminated only its owned GLIM
+process; cleanup.json: node-15,bag/master/record/observer0,all_exited true.
+Subsequent docker top cbsms_ws_gpu showed only tail -f /dev/null.
+
+integrity_after.json PASS:2026protected files,7pinned inputs,31prepared files,
+five source repository fingerprints; observer hash unchanged from before.
+Only experiment harness/docs/ledger added or edited, not estimator/runtime
+inputs. No model/covariance/settings changes, repeat capture, commit or push.
+
+Stopped the idle cbsms_ws_gpu container; Humble was never started.
+Final docker inspect:
+ /cbsms_ws_gpu exited
+ /ubuntu-jammy-humble-nvidia exited
+Both restored to original stopped state. No automation was activated.
+
+Stop and report. Paced diagnostic-input repair is proposed only, not executed.

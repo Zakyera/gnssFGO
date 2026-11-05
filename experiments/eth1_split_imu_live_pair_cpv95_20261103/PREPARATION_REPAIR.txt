@@ -1,0 +1,11 @@
+CP-V95 preparation-only reference-bound check correction,2026-11-03.
+First admission stopped before any source,receiver,ROS master or container start.
+An added reference check incorrectly required IE-TC to precede the first camera.
+Actual unchanged author IE-TC:69601rows,1727775008000000000..1727775356000000000ns.
+Camera-defined epoch1727775007855396309ns;reference begins144.603691ms later,
+before initialized GLIM/Kimera and receiver outputs. Existing CP89/91 evaluation
+already uses this exact reference, same SHA256. Corrected admission checks the
+actual reference envelope. Evaluator still requires valid reference support for
+every scored native row,50ms maximum reference gap; no extrapolation/gap filling.
+Preserved first profile-parity receipt; subsequent admission verifies rather than
+overwrites it. No estimator setting,score,source or receiver attempt changed.

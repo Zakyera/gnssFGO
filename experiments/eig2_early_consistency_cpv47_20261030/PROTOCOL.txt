@@ -1,0 +1,28 @@
+CP-V47 -- earliest saved ON transitions and initialization/IMU consistency
+2026-10-30. User authorized diagnosis proposed at CP-V46 closeout.
+
+Use existing CP-V42 corrected OFF/ON logs, CP-V44 observer prefix and full
+native phase checkpoints21--25. Trace earliest recorded pose revisions and
+CBS admissions, compare exact matching timestamps, not interpolated identities.
+Inspect native initialization and frontend bias/PIM lifecycle in pinned backend
+code and available frontend code. Distinguish code inspection from runtime proof.
+
+Numerically inspect saved PIM and X/V/b for all captured phases: check old states
+entering next update equal previous finalized states; new bias equals last
+backend bias; new velocity equals predict(previous latest NavState, current bias).
+Pose guess is stereo (profile2), so new pose need not equal IMU prediction.
+Measure existing IMU residuals before/after solves and PIM biasHat correction;
+do not mistake a stale integration reference for a missing bias correction.
+Check PIM duration against timestamped endpoint interval; unchanged PIMs across
+phases and history. Native geometry only, no covariance interpretation, new
+optimization, weight changes, live source capture or production patch.
+
+If needed, build a private read-only native inspector in the existing Noetic
+container; use GTSAM predict/error APIs, preserve all inputs and verify exact
+roundtrip hashes. Restore originally stopped containers. No old scripts run.
+Add release/sanitizer geometry fixtures. No raw sensor reintegration or new
+source stage unless separately authorized. Report missing early full snapshots,
+raw frontend bias reset receipts and measurements as limitations, not assumptions.
+
+Output is a causal-localization report, not a fixed algorithm or accuracy score.
+No nonlinear stationarity claim. Preserve CP-V42..46 and Hesai checkpoint.

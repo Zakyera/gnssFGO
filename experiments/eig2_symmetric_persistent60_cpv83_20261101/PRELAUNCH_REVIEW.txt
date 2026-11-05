@@ -1,0 +1,25 @@
+CP-V83 prelaunch differential review — 2026-11-01
+No capture launched at this review. CP82 tests passed in release and UBSan,
+including actual persistent bridge insertion/retirement, native covariance route,
+GPU/IMU marginalization and exact temporary-output parity with frozen original.
+Only private GLIM constructor admission/diagnostic differs; original code retained.
+
+CP80 harness copied into a fresh CP83 root. Source profile, Kimera CP76 binaries,
+fusion CP-K19 Qc x1.0/model, Gaussian scales, clocks and native mean alignment
+unchanged. GLIM alone switches temporary -> inject_persistent with explicit
+CP82 opt-in and private DSO checked by actual process maps before playback.
+Kimera remains persistent. All other mode/provider restrictions remain enforced.
+Source-runner K2G event expectation changes to injected_persistent, not a relaxed
+count guard. Both-direction injection and absence of temporary removals required.
+
+60s window-specific gates derive from saved CP66 raw input audit:600 scans/pairs,
+6000IMU,597..600frontend,>=590GLIM; >280Kimera, first<=1s,last>=59s,maxgap<=1.1s.
+No EOF, payload, storage, numerical or source/receiver lifecycle guards relaxed.
+EVO report checks use >25m reference and >40distance pairs for this60s crop,
+instead of full355s >150m/>100pairs. Metric definitions and masks unchanged.
+No matching/scoring or sensor changes to obtain better results.
+
+prepare_host.py must still verify files/profiles, receiver equality, library
+hashes, protected originals, syntax, transport/EOF negatives, storage forecast,
+Hesai667 and stopped containers before producing prepared.json. Exact resulting
+counts/headroom are saved in that receipt, not assumed here. No full campaign.

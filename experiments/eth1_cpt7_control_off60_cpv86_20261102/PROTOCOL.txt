@@ -1,0 +1,32 @@
+CP-V86: matched current-binary ETH1 CPT7 CBS-OFF60 control
+User approved the proposed next step on 2026-11-02: one 60-second CPT7 control
+against completed CP-V85 Alphasense. No replay of the Alphasense estimator.
+One fresh capture, offset0/rate0.20/drain25s, same camera/IMU/LiDAR bag window.
+GLIM remains running on Hesai+CPT7 to match CP85 workload; both CBS receive
+switches OFF, both publish ON. No fusion, CBS-ON, full sequence, builds or tuning.
+Kimera CP76/CP40/CP-K9 private binaries exactly match CP85. Native smart25states,
+FL4Q0/FL4Mremove, native IMU support override unset. Same initialization/backend.
+Restore ONLY validated CP-K23 CPT7 camera transforms, IMU100Hz/noise parameters
+and CPT7 topic/body instead of Alphasense. All other profile files identical.
+Alpha raw IMU is still played/recorded for workload parity, not used by Kimera.
+This controls the IMU integration bundle, NOT hardware quality alone.
+Do not apply diagnostic fitted2.4deg or3ms changes. No defaults changed.
+
+Preflight: unique roots/port11588, stopped containers, no competing estimators,
+exact binary/profile/input hashes, CP85 terminal artifacts and Hesai667 preserved.
+Storage guard unchanged:10GiB before launch,5GiB during run. No deletion.
+Validate resolved topic/body, all loaded private libraries and both receive=false
+BEFORE playback. Preserve native trajectories, revision/covariance/timing logs.
+Coverage: exact raw IMU header sequences;601 input stereo pairs; initialization
+and terminal support accounting based on actual CPT7 times, not old magic counts.
+No guard relaxation or blind retry. Fail closed, restore originally-stopped
+containers. Any numerical failure is retained; never label a prefix full.
+
+Saved-only EVO1.36.3 Method1 newest absolute poses, common physical prism,
+SE3 no scale ATE, reference-distance0.5m translation/rotation RPE. No smoothing
+or bridging gaps>0.5s. Common100ms comparison explicitly intersects CP85 support;
+reuse CP85 EVO results if mask identical, otherwise score saved data on new mask.
+Native-cadence metrics separately. Estimated path is not physical travel.
+IE-TC shares CPT7 and is not independent prism GT. Covariances retained but
+not certified calibrated/independent. Incremental checks are not stationarity.
+Finish this control and report; no subsequent experiment automatically authorized.

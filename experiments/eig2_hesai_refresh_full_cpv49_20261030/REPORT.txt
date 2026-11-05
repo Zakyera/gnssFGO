@@ -1,0 +1,50 @@
+CP-V49: full Hesai EIG-2 corrected matched pair. CAPTURE AND EVO SCORING COMPLETE.
+Final preservation/process verification receipt: complete.json (created separately).
+Launched ONCE2026-10-30 12:47:53local; launcher66944/controller66951.
+Controller start12:48:01, capture_off stage12:48:02. Exact receipts in launch.json/start.json.
+7593protected files, input hashes, original profiles and667Hesai checkpoint files pass.
+33.0GiB free versus11.98GiB conservative full-pair forecast. No other source jobs active.
+Both originally stopped containers are owned by this finite controller and restored on exit.
+Original CP-K24 Hesai profile + tested CP-V40 Kimera + receiver Qc x1.0.
+Only OFF/ON CBS differs within this pair. No rejected candidates, tuning or covariance investigation.
+OFF engineering gates then saved EVO/revision health screen precede ON.
+Matched EVO report follows both captures/gates and cleanup; final process verification remains separate.
+
+Controller finished 2026-10-30T13:50:31.129950+02:00: both captures/gates passed; EVO reporting pending
+{"failure": null, "cleanup_error": null}
+No automatic retry.
+
+FINAL RESULTS — 2026-10-30
+OFF355.02s and ON355.02s captures/gates passed; cleanup13:50:31, EVO13:51:01.
+Method1 common100ms mask:352.2s/355.02s (99.206%),3525queries,348RPE pairs.
+Reference path188.009728m. IE-TC shares CPT7; not independent prism ground truth.
+EVO SE3/no-scale ATE; reference-distance0.5m translation/rotation RPE.
+Estimator | ATE OFF->ON m | Path OFF->ON m | RPE translation m | rotation deg
+GLIM | .046029->.048301 | 189.8467->189.8845 | .019519->.016977 | .633343->.633341
+Kimera | .515214->.862981 | 186.9171->296.6668 | .030823->.228248 | .819211->1.579625
+Fusion ONLINE | .086494->.179195 | 199.3071->200.4111 | .036214->.037733 | 2.302487->2.241161
+Fusion DELAYED | .084784->.177431 | 186.7745->186.9442 | .013130->.014992 | .662962->.664916
+Delayed is seven-second fixed-lag-finalized, NOT ONLINE or full-history.
+All lengths are estimated polylines, not actual physical vehicle travel.
+Full native-cadence Kimera path188.0518->330.7820m (gap chords excluded).
+Earlier OFF status used that native cadence; final table uses shared mask.
+Full-saved coverage/products and raw metrics retained in RESULTS_REPORT.txt/results.json.
+
+OFF previous-state revision max.288107m, zero>.5m among1745observable steps.
+ON max2.736418m,69>.5m/9>1m among1747observable steps. Missing step IDs retained.
+Native whitened IMU cost median.511618->709.344; not unwhitened error or ATE.
+Thus severe OFF zigzag improvement reproduces with Hesai. ON still causes poor
+published Kimera behavior while Hesai GLIM remains near5cm trajectory ATE.
+The less accurate Velodyne source is NOT necessary for this failure to occur.
+This isolates a cleaner ON diagnosis; it does NOT identify the faulty equation,
+prove covariance calibration, or establish that every inserted belief is sound.
+No further diagnostic or source run has been launched.
+
+Both originally stopped containers restored; launcher66944/controller66951 exited.
+7593protected files/Hesai667originals passed controller closeout.
+48direct matched EVO CLI calls plus separate OFF admission calls; CLI/API error0.
+Zero mean/covariance payload mismatch within existing roundtrip tolerances;
+no pending/stale/duplicate/expired receiver versions; ON has1terminal-cell omission,
+OFF0. Both have50preinitialization exclusions. No zero-factor-loss claim.
+All covariance/payload/revision/timing histories retained; no covariance tuning.
+Final report_closeout.py rechecks hashes, process exit, containers and checkpoint.

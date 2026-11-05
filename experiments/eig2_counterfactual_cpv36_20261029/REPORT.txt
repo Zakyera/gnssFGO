@@ -1,0 +1,162 @@
+CP-V36 — EIG-2 CBS-OFF checkpoint comparison —2026-10-29
+Scientific comparison COMPLETE; final integrity receipt in closeout.json.
+No production fix, full-sequence accuracy claim or CBS-ON run.
+
+DECISION
+========
+The leading problem is nonlinear consistency of the modified fixed-lag Kimera
+baseline, not a failure to solve its stored linear system. Stronger prior
+weights are NOT justified as the first repair by this evidence.
+
+At the267.8s checkpoint, the captured incremental state satisfies its cached
+linear equations very accurately, but has a native IMU position-constraint
+residual as large as0.827m. An isolated, derivative-tested joint-landmark solve
+with the same measurements/noise and unchanged original-chart marginal prior
+reduces that residual to1.05e-6m. Re-evaluating native factors at the resulting
+candidate also reduces their reported cost from1.84364e9 to5469.895.
+This shows much more internally consistent candidate states exist without
+strengthening the prior. It does NOT establish micrometre positioning accuracy,
+an all-native-factor stationary solution, or a working online trajectory fix.
+
+The difficult solves are bounded/nonconverged and visual activity changes.
+The comparator differs in damping/iterations, current-state linearization and
+explicit landmark treatment together; it does not isolate prior refresh alone.
+Interpret these results as mechanism evidence, not a deployable replacement.
+
+FAITHFUL CAPTURE
+================
+One300s original-start0.20x Kimera-only OFF capture,25s drain. Original front
+stereo/CPT7/calibration/25states/CP-K9/FL4Q0/remove and all weights retained.
+No GLIM, fusion, incoming CBS, ON, source retry, default build or tuning.
+All1498 native pose AND objective rows and37100 MAIN mean/covariance revision
+payload rows match the corresponding original OFF prefix EXACTLY. Coverage
+ends299.797532s; this is not the full355.02s accuracy benchmark.
+Seven independent saved-factor readbacks have ZERO cost and linearization
+difference: updates800,934,1000,1335,1336,1337,1338;985--1133 factors each.
+40 private runtime files frozen;5131 original protected files unchanged.
+The667-file four-sequence Hesai checkpoint passes. See capture_verification.json.
+
+Release and ASan/UBSan observer fixtures pass12 real-wrapper updates with exact
+state/theta/delta/fixed-key/cache/tree nonmutation. Offline derivative fixture
+passes release and sanitizer too. Linked vendor DSOs were not instrumented.
+Preflight tooling failures and one NumPy JSON-summary failure are preserved;
+PREFLIGHT_NOTES.txt and REPORTING_REPAIR.txt explain the report-only repairs.
+Authoritative summary: diagnostic_results_v2.json, not the partial old JSON.
+
+WHAT THE LINEAR AUDIT SHOWS
+==========================
+Across all seven checkpoints:
+- Fresh native linearization at the STORED theta equals the cached augmented
+  equations exactly. This does not mean theta is near the current estimate.
+- Cache versus Bayes-tree Hessian relative difference1.10e-16--2.53e-16;
+  right-hand-side relative difference1.11e-16--2.87e-16.
+- Stored incremental delta has scaled linear normal-equation residual maximum
+  7.70e-10--9.83e-7 and backward-relative residual6.09e-15--5.82e-14.
+- The earlier whole-augmented-matrix difference~1e-8 is in the scalar constant;
+  it is NOT a Hessian/right-hand-side discrepancy and cannot change the linear
+  minimizer. No nonlinear stationarity follows from these equation checks.
+
+Thus the solver can accurately solve a local linear model while its resulting
+state fits the actual nonlinear IMU constraints badly. CP-V35 independently
+showed fixed-anchor departures up to19.46deg and the jump occurring in the solve,
+not the following marginalization call. CP-K9's prior-chart promotion is gated
+on actual temporary-CBS retirement; it does NOT activate in OFF. See CODE_REVIEW.txt
+and equation_audit.json. This implicates retained linearization/coordinate
+treatment, but does not prove a particular cache-corruption or upstream bug.
+
+SAVED-STATE COMPARISON (starting from captured incremental result)
+================================================================
+Maximum unwhitened IMU POSITION-CONSTRAINT residual, metres, NOT ATE/RPE:
+update    approx time(s)    captured        offline candidate    stopping reason
+ 800          160.4        .000021835       .000004768           gradient gate
+ 934          187.2        .005743967       .000002443           gradient gate
+1000          200.4        .022165453       .000000730           gradient gate
+1335          267.4        .140182429       .000002537          30-iteration cap
+1336          267.6        .372427626       .000001028          30-iteration cap
+1337          267.8        .827052806       .000001054          30-iteration cap
+1338          268.0        .983586947       .000002013          30-iteration cap
+
+Same starts: initial cost = native cost = joint diagnostic cost at initialization.
+update        initial cost        final joint cost     re-evaluated native cost
+ 800              4130.389             4119.110                  4121.273
+ 934            123930.454             4701.883                  4704.297
+1000           2243499.677             4835.893                  4861.345
+1335          67743130.765             5434.018                  5436.196
+1336         363019596.579             5414.375                  5446.180
+1337        1843639404.717             5482.642                  5469.895
+1338        4221461616.334             5475.986                  5440.888
+These are weighted objectives, not metres or covariance scales. Native and
+joint final objectives are intentionally reported separately.
+
+The independent initialized-state starts also reduce maximum IMU position
+residual to0.66e-6--4.75e-6m. Across14starts, all8457 joint-objective directional
+derivative checks pass. Five starts meet the declared scaled-gradient<1e-5
+gate; nine hit the30-iteration cap, including ALL eight peak-event starts.
+No exception, wall-bound stop or relaxed tolerance. Peak final scaled gradients
+remain .001876--.076134, so the difficult cases are NOT stationary solutions.
+The native operational smart-factor error/Schur derivative check fails at every
+checkpoint/start; mapped failures are exclusively smart-stereo factors, not
+the native IMU or preserved-prior adapter. This corroborates CP-K1's existing
+objective-semantics caveat and is not newly invented as an acceptance excuse.
+
+IMPORTANT VISUAL / MODEL QUALIFICATIONS
+=======================================
+The comparator represents each initially valid smart landmark explicitly, with
+the same observations, calibration/extrinsic and noise. Its initial visual cost
+equals the native smart-factor cost. Initially invalid smart factors have zero
+native cost and remain inactive in that conditional solve. That is NOT a fully
+equivalent native smart-factor algorithm over arbitrary trial states.
+
+Starting from each captured incremental result:
+update      initially active/inactive smart    final native activity changes
+ 800                     357/723                          11
+ 934                     227/705                           0
+1000                     145/868                          50
+1335                      81/919                          37
+1336                      76/963                          75
+1337                      61/944                         135
+1338                      37/982                          51
+Numbers of explicit joint landmarks exceeding the native distance policy at
+the final candidate are respectively2,6,23,2,14,3,4. Every start has at least
+one such case; these are NOT admitted native-domain optimum certificates.
+Across both starts, activity changes range0--275 and distance violations2--23.
+The native validity/triangulation policy is re-evaluated only for reporting at
+the final candidate; no live guard was disabled. The retained prior itself is
+the original Gaussian/function/anchor, not reconstructed eliminated nonlinear
+measurements. These limitations remain even for the five gradient-gate stops.
+
+Very few visual factors remain valid at the bad captured states, but this
+alone does not establish bad calibration, scale pumping or their causal order.
+The two starting points can select different active sets and end at different
+poses; they are disconnected checkpoint comparisons, not an improved path.
+No new RMSE/RPE, physical travel, CBS benefit or state-of-the-art benchmark claim.
+Existing direct-evo accuracy tables and Rerun recordings remain unchanged.
+
+PROPOSED NEXT SINGLE TEST — NOT EXECUTED
+======================================
+Stay CBS-OFF. Use these saved checkpoints to isolate current-state
+relinearization with the original-chart prior while RETAINING native smart
+factors: compare the existing linear step with a refreshed native-factor step,
+same measurements/weights/guards. Inspect native IMU residuals, prior energy,
+visual validity and state movement; do not use the inconsistent smart cost
+alone as a global nonlinear acceptance certificate. This separates the
+linearization hypothesis from the explicit-landmark comparator.
+Only after that evidence and focused guards should a separately approved
+private OFF live repair be tested. Do not tune prior/covariance strengths or
+proceed to CBS-ON as the first response to the current evidence.
+
+ARTIFACTS / CLOSEOUT
+===================
+PROTOCOL.txt, INTERPRETATION_CRITERIA.txt: preregistered scope/limits.
+capture_verification.json: exact baseline and checkpoint preservation.
+diagnostic_results_v2.json: all14 starts, residuals/costs/iterations/domain checks.
+equation_audit.json: stored-solution equation residuals and derivative identities.
+P/capture/snapshots: seven self-contained local native-format checkpoints.
+P/offline: each start's directional checks, iteration trace and final values.
+P/inspection: read-only equation audit and native factor identity maps.
+P=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_counterfactual_cpv36_20261029
+Full frontend state and Bayes-tree topology are not serialized; these are
+offline nonlinear factor checkpoints, not restartable estimator checkpoints.
+Controller receipts show capture and all offline/inspection stages exited;
+both originally stopped containers restored. Final independent recheck and
+original RRD protection are recorded in closeout.json. No deletion/push/promotion.

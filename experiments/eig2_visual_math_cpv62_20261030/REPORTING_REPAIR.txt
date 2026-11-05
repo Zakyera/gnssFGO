@@ -1,0 +1,9 @@
+CP62 report-only repair
+Original analyze.py completed all numerical calculations but json.dump failed
+on a NumPy boolean (TypeError: Object of type bool is not JSON serializable).
+Original analyze.py and incomplete analysis.json are preserved unchanged.
+Fresh analyze_v2.py writes fresh analysis_v2.json, converting NumPy scalars to
+their identical Python scalar values at serialization. No numerical formula,
+threshold, source extraction, native solve or saved artifact is changed.
+The repeated work is saved-data report generation only, not another experiment.
+

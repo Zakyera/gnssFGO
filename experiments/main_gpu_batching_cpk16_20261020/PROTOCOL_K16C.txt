@@ -1,0 +1,59 @@
+CP-K16c — bounded identical-workload MAIN timing, 2026-10-20
+Authorized by user "proceed" after K16b report. Timing gate ONLY.
+
+Reuse unchanged original CP-I3 and K16a release_1 DSOs, K16b frozen device
+geometry and actual shared-native fixed-lag wrapper. Build only a diagnostic
+executable; no library, estimator, settings, covariance, kernel or guard edits.
+No ROS/dataset/source/receiver run, promotion, commit/push or automation change.
+
+Available exact device image is K16b's synthetic 864-point geometry, NOT an
+ETH1 snapshot. The S3 fixture is Gaussian history, not replayable GPU input.
+Thus this gate measures synthetic actual-solver workloads. A real-data/full
+GLIM timing conclusion requires a separately authorized bounded source check.
+
+Two fixed workloads, before seeing timings:
+ small: 5 retained poses, 2 VGICP links/new pose, .45s toy lag;
+ filled: 50 retained poses, 15 VGICP links/new pose, 4.95s toy lag.
+Pose/velocity/bias and native IMU/CPU factors follow K16b; native factors
+admitted before temporary peer factors. Peer retirement before marginalization.
+The load/geometry is a benchmark fixture, not a changed production profile.
+Same solver params, seeds, inputs, ordering, per-cycle arrival + two empty
+updates, and native provider in every branch. No forced optimization skipped.
+
+Warm each fresh process by filling its window plus five arrivals. Measure the
+next 20 cycles including actual retirement, relinearization and cached work.
+Primary time: sum of three CUDA-synchronized MAIN.update calls per cycle.
+Each start follows device synchronization; end includes completed device work.
+Input construction, profile collection, output formatting, estimates, covariance
+queries, exact state snapshots and file I/O excluded from timing. No correctness
+observer inside the timed update. Native provider computation stays enabled.
+No nested-profiler times summed as wall time.
+
+First untimed audit: original, candidate disabled, candidate enabled, each
+independent process with identical frozen device bytes; stop on divergence.
+Capture all update decisions and final theta/state/Gaussians/native graph,
+LOCAL joint/relative covariance and exact GPU-state SHA256. Inherited K16b
+tolerances unchanged; disabled exact. Existing counters prove activation and
+same derivative work. Counters are collected only in untimed audit.
+
+Then six paired timing repetitions, alternating original/enabled first.
+Each fresh process includes its own untimed warmup. Both small/filled histories
+run in every process. Retain all 20 measured cycles per workload/repetition,
+not a favorable subset. Numerical/decision outputs outside timed scopes must
+match the untimed reference. Stop on failure, no automatic retry.
+Report median/p95/max and all paired ratios, resident-memory high-water mark
+and sampled device-memory delta. Device memory includes allocator/background
+effects and is not an exact allocation peak. CPU affinity and environment equal.
+Existing wrapper does not expose per-batch sizes: report prepared requests per
+update and active GPU-factor counts; do not call these exact per-batch sizes.
+No production instrumentation patch solely to obtain that statistic.
+
+Predeclared performance target: filled-window median and p95 update-cycle time
+each <=80% of original, with all numerical gates passed. Failure to meet target
+is a measured result, not authorization to alter work, tolerances or estimator.
+
+Protect original inputs/DSOs/five source fingerprints. Use new exclusive output
+roots. Start only the stopped existing Noetic build container, restore it stopped
+after owned work exits. Preserve old evidence and paused follow-up.
+Kimera physical revision-window / receiver7s retention remains separate.
+Stop and report after K16c; propose at most one bounded real-source gate.

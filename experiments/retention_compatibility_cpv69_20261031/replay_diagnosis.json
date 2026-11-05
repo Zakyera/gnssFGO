@@ -1,0 +1,41 @@
+{
+  "compatibility_gate_passed": true,
+  "replay_admission_gate_passed": false,
+  "retain_launched": false,
+  "comparison_available": false,
+  "source_capture_completed": true,
+  "method1_pose_rows": 298,
+  "received_factors": 292,
+  "exact_wire_payload_sequence": true,
+  "exact_receiver_edges": true,
+  "exact_covariance": true,
+  "maximum_mean_roundtrip_difference": 1.6653345369377348e-16,
+  "exact_update_matches": 291,
+  "update_mismatches": [
+    {
+      "sender": [
+        405,
+        407
+      ],
+      "receiver": [
+        204,
+        205
+      ],
+      "original_update": 207,
+      "replay_update": 206,
+      "original_update_time_s": 41.799580719000005,
+      "replay_update_time_s": 41.59958267211914,
+      "original_record_arrival_ns": 1730638858175459358
+    }
+  ],
+  "receipt_minus_input_record_ns": {
+    "minimum": -2045439,
+    "maximum": 73710,
+    "median": -858044.0
+  },
+  "objective_updates": 298,
+  "retirements": 268,
+  "no_source_retry_after_timing_gate": true,
+  "conclusion": "Recorded ROS arrival times do not fully reproduce backend admission order. No conclusion about sustained retain accuracy; original timing gate preserved.",
+  "proposed_next": "Explicit recorded-update delivery gate in a fresh diagnostic harness, with causal availability and exact update/endpoint/payload checks; not a blind rosbag retry."
+}

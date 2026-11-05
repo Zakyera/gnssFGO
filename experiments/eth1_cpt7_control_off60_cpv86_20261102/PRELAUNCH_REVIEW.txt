@@ -1,0 +1,17 @@
+CP-V86 prelaunch review, before freezing/launch.
+New paths/port11588. Copied source runner retains executable755, private libraries
+copied byte-identical CP85. No estimator build or source implementation edit.
+Only profile differences: Left/Right T_BS and five IMU rate/noise fields, restored
+byte-for-byte from ETH1 CP-K23. Other camera/frontend/backend profiles identical.
+Same four raw bags played to preserve epoch/workload; Alpha topic is recorded
+but Kimera subscribes only CPT7. Both receivers checked false before playback.
+The static Alpha->CPT7 broadcaster is not used for the shared-CPT7 body.
+Coverage guard uses actual input/header conservation and actual initialization/
+CPT7 terminal support; no inherited frontend count heuristic. All old failures
+stay preserved. Evaluation handles CPT7 body explicitly; CP85 scores reused on
+identical masks, never silently compares different coverage or output definitions.
+Method1 first/newest absolute; no implicit refined/incremental replacement.
+Controller checks10GiB start/5GiB runtime, finite480s source timeout, then cleanup
+before saved-only EVO. No source retry or automatic subsequent experiment.
+Two preparation-only assertions fixed and documented in PREPARATION_NOTES.txt.
+No sensor playback, container start or scoring occurred during preparation.

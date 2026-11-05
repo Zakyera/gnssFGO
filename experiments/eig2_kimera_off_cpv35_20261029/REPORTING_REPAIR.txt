@@ -1,0 +1,23 @@
+2026-10-29 CP-V35 closeout reporting repair (no source retry)
+
+The first validate_capture.py invocation failed in monitor.py poses():
+AttributeError: 'NoneType' object has no attribute 'isdigit'.
+The capture had already finished successfully and containers were stopped.
+
+Exact cause: rostopic echo appended these two non-CSV lines after its1498
+complete data rows, during the post-playback drain without /clock:
+line1500: WARNING: no messages received and simulated time is active.
+line1501: Is /clock being published?
+The original Kimera CSV has no such lines. No malformed numerical data row
+was found. The old parser called isdigit before checking missing fields.
+
+Repair: recognize ONLY these two complete warning lines, report their line
+numbers, then require complete fields and numeric sequence IDs for every
+remaining row. No numerical row discarded, tolerance relaxed, capture rerun,
+or source/protected file edited. Original odometry.log remains unchanged.
+No verification.json existed when this reporting-only failure occurred.
+
+Final closeout.py first attempt: Docker socket access was denied in its child
+docker inspect call, before closeout.json creation. A separate read-only docker
+inspect had already shown both containers stopped. Re-run only the read-only
+verification/receipt script with scoped permission; no container or run action.

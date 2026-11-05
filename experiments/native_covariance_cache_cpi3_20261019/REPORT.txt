@@ -1,0 +1,137 @@
+CP-I3 — reuse native Gaussian preparation across revised edges
+2026-10-19
+============================================================
+Result: ISOLATED IMPLEMENTATION, CORRECTNESS AND SAVED-EQUATION TIMING PASSED.
+Not yet a live all-LOCAL baseline. No GLIM/Kimera/fusion run, bag playback,
+sequence retry, covariance tuning or default promotion. CP-R1 remains failed.
+
+What changed
+------------
+The existing native Gaussian covariance provider now lazily assembles, rank-
+checks and factorizes the native system once per queried committed epoch.
+Every pair then queries that same Gaussian Bayes tree. Its per-pair joint
+covariance, current-chart transport and full6x6 relative Schur extraction are
+unchanged. No additional nonlinear residual/Jacobian evaluation or GPU call.
+This caches computation, not the covariance value across source updates.
+
+Preparation belongs to immutable committed State. A newly staged State clears
+its own preparation immediately. Successful commit swaps in this fresh State;
+retirement/equation/chart changes therefore cannot inherit an old tree. Reset
+starts empty. Failed staging, mismatched commit and abort preserve the previous
+committed state and cache. Failed rank/elimination installs no prepared tree.
+Caller output remains unchanged on query failure; no MAIN covariance fallback.
+Queries remain single-threaded, as in the existing observer contract.
+
+theta() retains the same validity check and returns a Values copy, but no longer
+clones a Gaussian graph solely to check that the epoch exists. This was another
+redundant per-pair preparation operation, not a mathematical change.
+
+The change is exclusively in NativeGaussianHistory.h/.cpp. ShadowObserver,
+rank certificate, fixed-lag wrappers, CP-I1 revision bridge, source means,
+revision identity/timing, source-to-source classic CBS and gnssFGO are unchanged.
+One preparation does NOT mean zero per-pair linear algebra: joint extraction,
+12D validity checking, transport and relative Schur work still execute per pair.
+
+Build / recovery
+----------------
+W=/home/yeranis/repos/V4RL/cbs_gtsam4.3
+New root: W/runs/native_covariance_cache_cpi3_20261019
+New provider: release_v2/libgtsam_points.so.1.2.1
+SHA256 3f23e6115e34acc5a2f2b965b15bd4c651897c889a6c38a0a52cdb3855c0ceb7
+
+Unchanged CP-I1 bridge:
+W/runs/local_revision_covariance_cpi1_20261019/libglim_ros.so
+SHA256 42df73c172232a612da965bf43ead8ec454caf08434b84e2da5de74d26cdb79f
+
+The private provider needs library-path precedence in a FUTURE authorized run;
+the bridge still needs GLIM_SHARED_NATIVE_PROVIDER=shared_native and
+GLIM_REVISION_COVARIANCE_POLICY=native_local. No launch/default has been edited.
+An RTLD_NOW load check confirmed that this exact unchanged bridge resolves the
+new provider; abi_load.json records actual /proc/self/maps paths. It constructs
+no estimator. Source code, patch, original ABI recipes and all commands retained.
+
+Original S4d provider/bridge, CP-I1 build and failed CP-R1 capture are untouched.
+1354 CP-R1 protected hashes, plus the CP-I3 preparation input hashes, verified.
+Native cbs/Kimera-VIO/glim_ros1/gtsam_points source repositories remain clean.
+Existing unrelated gnssFGO changes preserved. No commit/push requested/performed;
+HEAD remains668d4c788983722f4acad37d1495c15d03a27e18.
+Noetic container restored stopped after tests; receiver container never started.
+
+Correctness
+-----------
+-55/55 Release tests, repeated;55/55 focused ASan/UBSan, repeated.
+-50 inherited lifecycle/native covariance/provider/revision tests unchanged,
+  plus5 new cache tests. Inherited tests check dense independent Schur reference,
+  actual wrapper retirement, unchanged MAIN state and zero extra native calls.
+- Literal S4d uncached implementation compiled in a distinct test namespace.
+  Multi-pair/reverse order/repeated queries with nonzero chart deltas return
+  entrywise identical joint-theta, transport, joint-current and relative matrices.
+- New commit, retirement, explicit native removal, changed chart and generation
+  reset invalidate preparation. Abort and failed stage/commit preserve it only
+  for the unchanged old committed state. Retired/stale endpoints are rejected.
+- Repeated rank-deficient queries fail without installing a tree or mutating
+  output. No changed rank tolerance, diagonalization, jitter or regularization.
+- Focused sanitizers instrument the new provider, observer/wrappers and tests;
+  vendor GTSAM/CBS/GPU libraries are not fully instrumented, leaks disabled.
+  This is not a whole-ROS-process sanitizer claim.
+
+First compile attempt failed in a new TEST helper: one auto declaration tried
+to declare two distinct namespace Result types. Split declarations; no provider
+or math change. Failed log retained; subsequent Release and sanitizer pass.
+
+Bounded timing result (seconds)
+------------------------------
+Same retained ETH1 native Gaussian equations, no new sensor processing.
+783 committed snapshots replayed with recorded native identities/retirement.
+At20 saved query epochs, compare all available pose i->i+2 queries plus the
+retained exact query. Added endpoints use zero chart deltas; retained query
+uses its real recorded deltas. These are NOT missing CP-R1 EIG-2 revisions.
+
+Each epoch: one warmup +3 measured original/cached passes with alternating
+execution order and fresh prepared histories. Parser/staging/comparison outside
+timing; per-pair theta-copy plus full covariance query inside. Preparation cost
+is included once for cached, every pair for original. OMP1; no compilation or
+estimators concurrent. Desktop load/CPU frequency not locked.
+
+60 measured batches            median       mean        p95        max
+Original uncached              .497539      .559674     .991881    1.605679
+Candidate cached               .018838      .034689     .091476     .150169
+Paired speed ratio: median22.2517x. Ratio of the two medians is a different
+statistic; do not confuse them. Tail improvement is real in this workload,
+but tails remain and zero-cost queries are not claimed.
+
+Filled-window subset (51 batches with >=45 pairs):
+Original median .517467s, p95 1.262511s; cached median .019995s, p95 .118307s.
+Each cached batch performed exactly ONE native-system preparation.
+80 total batches including warmups,3640 paired query comparisons:
+max covariance relative difference against literal uncached code =0.
+Against20 historical stored query outputs: max relative difference3.7292e-15,
+within prior1e-8 gate. The journal reconstructs Hessian factors from retained
+equations; it need not reproduce live factor-subclass conversion costs.
+Total bounded benchmark wall time48.99s.
+
+Interpretation / stop
+---------------------
+The avoidable repeated preparation is removed with identical tested matrices.
+The old GPU-equation reuse remains; no second nonlinear local optimization was
+introduced. This is a measured covariance-query speedup, NOT a whole-GLIM
+speedup or proof that CP-R1's1.024s revision routine is now18.8ms. Different
+sequence, equations and timed scope; live logging/scheduling/export remain.
+No new accuracy metrics or60s completion claim.
+
+Next bounded decision: a NEW short live provenance/throughput gate, with these
+exact private DSOs and unchanged timing/model/settings. Before preparation fix
+the documented future validator input split (Kimera revision payloads in
+estimators.log; LOCAL query telemetry in ROS stdout). Never overwrite CP-R1.
+Check actual revised covariance provenance, source-update latency and arrival
+age margin before resuming any matched60s campaign. No retry was started here.
+
+Evidence/reproduction
+---------------------
+prepare.py: refuse-overwrite overlay and literal original test oracle.
+build.py: frozen build recipes, private provider and inherited/new tests.
+PROTOCOL.txt: predeclared scope, tolerances and bounded timing workload.
+time_saved.py: requires both correctness passes, verifies journal hash.
+verification.json: exact outputs, timing statistics and protected hashes.
+evidence/: commands, tests/repeats, original compile error, patches, timings.
+Detailed private run root retains all build/test logs and abi_load.json.

@@ -1,0 +1,358 @@
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate030_cpk13_20261020/prepared/validate_case.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate020_cpk14_20261020/prepared/validate_case.py
+@@ -9,7 +9,7 @@
+ OUT=REC/'receiver'
+ CTL=P/f'full_{MODE}_control'
+ EXE=Path('/home/yeranis/results/gnssfgo_fixed_lag_failure_fl4e_20261014/candidate_live')
+-RESULT=Path(f'/home/yeranis/results/gnssfgo_eth1_full_rate030_cpk13_20261020/{MODE}')
++RESULT=Path(f'/home/yeranis/results/gnssfgo_eth1_full_rate020_cpk14_20261020/{MODE}')
+ LIB=Path('/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib')
+ 
+ def sha(p):
+@@ -160,7 +160,7 @@
+         monitor_output_age_s=stat(ages),published_during_source=published_during_source,
+         max_monitor_queue=max(m['queued'] for m in monitored),
+         protected_unchanged=len(manifest),
+-        claim='live 0.3x full ETH1 capture; fixed-lag incremental without stationarity certificate')
++        claim='live 0.2x full ETH1 capture; fixed-lag incremental without stationarity certificate')
+     RESULT.mkdir(parents=True,exist_ok=False)
+     with (RESULT/'validation.json').open('x') as f:json.dump(result,f,indent=2)
+     return result
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate030_cpk13_20261020/prepared/validate_candidate.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate020_cpk14_20261020/prepared/validate_candidate.py
+@@ -1,4 +1,4 @@
+-"""CP-K13 source lifecycle gate; no nonlinear-stationarity claim."""
++"""CP-K14 source lifecycle gate; no nonlinear-stationarity claim."""
+ import csv
+ import hashlib
+ import json
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate030_cpk13_20261020/prepared/source.env
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate020_cpk14_20261020/prepared/source.env
+@@ -2,7 +2,7 @@
+ # to off_source/on_source and CBSMS_CBS_ENABLE to false/true.
+ : "${CBSMS_RUN_NAME:?Set fresh ETH1 source run name}"
+ : "${CBSMS_CBS_ENABLE:?Set false or true}"
+-export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate030_cpk13_20261020/prepared
++export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate020_cpk14_20261020/prepared
+ export CBSMS_RUN_NAME CBSMS_CBS_ENABLE
+ export ROS_LOG_DIR="${CBSMS_RUN_ROOT}/${CBSMS_RUN_NAME}/ros_logs"
+ export CBSMS_PROJECT_ROOT=/workspace/cbs_gtsam4.3
+@@ -10,9 +10,9 @@
+ export CBSMS_BAG_START_SEC=0.0
+ export CBSMS_BAG_DURATION_SEC="${CBSMS_BAG_DURATION_SEC:-346.32}"
+ export CBSMS_POST_PLAYBACK_DRAIN_SEC=25
+-export CBSMS_BAG_RATE=0.30
++export CBSMS_BAG_RATE=0.20
+ export CBSMS_SEED_CLOCK_SECS=1727775007
+-export CBSMS_ROS_MASTER_PORT=11461
++export CBSMS_ROS_MASTER_PORT=11462
+ export CBSMS_USE_EXISTING_ROS_MASTER=true
+ export CBSMS_KIMERA_MODE=stereo_shared_cpt7
+ # The recovered classic Kimera source path is "current", not experimental RIGHT.
+@@ -35,7 +35,7 @@
+ export CBSMS_KIMERA_RECEIVER_AUDIT_MAX_SAMPLES=40
+ export CBSMS_KIMERA_RECEIVER_AUDIT_STRIDE=20
+ export CBSMS_DIAGNOSTIC_NODE_OUTPUT=log
+-export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate030_cpk13_20261020/prepared/input_profiles/glim_config
+-export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate030_cpk13_20261020/prepared/input_profiles/kimera_profile
++export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate020_cpk14_20261020/prepared/input_profiles/glim_config
++export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate020_cpk14_20261020/prepared/input_profiles/kimera_profile
+ 
+ export CBSMS_DATASET_DIR=/workspace/cbs_gtsam4.3/src/datasets/GrandTour
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate030_cpk13_20261020/prepared/run_case.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate020_cpk14_20261020/prepared/run_case.py
+@@ -33,7 +33,7 @@
+     own.mkdir(exist_ok=False)
+     inside = '/workspace/'+str(own.relative_to('/home/yeranis/repos/V4RL'))
+     env_inside = '/workspace/'+str((ROOT/'source.env').relative_to('/home/yeranis/repos/V4RL'))
+-    master_uri = 'http://127.0.0.1:11461'
++    master_uri = 'http://127.0.0.1:11462'
+     jobs = {}
+     streams = []
+     def start(name, command):
+@@ -47,7 +47,7 @@
+             text=True, capture_output=True, check=check)
+     def stop_pid(name):
+         # The PID is recorded by this case, command must match the owned port/run.
+-        token = '11461' if name=='master' else str(source.name)
++        token = '11462' if name=='master' else str(source.name)
+         script = ('import os,signal,sys; from pathlib import Path; p=Path(sys.argv[1]); '
+           'pid=int(p.read_text()) if p.exists() else 0; c=Path("/proc/%d/cmdline"%pid); '
+           'e=Path("/proc/%d/environ"%pid); '
+@@ -59,7 +59,7 @@
+     started = time.time()
+     try:
+         assert ros('rosparam get /rosversion',check=False).returncode != 0, 'port is already in use'
+-        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11461'
++        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11462'
+         start('master',['docker','exec','cbsms_ws_gpu','setsid','--wait','bash','-lc',master_script])
+         for _ in range(60):
+             if ros('rosparam get /rosversion',check=False).returncode==0:
+@@ -85,7 +85,7 @@
+         start('source',['docker','exec','cbsms_ws_gpu','setsid','--wait','bash','-lc',source_script])
+         samples = (own/'monitor.jsonl').open('x',buffering=1)
+         streams.append(samples)
+-        print(f'STARTED {tag}: native GLIM, native Kimera and WNOA receiver live at 0.3x',flush=True)
++        print(f'STARTED {tag}: native GLIM, native Kimera and WNOA receiver live at 0.2x',flush=True)
+         log_positions={}
+         def provider_failures():
+             for log in [source/'estimators.log',*source.glob('ros_logs/*/glim_rosnode-*-stdout.log'),*source.glob('ros_logs/*/kimera_vio_ros-kimera_vio_ros_node-*-stdout.log')]:
+@@ -98,7 +98,7 @@
+             assert shutil.disk_usage(ROOT).free>5*1024**3, 'disk reserve below 5GiB'
+             provider_failures()
+             assert jobs['receiver'].poll() is None, 'receiver stopped during playback'
+-            assert time.time()-started < duration/0.30+600, 'source deadline exceeded'
++            assert time.time()-started < duration/0.20+600, 'source deadline exceeded'
+             status_path=receiver/'transport_status.json'
+             if status_path.exists():
+                 try:
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate030_cpk13_20261020/prepared/run_case_on.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate020_cpk14_20261020/prepared/run_case_on.py
+@@ -34,7 +34,7 @@
+     own.mkdir(exist_ok=False)
+     inside = '/workspace/'+str(own.relative_to('/home/yeranis/repos/V4RL'))
+     env_inside = '/workspace/'+str((ROOT/'source.env').relative_to('/home/yeranis/repos/V4RL'))
+-    master_uri = 'http://127.0.0.1:11461'
++    master_uri = 'http://127.0.0.1:11462'
+     jobs = {}
+     streams = []
+     def start(name, command):
+@@ -48,7 +48,7 @@
+             text=True, capture_output=True, check=check)
+     def stop_pid(name):
+         # The PID is recorded by this case, command must match the owned port/run.
+-        token = '11461' if name=='master' else str(source.name)
++        token = '11462' if name=='master' else str(source.name)
+         script = ('import os,signal,sys; from pathlib import Path; p=Path(sys.argv[1]); '
+           'pid=int(p.read_text()) if p.exists() else 0; c=Path("/proc/%d/cmdline"%pid); '
+           'e=Path("/proc/%d/environ"%pid); '
+@@ -60,7 +60,7 @@
+     started = time.time()
+     try:
+         assert ros('rosparam get /rosversion',check=False).returncode != 0, 'port is already in use'
+-        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11461'
++        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11462'
+         start('master',['docker','exec','cbsms_ws_gpu','setsid','--wait','bash','-lc',master_script])
+         for _ in range(60):
+             if ros('rosparam get /rosversion',check=False).returncode==0:
+@@ -86,7 +86,7 @@
+         start('source',['docker','exec','cbsms_ws_gpu','setsid','--wait','bash','-lc',source_script])
+         samples = (own/'monitor.jsonl').open('x',buffering=1)
+         streams.append(samples)
+-        print(f'STARTED {tag}: native GLIM, native Kimera and WNOA receiver live at 0.3x',flush=True)
++        print(f'STARTED {tag}: native GLIM, native Kimera and WNOA receiver live at 0.2x',flush=True)
+         log_positions={}
+         def provider_failures():
+             for log in [source/'estimators.log',*source.glob('ros_logs/*/glim_rosnode-*-stdout.log'),*source.glob('ros_logs/*/kimera_vio_ros-kimera_vio_ros_node-*-stdout.log')]:
+@@ -99,7 +99,7 @@
+             assert shutil.disk_usage(ROOT).free>5*1024**3, 'disk reserve below 5GiB'
+             provider_failures()
+             assert jobs['receiver'].poll() is None, 'receiver stopped during playback'
+-            assert time.time()-started < duration/0.30+600, 'source deadline exceeded'
++            assert time.time()-started < duration/0.20+600, 'source deadline exceeded'
+             status_path=receiver/'transport_status.json'
+             if status_path.exists():
+                 try:
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate030_cpk13_20261020/prepared/verify_effective.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate020_cpk14_20261020/prepared/verify_effective.py
+@@ -11,7 +11,7 @@
+ root = Path(__file__).resolve().parent
+ source = Path(sys.argv[1])
+ assert os.environ['CBSMS_BAG_DURATION_SEC'] == '346.32'
+-assert os.environ['CBSMS_BAG_RATE'] == '0.30'
++assert os.environ['CBSMS_BAG_RATE'] == '0.20'
+ assert os.environ['CBSMS_MISSION']=='2024-10-01-11-29-55'
+ assert os.environ['CBSMS_BAG_START_SEC']=='0.0'
+ enabled = os.environ['CBSMS_CBS_ENABLE'] == 'true'
+@@ -98,7 +98,7 @@
+ assert not any('SNAPSHOT' in k or 'REAL_INPUT' in k or 'GLIM_E1_REAL_AUDIT_ROOT' == k for k in env(glim_pid))
+ assert 'e1b4a_real_input' not in glim_loaded
+ with (source/'effective_mode_check.json').open('x') as f:
+-    json.dump(dict(passed=True, checked_before_playback=True, playback_rate=0.30, requested_s=346.32, glim=expected,
++    json.dump(dict(passed=True, checked_before_playback=True, playback_rate=0.20, requested_s=346.32, glim=expected,
+                    kimera=expected_flags, kimera_candidate_env={k:env(pid)[k] for k in ('CPK9_PRIOR_REFRESH','FL4Q_ENABLE','FL4M_RETIREMENT')}, kimera_pid=pid, kimera_argv=argv,
+                    kimera_maps=loaded,glim_maps=glim_loaded,glim_revision_covariance='native_local',cached_provider_sha256='3f23e6115e34acc5a2f2b965b15bd4c651897c889a6c38a0a52cdb3855c0ceb7'), f, indent=2)
+ print('Active-window mode and unchanged Gaussian source settings verified before playback.')
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate030_cpk13_20261020/prepared/verify_effective_on.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate020_cpk14_20261020/prepared/verify_effective_on.py
+@@ -11,7 +11,7 @@
+ root = Path(__file__).resolve().parent
+ source = Path(sys.argv[1])
+ assert os.environ['CBSMS_BAG_DURATION_SEC'] == '346.32'
+-assert os.environ['CBSMS_BAG_RATE'] == '0.30'
++assert os.environ['CBSMS_BAG_RATE'] == '0.20'
+ assert os.environ['CBSMS_MISSION']=='2024-10-01-11-29-55'
+ assert os.environ['CBSMS_BAG_START_SEC']=='0.0'
+ enabled = os.environ['CBSMS_CBS_ENABLE'] == 'true'
+@@ -102,7 +102,7 @@
+ assert not any('SNAPSHOT' in k or 'REAL_INPUT' in k or 'GLIM_E1_REAL_AUDIT_ROOT' == k for k in env(glim_pid))
+ assert 'e1b4a_real_input' not in glim_loaded
+ with (source/'effective_mode_check.json').open('x') as f:
+-    json.dump(dict(passed=True, checked_before_playback=True, playback_rate=0.30, requested_s=346.32, glim=expected,
++    json.dump(dict(passed=True, checked_before_playback=True, playback_rate=0.20, requested_s=346.32, glim=expected,
+                    kimera=expected_flags, kimera_candidate_env={k:env(pid)[k] for k in ('CPK9_PRIOR_REFRESH','FL4Q_ENABLE','FL4M_RETIREMENT')}, kimera_pid=pid, kimera_argv=argv,
+                    kimera_maps=loaded,glim_maps=glim_loaded,glim_revision_covariance='native_local',cached_provider_sha256='3f23e6115e34acc5a2f2b965b15bd4c651897c889a6c38a0a52cdb3855c0ceb7'), f, indent=2)
+ print('Active-window mode and unchanged Gaussian source settings verified before playback.')
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate030_cpk13_20261020/prepared/source_runner.sh
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate020_cpk14_20261020/prepared/source_runner.sh
+@@ -43,7 +43,7 @@
+ run_dir="${run_root}/${run_name}"
+ experiment_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ launch_file="${experiment_dir}/active_window.launch"
+-[[ "${cbs_enable}" == false && "${cbs_direction}" == bidirectional && "${duration_sec}" == 346.32 && "${bag_rate}" == 0.30 && "${bag_start_sec}" == 0.0 ]] || { echo "Prepared ETH1 full346.32-second 0.30x OFF fixed-lag capture only." >&2; exit 2; }
++[[ "${cbs_enable}" == false && "${cbs_direction}" == bidirectional && "${duration_sec}" == 346.32 && "${bag_rate}" == 0.20 && "${bag_start_sec}" == 0.0 ]] || { echo "Prepared ETH1 full346.32-second 0.20x OFF fixed-lag capture only." >&2; exit 2; }
+ glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-${project_root}/clean_glim_ws/src/glim/config_grandtour_eth1_gpu_hesai_cpt7}"
+ kimera_profile_source="${CBSMS_KIMERA_PROFILE_SOURCE:-}"
+ kimera_calibration_overlay="${CBSMS_KIMERA_CALIBRATION_OVERLAY:-${project_root}/src/cbsms/config/grandtour_kimera/eth1_mono_shared_cpt7}"
+@@ -577,7 +577,7 @@
+   "kimera_receive_cbs_beliefs=${kimera_receive_external_beliefs}" \
+   "glim_cbs_mode=${glim_cbs_mode}" \
+   "kimera_cbs_odom_factor_mode=active_window_temporary" \
+-  "experiment=gnssfgo_eth1_full_rate030_cpk13_20261020" \
++  "experiment=gnssfgo_eth1_full_rate020_cpk14_20261020" \
+   "glim_sensor_pair=hesai+cpt7_imu" \
+   "kimera_sensor_pair=${kimera_sensor_pair}" \
+   "glim_body_frame=cpt7_imu" \
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate030_cpk13_20261020/prepared/source_runner_on.sh
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate020_cpk14_20261020/prepared/source_runner_on.sh
+@@ -43,7 +43,7 @@
+ run_dir="${run_root}/${run_name}"
+ experiment_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ launch_file="${experiment_dir}/active_window_on.launch"
+-[[ "${cbs_enable}" == true && "${cbs_direction}" == bidirectional && "${duration_sec}" == 346.32 && "${bag_rate}" == 0.30 && "${bag_start_sec}" == 0.0 ]] || { echo "Prepared ETH1 full346.32-second 0.30x classic CBS-ON fixed-lag capture only." >&2; exit 2; }
++[[ "${cbs_enable}" == true && "${cbs_direction}" == bidirectional && "${duration_sec}" == 346.32 && "${bag_rate}" == 0.20 && "${bag_start_sec}" == 0.0 ]] || { echo "Prepared ETH1 full346.32-second 0.20x classic CBS-ON fixed-lag capture only." >&2; exit 2; }
+ glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-${project_root}/clean_glim_ws/src/glim/config_grandtour_eth1_gpu_hesai_cpt7}"
+ kimera_profile_source="${CBSMS_KIMERA_PROFILE_SOURCE:-}"
+ kimera_calibration_overlay="${CBSMS_KIMERA_CALIBRATION_OVERLAY:-${project_root}/src/cbsms/config/grandtour_kimera/eth1_mono_shared_cpt7}"
+@@ -577,7 +577,7 @@
+   "kimera_receive_cbs_beliefs=${kimera_receive_external_beliefs}" \
+   "glim_cbs_mode=${glim_cbs_mode}" \
+   "kimera_cbs_odom_factor_mode=active_window_temporary" \
+-  "experiment=gnssfgo_eth1_full_rate030_cpk13_20261020" \
++  "experiment=gnssfgo_eth1_full_rate020_cpk14_20261020" \
+   "glim_sensor_pair=hesai+cpt7_imu" \
+   "kimera_sensor_pair=${kimera_sensor_pair}" \
+   "glim_body_frame=cpt7_imu" \
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate030_cpk13_20261020/prepared/active_window.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate020_cpk14_20261020/prepared/active_window.launch
+@@ -111,7 +111,7 @@
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_stride" value="20"/>
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_max_updates" value="40"/>
+ 
+-  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate030_cpk13_20261020/prepared/glim_profile.launch">
++  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate020_cpk14_20261020/prepared/glim_profile.launch">
+     <arg name="config_path" value="$(arg glim_config_path)"/>
+     <arg name="glim_node_output" value="$(arg diagnostic_node_output)"/>
+     <arg name="glim_input_imu_topic" value="$(arg glim_input_imu_topic)"/>
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate030_cpk13_20261020/prepared/active_window_on.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate020_cpk14_20261020/prepared/active_window_on.launch
+@@ -111,7 +111,7 @@
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_stride" value="20"/>
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_max_updates" value="40"/>
+ 
+-  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate030_cpk13_20261020/prepared/glim_profile_on.launch">
++  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate020_cpk14_20261020/prepared/glim_profile_on.launch">
+     <arg name="config_path" value="$(arg glim_config_path)"/>
+     <arg name="glim_node_output" value="$(arg diagnostic_node_output)"/>
+     <arg name="glim_input_imu_topic" value="$(arg glim_input_imu_topic)"/>
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate030_cpk13_20261020/prepared/glim_profile.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate020_cpk14_20261020/prepared/glim_profile.launch
+@@ -115,7 +115,7 @@
+ 		<env name="CBS_E1B_LOCAL_UPDATE_GPU_BATCHING" value="1"/>
+         <env name="GLIM_SHARED_NATIVE_PROVIDER" value="shared_native"/>
+         <env name="GLIM_REVISION_COVARIANCE_POLICY" value="native_local"/>
+-        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate030_cpk13_20261020/prepared/full_off_source/e1b_profile.jsonl"/>
++        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate020_cpk14_20261020/prepared/full_off_source/e1b_profile.jsonl"/>
+ 		<param name="config_path" value="$(arg config_path)" />
+ 		<param name="glim_dump_path" value="$(arg glim_dump_path)" />
+ 		<param name="deterministic_input_event_log_path" value="$(arg glim_deterministic_input_event_log_path)" />
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate030_cpk13_20261020/prepared/glim_profile_on.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate020_cpk14_20261020/prepared/glim_profile_on.launch
+@@ -115,7 +115,7 @@
+ 		<env name="CBS_E1B_LOCAL_UPDATE_GPU_BATCHING" value="1"/>
+         <env name="GLIM_SHARED_NATIVE_PROVIDER" value="shared_native"/>
+         <env name="GLIM_REVISION_COVARIANCE_POLICY" value="native_local"/>
+-        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate030_cpk13_20261020/prepared/full_on_source/e1b_profile.jsonl"/>
++        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate020_cpk14_20261020/prepared/full_on_source/e1b_profile.jsonl"/>
+ 		<param name="config_path" value="$(arg config_path)" />
+ 		<param name="glim_dump_path" value="$(arg glim_dump_path)" />
+ 		<param name="deterministic_input_event_log_path" value="$(arg glim_deterministic_input_event_log_path)" />
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate030_cpk13_20261020/prepared/full_off.json
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate020_cpk14_20261020/prepared/full_off.json
+@@ -1,7 +1,7 @@
+ {
+-  "sequence": "ETH1 LOCAL CP-K13 bag0-346.32s matched OFF",
++  "sequence": "ETH1 LOCAL CP-K14 bag0-346.32s matched OFF",
+   "source_protocol": "classic",
+-  "ros_master_uri": "http://127.0.0.1:11461",
++  "ros_master_uri": "http://127.0.0.1:11462",
+   "imu_topic": "/boxi/cpt7/imu",
+   "imu_frame": "cpt7_imu",
+   "world_frame": "gnssfgo_world",
+@@ -12,18 +12,18 @@
+   "drain_timeout_wall_sec": 300,
+   "ros1_container": "cbsms_ws_gpu",
+   "receiver_container": "ubuntu-jammy-humble-nvidia",
+-  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate030_cpk13_20261020/prepared/receiver_fl4e.sh",
++  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate020_cpk14_20261020/prepared/receiver_fl4e.sh",
+   "sources": [
+     {
+       "id": "glim_hesai",
+-      "session": "eth1_cpk13_full_off_20261019",
++      "session": "eth1_cpk14_full_off_20261019",
+       "kind": "glim",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/ros_logs/*/glim_rosnode-*-stdout.log"
+     },
+     {
+       "id": "kimera_front",
+-      "session": "eth1_cpk13_full_off_20261019",
++      "session": "eth1_cpk14_full_off_20261019",
+       "kind": "kimera",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/estimators.log"
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate030_cpk13_20261020/prepared/full_on.json
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate020_cpk14_20261020/prepared/full_on.json
+@@ -1,7 +1,7 @@
+ {
+-  "sequence": "ETH1 LOCAL CP-K13 bag0-346.32s matched ON",
++  "sequence": "ETH1 LOCAL CP-K14 bag0-346.32s matched ON",
+   "source_protocol": "classic",
+-  "ros_master_uri": "http://127.0.0.1:11461",
++  "ros_master_uri": "http://127.0.0.1:11462",
+   "imu_topic": "/boxi/cpt7/imu",
+   "imu_frame": "cpt7_imu",
+   "world_frame": "gnssfgo_world",
+@@ -12,18 +12,18 @@
+   "drain_timeout_wall_sec": 300,
+   "ros1_container": "cbsms_ws_gpu",
+   "receiver_container": "ubuntu-jammy-humble-nvidia",
+-  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate030_cpk13_20261020/prepared/receiver_fl4e.sh",
++  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate020_cpk14_20261020/prepared/receiver_fl4e.sh",
+   "sources": [
+     {
+       "id": "glim_hesai",
+-      "session": "eth1_cpk13_full_on_20261019",
++      "session": "eth1_cpk14_full_on_20261019",
+       "kind": "glim",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/ros_logs/*/glim_rosnode-*-stdout.log"
+     },
+     {
+       "id": "kimera_front",
+-      "session": "eth1_cpk13_full_on_20261019",
++      "session": "eth1_cpk14_full_on_20261019",
+       "kind": "kimera",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/estimators.log"
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate030_cpk13_20261020/prepared/preflight_on.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate020_cpk14_20261020/prepared/preflight_on.py
+@@ -2,7 +2,7 @@
+ from pathlib import Path
+ import hashlib,json
+ P=Path(__file__).resolve().parent
+-V=Path('/home/yeranis/results/gnssfgo_eth1_full_rate030_cpk13_20261020/off')
++V=Path('/home/yeranis/results/gnssfgo_eth1_full_rate020_cpk14_20261020/off')
+ def sha(p):
+  with Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+ for p in [P/'full_off_source/candidate_validation.json',P/'full_off_source/local_provenance.json',

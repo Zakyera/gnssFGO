@@ -1,0 +1,93 @@
+CP-V78 full EIG-2 Hesai native-matching comparison: RUNNING.
+User approved extending CP77 to full355.02s, same saved-input Kimera-only scope.
+No new GLIM/fusion/feedback consumer, weights or build. See PROTOCOL.txt.
+Fresh controller owns temporary->validation->persistent->validation->EVO->cleanup.
+Do not execute archived predecessor scripts or duplicate any active stage.
+Preparation PASS:3541 complete raw wire messages/beliefs,812 protected pins,
+unchanged CP76 private libraries and profile,19.56GiB free at preparation.
+Launched ONCE2026-11-01 00:45:57 local. Sleep-inhibiting supervisorPID85846,
+controllerPID85848. Exact owned stage receipts in replay_attempt/ and captures.
+Inspect launch.json/status.json before any work; do not duplicate a stage.
+Expected roughly one hour for the pair at0.20x plus checks/scoring. No result yet.
+
+FINAL CONTROLLER STATUS 2026-11-01T01:47:00.318057+02:00
+{
+  "passed": true,
+  "scored": true,
+  "error": null,
+  "cleanup_error": null,
+  "integrity_error": null,
+  "containers_restored": true,
+  "protected_files": 812,
+  "completed": "2026-11-01T01:47:00.317902+02:00",
+  "controller_pid": 85848,
+  "controller_exiting": true,
+  "owned_stage_jobs_alive": {
+    "110859": false,
+    "119241": false,
+    "119250": false,
+    "111017": false,
+    "119132": false,
+    "118963": false,
+    "119194": false,
+    "86149": false
+  },
+  "live_bidirectional_provenance_gate_passed": false,
+  "default_promotion": false
+}
+
+CP-V78 — EIG-2 HESAI,FULL355.02s, NATIVE MATCHING: TEMPORARY vs GENERAL PERSISTENT
+Both arms have CBS-ON saved inputs; this is NOT OFF/ON or FL4m RETAIN.
+Complete original raw wire stream, native admission/retries/mean alignment.
+Same CP76 binary, original weights and25states; no new GLIM/fusion/return peer.
+Method1 first absolute Kimera backend publication; not recursive ROS incremental or finalized.
+EVO1.36.3 only: SE3/no-scale ATE; reference-distance0.5m translation/rotation RPE.
+IE-TC shares CPT7; not independent prism GT. Path is estimated polyline, not real travel.
+
+COMMON
+Mode | ATE RMSE m | path m | reference path m | tRPE m | rRPE deg | poses
+temporary | 0.882818 | 299.663520 | 188.013310 | 0.228600 | 1.595266 | 3531
+persistent | 0.319614 | 188.408707 | 188.013310 | 0.036599 | 0.838412 | 3531
+FULL_SAVED
+Mode | ATE RMSE m | path m | reference path m | tRPE m | rRPE deg | poses
+temporary | 0.887076 | 334.301106 | 186.605019 | 0.340378 | 2.116129 | 1761
+  first 0.199946383s, last 354.997128976s, span 354.797182593s, gaps2; supported353.197194293s
+persistent | 0.319811 | 189.877085 | 186.612027 | 0.043441 | 0.716961 | 1763
+  first 0.199946383s, last 354.897129676s, span 354.697183293s, gaps1; supported353.997188393s
+Common coverage: {"grid_queries": 3547, "valid_queries": 3531, "excluded_queries": 16, "supported_s": 352.8, "capture_s": 355.02, "supported_capture_percent": 99.37468311644415, "first_s": 0.23645396600000002, "last_s": 354.836453966, "envelope_s": 354.6, "start_gap_s": 0.23645396600000002, "tail_gap_s": 0.18354603399995995, "segments": [{"first_s": 0.23645396600000002, "last_s": 337.836453966, "rows": 3377}, {"first_s": 338.536453966, "last_s": 353.736453966, "rows": 153}, {"first_s": 354.836453966, "last_s": 354.836453966, "rows": 1}]}
+Common ATE improvement: +63.796%
+
+TEMPORARY DIAGNOSTICS
+Raw incoming messages/beliefs: 3541/3541; exact payload/order/transport covariance verified.
+Aligned candidates: 1741; native admission statuses: {'0': 1741}
+Native decisions (events, includes retries): {"retry_timestamp_match": 42479, "sender_odom_queued": 1741, "dropped_timestamp_match": 1768}
+Unique last decisions: {"dropped_timestamp_match": 1768, "sender_odom_queued": 1741, "retry_timestamp_match": 32}
+Received sender IDs without match row: []
+Whole previous-pose revisions: {"n": 1745, "mean": 0.1346188831298449, "median": 0.07658721937322788, "p95": 0.4299364725981531, "maximum": 2.4803997262725948}
+Late40..60s previous-pose revisions: {"n": 100, "mean": 0.10321541826367961, "median": 0.0773371959493396, "p95": 0.29723226577969897, "maximum": 0.6322434806727831}
+Late40..60s same-update movement: {"n": 100, "mean": 0.09251865793928796, "median": 0.09354973362227859, "p95": 0.13518496343593195, "maximum": 0.15126637533263784}
+Final60s previous-pose revisions: {"n": 273, "mean": 0.10542790617748828, "median": 0.06656904660568976, "p95": 0.39183344753201804, "maximum": 0.8347946900149603}
+Costs: {"rows": 1761, "total_after": {"n": 1761, "mean": 69370.905169036, "median": 45796.14814959835, "p95": 177648.74308309882, "maximum": 301963.6976599745}, "imu_after": {"n": 1761, "mean": 1446.778753631909, "median": 712.3957425695484, "p95": 4868.86620451735, "maximum": 135905.95383123}, "retirements": 1719}
+Timings: {"optimize_ms": {"n": 1761, "mean": 109.74723513855764, "median": 111.557, "p95": 144.474, "maximum": 209.733}, "smoother_ms": {"n": 1761, "mean": 49.89166652356616, "median": 48.85, "p95": 67.4024, "maximum": 123.472}}
+PERSISTENT DIAGNOSTICS
+Raw incoming messages/beliefs: 3541/3541; exact payload/order/transport covariance verified.
+Aligned candidates: 1743; native admission statuses: {'0': 1743}
+Native decisions (events, includes retries): {"retry_timestamp_match": 42496, "sender_odom_queued": 1743, "dropped_timestamp_match": 1767}
+Unique last decisions: {"dropped_timestamp_match": 1767, "sender_odom_queued": 1743, "retry_timestamp_match": 29}
+Received sender IDs without match row: [[3539, 3541], [3540, 3542]]
+Whole previous-pose revisions: {"n": 1747, "mean": 0.01116637959909943, "median": 0.007683142216825902, "p95": 0.031255921210590995, "maximum": 0.21219182007584064}
+Late40..60s previous-pose revisions: {"n": 100, "mean": 0.015006140917165347, "median": 0.011777670710480793, "p95": 0.04221682283690599, "maximum": 0.08734680626806825}
+Late40..60s same-update movement: {"n": 100, "mean": 0.09233301647437647, "median": 0.09323266344012898, "p95": 0.13579965221377482, "maximum": 0.14919040972574493}
+Final60s previous-pose revisions: {"n": 275, "mean": 0.006560338510650607, "median": 0.003356058891855707, "p95": 0.025961336504687967, "maximum": 0.05486054089751021}
+Costs: {"rows": 1763, "total_after": {"n": 1763, "mean": 3021506.8397401767, "median": 3701465.3114910764, "p95": 4695999.560645113, "maximum": 4723628.137101478}, "imu_after": {"n": 1763, "mean": 1423.612208083012, "median": 737.7370271454599, "p95": 4961.601424969435, "maximum": 7711.932086445653}, "retirements": 0}
+Timings: {"optimize_ms": {"n": 1763, "mean": 279.4111590913216, "median": 275.53, "p95": 535.7452999999999, "maximum": 694.325}, "smoother_ms": {"n": 1763, "mean": 223.9533742121384, "median": 216.737, "p95": 468.5661999999998, "maximum": 613.745}}
+
+LIMITS: complete raw input does not force identical accepted factors, keyframes or callback ordering.
+General persistent changes admission/replacement as well as retirement: not a retention-only causal ablation.
+Different total graph objectives are not directly comparable across these policies.
+Saved stream contains original ON feedback history; no new live bidirectional inference.
+CP76 runtime slot/replacement/absorption assertions active, but no logged absorption-count claim.
+CP67 native-only LOCAL provenance gate remains failed. No default or live-bidirectional promotion.
+No covariance tuning, stronger weights, output smoothing, nonlinear-stationarity claim or automatic next run.
+Evidence: results.json, report_verification.json, evaluation/commands.json, EVO ZIPs, per-arm validation.json.
+Integrity/container/owned-job closeout: verification.json and complete.json.

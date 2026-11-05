@@ -1,0 +1,75 @@
+CP-V78 POST-CLOSEOUT INTERPRETATION — 2026-11-01
+================================================
+Both full355.02s EIG-2 Hesai conditional Kimera-only arms completed and passed.
+Controller closed01:47:00 local. This supplement does not replace or modify the
+controller's immutable REPORT.txt, complete.json, results or validation evidence.
+
+Method1 = first-published absolute Kimera backend poses, not native recursive
+incremental ROS output or later revised/finalized poses. EVO1.36.3 SE3/no-scale
+ATE; translation and rotation RPE use reference-distance delta0.5m.
+
+FULL-SAVED, at each arm's native output cadence
+Metric                         Temporary       General persistent
+ATE RMSE m                     0.887076        0.319811
+Translation RPE RMSE m          0.340378        0.043441
+Rotation RPE RMSE deg           2.116129        0.716961
+Estimated polyline m            334.301106      189.877085
+Matched reference polyline m    186.605019      186.612027
+Pose rows                      1761            1763
+Supported time s               353.197194      353.997188
+Gaps over0.5s                   0.6s,1.0s       0.7s
+ATE/tRPE/rRPE improve63.948%/87.237%/66.119%; path excess79.149%->1.750%.
+Output envelopes0.199946..354.997129s and0.199946..354.897130s.
+
+COMMON100ms MASK (distinct sampling; do not mix with native path lengths)
+ATE RMSE m                     0.882818        0.319614
+Translation RPE RMSE m          0.228600        0.036599
+Rotation RPE RMSE deg           1.595266        0.838412
+Estimated polyline m            299.663520      188.408707
+Reference polyline m            188.013310      188.013310
+3531queries,16excluded; supported352.8/355.02s =99.3747%.
+ATE improves63.796%; path excess59.384%->0.210%. Gaps are not interpolated
+across or used for RPE pairs. RPE pair counts348common,327native each arm.
+
+INSTABILITY AND COMPUTATION
+Whole previous-pose revision p95:0.429936->0.031256m (92.73%less).
+Maximum previous-pose revision:2.480400->0.212192m.
+40..60s revision p95:0.297232->0.042217m; same-update movement means
+0.092519/0.092333m are similar in that bounded interval.
+Final60s revision p95:0.391833->0.025961m (93.37%less).
+Mean optimize109.747->279.411ms (2.546x); p95 144.474->535.745ms.
+Mean smoother49.892->223.953ms. This is not a1x/realtime certification.
+Temporary1719retirements. Persistent exactly-once assertions were active, but
+per-boundary absorption count was not logged and remains unknown.
+Total objectives differ in retained information and are not directly comparable;
+incremental assertions/zero recorded cost increases do not prove stationarity.
+
+PAYLOAD/COVARIANCE/ADMISSION
+Both received all3541 original messages byte-exact/in order, including covariance,
+with native mean-alignment receipts and unchanged weights. No covariance tuning.
+Temporary:1741admitted,1768final timestamp drops,32last retries,no missing row.
+Persistent:1743admitted,1767final timestamp drops,29last retries,2received IDs
+without a match row at end ([3539,3541],[3540,3542]). Native retries are not
+new wire messages. Do not claim all3541 were inserted or zero-factor loss.
+
+CONCLUSION AND LIMITS
+The full usable sequence sustains the short-test improvement: general persistent
+substantially reduces published-output path inflation and active-pose revision
+spikes while improving ATE and RPE, with a significant compute penalty. This is
+evidence for the policy change, not proof that temporary removal is the sole
+cause. Native keyframes, admissions, replacement and aligned means evolve with
+each arm, and only the first6 published rows are exactly identical.
+Both arms consume saved CBS-ON GLIM input; this is NOT CBS-OFF versus CBS-ON,
+NOT FL4m RETAIN, and NOT new live bidirectional GLIM/Kimera/fusion operation.
+The saved stream contains its original ON feedback history. No return-peer
+consumer ran. CP67 mixed-prior/native-only LOCAL provenance remains failed, so
+this result does not authorize live feedback or default promotion.
+IE-TC shares CPT7 and is not independent prism ground truth. The path figures
+are estimated polylines, not physical travel. No smoothing or refined-state
+substitution produced these improvements. No extra run or tuning was launched.
+
+Closeout:812protected hashes and218terminal output hashes verified;12EVOarchives
+verified by the existing report verifier; four-sequence Hesai checkpoint667PASS.
+Independent host check01:48:39 found supervisor/controller/all8stage jobs absent,
+no process matching the experiment root, and both containers stopped. See
+post_closeout.json and immutable verification.json/replay_attempt receipts.

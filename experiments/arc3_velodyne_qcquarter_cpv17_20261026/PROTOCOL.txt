@@ -1,0 +1,76 @@
+CP-V17 ARC-3 rear-Velodyne full matched CBS OFF/ON, 2026-10-26.
+User explicitly requested the newly downloaded ARC-3 full sequence, Velodyne
+setup and 0.25 WNOA strength after the CP-V15/16 tests. Interpret consistently:
+Qc = 0.25 times ORIGINAL Qc, all six dimensions, fourfold motion information.
+This changes the receiver only, equally OFF and ON; source CBS weights stay1.
+
+One full usable OFF then one full usable ON, fresh roots, headless0.20x,25s
+drain. Keep CP-V2/CP-V4 private source binaries, rear Velodyne/front stereo/
+shared CPT7, MAIN batching, GLIM5s, all-LOCAL dense covariance every version,
+corrected MAIN means, CP-K9 Kimera prior refresh1/FL4Q0/remove/25states/native
+IMU override unset, classic active_window_temporary CBS, not live_revision.
+Same7s fixed-lag source_wnoa, independent100ms supports, no central IMU/GNSS,
+initial priors unchanged, stable-ID replacement/seal_at_absorption and explicit
+terminal-partial-cell EOF policy. Use verified CP-V15 private Qc0.25 binary;
+no new source build or parameter search. Mean-only peer covariance alignment
+approximation unchanged. Preserve every old capture and failed experiment.
+
+Before launch validate all required bags, hashes, mission calibration/TF,
+stereo/IMU timing and signed Velodyne point-time layout. Use the same raw
+quiet-start prerequisite: earliest two-second interval within first15s with
+gyro p95<.01rad/s, accel per-axis std<.1m/s2, mean z<-9m/s2 and resized left
+image difference max<1.5grey levels. No result-driven crop. End at last scan
+supported by stereo, IMU and reference; explicitly report excluded sensor tails.
+ARC-3 indexed span is about729s; this is longer than the old CP-V4 harness
+mission-length sanity bound600s. Update only that admission range to700..730s,
+not a physical-quality/estimator guard. Runtime deadlines derive from duration.
+
+Preserve8GiB launch/5GiB runtime reserve, forecast pair space; no deletion to
+continue. Run exclusively with scoped sleep/lid inhibitors. OFF must pass all
+sensor-time/LOCAL/lifecycle/receiver/coverage gates before ON. Stop on numerical,
+input, integrity or storage failure, preserve prefix; no automatic retry, guard
+relaxation, covariance tuning or fallback method. Routine prelaunch/report-only
+corrections must be documented; do not overwrite run artifacts or protected files.
+
+Primary evaluation: GLIM FIRST-PUBLISHED CSV, native Kimera ROS odometry,
+concurrent fusion ONLINE for OFF/ON using same IE-TC/body-prism lever arm and
+no-scale rigid alignment; full-saved and gap-aware common masks. Report position
+ATE,1s translation/rotation RPE, path lengths/reference path, startup/tail/gaps,
+covariance/revision/payload/timing evidence. Revised GLIM and DELAYED fixed-lag-
+finalized fusion are separate, not ONLINE/full-history. Include100ms fusion
+displacement error to assess jitter. Shared-CPT7 IE-TC is not independent prism
+GT. Assess whether Kimera is healthier OFF, GLIM/fusion improve ON, and whether
+Kimera is harmed by feedback; do not assume Velodyne is bad or CBS will rescue it.
+This is an ARC-3 CBS comparison at fixedQc0.25, NOT an isolated Qc-vs-original
+test. No covariance calibration or nonlinear-stationarity/flight-control claim.
+
+Finite controller owns OFF/gates/ON/gates/scoring/cleanup. Restore initially
+stopped containers only after owned jobs exit. No next dataset, default
+promotion, commit/push or persistent automation authorized by this run request.
+
+APPROVED ADDENDUM (user: proceed, 2026-10-26): AS-RECORDED GAP-AWARE TEST.
+The explicit proposal in REPORT.txt is now authorized. Strict clean-input
+validation remains failed historically. The new admission accepts exactly the
+audited single missing-left stamp1731934279738235734 and70partial-time scans,
+verified against original bag hash and every audited point-time interval.
+No fabricated frames, time filling, interior crop, source-sync change or solver
+guard relaxation. Calibration, finite point data, signed offset bounds, monotonic
+normalized scans, IMU/reference brackets and quiet initialization still required.
+The full mutually-supported window ends after the recorded IMU sample needed
+by the final scan, rather than stopping at its header before its last point.
+Input-aware GLIM coverage must match every available normalized scan between
+first/last publication, with existing bounded startup/tail allowance. Both
+first-published CSV and revised export checked. Known raw interscan gaps stay
+visible; any extra interior processing loss fails. Kimera keyframe/frontend
+counters and runtime numerical/lifecycle/receiver gates remain unchanged,
+except available stereo count excludes the single absent left frame.
+Source output pairing is not claimed to be independently audited per image.
+Primary score uses six first-published/ONLINE streams, integer100ms grid,
+<=0.5s estimator and<=0.05s reference interpolation, no extrapolation. Path
+length on common mask sums contiguous pieces;1sRPE cannot cross any invalid
+sample. Full-native path lengths separately retain gap chords. Revised GLIM
+and delayed finalized fusion are secondary. Reuse validated CP-V10 geometry.
+Receiver uses exact verified CP-V15 live_trace Qc0.25 binary; Leica-specific
+absolute-time trace window lies outside ARC-3, so observer does not activate.
+Forecast up to14GiB pair storage plus8GiB reserve before launch;5GiB runtime
+emergency reserve unchanged. No deletion, source retry or additional method.

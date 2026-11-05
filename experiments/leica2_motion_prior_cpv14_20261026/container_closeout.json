@@ -1,0 +1,20 @@
+{
+  "owned_controller_exit_code": 0,
+  "pre_stop_processes": ["zsh", "ros2", "rmw_zenohd"],
+  "owned_receiver_build_or_validation_jobs_present_before_stop": false,
+  "containers": {
+    "ubuntu-jammy-humble-nvidia": {
+      "Status": "exited", "Running": false, "Pid": 0,
+      "ExitCode": 137, "OOMKilled": false,
+      "StartedAt": "2026-10-26T16:23:28.461186415Z",
+      "FinishedAt": "2026-10-26T16:32:50.506345777Z"
+    },
+    "cbsms_ws_gpu": {
+      "Status": "exited", "Running": false, "Pid": 0,
+      "ExitCode": 137, "OOMKilled": false,
+      "StartedAt": "2026-10-26T11:39:30.639951866Z",
+      "FinishedAt": "2026-10-26T11:41:05.006835815Z"
+    }
+  },
+  "note": "Only Humble was started for this task. Its controller, both replays and payload/hash checks had returned normally before docker stop. Exit137 is the container shutdown status, not a receiver failure. Noetic stayed stopped throughout. Existing Rerun viewer was not touched."
+}

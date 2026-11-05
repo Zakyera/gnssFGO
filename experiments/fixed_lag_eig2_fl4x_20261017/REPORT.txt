@@ -1,0 +1,196 @@
+FL4x — EIG-2 matched 60 s CBS-OFF/ON live comparison
+2026-10-17
+==================================================
+
+Status: COMPLETED. Both captures and all validation checks passed.
+CBS-ON worsens native GLIM, native Kimera and fusion ATE in this EIG-2
+window. Kimera and fusion translation RPE also worsen; rotation RPE improves
+slightly. GLIM translation RPE is essentially unchanged/slightly improved.
+This differs from SPX-3; no settings were changed after seeing the results.
+
+Scope and frozen configuration
+------------------------------
+GrandTour EIG-2, mission 2024-11-03-13-59-54, bag offset5.7–65.7s,
+duration60s, playback0.10x. Selected by local data/profile readiness.
+Original GLIM, original Kimera and gnssFGO co-run live. Saved-journal replay
+is a determinism check, not a substitute for live fusion.
+
+Exactly FL4v/FL4w algorithms and binaries, no tuning/rebuild. Hesai+CPT7
+GLIM5s lag, Alphasense front stereo+CPT7 Kimera25states. The30 retained
+EIG-2 calibration/configuration files were checked byte-identical to FL4w,
+then copied from EIG-2 provenance. Native Kimera IMU override is unset.
+Temporary classic bidirectional CBS, active_window_temporary, source
+live_revision=false, native-IMU mean alignment, horizon.20s,onepair/update,
+stride1,receive delay0; dense schur_relative_between covariance,scale1,
+Gaussian. NoHuber,health weighting or covariance adjustment.
+GLIM shared-native Gaussian LOCAL provider and FL4q Kimera private DSO.
+
+Receiver: frozen FL4e7s fixed-lag source_wnoa, independent100ms support
+clock after59 CPT7 startup samples; no central IMU or GNSS factors.
+Stable-ID mean+full-covariance revision replacement and unchanged bounded
+lifecycle. WNOA Qc variances[.00375,.00375,.00375,.015,.015,.015];
+initialXidentity,V=Wzero; priorSDpose1e-5,velocity10,angular-rate3.
+Headless; presentation/source factor-graph inspectors disabled.
+Kimera DSO SHA256:
+6ce24c266b0f0e2561f0c05de2a661a72d5a4d9335df7c3cdfa0a4c77af9b4ae
+Receiver SHA256:
+53c96a2b7a762800cf2291166dc78520269098684411de641b52bee6a54dc5c9
+Actual GLIM provider:shared_linearization_s4_provider_20261012/release_2.
+
+Preflight
+---------
+1263 protected hashes,170-file FL4v archive/original verification passed.
+Required Hesai,front-left/right compressed images,CPT7 IMU and IE-TC
+reference topics and coverage verified from actual local bags. Four input
+bag hashes and profile hashes retained in preflight.json. Fresh ROS11446;
+containers initially stopped, no competing experiment. IMU maxgap10.001ms,
+IE-TC maxgap5.001ms. Selected absolute interval
+1730638816.5635462–1730638876.5635462 is fully covered by the reference.
+ON admitted only after OFF source/receiver/deterministic checks passed.
+
+Evaluation convention
+---------------------
+Use unchanged evaluator, only GT path changed to EIG-2:
+2024-11-03-13-59-54_cpt7_ie_tc.bag,
+/boxi/inertial_explorer/tc/odometry, child cpt7_imu.
+This is dataset IE-TC GNSS/INS reference sharing CPT7, NOT independent
+prism ground truth. Evaluate complete saved trajectories, with every saved
+timestamp reference-bracketed, not a short prism-covered subset.
+ATE: independent rigidSE3 no-scale alignment at the prism lever arm.
+1s translation/rotation RPE: same prism frame, no global alignment.
+Report all-saved distances and durations, plus a common-time cross-check.
+Online/as-played and delayed fixed-lag-finalized fusion are separate outputs.
+
+Results: complete saved trajectories, not a short GT subset
+---------------------------------------------------------
+Both requested60s captures completed. All saved poses have reference
+coverage (100%). Source startup/output boundaries yield59.10s native GLIM,
+59.60s native Kimera,59.40s fusion. OFF/ON timestamp sets are identical for
+each output (direct comparison passed). Do not label these exactly60s of
+published poses. No shortened capture or late failure occurred.
+
+FULL-SAVED results (ATE/RPE are RMSE; distances at prism lever arm):
+Mode  Original output      ATE m     tRPE1s m  rRPE1s deg  Path m   Ref path m
+OFF   native GLIM          .020988   .015866    .713859     34.912   34.850
+ON    native GLIM          .024871   .015827    .710541     35.049   34.850
+OFF   native Kimera        .081560   .019430   1.009399     34.515   34.463
+ON    native Kimera        .152702   .028910    .996618     34.189   34.463
+OFF   fusion ONLINE        .043372   .039361   2.823262     40.582   34.940
+ON    fusion ONLINE        .081958   .046441   2.747318     41.774   34.940
+
+Separate DELAYED fixed-lag-finalized fusion (NOT online):
+OFF   fusion finalized     .030886   .014220    .764971     34.959   34.940
+ON    fusion finalized     .057231   .017726    .761487     34.991   34.940
+
+COMMON-TIME cross-check:590samples,58.899944s,580 one-second RPE pairs;
+timestamps1730638817.3–1730638876.1999438,reference path34.707934m.
+Mode  Output                ATE m     tRPE1s m  rRPE1s deg  Path m
+OFF   native GLIM           .020921   .015866    .713856     34.606
+ON    native GLIM           .024834   .015827    .710539     34.674
+OFF   native Kimera         .080624   .019509   1.013400     34.312
+ON    native Kimera         .150722   .029030   1.000493     33.962
+OFF   fusion ONLINE         .038348   .039438   2.826038     36.812
+ON    fusion ONLINE         .078566   .046503   2.752172     36.898
+OFF   fusion finalized      .030633   .014235    .765384     34.475
+ON    fusion finalized      .056570   .017732    .761370     34.418
+
+Common-mask results confirm the direction; this is not an overlap-selection
+artifact. Common scoring resamples curves, so its path lengths differ from
+the full saved paths. Reference distances differ with each output's sampling.
+Online fusion path inflation and high rotational RPE are visible in both
+modes; delayed finalized output is substantially smoother. This task does
+not diagnose causes, infer covariance accuracy, or modify the method.
+One window is not evidence of universal CBS harm, just as SPX-3 was not
+evidence of universal benefit. Native sources are NOT source-only receiver
+graphs. No1x throughput or nonlinear-stationarity claim is made.
+
+Validation/accounting/runtime
+-----------------------------
+                               OFF                  ON
+Native GLIM poses              592                  592
+Native Kimera ROS poses        298                  298
+Online/finalized fusion poses  595/595              595/595
+CPT7 timing samples            6000                 6000
+Received versions              34554                34558
+GLIM/Kimera versions           27454/7100           27458/7100
+Inserted/replaced              884/33620            884/33624
+Pre-initialization exclusions  50                   50
+Absorbed/active at end          783/101              783/101
+Pending/unsupported at end      0/0                  0/0
+Retained supports/peak slots    71/175               71/175
+Maximum transport queue         44                   39
+Whole-support p95 service       .080952s             .154934s
+Whole-support maximum service   .123748s             .227387s
+Receipt-to-processing p95       .023707s             .039120s
+Full capture wall time          645.783s             645.779s
+Kimera fallback/cap hits        0/0                  17/14
+G2K/K2G injections              0/0                  292/293
+Planned Kimera retirements      0                    268
+Repeat wall time                28.055s              31.398s
+Byte-identical archive files    35638                35642
+
+All595 fusion poses published while each source process was running.
+No duplicate belief/IMU events, no queued/pending/unsupported factors at end.
+Each receiver's5 numeric products and full archive reproduced byte-for-byte
+from its saved causal journal. All1263 protected hashes remained unchanged.
+Covariance payload error0; maximum mean-log roundtrip3.26e-14.
+Kimera accepted steps all nonincreasing. ON used17 existing fallback steps,
+14 reaching the unchanged10iteration cap; no failure/rollback guard fired.
+This passes the predeclared acceptance policy, NOT a stationarity proof.
+Receiver stationarity remains not_checked_incremental_policy.
+Frozen C++ builds reused; no estimator code change/build or test-suite rerun.
+
+Covariance histories retained (not a weighting/causality conclusion)
+-----------------------------------------------------------------
+590GLIM and296Kimera physical edges matched exactly OFF/ON, including
+endpoint timestamps. Final-observed-version ON/OFF trace ratios:
+Source/component          Median       Mean
+GLIM rotation             .862984      .843974
+GLIM translation          .721659      .666260
+Kimera rotation          1.269989     1.409669
+Kimera translation       1.176554     1.454338
+
+All received covariances finite,symmetric(maxerror0),positive minimum
+eigenvalues: GLIM OFF1.8642e-10,ON1.8770e-10; Kimera OFF9.3709e-10,
+ON1.2130e-9. Full dense matrices and first-to-last statistics retained.
+In this window Kimera's median final covariance trace INCREASES under ON,
+unlike SPX-3. Therefore these results must not be summarized as a universal
+CBS covariance shrinkage. Trace alone does not measure directional factor
+information or establish why either native/fused accuracy changes.
+
+Evidence locations
+------------------
+H=/home/yeranis/repos/gnssFGO/experiments/fixed_lag_eig2_fl4x_20261017
+R=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eig2_live60_off_on_fl4x_20261017/prepared
+V=/home/yeranis/results/gnssfgo_eig2_live60_fl4x_20261017
+H:PROTOCOL.txt,prepare.py,inspect_bags.py,preflight.json,harness.diff,REPORT.txt.
+R:protected_manifest.json,input_profiles,private_build,environment/launches,
+  live60_MODE_control,live60_MODE_source,live60_MODE_receiver.
+Native paths:R/live60_MODE_source/{odom_imu.txt,kimera_odometry.csv}.
+Fusion:R/live60_MODE_receiver/receiver/{online,finalized}_trajectory.tum.
+Covariance/revisions:R/live60_MODE_receiver/events.csv and receiver/archive.
+Source settings/DSOs:live60_MODE_source/effective_mode_check.json.
+Checks/repeats:V/MODE/{validation,repeat_validation}.json.
+Scores:R/evaluation_full/{summary,belief_covariance_matched}.json;
+  these include input/output hashes,GTframes,common-mask hash and full precision.
+Source diagnostics:acceptance.csv,objective.csv,ROS logs,recordings/cbs.bag.
+
+Commands executed once (historical; do not rerun into these existing roots):
+python3 R/run_case.py live60 off
+evo-venv-python R/validate_candidate.py off
+evo-venv-python R/validate_case.py check off
+evo-venv-python R/validate_case.py repeat off
+python3 R/preflight_on_fl4f.py
+python3 R/run_case_on.py live60 on
+evo-venv-python R/validate_candidate.py on
+evo-venv-python R/validate_case.py check on
+evo-venv-python R/validate_case.py repeat on
+Noetic-container-python R/evaluate_fl4f.py
+python3 R/compare_belief_cov_fl4f.py
+
+No capture retries or overwritten artifacts. Both containers initially
+stopped, restored to stopped after scoring and checking no experiment
+process remained. Artifacts remain local; no GitHub push was requested.
+Base gnssFGO HEAD668d4c788983722f4acad37d1495c15d03a27e18.
+New report/harness/ledger are local; earlier FL4w work preserved.
+STOP: authorized comparison complete. No new sequence or tuning.

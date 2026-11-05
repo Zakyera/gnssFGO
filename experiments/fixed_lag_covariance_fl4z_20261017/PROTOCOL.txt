@@ -1,0 +1,44 @@
+FL4z: saved covariance and relative-reference error, 2026-10-17
+=================================================================
+Authorization: inspect the three latest ETH1/SPX-3/EIG-2 OFF/ON captures.
+No new estimator run, receiver optimization, new method, tuning or gating.
+
+ETH1: FL4t OFF / FL4v ON, restrict physical endpoints and availability to
+the retained comparison interval 1727775011.5999973..1727775116.9998968.
+OFF failed later; this is not a complete120s OFF/ON result.
+SPX-3: FL4w60s; EIG-2: FL4x60s. All common exported source intervals.
+
+Audit exact exported means and full6x6 matrices from saved receiver journal,
+with receipt metadata linking each payload to its original source update.
+One record per edge at first publication. Separately use the latest common
+source update available in BOTH modes (not matching transport revision number,
+which can differ due to deduplication). No repeated-revision sample inflation.
+Retain unmatched/censored counts; require identical physical OFF/ON endpoints.
+Later versions are not called source-to-source injections.
+
+Use existing FL4y SE3/reference parser. Body CPT7, [phi,rho] ordering, no
+global alignment or lever arm for relative factors. e=Log(Z^-1 Z_reference).
+Report rotational/translation block trace in rad^2/m^2; sqrt(trace) is the
+RMS-norm uncertainty scale, not per-axis SD or a95% bound. Keep Cartesian
+translation error separate from tangent rho. Use dense6D quadratic error
+and genuine3D marginal blocks; no conditioning/Schur complement here.
+All covariance-normalized scores are reference discrepancies, NOT innovation
+NIS, independent-sample statistical tests or calibrated true-error NEES.
+IE-TC uncertainty/correlation with CPT7/source estimators is not known.
+
+Relate covariance to quality using descriptive Spearman rank correlation,
+low/high reference-error quartiles within each sequence/source/mode, and
+matched OFF/ON covariance-change vs error-change direction. No GT-fitted
+threshold or covariance scale. Report full distributions and directional
+anisotropy, not a combined rad/m trace as a global weight.
+
+Read actual G2K and K2G aligned-factor logs to check injection uncertainty
+and error, plus raw payload error on its original interval. Existing native
+mean alignment does not add bridge process covariance in these builds;
+document this scope without changing it. Error-to-covariance comparisons
+for aligned factors consequently include unmodeled bridge effects.
+
+Validate finite/symmetric/SPD matrices, receipt identities, timestamp
+coverage, Exp/Log consistency, dense solve vs Cholesky, input hashes and
+agreement with retained FL4y figures. Preserve raw evidence. Save compact
+JSON results and report in this new audit directory, no workbook required.

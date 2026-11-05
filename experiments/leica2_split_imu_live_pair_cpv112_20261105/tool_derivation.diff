@@ -1,0 +1,142 @@
+--- /home/yeranis/repos/gnssFGO/experiments/spx3_split_imu_live_pair_cpv111_20261104/inspect_available.py
++++ /home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105/inspect_available.py
+@@ -17,8 +17,8 @@
+ H = Path(__file__).resolve().parent
+ E = H.parent
+ W = Path('/home/yeranis/repos/V4RL/cbs_gtsam4.3')
+-D = W / 'src/datasets/GrandTour/SPX-3'
+-M = '2024-11-02-17-43-10'
++D = W / 'src/datasets/GrandTour/LEICA-2'
++M = '2024-11-25-16-36-19'
+ P103 = W / 'runs/eth1_prior_fix_live_cpv103_20261103/prepared/on'
+ 
+ def sha(path):
+--- /home/yeranis/repos/gnssFGO/experiments/spx3_split_imu_live_pair_cpv111_20261104/audit_inputs.py
++++ /home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105/audit_inputs.py
+@@ -1,4 +1,4 @@
+-"""Exact raw SPX-3 selected-input audit; never starts an estimator."""
++"""Exact raw LEICA-2 selected-input audit; never starts an estimator."""
+ import datetime, hashlib, json, sys
+ from pathlib import Path
+ import numpy as np
+@@ -6,8 +6,8 @@
+ from rosbags.highlevel import AnyReader
+ H=Path(__file__).resolve().parent
+ W=Path('/home/yeranis/repos/V4RL/cbs_gtsam4.3')
+-D=W/'src/datasets/GrandTour/SPX-3';mission='2024-11-02-17-43-10'
+-epoch=1730565899872888651;end=1730566096892888651
++D=W/'src/datasets/GrandTour/LEICA-2';mission='2024-11-25-16-36-19'
++epoch=1732549034915071665;end=1732549463665071665
+ def sha(p):
+     with p.open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+ def save(name,data):
+@@ -22,7 +22,7 @@
+ for suffix,wanted in topics.items():
+     p=D/(mission+'_'+suffix+'.bag')
+     with AnyReader([p]) as r:
+-        starts.append(r.start_time)
++        starts.extend(next(r.messages(connections=[c]))[1] for c in r.connections if c.topic in wanted)
+         bags[suffix]=dict(path=str(p),bytes=p.stat().st_size,mtime_ns=p.stat().st_mtime_ns,sha256=sha(p),start_ns=r.start_time,end_ns=r.end_time)
+         for c,t,raw in r.messages(connections=[c for c in r.connections if c.topic in wanted],start=epoch,stop=end):
+             m=r.deserialize(raw,c.msgtype);ts=int(m.header.stamp.sec)*10**9+int(m.header.stamp.nanosec)
+@@ -36,10 +36,10 @@
+                     for field,k in [('angular_velocity_covariance','gyroscope_noise_density'),('linear_acceleration_covariance','accelerometer_noise_density')]:
+                         assert np.max(abs(np.asarray(getattr(m,field)).reshape(3,3)-np.eye(3)*noise[k]**2*200))<1e-15
+     print('Audited',suffix,len(headers[wanted[0]]),flush=True)
+-assert min(starts)+29000000000==epoch,'New IMU must not silently change rosbag playback epoch'
++assert min(starts)==1732549028915071665 and min(starts)+6000000000==epoch,'Selected-topic epoch changed with new Alpha input'
+ for topic,values in headers.items():
+     ts=np.array(values,np.int64);gap=np.diff(ts)*1e-9;s=streams[topic]
+-    assert (gap>0).all() and (ts[-1]-ts[0])*1e-9>196
++    assert (gap>0).all() and (ts[-1]-ts[0])*1e-9>427.73
+     assert (end-ts[-1])*1e-9<.2 and ts[0]-epoch<10**9
+     s.update(frames=sorted(s['frames']),count=len(ts),first_ns=int(ts[0]),last_ns=int(ts[-1]),
+              median_period_s=float(np.median(gap)),max_gap_s=float(gap.max()),
+@@ -51,19 +51,19 @@
+     assert 9<np.linalg.norm(v[:,3:].mean(axis=0))<10.5
+     quiet[suffix]=dict(n=len(v),gyro_norm_max=float(g.max()),acc_mean=v[:,3:].mean(axis=0).tolist(),acc_std=v[:,3:].std(axis=0).tolist())
+ left=headers[topics['alphasense'][0]];right=headers[topics['alphasense'][1]];paired=sorted(set(left)&set(right))
+-assert len(left)==len(right)==len(paired)==1970
+-historical=json.loads((H.parent/'spx3_stationary_full_cpk28_20261023/bag_preflight.json').read_text())
++assert len(left)==len(right)==len(paired)==4287
++historical=json.loads((H.parent/'leica2_full_cpk29_20261023/bag_preflight.json').read_text())
+ assert historical['window']['start_ns']==epoch and historical['window']['end_ns']==end
+-assert streams['/boxi/hesai/points']['count']==historical['bag_files']['hesai']['topics']['/boxi/hesai/points']['selected']['count']==1971
+-assert streams['/boxi/cpt7/imu']['count']==19702
++assert streams['/boxi/hesai/points']['count']==historical['bag_files']['hesai']['topics']['/boxi/hesai/points']['selected']['count']==4288
++assert streams['/boxi/cpt7/imu']['count']==42875
+ assert abs(streams['/boxi/alphasense/imu']['median_period_s']-.005)<1e-5
+ tf=Path(prior['TF']['path']);assert sha(tf)==prior['TF']['sha256']
+ result=dict(passed=True,created=datetime.datetime.now().astimezone().isoformat(),epoch_ns=epoch,end_ns=end,
+-    playback_epoch_ns=min(starts),offset_s=29.0,duration_s=197.02,mission=mission,bag_files=bags,
++    playback_epoch_ns=min(starts),offset_s=6.0,duration_s=428.75,mission=mission,bag_files=bags,
+     streams=streams,quiet_first_second=quiet,noise=noise,noise_density_matches_raw_message_covariance=True,
+     stereo_pairs=len(paired),stereo_pair_stamps_ns=paired,
+     raw_unmatched_camera_headers=dict(left_only_ns=sorted(set(left)-set(right)),right_only_ns=sorted(set(right)-set(left))),
+     T_alphasense_cpt7=prior['T_alpha_cpt7'],T_alphasense_prism=prior['T_alpha_prism'],T_cpt7_prism=prior['T_cpt7_prism'],
+-    tf=dict(path=str(tf),sha256=sha(tf)),scope='Original raw SPX-3 split-IMU full selected window; not a calibration certification')
++    tf=dict(path=str(tf),sha256=sha(tf)),scope='Original raw LEICA-2 split-IMU full selected window; not a calibration certification')
+ save('raw_input_audit.json',result);save('expected_headers.json',headers)
+ print(json.dumps(dict(passed=True,streams=streams,quiet=quiet),indent=2))
+--- /home/yeranis/repos/gnssFGO/experiments/spx3_split_imu_live_pair_cpv111_20261104/prepare.py
++++ /home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105/prepare.py
+@@ -1,4 +1,4 @@
+-"""Fresh mechanical CP108->SPX3 harness copy. No source or receiver launch."""
++"""Fresh mechanical CP111->LEICA2 harness copy. No source or receiver launch."""
+ import ast,difflib,hashlib,json,re,shutil,subprocess,sys,xml.etree.ElementTree as ET
+ from pathlib import Path
+ import numpy as np
+@@ -17,14 +17,14 @@
+ audit=read(H/'raw_input_audit.json');inv=read(H/'available_data_review.json')
+ assert inv['CP103_lidar_extrinsic_max_abs']<1e-9
+ for z in inv['cameras'].values():assert max(z['comparison_to_CP103'].values())<1e-9
+-replacements=[(BASE_H.name,H.name),('2024-11-03-13-59-54','2024-11-02-17-43-10'),
+- ('EIG-2','SPX-3'),('EIG2-CPV108','SPX3-CPV111'),('EIG2','SPX3'),
+- ('eig2_cpv108_','spx3_cpv111_'),('CP-V108','CP-V111'),('11631','11641'),('11632','11642'),
+- ('1730638815','1730565898'),('355020000000','197020000000'),('355.02','197.02'),('353.02','195.02')]
++replacements=[(BASE_H.name,H.name),('2024-11-02-17-43-10','2024-11-25-16-36-19'),
++ ('SPX-3','LEICA-2'),('SPX3-CPV111','LEICA2-CPV112'),('SPX3','LEICA2'),
++ ('spx3_cpv111_','leica2_cpv112_'),('CP-V111','CP-V112'),('11641','11651'),('11642','11652'),
++ ('1730565898','1732549034'),('197020000000','428750000000'),('197.02','428.75'),('195.02','426.75')]
+ def rebase(s):
+     for a,b in replacements:s=s.replace(a,b)
+-    s=re.sub(r'(?<![\w.])5\.7(?![\w.])','29.0',s)
+-    for a,b in [('3550','1970'),('3547','1967'),('3530','1950')]:
++    s=re.sub(r'(?<![\w.])29\.0(?![\w.])','6.0',s)
++    for a,b in [('1970','4287'),('1967','4284'),('1950','4267')]:
+         s=re.sub(r'(?<!\d)'+a+r'(?!\d)',b,s)
+     return s
+ records=[];diff=[]
+@@ -70,18 +70,12 @@
+ for name in names:
+     src=BASE_H/name;old=src.read_text();s=rebase(old)
+     if name=='preflight_tests.py':
+-        s=once(s,"old=W/'runs/eig2_symmetric_persistent_full_cpv84_20261101_attempt1/prepared/full_on_source'",
+-                  "old=W/'runs/gnssfgo_spx3_stationary_full_cpk28_20261023/prepared/full_on_source'")
+-    elif name=='verify_report.py':
+-        # SPX3 is shorter in distance, independently established by raw IE-TC.
+-        # Preserve positive path, exact EVO/archive checks, >100 pairs/poses.
+-        s=once(s,"v['reference_path_length_m']>100","v['reference_path_length_m']>50")
++        s=once(s,"gnssfgo_spx3_stationary_full_cpk28_20261023","gnssfgo_leica2_full_cpk29_20261023")
+     elif name=='admission.py':
+-        s=once(s,"pins=read(QUAL_P/'protected_manifest.json')","pins=read(BASE_P/'protected_manifest.json')")
+-        oldseal="for name in (QUAL_H.name,'eth1_prior_fix_evaluation_cpv104_20261104','eth1_fusion_diagnosis_cpv105_20261104',\n             'eth1_covariance_freeze_cpv106_20261104','eth1_covariance_provenance_cpv107_20261104'):"
+-        newseal="for name in (BASE_H.name,'eig2_fusion_localization_cpv109_20261104','eig2_fusion_intervention_cpv110_20261104'):"
+-        s=once(s,oldseal,newseal)
+-        s=s.replace('SPX3 duration2.5%longer','SPX3 window shorter than CP108; retain conservative16GiB allowance')
++        s=once(s,"forecast_bytes=16*2**30","forecast_bytes=20*2**30")
++        s=once(s,"required_free_bytes=21*2**30","required_free_bytes=25*2**30")
++        s=once(s,"16GiB full-pair allowance exceeds CP95 9.45GiB forecast, plus5GiB reserve; LEICA2 window shorter than CP108; retain conservative16GiB allowance",
++                  "20GiB full-pair allowance scales CP108 16GiB by LEICA2/EIG2 duration ratio1.208, plus5GiB reserve")
+     ast.parse(s)
+     with (H/name).open('x') as f:f.write(s)
+     diff.extend(difflib.unified_diff(old.splitlines(True),s.splitlines(True),fromfile=str(src),tofile=str(H/name)))
+@@ -97,6 +91,6 @@
+         if p.suffix=='.launch':ET.parse(p)
+ save(H/'copy_parity.json',dict(passed=True,files=records,source_profiles_byte_identical=True,source_binaries_byte_identical=True,
+   baseline=str(BASE_H),mission_changes=['bag paths/window/clock','session/ports','mission calibration transform/fixture','raw counts and evaluation reference'],
+-  covariance_intervention=False,ports=[11641,11642]))
++  covariance_intervention=False,ports=[11651,11652]))
+ with (H/'mechanical_copy.diff').open('x') as f:f.write(''.join(diff))
+-print('Prepared fresh SPX3 harness; no source or receiver started',P)
++print('Prepared fresh LEICA2 harness; no source or receiver started',P)

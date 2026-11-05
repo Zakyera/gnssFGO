@@ -1,0 +1,168 @@
+CP-K11 matched120s live ETH1 OFF/ON — COMPLETED AND VALIDATED,2026-10-20
+
+PRIMARY RESULT: Kimera ATE improves66.28%,GLIM ATE worsens20.44%,
+fusion ONLINE ATE worsens64.56%. Both GLIM RPE measures improve;Kimera
+translation RPE improves47.57% but rotation RPE slightly worsens1.78%.
+Fusion ONLINE translation RPE changes little(-1.02%);rotation worsens3.66%.
+No causal explanation or covariance tuning is inferred from these scores.
+
+Both120s captures ran once with native GLIM,native Kimera and fuser concurrent
+at0.10x. Same CP-K9 Kimera in BOTH modes,prior-refresh1,FL4q0,retirement=remove;
+unchanged CP-R6 ETH1 sensor/calibration profiles,CP-I1/CP-I3 all-LOCAL dense
+covariances,Gaussian scales1,classic temporary source CBS. No central IMU/GNSS;
+same7s fixed-lag source_wnoa,100ms supports,Qc/priors/stable-ID replacement.
+Hesai+CPT7 GLIM5s lag;Alphasense front_left/front_right stereo+CPT7 Kimera25states.
+Native source IMU override unset. Existing mean-only peer covariance-alignment
+approximation unchanged. No source rerun,build,tuning,default promotion or push.
+
+Evaluation:unchanged evaluator,rigid SE3(no scale)ATE at existing prism lever
+arm,1s relative-pose RPE. IE-TC /boxi/inertial_explorer/tc/odometry covers EVERY
+saved output. It shares CPT7:NOT independent prism ground truth.
+Primary table scores ALL saved poses from the120s experiment,not an11s subset.
+OFF/ON timestamps and counts match per output. Startup/tail gaps remain:
+GLIM1191poses/118.999748s span;Kimera584/119.599328s;fusion1193/119.2s.
+Kimera's3.199979s startup gap is retained;post-startup maxgap.200043s.
+Relative to first/last CPT7 records:GLIM head/tail.671568/.178711s,
+Kimera head/tail.151921/.098778s. No poses invented across initialization.
+Valid1sRPE pairs:1179GLIM,1151Kimera,1182fusion per mode.
+
+Full-saved PRIMARY table (path at evaluation/prism lever arm)
+Mode  Output                    ATE m      tRPE1s m   rRPE1s deg   path m
+OFF   Original/native GLIM       .028690    .025752     .408311     72.524251
+ON    Original/native GLIM       .034553    .021974     .354980     72.541612
+OFF   Original/native Kimera     .463011    .045912     .553459     70.011526
+ON    Original/native Kimera     .156114    .024071     .563290     71.795828
+OFF   Fusion ONLINE              .047754    .039114    1.979095     77.638050
+ON    Fusion ONLINE              .078585    .038713    2.051555     79.967543
+
+Separate DELAYED fixed-lag-finalized output (NOT online or full-history):
+OFF   Fusion DELAYED             .041371    .015931     .357660     72.147026
+ON    Fusion DELAYED             .073055    .015253     .334459     72.329136
+
+Raw CPT7-body paths OFF/ON(before evaluation lever arm):
+GLIM72.407367/72.421373m;Kimera69.952811/71.774208m;
+fusionONLINE76.466282/78.492623m;fusionDELAYED72.019043/72.190377m.
+Reference path at saved timestamps:71.775437m(GLIM),71.684230m(Kimera),
+71.869744m(fusion);differences reflect sampling.
+
+Common-mask supplementary table (all eight curves on identical timestamps):
+1160timestamps,1150valid1s pairs,span115.899890s,
+1727775011.5999973--1727775127.4998868. Startup/endpoint omissions explicit.
+Reference path71.589503m. Same ATE direction as full-saved results.
+Mode  Output                    ATE m      tRPE1s m   rRPE1s deg   path m
+OFF   Original/native GLIM       .028420    .025664     .410756     72.177962
+ON    Original/native GLIM       .034703    .022158     .358887     72.046734
+OFF   Original/native Kimera     .458070    .045923     .553567     69.628023
+ON    Original/native Kimera     .154963    .024073     .563338     71.420335
+OFF   Fusion ONLINE              .044537    .039615    2.002000     75.196836
+ON    Fusion ONLINE              .077386    .039221    2.078140     77.091846
+OFF   Fusion DELAYED             .038841    .016117     .361502     71.720801
+ON    Fusion DELAYED             .072384    .015411     .338617     71.852434
+
+Covariance/revision evidence retained:
+GLIM1189stableIDs per mode,56442/56481versions,55253/55292revisions;
+Kimera582stableIDs,14250versions/mode via LOCAL joint queries. All36dense
+covariance entries match payloads exactly. Finite,symmetric,maxsymmetryerror0.
+Minimum eigenvalues OFF/ON:GLIM1.997874e-10/2.063106e-10;
+Kimera7.272517e-10/8.019808e-10.
+Median traces over ALL versions(revision-weighted,not matched-age calibration):
+Source/mode       rotation rad^2       translation m^2
+GLIM OFF          1.453199e-8           2.189959e-6
+GLIM ON           1.407841e-8           2.182910e-6
+Kimera OFF        2.454637e-8           1.654358e-6
+Kimera ON         2.415633e-8           1.743283e-6
+Means,p95,max,first-to-last ratios in results.json. These are native-information
+covariances at corrected charts,not certified independent/calibrated likelihoods.
+
+Validation:
+Both modes pass LOCAL provenance,receiver accounting,corrected Kimera lifecycle,
+and deterministic saved-journal replay. G2K/K2G injections OFF0/0,ON580/581.
+ON556retirements/556prior refreshes match EVERY update,maxcacheerror
+1.645799e-9<1e-8. No recovery/crash/FL4q/CP-K9 error marker in actual node log.
+Ordinary incremental total-cost increases20OFF/15ON are observational;
+nonlinear stationarity is NOT certified.
+Receiver counts/timing below remain valid. ON support-cycle p95.116253s,
+max.168158s;OFF.107532/.192230s. Receipt-processing wallp95.031658/.032513s;
+queue max49/48,drained0. All1193ONLINE outputs/mode published while sources ran.
+GLIM revision first-endpoint maxage5.185580/5.188818s;7s lagmargin1.814420/
+1.811182s. Post5s source-finish callback wallp95.190102/.204406s.
+Saved receiver replay OFF60.888s,ON59.130s:each73216archive files and five
+numeric products byte-identical. This is NOT a GLIM/Kimera rerun or1x claim.
+
+Resolved postprocessing defect:
+The immutable original candidate checker read the wrong ROS log. Its failure
+and controller-monitor log-route limitation are retained in VALIDATION_BLOCKER.txt.
+On the user's request for comparison,validate_actual_node_log.py reused the
+same frozen checks in memory against launcher+actual Kimera stdout,unchanged
+thresholds plus per-update accounting. OFF additionally rechecked in a separate
+artifact;ON passing gate explicitly records correction/hashes. Captures and
+original checker untouched. Corrected gates passed,then ON repeat and scoring
+ran once. No gate relaxed,no source retry. Follow-up remains paused.
+
+Final artifacts:H/results.json,H/evidence/,P/evaluation_full/summary.json,
+P/live120_{off,on}_source/{odom_imu.txt,kimera_odometry.csv,objective.csv,
+local_provenance.json,candidate_validation.json,ros_logs/},source belief/
+covariance/revision histories,and receiver/{events.csv,receipts.jsonl,
+receiver/{archive/,online_trajectory.tum,finalized_trajectory.tum}}.
+V/{off,on}/{validation.json,repeat_validation.json,repeat_live/}.
+1825protected files unchanged;source repositories clean. Existing dirty
+gnssFGO work preserved,HEAD668d4c788983722f4acad37d1495c15d03a27e18.
+Owned processing jobs exited;both containers restored stopped after scoring.
+The final integrity receipt is final_checks.json. No next experiment launched.
+
+HISTORICAL PROGRESS AND INITIAL BLOCKER (superseded by completion above)
+====================================================================
+Authorized scope and frozen settings: PROTOCOL.txt in this directory.
+OFF launched once at approximately10:54 local time. Do not duplicate it.
+Startup passed: actual CP-K9 Kimera library loaded with prior-refresh1,FL4q0,
+retirement=remove; CBS reception OFF. All-LOCAL GLIM and frozen7s WNOA receiver
+verified. Native GLIM,Kimera and fusion are concurrent; not post-hoc fusion.
+Preparation verified1825protected files, frozen receiver configuration and
+unchanged evaluator functions. Exact selected-record query:
+1727775007855396309--1727775127855396309ns (120s).
+
+P=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_prior_live120_cpk11_20261020/prepared
+V=/home/yeranis/results/gnssfgo_eth1_prior_live120_cpk11_20261020
+OFF controller: P/run_case.py live120 off, port11459.
+OFF completed normally at approximately11:14 local,1246.256s wall time.
+LOCAL provenance,receiver accounting/coverage and CP-K9 source checks PASS.
+1191native GLIM poses/118.999748s span;584native Kimera/119.599328s span.
+Known3.2s Kimera startup gap retained and disclosed; no invented poses.
+70692belief versions accounted:1770insertions,68897replacements,25before-init
+exclusions;zero duplicates/pending/unsupported-end. Dense covariance difference0.
+1193fusion ONLINE outputs;7s lag,71retained supports,peak175factor slots.
+Support-cycle p95.107532s,max.192230s;live queue maximum49;drained to0.
+Kimera OFF has no external injections,retirements or CP-K9 prior promotions,
+as intended; no FL4q/recovery. Ordinary incremental nonincrease is not asserted.
+Saved receiver-journal repeat PASS in60.888s:73216archive files and all five
+numeric products byte-identical. Receiver binary hash unchanged. No source
+rerun. All four OFF gates and preflight_on.json passed before ON launch.
+ON launched ONCE at approximately11:26 local time; do not duplicate.
+Its effective startup checks passed with the same candidate/receiver/profiles
+and classic CBS reception enabled in both directions. ON completed normally,
+1249.913s wall time,1191native GLIM/584native Kimera/1193fusionONLINE outputs.
+ON LOCAL provenance and receiver check PASS:70731belief versions accounted,
+1770insertions,68936replacements,25before-init exclusions;zero unsupported-end,
+pending or duplicate events. Covariance payload difference0. Retained71supports,
+peak175factor slots; support-cycle p95.116253s,max.168158s;queue max48,drained0.
+
+BLOCKER: ON candidate validator exited1 at retirement-count equality.
+It reads estimators.log,but CP-K9 diagnostic rows are in Kimera's node stdout
+log. The actual node log has556refresh rows matching all556objective retirements,
+zero mismatched updates and maxprior-cacheerror1.6458e-9,below1e-8. No recovery/
+crash/CP-K9 error token in either log. See VALIDATION_BLOCKER.txt for exact paths.
+This is a postprocessing log-routing defect,not an estimator runtime failure.
+The runtime Kimera error-token scan also watched only the launcher log; the
+retrospective node-log check found no such errors. This limitation is retained.
+Protected scripts and captures unchanged. Following the prescribed STOP rule,
+ON journal-repeat and matched scoring NOT run; no OFF/ON accuracy conclusion.
+No source rerun is needed to correct the checker and finish saved-data work.
+OFF must validate before ON. Stop on failure; no automatic source retry.
+Task follow-up complete-frozen-eth1-live-wnoa-comparison updated to CP-K11,
+every5min with no unchanged-state notifications; old CP-R7 instructions replaced.
+Follow-up PAUSED on this validation blocker. Owned capture/validation jobs
+exited; both originally-stopped containers restored and verified exited.
+Closeout hash check:1825protected files unchanged;git diff --check passes.
+No ON candidate-pass artifact,ON repeat or scoring output was manufactured.
+Normal final_checks.py not run because its all-gates/results prerequisites
+are deliberately unmet. This is a preserved blocked result,not full validation.

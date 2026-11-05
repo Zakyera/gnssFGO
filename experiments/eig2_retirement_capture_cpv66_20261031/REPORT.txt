@@ -1,0 +1,119 @@
+CP-V66 -- EIG-2 Hesai matched60s retirement observation
+COMPLETE: matched captures and11same-checkpoint causal2x2 events.
+MAIN FINDING: removing the expiring external factor has a large immediate causal
+effect on all three selected late large corrections. This is not a full-trajectory
+fix or evidence that permanently retaining/marginalizing peer information is safe.
+
+LATEST RESULTS (metres; PREVIOUS-POSE REVISION, not RMSE)
+Sensor time  Update  Actual remove A  Retain-one-update B  Magnitude reduction
+50.399505s   250     .335969           .062328              81.45%
+59.399422s   295     .639667           .107762              83.15%
+59.599420s   296     .449398           .019526              95.66%
+Same new peer, camera/IMU observations, native prior functions/anchors, weights,
+smart policy and native ordinary charts; only old expired group restored.
+Outgoing edges224->225 /269->270 /270->271 respectively; incoming248->249 /
+293->294 /294->295 unchanged in A/B. Restoration byte checks recover originals.
+Corresponding rotation revisions A->B:3.885932->.521564deg,
+2.611334->.644783deg,2.375558->.203518deg.
+Within-current-solution movements remain nearly unchanged:
+.107951->.108273m, .093773->.093733m, .093584->.093575m.
+Published segment magnitudes A->B:.307984->.148263m,
+.628241->.128188m,.467875->.089941m. These are independent event branches;
+do NOT stitch their outputs into a counterfactual full trajectory.
+
+FOUR-ARM AND NUMERICAL QUALIFICATIONS
+A removed-old/new-included; B retained-old/new-included;
+C retained-old/new-omitted; D removed-old/new-omitted. Old factor retained only
+before marginalization while its endpoints still exist. Never absorbed in B/C.
+At59.4s A/B/C/Dprevious revisions:.639667/.107762/.042518/.509103m.
+At59.6s:.449398/.019526/.005271/.452770m.
+At50.4s:.335969/.062328/.059907/.338058m.
+Thus removing the new admission alone does not remove these large jumps.
+Removal contrast projected on observed correction:84.66%,102.61%,117.10%
+for295,296,250. These are directional contrasts, NOT explained-variance shares;
+values above100% reflect partial cancellation by other update contributions.
+Early controls28/29 have exactlyzero removal contrast.30..35 effects are
+.005109/.010932/.012688/.009171/.003957/.001704m: no claim every event is large.
+
+ALL11factual arms passed before any B/C/D. Fresh ordinary and exact-state-refresh
+H/RHS match recorded equations EXACTLY; native state reproduction norm max
+3.4403e-7 ordinary/7.5689e-7 chained refresh (mixed tangent units), within
+predeclared1e-6/1e-5gates. At295the previous-pose translation-correction magnitude
+differs from the native log by1.56e-7m, not bitwise solver identity.
+Controls28/29 have native ordinary
+theta different from initialized estimates(.0259703/.00684889mixed norm);
+all retirement events start at initialized estimates to<=4.03e-17. Native charts
+are retained, not silently replaced by a differently refreshed problem.
+Exactly88real-data native Gaussian steps (two per arm/event), plus separate
+Release/sanitizer analytic fixtures. No source replay, extra nonlinear iterations
+or nonlinear-stationarity claim. Vendor libraries are not sanitized.
+
+NOT A COMPLETE CURE
+Retaining the factor does not consistently improve native residual costs or bias
+changes. At295gyro-bias revision remains.0117634->.0117622rad/s; native visual
+cost208.126->214.297. At250IMU cost2044.200->2311.273 and bias-between
+17686.061->21788.204. Different arms have different native accepted-smart sets;
+these are nonlinear responses to changed geometry, not manually disabled guards.
+Lower publication jumps alone do not prove better true accuracy or consistency.
+Original prior/other physical functions and all common-state non-target Gaussian
+factors are identical. Source covariance was not changed or analyzed.
+
+CONCLUSION / NEXT BOUNDARY
+This directly supports temporary-factor retirement as a major immediate mechanism
+for the selected large ON publication jumps, beyond timing correlation. It does
+not prove all zigzags share this cause or that retention remains good when carried
+forward. A later lifecycle candidate must avoid abrupt information loss without
+unaccounted recycled peer information/double counting. No permanent retention,
+changed marginalization, full-sequence candidate or default promotion launched.
+All original captures/checkpoints preserved. Final independent verification and
+container/process/integrity evidence are in verification.json and complete.json.
+
+HISTORICAL EXECUTION NOTES
+Initial preparation: private passive serializer/fixture work; no sources yet.
+User authorized60seconds each to include substantial published-output zigzags.
+See PROTOCOL.txt for frozen window, stages, storage and causal interpretation.
+
+PRELAUNCH READY
+Private backend SHA526952811bbda6dbba5dcaff183c7264c8fe7a38baed95f2b3a7e6dec5588015.
+Release and ASan/UBSan:80 four-phase snapshots each, byte-exact reconstruction,
+multi-state prior function/derivative parity and exact live state/theta/delta/
+cache/tree/smart/tracking nonmutation through repeated marginalization. Disabled
+observer exactly matches CP-V40 fixture outputs. Vendor libraries not sanitized.
+Initial link failure (missing unchanged libcbs copy) and subsequent fixture
+presence-assertion failure (checked wrapper after absorption) preserved. Corrected
+only diagnostic packaging/check phase; all scientific/nonmutation gates intact.
+No source capture retried. build_attempt_phase2 is the successful build attempt.
+Raw60s window has600 matching stereo pairs and600Hesai records; original offset
+5.7s. Profiles byte-identical toCP49; receiver model unchanged.7691protectedfiles.
+24.0GiB available vs18GiB admission threshold,5GiB unchanged runtime reserve.
+Reviewed prepared source duration60.0,rate0.20,drain25; frontend597..600,
+GLIM590minimum; observer scoped toKimera, test-only switches absent. All old
+355s thresholds/ports corrected in the fresh harness before source launch.
+
+Controller finished 2026-10-31T01:03:10.416991+02:00: both captures/gates passed; native checkpoint analysis pending
+{"failure": null, "cleanup_error": null}
+No automatic retry.
+
+CAPTURE COMPLETE / CAUSAL ANALYSIS IN PROGRESS
+Both60s captures passed sensor, LOCAL provenance, lifecycle/receiver and snapshot
+gates.424snapshots each,848total; actual update IDs28..35 and200..297.
+Original startup/front-end EOF explains final297; no artificial298snapshot.
+Capture closeout01:03:10local: both originally-stopped containers restored,
+owned capture jobs exited,7691pins unchanged,Hesai4cases/667originals PASS.
+No source retries. Separate saved-checkpoint analysis may briefly start native
+container; do not duplicate its controller or interpret capture status as final.
+
+Saved Method1 decomposition:294eligible segments each,292adjacent eligible
+pairs. Previous-pose translation revision median OFF.004232m / ON.043281m;
+maximum OFF.037687m / ON.639667m. ONlargest isupdate295 at59.399421509s,
+with .093773m within-current-solution step but .628241m published segment.
+Published-direction negative-dot counts OFF8/ON38; within-solution OFF6/ON6.
+Counts include actual turns/stationary noise and are descriptive, not a health
+classifier. Eligible-sample polylines OFF34.073528m/ON40.854414m; corresponding
+within-solve step sums33.856885m/33.574121m. These are NOT EVOcommon-mask/full
+trajectory distance or proof of physical drone zigzags. No ATE/RPE scoring.
+
+Selected before viewing counterfactual benefit: controls28,29; removals30..35;
+three largest late revisions295,296,250. Exact native slot/key receipts agree
+with runtime ownership logs. Source scheduling is not claimed bit-identical
+toCP49; the large59.4s event is reproduced in this new matched capture.

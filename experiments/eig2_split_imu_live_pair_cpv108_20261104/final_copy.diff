@@ -1,0 +1,508 @@
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/full_on.json
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/full_on.json
+@@ -1,7 +1,7 @@
+ {
+-  "sequence": "ETH1 CP-V99 full346.32s live split-IMU CBS ON",
++  "sequence": "EIG-2 CP-V108 full355.02s live split-IMU CBS ON",
+   "source_protocol": "classic",
+-  "ros_master_uri": "http://127.0.0.1:11612",
++  "ros_master_uri": "http://127.0.0.1:11632",
+   "imu_topic": "/boxi/cpt7/imu",
+   "imu_frame": "cpt7_imu",
+   "world_frame": "gnssfgo_world",
+@@ -12,11 +12,11 @@
+   "drain_timeout_wall_sec": 300,
+   "ros1_container": "cbsms_ws_gpu",
+   "receiver_container": "ubuntu-jammy-humble-nvidia",
+-  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/receiver_cpk19.sh",
++  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/receiver_cpk19.sh",
+   "sources": [
+     {
+       "id": "glim_hesai",
+-      "session": "eth1_cpv99_on_20261103",
++      "session": "eig2_cpv108_on_20261104",
+       "kind": "glim",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/ros_logs/*/glim_rosnode-*-stdout.log",
+@@ -25,7 +25,7 @@
+     },
+     {
+       "id": "kimera_front",
+-      "session": "eth1_cpv99_on_20261103",
++      "session": "eig2_cpv108_on_20261104",
+       "kind": "kimera",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/estimators.log",
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/run_case_on.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/run_case_on.py
+@@ -37,7 +37,7 @@
+     own.mkdir(exist_ok=False)
+     inside = '/workspace/'+str(own.relative_to('/home/yeranis/repos/V4RL'))
+     env_inside = '/workspace/'+str((ROOT/args.mode/'source.env').relative_to('/home/yeranis/repos/V4RL'))
+-    port = str(11611+(args.mode=='on'))
++    port = str(11631+(args.mode=='on'))
+     master_uri = 'http://127.0.0.1:'+port
+     jobs = {}
+     streams = []
+@@ -91,7 +91,7 @@
+             assert jobs['receiver'].poll() is None, 'receiver startup failed'
+             assert time.monotonic()<deadline, 'transport startup timeout'
+             time.sleep(.2)
+-        duration=346.32
++        duration=355.02
+         source_script = ('export CBSMS_RUN_NAME='+tag+'_source CBSMS_CBS_ENABLE='+('true' if args.mode=='on' else 'false')+
+           ' CBSMS_BAG_DURATION_SEC='+str(float(duration))+'; source '+shlex.quote(env_inside)+
+           '; '+identity_script('source')+
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/full_off.json
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/full_off.json
+@@ -1,7 +1,7 @@
+ {
+-  "sequence": "ETH1 CP-V99 full346.32s live split-IMU CBS OFF",
++  "sequence": "EIG-2 CP-V108 full355.02s live split-IMU CBS OFF",
+   "source_protocol": "classic",
+-  "ros_master_uri": "http://127.0.0.1:11611",
++  "ros_master_uri": "http://127.0.0.1:11631",
+   "imu_topic": "/boxi/cpt7/imu",
+   "imu_frame": "cpt7_imu",
+   "world_frame": "gnssfgo_world",
+@@ -12,11 +12,11 @@
+   "drain_timeout_wall_sec": 300,
+   "ros1_container": "cbsms_ws_gpu",
+   "receiver_container": "ubuntu-jammy-humble-nvidia",
+-  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/receiver_cpk19.sh",
++  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/receiver_cpk19.sh",
+   "sources": [
+     {
+       "id": "glim_hesai",
+-      "session": "eth1_cpv99_off_20261103",
++      "session": "eig2_cpv108_off_20261104",
+       "kind": "glim",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/ros_logs/*/glim_rosnode-*-stdout.log",
+@@ -25,7 +25,7 @@
+     },
+     {
+       "id": "kimera_front",
+-      "session": "eth1_cpv99_off_20261103",
++      "session": "eig2_cpv108_off_20261104",
+       "kind": "kimera",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/estimators.log",
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/off/coverage_control.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/off/coverage_control.py
+@@ -5,7 +5,7 @@
+ import coverage_checks as legacy
+ S=Path(sys.argv[1]);P=Path(__file__).resolve().parent
+ a=json.loads((P/'input_audit.json').read_text());wanted=json.loads((P/'expected_headers.json').read_text());imu={}
+-duration=a['duration_s'];assert duration==346.32
++duration=a['duration_s'];assert duration==355.02
+ for topic,file in [('/boxi/cpt7/imu','cpt7_headers.csv'),('/boxi/alphasense/imu','alphasense_headers.csv')]:
+     with (S/file).open() as f:rows=list(csv.DictReader(f))
+     key=next(k for k in rows[0] if k.endswith('.stamp'));ts=[int(r[key]) for r in rows]
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/off/verify_effective_on.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/off/verify_effective_on.py
+@@ -10,12 +10,12 @@
+ 
+ root = Path(__file__).resolve().parent
+ source = Path(sys.argv[1])
+-assert os.environ['CBSMS_BAG_DURATION_SEC'] == '346.32'
++assert os.environ['CBSMS_BAG_DURATION_SEC'] == '355.02'
+ assert os.environ['CBSMS_BAG_RATE'] == '0.20'
+-assert os.environ['CBSMS_MISSION']=='2024-10-01-11-29-55'
+-assert os.environ['CBSMS_BAG_START_SEC']=='0'
++assert os.environ['CBSMS_MISSION']=='2024-11-03-13-59-54'
++assert os.environ['CBSMS_BAG_START_SEC']=='5.7'
+ enabled = os.environ['CBSMS_CBS_ENABLE'] == 'true'
+-assert not enabled, 'CP-V89 requires BOTH source receivers disabled'
++assert enabled is (root.name=='on'), 'Mode mismatch'
+ assert os.environ['CBSMS_KIMERA_MODE'] == 'stereo'
+ assert os.environ['CBSMS_CBS_PROTOCOL'] == 'classic'
+ assert os.environ['CBSMS_CBS_LIVE_REVISION_ENABLE'] == 'false'
+@@ -37,7 +37,7 @@
+     glim_factor_graph_inspector_enable=False, glim_cbs_export_endpoint_audit_enable=True)
+ for key, value in expected.items():
+     assert glim[key] == value, (key, glim.get(key), value)
+-assert glim['glim_cbs_receive_external_beliefs'] is False
++assert glim['glim_cbs_receive_external_beliefs'] is enabled
+ import subprocess
+ glim_bus = subprocess.check_output(['rosnode', 'info', '/glim_rosnode'], text=True)
+ subscriptions = glim_bus.split('Subscriptions:', 1)[1].split('Publications:', 1)[0]
+@@ -52,7 +52,7 @@
+ assert kimera['cbs_external_pose_frame_id']=='cpt7_imu'
+ import tf
+ import rospy
+-rospy.init_node('cpv89_frame_preflight', anonymous=True)
++rospy.init_node('cpv91_frame_preflight', anonymous=True)
+ listener=tf.TransformListener()
+ import time
+ deadline=time.monotonic()+10
+@@ -98,6 +98,10 @@
+     return dict(x.decode().split('=',1) for x in Path('/proc/%d/environ'%pid).read_bytes().split(b'\0') if b'=' in x)
+ assert env(pid)['FL4Q_ENABLE']=='0'
+ assert env(pid)['CPK9_PRIOR_REFRESH']=='1'
++archive_dir=Path(env(pid)['CPV102_PRIOR_FAILURE_DIR']).resolve()
++assert archive_dir==source/'prior_failures' and archive_dir.is_dir() and os.access(archive_dir,os.W_OK)
++assert 'CPV102_PRIOR_FAILURE_DIR' not in env(glim_pid)
++assert not list(archive_dir.iterdir())
+ assert env(pid)['CPV40_REFRESH']=='1' and env(pid)['CPV38_OFF_REFRESH']=='0'
+ assert 'CPV40_REFRESH' not in env(glim_pid)
+ assert env(pid)['FL4M_RETIREMENT']=='remove'
+@@ -136,7 +140,7 @@
+ assert imu_params['gyroscope_noise_density']==0.00020202932517334086
+ assert imu_params['accelerometer_noise_density']==0.0012593921763625943
+ assert hashlib.sha256(Path('/workspace/cbs_gtsam4.3/runs/glim_persistent_compat_cpv82_20261101/release_4/libglim_ros.so').read_bytes()).hexdigest()=='aecc729f4bf51548950b8cb997c3dcd474e30cabe23785c4011e6b22f7dbe918'
+-assert hashlib.sha256((root/'private_build/libkimera_vio.so').read_bytes()).hexdigest()=='b7d6829da6c2c5a0edbe3d7092ba109fa29d24a60b2bb5395b05dd629fa1cee8'
++assert hashlib.sha256((root/'private_build/libkimera_vio.so').read_bytes()).hexdigest()=='985c115d3573446f65ef4ce7cc4125e514b4922fed6445ed05cbc4dbdfb70a09'
+ assert hashlib.sha256(Path('/workspace/cbs_gtsam4.3/runs/local_revision_covariance_cpi1_20261019/libglim_ros.so').read_bytes()).hexdigest()=='42df73c172232a612da965bf43ead8ec454caf08434b84e2da5de74d26cdb79f'
+ assert hashlib.sha256(Path('/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/release_1/libgtsam_points.so.1.2.1').read_bytes()).hexdigest()=='6f71292d29d974a0555abd9fda6b2370fdab81ca634a4e1343c216d2a762d2ca'
+ assert 'GLIM_SHARED_NATIVE_JOURNAL' not in env(glim_pid)
+@@ -145,8 +149,10 @@
+ assert not any('SNAPSHOT' in k or 'REAL_INPUT' in k or 'GLIM_E1_REAL_AUDIT_ROOT' == k for k in env(glim_pid))
+ assert 'e1b4a_real_input' not in glim_loaded
+ with (source/'effective_mode_check.json').open('x') as f:
+-    json.dump(dict(passed=True, checked_before_playback=True, playback_rate=0.20, requested_s=346.32, glim=expected,
++    json.dump(dict(passed=True, checked_before_playback=True, playback_rate=0.20, requested_s=355.02, glim=expected,
+                    actual_profile_sha256=profile_checks,actual_imu_parameters=imu_params,
+-                   kimera=expected_flags, kimera_native_only_outgoing_information=False, mixed_prior_feedback_user_accepted=True, kimera_candidate_env={k:env(pid)[k] for k in ('CPK9_PRIOR_REFRESH','FL4Q_ENABLE','FL4M_RETIREMENT','CPV40_REFRESH','CPV38_OFF_REFRESH','CPV76_PERSISTENT_COMPAT')}, kimera_pid=pid, kimera_argv=argv,
++                   kimera_body='alphasense_imu',glim_body='cpt7_imu',wire_body='cpt7_imu',
++                   T_alphasense_cpt7=matrix.tolist(),kimera_receive=enabled,glim_receive=enabled,
++                   kimera=expected_flags, kimera_native_only_outgoing_information=False, mixed_prior_feedback_user_accepted=True, kimera_candidate_env={k:env(pid)[k] for k in ('CPK9_PRIOR_REFRESH','FL4Q_ENABLE','FL4M_RETIREMENT','CPV40_REFRESH','CPV38_OFF_REFRESH','CPV76_PERSISTENT_COMPAT')}, prior_failure_archive=str(archive_dir), private_kimera_sha256='985c115d3573446f65ef4ce7cc4125e514b4922fed6445ed05cbc4dbdfb70a09', kimera_pid=pid, kimera_argv=argv,
+                    kimera_maps=loaded,glim_maps=glim_loaded,glim_persistent_compat=env(glim_pid)['CPV82_GLIM_PERSISTENT_COMPAT'],glim_revision_covariance='native_local',cached_provider_sha256='6f71292d29d974a0555abd9fda6b2370fdab81ca634a4e1343c216d2a762d2ca'), f, indent=2)
+-print('CP-V89 split IMU topics/body transform and current private builds verified; BOTH CBS receivers OFF.')
++print('CP-V108 split IMU topics/body transform and current private builds verified; Matched requested receive mode, persistent.')
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/off/glim_profile_on.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/off/glim_profile_on.launch
+@@ -117,7 +117,7 @@
+         <env name="GLIM_SHARED_NATIVE_PROVIDER" value="shared_native"/>
+         <env name="CPV82_GLIM_PERSISTENT_COMPAT" value="1"/>
+         <env name="GLIM_REVISION_COVARIANCE_POLICY" value="native_local"/>
+-        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/full_off_source/e1b_profile.jsonl"/>
++        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/full_off_source/e1b_profile.jsonl"/>
+ 		<param name="config_path" value="$(arg config_path)" />
+ 		<param name="glim_dump_path" value="$(arg glim_dump_path)" />
+ 		<param name="deterministic_input_event_log_path" value="$(arg glim_deterministic_input_event_log_path)" />
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/off/source.env
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/off/source.env
+@@ -2,17 +2,17 @@
+ # to off_source/on_source and CBSMS_CBS_ENABLE to false/true.
+ : "${CBSMS_RUN_NAME:?Set fresh EIG-2 source run name}"
+ : "${CBSMS_CBS_ENABLE:?Set false or true}"
+-export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared
++export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared
+ export CBSMS_RUN_NAME CBSMS_CBS_ENABLE
+ export ROS_LOG_DIR="${CBSMS_RUN_ROOT}/${CBSMS_RUN_NAME}/ros_logs"
+ export CBSMS_PROJECT_ROOT=/workspace/cbs_gtsam4.3
+-export CBSMS_MISSION=2024-10-01-11-29-55
+-export CBSMS_BAG_START_SEC=0
+-export CBSMS_BAG_DURATION_SEC=346.32
++export CBSMS_MISSION=2024-11-03-13-59-54
++export CBSMS_BAG_START_SEC=5.7
++export CBSMS_BAG_DURATION_SEC=355.02
+ export CBSMS_POST_PLAYBACK_DRAIN_SEC=25
+ export CBSMS_BAG_RATE=0.20
+-export CBSMS_SEED_CLOCK_SECS=1727775007
+-export CBSMS_ROS_MASTER_PORT=11611
++export CBSMS_SEED_CLOCK_SECS=1730638815
++export CBSMS_ROS_MASTER_PORT=11631
+ export CBSMS_USE_EXISTING_ROS_MASTER=true
+ export CBSMS_KIMERA_MODE=stereo
+ # The recovered classic Kimera source path is "current", not experimental RIGHT.
+@@ -35,7 +35,7 @@
+ export CBSMS_KIMERA_RECEIVER_AUDIT_MAX_SAMPLES=40
+ export CBSMS_KIMERA_RECEIVER_AUDIT_STRIDE=20
+ export CBSMS_DIAGNOSTIC_NODE_OUTPUT=log
+-export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/off/input_profiles/glim_config
+-export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/off/input_profiles/kimera_profile
++export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/off/input_profiles/glim_config
++export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/off/input_profiles/kimera_profile
+ 
+-export CBSMS_DATASET_DIR=/workspace/cbs_gtsam4.3/src/datasets/GrandTour
++export CBSMS_DATASET_DIR=/workspace/cbs_gtsam4.3/src/datasets/GrandTour/EIG-2
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/off/active_window_on.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/off/active_window_on.launch
+@@ -17,7 +17,7 @@
+   -->
+ 
+   <arg name="glim_config_path"
+-       default="/workspace/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/off/input_profiles/glim_config"/>
++       default="/workspace/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/off/input_profiles/glim_config"/>
+   <arg name="kimera_mode" default="mono"/>
+   <arg name="kimera_enable" default="true"/>
+   <arg name="kimera_params_folder"/>
+@@ -111,7 +111,7 @@
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_stride" value="20"/>
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_max_updates" value="40"/>
+ 
+-  <include file="/workspace/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/off/glim_profile_on.launch">
++  <include file="/workspace/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/off/glim_profile_on.launch">
+     <arg name="config_path" value="$(arg glim_config_path)"/>
+     <arg name="glim_node_output" value="$(arg diagnostic_node_output)"/>
+     <arg name="glim_input_imu_topic" value="$(arg glim_input_imu_topic)"/>
+@@ -351,7 +351,7 @@
+   <node if="$(eval arg('kimera_enable') and arg('kimera_mode') == 'stereo')"
+         pkg="tf2_ros" type="static_transform_publisher"
+         name="grandtour_alpha_imu_to_cpt7_imu_tf"
+-        args="-0.302230743591 0.061798150147 -0.084107655163 -0.007201422999 -0.036738889993 -0.007919430999 0.999267569814 alphasense_imu cpt7_imu"/>
++        args="-0.30223074363567076 0.06179815072250501 -0.084107655854897975 -0.0072014230414873199 -0.036738890418011302 -0.0079194313659656668 0.99926756979493259 alphasense_imu cpt7_imu"/>
+ 
+   <include if="$(eval arg('kimera_enable') and arg('kimera_mode') != 'mono')"
+            file="$(dirname)/grandtour_eth1_kimera_stereo.launch">
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/off/source_runner_on.sh
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/off/source_runner_on.sh
+@@ -43,8 +43,8 @@
+ run_dir="${run_root}/${run_name}"
+ experiment_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ launch_file="${experiment_dir}/active_window_on.launch"
+-[[ "${cbs_enable}" == false && "${cbs_direction}" == bidirectional && "${duration_sec}" == 346.32 && "${bag_rate}" == 0.20 && "${bag_start_sec}" == 0 && "${mission}" == 2024-10-01-11-29-55 && "${kimera_mode}" == stereo ]] || { echo "CP-V89 ETH1 split-IMU full OFF346.32 only." >&2; exit 2; }
+-glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-/workspace/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/off/input_profiles/glim_config}"
++[[ "${cbs_enable}" == false && "${cbs_direction}" == bidirectional && "${duration_sec}" == 355.02 && "${bag_rate}" == 0.20 && "${bag_start_sec}" == 5.7 && "${mission}" == 2024-11-03-13-59-54 && "${kimera_mode}" == stereo ]] || { echo "CP-V108 EIG-2 split-IMU full OFF355.02 only." >&2; exit 2; }
++glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-/workspace/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/off/input_profiles/glim_config}"
+ kimera_profile_source="${CBSMS_KIMERA_PROFILE_SOURCE:-}"
+ kimera_calibration_overlay="${CBSMS_KIMERA_CALIBRATION_OVERLAY:-${project_root}/src/cbsms/config/grandtour_kimera/eth1_mono_shared_cpt7}"
+ reference_bag="${CBSMS_REFERENCE_BAG:-${dataset_dir}/${mission}_ap20_prism_position.bag}"
+@@ -155,6 +155,7 @@
+ 
+ mkdir -p "${run_dir}/recordings" "${run_dir}/kimera_logs" \
+   "${run_dir}/evaluation"
++mkdir -p "${run_dir}/prior_failures"
+ cp "${launch_file}" "${run_dir}/grandtour_launch_used.launch"
+ cp "${project_root}/src/glim_ros1/launch/newer_college_2021_glim_kimera_cbs_on.launch" \
+   "${run_dir}/newer_college_reference_launch.launch"
+@@ -583,7 +584,7 @@
+   "kimera_receive_cbs_beliefs=${kimera_receive_external_beliefs}" \
+   "glim_cbs_mode=${glim_cbs_mode}" \
+   "kimera_cbs_odom_factor_mode=persistent" \
+-  "experiment=eth1_split_imu_repeat_cpv99_20261103" \
++  "experiment=eig2_split_imu_live_pair_cpv108_20261104" \
+   "glim_sensor_pair=hesai+cpt7_imu" \
+   "kimera_sensor_pair=${kimera_sensor_pair}" \
+   "glim_body_frame=cpt7_imu" \
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/off/kimera_vio_ros.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/off/kimera_vio_ros.launch
+@@ -452,6 +452,7 @@
+            unless="$(arg online)"/>
+     <env name="FL4Q_ENABLE" value="0"/>
+     <env name="CPK9_PRIOR_REFRESH" value="1"/>
++    <env name="CPV102_PRIOR_FAILURE_DIR" value="$(env ROS_LOG_DIR)/../prior_failures"/>
+     <env name="CPV40_REFRESH" value="1"/>
+     <env name="CPV76_PERSISTENT_COMPAT" value="1"/>
+     <env name="CPV69_RETAIN_COMPAT" value="0"/>
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/transport_tools/frame_calibration.json
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/transport_tools/frame_calibration.json
+@@ -27,6 +27,6 @@
+       1.0
+     ]
+   ],
+-  "source": "/home/yeranis/repos/gnssFGO/experiments/eth1_split_imu_persistent_on_cpv91_20261102_attempt1/prepared.json",
++  "source": "/home/yeranis/repos/gnssFGO/experiments/eig2_split_imu_live_pair_cpv108_20261104/raw_input_audit.json",
+   "convention": "T_Alpha_CPT7; rotation-translation tangent; native diagnostic rows ONLY"
+-}
++}--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/transport_tools/live_receiver_protocol.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/transport_tools/live_receiver_protocol.py
+@@ -145,7 +145,7 @@
+         raise ValueError('unknown receiver_publication_policy')
+     if policy == 'fl4a_fixed_lag_incremental':
+         # Private FL4a adapter only. No nonlinear stationarity certificate is claimed.
+-        expected = '/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/receiver_cpk19.sh'
++        expected = '/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/receiver_cpk19.sh'
+         if config.get('receiver_model') != 'source_wnoa' or config.get('receiver_binary') != expected:
+             raise ValueError('FL4a policy requires the pinned fixed-lag wrapper')
+         if config.get('receiver_fixed_lag_seconds') != 7 or any(key.startswith('WNOJ_') for key in environment):
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/on/coverage_control.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/on/coverage_control.py
+@@ -5,7 +5,7 @@
+ import coverage_checks as legacy
+ S=Path(sys.argv[1]);P=Path(__file__).resolve().parent
+ a=json.loads((P/'input_audit.json').read_text());wanted=json.loads((P/'expected_headers.json').read_text());imu={}
+-duration=a['duration_s'];assert duration==346.32
++duration=a['duration_s'];assert duration==355.02
+ for topic,file in [('/boxi/cpt7/imu','cpt7_headers.csv'),('/boxi/alphasense/imu','alphasense_headers.csv')]:
+     with (S/file).open() as f:rows=list(csv.DictReader(f))
+     key=next(k for k in rows[0] if k.endswith('.stamp'));ts=[int(r[key]) for r in rows]
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/on/verify_effective_on.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/on/verify_effective_on.py
+@@ -10,12 +10,12 @@
+ 
+ root = Path(__file__).resolve().parent
+ source = Path(sys.argv[1])
+-assert os.environ['CBSMS_BAG_DURATION_SEC'] == '346.32'
++assert os.environ['CBSMS_BAG_DURATION_SEC'] == '355.02'
+ assert os.environ['CBSMS_BAG_RATE'] == '0.20'
+-assert os.environ['CBSMS_MISSION']=='2024-10-01-11-29-55'
+-assert os.environ['CBSMS_BAG_START_SEC']=='0'
++assert os.environ['CBSMS_MISSION']=='2024-11-03-13-59-54'
++assert os.environ['CBSMS_BAG_START_SEC']=='5.7'
+ enabled = os.environ['CBSMS_CBS_ENABLE'] == 'true'
+-assert enabled, 'CP-V91 requires BOTH source receivers enabled'
++assert enabled is (root.name=='on'), 'Mode mismatch'
+ assert os.environ['CBSMS_KIMERA_MODE'] == 'stereo'
+ assert os.environ['CBSMS_CBS_PROTOCOL'] == 'classic'
+ assert os.environ['CBSMS_CBS_LIVE_REVISION_ENABLE'] == 'false'
+@@ -37,7 +37,7 @@
+     glim_factor_graph_inspector_enable=False, glim_cbs_export_endpoint_audit_enable=True)
+ for key, value in expected.items():
+     assert glim[key] == value, (key, glim.get(key), value)
+-assert glim['glim_cbs_receive_external_beliefs'] is True
++assert glim['glim_cbs_receive_external_beliefs'] is enabled
+ import subprocess
+ glim_bus = subprocess.check_output(['rosnode', 'info', '/glim_rosnode'], text=True)
+ subscriptions = glim_bus.split('Subscriptions:', 1)[1].split('Publications:', 1)[0]
+@@ -98,6 +98,10 @@
+     return dict(x.decode().split('=',1) for x in Path('/proc/%d/environ'%pid).read_bytes().split(b'\0') if b'=' in x)
+ assert env(pid)['FL4Q_ENABLE']=='0'
+ assert env(pid)['CPK9_PRIOR_REFRESH']=='1'
++archive_dir=Path(env(pid)['CPV102_PRIOR_FAILURE_DIR']).resolve()
++assert archive_dir==source/'prior_failures' and archive_dir.is_dir() and os.access(archive_dir,os.W_OK)
++assert 'CPV102_PRIOR_FAILURE_DIR' not in env(glim_pid)
++assert not list(archive_dir.iterdir())
+ assert env(pid)['CPV40_REFRESH']=='1' and env(pid)['CPV38_OFF_REFRESH']=='0'
+ assert 'CPV40_REFRESH' not in env(glim_pid)
+ assert env(pid)['FL4M_RETIREMENT']=='remove'
+@@ -136,7 +140,7 @@
+ assert imu_params['gyroscope_noise_density']==0.00020202932517334086
+ assert imu_params['accelerometer_noise_density']==0.0012593921763625943
+ assert hashlib.sha256(Path('/workspace/cbs_gtsam4.3/runs/glim_persistent_compat_cpv82_20261101/release_4/libglim_ros.so').read_bytes()).hexdigest()=='aecc729f4bf51548950b8cb997c3dcd474e30cabe23785c4011e6b22f7dbe918'
+-assert hashlib.sha256((root/'private_build/libkimera_vio.so').read_bytes()).hexdigest()=='b7d6829da6c2c5a0edbe3d7092ba109fa29d24a60b2bb5395b05dd629fa1cee8'
++assert hashlib.sha256((root/'private_build/libkimera_vio.so').read_bytes()).hexdigest()=='985c115d3573446f65ef4ce7cc4125e514b4922fed6445ed05cbc4dbdfb70a09'
+ assert hashlib.sha256(Path('/workspace/cbs_gtsam4.3/runs/local_revision_covariance_cpi1_20261019/libglim_ros.so').read_bytes()).hexdigest()=='42df73c172232a612da965bf43ead8ec454caf08434b84e2da5de74d26cdb79f'
+ assert hashlib.sha256(Path('/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/release_1/libgtsam_points.so.1.2.1').read_bytes()).hexdigest()=='6f71292d29d974a0555abd9fda6b2370fdab81ca634a4e1343c216d2a762d2ca'
+ assert 'GLIM_SHARED_NATIVE_JOURNAL' not in env(glim_pid)
+@@ -145,10 +149,10 @@
+ assert not any('SNAPSHOT' in k or 'REAL_INPUT' in k or 'GLIM_E1_REAL_AUDIT_ROOT' == k for k in env(glim_pid))
+ assert 'e1b4a_real_input' not in glim_loaded
+ with (source/'effective_mode_check.json').open('x') as f:
+-    json.dump(dict(passed=True, checked_before_playback=True, playback_rate=0.20, requested_s=346.32, glim=expected,
++    json.dump(dict(passed=True, checked_before_playback=True, playback_rate=0.20, requested_s=355.02, glim=expected,
+                    actual_profile_sha256=profile_checks,actual_imu_parameters=imu_params,
+                    kimera_body='alphasense_imu',glim_body='cpt7_imu',wire_body='cpt7_imu',
+-                   T_alphasense_cpt7=matrix.tolist(),kimera_receive=True,glim_receive=True,
+-                   kimera=expected_flags, kimera_native_only_outgoing_information=False, mixed_prior_feedback_user_accepted=True, kimera_candidate_env={k:env(pid)[k] for k in ('CPK9_PRIOR_REFRESH','FL4Q_ENABLE','FL4M_RETIREMENT','CPV40_REFRESH','CPV38_OFF_REFRESH','CPV76_PERSISTENT_COMPAT')}, kimera_pid=pid, kimera_argv=argv,
++                   T_alphasense_cpt7=matrix.tolist(),kimera_receive=enabled,glim_receive=enabled,
++                   kimera=expected_flags, kimera_native_only_outgoing_information=False, mixed_prior_feedback_user_accepted=True, kimera_candidate_env={k:env(pid)[k] for k in ('CPK9_PRIOR_REFRESH','FL4Q_ENABLE','FL4M_RETIREMENT','CPV40_REFRESH','CPV38_OFF_REFRESH','CPV76_PERSISTENT_COMPAT')}, prior_failure_archive=str(archive_dir), private_kimera_sha256='985c115d3573446f65ef4ce7cc4125e514b4922fed6445ed05cbc4dbdfb70a09', kimera_pid=pid, kimera_argv=argv,
+                    kimera_maps=loaded,glim_maps=glim_loaded,glim_persistent_compat=env(glim_pid)['CPV82_GLIM_PERSISTENT_COMPAT'],glim_revision_covariance='native_local',cached_provider_sha256='6f71292d29d974a0555abd9fda6b2370fdab81ca634a4e1343c216d2a762d2ca'), f, indent=2)
+-print('CP-V91 split IMU topics/body transform and current private builds verified; BOTH CBS receivers ON, persistent.')
++print('CP-V108 split IMU topics/body transform and current private builds verified; Matched requested receive mode, persistent.')
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/on/glim_profile_on.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/on/glim_profile_on.launch
+@@ -117,7 +117,7 @@
+         <env name="GLIM_SHARED_NATIVE_PROVIDER" value="shared_native"/>
+         <env name="CPV82_GLIM_PERSISTENT_COMPAT" value="1"/>
+         <env name="GLIM_REVISION_COVARIANCE_POLICY" value="native_local"/>
+-        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/full_on_source/e1b_profile.jsonl"/>
++        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/full_on_source/e1b_profile.jsonl"/>
+ 		<param name="config_path" value="$(arg config_path)" />
+ 		<param name="glim_dump_path" value="$(arg glim_dump_path)" />
+ 		<param name="deterministic_input_event_log_path" value="$(arg glim_deterministic_input_event_log_path)" />
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/on/source.env
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/on/source.env
+@@ -2,17 +2,17 @@
+ # to off_source/on_source and CBSMS_CBS_ENABLE to false/true.
+ : "${CBSMS_RUN_NAME:?Set fresh EIG-2 source run name}"
+ : "${CBSMS_CBS_ENABLE:?Set false or true}"
+-export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared
++export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared
+ export CBSMS_RUN_NAME CBSMS_CBS_ENABLE
+ export ROS_LOG_DIR="${CBSMS_RUN_ROOT}/${CBSMS_RUN_NAME}/ros_logs"
+ export CBSMS_PROJECT_ROOT=/workspace/cbs_gtsam4.3
+-export CBSMS_MISSION=2024-10-01-11-29-55
+-export CBSMS_BAG_START_SEC=0
+-export CBSMS_BAG_DURATION_SEC=346.32
++export CBSMS_MISSION=2024-11-03-13-59-54
++export CBSMS_BAG_START_SEC=5.7
++export CBSMS_BAG_DURATION_SEC=355.02
+ export CBSMS_POST_PLAYBACK_DRAIN_SEC=25
+ export CBSMS_BAG_RATE=0.20
+-export CBSMS_SEED_CLOCK_SECS=1727775007
+-export CBSMS_ROS_MASTER_PORT=11612
++export CBSMS_SEED_CLOCK_SECS=1730638815
++export CBSMS_ROS_MASTER_PORT=11632
+ export CBSMS_USE_EXISTING_ROS_MASTER=true
+ export CBSMS_KIMERA_MODE=stereo
+ # The recovered classic Kimera source path is "current", not experimental RIGHT.
+@@ -35,7 +35,7 @@
+ export CBSMS_KIMERA_RECEIVER_AUDIT_MAX_SAMPLES=40
+ export CBSMS_KIMERA_RECEIVER_AUDIT_STRIDE=20
+ export CBSMS_DIAGNOSTIC_NODE_OUTPUT=log
+-export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/on/input_profiles/glim_config
+-export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/on/input_profiles/kimera_profile
++export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/on/input_profiles/glim_config
++export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/on/input_profiles/kimera_profile
+ 
+-export CBSMS_DATASET_DIR=/workspace/cbs_gtsam4.3/src/datasets/GrandTour
++export CBSMS_DATASET_DIR=/workspace/cbs_gtsam4.3/src/datasets/GrandTour/EIG-2
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/on/active_window_on.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/on/active_window_on.launch
+@@ -17,7 +17,7 @@
+   -->
+ 
+   <arg name="glim_config_path"
+-       default="/workspace/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/on/input_profiles/glim_config"/>
++       default="/workspace/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/on/input_profiles/glim_config"/>
+   <arg name="kimera_mode" default="mono"/>
+   <arg name="kimera_enable" default="true"/>
+   <arg name="kimera_params_folder"/>
+@@ -111,7 +111,7 @@
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_stride" value="20"/>
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_max_updates" value="40"/>
+ 
+-  <include file="/workspace/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/on/glim_profile_on.launch">
++  <include file="/workspace/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/on/glim_profile_on.launch">
+     <arg name="config_path" value="$(arg glim_config_path)"/>
+     <arg name="glim_node_output" value="$(arg diagnostic_node_output)"/>
+     <arg name="glim_input_imu_topic" value="$(arg glim_input_imu_topic)"/>
+@@ -351,7 +351,7 @@
+   <node if="$(eval arg('kimera_enable') and arg('kimera_mode') == 'stereo')"
+         pkg="tf2_ros" type="static_transform_publisher"
+         name="grandtour_alpha_imu_to_cpt7_imu_tf"
+-        args="-0.302230743591 0.061798150147 -0.084107655163 -0.007201422999 -0.036738889993 -0.007919430999 0.999267569814 alphasense_imu cpt7_imu"/>
++        args="-0.30223074363567076 0.06179815072250501 -0.084107655854897975 -0.0072014230414873199 -0.036738890418011302 -0.0079194313659656668 0.99926756979493259 alphasense_imu cpt7_imu"/>
+ 
+   <include if="$(eval arg('kimera_enable') and arg('kimera_mode') != 'mono')"
+            file="$(dirname)/grandtour_eth1_kimera_stereo.launch">
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/on/source_runner_on.sh
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/on/source_runner_on.sh
+@@ -43,8 +43,8 @@
+ run_dir="${run_root}/${run_name}"
+ experiment_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ launch_file="${experiment_dir}/active_window_on.launch"
+-[[ "${cbs_enable}" == true && "${cbs_direction}" == bidirectional && "${duration_sec}" == 346.32 && "${bag_rate}" == 0.20 && "${bag_start_sec}" == 0 && "${mission}" == 2024-10-01-11-29-55 && "${kimera_mode}" == stereo ]] || { echo "CP-V91 ETH1 split-IMU full ON346.32 only." >&2; exit 2; }
+-glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-/workspace/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/on/input_profiles/glim_config}"
++[[ "${cbs_enable}" == true && "${cbs_direction}" == bidirectional && "${duration_sec}" == 355.02 && "${bag_rate}" == 0.20 && "${bag_start_sec}" == 5.7 && "${mission}" == 2024-11-03-13-59-54 && "${kimera_mode}" == stereo ]] || { echo "CP-V108 EIG-2 split-IMU full ON355.02 only." >&2; exit 2; }
++glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-/workspace/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/on/input_profiles/glim_config}"
+ kimera_profile_source="${CBSMS_KIMERA_PROFILE_SOURCE:-}"
+ kimera_calibration_overlay="${CBSMS_KIMERA_CALIBRATION_OVERLAY:-${project_root}/src/cbsms/config/grandtour_kimera/eth1_mono_shared_cpt7}"
+ reference_bag="${CBSMS_REFERENCE_BAG:-${dataset_dir}/${mission}_ap20_prism_position.bag}"
+@@ -155,6 +155,7 @@
+ 
+ mkdir -p "${run_dir}/recordings" "${run_dir}/kimera_logs" \
+   "${run_dir}/evaluation"
++mkdir -p "${run_dir}/prior_failures"
+ cp "${launch_file}" "${run_dir}/grandtour_launch_used.launch"
+ cp "${project_root}/src/glim_ros1/launch/newer_college_2021_glim_kimera_cbs_on.launch" \
+   "${run_dir}/newer_college_reference_launch.launch"
+@@ -583,7 +584,7 @@
+   "kimera_receive_cbs_beliefs=${kimera_receive_external_beliefs}" \
+   "glim_cbs_mode=${glim_cbs_mode}" \
+   "kimera_cbs_odom_factor_mode=persistent" \
+-  "experiment=eth1_split_imu_repeat_cpv99_20261103" \
++  "experiment=eig2_split_imu_live_pair_cpv108_20261104" \
+   "glim_sensor_pair=hesai+cpt7_imu" \
+   "kimera_sensor_pair=${kimera_sensor_pair}" \
+   "glim_body_frame=cpt7_imu" \
+@@ -641,5 +642,5 @@
+ fi
+ 
+ touch "${run_dir}/complete.marker"
+-echo "CP-V91 ETH1 split-IMU persistent CBS-ON346.32 source run complete: ${run_dir}"
++echo "CP-V108 EIG-2 split-IMU persistent CBS-ON355.02 source run complete: ${run_dir}"
+ echo "GLIM rows=${glim_rows}, Kimera rows=${kimera_rows}, EKF rows=${ekf_rows}, G2K messages=${g2k_messages}, G2K injected=${g2k_injected}, K2G injected=${k2g_injected}"
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_repeat_cpv99_20261103/prepared/on/kimera_vio_ros.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/on/kimera_vio_ros.launch
+@@ -452,6 +452,7 @@
+            unless="$(arg online)"/>
+     <env name="FL4Q_ENABLE" value="0"/>
+     <env name="CPK9_PRIOR_REFRESH" value="1"/>
++    <env name="CPV102_PRIOR_FAILURE_DIR" value="$(env ROS_LOG_DIR)/../prior_failures"/>
+     <env name="CPV40_REFRESH" value="1"/>
+     <env name="CPV76_PERSISTENT_COMPAT" value="1"/>
+     <env name="CPV69_RETAIN_COMPAT" value="0"/>

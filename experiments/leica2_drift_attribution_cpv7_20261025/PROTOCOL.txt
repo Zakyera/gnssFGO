@@ -1,0 +1,47 @@
+CP-V7 — bounded saved-data LEICA-2 drift attribution, 2026-10-25
+
+Authorization: user "Proceed" to the proposed saved-data comparison after
+CP-V6. No source/solver replay, container start, estimator/settings/calibration
+change, covariance tuning, build, deletion, push or new experiment.
+
+Inputs: immutable CP-V4 Velodyne LEICA-2 OFF/original ON and CP-V6A rotation-
+variance10 ON, native GLIM/native Kimera/concurrent ONLINE fusion trajectories,
+actual G2K factor logs and saved CP-V5 peer audit. Shared-CPT7 IE-TC reference;
+not independent prism ground truth. Keep existing scores and reports unchanged.
+
+1. Exact 100ms integer-time common grid, same physical timestamps for all nine
+trajectories, linear-position/SO(3)-rotation interpolation, <=0.5s estimate
+bracket and <=0.05s reference bracket, no extrapolation. Retain coverage gaps.
+Apply saved CPT7-to-prism transform identically for trajectory RPE/position.
+Relative translation is Cartesian translation difference (not SE(3) rho).
+Evaluate fixed horizons 1/5/10/20s; require uninterrupted common support over
+each interval. Overlapping windows are descriptive, not independent trials.
+
+2. Fixed starting-pose alignment at the first common timestamp, separately
+for each trajectory; no whole-path fit or intermediate reset. Report position
+drift, wrapped heading and roll/pitch angle differences, and rotation magnitude.
+Orientation uses CPT7 body axes, heading about reference Z; document the frame.
+Also retain per-path rigid no-scale best-fit ATE as a distinct metric, not a
+replacement for existing full-saved scores. Sensitivity anchors at +1/+5s
+inside the initial common segment check dependence on one initial pose.
+
+Use fixed30s bins, non-overlapping1s signed relative-rotation errors transported
+into reference-world axes, and their mean/sign persistence. Do not sum norms
+or overlapping errors and call this an exact decomposition of final drift.
+No covariance is interpolated or accumulated without cross-time covariance.
+
+3. For original and candidate ON, join actual G2K aligned means, raw LOCAL
+covariances, APPLIED factor matrices, and recorded same-edge pre/post-update
+relative means. Verify against runtime pre-residuals; never infer pre-state
+from asynchronously published native odometry. Require exact IDs/epochs and
+retain unmatched records. Score against reference at actual receiver endpoints.
+Summarize whole run and fixed30s bins; use identical physical endpoint pairs
+for paired original/candidate comparisons where available. Pre/post changes
+include all native/new/prior/retirement effects, not isolated CBS causation.
+
+Deliver a short report, machine-readable metrics/provenance and a few static
+figures answering: persistent drift/bias, isolated intervals, or inconclusive.
+Tests: synthetic identity/constant global transform/known rotational drift,
+gap exclusion, integer horizon identity, existing score cross-check, finite
+values, covariance/SPD checks, input SHA256 before/after. Refuse overwrites.
+Stop after this report. A one-way CBS experiment is NOT authorized by this step.

@@ -1,0 +1,182 @@
+CP-V44 — EIG-2 Velodyne CBS-ON phase diagnostic
+2026-10-29. Bounded capture and saved-state analysis COMPLETE.
+Covariance investigation excluded; no estimator weights or solver policy changed.
+
+BOTTOM LINE
+===========
+We localized an early instability mechanism, NOT a proven specific software bug.
+The ordinary CBS solve makes large coherent window-tilt changes while changing
+accelerometer bias in almost exactly the direction/magnitude that compensates
+the changed gravity projection. This is not merely Rerun drawing an old point.
+The extra CP-V40 refresh generally repairs much of the resulting IMU residual,
+but does not reliably prevent window motion and sometimes adds substantial tilt.
+
+In these five windows, the ordinary solve already uses current initialized
+states as its linearization point. Fresh native equations equal the saved cache
+exactly, and independent direct solutions closely reproduce the live states.
+Thus the early ON anomaly is NOT explained by the previously identified OFF
+retained-linearization mechanism, a stale linear cache, or inaccurate linear
+back-substitution in the tested windows. A correct linear solve is NOT a
+nonlinear convergence certificate or proof that the graph is well constrained.
+
+The strongest remaining lead is the coupled orientation/velocity/accelerometer-
+bias response of the native graph with CBS constraints, including nonlinear
+convergence and constraint consistency. No conclusion about covariance scale
+is drawn. No full sequence or production fix is justified by this diagnostic.
+
+1. EXACT EXPERIMENT
+===================
+ONE10.0s original-start EIG-2 rear-Velodyne/front-Alphasense/shared-CPT7 ON run;
+offset5.7s,0.20x,25s drain. GLIM and Kimera co-run with the seven-second source-
+WNOA receiver, original Qc x1.0. Same CP-V42 profiles, clocks, MAIN/LOCAL export,
+classic active_window_temporary CBS, scales1, CP-K9/remove/25-state configuration,
+native IMU override unset, CPV40_REFRESH=1 and CPV38_OFF_REFRESH=0. No tuning,
+new IMU/GNSS receiver factors, full rerun, source retry or default promotion.
+
+Private observer backend SHA:
+8d153943c1b605820db7aa530032d655e4e8296f25a9f1cbe0fecbc06afc2720
+Original CP-V40 backend/libcbs and all old artifacts preserved. Launcher18162,
+controller18169; exact child ownership in receipts. Capture/gates complete,
+both originally-stopped containers restored.48Kimera updates,42G2K/43K2G
+injections,18peer retirements. All sensor/transport/lifecycle/receiver gates pass.
+No ATE/RPE, full trajectory score or physical-flight zigzag claim from this prefix.
+
+15complete native snapshots: updates21--25, before ordinary update, after
+ordinary update, after added refresh. Each contains native factors, IMU PIM,
+stereo observations/calibration/cache, X/V/b, owning theta and cached/tree
+Gaussian equations. No marginalized prior or locked variable at these stages;
+first marginalization remains update26. The before-ordinary graph precedes
+incoming-factor admission; the after-ordinary graph plus initialized Values
+provides the common graph for all within-update cost comparisons.
+
+2. WHICH PHASE MOVES THE WINDOW?
+===============================
+Coherent world-frame tilt magnitudes, degrees. Rotation-mean estimate across
+common poses; NOT ATE, RPE or physical attitude error. Different rotation axes
+mean phase magnitudes must not simply be added. Refresh includes the newly
+created pose; ordinary/net comparisons use previously existing poses.
+
+update  sensor time   ordinary solve   added refresh   net old-window tilt
+  21       ~4.6s          0.482            1.073             1.551
+  22       ~4.8s          5.246            0.565             4.692
+  23       ~5.0s          2.481            0.064             2.540
+  24       ~5.2s          5.683            3.936             9.509
+  25       ~5.4s         10.212            1.019             9.350
+
+At25 the ordinary solve revises the previously newest pose by0.1353m/10.091deg;
+after both steps its net revision is0.1336m/9.157deg. Ordinary window-shape
+residual maximum0.0554m: motion is coherent but not a perfectly rigid transform.
+At22 the ordinary step changes that previous pose0.0765m/5.307deg.
+
+3. GRAVITY / ACCELEROMETER-BIAS COUPLING
+======================================
+Serialized PIM gravity is [0,0,+9.81], exactly matching the frozen CPT7 profile.
+The sign is NOT newly changed or diagnosed as wrong. The profile explains the
+stationary CPT7 negative-Z specific-force convention.
+
+For body specific force f=R^T(a-g)+b, a common rotation of trajectory pose and
+world acceleration can be compensated approximately by
+    delta_b = R_after^T g - R_before^T g.
+This identity is evaluated on saved states, not fitted by adjusting weights.
+It is conditional on common rotation of trajectory kinematics, not a proof of
+an exact graph nullspace or physical sensor-bias changes.
+
+Ordinary solve; median across existing states:
+update   actual bias change   gravity prediction   direction cosine
+  21         0.0870                0.0867                0.99928
+  22         0.8954                0.8970                0.99900
+  23         0.4238                0.4235                0.99978
+  24         0.9726                0.9729                0.99873
+  25         1.7500                1.7511                0.99688
+Bias magnitudes in m/s^2. Squared residual/actual-change energy at22/24/25 is
+0.59%/0.76%/0.90%; RMS vector residual0.0687/0.0846/0.1653m/s^2 respectively.
+Median velocity deviation from the corresponding rotated previous velocity
+is only0.00269/0.00348/0.00299m/s. This supports a coupled tilt/bias correction,
+not independent large physical accelerations or a simple local scale change.
+
+A relative CBS factor does not directly command a common world rotation:
+(G Xi)^-1 (G Xj) = Xi^-1 Xj. The common tilt arises through the coupled native
+pose/velocity/bias solution and non-rigid components of the update. These
+measurements localize HOW the graph moves, not WHY its final optimum or its
+finite-step solution chooses that motion.
+
+4. THE EXTRA REFRESH IS NOT SIMPLY MAKING EVERYTHING WORSE
+=========================================================
+Existing weighted native IMU cost on one common, unchanged factor graph:
+update       initialized         after ordinary       after refresh
+  21           854431.20                214.73               233.52
+  22          2185593.39              32221.92               209.97
+  23           245714.51               1276.23               213.33
+  24          1343825.35              23360.75              6191.63
+  25          9615036.98             303724.43               456.25
+
+At25, maximum physical IMU position residual0.012702m ->0.000217m and velocity
+residual0.063643m/s ->0.001926m/s across ordinary->refresh. Rotation residual
+0.009710deg ->0.003092deg. These are internal factor residuals, NOT GT errors.
+At24, after-refresh maximum IMU position residual remains larger; all exact
+values retained in analysis.json. At21 IMU cost rises slightly while total
+objective falls. Every ordinary and extra step in these five windows lowers
+the complete native reported objective. The late uphill events of CP-V43 are
+NOT reproduced or explained away by this10s prefix.
+
+At25 total objective9,656,058.51 ->342,137.01 ->38,810.81. Final components:
+IMU456.25, bias-between7803.60, peer relative-pose30300.45, smart stereo131.65,
+initial priors118.87. These are existing weighted cost contributions, not a
+covariance calibration/ranking. Native smart validity changes (e.g.334->338->327
+of893 at25), so a reduced total alone is not a fixed-activity stationarity test.
+
+5. EQUATION, OBSERVER AND OUTPUT VERIFICATION
+===========================================
+Release and ASan/UBSan observer tests:12ON updates,30phase snapshots each;
+exact state/theta/delta/fixed-key/tree/cache/smart-cache nonmutation versus no
+observer. Old CP-V40 versus observer-disabled state/equation dumps byte-identical.
+Linked vendor DSOs are not sanitizer-instrumented. No estimator covariance
+computation was added by the observer tests.
+
+All15real checkpoints serialize byte-identically on readback; independent
+per-factor error and linearization parity have zero differences. Saved final
+poses are also checked against the actual MAIN export, not merely against the
+checkpoint reader. Native full factor slots/types retained, no omissions.
+
+All15fresh-at-theta Gaussian graphs equal the captured cache exactly. Normal
+matrix and RHS from the Bayes tree agree to4.161e-16/1.743e-15 relative; augmented
+constant terms differ and are retained separately, not mistaken for a different
+normal equation. Independent direct solves reproduce live states within maximum
+5.925e-8 aggregate tangent norm. This mixed-unit norm is NOT metres or RMSE.
+Ordinary-solve theta matches initialized current Values to<=2.923e-17 norm.
+Independent current-state native GN from after-ordinary reproduces the added
+refresh within1.516e-8 aggregate tangent norm. Linear backward residuals are
+~1e-17 or smaller; none of these checks certifies nonlinear stationarity.
+
+Observer overhead:15snapshots total0.318s, median20.69ms, maximum26.08ms.
+The short live run is NOT bit-identical to CP-V42: all48native output timestamps
+match, but maximum native position/orientation difference0.08049m/0.36236deg.
+First changed pose is update6; >1mm by14, >0.01deg by10, all BEFORE recording
+begins at21. This is not exact old-event reconstruction; the new run reproduces
+the early tilt/bias and IMU-cost behavior. No retry was used to obtain it.
+
+6. RECOMMENDED NEXT DECISION — NOT RUN
+=====================================
+Use THESE saved checkpoints to distinguish insufficient nonlinear convergence
+from an unfavorable solution of the coupled constraints. First check the true
+native objective/derivatives and smart-factor activity at the final states;
+then a bounded, safeguarded native solve with identical measurements, original
+priors and weights can test whether the tilt/bias excursion persists.
+Do not merely add more undamped updates or strengthen priors live. If a properly
+checked solve removes the excursion, integration/acceptance is the lead. If it
+retains it, investigate native/CBS constraint consistency and observability.
+No source replay is needed for that discrimination. A full rerun must wait.
+
+ARTIFACTS / PRESERVATION
+=======================
+H=/home/yeranis/repos/gnssFGO/experiments/eig2_on_checkpoint_cpv44_20261029
+P=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_on_checkpoint_cpv44_20261029
+H/PROTOCOL.txt,PRELAUNCH_REVIEW.txt: authorization, settings, tests, preparation.
+H/complete.json,closeout.json: bounded capture/gates/cleanup (6590pins/Hesai667).
+H/analysis.json,gravity_coupling.json: complete phase and mechanism measurements.
+P/checkpoints:15full native binary snapshots; P/inspection/results: state/factor
+readbacks; P/equation_inspection and equation_components: independent equations.
+H/final_verification.json: final hashes, MAIN matching, originals, jobs/container
+restoration and four-sequence Hesai checkpoint. Original reports not overwritten.
+No covariance investigation, new accuracy tables, production change, deletion,
+commit, push, full-sequence run or new method/dataset campaign.

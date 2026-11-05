@@ -1,0 +1,31 @@
+Recorded while capture is active, before any dataset checkpoint solve.
+
+Admission: exact original native-pose, objective and MAIN payload prefix;
+seven independent checkpoint roundtrip receipts; protected inputs unchanged.
+Failure means no scientific comparison and no source retry.
+
+Each offline starting point must pass its joint-objective derivative gate
+before optimization. Gates are not relaxed after seeing dataset outcomes.
+Report failed gates, solver exceptions, iteration/time limits and unchanged
+steps; an optimizer returning is not a stationarity certificate.
+
+Report native IMU unwhitened position/rotation/velocity residuals as internal
+constraint consistency, NOT reference accuracy. Report weighted costs separately
+from metres. Compare initialized and incremental-result starts independently.
+State initial active/inactive visual counts and final native activity/distance
+differences. Do not conflate different initial active sets or final native and
+joint objectives. No omitted factor is silently counted as successfully solved.
+
+If a qualified solve strongly reduces IMU inconsistency using the same native
+IMU measurements/noise and unchanged prior function, it supports a solver /
+linearization problem over the claim that the sensor factors necessarily force
+the bad residual. It does not isolate one particular code defect: damping,
+iterations, coordinate refresh and explicit landmark treatment differ together
+in this offline comparator. Separate ablations would be needed for causation.
+
+If the derivative gate or optimization fails, preserve the failure. A failed
+comparator does not vindicate the native update and does not prove that larger
+prior weights are necessary. No nonlinear stationarity claim from cached/tree
+equation agreement alone. No online output, new ATE/RPE, trajectory smoothing,
+CBS-ON improvement, full-sequence recovery or production fix can be claimed
+from these seven disconnected checkpoints.

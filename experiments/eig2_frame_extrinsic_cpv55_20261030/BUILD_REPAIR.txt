@@ -1,0 +1,33 @@
+Original release compilation stopped at GTSAM's Eigen-version static assertion:
+the standalone command selected system Eigen before the GTSAM build's bundled
+Eigen. No test executed, no numerical failure or estimator fault. Original
+command/log/source retained. Fresh native_attempt1 adds the same GTSAM bundled
+Eigen include path used by CP53's native extraction build. No test/production
+code or guard changed. Container restored stopped after failed attempt.
+
+The additional saved-graph reader's first compile used a nonexistent camera
+baseline getter. Fresh SavedFrame_v2/saved_native_attempt1 uses the actual
+getStereoCalib()->baseline() accessor. Original source/compile logs preserved;
+no numerical test or estimator setting changed, no source run.
+
+saved_native_attempt1 compiled but crashed before graph loading. readelf identifies
+an actual standalone test link defect: inherited CP53 link list selected OpenCV
+3.4, whereas the newly called pinned Kimera camera library depends on OpenCV4.2.
+The old CP53 reader did not call camera APIs. Fresh saved_native_attempt2 removes
+the inherited OpenCV3 list and explicitly links OpenCV4.2 core, matching the
+camera library. Test source/checks unchanged. Failed binary/logs kept. gdb was
+unavailable (debug.log); no debugger package installed. Do not infer a production
+estimator fault from this diagnostic executable's mixed-ABI crash.
+
+Raw camera header reader initially used ROS2-style lowercase k/d; original
+rosbags ROS1 CameraInfo has uppercase K/D. input_header_audit_v2 only corrects
+these field names; no numerical guard change or new data capture.
+
+saved_native_attempt2 then exposed the paired header mismatch at link time
+(cv::String::deallocate, a 3.x symbol): inherited extraction compile flags put
+devel's OpenCV3 headers ahead of OpenCV4. Fresh attempt3 uses the exact camera
+translation-unit compile recipe's OpenCV4 header ordering plus CP51 checkpoint
+overlays, and the corrected OpenCV4 link. Same SavedFrame_v2.cpp; no estimator
+or numerical test changes. Live saved Kimera maps contain only OpenCV4 core.
+Saved GLIM maps contain both versions; that is a separate dependency-hygiene
+observation, not evidence that GLIM's Eigen/GTSAM belief transforms are wrong.

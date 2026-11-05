@@ -1,0 +1,21 @@
+CP-T1: saved four-sequence optimization / throughput audit, 2026-10-23
+User requests timing for GLIM, Kimera and fusion, dominant cost and 0.5x feasibility.
+
+1. Freeze scope: completed ETH1 CP-K23, EIG-2 CP-K24A supplemental result,
+   corrected quiet-start SPX-3 CP-K28, LEICA-2 CP-K29; both OFF and ON at0.20x.
+   Trace timer boundaries and reuse retained telemetry. No captures, solver
+   replays, builds, parameter changes, tuning or higher-rate launch.
+2. Extract whole/steady/tail timings, additive stage costs, actual update rates,
+   spikes, measured queue/output-age evidence. Distinguish scan/backend/support
+   service from pure nonlinear solve; nested timers must not be double-counted.
+   Use event rates and total measured service for throughput estimates; do not
+   average per-version costs and omit revision volume. Assess short bursts.
+3. Report comparison and bounded0.5x recommendation. Saved0.20x times extrapolate
+   unchanged service only; no guarantee under altered CPU/GPU contention or
+   changed causal CBS arrivals. Identify uninstrumented costs explicitly.
+Outputs are new read-only-analysis artifacts here; existing captures immutable.
+
+Completed all three steps 2026-10-23. Report: REPORT.txt. Authoritative statistics:
+timing_v2.json; audit callback association: audit_spikes.json. No new run/build,
+solver replay, tuning, container start or playback-rate change.0.5x plausible,
+not yet validated. No next experiment automatically authorized.

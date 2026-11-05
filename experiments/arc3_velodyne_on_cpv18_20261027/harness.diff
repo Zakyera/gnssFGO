@@ -1,0 +1,260 @@
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/validate_case.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_on_cpv18_20261027/prepared/validate_case.py
+@@ -11,7 +11,7 @@
+ OUT=REC/'receiver'
+ CTL=P/f'full_{MODE}_control'
+ EXE=Path('/home/yeranis/results/gnssfgo_leica2_motion_prior_quarter_cpv15_20261026/live_trace')
+-RESULT=Path(f'/home/yeranis/results/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/{MODE}')
++RESULT=Path(f'/home/yeranis/results/gnssfgo_arc3_velodyne_on_cpv18_20261027/{MODE}')
+ LIB=Path('/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib')
+ 
+ def sha(p):
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/glim_profile_on.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_on_cpv18_20261027/prepared/glim_profile_on.launch
+@@ -116,7 +116,7 @@
+         <env name="CPK16_MAIN_GPU_BATCHING" value="1"/>
+         <env name="GLIM_SHARED_NATIVE_PROVIDER" value="shared_native"/>
+         <env name="GLIM_REVISION_COVARIANCE_POLICY" value="native_local"/>
+-        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/full_on_source/e1b_profile.jsonl"/>
++        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_on_cpv18_20261027/prepared/full_on_source/e1b_profile.jsonl"/>
+ 		<param name="config_path" value="$(arg config_path)" />
+ 		<param name="glim_dump_path" value="$(arg glim_dump_path)" />
+ 		<param name="deterministic_input_event_log_path" value="$(arg glim_deterministic_input_event_log_path)" />
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/source.env
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_on_cpv18_20261027/prepared/source.env
+@@ -2,7 +2,7 @@
+ # to off_source/on_source and CBSMS_CBS_ENABLE to false/true.
+ : "${CBSMS_RUN_NAME:?Set fresh ARC-3 source run name}"
+ : "${CBSMS_CBS_ENABLE:?Set false or true}"
+-export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared
++export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_on_cpv18_20261027/prepared
+ export CBSMS_RUN_NAME CBSMS_CBS_ENABLE
+ export ROS_LOG_DIR="${CBSMS_RUN_ROOT}/${CBSMS_RUN_NAME}/ros_logs"
+ export CBSMS_PROJECT_ROOT=/workspace/cbs_gtsam4.3
+@@ -12,7 +12,7 @@
+ export CBSMS_POST_PLAYBACK_DRAIN_SEC=25
+ export CBSMS_BAG_RATE=0.20
+ export CBSMS_SEED_CLOCK_SECS=1731934116
+-export CBSMS_ROS_MASTER_PORT=11488
++export CBSMS_ROS_MASTER_PORT=11489
+ export CBSMS_USE_EXISTING_ROS_MASTER=true
+ export CBSMS_KIMERA_MODE=stereo_shared_cpt7
+ # The recovered classic Kimera source path is "current", not experimental RIGHT.
+@@ -35,7 +35,7 @@
+ export CBSMS_KIMERA_RECEIVER_AUDIT_MAX_SAMPLES=40
+ export CBSMS_KIMERA_RECEIVER_AUDIT_STRIDE=20
+ export CBSMS_DIAGNOSTIC_NODE_OUTPUT=log
+-export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/input_profiles/glim_config
+-export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/input_profiles/kimera_profile
++export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_on_cpv18_20261027/prepared/input_profiles/glim_config
++export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_on_cpv18_20261027/prepared/input_profiles/kimera_profile
+ 
+ export CBSMS_DATASET_DIR=/workspace/cbs_gtsam4.3/src/datasets/GrandTour/ARC-3
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/input_audit.json
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_on_cpv18_20261027/prepared/input_audit.json
+@@ -42596,7 +42596,7 @@
+       "normalized_stamp_s": 1731934583.1055813,
+       "min_offset_s": -0.0981796532869339,
+       "max_offset_s": 0.001306368038058281,
+-      "count": 11488,
++      "count": 11489,
+       "captured_imu_bracketed": true
+     },
+     {
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/full_on.json
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_on_cpv18_20261027/prepared/full_on.json
+@@ -1,7 +1,7 @@
+ {
+   "sequence": "ARC-3 LOCAL CP-V17 Velodyne physical 1731934117040035611..1731934843420035611ns matched ON",
+   "source_protocol": "classic",
+-  "ros_master_uri": "http://127.0.0.1:11488",
++  "ros_master_uri": "http://127.0.0.1:11489",
+   "imu_topic": "/boxi/cpt7/imu",
+   "imu_frame": "cpt7_imu",
+   "world_frame": "gnssfgo_world",
+@@ -12,18 +12,18 @@
+   "drain_timeout_wall_sec": 300,
+   "ros1_container": "cbsms_ws_gpu",
+   "receiver_container": "ubuntu-jammy-humble-nvidia",
+-  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/receiver_cpk19.sh",
++  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_on_cpv18_20261027/prepared/receiver_cpk19.sh",
+   "sources": [
+     {
+       "id": "glim_velodyne",
+-      "session": "arc3_cpv17_velodyne_on_20261026",
++      "session": "arc3_cpv18_velodyne_on_20261027",
+       "kind": "glim",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/ros_logs/*/glim_rosnode-*-stdout.log"
+     },
+     {
+       "id": "kimera_front",
+-      "session": "arc3_cpv17_velodyne_on_20261026",
++      "session": "arc3_cpv18_velodyne_on_20261027",
+       "kind": "kimera",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/estimators.log"
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/active_window_on.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_on_cpv18_20261027/prepared/active_window_on.launch
+@@ -17,7 +17,7 @@
+   -->
+ 
+   <arg name="glim_config_path"
+-       default="/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/input_profiles/glim_config"/>
++       default="/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_on_cpv18_20261027/prepared/input_profiles/glim_config"/>
+   <arg name="kimera_mode" default="mono"/>
+   <arg name="kimera_enable" default="true"/>
+   <arg name="kimera_params_folder"/>
+@@ -111,7 +111,7 @@
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_stride" value="20"/>
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_max_updates" value="40"/>
+ 
+-  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/glim_profile_on.launch">
++  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_on_cpv18_20261027/prepared/glim_profile_on.launch">
+     <arg name="config_path" value="$(arg glim_config_path)"/>
+     <arg name="glim_node_output" value="$(arg diagnostic_node_output)"/>
+     <arg name="glim_input_imu_topic" value="$(arg glim_input_imu_topic)"/>
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/active_window.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_on_cpv18_20261027/prepared/active_window.launch
+@@ -17,7 +17,7 @@
+   -->
+ 
+   <arg name="glim_config_path"
+-       default="/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/input_profiles/glim_config"/>
++       default="/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_on_cpv18_20261027/prepared/input_profiles/glim_config"/>
+   <arg name="kimera_mode" default="mono"/>
+   <arg name="kimera_enable" default="true"/>
+   <arg name="kimera_params_folder"/>
+@@ -111,7 +111,7 @@
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_stride" value="20"/>
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_max_updates" value="40"/>
+ 
+-  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/glim_profile.launch">
++  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_on_cpv18_20261027/prepared/glim_profile.launch">
+     <arg name="config_path" value="$(arg glim_config_path)"/>
+     <arg name="glim_node_output" value="$(arg diagnostic_node_output)"/>
+     <arg name="glim_input_imu_topic" value="$(arg glim_input_imu_topic)"/>
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/glim_profile.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_on_cpv18_20261027/prepared/glim_profile.launch
+@@ -116,7 +116,7 @@
+         <env name="CPK16_MAIN_GPU_BATCHING" value="1"/>
+         <env name="GLIM_SHARED_NATIVE_PROVIDER" value="shared_native"/>
+         <env name="GLIM_REVISION_COVARIANCE_POLICY" value="native_local"/>
+-        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/full_off_source/e1b_profile.jsonl"/>
++        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_on_cpv18_20261027/prepared/full_off_source/e1b_profile.jsonl"/>
+ 		<param name="config_path" value="$(arg config_path)" />
+ 		<param name="glim_dump_path" value="$(arg glim_dump_path)" />
+ 		<param name="deterministic_input_event_log_path" value="$(arg glim_deterministic_input_event_log_path)" />
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/run_case_on.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_on_cpv18_20261027/prepared/run_case_on.py
+@@ -34,7 +34,7 @@
+     own.mkdir(exist_ok=False)
+     inside = '/workspace/'+str(own.relative_to('/home/yeranis/repos/V4RL'))
+     env_inside = '/workspace/'+str((ROOT/'source.env').relative_to('/home/yeranis/repos/V4RL'))
+-    master_uri = 'http://127.0.0.1:11488'
++    master_uri = 'http://127.0.0.1:11489'
+     jobs = {}
+     streams = []
+     def start(name, command):
+@@ -48,7 +48,7 @@
+             text=True, capture_output=True, check=check)
+     def stop_pid(name):
+         # The PID is recorded by this case, command must match the owned port/run.
+-        token = '11488' if name=='master' else str(source.name)
++        token = '11489' if name=='master' else str(source.name)
+         script = ('import os,signal,sys; from pathlib import Path; p=Path(sys.argv[1]); '
+           'pid=int(p.read_text()) if p.exists() else 0; c=Path("/proc/%d/cmdline"%pid); '
+           'e=Path("/proc/%d/environ"%pid); '
+@@ -60,7 +60,7 @@
+     started = time.time()
+     try:
+         assert ros('rosparam get /rosversion',check=False).returncode != 0, 'port is already in use'
+-        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11488'
++        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11489'
+         start('master',['docker','exec','cbsms_ws_gpu','setsid','--wait','bash','-lc',master_script])
+         for _ in range(60):
+             if ros('rosparam get /rosversion',check=False).returncode==0:
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/source_runner.sh
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_on_cpv18_20261027/prepared/source_runner.sh
+@@ -44,7 +44,7 @@
+ experiment_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ launch_file="${experiment_dir}/active_window.launch"
+ [[ "${cbs_enable}" == false && "${cbs_direction}" == bidirectional && "${duration_sec}" == 726.38 && "${bag_rate}" == 0.20 && "${bag_start_sec}" == 0.2 ]] || { echo "Prepared ARC-3 full-usable726.38-second 0.20x OFF fixed-lag capture only." >&2; exit 2; }
+-glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/input_profiles/glim_config}"
++glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_on_cpv18_20261027/prepared/input_profiles/glim_config}"
+ kimera_profile_source="${CBSMS_KIMERA_PROFILE_SOURCE:-}"
+ kimera_calibration_overlay="${CBSMS_KIMERA_CALIBRATION_OVERLAY:-${project_root}/src/cbsms/config/grandtour_kimera/eth1_mono_shared_cpt7}"
+ reference_bag="${CBSMS_REFERENCE_BAG:-${dataset_dir}/${mission}_ap20_prism_position.bag}"
+@@ -579,7 +579,7 @@
+   "kimera_receive_cbs_beliefs=${kimera_receive_external_beliefs}" \
+   "glim_cbs_mode=${glim_cbs_mode}" \
+   "kimera_cbs_odom_factor_mode=active_window_temporary" \
+-  "experiment=gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026" \
++  "experiment=gnssfgo_arc3_velodyne_on_cpv18_20261027" \
+   "glim_sensor_pair=velodyne+cpt7_imu" \
+   "kimera_sensor_pair=${kimera_sensor_pair}" \
+   "glim_body_frame=cpt7_imu" \
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/full_off.json
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_on_cpv18_20261027/prepared/full_off.json
+@@ -1,7 +1,7 @@
+ {
+   "sequence": "ARC-3 LOCAL CP-V17 Velodyne physical 1731934117040035611..1731934843420035611ns matched OFF",
+   "source_protocol": "classic",
+-  "ros_master_uri": "http://127.0.0.1:11488",
++  "ros_master_uri": "http://127.0.0.1:11489",
+   "imu_topic": "/boxi/cpt7/imu",
+   "imu_frame": "cpt7_imu",
+   "world_frame": "gnssfgo_world",
+@@ -12,18 +12,18 @@
+   "drain_timeout_wall_sec": 300,
+   "ros1_container": "cbsms_ws_gpu",
+   "receiver_container": "ubuntu-jammy-humble-nvidia",
+-  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/receiver_cpk19.sh",
++  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_on_cpv18_20261027/prepared/receiver_cpk19.sh",
+   "sources": [
+     {
+       "id": "glim_velodyne",
+-      "session": "arc3_cpv17_velodyne_off_20261026",
++      "session": "arc3_cpv18_velodyne_off_20261027",
+       "kind": "glim",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/ros_logs/*/glim_rosnode-*-stdout.log"
+     },
+     {
+       "id": "kimera_front",
+-      "session": "arc3_cpv17_velodyne_off_20261026",
++      "session": "arc3_cpv18_velodyne_off_20261027",
+       "kind": "kimera",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/estimators.log"
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/source_runner_on.sh
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_on_cpv18_20261027/prepared/source_runner_on.sh
+@@ -44,7 +44,7 @@
+ experiment_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ launch_file="${experiment_dir}/active_window_on.launch"
+ [[ "${cbs_enable}" == true && "${cbs_direction}" == bidirectional && "${duration_sec}" == 726.38 && "${bag_rate}" == 0.20 && "${bag_start_sec}" == 0.2 ]] || { echo "Prepared ARC-3 full-usable726.38-second 0.20x classic CBS-ON fixed-lag capture only." >&2; exit 2; }
+-glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/input_profiles/glim_config}"
++glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-/workspace/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_on_cpv18_20261027/prepared/input_profiles/glim_config}"
+ kimera_profile_source="${CBSMS_KIMERA_PROFILE_SOURCE:-}"
+ kimera_calibration_overlay="${CBSMS_KIMERA_CALIBRATION_OVERLAY:-${project_root}/src/cbsms/config/grandtour_kimera/eth1_mono_shared_cpt7}"
+ reference_bag="${CBSMS_REFERENCE_BAG:-${dataset_dir}/${mission}_ap20_prism_position.bag}"
+@@ -579,7 +579,7 @@
+   "kimera_receive_cbs_beliefs=${kimera_receive_external_beliefs}" \
+   "glim_cbs_mode=${glim_cbs_mode}" \
+   "kimera_cbs_odom_factor_mode=active_window_temporary" \
+-  "experiment=gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026" \
++  "experiment=gnssfgo_arc3_velodyne_on_cpv18_20261027" \
+   "glim_sensor_pair=velodyne+cpt7_imu" \
+   "kimera_sensor_pair=${kimera_sensor_pair}" \
+   "glim_body_frame=cpt7_imu" \
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/transport_tools/live_receiver_protocol.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_on_cpv18_20261027/prepared/transport_tools/live_receiver_protocol.py
+@@ -132,7 +132,7 @@
+         raise ValueError('unknown receiver_publication_policy')
+     if policy == 'fl4a_fixed_lag_incremental':
+         # Private FL4a adapter only. No nonlinear stationarity certificate is claimed.
+-        expected = '/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared/receiver_cpk19.sh'
++        expected = '/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_on_cpv18_20261027/prepared/receiver_cpk19.sh'
+         if config.get('receiver_model') != 'source_wnoa' or config.get('receiver_binary') != expected:
+             raise ValueError('FL4a policy requires the pinned fixed-lag wrapper')
+         if config.get('receiver_fixed_lag_seconds') != 7 or any(key.startswith('WNOJ_') for key in environment):

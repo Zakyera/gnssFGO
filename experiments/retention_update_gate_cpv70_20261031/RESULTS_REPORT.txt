@@ -1,0 +1,42 @@
+CP-V70 -- CONDITIONAL REMOVE / RETAIN, EIG-2 HESAI, FIRST60s
+Method1 first-published absolute Kimera backend poses. EVO1.36.3 only.
+Same292 recorded post-aligned incoming beliefs, updates and endpoints.
+Both arms CBS-ON inputs: REMOVE is not CBS-OFF. No live GLIM/fusion.
+Original feedback history held fixed; no new return feedback.
+IE-TC shares CPT7; not independent prism ground truth.
+ATE SE3 alignment, no scale. RPE reference-distance0.5m consecutive pairs.
+Path is estimated polyline, not physical distance travelled.
+
+COMMON MASK
+Mode | ATE RMSE m | path m | translation RPE m | rotation RPE deg | rows
+remove | 0.088985 | 39.406009 | 0.083220 | 1.421097 | 596
+retain | 0.062449 | 34.554530 | 0.030854 | 1.064247 | 596
+Reference path: 34.756967m; matched RPE pairs: 63
+Common coverage: {"grid_queries": 596, "valid_queries": 596, "excluded_queries": 0, "supported_s": 59.5, "capture_s": 60.0, "supported_capture_percent": 99.16666666666667, "first_s": 0.23645396600000002, "last_s": 59.736453966000006, "envelope_s": 59.50000000000001, "start_gap_s": 0.23645396600000002, "tail_gap_s": 0.26354603399999377, "segments": [{"first_s": 0.23645396600000002, "last_s": 59.736453966000006, "rows": 596}]}
+ATE improvement remove -> retain: +29.821%
+
+FULL SAVED -- native cadence
+remove | 0.097695 | 41.727794 | 0.111920 | 2.403280 | 298
+  first 0.199946383s, last 59.799417809s, span 59.599471426s, gaps 0
+retain | 0.062660 | 34.823199 | 0.033203 | 0.854870 | 298
+  first 0.199946383s, last 59.799417809s, span 59.599471426s, gaps 0
+
+PREVIOUS-POSE REVISION / WITHIN-SOLUTION MOTION (geometric diagnostics, not ATE/RPE)
+Mode | window | revision median/p95/max m | within-update motion median/p95/max m
+remove | whole | 0.042824 / 0.178221 / 0.639667 | 0.115636 / 0.182383 / 0.203477
+remove | 40..60s | 0.077381 / 0.285475 / 0.639667 | 0.093584 / 0.134877 / 0.150779
+  Costs: {"rows": 298, "total_after": {"n": 298, "mean": 71799.0492200883, "median": 44117.76683850949, "p95": 242975.16700976517, "maximum": 299873.8214279188}, "imu_after": {"n": 298, "mean": 1367.0913821170923, "median": 837.7725440435174, "p95": 5039.4240923020725, "maximum": 5656.1212604206985}, "retirements": 268}
+  Timing: {"optimize_ms": {"n": 298, "mean": 73.61222779865771, "median": 77.18105, "p95": 98.00772500000001, "maximum": 116.626}, "smoother_ms": {"n": 298, "mean": 33.619785100671145, "median": 33.35195, "p95": 45.4043849999999, "maximum": 67.7955}}
+  Early messages held until target update: 1
+retain | whole | 0.008526 / 0.033301 / 0.113423 | 0.115716 / 0.182068 / 0.204575
+retain | 40..60s | 0.011378 / 0.037104 / 0.113423 | 0.093103 / 0.136646 / 0.148088
+  Costs: {"rows": 298, "total_after": {"n": 298, "mean": 352345.1312312135, "median": 231137.14231129037, "p95": 887126.0712279122, "maximum": 955331.5246190169}, "imu_after": {"n": 298, "mean": 1429.4395608102136, "median": 882.3646232452425, "p95": 5210.438263138853, "maximum": 5739.165671765181}, "retirements": 268}
+  Timing: {"optimize_ms": {"n": 298, "mean": 68.7510502013423, "median": 71.3028, "p95": 89.898405, "maximum": 127.077}, "smoother_ms": {"n": 298, "mean": 31.16862309395973, "median": 30.57825, "p95": 41.51699499999996, "maximum": 70.0566}}
+  Early messages held until target update: 1
+
+LIMITS: this is a60s conditional diagnostic, not full mission or live bidirectional safety.
+CP67 LOCAL provenance gate remains FAILED. Retained marginal history includes peer information.
+No covariance weights, prior functions, native smart factors or solver iterations changed.
+No nonlinear stationarity, independent covariance, default promotion or final universal fix claim.
+Machine-readable evidence: results.json, evaluation/commands.json and EVO ZIP archives.
+Closeout: verification.json and complete.json; original CP69 failure stays preserved.

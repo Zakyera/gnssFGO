@@ -1,0 +1,51 @@
+CP-V9: authorized single full Leica-2 Velodyne G2K gravity projection
+=================================================================
+2026-10-26 user explicitly approved proceeding to the CP-V8 experiment.
+ONE full CBS-ON capture, saved CP-V4 OFF/original ON controls, no duplicate OFF,
+automatic retry, sweep, degeneracy detector, default promotion, deletion/push.
+Private opt-in replaces only receiving Kimera sender-odometry G2K factors.
+Residual r=Log(Z^-1 Xi^-1 Xj), rotation first; fixed M=[g^T,0;0,I3],
+y=M r, Cy=M C M^T, full dense 4x4 Gaussian. g=(Ri Rz)^T gravity_world/|gravity|,
+using pre-injection Xi and the nominal aligned Z endpoint. gravity_world is
+read from Kimera's existing native IMU preintegration parameters, not GT or
+a fixed covariance index. Freeze g/M for the factor lifetime. No 6D duplicate.
+Use the exact derivative of this residual. Frozen BetweenFactor uses an
+approximate local Jacobian away from zero; do not change any default/native
+factor. This is disclosed as a candidate factor implementation distinction,
+not bitwise preservation of the original approximate update equations.
+Focused checks: dense covariance/SPD/information loss; non-axis-aligned chart,
+finite-difference Jacobians, rigid-world invariance, default/direction isolation,
+actual BPSAM insertion/removal/LOCAL exclusion and immutable factor projection.
+Stop on a failed admission check. No broad optimizer redesign.
+
+Keep CP-V4 sensors/profiles/binaries except isolated libcbs receiving overlay;
+CP-K9 Kimera prior-refresh1/FL4Q0/remove/25states; MAIN batching, GLIM5s,
+all-LOCAL dense exports/corrected MAIN means, classic active_window_temporary,
+Gaussian scale1, K2G unchanged; CP-K19 seven-second source_wnoa,100ms supports,
+no central IMU/GNSS, same Qc/priors/stable IDs/seal_at_absorption/EOF policy.
+Mean-only covariance alignment approximation remains. Logging identifies raw
+6D beliefs separately from actual projected factors. Existing 6D residual
+safety checks unchanged. No filter based on reference errors.
+Window1732549034915071665..1732549463665071665ns,428.75s,bag offset6.0,
+0.20x headless,25s drain,port11487,fresh CP-V9 roots only.
+Preserve source/control/receiver coverage, sensor, LOCAL, lifecycle, transport
+and projected-factor audits. A failed prefix is not a full result.
+Use process-scoped inhibitors; stop owned jobs before restoring containers.
+No persistent automation is authorized or needed by this protocol.
+
+Predeclared screening criteria unchanged from CP-V8 PROPOSAL.txt:
+same-supported-timestamp Kimera ATE AND20s rotation RPE >=20% better than
+original ON; no worse accumulated heading or10/20s gravity-axis angular error,
+including0,+1,+5s fixed-start anchors where supported; GLIM ATE <=10% worse,
+ONLINE fusion ATE <=5% worse, neither >10% worse10/20s translation RPE.
+No numerical/lifecycle failures, materially reduced coverage, unaccounted
+factor, protected-setting drift or workload exceeding frozen rate budget.
+Before capture, material common coverage loss is operationalized as >1% of
+saved OFF/original-ON common supported duration. Timing screen uses p95 whole
+GLIM scan <=500ms and Kimera backend <=1000ms at0.20x, with receiver drain and
+retention/coverage gates intact; spikes and queue maxima reported separately.
+Margins are practical screens, not confidence intervals. Do not relax them.
+Report all native/ONLINE ATE,1/10/20s RPE,path lengths,coverage,uncertainty,
+revision/payload/timing. DELAYED fixed-lag-finalized fusion separately.
+IE-TC shares CPT7; no independent-prism or stationarity/calibration claim.
+One result stops this experiment; further confirmation requires approval.

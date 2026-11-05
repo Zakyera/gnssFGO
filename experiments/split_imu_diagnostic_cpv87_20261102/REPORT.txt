@@ -1,0 +1,198 @@
+CP-V87 — ETH1 Alphasense/Kimera saved-data diagnosis
+2026-11-02. Diagnosis complete; root cause NOT yet isolated or repaired.
+
+BOTTOM LINE
+The target GLIM/HG4930 + Kimera/Alphasense assignment is technically routed
+correctly, but the Alphasense Kimera integration is not qualified for a campaign.
+The healthy CPT7 control localizes the issue to the changed IMU integration
+bundle or its interaction with the backend. It does not prove defective hardware.
+The leading TESTABLE configuration hypothesis is the much tighter Alphasense
+bias-evolution model interacting with real acceleration/model disagreement.
+This is not a confirmed cause. No estimator, optimizer, replay, build, tuning,
+calibration update, fusion, CBS-ON, deletion or new trajectory scoring was run.
+
+1. AUTHORITATIVE EXISTING COMPARISON (EVO; NOT RESCORED)
+CP85 authority: ../eth1_split_imu_off60_cpv85_20261101_attempt1/
+report_completion_1/{complete.json,results.json,RESULTS_REPORT.txt}.
+CP86 authority: ../eth1_cpt7_control_off60_cpv86_20261102/
+{complete.json,results.json,RESULTS_REPORT.txt,profile_parity.json}.
+Both source-only CBS-OFF captures: ETH1 offset0,60s,0.20x,25s drain;
+same camera data, same current CP76/CP40 Kimera and CP82 GLIM binaries.
+Only Kimera IMU subscription/body, camera T_BS, IMU rate/noise differ.
+
+Kimera                          Alpha CP85       CPT7 CP86
+Common Method1 EVO ATE (m)       23.192259         0.047226
+Common delta0.5m tRPE (m)        13.281672         0.025292
+Common delta0.5m rRPE (deg)       0.932099         0.665586
+Common estimated polyline (m) 1323.428703        25.219278
+Common reference polyline (m)   25.304035        25.304035
+Full-native Method1 ATE (m)      24.126003         0.047371
+Full-native polyline (m)      1704.070396        25.489573
+Previous-state revision p95(m)  37.122535         0.017472
+Previous-state revision max(m)  75.824811         0.078017
+
+Common mask is IDENTICAL:56.0s,561 queries,46 reference-distance0.5m pairs.
+Full-native is284 Kimera poses,56.399676s supported span; startup3.199979s
+keyframe gap is explicit. Do not interchange native/common path lengths.
+Reference is IE-TC transformed to prism, sharing CPT7; NOT independent prism GT.
+These are estimated polylines, not physical distance travelled.
+
+2. WHAT THE SAVED DATA RULE OUT / DO NOT RULE OUT
+Confirmed actual Kimera remap /boxi/alphasense/imu and alphasense_imu body in
+CP85, versus /boxi/cpt7/imu and cpt7_imu in CP86. GLIM remains CPT7 in both.
+Zero CBS insertions in both; no fusion. A bad external-belief transform cannot
+explain this failure because no external factor entered Kimera.
+The Alpha-to-CPT7 belief/fusion adapter still needs separate qualification
+before future CBS/fusion use. Correct native input routing does not certify it.
+
+Saved mission-TF/profile audit confirms camera T_BS composition, proper rotations
+and invariant stereo geometry. This excludes an obvious swapped/inverted matrix
+in preparation, NOT a few-degree error in the dataset's physical calibration.
+RosOnlineDataProvider passes header timestamps, acceleration and angular velocity
+unchanged. There is no extra g multiplier or hidden axis rotation in that path.
+Actual packet integration uses header deltas, not a hardcoded100Hz timestep.
+Noise densities are squared once; bias random-walk sigmas use sqrt(delta_t).
+No obvious density/rate/double-squaring conversion bug was found.
+
+All11972 Alpha and5986 CPT7 recorded header stamps match raw inputs.601 camera
+pairs reconcile as3 pre-initialization+597 processed+1 unsupported EOF pair.
+No processing-side IMU loss was found. Alpha RAW data do have four gaps>15ms
+(4.4815..4.5035,8.8844..8.9064,26.1854..26.2024,34.9843..35.0063s);
+CPT7 max gap10.001ms. A small physical timing offset/averaging convention remains
+unexcluded. Header equality is not a certificate of camera/IMU synchronization.
+
+3. WHEN FAILURE BECOMES VISIBLE
+All times below are seconds after the saved playback epoch1727775007855396309ns,
+NOT wall-clock seconds or time after initialization. The284 keyframe stamps are
+identical between arms.282 revision pairs are available; diagnostic step2 absent
+in both. Threshold crossings are operational markers, not the first true error.
+
+time(s)  Saved Alpha observation
+ 6.500   First post-update IMU objective>10:15.924; previous revision3.38mm.
+18.900   First previous-state translation revision>0.1m:0.124959m.
+19.300   First post-update IMU objective>100:176.803.
+20.656   First raw z acceleration exactly approximately-39.2m/s2.
+20.700   IMU objective4619.580; previous-state revision0.264507m.
+20.900   First revision>0.5m:0.715867m; same-update motion0.268749m.
+         IMU objective14907.369 of total15300.162 (97.4%).
+22.900   First revision>1m:1.364251m.
+28.700   Revision11.180604m, but same-update translation only0.098529m.
+
+CPT7 never exceeds0.1m previous-state revision or10 IMU objective in this run.
+Alpha post-update IMU objective median2928.111/p95213410.199;
+CPT7 median0.399760/p951.183495. These are WEIGHTED nonlinear factor errors
+evaluated after each incremental update, NOT a nonlinear-stationarity test,
+physical residual magnitude, or directly comparable sensor accuracy score.
+The two arms use different noise models. Within-Alpha escalation is the useful
+observation. RetirementAudit.h confirms objective.csv columns5=post-update total,
+7=post-update native ImuFactor error (zero-based), excluding separate bias factors.
+
+4. BIAS-EVOLUTION MODEL: SPECIFIC CONFIGURATION SUSPECT
+                                  Alpha                 CPT7 control
+accelerometer density             0.00125939217636      0.0005928679563445
+gyroscope density                 0.000202029325173     0.00001113913052107
+accelerometer bias random walk    0.0000431745491810    0.0043
+gyroscope bias random walk        0.00000186723797019   0.000266
+
+For each0.2s native bias BetweenFactor, sigma=sqrt(0.2)*random_walk:
+Alpha accel1.9308245e-5 versus CPT7 1.9230185e-3m/s2;
+Alpha gyro8.3505421e-7 versus CPT7 1.1895882e-4rad/s.
+Alpha therefore permits99.6x/142.5x smaller accel/gyro bias CHANGES;
+corresponding bias-factor information is9919x/20294x stronger.
+This does NOT mean all Alpha IMU factors are stronger: white measurement noise
+is larger. It also does NOT hard-fix bias to its initial value: a coherent shift
+of all active bias states is distinct from changes between successive states.
+Initial bias-prior sigmas remain0.1m/s2 and0.01rad/s in both profiles.
+
+Alpha values were copied from authors' static Allan calibration, not invented.
+Correct import does not establish adequacy for dynamic shocks, imperfect timing,
+extrinsic/intrinsic errors or the current fixed-lag estimation configuration.
+The size of the difference makes this a useful isolated ablation, not proof
+that the published calibration is wrong or that larger random walk is correct.
+
+5. INITIALIZATION INTERACTION
+Code-equivalent reconstruction of first valid0.1999993..0.2999989s packet:
+Alpha22 samples, implied initial accel bias[.280815,-.185088,.172118]m/s2,
+gyro bias[-.00558873,-.00642473,.00020355]rad/s;
+CPT7 12 samples, accel[-.109137,-.135480,-.058190]m/s2,
+gyro[.00023461,-.00077292,-.00006019]rad/s.
+These are reconstructed initial guesses, NOT saved estimated bias trajectories.
+
+UtilsOpenCV::AlignGravityVectors returns identity for |1-cos(theta)|<1e-3
+(angle<approximately2.563deg), even with roundOnAutoInitialize=0. Both packets
+take this branch:Alpha1.99859deg,CPT7 1.00999deg. Initial logged poses are identity.
+InitializationFromImu then puts the residual mean acceleration into bias.
+Consequently a small initial tilt can be traded against bias at startup.
+This behavior is shared by both arms, not a newly introduced Alpha-only change;
+its interaction with the tighter bias model remains a hypothesis, not a diagnosis.
+
+6. RAW-SENSOR CROSS-CHECK (OFFLINE DIAGNOSTIC ONLY)
+Applied the mission TF rotation, constant quiet bias difference, and rigid-body
+lever-arm acceleration omega_dot x r + omega x (omega x r), with
+r_CPT_to_Alpha=[.30850747,-.05800214,.06079000]m in CPT7 coordinates.
+Identical zero-phase2/5/10Hz filters are diagnostic processing ONLY; no estimator
+input or reported trajectory was filtered or modified.
+
+At5Hz,5..58s, gyro-axis correlations=.994688/.996963/.999593. This argues against
+an axis swap or gross rotation error, not against a small extrinsic/time error.
+Acceleration residual norm median0.300948m/s2,p951.320592,max8.355719, despite
+the lever-arm correction. At2Hz median0.232484/p95.782070;at10Hz.39961/2.01007.
+These differences mix real dynamics, sensor bandwidth/averaging, residual
+extrinsics, timing, scale and bias. Do NOT convert them into calibrated noise
+sigmas or attribute them entirely to one sensor.
+
+Global scalar acceleration fits were not stable across held-out time windows
+and bandwidths (roughly.924.. .997). No single scale fix is justified or applied.
+Quiet0.2..3s means have norms9.55868 versus9.83769m/s2. Bias and mounting matter;
+the norm difference alone does not establish an acceleration scale defect.
+
+Two raw Alpha samples have z=-39.2m/s2 at20.655504 and51.635929s, suggestive
+of saturation near4g. ACTUAL firmware/range registers were not recovered.
+The pure signed16 quantum test matches only10.24% of components; a tenth-count
+grid matches99.9916%, consistent with possible averaging but not proof of it.
+supplement_2.json explicitly supersedes the overly broad quantization
+interpretation in supplement_1.json. Do not claim verified4g sensor configuration.
+The manufacturer supports selectable2/4/8/16g ranges; maximum capability is not
+the same as actual recording range. The initial IMU-error growth and0.1m revision
+precede the first full-scale sample, so clipping alone does not explain onset.
+
+7. DECISION / NEXT SINGLE EXPERIMENT (PROPOSED, NOT LAUNCHED)
+Do not proceed to full split-IMU/CBS runs yet. The next discriminating intervention
+is ONE matched60s Alpha CBS-OFF bias-random-walk-only ablation: retain Alpha raw
+data,200Hz,white-noise densities,extrinsics,timing,initialization,priors and
+backend; change ONLY its two bias random walks to the already-used CPT7 control
+values(.0043 accel,.000266 gyro). Do not also change alignment or clipping.
+This tests sensitivity to bias evolution; it is NOT an approved production
+calibration or a claim that CPT7 noise describes Alpha hardware.
+Retain physical bias/velocity and separate inertial/bias/prior error diagnostics
+if an observational capture can be added without changing estimator behavior.
+Compare the same EVO mask, trajectory revisions and onset. A healthy result
+would support a model-configuration interaction, not prove sensor independence
+or final uncertainty calibration. Failure would keep initialization/timing/
+calibration and numerical interaction open; do not start a parameter sweep.
+
+Current logging lacks actual bias histories, individual unwhitened IMU residuals,
+preintegrated deltas/Jacobians and factor-by-factor bias errors. These cannot be
+recovered uniquely from saved poses. They are the main causal-diagnosis limit.
+
+8. SOURCES / ARTIFACTS
+analysis.json, revision_events.json, supplement_1.json, supplement_2.json and
+their input SHA256 manifests record all computations. Verification is separate
+verification.json. Original CP85/86 completion hashes must remain valid.
+
+Local implementation (W=/home/yeranis/repos/V4RL/cbs_gtsam4.3):
+W/src/Kimera-VIO-ROS/src/RosOnlineDataProvider.cpp (IMU callback)
+W/src/Kimera-VIO/src/dataprovider/DataProviderModule.cpp (actual-time support)
+W/src/Kimera-VIO/src/imu-frontend/ImuFrontend.cpp (density-squared covariance)
+W/runs/persistent_compatibility_cpv76_20261101/VioBackend.cpp:4615 (bias sigmas)
+W/src/Kimera-VIO/src/initial/InitializationFromImu.cpp (initial guesses)
+W/src/Kimera-VIO/src/utils/UtilsOpenCV.cpp:302 (near-aligned identity branch)
+W/runs/persistent_compatibility_cpv76_20261101/RetirementAudit.h (cost semantics)
+
+Primary sources checked2026-11-02; no foreign configuration applied:
+https://github.com/boschsensortec/BMI08x_SensorAPI/blob/master/bmi08x.h
+  BMI085 has distinct2/4/8/16g range selections, not evidence of ETH1's setting.
+https://github.com/sevensense-robotics/core_research_manual/blob/master/pages/calibration.md
+  T_B_C describes camera in IMU; use unit-specific calibration, not examples.
+https://github.com/sevensense-robotics/core_research_manual/blob/master/pages/sensor_settings.md
+  IMU rate configurable100/200/400Hz; ETH1 observed200Hz is consistent.

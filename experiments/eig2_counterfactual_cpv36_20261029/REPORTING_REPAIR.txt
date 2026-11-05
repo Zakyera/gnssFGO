@@ -1,0 +1,7 @@
+The first host summary writer completed its numerical assertions but failed
+serializing a NumPy scalar boolean with standard json.dump. Its partial
+diagnostic_results.json is preserved as failed evidence, NOT an authoritative
+result. The reporting-only repair converts NumPy scalar types, encodes before
+creating the output, and writes diagnostic_results_v2.json at a fresh name.
+No source replay, checkpoint rewrite, optimizer rerun or guard change occurred.
+All original numerical results and receipts remain untouched.

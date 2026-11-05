@@ -1,0 +1,173 @@
+CP-V52 — Hesai EIG-2 first GLIM factor: identical-graph ablation
+Saved diagnosis complete; no production fix or full-run root cause established.
+Final authority: complete.json after verification. Detailed data: analysis.json,
+visual_support.json, attempt_compile1/test_passed.json and verification.json.
+
+MAIN FINDING
+============
+The FIRST admitted GLIM factor changes Kimera's coupled orientation/velocity/
+IMU-bias solution and the validity of some stereo smart-factor triangulations.
+Removing ONLY that factor brings the resulting state very close to actual OFF.
+This is a controlled first-insertion effect, no longer merely an OFF/ON plot
+correlation. It occurs before marginalization, factor retirement or accumulated
+CBS history. It does NOT identify a wrong line of code or prove that this small
+first change causes all later metre-scale zigzags.
+
+WHAT WAS HELD IDENTICAL
+======================
+Saved CP-V51 Hesai EIG-2 update6, capture time1.599933183s; original bag+7.299933s.
+A = exact native ON graph with first CBS factor929 x4->x5 (GLIM5->7).
+B = same initial values and graph, omit ONLY929; native no-motion206 x2->x3
+and all four prior functions retained. Same338 stereo smart factors, PIM/IMU,
+bias factors, observation/calibration/cache, means, noise and native Jacobians.
+One ordinary native GN step and one current-state refresh each: FOUR total.
+No raw data playback, source/controller rerun, covariance analysis/rescaling,
+parameter tuning, stronger prior, production patch, nonlinear iterations to
+improve results, new trajectory score or default promotion.
+
+The actual OFF initial state is numerically identical (all exported elements
+exactly equal). Its355 native factor functions also match ON's non-CBS355,
+including stereo observations/parameters, IMU/PIM, priors and no-motion factor.
+This multiset comparison excludes stereo triangulation caches; it does not
+claim identical cached incremental equations. ON has356 factors including CBS.
+B uses the identical saved ON cache history as A, so only the target factor
+changes between the two experimental arms.
+
+REPRODUCTION / IDENTITY GATES
+============================
+A passed BEFORE any B optimization:
+  initial versus owning theta tangent norm       2.6762e-19
+  ordinary fresh versus cached equations relative0 (exact)
+  ordinary versus recorded state tangent norm    3.3374e-10
+  exact-state refresh versus cached equations    0 (exact)
+  chained refresh versus recorded state norm     1.2288e-10
+State norms combine pose/velocity/bias units: NOT metres. Linear backward
+residual <=2.42e-17 in both arms; not nonlinear stationarity certification.
+Reinserting the removed factor into an identity-check copy restores the saved
+snapshot byte-for-byte. Original ordinary/refresh snapshots serialize exactly
+before/after the test. Native priors and all non-target factors stay intact.
+
+FIRST-UPDATE RESPONSE
+====================
+Below: revision from the shared previous active state to the result after the
+ordinary step AND refresh, old states x0--x5 only. These are state REVISIONS,
+not errors against independent truth, ATE, or flight motion. Maximum rows may
+refer to different old states. Common tilt is an orientation fit, not proof of
+a completely rigid window; individual relative poses also change.
+
+Quantity                                WITHOUT first factor B   WITH factor A
+Common old-window tilt                  0.020190 deg             0.078592 deg
+Largest old-pose orientation revision    0.027277 deg             0.322581 deg
+Largest old-pose position revision       0.784757 mm              5.721914 mm
+Largest old-state velocity revision      0.001985 m/s             0.010761 m/s
+Largest accel-bias revision              0.002690 m/s^2           0.022848 m/s^2
+Largest gyro-bias revision               0.0003430 rad/s          0.0074609 rad/s
+                                        0.019654 deg/s           0.427480 deg/s
+Native IMU weighted cost after refresh   0.052557                 1.253754
+
+The IMU cost is about23.86x larger with the factor, at identical weighting;
+this is NOT a23.86x physical error/ATE claim. Actual maximum unwhitened IMU
+rotation residual is0.000008904deg B versus0.000193411deg A: the residual can
+remain small while estimated biases change. Do not equate estimated bias
+changes with true bias error; no independent true biases are supplied.
+
+Direct A-versus-B final differences over all states x0--x6:
+  max position7.511010mm; orientation0.395866deg; velocity0.016844m/s;
+  accel bias0.023123m/s^2; gyro bias0.007542rad/s (0.432125deg/s).
+B versus ACTUAL saved OFF final state:
+  max position0.066460mm; orientation0.001272deg; velocity0.000115m/s;
+  accel bias0.00005144m/s^2; gyro bias0.00001656rad/s.
+Thus B returns very close to OFF, not bit-exact. Native functions/initial values
+match, but smart caches/native incremental solve histories are not asserted equal.
+
+WHAT THE EXTERNAL FACTOR IS ASKING FOR
+=====================================
+Six components are the native Pose3 Local/unwhitened residual coordinates of
+the actual x4->x5 factor. Rotation coordinates are not world Euler angles, and
+translation coordinates are not global trajectory offsets. Signs follow native
+factor conventions. All six coupled components/weights remain present in A;
+this test does not isolate one DOF or change any covariance/Jacobian.
+
+At shared initialization:
+  rotation [rx,ry,rz] = [ +0.091718, -0.003776, +0.038471 ] deg
+  translation        = [ +3.516832, -4.540246, +1.025499 ] mm
+  rotational norm0.099531deg; translational norm5.833832mm.
+After both steps WITHOUT the factor:
+  rotation [ +0.093415, -0.001340, +0.035998 ] deg; norm0.100120deg
+  translation [ +3.199815, -4.653205, +0.995960 ] mm; norm5.734376mm.
+After both steps WITH the factor:
+  rotation [ +0.009573, -0.000868, +0.014283 ] deg; norm0.017216deg
+  translation [ +3.074063, -5.381825, +2.433790 ] mm; norm6.658622mm.
+
+Kimera substantially reduces angular disagreement with the GLIM constraint,
+while the unweighted translational residual norm slightly increases. It does
+so with relative-pose corrections and coupled orientation/velocity/bias changes,
+not only a common world rotation (which cannot change a between residual).
+The disagreement is mainly first and third local rotational components; this
+does not prove which estimator or physical axis is wrong.
+
+STEREO SUPPORT: ADDITIONAL SAVED-DATA OBSERVATION
+===============================================
+All338 smart factors/observations are retained in both solves. At the resulting
+states, native error evaluation on separate copies of the SAME saved graph
+reports these triangulation statuses:
+                         Valid  Degenerate  Behind camera  Outlier  Far point
+Initial / B final        285    29          8              13       3
+A after ordinary         266    23          2              44       3
+A after refresh          267    20          8              39       4
+Actual OFF final         285    29          8              13       3
+
+Comparing B to A final on identical observations:27 valid tracks become outliers,
+3 valid become degenerate,12 degenerate become valid. Net18 fewer valid tracks.
+Remaining changes:one behind-camera becomes far-point, one outlier becomes
+behind-camera. Native smart weighted cost33.7644 B versus93.7005 A.
+
+These are POST-EVALUATION statuses of cloned factors, not directly observed
+frontend feature losses, removed factors, or the exact live solver's active row
+count. They show sensitivity of the visual model to the changed state and give
+a plausible additional feedback mechanism. They do NOT prove that loss of
+visual support drives subsequent full-run instability; that would need a separate
+controlled test. Costs can change active validity, so total-cost comparisons are
+not a nonlinear stationarity or one-smooth-fixed-objective certificate.
+
+INTERPRETATION / NEXT DECISION
+=============================
+What is established: the first native relative factor alone produces the early
+coupled state response; native visual data or a different IMU/PIM between OFF
+and ON is not needed to explain this first A/B difference. The correct saved
+native linear equations reproduce the ON response. Factor removal cannot
+originate this first event, because no CBS removal has yet happened.
+
+What is NOT established: whether GLIM's short-interval angular increment is
+physically wrong, whether frame/timestamp/endpoint mean alignment is wrong,
+whether native graph sensitivity/model interaction is excessive, or whether a
+specific implementation bug causes the later oscillations. A low full-path GLIM
+ATE alone does not validate every0.2s relative rotation. Neither does a native
+solver faithfully solving its equations prove the measurements are semantically
+correct. Low covariance calibration is not assumed or investigated here.
+
+Recommended next step, NOT launched: trace this ONE x4->x5 angular disagreement
+against the shared raw CPT7 gyro over the exact endpoints, retaining source and
+receiver time/frame/bias conventions and auditing the endpoint-alignment chain.
+Determine whether the disagreement exists at GLIM's native source mean or is
+introduced by transport/alignment. Keep covariance/weights and native smart
+factors unchanged. This is more specific than another blind full rerun or prior
+adjustment. Do not silently promote a factor-dropping fix from this experiment.
+
+EXECUTION / LIMITS / CLOSEOUT
+============================
+Initial diagnostic compile failed before any optimizer call: if-initializer s
+was redeclared in else. Original source/log/failure/cleanup remain. Fresh
+attempt_compile1 only renames that local variable and rebases output roots.
+Release and ASan/UBSan synthetic fixtures pass single-factor removal/native
+retention/initial nonmutation and expected two-step pose-chain solutions.
+Eight synthetic fixture GN steps plus four real-checkpoint GN steps total.
+Vendor DSOs are not sanitizer-instrumented. Existing link commands emit mixed
+OpenCV3.4/4.2 warnings; no camera/image processing executed here. No new warnings
+were treated as evidence of the CBS fault. System python lacked numpy before
+analysis; unchanged analysis script ran in existing EVO venv (NO EVO score).
+Only about28MiB added, no deletions.9084 protected input hashes checked before/
+after test, source outputs preserved. Both originally-stopped containers restored,
+owned processes exited; final verifier checks original Hesai667-file checkpoint.
+See complete.json/verification.json for final counts/time/hashes rather than
+assuming success from this narrative. No sensor/full-sequence retry or new run.

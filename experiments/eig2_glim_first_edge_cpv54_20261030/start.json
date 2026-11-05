@@ -1,0 +1,11 @@
+{
+  "pid": 157634,
+  "started": "2026-10-30T16:42:12.103840+02:00",
+  "before": [
+    "/cbsms_ws_gpu exited",
+    "/ubuntu-jammy-humble-nvidia exited"
+  ],
+  "inhibitors": "ModemManager                 0    root    1730   ModemManager    sleep                                                    ModemManager needs to reset devices                       delay\nNetworkManager               0    root    1625   NetworkManager  sleep                                                    NetworkManager needs to turn off networks                 delay\nUPower                       0    root    1830   upowerd         sleep                                                    Pause device polling                                      delay\nUnattended Upgrades Shutdown 0    root    1885   unattended-upgr shutdown                                                 Stop ongoing upgrades or perform upgrades before shutdown delay\nEIG2-CPV54                   1000 yeranis 157627 systemd-inhibit sleep:idle:handle-lid-switch                             Authorized short matched belief insertion observation     block\nGNOME Shell                  1000 yeranis 3552   gnome-shell     sleep                                                    GNOME needs to lock the screen                            delay\nyeranis                      1000 yeranis 3675   gsd-media-keys  handle-power-key:handle-suspend-key:handle-hibernate-key GNOME handling keypresses                                 block\nyeranis                      1000 yeranis 3675   gsd-media-keys  sleep                                                    GNOME handling keypresses                                 delay\nyeranis                      1000 yeranis 3677   gsd-power       sleep                                                    GNOME needs to lock the screen                            delay\nyeranis                      1000 yeranis 3521   gnome-session-b sleep                                                    user session inhibited                                    block\n",
+  "session": "EIG2-CPV54: Authorized short matched belief insertion observation (suspend, idle)\n/usr/lib/chatgpt/ChatGPT: Electron (suspend)\n",
+  "protected_files": 9952
+}

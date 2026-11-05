@@ -1,0 +1,429 @@
+{
+  "case": "hesai_spx3",
+  "sensor": "Hesai",
+  "sequence": "SPX-3",
+  "method": 1,
+  "original_receiver_Qc_multiplier": 1.0,
+  "epoch_ns": 1730565899872888651,
+  "duration_s": 197.02,
+  "origin_enu_m": [
+    5.891410366081132,
+    4.255473516927893,
+    0.71045366729591
+  ],
+  "reference": {
+    "path": "/workspace/cbs_gtsam4.3/src/datasets/GrandTour/SPX-3/2024-11-02-17-43-10_cpt7_ie_tc.bag",
+    "sha256": "563ad3681eb40ed85bb682926ea1bdafb86b038dfffa7e6413cc4e32b8fb75aa",
+    "topic": "/boxi/inertial_explorer/tc/odometry",
+    "frame_ids": [
+      "enu_origin"
+    ],
+    "child_frame_ids": [
+      "cpt7_imu"
+    ],
+    "caveat": "IE-TC GNSS/INS reference shares CPT7 IMU; not independent prism GT"
+  },
+  "reference_vertices": 39404,
+  "products": {
+    "off_glim": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_stationary_full_cpk28_20261023/prepared/full_off_source/glim_odometry.csv",
+      "sha256": "853854d34fc30283669b82ff801c8bde22fe322c57ae6d5087beaa18456fc56f",
+      "product": "glim_initial",
+      "rows": 1962,
+      "alignment_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_spx3/method1_off_glim_ape.zip",
+      "alignment_SE3": [
+        [
+          0.6984054888680009,
+          -0.7156905222985275,
+          -0.004104803419096431,
+          5.63473604336704
+        ],
+        [
+          0.7157006996514647,
+          0.6983803419631677,
+          0.006116083535496027,
+          4.066283591844293
+        ],
+        [
+          -0.00151050900442043,
+          -0.007209316990544673,
+          0.9999728716875661,
+          0.4617704201274324
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "common_ATE_m": 0.01665181076642305,
+      "common_path_m": 90.96192746202462,
+      "common_RPE_translation_m": 0.006774317591957929,
+      "common_RPE_rotation_deg": 0.25915494891889623,
+      "common_RPE_pairs": 167,
+      "path_with_gap_chords_m": 91.1943076193658,
+      "displayed_gap_aware_path_m": 91.1943076193658,
+      "gaps_over_500ms": 0,
+      "max_float32_error_m": 4.737956302847124e-07,
+      "common_pose_max_difference_m": 0.0,
+      "evo_error_max_difference_m": 0.0,
+      "first_s": 0.716308269,
+      "last_s": 196.815584335
+    },
+    "off_kimera": {
+      "path": "/home/yeranis/repos/gnssFGO/experiments/newest_absolute_comparison_cpv27_20261028/hesai_spx3.npz",
+      "sha256": "5e5a0615ef1decd4ba471365a002761d5f3e75f1b34d94de5d40fefab06ab3a1",
+      "product": "recovered absolute backend, NOT native incremental ROS",
+      "rows": 958,
+      "alignment_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_spx3/method1_off_kimera_ape.zip",
+      "alignment_SE3": [
+        [
+          0.8894922509133046,
+          0.4569496962836946,
+          -0.0007145847903944428,
+          5.3392468240353015
+        ],
+        [
+          0.4568074253894518,
+          -0.8892522304260894,
+          -0.023610311122188362,
+          4.037061568223317
+        ],
+        [
+          -0.011424170615134316,
+          0.020674761146516205,
+          -0.9997209823632247,
+          0.49434101264594943
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "common_ATE_m": 0.361815796485449,
+      "common_path_m": 102.59882707433356,
+      "common_RPE_translation_m": 0.1518890288240616,
+      "common_RPE_rotation_deg": 0.7107781676841126,
+      "common_RPE_pairs": 167,
+      "path_with_gap_chords_m": 107.0502400603915,
+      "displayed_gap_aware_path_m": 107.03424330366258,
+      "gaps_over_500ms": 3,
+      "max_float32_error_m": 4.6520499985547303e-07,
+      "common_pose_max_difference_m": 0.0,
+      "evo_error_max_difference_m": 0.0,
+      "first_s": 0.199733622,
+      "last_s": 196.998019298
+    },
+    "off_fusion": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_stationary_full_cpk28_20261023/prepared/full_off_receiver/receiver/online_trajectory.tum",
+      "sha256": "444bd175652c3d566b11ebd5de158736e80fda86b64953184ef6f5856ed1f7ac",
+      "product": "fusion_online",
+      "rows": 1965,
+      "alignment_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_spx3/method1_off_fusion_ape.zip",
+      "alignment_SE3": [
+        [
+          0.8807777348017716,
+          0.4733544403735825,
+          -0.012890137938478624,
+          5.649136722469065
+        ],
+        [
+          0.4734272691378049,
+          -0.8808272520964985,
+          0.0031579741691221087,
+          4.047611809086984
+        ],
+        [
+          -0.00985914368395592,
+          -0.008884016138265463,
+          -0.9999119318935414,
+          0.5272411178322312
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "common_ATE_m": 0.04206590411404919,
+      "common_path_m": 94.14109429712346,
+      "common_RPE_translation_m": 0.030089483388796648,
+      "common_RPE_rotation_deg": 1.457516593070387,
+      "common_RPE_pairs": 167,
+      "path_with_gap_chords_m": 98.64014681802405,
+      "displayed_gap_aware_path_m": 98.64014681802405,
+      "gaps_over_500ms": 0,
+      "max_float32_error_m": 4.7514529555314766e-07,
+      "common_pose_max_difference_m": 0.0,
+      "evo_error_max_difference_m": 0.0,
+      "first_s": 0.5813053490000001,
+      "last_s": 196.98130534900002
+    },
+    "on_glim": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_stationary_full_cpk28_20261023/prepared/full_on_source/glim_odometry.csv",
+      "sha256": "601a8eab0c732d5cd9f93b40ca900950eec6608ec98cbb3fada0024b6a23518d",
+      "product": "glim_initial",
+      "rows": 1962,
+      "alignment_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_spx3/method1_on_glim_ape.zip",
+      "alignment_SE3": [
+        [
+          0.6984105347425673,
+          -0.7156849282601274,
+          -0.004220002594413534,
+          5.634745687137441
+        ],
+        [
+          0.7156946985595682,
+          0.6983796778747727,
+          0.006850108412110451,
+          4.06660583994186
+        ],
+        [
+          -0.0019553552949781346,
+          -0.00780442136387601,
+          0.9999676332726204,
+          0.4649619057930996
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "common_ATE_m": 0.017116946498523005,
+      "common_path_m": 91.21110159004589,
+      "common_RPE_translation_m": 0.006865004087480687,
+      "common_RPE_rotation_deg": 0.2574105705935619,
+      "common_RPE_pairs": 167,
+      "path_with_gap_chords_m": 91.5690402237982,
+      "displayed_gap_aware_path_m": 91.5690402237982,
+      "gaps_over_500ms": 0,
+      "max_float32_error_m": 4.750030626610169e-07,
+      "common_pose_max_difference_m": 0.0,
+      "evo_error_max_difference_m": 0.0,
+      "first_s": 0.716308269,
+      "last_s": 196.815584335
+    },
+    "on_kimera": {
+      "path": "/home/yeranis/repos/gnssFGO/experiments/newest_absolute_comparison_cpv27_20261028/hesai_spx3.npz",
+      "sha256": "5e5a0615ef1decd4ba471365a002761d5f3e75f1b34d94de5d40fefab06ab3a1",
+      "product": "recovered absolute backend, NOT native incremental ROS",
+      "rows": 956,
+      "alignment_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_spx3/method1_on_kimera_ape.zip",
+      "alignment_SE3": [
+        [
+          0.8769872286631344,
+          0.4804481644696691,
+          0.007934861024694253,
+          5.816289473511233
+        ],
+        [
+          0.4805130934573207,
+          -0.8768406750641881,
+          -0.016049846387259172,
+          4.133260394080608
+        ],
+        [
+          -0.0007535103393453949,
+          0.017888314920761202,
+          -0.9998397073588665,
+          0.48575982457629985
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "common_ATE_m": 0.22114028321023388,
+      "common_path_m": 99.11213190949007,
+      "common_RPE_translation_m": 0.12562612596315648,
+      "common_RPE_rotation_deg": 1.4785781205065702,
+      "common_RPE_pairs": 167,
+      "path_with_gap_chords_m": 102.09291157705675,
+      "displayed_gap_aware_path_m": 102.07346300385143,
+      "gaps_over_500ms": 5,
+      "max_float32_error_m": 4.687371166767207e-07,
+      "common_pose_max_difference_m": 0.0,
+      "evo_error_max_difference_m": 0.0,
+      "first_s": 0.199733622,
+      "last_s": 196.998019298
+    },
+    "on_fusion": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_stationary_full_cpk28_20261023/prepared/full_on_receiver/receiver/online_trajectory.tum",
+      "sha256": "337d2ce90de1dee23ec3aac388b77a8a867464d0d40df5f94b8698c682334aa7",
+      "product": "fusion_online",
+      "rows": 1965,
+      "alignment_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/hesai_spx3/method1_on_fusion_ape.zip",
+      "alignment_SE3": [
+        [
+          0.8807818891426965,
+          0.4732735761715974,
+          -0.015342289789004628,
+          5.6403212765278115
+        ],
+        [
+          0.47347836984073544,
+          -0.8806787646133913,
+          0.014938100682193964,
+          4.0630158518302935
+        ],
+        [
+          -0.006441820486647927,
+          -0.020421450897988695,
+          -0.999770707358462,
+          0.5767089106525309
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "common_ATE_m": 0.03799968289120393,
+      "common_path_m": 94.16022386041145,
+      "common_RPE_translation_m": 0.02753018172945933,
+      "common_RPE_rotation_deg": 1.4132642425875825,
+      "common_RPE_pairs": 167,
+      "path_with_gap_chords_m": 97.4819722029102,
+      "displayed_gap_aware_path_m": 97.4819722029102,
+      "gaps_over_500ms": 0,
+      "max_float32_error_m": 4.767007766304232e-07,
+      "common_pose_max_difference_m": 0.0,
+      "evo_error_max_difference_m": 0.0,
+      "first_s": 0.5813053490000001,
+      "last_s": 196.98130534900002
+    }
+  },
+  "common_coverage": {
+    "grid_queries": 1961,
+    "valid_queries": 1922,
+    "excluded_queries": 39,
+    "supported_s": 191.7,
+    "capture_s": 197.02,
+    "supported_capture_percent": 97.29976652116535,
+    "first_s": 1.5271113490000001,
+    "last_s": 196.727111349,
+    "envelope_s": 195.20000000000002,
+    "start_gap_s": 1.5271113490000001,
+    "tail_gap_s": 0.2928886509999984,
+    "segments": [
+      {
+        "first_s": 1.5271113490000001,
+        "last_s": 1.6271113490000002,
+        "rows": 2
+      },
+      {
+        "first_s": 2.627111349,
+        "last_s": 165.62711134900002,
+        "rows": 1631
+      },
+      {
+        "first_s": 166.52711134900002,
+        "last_s": 168.327111349,
+        "rows": 19
+      },
+      {
+        "first_s": 169.227111349,
+        "last_s": 170.62711134900002,
+        "rows": 15
+      },
+      {
+        "first_s": 171.327111349,
+        "last_s": 196.727111349,
+        "rows": 255
+      }
+    ]
+  },
+  "terminal_omissions": {
+    "off": 1,
+    "on": 1
+  },
+  "kimera_reconstruction_checks": {
+    "off": {
+      "rows": 958,
+      "first_keyframe": 0,
+      "last_keyframe": 957,
+      "every_id_unique_contiguous_and_matches_csv": true,
+      "exact_header_stamps_used": true,
+      "rounded_log_timestamps_not_used": true,
+      "every_increment_pose_within_log_rounding_bounds": true,
+      "increment_position_max_difference_m": 4.988995231946322e-05,
+      "increment_quaternion_max_component_difference": 4.995009965647057e-07,
+      "graph_quaternion_norm_max_error": 6.326069487139208e-07,
+      "graph_prism_position_rounding_bound_m": 5.135780065218782e-05,
+      "graph_rotation_rounding_bound_rad": 2.000010000058334e-05,
+      "logged_no_incremental_pose": false,
+      "graph_vs_increment_position_max_m": 1.0021598394166524,
+      "source_log": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_stationary_full_cpk28_20261023/prepared/full_off_source/estimators.log",
+      "rounded_incremental_common_ATE_difference_m": 5.761712668084229e-08,
+      "rounded_incremental_full_ATE_difference_m": 5.766589467048888e-08
+    },
+    "on": {
+      "rows": 956,
+      "first_keyframe": 0,
+      "last_keyframe": 955,
+      "every_id_unique_contiguous_and_matches_csv": true,
+      "exact_header_stamps_used": true,
+      "rounded_log_timestamps_not_used": true,
+      "every_increment_pose_within_log_rounding_bounds": true,
+      "increment_position_max_difference_m": 4.885570604655854e-05,
+      "increment_quaternion_max_component_difference": 4.984887506109814e-07,
+      "graph_quaternion_norm_max_error": 6.200784697929507e-07,
+      "graph_prism_position_rounding_bound_m": 5.136026348797612e-05,
+      "graph_rotation_rounding_bound_rad": 2.000010000058334e-05,
+      "logged_no_incremental_pose": false,
+      "graph_vs_increment_position_max_m": 0.880775348258567,
+      "source_log": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_stationary_full_cpk28_20261023/prepared/full_on_source/estimators.log",
+      "rounded_incremental_common_ATE_difference_m": 1.3605959243989663e-07,
+      "rounded_incremental_full_ATE_difference_m": 1.391936715056108e-07
+    }
+  },
+  "cloud_path": "/home/yeranis/repos/gnssFGO/experiments/all_method2_rerun_cpv30_20261029/hesai_spx3_cloud.npz",
+  "cloud_points": 23079,
+  "submaps": [
+    {
+      "id": "000000",
+      "points": 23079,
+      "frame_check_m": 5.101202537707555e-07,
+      "first_s": 0.7163083553314209,
+      "last_s": 196.91557455062866
+    }
+  ],
+  "cloud_alignment": {
+    "source": "CP-V10 ON first-published fit, not method2 fit",
+    "rotation": [
+      [
+        0.6984105347425673,
+        -0.7156849282601274,
+        -0.004220002594413534
+      ],
+      [
+        0.7156946985595682,
+        0.6983796778747727,
+        0.006850108412110451
+      ],
+      [
+        -0.0019553552949781346,
+        -0.00780442136387601,
+        0.9999676332726204
+      ]
+    ],
+    "translation_m": [
+      5.634745687137441,
+      4.06660583994186,
+      0.4649619057930996
+    ]
+  },
+  "trajectory_npz_sha256": "aad00020f3fc0f214e267f659734a179500f3322dad6db57e8b0a0440cdad981",
+  "cloud_npz_sha256": "bd71997d0020628f9a27cd9b674ee940b92dd89f07b9fa7be820898d655d6c01",
+  "reference_and_cloud_identical_to_method2": true,
+  "evo_version": "v1.36.3"
+}

@@ -1,0 +1,222 @@
+CP-V107 — covariance maturation and persistent information provenance
+2026-11-04. Saved-data/code analysis only; no new estimator/receiver run.
+
+BOTTOM LINE
+The concern is supported, especially for late Kimera revisions consumed by
+fusion. The strongest new evidence is a systematic, direction-dependent late
+contraction already present in native Alpha coordinates, not a conversion or
+transport scaling error. The persistent mixed-prior information route exists
+in the actual implementation. We cannot yet assign a percentage of CP103's
+covariance reduction to that route rather than state-dependent native visual
+information or other covariance-model approximations.
+
+Do not equate every covariance reduction with a bug: new camera/IMU information
+normally changes uncertainty as a belief matures. Here the problematic signature
+is continuing confidence growth after reference discrepancy has stopped improving.
+CP106 independently demonstrated that this covariance schedule materially affects
+fusion ATE in the fixed saved ON stream. Its freeze was diagnostic, not a fix.
+
+1. WHAT WAS ANALYZED
+ON is CP103's corrected-private Kimera full live ON. OFF is CP95's saved full live
+OFF, not a newly repeated same-binary control. Scientific profiles match, but the
+Kimera binary and realization differ. Within-run maturation is followed directly.
+
+Reuse CP105's exact physical endpoint cohort: 1454 Kimera intervals, approximately
+0.2s each, endpoints 3–300s. Of1471 eligible matched intervals,17 were excluded
+because fixed-age/terminal support was insufficient. All four comparison stages
+use the same1454 intervals. GLIM's corresponding same-stage cohort is2970.
+Terminal means LAST ACTUALLY ACCEPTED at receiver absorption, not a later expired
+revision. In this Kimera subset,25OFF/31ON expired versions are excluded; these
+are subset counts, not full-run omissions. Full CP103 still has25pre-init and
+134expired versions, zero unsupportedEOF/pending, as previously sealed.
+
+Joined all36778OFF/36746ON native Kimera rows to receiver versions in per-edge
+observed order. Native source revision numbers can repeat; receiver revisions
+normalize these and receiver ordinal denotes a stable edge, NOT an update ID.
+Initial diagnostic join failed on this distinction before output; repair retained
+in ANALYSIS_REPAIR.txt. Every joined full6x6 covariance passes Alpha->CPT7 adjoint
+congruence, maximum relative error6.10e-16OFF/5.91e-16ON. All1454terminal and
+1454age2.5 matrices per mode match CP105 arrays exactly.
+
+2. THE LATE CONFIDENCE/REFERENCE MISMATCH
+Reported norm below means sqrt(mean trace of the translation3x3 block), in mm.
+It is not a per-axis sigma,95% bound, global pose covariance or travel distance.
+Reference discrepancy is RMS translation tangent of Log(Z_belief^-1 Z_IE-TC)
+at the same endpoints, not EVO trajectory0.5m RPE or independent true error.
+
+                    Initial          age~2.45s       last accepted~4.85s
+OFF reported norm     4.898 mm         2.370 mm           2.184 mm
+OFF IE discrepancy   11.567 mm         8.563 mm           8.945 mm
+ON reported norm      4.503 mm         1.929 mm           0.846 mm
+ON IE discrepancy     8.071 mm         5.131 mm           5.142 mm
+
+ON aggregate mean translation variance falls80.76% from age2.5 to terminal,
+while squared discrepancy increases0.415%. The paired-edge MEDIAN variance
+ratio is0.267863 (73.21% reduction); OFF0.920147 (7.99% reduction). These are
+different summaries and must not be conflated. Native Alpha medians0.268708ON/
+0.921628OFF give the same conclusion before the lever-arm/body conversion.
+
+Paired median terminal/first translation ratios: ON0.06302 vs OFF0.26469.
+Paired median terminal ON/OFF ratio: Kimera0.21224, GLIM1.00454. There is no
+comparable systematic ON-induced GLIM contraction in this matched cohort;
+that does not certify GLIM calibration or independence.
+
+Full6x6 generalized covariance eigenvalues show this is not one scalar multiplier.
+Median ordered ratios, terminal divided by age2.5 covariance:
+  OFF: 0.7774,0.8586,0.9283,0.9668,0.9937,1.0123
+  ON:  0.1995,0.3370,0.4634,0.7302,0.8717,0.9102
+All six directions contract for83.77% of ON edges versus36.93% of OFF edges.
+These are dimensionless same-body perturbation-coordinate comparisons, not
+percentages of independently added information or transport of an old posterior.
+Rotation also tightens: late paired median trace ratio0.7554ON vs0.9122OFF,
+without a comparable change in rotational reference discrepancy.
+
+The nominal95% translation ellipsoid includes only24.62% of ON reference
+discrepancies at age2.5 and6.26% at terminal; OFF27.10% and22.97%. Even OFF is
+not a calibrated benchmark here. IE-TC reference uncertainty/correlation is
+unknown, it shares CPT7 with GLIM, and interval residuals are dependent. These
+are descriptive inclusion rates, NOT a valid NEES/NIS test or a fitted scale.
+Mean-centered ON terminal discrepancy scatter still exceeds mean reported
+translation covariance in all three generalized directions (12.55,27.23,84.61).
+Subtracting one average bias does not eliminate the observed mismatch. This
+pooled scatter is neither stationary sensor-noise estimation nor a calibration.
+
+Adjacent approximately0.2s Kimera interval translation reference discrepancies
+are correlated: terminal ON axis coefficients0.659/0.668/0.530 (1445pairs), OFF
+0.853/0.734/0.875. This does NOT prove feedback introduced the correlation:
+native processing, shared endpoints and reference error also contribute. It
+does show why treating these residual samples as independent calibration trials
+would be inappropriate.
+
+3. WHEN THE CONTRACTION OCCURS
+Both modes first retire a native pose at update26 /8.499951453s. Every subsequent
+source update retires a pose (1467OFF/1466ON updates). Consequently, associating
+a covariance drop with a retirement update is not a causal test: all routine
+new-measurement/relinearization updates are in that same category after warm-up.
+
+The strongest single-step decrease usually occurs early (median source age0.4s
+in both modes); it is not generally one final catastrophic covariance collapse.
+The important difference is the continuing late contraction. In the last0.4s
+before each edge's LAST SAVED ACCEPTED VERSION, native translation trace divided
+by the preceding version has median:
+  OFF0.996299 (0.37% decrease per revision), n4322 transitions;
+  ON 0.835611 (16.44% decrease per revision), n4316 transitions.
+Only0.21% of these ON transitions increase variance, versus23.32%OFF. None has
+a single-step drop greater than50%. This is sustained late tightening, not just
+a few extreme outliers. Source updates are normally~0.2s but gaps remain; do not
+interpret these as constant-time derivative estimates or independent samples.
+
+The displayed source-age curve retains eligible rows within0.25s of each age
+cutoff, so n varies slightly by cutoff. The matrix/reference comparisons above
+retain the identical1454 cohort and are not based on that varying curve.
+
+4. SOURCE-TO-SOURCE EXTERNAL FACTORS ARE A DIFFERENT STREAM
+CP103 has1472 actual persistent insertions in EACH direction. All saved matrices
+are finite/SPD and agree exactly across the logged alignment/frozen/construction
+or transport path. In common CPT7 body coordinates their median translation
+traces are:
+  GLIM -> Kimera: 3.60644e-6 m2 (native Alpha insertion3.60637e-6).
+  Kimera -> GLIM: 1.16637e-5 m2.
+Native receiver rotation trace medians:1.01249e-8rad2 G2K /5.78524e-8rad2 K2G.
+These are covariances of short relative motions, not absolute pose uncertainty.
+The existing CP103 frame audit separately verifies wire/body conversion.
+
+Classic source CBS has live_revision DISABLED. It does not forward all36746
+Kimera maturation snapshots back to GLIM: those full diagnostic revisions feed
+fusion. A loop can still propagate through later new outgoing beliefs carrying
+mixed history; do not describe it as every mature revision being reinserted into
+the opposite source. Mean-only endpoint-time alignment leaves covariance unchanged;
+its unpropagated bridge uncertainty is a separate approximation, not newly fixed.
+
+5. IMPLEMENTATION EVIDENCE: HOW INFORMATION CAN RETURN
+Frozen CP102 candidate (the backend actually loaded by CP103):
+  VioBackend.cpp:3570 selects MAIN smoother LOCAL for relative-belief covariance;
+  :3736 onward also queries this route for older revised beliefs.
+  BpsamPersistent.inc:40–91 validates native persistent insertion/replacement,
+  rejects stacked slots, preserves native factors and verifies payload identity.
+  :94–119 checks that a peer factor touching retired keys is consumed ONCE by
+  marginalization and removed from explicit tracking, not simply discarded.
+  include/cbs/bpsam/incremental_fixed_lag_bpsam_smoother.h:431–498 performs native
+  marginalizeLeaves, then prunes explicit tracking and checks those receipts.
+
+Pinned cbs/src/bpsam/bpsam.cpp:4737–4865 constructs LOCAL by copying MAIN's factors,
+excluding tracked explicit CBS slots and anchor beliefs, and evaluating at MAIN
+states. :3091–3203 tracks original factor slot/pointer/endpoints; once a factor
+is absorbed into a new prior its old tracking cannot remove its contribution.
+There is no operation here decomposing that marginal prior into separate native
+and peer histories. CP-K9's original-chart preservation keeps the prior function;
+it does not remove peer information from it. CP102's numerical correction is
+therefore not a provenance correction.
+
+Existing CP67 native BPSAM fixture demonstrated the route: LOCAL equals its
+native-only control before absorption, but differs after absorbing a peer into
+a marginal prior. That was an older one-boundary diagnostic, not a CP103 snapshot
+or a numerical measure of this run's confidence excess. Current CP76 persistent
+lifecycle uses the same explicit-filter limitation, and CP103 explicitly marks
+native-only outgoing information FALSE. The route is established; the amount
+of information recirculated in each CP103 matrix is not recorded.
+
+There is also a separate route: native visual information depends on states and
+validity decisions influenced by CBS. CP98's existing fixed-measurement test
+changed endpoint visual contributors16->66 and visual Hessian trace2.63x solely
+by changing evaluated states. CP97 observed covariance divergence before first
+marginalization. Removing explicit peer factors does not remove these effects.
+Those tests concern earlier captures and do not prove CP103's complete cause.
+
+GLIM's configured shared_native/native_local provider has separately maintained
+native Gaussian history and positive native admission (CP82 qualified route),
+unlike Kimera's copy-MAIN-and-filter extraction. Thus both being persistent does
+not mean they export identically sourced uncertainty. Even native Gaussian
+history does not certify independent/calibrated noise at CBS-influenced states.
+
+6. WHAT FUSION DOES AND DOES NOT DOUBLE COUNT
+Receiver.h:211–234 constructs a full-covariance WnoaRelativeFactor and replaces
+the preceding factor slot for the same stable ID. CP106 proved identical event
+accounting and exact baseline replay. There is no evidence of simply appending
+every revision as an independent new factor. Revisions after absorption are
+sealed/expired according to the existing rule, not stacked into the prior.
+
+However, different source/interval factors enter without their cross-source or
+cross-interval covariance. If their beliefs reuse information through overlapping
+source windows or CBS feedback, per-belief6x6 matrices alone cannot represent
+that joint dependence. Two distinct issues must be distinguished:
+  a) source covariance becoming too small relative to reference discrepancy;
+  b) correlated exported beliefs being combined without their joint covariance.
+Replacing one ID correctly solves neither source provenance nor inter-ID dependence.
+
+CP106 held all received means, arrivals/order, GLIM matrices and settings fixed,
+changing only later Kimera matrices to their first accepted matrices. ONLINE ATE
+fell0.094335->0.052415m; separate7s-finalized0.091336->0.043808m on the identical
+mask. This establishes conditional covariance-schedule influence on ATE, not
+the exact source mechanism. Short-scale RPE did not improve; ONLINE path inflation
+remains. Do not promote freezing or a fitted multiplier as a general solution.
+
+7. NEXT DISCRIMINATING TEST — PROPOSAL ONLY, NOT RUN
+First qualify a bounded Kimera diagnostic with two marginal-information histories
+from initialization: existing MAIN/mixed and positively admitted native-only.
+Use existing saved native fixtures where possible; do not merely filter the
+current mixed prior, reset it, or delete it. At fixed measurements and the SAME
+linearization states/active keys, compare old/revised relative covariance before
+and after selected absorption boundaries. This isolates the explicit absorbed
+peer contribution from the separate changed-state/visual-validity effect.
+
+If the preserved checkpoints cannot supply the required native histories, a
+short separately authorized passive capture is needed before that counterfactual;
+the ordinary CP103 logs do not contain complete historical Gaussian graphs.
+Require no-peer equality, known-peer positive control, conservation, full6x6
+frame parity and rollback checks before any receiver or live deployment test.
+Then evaluate a provenance-correct covariance export with the means unchanged
+in a saved receiver replay; this is a future authorization, not work done here.
+Retain native CBS corrections while separating uncertainty provenance; simply
+switching all factors to temporary changes another part of the experiment and
+does not by itself validate uncertainty or remove all dependence.
+
+VERIFICATION / PRESERVATION
+analysis.json,insertions.json,maturation_arrays.npz and covariance_maturation.png
+are new supplements. Independent Cholesky/eigen calculations verify26544matrix
+comparisons; maximum median-eigenvalue discrepancy8.88e-16. Reference inclusion
+arithmetic and transition counts independently checked. No original artifact
+modified. See closeout.json/complete.json for final hash/checkpoint verification.
+No capture, receiver replay, EVO score, build, installation, deletion or setting
+change. Paused experiment heartbeat remains paused. These findings are not
+nonlinear stationarity, sensor calibration or estimator-health certification.

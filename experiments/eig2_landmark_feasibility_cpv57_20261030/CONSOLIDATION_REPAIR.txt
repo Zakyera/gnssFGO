@@ -1,0 +1,10 @@
+The first independent consolidation caught a candidate exactly on the3px
+boundary: vectorized projection and independent camera-by-camera projection
+rounded to opposite sides of3px. No findings.json was written. Original
+consolidate.py and all original outputs remain unchanged.
+
+consolidate_v2.py independently checks every candidate and replaces any borderline
+feasibility witness with an inner-threshold cone candidate (2.99999px,9.99999m),
+checked by BOTH implementations. The original3px/10m/depth criteria remain strict;
+no boundary point is accepted via a relaxed tolerance. Native infeasibility
+certificates remain at3px, never at the tighter candidate-search threshold.

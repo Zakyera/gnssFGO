@@ -1,0 +1,36 @@
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_symmetric_persistent60_cpv83_20261101/prepared/validate_candidate.py
++++ /home/yeranis/repos/gnssFGO/experiments/eig2_symmetric_persistent60_cpv83_20261101/saved_validation_repair_1/validate_candidate.py
+@@ -7,13 +7,13 @@
+ import statistics
+ import sys
+ 
+-R = Path(__file__).resolve().parent
++R = Path('/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_symmetric_persistent60_cpv83_20261101/prepared')
+ mode = sys.argv[1]
+ assert mode in ("off", "on")
+ S = R / f"full_{mode}_source"
+ assert (R / f"full_{mode}_control/complete.json").exists()
+ assert not (R / f"full_{mode}_control/failed.txt").exists()
+-assert not (S / "candidate_validation.json").exists()
++assert not (Path('/home/yeranis/repos/gnssFGO/experiments/eig2_symmetric_persistent60_cpv83_20261101/saved_validation_repair_1') / "candidate_validation.json").exists()
+ assert not (S / "acceptance.csv").exists(), "obsolete FL4q executed"
+ with (S / "objective.csv").open() as f:
+     rows = [[float(x) for x in row] for row in csv.reader(f)]
+@@ -37,6 +37,9 @@
+ launcher_log = (S / "estimators.log").read_text()
+ assert "CPK9_PRIOR_REFRESH," not in launcher_log
+ log = launcher_log + "\n" + re.sub(r"\x1b\[[0-9;]*m", "", node_logs[0].read_text())
++glim_logs=list(S.glob("ros_logs/*/glim_rosnode-*-stdout.log"))
++assert len(glim_logs)==1,glim_logs
++log += "\n" + re.sub(r"\x1b\[[0-9;]*m", "", glim_logs[0].read_text())
+ for token in ("FL4Q", "CPK9 ", "CPV40 ", "CPV76 ", "active_window_rollback",
+               "active_window_retry_local_update_", "Smoother recovery",
+               "Persistent BPSAM recovery", "process has died", "terminate called",
+@@ -95,6 +98,6 @@
+     candidate_sha256=want,
+     kimera_native_only_outgoing_information=False, mixed_prior_feedback_user_accepted=True,
+     note="CP76 persistent ownership/refresh guards active; zero temporary retirements. No explicit absorption count telemetry; no stationarity or native-only information claim.")
+-with (S / "candidate_validation.json").open("x") as f:
++with (Path('/home/yeranis/repos/gnssFGO/experiments/eig2_symmetric_persistent60_cpv83_20261101/saved_validation_repair_1') / "candidate_validation.json").open("x") as f:
+     json.dump(result, f, indent=2)
+ print(json.dumps(result, indent=2))

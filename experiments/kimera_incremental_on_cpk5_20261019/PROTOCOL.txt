@@ -1,0 +1,55 @@
+CP-K5 — authorized bounded ordinary-incremental Kimera temporary-ON test
+2026-10-19. One first111s ETH1 playback,0.10x,25s drain; no automatic retry.
+
+Question: does the ordinary incremental backend remain operational when the
+existing temporary external-factor lifecycle is exercised, after CP-K4b OFF
+completed beyond the old FL4q stop? This is not a full experiment or new solver.
+
+Reuse CP-K4b private launch/profile and CP-K1 private DSOs without rebuilding.
+FL4Q_ENABLE=0 in BOTH OFF and ON; FL4M_RETIREMENT=remove. Same25-state front
+Alphasense stereo/shared CPT7, native IMU path (support override unset),numOptimize1.
+Only receiving is enabled; source CBS classic active_window_temporary,
+live_revision=false, native-IMU mean alignment=true, Gaussian scale1, no health
+weight,0.20s horizon,one horizon pair/update. No covariance/model modification.
+
+Inputs: original /kimera/cbs/odom_belief_in messages in completed FL4v120s
+recordings/cbs.bag. Extract ONLY this topic; preserve every serialized byte and
+ROS-bag record timestamp. Play within the sensor-defined111s interval. These
+are RAW sender means, not old already-aligned receiver factors. The existing
+Kimera code performs mean alignment; its covariance-alignment approximation
+remains unchanged. No future endpoint is published before its recorded arrival.
+The stored stream has1189messages/120s,1100 within111s; full recorded availability
+lags .101780--.218573s. Verify this again in extraction/provenance receipt.
+
+This historical GLIM source used shared-native LOCAL for peer first publications;
+its downstream revision covariance policy is irrelevant because no downstream
+revision is consumed. It came from bidirectional FL4v ON with FL4q Kimera. New
+Kimera cannot affect that frozen GLIM stream: label this conditional one-way
+saved-input diagnostic, not a new matched live CBS-OFF/ON system comparison.
+All sensor/profile settings match CP-K4b; incoming values deliberately remain
+the historical recorded ones. Do not choose/fabricate inputs from GT or ATE.
+
+No GLIM source process, gnssFGO receiver, GNSS, tuning, build, full346s run,
+automatic retries, persistent-factor substitution or acceptance relaxation.
+Existing native recovery/crash/rollback/FL4q-executed guards remain stop conditions.
+Ordinary objective observations are not a new monotonicity/stationarity gate.
+
+Before playback: verify immutable input hashes, native profile equality,
+loaded DSOs, exact effective flags/environment, fresh output/port, no competing
+jobs,8GiB disk admission. Runtime preserve5GiB reserve. Capture native odometry,
+received wire messages, existing objective/retirement and revision logs.
+Validate finite/monotonic native output,111s completion/coverage, zero FL4q,
+retirement activity, exact wire payload conservation and installed dense
+covariance equality where existing alignment logs permit. Record temporal
+alignment/acceptance counts; do not assume all1100 inputs become factors.
+
+Score original native ROS odometry, never smoother state/reconstructed chain.
+Existing evaluate_fl4f.py/IE-TC source and CPT7-to-prism/no-scale SE3/1sRPE
+conventions unchanged; IE-TC shares CPT7, not independent prism GT. Report every
+saved pose and common-mask comparison against CP-K4b; disclose startup gap/tails.
+If failure, retain prefix but do not present it as requested111s completion.
+
+H=/home/yeranis/repos/gnssFGO/experiments/kimera_incremental_on_cpk5_20261019
+R=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/kimera_incremental_on_cpk5_20261019
+ROS port11457. Restore originally stopped containers after owned jobs exit.
+Stop after this report; no promotion, further run, commit or push.

@@ -1,0 +1,20 @@
+The first saved-data arithmetic pass stopped before writing outputs at its
+overstrict assertion that the supporting IMU sample timestamp equals the
+independent uniform support timestamp. OFF journal event95/sample physical
+1732549035699516000 emits support3 at1732549035699515000: 1000ns later.
+This is the existing causal right-bracket clock convention, not source timing
+corruption. Receiver.h::support enforces exact uniform ready.physical_ns;
+imuClock delegates sample bracketing to CausalSupportClock.
+
+Correct the analysis to require exact event/availability identity and uniform
+support times, plus nonnegative right-sample offset less than one100ms period;
+save offset statistics. No receiver guard, data, estimator or experiment edited.
+Failed command exited1 at analyze.py line144; no result artifacts existed.
+
+Supplemental frontier_cohorts.py first JSON serialization failed because the
+common time-interval envelope includes initial publications before both source
+frontiers exist. Their age is intentionally NaN in the diagnostic NPZ. Partial
+frontier_cohorts.json is preserved as failed output, NOT authoritative. Correct
+the cohort summary to explicitly exclude/count unseen-source startup rows;
+write frontier_cohorts_complete.json in a fresh filename. No source sample or
+accuracy mask changes. Full results.json is unaffected and was already valid.

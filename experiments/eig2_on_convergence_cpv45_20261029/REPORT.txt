@@ -1,0 +1,170 @@
+CP-V45 — EIG-2 CBS-ON native derivative/convergence admission
+Started2026-10-29; completed2026-10-30. SAVED-DATA DIAGNOSIS COMPLETE.
+Iterative convergence experiment NOT ADMITTED; no production fix or source run.
+
+CONCLUSION
+==========
+We found objective/linearization mismatches in the actual saved ON graphs, but
+have NOT established the root cause of the large CBS-ON instability.
+
+The native CBS relative-pose factor uses an approximate Jacobian: it computes
+the derivative of Between(Xi,Xj) but omits the subsequent Local/Log chain rule.
+All95 saved relative-pose factors fail at least one declared cost-derivative
+check. The complete chain rule agrees with finite differences. This is a
+confirmed approximation in the deployed equations, NOT proof of a wrong belief
+frame, timestamp, measurement, or corrupted graph.
+
+Its overall gradient discrepancy is modest,0.137--0.150% in these five windows.
+That is too small by itself to declare it the cause of a~10deg window tilt.
+Weakly constrained coupled directions could amplify an equation difference,
+but that causal sensitivity has NOT been tested here. Avoid headlines saying
+“CBS bug found/fixed” or “GTSAM is broken”. The fast approximation is explicit
+in the library source and is not evidence of a new accidental regression.
+
+The initial pose prior also fails the exact derivative check; the implementation
+returns an identity Jacobian. Native smart-stereo cost/Schur-gradient disagreement
+remains, as already observed in CP-V36. IMU, bias-between and other initial-prior
+checks pass. Consequently we cannot honestly use the native linear gradient
+as a certificate that the reported nonlinear objective has converged.
+
+One additional full native GN step reduces reported total cost in4/5 windows
+but does not reverse the previous window tilt in any of the five. At update24
+it repairs much of the remaining IMU inconsistency while increasing net tilt
+9.51->9.81deg. Thus “just run more iterations” is not demonstrated to repair
+the shaking. This one-step result does NOT prove that a properly converged
+solution would remain tilted or that all extra iterations are useless.
+
+EXACT SCOPE / INPUTS
+===================
+Five CP-V44 after_refresh/checkpoint.bin graphs at updates21--25, approximately
+4.6--5.4sensor seconds. Same native measurements, noise, initial priors, smart
+factors, pose/velocity/bias variables and retained smart caches. No marginal
+prior or fixed variable exists in these windows; first marginalization was26.
+Serialized original noise is used only to reconstruct/evaluate identical
+factor equations, not to study, rescale, compare or tune covariance.
+
+No estimator/receiver/source replay, full sequence, accuracy rescore, changed
+calibration, explicit landmark substitution, covariance investigation, default
+promotion, deletion or push. CP-V42 and original Method1/2 results remain intact.
+The saved native costs exactly match the CP-V44 reported final-state costs.
+
+DERIVATIVE EVIDENCE
+===================
+Every non-null factor:3deterministic directions, central differences at
+eps1e-4,1e-5,1e-6, independent cloned factor/cache for each evaluation.
+Native Gaussian gradient dot direction compared with native error difference.
+Gate uses both1e-5/1e-6 with1e-5 absolute+1e-5 relative tolerance. No tuning of
+that tolerance. All states and original caches remain byte-identical.
+
+Family                 gate checks   failed checks   failing factor instances
+IMU                         690              0                  0/115
+bias between                690              0                  0/115
+initial priors              120             30                  5/20
+native smart stereo       24510           8112               1405/4085
+CBS relative pose           570            552                 95/95
+TOTAL                     26580           8694               1505/4430
+
+Factor instances count each checkpoint separately, not independent observations.
+There are ZERO smart status changes in these infinitesimal directional checks.
+Therefore small-step derivative failures are not explained merely by dropping
+a visual factor between the plus/minus samples. This does not make native
+smart elimination equivalent to differentiating its operational cost: cached
+triangulation and the Schur-eliminated local model remain distinct semantics.
+Large trial steps do change visual validity, as reported below.
+
+For each CBS factor all12 residual Jacobian columns were checked at all3eps:
+3420column checks. The separate exact chain-rule calculation changes neither
+residual nor factor/noise and is NOT inserted into the graph. All3420 exact
+cost-derivative checks pass. Maximum normalized residual-Jacobian difference
+from finite differences: native .007124; exact chain6.38e-11.
+
+Update   native CBS stacked gradient discrepancy    exact-chain discrepancy
+ 21                     .137115%                          3.06e-12
+ 22                     .138362%                          3.14e-12
+ 23                     .140366%                          2.94e-12
+ 24                     .144184%                          2.46e-12
+ 25                     .149635%                          3.05e-12
+
+These are L2 relative differences of the stacked factor cost-gradient columns
+at eps1e-5, not covariance comparisons or a global graph conditioning measure.
+Three individual components across all five windows have opposite signs, but
+component ratios near cancellation are misleading; do not present the maximum
+component ratio as a percentage error in the whole graph.
+
+Code evidence (workspace devel headers used by the private audit):
+gtsam/config.h:98--99: GTSAM_SLOW_BUT_CORRECT_BETWEENFACTOR is undefined.
+gtsam/slam/BetweenFactor.h:115--124: exact Local chain multiplication is behind
+that switch; fast branch returns Local residual without it.
+gtsam/nonlinear/ExtendedPriorFactor.h:147--153: pose prior returns identity H.
+CP-V44 independently verified fresh native equations equal captured live cache
+exactly at all15owning theta points; this is not a different offline model.
+No compile define, library or live factor was changed in CP-V45.
+
+BOUNDED ONE-DIRECTION PROBES (NOT AN ITERATIVE SOLVE)
+==================================================
+From each captured final state, independently solve ONE fresh native Gaussian
+system; evaluate all13predeclared fractions2^-j, j=0..12. No best candidate is
+propagated to a next iteration. Linear backward-relative residual4.07e-18--
+5.46e-18; that is a linear algebra check, NOT nonlinear stationarity.
+
+Full-step trial shown below, including the unfavorable update23:
+Update  native total cost before->trial  IMU cost before->trial  net tilt before->trial
+ 21       27118.73 ->27073.80                233.52 ->197.63        1.55 ->1.67deg
+ 22       28002.36 ->27991.93                209.97 ->202.83        4.69 ->4.78deg
+ 23       28577.39 ->28579.30                213.33 ->213.21        2.54 ->2.64deg
+ 24       39201.74 ->33291.12               6191.63 ->285.79        9.51 ->9.81deg
+ 25       38810.81 ->38657.70                456.25 ->308.35        9.35 ->9.38deg
+
+Cost is a weighted objective, not RMSE/metres. Net tilt compares the common
+old-window poses with BEFORE the ordinary solve at that update. It is not
+ground-truth attitude error or physical drone rotation. Orientation-mean
+calculation reproduces CP-V44's original net tilts to<1e-7deg.
+
+Additional full-step tilt relative to captured final state:
+.12279/.09028/.10621/.43127/.04188deg for21/22/23/24/25.
+Median accel-bias movement .02081/.01554/.01866/.07615/.00748m/s^2.
+At24 max native IMU position-constraint residual .0018937->.00018834m; this is
+internal consistency, not positional accuracy.
+
+Full-step smart status changes9/1/9/12/7; active counts respectively
+289->283,300->299,338->342,312->310,327->323. Native validity rules are never
+disabled. Lower reported cost can therefore involve a changed visual active
+set. Each checkpoint also has lower-cost SMALL probes with unchanged status
+(e.g.fraction1/4096 in all five); report both, not just favorable large steps.
+No exact smooth global objective or globally optimal state is certified.
+
+DECISION / NEXT PROPOSAL (NOT EXECUTED)
+======================================
+All five fail native nonlinear-convergence admission. Per preregistered
+protocol, zero iterative optimizations were launched. No stopping-gradient
+threshold was relaxed and no explicit-landmark model substituted.
+
+The most focused next causal test is a saved-checkpoint equation ablation:
+correct ONLY the CBS relative-pose Jacobian chain rule, with its residual,
+measurements, priors, noise and native smart factors unchanged. Compare the
+same one-step response/current native equations first; quantify whether the
+small derivative difference materially changes the tilt/bias direction. The
+pose-prior and visual caveats must remain explicit, not silently repaired in
+the same ablation. A tiny effect would demote this hypothesis; a large effect
+would justify focused safety checks, not an immediate full sequence.
+
+No authorization is inferred for a new live patch/run from this report.
+
+VALIDATION / CLOSEOUT
+====================
+Release and ASan/UBSan synthetic tests pass exact-chain residual/cost derivative,
+Gaussian-gradient sign convention, exercised native approximation, and input
+nonmutation. Vendor DSOs not sanitizer-instrumented. Retained sanitizer-link
+warnings concern inherited OpenCV3.4/4.2 library mixing in the reused link list;
+the geometric fixture passes and no image-processing API is invoked here.
+All5snapshot serialization bytes before/after exactly equal original files.
+7090protected pins verify after audit. Original4Hesai cases/667files verify.
+Both originally stopped containers restored; no owned offline jobs remain.
+The host's system Python lacks NumPy; report aggregation used the bundled
+Python/NumPy without installing packages. No numerical test retry or source run.
+
+analysis.json retains all65probes, physical residuals, active sets, movements,
+derivative-family counts and input hashes. P/results retains raw per-factor
+derivatives, peer Jacobians, trial X/V/b, per-factor costs, before/after binaries
+and explicit blocked gate receipts. Final verification is in complete.json.
+P=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_on_convergence_cpv45_20261029

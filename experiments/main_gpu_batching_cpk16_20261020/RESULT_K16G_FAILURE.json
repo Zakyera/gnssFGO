@@ -1,0 +1,79 @@
+{
+  "passed": false,
+  "reason": "instrumented source required TERM after45s graceful shutdown timeout",
+  "requested_window_s": 60,
+  "playback_rate": 0.2,
+  "cleanup": {
+    "returncodes": {
+      "master": 0,
+      "node": -15,
+      "observer": 0,
+      "record": 0,
+      "bag": 0
+    },
+    "all_exited": true
+  },
+  "no_numerical_mismatch_observed": true,
+  "completed_comparisons": {
+    "update": 434,
+    "stamp": 1727775057.075045,
+    "states": 11,
+    "nonlinear_slots": 603,
+    "inputs": 2593,
+    "initial_gpu_checks": 2156,
+    "retirement_updates": 140,
+    "pair_queries": 13415,
+    "sync_calls": 28786,
+    "prepared_hits": 28786,
+    "gaussian_checks": 404398,
+    "covariance_checks": 40245,
+    "gpu_runtime_checks": 105776,
+    "p_max": 0,
+    "r_max": 1.4304896245382014e-17,
+    "v_max": 0,
+    "b_max": 0,
+    "gaussian_max": 0,
+    "covariance_max": 0,
+    "passed": true
+  },
+  "compared_physical_span_s": 48.400002002716064,
+  "maximum_active_poses": 51,
+  "sensor_observer": {
+    "lidar": {
+      "expected": 598,
+      "received": 598,
+      "observer_identical_order": true
+    },
+    "imu": {
+      "expected": 5986,
+      "received": 5986,
+      "observer_identical_order": true
+    }
+  },
+  "native_count": 211,
+  "native_span_s": 44.999650955,
+  "native_first_stamp_ns": 1727775008675043106,
+  "native_last_stamp_ns": 1727775053674694061,
+  "native_startup_gap_s": 0.819646797,
+  "native_tail_gap_s": 14.180702248,
+  "native_gaps_over_150ms": 62,
+  "instrumented_main_root_ms": {
+    "count": 217,
+    "first20_median": 33.141868,
+    "last20_median": 3046.0530615,
+    "maximum": 7374.655402
+  },
+  "input_timing_rows": 228,
+  "limitations": [
+    "Sensor receipt conservation is in the separate observer, not proof all scans reached GLIM.",
+    "Instrumented MAIN timing includes duplicate solving and exhaustive comparisons.",
+    "Nested in-memory profiler sessions do not retain a complete diagnostic substage breakdown.",
+    "Missing frames and unfinished drain invalidate full60s acceptance.",
+    "No estimator performance regression or arithmetic failure is established by this overloaded diagnostic."
+  ],
+  "input_callback_wait_ms": {
+    "maximum": 7376.07,
+    "last20_median": 2242.54,
+    "maximum_workload": 11
+  }
+}

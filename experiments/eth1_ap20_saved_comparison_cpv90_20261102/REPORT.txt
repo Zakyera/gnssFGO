@@ -1,0 +1,106 @@
+CP-V90 — ETH1 split-IMU CBS-OFF, independent Leica/AP20 position check
+2026-11-02 | Saved-data analysis of the completed CP-V89 capture
+
+BOTTOM LINE
+The GLIM–Kimera position-accuracy gap remains when the reference is raw Leica
+total-station tracking of the AP20 prism, rather than IE-TC. On exactly the same
+3,873 measurement timestamps, GLIM RMSE is 0.031474 m and Kimera is 0.684862 m.
+On that same mask versus IE-TC they are 0.032814 m and 0.686583 m. IE-TC versus
+AP20 is 0.010988 m. Thus this observed gap is not explained by choosing IE-TC
+as the reference on these supported intervals. This does NOT prove independence
+of every error source, certify IMU calibration, or establish the cause of
+Kimera's remaining error. It does not qualify split-body CBS/fusion operation.
+
+SCOPE AND METHOD
+GLIM: Hesai LiDAR + CPT7/HG4930. Kimera: front Alphasense stereo + built-in
+Alphasense IMU, using the experimental CP88/89 bias random walks. CBS OFF in
+both. No fusion. No estimator rerun, sensor replay, build or parameter change.
+The CP89 Method 1 first/newest absolute outputs are used: GLIM published
+absolute poses and Kimera absolute backend poses, NOT its native integrated
+incremental trajectory and NOT later finalized/revised historical poses.
+
+All positions refer to the SAME physical prism point. CP89 immutable TUM files
+already include each estimator's body-to-prism lever arm; it is NOT applied
+again. Raw IE-TC CPT7 poses are converted using the pinned T_cpt7_prism.
+The raw AP20 bag supplies measured PointStamped positions in leica_total_station.
+Timestamp and position values are retained; no AP20 gap filling or smoothing.
+
+EVO 1.36.3 APE translation RMSE, one SE(3) rigid alignment per comparison using
+all accepted positions; no scale optimization, time-offset fit or per-fragment
+realignment. Estimator positions are linearly interpolated at raw AP20 times
+only across saved native gaps <=0.5s, never extrapolated. IE-TC interpolation
+uses gaps <=0.05s. All five comparisons share the exact same accepted mask.
+No samples are selected or rejected according to estimation error.
+Identity quaternions merely serialize position-only curves in TUM format.
+No orientation accuracy or RPE is claimed from these Leica observations.
+
+PRIMARY POSITION RESULTS — common raw AP20 measurement mask
+Estimator/reference             RMSE m     Median m    P95 m       Max m
+GLIM CPT7 vs AP20               0.031474   0.028105    0.048761    0.144684
+Kimera Alphasense vs AP20       0.684862   0.465960    1.372235    1.611755
+
+REFERENCE CONTROL — IDENTICAL timestamps, separate global rigid alignments
+GLIM CPT7 vs IE-TC              0.032814   0.028806    0.050097    0.131644
+Kimera Alphasense vs IE-TC      0.686583   0.468605    1.379361    1.614384
+IE-TC vs AP20                  0.010988   0.009099    0.020531    0.121991
+IE-TC is the supplementary reference control, not a third source estimator.
+
+COVERAGE AND PATHS — partial measured support, NOT a full-sequence Leica score
+Requested CP89 window: 346.32s. AP20 has 4,547 finite, strictly increasing unique
+measurements; record/header stamps agree exactly. Raw measured support is
+228.310992s (65.924865% of this requested window), using <=0.20s continuity.
+This definition/window is not the paper's mission-wide coverage statistic.
+The final common mask has 3,873 rows, 13 segments (including 3 singleton points),
+194.514120s supported duration = 56.166008% of the requested window. First/last
+accepted times are 3.771624920s / 302.059281404s; their difference is NOT coverage.
+IE-TC supports every accepted row and does not reduce the primary mask.
+674 raw AP20 rows are omitted: 72 at startup and 602 after the dense Kimera
+output ends near 302s. By source support: 660 Kimera-only failures, 11 both,
+3 GLIM-only. No interpolated bridge through Kimera's sparse ~5.1s tail gaps.
+
+Segmented polyline lengths on the SAME common timestamps and intervals:
+  Measured Leica/AP20 reference   152.455646 m
+  GLIM CPT7 estimate              153.293176 m
+  Kimera Alphasense estimate      156.854371 m
+  IE-TC reference                 152.383621 m
+Breaks occur at raw AP20 gaps >0.20s or omitted raw rows; outage chords are not
+included. These are sampled polylines, NOT exact physical distance travelled.
+Interpolation and sampling affect the lengths; this is not the full route.
+
+FULL-SAVED NATIVE OUTPUT — separate, NOT the common AP20 evaluation mask
+GLIM: 3,454 saved poses, 0.819646797–346.119253597s, 345.299607s support
+(99.705361%), zero gaps >0.5s; segmented native estimated path 205.236377m.
+Kimera: 1,493 saved poses, 0.299998900–342.898091204s, 297.198336s support
+(85.816105%), 11 gaps >0.5s; segmented native estimated path 214.718296m.
+Different supports/cadences mean these two native path lengths are not the
+same-mask comparison above. The previously reported CP89 full-window IE-TC
+scores remain unchanged. Their masks and global alignments differ from CP90.
+The unmatched left image at 203.898841154s and missing early GLIM CSV pose
+remain documented CP89 omissions; this saved analysis does not repair either.
+
+VERIFICATION AND REPRODUCTION
+analyze.py is exclusive-output and must NOT be rerun into this completed root.
+PROTOCOL.txt and ape_config.json were fixed before scoring. evaluation/ contains
+raw AP20 positions/stamps, accepted interpolation brackets/weights, rejected
+rows, common TUM curves, exact commands, CLI logs and five EVO result archives.
+results.json contains unrounded statistics, alignments, segments and lengths.
+All five CLI error arrays/statistics match direct EVO Python API computations;
+TUM timestamp roundtrip is exact to ns and position error <1e-10m.
+Pre/post historical checks passed: 3,716 protected CP89 files, 148 terminal
+output hashes, 28 report-input hashes, all 667 Hesai copies and 667 originals.
+CP89 post_closeout is pinned. Both containers remained stopped. No old result
+or reference table was overwritten. Supplemental verification details are in
+supplemental_verification.json; complete.json pins this analysis's final files.
+
+INTERPRETATION LIMITS / NEXT DECISION
+This is a useful independent positional cross-check, not an official ETH1
+benchmark result, full temporal coverage, attitude evaluation or uncertainty
+calibration. IE-TC shares CPT7 with GLIM; the raw Leica measurements do not use
+the estimators' IMU propagation. Agreement here cannot establish absence of
+correlation everywhere or certify either reference over its unobserved gaps.
+The evidence supports retaining GLIM's good positional accuracy on this mask
+and treating Kimera's larger error as a remaining estimator/configuration issue
+to investigate, not dismissing it as an IE-TC-reference artifact. It does NOT
+identify whether Alpha hardware, its experimental noise model, visual tracking,
+initialization or another issue is responsible. No new experiment authorized
+or launched by this report; existing run and covariance conclusions unchanged.

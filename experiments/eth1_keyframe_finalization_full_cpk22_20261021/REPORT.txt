@@ -1,0 +1,51 @@
+CP-K22 — OFF STOPPED AFTER HOST SUSPEND/RESUME, 2026-10-21
+Authorized continuation: full ETH1 matched CBS-OFF/ON, known-expired revisions
+audited/ignored, unchanged windows/model/source builds. CP-K20 is preserved.
+Only native-keyframe coverage and gap-aware evaluation harness changes.
+Preparation passed:2320 protected files; same pinned source/receiver binaries,
+profiles,algorithm and covariance parameters. Saved CP-K21 fixture1492native
+poses passes with3460processed frontend frames; all seven negatives reject
+(duplicate stamps,excessive gap,truncated pose/input tails,nonfinite positions,
+missing output/backend mismatch,and original dense GLIM tail guard).
+No source/solver replay was used for those checks.
+Full OFF launched ONCE at about10:55 local,October21,host exec session82221.
+Controller run_case.py full off; source effective checks passed before playback.
+Native GLIM,Kimera and CP-K19 WNOA receiver are concurrent at0.20x. Early
+transport queue0,max18; ONLINE output is advancing. No completed result yet.
+Do not duplicate. Inspect full_off_control/complete.json or failed.txt and
+owned process status. ON only after all three ordinary OFF gates pass.
+Both containers were stopped before this run and must be restored after work.
+Experiment-only persistent follow-up approval requested,not yet enabled.
+
+STATUS CHECK2026-10-21~11:25local
+OFF controller failed at11:14:27.475local:receiver stopped during playback.
+Exact receiver error:FL4A_STREAM_FAILURE new belief references retired support.
+No ON launched,no successful full346.32s capture,no accuracy comparison.
+Transport broken-pipe and source truncated-coverage errors are subsequent
+cleanup consequences,not the initial failure. Do not retry automatically.
+
+Host journal establishes:lid closed11:11:13,suspend entered11:11:19,resume
+at11:14:25. Kernel PM:suspend entry(deep)/exit and systemd-suspend service
+confirm approximately186s system sleep. Kimera backend972 completes08:11:19.324
+UTC;973 completes08:14:25.741UTC,matching that pause. Their measured backend
+times140.972/147.869ms do not explain the186s wall gap as optimization work.
+
+Last committed event139000;139001(first Kimera972->973,ID2933,revision0) fails.
+Physical endpoints1727775205554276700/1727775205754275800ns.
+Arrival1727775218563518000ns,selected-window+210.708121691s.
+Endpoint ages13.0092413/12.8092422s;oldest retained support1727775211483475000ns.
+First endpoint is5.9291983s before retained history. After resume the input
+clock advances ahead of the available source output. Exact suspend/catch-up
+scheduling is not separately instrumented; do not generalize this as intrinsic
+solver throughput or certify the full-run problem solved.
+
+Immediately preceding committed event correctly expires known Kimera971->972
+revision1 and retains its sealed revision0 reference. Thus agreed known-ID
+expired-revision handling operated;the failing first arrival is deliberately
+outside that policy. No model/lag/covariance or guard has been changed.
+All owned source/receiver/controller processes exited; no next case started.
+Next run would need explicit user authorization and an awake machine; a scoped
+sleep inhibitor can be considered,not installed or enabled here.
+
+Closeout:all2320protected files unchanged; full_on_control absent. Both
+cbsms_ws_gpu and ubuntu-jammy-humble-nvidia verified exited after cleanup.

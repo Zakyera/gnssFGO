@@ -1,0 +1,659 @@
+CP-V8 — HESAI / VELODYNE CROSS-SEQUENCE DECISION REPORT
+Completed 2026-10-26. Saved-data analysis; no new estimator experiment.
+====================================================================
+
+EXECUTIVE DECISION
+The system demonstrates substantial collaborative position-estimation gains,
+but is NOT yet a robust, calibrated uncertainty-sharing method. Preserve the
+baseline; do not promote the rejected whole-rotation variance10 candidate.
+Do not start another broad dataset campaign or covariance-scale sweep.
+
+The important NEW finding is that Kimera's20s rotation RPE worsens with CBS ON
+in SIX of SEVEN completed pairs, although position ATE improves in six. Only
+Hesai ETH1 improves both Kimera position ATE and20s rotation RPE. Several
+apparently successful position results therefore hide an orientation tradeoff.
+This is a descriptive result from these captures, not a significance test.
+
+Actual incoming GLIM->Kimera factors show worse tilt RMS than the verified
+Kimera pre-update state in SIX pairs, but better heading RMS in FIVE. These
+sets are not identical; Hesai EIG-2 is an important counterexample. The
+evidence supports investigating directional information exchange, not a
+universal claim that LiDAR is always bad at tilt or good at heading.
+
+Recommended next intervention: ONE parameter-free, gravity-separated G2K
+information ablation that retains gravity-axis rotation and translation but
+marginalizes the two tilt residual directions. Keep K2G and fusion unchanged.
+This is a causal diagnostic proposal, NOT an implemented fix or final adaptive
+policy. It avoids inventing a trust threshold from unreliable covariance ranks.
+The full mathematical specification, stop rules and future acceptance contract
+are appended in Section10 and also saved as PROPOSAL.txt. Nothing was launched.
+
+1. POPULATION, FAIRNESS AND WHAT 'WORKS' MEANS
+---------------------------------------------
+Seven completed baseline OFF/ON pairs: four Hesai and three rear-Velodyne.
+Four distinct missions, not seven independent environments or repetitions.
+SPX-3 uses corrected quiet-start CP-K28, NOT obsolete moving-start CP-K26.
+EIG-2 Hesai uses CP-K24A's qualified EOF-reviewed scores, not a zero-loss claim.
+The existing CP-V6A Leica variance10 intervention is separate negative evidence.
+
+Freeze: 0.20x, MAIN batching, GLIM5s/all-LOCAL dense covariance every version,
+corrected MAIN means, CP-K9 Kimera25states/prior-refresh1/FL4Q0/remove,
+classic active_window_temporary CBS at Gaussian scale1, seven-second WNOA
+fusion/100ms supports/no central IMU or GNSS, seal_at_absorption and explicit
+EOF handling. Source-to-source exchange is not downstream revision replacement.
+
+Success is measured OFF->ON improvement with acceptable native-source harm,
+long-horizon accuracy, coverage and safe completion. Fusion need not beat the
+best native estimator in every run. Conversely, better GLIM cannot cancel a
+large Kimera regression without an explicitly different application objective.
+Engineering correctness, calibrated uncertainty, accuracy and throughput are
+separate questions. Passed payload/lifecycle checks are not an accuracy proof.
+
+Reference: shared-CPT7 IE-TC GNSS/INS, not independent/noiseless prism GT.
+Trajectories are evaluated at the established prism lever arm, with rigid
+SE(3) no-scale best-fit ATE. RPE is relative motion, not globally aligned ATE.
+Rear Velodyne changes mounting/viewpoint/density as well as the sensor; this
+is not an isolated experiment varying only 'LiDAR accuracy'.
+
+The three cross-sensor Kimera OFF trajectory files are BYTE-IDENTICAL. That
+supports the unchanged camera/IMU baseline, but also prohibits counting them
+as independent repetitions. No standard errors/p-values are inferred from
+thousands of overlapping time windows or repeated covariance revisions.
+
+2. POSITION ACCURACY — ORIGINAL FULL-SAVED RESULTS
+-------------------------------------------------
+ATE RMSE metres, OFF -> ON. These reproduce the historical report values.
+Every saved pose is scored; streams can have different timestamps and spans.
+Change is100*(ON/OFF-1): negative improves. Tiny changes are not proof of gain.
+
+Pair              Native GLIM                Native Kimera               Fusion ONLINE            
+----------------  -------------------------  --------------------------  -------------------------
+Hesai ETH1        0.0397 -> 0.0374 (-5.7%)   4.4962 -> 0.3409 (-92.4%)   0.1661 -> 0.1035 (-37.7%)
+Hesai EIG-2       0.0511 -> 0.0446 (-12.8%)  1.8826 -> 0.6888 (-63.4%)   0.1675 -> 0.1358 (-19.0%)
+Hesai SPX-3       0.0166 -> 0.0166 (-0.1%)   0.4834 -> 0.1102 (-77.2%)   0.0441 -> 0.0408 (-7.5%) 
+Hesai LEICA-2     0.5692 -> 0.5702 (+0.2%)   1.0971 -> 0.4800 (-56.2%)   0.6970 -> 0.5656 (-18.8%)
+Velodyne SPX-3    0.0504 -> 0.0537 (+6.6%)   0.4834 -> 0.3766 (-22.1%)   0.1287 -> 0.1121 (-12.9%)
+Velodyne EIG-2    0.2837 -> 0.3303 (+16.4%)  1.8826 -> 1.8029 (-4.2%)    0.5343 -> 0.8861 (+65.8%)
+Velodyne LEICA-2  2.8281 -> 0.8613 (-69.5%)  1.0971 -> 2.5842 (+135.5%)  2.0004 -> 1.8287 (-8.6%)
+
+Hesai: Kimera and ONLINE fusion position ATE improve4/4. Velodyne: each
+improves2/3, but on different subsets. Do not collapse this to a success rate.
+Leica Velodyne GLIM gains while Kimera is damaged; EIG Velodyne fusion worsens.
+Hesai SPX-3's0.000017m GLIM ATE change is effectively unchanged at this evidence
+level. No repeated-trial variance estimate supports a claim about such a gain.
+
+New CP-V8 same-time common-mask ATE, metres (native G/K/ONLINE all share mask):
+
+Pair              GLIM              Kimera            Fusion ONLINE   
+----------------  ----------------  ----------------  ----------------
+Hesai ETH1        0.0403 -> 0.0373  4.5000 -> 0.3407  0.1679 -> 0.1045
+Hesai EIG-2       0.0511 -> 0.0445  1.8810 -> 0.6880  0.1655 -> 0.1346
+Hesai SPX-3       0.0165 -> 0.0165  0.4823 -> 0.1088  0.0421 -> 0.0380
+Hesai LEICA-2     0.4947 -> 0.4971  1.0949 -> 0.4780  0.6604 -> 0.5200
+Velodyne SPX-3    0.0507 -> 0.0540  0.4822 -> 0.3737  0.1246 -> 0.1097
+Velodyne EIG-2    0.2836 -> 0.3305  1.8798 -> 1.7986  0.5308 -> 0.8844
+Velodyne LEICA-2  2.7809 -> 0.8481  1.0942 -> 2.5853  2.0060 -> 1.8680
+
+All Kimera and ONLINE fusion ATE direction conclusions survive matched
+coverage. GLIM Hesai SPX-3 is effectively unchanged: its tiny full-saved gain
+reverses to a tiny common-mask increase, so it is NOT counted as a robust gain.
+Absolute full-saved
+and common-mask ATE differ because samples and fitted alignment differ; these
+are not rerun trajectories. An integer-nanosecond grid avoids the old float
+arange endpoint drift. One or two boundary queries differ in some cases;
+original scores/masks remain preserved alongside this newly declared analysis.
+
+3. THE MISSING PART OF THE VERDICT: MULTI-HORIZON MOTION ERROR
+------------------------------------------------------------
+Kimera rotation RPE RMS degrees, OFF -> ON; complete common support throughout
+each interval. No interval crosses a missing/unsupported sample. The20s result
+worsens in6/7pairs, including three Hesai position-success cases.
+
+Pair              1s              10s             20s             20s change
+----------------  --------------  --------------  --------------  ----------
+Hesai ETH1        0.568 -> 0.560  1.182 -> 0.987  1.934 -> 1.209  -37.5%    
+Hesai EIG-2       0.848 -> 0.842  1.466 -> 1.631  1.890 -> 2.249  +19.0%    
+Hesai SPX-3       0.484 -> 0.484  0.642 -> 0.946  0.933 -> 1.134  +21.5%    
+Hesai LEICA-2     0.406 -> 0.414  0.649 -> 0.965  1.037 -> 1.268  +22.3%    
+Velodyne SPX-3    0.484 -> 0.510  0.655 -> 1.455  0.952 -> 2.187  +129.6%   
+Velodyne EIG-2    0.846 -> 1.014  1.449 -> 2.986  1.875 -> 4.835  +157.9%   
+Velodyne LEICA-2  0.406 -> 0.536  0.649 -> 2.008  1.037 -> 3.326  +220.8%
+
+The same-start sensitivity check fixes each pair's start cohort to those
+supporting an uninterrupted20s interval, then evaluates1/10/20s on those
+EXACT starts. Six-of-seven20s deterioration is unchanged by construction;
+the shorter-horizon same-cohort scores are retained in metrics. Counts below.
+Do not interpret changing horizon cohorts as a precise crossover time.
+
+Full multi-horizon table below: translation metres / rotation degrees.
+These are new common-mask RPE, not original per-stream1s scores.
+
+Pair              Output         CBS  1s m/deg         10s m/deg        20s m/deg      
+----------------  -------------  ---  ---------------  ---------------  ---------------
+Hesai ETH1        native_glim    off  0.0214 / 0.3770  0.0837 / 0.7427  0.1504 / 0.8326
+Hesai ETH1        native_glim    on   0.0162 / 0.3555  0.0822 / 0.7351  0.1505 / 0.8328
+Hesai ETH1        native_kimera  off  0.4408 / 0.5683  3.3432 / 1.1824  4.9091 / 1.9344
+Hesai ETH1        native_kimera  on   0.0199 / 0.5602  0.1045 / 0.9874  0.1945 / 1.2086
+Hesai ETH1        fused_online   off  0.0670 / 2.9822  0.2171 / 2.8313  0.3813 / 2.7856
+Hesai ETH1        fused_online   on   0.0481 / 2.8436  0.1940 / 2.7298  0.3550 / 2.7059
+Hesai EIG-2       native_glim    off  0.0187 / 0.6371  0.0841 / 1.2981  0.1488 / 1.6617
+Hesai EIG-2       native_glim    on   0.0159 / 0.6323  0.0825 / 1.2925  0.1479 / 1.6573
+Hesai EIG-2       native_kimera  off  0.1093 / 0.8477  0.7524 / 1.4660  1.2726 / 1.8904
+Hesai EIG-2       native_kimera  on   0.0257 / 0.8419  0.1258 / 1.6314  0.2239 / 2.2493
+Hesai EIG-2       fused_online   off  0.0434 / 2.4228  0.1573 / 2.6851  0.2789 / 2.8772
+Hesai EIG-2       fused_online   on   0.0392 / 2.4089  0.1402 / 2.7013  0.2502 / 2.8927
+Hesai SPX-3       native_glim    off  0.0066 / 0.2666  0.0427 / 0.8207  0.0658 / 1.0467
+Hesai SPX-3       native_glim    on   0.0066 / 0.2456  0.0423 / 0.8193  0.0660 / 1.0373
+Hesai SPX-3       native_kimera  off  0.0638 / 0.4840  0.3736 / 0.6420  0.6016 / 0.9330
+Hesai SPX-3       native_kimera  on   0.0158 / 0.4840  0.0566 / 0.9458  0.0829 / 1.1339
+Hesai SPX-3       fused_online   off  0.0287 / 1.4028  0.0819 / 1.3806  0.1084 / 1.4950
+Hesai SPX-3       fused_online   on   0.0281 / 1.3414  0.0785 / 1.3603  0.1003 / 1.5170
+Hesai LEICA-2     native_glim    off  0.0191 / 0.3792  0.1347 / 0.9105  0.2602 / 1.2068
+Hesai LEICA-2     native_glim    on   0.0153 / 0.3095  0.1324 / 0.8261  0.2571 / 1.0783
+Hesai LEICA-2     native_kimera  off  0.0286 / 0.4064  0.2317 / 0.6487  0.4267 / 1.0371
+Hesai LEICA-2     native_kimera  on   0.0196 / 0.4145  0.1479 / 0.9651  0.2826 / 1.2685
+Hesai LEICA-2     fused_online   off  0.0315 / 1.5441  0.1630 / 1.5558  0.3016 / 1.6335
+Hesai LEICA-2     fused_online   on   0.0289 / 1.4185  0.1584 / 1.5264  0.2898 / 1.6051
+Velodyne SPX-3    native_glim    off  0.0260 / 0.4547  0.1414 / 0.9070  0.1942 / 0.9474
+Velodyne SPX-3    native_glim    on   0.0256 / 0.3676  0.1421 / 0.7742  0.1958 / 0.9090
+Velodyne SPX-3    native_kimera  off  0.0637 / 0.4839  0.3810 / 0.6548  0.6154 / 0.9524
+Velodyne SPX-3    native_kimera  on   0.0492 / 0.5095  0.3059 / 1.4546  0.4732 / 2.1868
+Velodyne SPX-3    fused_online   off  0.0349 / 1.3405  0.1147 / 1.4385  0.1495 / 1.6396
+Velodyne SPX-3    fused_online   on   0.0425 / 1.2573  0.1566 / 1.4623  0.1993 / 1.7267
+Velodyne EIG-2    native_glim    off  0.0863 / 0.9140  0.2591 / 1.8350  0.4270 / 2.3003
+Velodyne EIG-2    native_glim    on   0.0640 / 0.8287  0.2415 / 1.6745  0.4004 / 2.2028
+Velodyne EIG-2    native_kimera  off  0.1091 / 0.8458  0.7407 / 1.4493  1.2420 / 1.8749
+Velodyne EIG-2    native_kimera  on   0.1017 / 1.0141  0.5469 / 2.9861  0.9998 / 4.8345
+Velodyne EIG-2    fused_online   off  0.0722 / 2.1072  0.2152 / 2.5282  0.3651 / 2.8316
+Velodyne EIG-2    fused_online   on   0.0901 / 1.9929  0.2703 / 2.5849  0.4551 / 3.2186
+Velodyne LEICA-2  native_glim    off  0.0977 / 1.3615  0.6797 / 5.6997  1.0611 / 8.1138
+Velodyne LEICA-2  native_glim    on   0.0402 / 0.5919  0.2685 / 2.4410  0.5189 / 3.5855
+Velodyne LEICA-2  native_kimera  off  0.0286 / 0.4065  0.2317 / 0.6486  0.4267 / 1.0367
+Velodyne LEICA-2  native_kimera  on   0.0621 / 0.5362  0.3984 / 2.0084  0.7504 / 3.3257
+Velodyne LEICA-2  fused_online   off  0.0557 / 2.5508  0.2974 / 3.0120  0.4858 / 3.6281
+Velodyne LEICA-2  fused_online   on   0.0556 / 1.8685  0.2514 / 2.5380  0.4660 / 3.4461
+
+Sequence decisions:
+- Hesai ETH1: strongest positive evidence; large Kimera translation and
+  position gains, plus lower20s rotation error. Preserve as a useful baseline.
+- Hesai EIG-2: large position/translation gains, but Kimera20s rotation rises
+  ~19%. Incoming tilt is slightly healthier here; simple tilt harm cannot
+  explain every orientation regression.
+- Hesai SPX-3 and Leica-2: strong Kimera position gains with ~22% worse20s
+  rotation. Collaboration is useful, but not an across-the-board improvement.
+- Velodyne SPX-3: modest position gains; Kimera20s rotation more than doubles,
+  and ONLINE fusion20s translation worsens. Classify mixed, not clean success.
+- Velodyne EIG-2: small Kimera ATE gain hides20s rotation rising1.875->4.835deg;
+  fusion ATE and20s translation worsen. Clear rejection as robust improvement.
+- Velodyne Leica-2: substantial GLIM recovery but Kimera deteriorates in ATE,
+  short/long relative motion. ONLINE ATE modestly improves. Harmful transfer
+  is plausible, but bidirectional feedback prevents isolated causal attribution.
+
+4. ACTUAL FACTOR UNCERTAINTY VERSUS ACCURACY
+------------------------------------------
+10,609 actual G2K factors joined to their installed dense covariance and exact
+Kimera same-edge pre/post snapshots. All covariance differences are0; all
+pre-states reproduce the logged residual/whitened diagnostic within tolerance.
+This is not an asynchronous-odometry proxy or covariance interpolation.
+Kimera pre-state already contains past collaboration/native factors/prior;
+it is NOT a counterfactual CBS-OFF estimate. Post-update changes include ALL
+factors, retirement and feedback, not just the newly injected belief.
+
+Angular error RMS degrees at each receiver interval, incoming GLIM / Kimera
+PRE-update. Heading is projected CPT7-X yaw; tilt is horizontal ENU angular-log
+norm. No per-belief re-alignment to make either source look better.
+
+Pair              Factors  Heading G/Kpre   Tilt G/Kpre      G heading better  G tilt better
+----------------  -------  ---------------  ---------------  ----------------  -------------
+Hesai ETH1        1473     0.1143 / 0.1397  0.1695 / 0.1426  77.0%             40.7%        
+Hesai EIG-2       1740     0.2674 / 0.2665  0.1654 / 0.1852  53.6%             47.6%        
+Hesai SPX-3       927      0.0317 / 0.0928  0.1425 / 0.1078  75.0%             26.1%        
+Hesai LEICA-2     1890     0.0497 / 0.0765  0.2041 / 0.0947  64.3%             16.2%        
+Velodyne SPX-3    930      0.0536 / 0.0913  0.2443 / 0.1069  60.0%             13.4%        
+Velodyne EIG-2    1744     0.2804 / 0.2676  0.3745 / 0.2136  44.4%             21.2%        
+Velodyne LEICA-2  1905     0.0591 / 0.0794  0.3178 / 0.1157  63.1%             12.6%
+
+The distinction generalizes beyond Leica-2: incoming tilt RMS is worse6/7,
+heading RMS better5/7. EIG-2 heading is similar or worse, so no universal
+'trust LiDAR heading' rule follows. EIG-2 also has larger platform pitch;
+Euler heading and the vertical angular-log component differ there. Both are
+retained separately; the covariance projection below uses the angular-log axes.
+
+Actual angular marginal uncertainty, degrees, G/Kpre, expressed in nominal
+predicted ENU axes. Vertical is sqrt(Czz); tilt norm is sqrt(Cxx+Cyy).
+This projection is NOT a complete residual/bridge covariance propagation.
+The last two columns are within-run Spearman ranks between incoming uncertainty
+and actual angular-component error. They describe ranking, not calibration.
+
+Pair              Vertical uncertainty G/Kpre  Tilt uncertainty G/Kpre  G vertical rank  G tilt rank
+----------------  ---------------------------  -----------------------  ---------------  -----------
+Hesai ETH1        0.00162 / 0.01041            0.00636 / 0.00831        0.081            0.168      
+Hesai EIG-2       0.00339 / 0.00752            0.00509 / 0.00735        0.137            0.104      
+Hesai SPX-3       0.00902 / 0.00998            0.01791 / 0.00863        -0.046           0.580      
+Hesai LEICA-2     0.01051 / 0.00639            0.01798 / 0.00696        0.126            0.339      
+Velodyne SPX-3    0.01461 / 0.01104            0.01525 / 0.00895        0.350            0.708      
+Velodyne EIG-2    0.00789 / 0.00952            0.00636 / 0.00811        0.276            0.117      
+Velodyne LEICA-2  0.01791 / 0.00819            0.01685 / 0.00781        0.187            0.071
+
+A smaller covariance is not a reliable source selector. For Velodyne EIG-2,
+the lower-tilt-uncertainty choice selects incoming GLIM on~81% of intervals,
+but GLIM tilt is more accurate on only~21%. The selected tilt RMS is0.339deg
+versus0.214deg for always using Kimera's PRE state. This is an offline selector
+diagnostic, NOT a fused trajectory or evidence that an executable gate helps.
+For Leica Velodyne, the corresponding selected tilt RMS is0.174deg versus
+Kimera PRE0.116deg. SPX-3 has substantially better covariance/error ranking;
+there is no universal conversion from a covariance trace to estimator health.
+
+Same physical receiver-endpoint sensitivity across sensors:
+- SPX-3:881 matched pairs (46Hesai/49Velodyne excluded).
+- EIG-2:1,637 matched pairs (103/107 excluded).
+- Leica-2:1,458 matched pairs (432/447 excluded).
+On matched Leica intervals, heading G/Kpre is0.0497/0.0768deg with Hesai and
+0.0575/0.0776deg with Velodyne; tilt is0.2067/0.0941 and0.3240/0.1147deg.
+Thus the sensor-cohort check preserves useful-heading/harmful-tilt ordering.
+Leica matched cohort has NO330--390s factors and only12in300--330s. Do not
+use it to explain late drift; separate per-run30s bins retain coverage there.
+This is a different matched cohort from CP-V7's original/candidate comparison.
+
+For continuity with earlier reports, outgoing revision-MIXED median traces:
+translation m^2 and rotation rad^2, OFF -> ON. These are sender publications,
+not what the other sender receives, nor equal-age/equal-endpoint statistics.
+Revisions are repeated versions of correlated edges, not independent samples.
+
+Pair              Sender  Translation trace       Rotation trace        
+----------------  ------  ----------------------  ----------------------
+Hesai ETH1        glim    2.100e-06 -> 2.079e-06  7.441e-09 -> 7.457e-09
+Hesai ETH1        kimera  4.841e-06 -> 4.441e-06  4.096e-08 -> 3.220e-08
+Hesai EIG-2       glim    1.847e-06 -> 1.871e-06  6.728e-09 -> 6.822e-09
+Hesai EIG-2       kimera  7.856e-07 -> 6.667e-07  2.359e-08 -> 1.759e-08
+Hesai SPX-3       glim    1.667e-06 -> 1.680e-06  8.711e-08 -> 8.722e-08
+Hesai SPX-3       kimera  6.056e-06 -> 4.809e-06  4.957e-08 -> 4.193e-08
+Hesai LEICA-2     glim    1.795e-06 -> 1.797e-06  4.876e-08 -> 4.760e-08
+Hesai LEICA-2     kimera  1.013e-06 -> 7.603e-07  1.967e-08 -> 1.524e-08
+Velodyne SPX-3    glim    2.759e-06 -> 2.754e-06  9.743e-08 -> 9.797e-08
+Velodyne SPX-3    kimera  6.056e-06 -> 6.656e-06  4.957e-08 -> 5.105e-08
+Velodyne EIG-2    glim    3.910e-06 -> 3.894e-06  1.257e-08 -> 1.258e-08
+Velodyne EIG-2    kimera  7.856e-07 -> 1.947e-06  2.359e-08 -> 3.253e-08
+Velodyne LEICA-2  glim    2.494e-06 -> 2.494e-06  6.672e-08 -> 6.650e-08
+Velodyne LEICA-2  kimera  1.013e-06 -> 1.849e-06  1.967e-08 -> 2.486e-08
+
+5. ONLINE QUALITY AND DELAYED OUTPUT MUST STAY SEPARATE
+-------------------------------------------------------
+Full-saved ONLINE vs DELAYED ATE and path length, plus reference path length
+sampled at ONLINE timestamps. Length is at prism, not the CPT7 body origin.
+Native path lengths and original1s RPE are in AppendixA below. Polylines through
+sparse native samples can shortcut motion; gaps are not fabricated motion.
+
+Pair              CBS  ATE ONLINE/DELAYED  Length ONLINE/DELAYED  Reference length  ONLINE/ref
+----------------  ---  ------------------  ---------------------  ----------------  ----------
+Hesai ETH1        off  0.1661 / 0.1560     237.71 / 201.91        201.48            1.180     
+Hesai ETH1        on   0.1035 / 0.0988     225.88 / 202.79        201.48            1.121     
+Hesai EIG-2       off  0.1675 / 0.1662     225.56 / 188.51        188.13            1.199     
+Hesai EIG-2       on   0.1358 / 0.1323     221.25 / 188.67        188.13            1.176     
+Hesai SPX-3       off  0.0441 / 0.0378     98.64 / 90.88          90.79             1.086     
+Hesai SPX-3       on   0.0408 / 0.0347     97.48 / 90.98          90.79             1.074     
+Hesai LEICA-2     off  0.6970 / 0.6963     221.27 / 205.18        205.93            1.074     
+Hesai LEICA-2     on   0.5656 / 0.5659     218.37 / 205.70        205.93            1.060     
+Velodyne SPX-3    off  0.1287 / 0.1303     101.57 / 90.88         90.79             1.119     
+Velodyne SPX-3    on   0.1121 / 0.1103     100.56 / 90.80         90.79             1.108     
+Velodyne EIG-2    off  0.5343 / 0.5266     299.81 / 191.05        188.13            1.594     
+Velodyne EIG-2    on   0.8861 / 0.8836     255.33 / 189.44        188.13            1.357     
+Velodyne LEICA-2  off  2.0004 / 2.0006     280.15 / 204.80        205.93            1.360     
+Velodyne LEICA-2  on   1.8287 / 1.8318     235.14 / 205.89        205.93            1.142
+
+EIG-2 Velodyne ONLINE path is299.81m OFF /255.33m ON versus~188.13m
+reference. DELAYED paths191.05/189.44m are much smoother, but their ATE still
+worsens OFF->ON. Therefore neither jitter alone nor swapping in finalized
+output removes the EIG-2 global accuracy regression. The two issues differ.
+Do not describe finalized output as ONLINE or full-history smoothing.
+
+6. COVERAGE, COMPLETION AND FAILURE ACCOUNTING
+---------------------------------------------
+New CP-V8 common grid: valid/excluded queries; supported seconds versus
+envelope; last supported time is relative to capture start, not raw bag start.
+An envelope can contain holes. RPE counts require the whole interval supported.
+
+Pair              Capture s  Valid/excluded  Supported/envelope s  Common first..last s  RPE n1/10/20  
+----------------  ---------  --------------  --------------------  --------------------  --------------
+Hesai ETH1        346.32     2970/451        296.7/298.3           3.745..302.045        2940/2773/2673
+Hesai EIG-2       355.02     3526/16         352.3/354.1           0.736..354.836        3505/3325/3172
+Hesai SPX-3       197.02     1923/39         191.8/195.3           1.527..196.827        1881/1687/1487
+Hesai LEICA-2     428.75     3856/408        385.0/420.9           0.685..421.585        3810/3450/3050
+Velodyne SPX-3    197.02     1924/36         191.9/195.2           1.527..196.727        1882/1621/1421
+Velodyne EIG-2    355.02     3532/8          353.0/353.9           0.836..354.736        3521/3431/3331
+Velodyne LEICA-2  428.75     3850/414        384.6/389.7           0.685..390.385        3810/3450/3050
+
+Native sparse stationary-tail keyframes cause long gaps, especially ETH1 and
+Leica-2. All full-saved poses remain in their original ATE evaluation; the
+matched-mask metrics make NO dense full-recording coverage claim. First/tail
+offsets and each supported segment are retained in outputs/summary.json.
+Window crops: ETH1 offset0, EIG-2 offset5.7, SPX-3 offset29, Leica-2 offset6s;
+later sensor-only tails excluded by the established physical-window policy.
+
+EOF omissions (OFF/ON): Hesai ETH1 0/0, EIG-2 0/1, SPX-3 1/1,
+Leica-2 0/0; Velodyne SPX-3 1/0, EIG-2 0/0, Leica-2 0/0. These omissions
+are not repaired here; their counterfactual accuracy impact is unknown.
+Known post-absorption revisions expire under the recorded seal policy; last
+accepted information remains in the prior. This is not lossless full history.
+
+Reliability inventory:7completed pairs out of8attempted final-baseline pair
+cases (Hesai4/4, Velodyne3/4), not a population reliability estimate. ARC-5
+Velodyne OFF failed near380.6/401.29s with fusion GTSAM indeterminate linear
+system near x3758. ON was not launched. Numerical root cause is unresolved;
+exclude its failed prefix from full accuracy tables, not from failure counts.
+CBS was OFF: changing G2K cannot establish that this numerical failure is fixed.
+SNOW-3 quiet initialization blocked; ETH1 Velodyne input missing; SPX-2/CON-1
+required inputs missing. These are unavailable cases, not successful runs or
+numeric failures. Earlier superseded engineering attempts remain historical
+evidence; the denominator above is the designated final-baseline campaign.
+
+7. TIMING AND PRACTICAL DEPLOYMENT
+---------------------------------
+Milliseconds median/p95. GLIM per scan; Kimera per keyframe backend; fusion
+per100ms support cycle INCLUDING intervening belief revisions. Do not add
+parallel pipeline times or equate one factor solve with a complete cycle.
+Hesai CP-T1 excludes first5s for these timers; Velodyne source timers exclude
+first5s, fusion timers are whole-capture. Reuse original measurements, not
+a fresh benchmark or evidence that CBS causally speeds up computation.
+
+Pair              CBS  GLIM scan    Kimera keyframe  Fusion cycle
+----------------  ---  -----------  ---------------  ------------
+Hesai ETH1        off  61.6/153.7   82.9/136.6       55.8/107.8  
+Hesai ETH1        on   58.4/139.1   82.5/104.1       52.4/72.9   
+Hesai EIG-2       off  55.8/143.2   88.5/110.8       51.1/78.0   
+Hesai EIG-2       on   57.7/160.0   92.0/122.5       52.7/78.2   
+Hesai SPX-3       off  36.4/43.7    52.5/69.4        47.4/64.7   
+Hesai SPX-3       on   37.2/56.0    54.7/72.5        45.5/62.2   
+Hesai LEICA-2     off  55.1/141.4   79.2/102.4       42.8/64.8   
+Hesai LEICA-2     on   73.2/183.1   97.2/190.6       61.6/98.5   
+Velodyne SPX-3    off  83.5/177.5   98.0/130.7       83.5/124.0  
+Velodyne SPX-3    on   82.5/239.6   97.2/132.6       89.8/131.5  
+Velodyne EIG-2    off  109.2/356.5  146.8/187.6      99.2/151.7  
+Velodyne EIG-2    on   85.6/338.0   103.6/150.7      78.9/173.9  
+Velodyne LEICA-2  off  70.2/211.5   81.4/106.6       48.0/75.7   
+Velodyne LEICA-2  on   62.2/201.3   81.4/106.1       45.2/74.7
+
+Current evidence supports these completed0.20x captures, not0.5x operation.
+At0.5x, a10Hz scan has200ms wall budget; Velodyne GLIM p95 exceeds it in
+five of six cases. Queuing can absorb occasional overruns, so this is a risk
+indicator, not proof of inevitable failure. Do not mix speed changes into the
+next accuracy test. Sustained belief/covariance export remains expensive;
+MAIN batching is active. No new optimization work is justified by this report.
+
+8. WHAT WE CAN AND CANNOT CONCLUDE
+---------------------------------
+Supported:
+- Collaboration often greatly improves position when LiDAR is strong.
+- Switching to rear Velodyne reveals harmful tradeoffs hidden by good ATE.
+- Rotation is not one trust number: direction-dependent error relationships
+  recur across missions and sensors, and six Kimera long-horizon regressions
+  deserve more weight than six position-ATE gains alone.
+- Payload covariance use is consistent in the inspected factors. The problem
+  is not a reporting-only substitution of the actual applied matrices here.
+
+Not established:
+- That smaller covariance identifies the healthier estimator, or any scalar
+  multiplier/gate is calibrated; rank usefulness is sequence/direction-specific.
+- That G2K tilt alone caused all drift. EIG-2 Hesai is a counterexample, and
+  pre/post updates are not an isolated causal ablation. Mean alignment, past
+  feedback, priors, native factors and shared IMU remain confounded.
+- Independence of source beliefs or reference. All-LOCAL removes the intended
+  explicit external-factor contribution, not every possible correlation.
+- Statistical significance, universal success, nonlinear stationarity,
+  arbitrary-duration numerical reliability, or0.5x/real-time readiness.
+
+Known mathematical approximation: source peer means are temporally aligned
+while covariance retains the existing mean-only treatment. Bridge uncertainty
+and full transport are not reconstructed here. It remains a caveat, not a
+newly proven explanation or a fix silently bundled into this proposal.
+gnssFGO's original-endpoint source factors are a different path; do not assume
+the source peer alignment approximation directly applies to them identically.
+
+9. PREVIOUS NEGATIVE INTERVENTION: KEEP IT IN THE DECISION
+--------------------------------------------------------
+CP-V6A inflated all G2K rotational variance10x, translation/cross blocks
+unchanged. Full-saved originalON->candidate ATE:
+GLIM0.861349->0.713107m; Kimera2.584159->4.430475m;
+ONLINE fusion1.828658->2.934918m. Reject as overall improvement.
+CP-V7 showed lower Kimera1s rotation error but worse10/20s error and much
+larger accumulated heading drift. At common390.385s, heading original/candidate
+-21.310/-36.542deg; tilt decreased. This motivates separating directions,
+not weakening all rotation again or claiming that untouched cross blocks mean
+unchanged translational optimizer influence. The candidate was not promoted.
+
+10. JUSTIFIED PROPOSAL AND EXPLICIT STOP RULE
+-------------------------------------------
+
+CP-V8 PROPOSAL — one gravity-separated G2K information ablation
+==============================================================
+Status: design recommendation ONLY. No implementation, build or experiment
+authorized/executed by this report. Keep the baseline and CP-V6A unchanged.
+
+DECISION
+The next useful intervention is NOT another scalar covariance multiplier.
+Test whether removing only the two GLIM->Kimera tilt residual components,
+while retaining the gravity-axis rotation and three translation components,
+reduces accumulated Kimera orientation damage without losing the useful
+collaboration. Keep Kimera->GLIM and downstream fusion unchanged.
+
+This is a parameter-free STRUCTURAL ABLATION, not a proposed universal policy
+that LiDAR should never constrain tilt. It is the smallest interpretable next
+experiment that follows from the cross-sequence directional finding and the
+failed whole-rotation variance10 intervention. It is not an adaptive gate.
+If it succeeds, it justifies developing selective directional trust. If it
+fails, do not respond by sweeping tilt multipliers or adding another gate.
+
+WHY THIS, RATHER THAN MORE SCALING?
+1. GLIM incoming tilt RMS is worse than the verified Kimera pre-update state
+   in six of seven ON pairs; heading RMS is better in five. This is not merely
+   Leica-2 or merely Velodyne. Exact physical-interval matching across sensors
+   preserves the major findings for SPX-3 and LEICA-2.
+2. Whole-rotation variance10 reduced some tilt/local errors but harmed heading
+   and global position. It weakened useful and harmful components together.
+3. Actual covariance/error ranking is too inconsistent to justify selecting
+   an online gate or calibration coefficient from these records. EIG-2
+   Velodyne's smaller-tilt-uncertainty selector frequently chooses the less
+   accurate source. A disagreement magnitude alone cannot identify the culprit.
+4. A one-way K->G-only experiment would remove helpful G->K heading and
+   translation too. The proposed ablation isolates a narrower pathway.
+5. Hesai EIG-2 is a counterexample: incoming GLIM tilt is slightly healthier
+   in aggregate, yet Kimera long-horizon rotation worsens. The hypothesis is
+   incomplete; the ablation must be falsifiable and cannot be called a fix.
+
+MATHEMATICAL SPECIFICATION TO REVIEW BEFORE ANY CODE
+Let r(x)=[phi;rho] be the EXISTING six-dimensional factor residual in its
+actual right-local chart, with the existing dense SPD covariance C.
+Let g be a unit gravity direction expressed in that same residual chart.
+Use only the receiving estimator's pre-injection state/gravity and the
+measurement's nominal endpoint orientation to obtain g. Never use the IE-TC
+reference, GT heading, a future state, or a hard-coded covariance index.
+Derive the chart mapping against the real factor implementation first.
+
+Freeze g when the factor is installed, for its existing temporary lifetime.
+Define the full-row-rank 4x6 projection
+
+       M = [ g^T   0(1x3) ]
+           [ 0(3x3) I(3)  ].
+
+Use the four-dimensional residual y=M r(x), covariance C_y=M C M^T,
+and cost y^T C_y^-1 y (with the existing factor's cost normalization).
+Keep the full 4x4 covariance, including gravity-axis/translation cross terms.
+Use the projected Jacobian M J. Replace the original six-dimensional external
+factor for this ablation; never insert both and double count the measurement.
+
+This M refers to gravity-axis angular error, not an exact global Euler-yaw
+measurement. At finite rotations these notions differ. Translation means
+the retained EXISTING rho residual coordinates; SE(3) coupling remains.
+
+This is marginalization of the discarded residual components under the local
+Gaussian noise model, NOT conditioning them to zero. Do not delete rows from
+the precision matrix, diagonalize C, retain an arbitrary covariance corner,
+or set a zero residual while keeping six-dimensional whitening.
+
+For fixed M and SPD C, C_y is SPD and
+  M^T (M C M^T)^-1 M <= C^-1
+in the positive-semidefinite ordering. Thus the projected Gaussian adds no
+information relative to the original six-dimensional measurement. This does
+NOT prove nonlinear solver stability, calibrated noise, independent sources
+or unchanged translation/heading optimizer influence. Marginalization changes
+the dense conditional coupling; it intentionally removes information.
+
+The companion design_check.json tests only this linear-algebra specification.
+Any implementation still needs exact chart/Jacobian/lifecycle/default-parity
+checks on the real factor, including non-axis-aligned gravity and dense cross
+blocks. Do not rebuild the entire estimator or redesign its optimizer.
+
+ISOLATION CONTRACT
+- Private opt-in at the Kimera G2K receiving factor only; default exactly off.
+- Preserve original incoming/outgoing payloads and all-LOCAL exports.
+- K2G unchanged; receiver WNOA model, covariances, priors, supports and lag
+  unchanged. No simultaneous speed, sensor, startup, alignment or EOF changes.
+- Existing temporary-factor retirement, IDs and prior-refresh rules unchanged.
+- Log raw C, M, applied C_y, exact binding, pre/post states and timing.
+- Do not claim this repairs the known source mean-only covariance alignment.
+  Treat the ablation under the same approximation; derive its chart explicitly.
+
+BOUNDED FUTURE TEST, ONLY AFTER SEPARATE USER APPROVAL
+First: focused mathematical/implementation checks; stop if they fail.
+Then: ONE full LEICA-2 Velodyne ON at the frozen 0.20x/window, fresh outputs.
+Use saved OFF and original ON controls; do not rerun OFF automatically.
+A full window is appropriate because the negative intervention improved1s
+RPE but degraded accumulated heading over many tens of seconds. A passing
+30/60s clip is not sufficient for this hypothesis.
+
+Predeclared provisional screening criteria, on identical supported timestamps:
+- At least20% lower Kimera ATE AND20s rotation RPE than original ON.
+  Current CP-V8 common values2.5853m/3.3257deg imply about2.0683m/2.6606deg.
+- No worsening of accumulated heading or10/20s gravity-axis angular error;
+  check fixed-start anchoring at0,+1,+5s where supported.
+- GLIM ATE no more than10% worse and ONLINE fusion ATE no more than5% worse;
+  no >10% regression in their10/20s translation RPE. Retain all other metrics.
+- No numerical/lifecycle failure, materially reduced coverage, unaccounted
+  factor, protected-setting drift or workload exceeding the frozen rate budget.
+
+These percentages are proposed PRACTICAL DECISION MARGINS, not statistical
+confidence limits or covariance calibration constants. They are set before
+seeing candidate results and must not be relaxed afterward. Passing is a
+mechanism-screen result, NOT recovery to OFF accuracy: Leica Kimera OFF ATE
+is1.0942m and20s rotation RPE1.0367deg, substantially better still.
+
+Stop and report after this one screen. If it fails, retain the evidence and
+reject this intervention; do not silently tune another strength. If it passes,
+the next separately approved finite confirmation would be a matched fresh
+baseline/candidate repeat (GLIM preprocessing is not bitwise deterministic),
+then Hesai EIG-2 (useful-tilt counterexample) and Velodyne EIG-2 (fusion
+regression). These are known regression cases, not unseen holdouts. No automatic
+campaign or promotion. Generalization later requires genuinely unused data.
+
+WHAT THIS PROPOSAL WILL NOT SOLVE OR CERTIFY
+ARC-5 failed with CBS OFF, so a G2K receiving change cannot logically establish
+that receiver's numerical robustness. ONLINE path inflation/delayed differences
+also remain a separate output-quality issue. Shared CPT7/source correlation,
+mean-only covariance alignment, initialization/gaps and uncertain IE-TC
+reference are unchanged. None is silently declared fixed by better ATE.
+
+Ultimately the production objective is a measured OFF->ON improvement without
+material native-source harm across the intended domain, with safe completion
+and adequate coverage. This one ablation tests a specific information pathway;
+it is not a promise that the complete algorithm is solved.
+
+APPENDIX A — ORIGINAL PER-STREAM FULL-SAVED METRICS
+---------------------------------------------------
+ATE m;1s translation RPE m;1s rotation RPE degrees; prism path m; saved span s.
+These are historical scores, not newly harmonized RPE. DELAYED is separate.
+
+Pair              Output           CBS  ATE       tRPE1s    rRPE1s    Path        Span      
+----------------  ---------------  ---  --------  --------  --------  ----------  ----------
+Hesai ETH1        native_glim      off  0.039683  0.020328  0.349810  203.082664  345.399612
+Hesai ETH1        native_glim      on   0.037421  0.016090  0.329321  203.093810  345.399612
+Hesai ETH1        native_kimera    off  4.496229  0.440356  0.567768  196.006964  342.598092
+Hesai ETH1        native_kimera    on   0.340930  0.019842  0.559695  200.644192  342.598092
+Hesai ETH1        fused_online     off  0.166126  0.062154  2.765685  237.711338  345.500000
+Hesai ETH1        fused_online     on   0.103489  0.045039  2.635882  225.876905  345.500000
+Hesai ETH1        fused_finalized  off  0.155965  0.016563  0.317889  201.913713  345.500000
+Hesai ETH1        fused_finalized  on   0.098779  0.014114  0.311266  202.791644  345.500000
+Hesai EIG-2       native_glim      off  0.051085  0.018645  0.634210  189.321356  354.199316
+Hesai EIG-2       native_glim      on   0.044555  0.015874  0.629456  189.489614  354.199316
+Hesai EIG-2       native_kimera    off  1.882644  0.108961  0.844753  178.190542  354.697183
+Hesai EIG-2       native_kimera    on   0.688834  0.025637  0.840830  185.977289  354.797183
+Hesai EIG-2       fused_online     off  0.167508  0.043220  2.413468  225.562174  354.400000
+Hesai EIG-2       fused_online     on   0.135765  0.039077  2.399313  221.245882  354.400000
+Hesai EIG-2       fused_finalized  off  0.166193  0.021705  0.666499  188.511761  354.400000
+Hesai EIG-2       fused_finalized  on   0.132314  0.014837  0.666964  188.669543  354.400000
+Hesai SPX-3       native_glim      off  0.016576  0.006472  0.261729  90.959121   196.199266
+Hesai SPX-3       native_glim      on   0.016559  0.006515  0.241074  91.034397   196.199266
+Hesai SPX-3       native_kimera    off  0.483414  0.063055  0.478671  89.092288   196.798285
+Hesai SPX-3       native_kimera    on   0.110169  0.015798  0.482754  90.706621   196.798285
+Hesai SPX-3       fused_online     off  0.044145  0.028187  1.377564  98.640147   196.400000
+Hesai SPX-3       fused_online     on   0.040815  0.027646  1.317215  97.481972   196.400000
+Hesai SPX-3       fused_finalized  off  0.037843  0.007771  0.250678  90.884595   196.400000
+Hesai SPX-3       fused_finalized  on   0.034675  0.007622  0.255111  90.983706   196.400000
+Hesai LEICA-2     native_glim      off  0.569231  0.018105  0.358095  206.098577  427.899480
+Hesai LEICA-2     native_glim      on   0.570179  0.014467  0.292213  206.117688  427.899480
+Hesai LEICA-2     native_kimera    off  1.097081  0.028507  0.405502  200.145838  426.895626
+Hesai LEICA-2     native_kimera    on   0.480025  0.019594  0.413677  204.704769  427.795616
+Hesai LEICA-2     fused_online     off  0.696970  0.029814  1.462128  221.268065  428.100000
+Hesai LEICA-2     fused_online     on   0.565647  0.027332  1.343233  218.368678  428.100000
+Hesai LEICA-2     fused_finalized  off  0.696285  0.014800  0.219624  205.175389  428.100000
+Hesai LEICA-2     fused_finalized  on   0.565905  0.013914  0.217393  205.700250  428.100000
+Velodyne SPX-3    native_glim      off  0.050405  0.025637  0.447996  91.038051   196.000234
+Velodyne SPX-3    native_glim      on   0.053729  0.025275  0.362703  91.106891   196.000234
+Velodyne SPX-3    native_kimera    off  0.483414  0.063055  0.478671  89.092288   196.798285
+Velodyne SPX-3    native_kimera    on   0.376635  0.049016  0.507959  89.055736   196.698286
+Velodyne SPX-3    fused_online     off  0.128743  0.034302  1.317034  101.568640  196.400000
+Velodyne SPX-3    fused_online     on   0.112111  0.041748  1.235156  100.562792  196.400000
+Velodyne SPX-3    fused_finalized  off  0.130321  0.018166  0.346118  90.883957   196.400000
+Velodyne SPX-3    fused_finalized  on   0.110282  0.022631  0.320416  90.799025   196.400000
+Velodyne EIG-2    native_glim      off  0.283734  0.086222  0.913074  194.985220  354.000055
+Velodyne EIG-2    native_glim      on   0.330320  0.063956  0.827864  193.363740  354.000055
+Velodyne EIG-2    native_kimera    off  1.882644  0.108961  0.844753  178.190542  354.697183
+Velodyne EIG-2    native_kimera    on   1.802880  0.101591  1.012888  184.328154  354.697183
+Velodyne EIG-2    fused_online     off  0.534328  0.072108  2.103758  299.810523  354.400000
+Velodyne EIG-2    fused_online     on   0.886053  0.089961  1.989412  255.325842  354.400000
+Velodyne EIG-2    fused_finalized  off  0.526644  0.049721  0.869806  191.049842  354.400000
+Velodyne EIG-2    fused_finalized  on   0.883560  0.048397  0.850105  189.435899  354.400000
+Velodyne LEICA-2  native_glim      off  2.828135  0.092331  1.286905  206.093653  427.799116
+Velodyne LEICA-2  native_glim      on   0.861349  0.038075  0.561518  208.666970  427.799116
+Velodyne LEICA-2  native_kimera    off  1.097081  0.028507  0.405502  200.145838  426.895626
+Velodyne LEICA-2  native_kimera    on   2.584159  0.062012  0.535197  201.294269  426.895626
+Velodyne LEICA-2  fused_online     off  2.000424  0.052801  2.417982  280.154058  428.100000
+Velodyne LEICA-2  fused_online     on   1.828658  0.052690  1.769589  235.136662  428.100000
+Velodyne LEICA-2  fused_finalized  off  2.000564  0.035255  0.580349  204.796695  428.100000
+Velodyne LEICA-2  fused_finalized  on   1.831814  0.029802  0.417429  205.890093  428.100000
+
+APPENDIX B — EVIDENCE / REPRODUCIBILITY / READING GUIDE
+------------------------------------------------------
+REPORT.txt is this consolidated decision report. PROPOSAL.txt is the standalone
+recommendation; no future run is authorized. analyze.py/report.py reproduce
+the NEW analysis in fresh outputs; refuse overwrites. PROTOCOL.txt freezes scope.
+outputs/summary.json includes original scores, new masks/horizons, directional
+summaries, input hashes and cross-sensor cohort/identity checks.
+Per-case*_series.npz retains timestamps, validity, fixed-start position and
+orientation series;*_peer_records.jsonl.gz retains exact means/full matrices;
+*_directions.jsonl.gz and*_peers.json retain directions and30s coverage bins.
+No original source, receiver, profile, covariance or run evidence was modified.
+
+All42native/ONLINE full-saved ATE values independently reproduced within1.550e-08m.
+All10609pre-state joins pass; maximum logged-check discrepancy1.633e-10.
+Every actual applied G2K covariance matches the baseline raw covariance exactly.
+Synthetic SE(3), rigid-transform invariance, known yaw drift, exact timestamp
+and gap-exclusion checks pass. Design algebra check is distinct from software
+validation. closeout.json records input hashes and final checks.
+
+Figures:
+01_decision_scorecard.png — negative percentages/blue improve, positive/red worsen;
+position-ATE gains coexist with Kimera long-horizon rotational regressions.
+02_kimera_rotation_horizons.png — actual OFF->ON degrees at1/10/20s.
+03_peer_directional_tradeoff.png — incoming G/Kpre error ratios; above1 is
+worse incoming error. Heading and tilt frequently lie on opposite sides.
+04_velodyne_orientation.png — fixed-start Kimera heading/tilt error over time;
+broken lines mark excluded coverage. Not best-fit ATE or causal attribution.
+
+Canonical source reports/results:
+/home/yeranis/repos/gnssFGO/experiments/eth1_awake_full_cpk23_20261021/results.json
+/home/yeranis/repos/gnssFGO/experiments/eig2_full_cpk24_20261021/results_eof_review.json
+/home/yeranis/repos/gnssFGO/experiments/spx3_stationary_full_cpk28_20261023/results.json
+/home/yeranis/repos/gnssFGO/experiments/leica2_full_cpk29_20261023/results.json
+/home/yeranis/repos/gnssFGO/experiments/velodyne_full_campaign_cpv4_20261024/spx3/results.json
+/home/yeranis/repos/gnssFGO/experiments/velodyne_full_campaign_cpv4_20261024/eig2/results.json
+/home/yeranis/repos/gnssFGO/experiments/velodyne_full_campaign_cpv4_20261024/leica2/results.json

@@ -1,0 +1,41 @@
+CP-V18 ARC-3 CBS ON standalone diagnostic — STOPPED/FAILED.
+STATUS CORRECTION2026-10-27: first provider failure at513.5675/726.38s;
+controller cleanup13:07:27+02 passed,2959pins unchanged,containers stopped.
+Saved-data investigation CP-V19: ../arc3_glim_failure_cpv19_20261027/REPORT.txt.
+GLIM's revised active-window motion deteriorated during recorded lidar gaps;
+Kimera->GLIM timestamp support prevented new CBS insertion for10.899s and
+explicit temporary factors expired. Subsequent LOCAL extraction/chart guard
+failure stopped the run; exact floating-point branch remains unrecorded.
+No full ON metrics/validation or completed OFF/ON pair. No retry or fix applied.
+Historical launch chronology follows, not current running status.
+
+LAUNCHED ONCE2026-10-27 12:22:57+02;launcher62623/controller62630.
+Capture stage began12:23:12. Startup observation12:24:38: frozen effective
+source/sensor checks pass; actual running receiver63748 SHA equals CP-V15
+Qc0.25. Both source beliefs received: GLIM3935/Kimera700;109ONLINE poses,
+queue0/max23,no duplicates. Startup only; NOT full validation or accuracy proof.
+Read startup_observation.json, launch.json, current status.json and on.log.
+2959protected hashes verified; original four-case667-file Hesai checkpoint
+passes. Both containers running only for owned work; scoped sleep/lid/session
+inhibitors active. Finite controller automatically validates, scores saved data
+if successful and restores originally stopped containers after owned jobs exit.
+Expected playback about61minutes, plus validation/reporting; failure possible.
+
+Prelaunch-only corrections preserved: restricted sandbox disallowed the port
+socket check before any outputs or capture; unchanged preparation succeeded
+with host permission. Manual diff review caught broad port-name replacement
+changing one copied raw scan count11488->11489. Exact original input audit
+restored and generator excludes raw audit from substitutions BEFORE launch;
+prelaunch_review.json and prelaunch_port_rebase_evidence preserve original
+preparation evidence. No raw bag, source model, settings, threshold or actual
+capture was changed/retried. Only finalized inputs were launched and pinned.
+
+One separately authorized ON despite CP-V17 OFF numerical failure. Same input
+window726.38s,0.20x,CP-V15 Qc0.25 receiver and frozen sources. See PROTOCOL.txt.
+CP-V17 failure remains preserved; no complete matched OFF/ON result exists.
+Authoritative launch/status receipts are launch.json and status.json here.
+Never duplicate or retry. No persistent follow-up; finite controller only.
+
+Controller finished 2026-10-27T13:07:27.601133+02:00: STOPPED/FAILED
+{"failure": {"stage": "capture_on", "error": "CalledProcessError(1, ['python3', '/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_on_cpv18_20261027/prepared/run_case_on.py', 'full', 'on'])", "at": "2026-10-27T13:06:29.909148+02:00"}, "cleanup_error": null}
+No automatic retry. Scope-limited inhibitor releases when controller exits.

@@ -1,0 +1,388 @@
+CP-V22 / CP-V22A — LEICA-2 PAIRED RECEIVER DIAGNOSIS
+2026-10-27 | COMPLETED DIAGNOSIS; NO ESTIMATOR FIX OR PROMOTION
+
+IMPORTANT USER-LED FINDING ADDED BEFORE CLOSEOUT
+The user recalled Kimera's incremental-pose option. It is CONFIRMED enabled
+in both saved Leica-2 runs. Kimera publishes chained same-update relative
+motions; fusion ONLINE publishes absolute newest graph states. These are
+different causal output products. A saved-snapshot reconstruction of Kimera's
+chaining cuts Velodyne first-minute path 41.249->33.759m (reference32.608m)
+and 100ms vector RMS 5.015->2.465cm, but increases common-start endpoint
+displacement error 1.544->3.405m. See section11 and incremental_publication_check
+artifacts. The display/history policy explains much of the visible difference;
+chaining alone is not a verified accuracy fix. Output semantics must be resolved
+before interpreting smoothness as optimizer quality or choosing more tuning.
+
+BOTTOM LINE
+The excess Velodyne ONLINE zigzag is real. This unchanged-model diagnostic
+isolates its main immediate mechanism: new source beliefs revise the newest
+fused pose and velocity sharply; the next 100ms support is predicted from that
+revised state. Those corrections are much larger with Velodyne, including
+corrections from the SAME Kimera beliefs. Older active states move far less.
+
+The tested factor Jacobians, endpoint brackets, and endpoint interpolation
+pass. Both complete saved-journal replays reproduce the original ONLINE and
+finalized trajectories byte for byte. At five prescribed publications per
+case, the remaining linearized pose correction is submillimetre, not a missing
+centimetre-scale solver correction. Immediate marginalization effects are tiny.
+
+Thus, the evidence favors excessive newest-state sensitivity to short-motion
+evidence and the current motion/source information balance. It does NOT prove
+a particular covariance multiplier, physical sensor defect, or all-code absence
+of bugs. In particular, this is not a demonstrated weak initial anchor or a
+large instantaneous marginalization jump. No source run, timestamp shift,
+Qc change, production fix, default promotion, or further experiment was made.
+
+1. SCOPE, INPUTS AND BUILD
+
+Original Hesai CP-K29 CBS OFF:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_full_cpk29_20261023/prepared
+Original Velodyne CP-V4 CBS OFF:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared
+
+One complete saved receiver-journal replay of each, same 428.75s capture and
+4,282 output states. Epoch 1732549034915071665ns; saved support times run from
+0.484443335 to 428.584443335s. No GLIM/Kimera run or bag playback. This is the
+ORIGINAL receiver Qc, not the later 0.25 or 0.1 candidate: rotation variances
+0.00375 each and translation variances 0.015 each. Seven-second source WNOA,
+independent 100ms supports, no central IMU/GNSS factors, unchanged priors,
+replacement/seal_at_absorption and EOF policy. IMU only supplies support clock.
+
+Receiver.h is byte-identical to the CP-V13 observer receiver; Live.cpp to
+CP-K19. Extended observation to 0--60.1s and added copy-based numerical checks.
+No change to the model, update order, means, covariances, caches, or guards.
+Actual operation snapshots extend to 60.084496335s; the displacement/path
+comparison uses the 595 consecutive edges ending within (0,60]s. Source
+operation counts refer to ARRIVED insertions in the trace, not all source
+endpoints before 60s; hence 281 Kimera insertions versus CP-V21's 283 beliefs.
+
+Successful diagnostic executable:
+/home/yeranis/results/gnssfgo_leica2_paired_receiver_trace_cpv22a_20261027/live_trace
+SHA256 010a8de66e247d3ac2847888dd68de9a321e552c8050e97ee592f24648528800
+Private build and full outputs stay in that fresh result root. Scripts,
+protocol, analysis, figures and receipts are beside this report. No commit.
+
+2. INITIAL OBSERVER FAILURE — PRESERVED, NOT AN ESTIMATOR FAILURE
+
+The original CP-V22 observer crashed at its first generic WNOA-factor Jacobian
+audit (support 50). It passed an empty Jacobian vector to the generic GTSAM
+NoiseModelFactor6 API, which requires a pre-sized vector; the custom source
+factor had resized this automatically. The new observer was wrong here.
+
+Failed experiment and result roots without the 'a' suffix are preserved with
+FAILURE.txt, failed.txt, binary and partial output. Velodyne was never launched
+there. All 50 saved ONLINE states and 1,882 completed event metadata rows match
+the original prefix. This is NOT a failed baseline or full result.
+
+CP-V22A fixes only observer buffer allocation plus a null check, in fresh roots;
+all test bounds and estimator mathematics remain unchanged. Failed-prefix and
+exact observer-delta verification: failed_prefix_check.json.
+
+3. REPRODUCTION AND INTEGRITY
+
+For BOTH complete replays:
+- ONLINE/finalized CSV and TUM files byte-identical to original.
+- Summary objects exactly identical; 4,282 ONLINE and 4,282 finalized states.
+- Every deterministic event field equal: 296,023 Hesai / 296,400 Velodyne rows.
+  Wall-time/service-time/RSS fields are intentionally excluded.
+- All observed commit payloads equal: 34,565 Hesai / 34,604 Velodyne commits.
+- Publication coordinates reproduce the plotted original within 4.6e-16m.
+- All 595 cycle displacement vectors equal the sum of traced operations within
+  5.0e-16m. The prediction + support-adjustment split also closes numerically.
+
+Successful controller verified 3,022 input pins and 1,665 compile dependencies
+after both replays. Final host closeout rechecks saved inputs, analysis inputs,
+output parity, diagnostic identities and the four-sequence Hesai checkpoint;
+see closeout.json for actual receipt/counts, not an inferred success claim.
+Both figures were visually inspected. Only the originally stopped Humble
+container was started. All owned jobs exited, then it was stopped; Noetic
+remained stopped. container_closeout.json records both stopped with PID 0.
+
+4. WHICH OPERATIONS MOVE THE NEWEST STATE?
+
+Before/after displacement of the SAME newest fused prism point during each
+operation. Values are median / p95, in centimetres, not position RMSE.
+
+Operation                         Hesai             Velodyne
+New GLIM belief, 592 each          1.330 / 3.085      2.215 / 6.589
+New Kimera belief, 281 each        1.625 / 4.243      3.888 / 9.973
+Retirement, 526 each               ~0 / 0.00838      ~0 / 0.01304
+
+At p95 the new-Kimera correction is 2.35x larger in the Velodyne graph despite
+unchanged Kimera payloads. This is a response of a DIFFERENT existing fused
+graph, not evidence that Kimera changed or became less accurate.
+
+Newest world-velocity change, median / p95, m/s:
+New GLIM                         0.1068 / 0.2497     0.1631 / 0.4610
+New Kimera                       0.0929 / 0.2439     0.2177 / 0.5558
+
+Retirement's p95 immediate position changes are only 0.084 / 0.130mm; maxima
+0.259 / 0.308mm. This does not prove the accumulated marginal prior is ideal,
+but it does not support retirement itself as the observed centimetre jump.
+
+New-support creation changes position beyond its existing WNOA prediction by
+only 0.0237 / 0.0175mm at p95. Much of the newest-point movement is therefore
+already in the source-revised state/velocity before prediction, rather than a
+large extra solver kick when adding a support. Actual travel is part of the
+prediction; its length must not be called entirely jitter.
+
+Revisions are smaller per operation but numerous, not negligible by assertion:
+Velodyne GLIM/Kimera replacement p95 changes are 0.0512/0.2561cm; net per-cycle
+replacement RMS magnitudes are 0.2714/0.6588cm. Vector components can cancel;
+do not sum their magnitudes to assign percentages of excess path length.
+
+Among 280 cycles containing both new-source corrections, the two directions
+oppose in 56.8% Hesai / 61.4% Velodyne; median cosine -0.139 / -0.311. This is
+often opposing correction, NOT a universal alternating tug-of-war. The earlier
+CP-V13 late-window observations of same-direction updates remain valid.
+Attribution is conditional on actual history/order, not source-removal proof.
+
+5. NEWEST-STATE SENSITIVITY, NOT WHOLE-WINDOW MOTION
+
+Position change p95 (mm) for one new source factor, at different state ages:
+                              newest       0.1s old      1.0s old
+Hesai, GLIM                    30.847         8.653        0.233
+Hesai, Kimera                  42.428        15.675        0.068
+Velodyne, GLIM                 65.891        17.113        0.454
+Velodyne, Kimera               99.732        46.528        0.164
+
+Older states are much steadier under the actual incremental update policy.
+Tiny observed updates are NOT a certificate of nonlinear convergence.
+
+Mean simultaneous seven-second window length (publications after 7.5s):
+                                      Hesai         Velodyne
+Current revised window                4.191m        4.217m
+Stitched original ONLINE points       4.464m        5.220m
+IE-TC on same windows                 4.216m        4.216m
+These overlap heavily: descriptive window statistics, not independent trials
+or a full trajectory distance. This directly inspects concurrent active-window
+states, rather than substituting independently retired finalized rows.
+
+Same 586-state cohort, times 0.484443335--58.984443335s, reference path 32.608m:
+Read state at age      Hesai path / step RMS      Velodyne path / step RMS
+0.0s (ONLINE)            34.727m / 2.616cm          41.216m / 5.057cm
+0.1s                    32.785m / 0.929cm          34.216m / 2.044cm
+0.2s                    32.546m / 0.608cm          33.148m / 1.376cm
+0.5s                    32.483m / 0.514cm          32.917m / 1.219cm
+1.0s                    32.458m / 0.483cm          32.826m / 1.151cm
+
+Step RMS means error of each 100ms displacement VECTOR versus IE-TC, not ATE.
+No filtering or smoothing was applied; these are saved revisions of the same
+states read at later publications. The 0.2s Velodyne row reduces this RMS by
+72.8%, but incurs 0.2s of state age and is NOT current-time ONLINE output.
+Fixed full-run alignment is unchanged: position RMSE over this local cohort
+barely changes (Velodyne 3.0147->3.0139m at 1s). This is not a global-drift fix.
+These local fixed-fit errors are not newly independently aligned full-run ATE.
+
+For the original first60s/595-edge cohort, CP-V21 lengths are reproduced:
+IE-TC 32.608m; Hesai ONLINE 34.743m; Velodyne ONLINE 41.249m. DELAYED finalized
+lengths were 32.449 / 32.703m. The age study uses a shorter common cohort so
+every age has identical timestamps. Neither later product is relabelled online.
+
+6. ACTUAL-FACTOR NUMERICAL CHECKS
+
+All inserted source factors in the trace and five prescribed actual WNOA
+factors per case: 592 GLIM + 281 Kimera + 5 WNOA per sensor. Central finite
+differences at 1e-5 and 1e-6 use Pose3.retract pose coordinates and additive
+world velocity/body angular velocity. Compare the actual implemented Jacobian
+blocks against the unchanged residual; some pose derivatives in production
+already use numerical differentiation, so these are not all analytic checks.
+
+42,024 block/step comparisons combined: ZERO failures.
+Largest scaled errors: Hesai 7.783e-9, Velodyne 9.945e-9;
+predeclared bound 2e-5. Residual-with-Jacobian versus without differs by zero.
+All 1,746 source factors' independently reconstructed endpoint residuals match
+exactly. Endpoint interpolation at tau=0/0.1 returns the corresponding support
+to <=7.33e-15 pose norm. No tested indexing/bracket/Jacobian mismatch found.
+
+Median endpoint phases within a 100ms cell remain GLIM 61.381ms Hesai / 47.599ms
+Velodyne and Kimera 15.204ms for both. A valid phase difference can affect the
+information geometry; passing arithmetic does not prove equal sensitivity or
+eliminate all timing effects. No arbitrary time shift was tried.
+
+7. FROZEN LINEAR SYSTEMS AND RESIDUAL TENSION
+
+Clone graph/values at prescribed newest indices 50,100,200,400,550, keeping
+original marginal charts. Inspect whitened A,b, column-normalized SVD and
+gradient offline. Solve ONLY the saved linear least-squares diagnostic; never
+feed the increment back to the receiver and never perform an extra nonlinear
+optimization. The trace remains bitwise-equivalent in all output trajectories.
+
+Newest index       Normalized condition H/V     Newest linear translation H/V
+50                         202 / 243                    0.050 / 0.161mm
+100                        251 / 283                    0.117 / 0.056mm
+200                        278 / 311                    0.071 / 0.069mm
+400                        443 / 464                    0.246 / 0.181mm
+550                       1353 / 1658                   0.380 / 0.896mm
+
+All ten systems have full column numerical rank under the reported SVD cutoff:
+612 at index50 and 852 thereafter. Gradients are NOT zero (normalized infinity
+norms 0.140--0.602 Hesai / 0.033--0.573 Velodyne). No sampled remaining linear
+centimetre correction or rank failure explains the observed jumps. This does
+not establish nonlinear stationarity at every publication, correct covariance,
+or globally benign conditioning. Condition numbers depend on normalization.
+
+Median incoming factor half-whitened squared error, before -> after insertion:
+Hesai GLIM       4554.09 -> 1.671       Kimera 2346.32 -> 1.559
+Velodyne GLIM    7601.67 -> 4.939       Kimera 6310.14 -> 2.239
+The new factor is strongly fitted as the newest states move. This cost is NOT
+GT error, calibrated NEES, or an independent residual sample. Total factor
+category costs also differ in count/dimension and cannot be read as scalar
+fusion weights. Full raw category summaries are in *_analysis.json.
+
+8. WHAT THIS SAYS ABOUT THE ORIGINAL BUG SUSPICIONS
+
+Velodyne parameters/extrinsics: CP-V21 found only the intended sensor topic,
+frame and calibration differences; copied extrinsics match recorded raw TF.
+This verifies implementation consistency, not physical calibration truth or
+optimal Velodyne-specific preprocessing. No new contradiction was found here.
+
+Frames: the earlier audit found common CPT7 body-relative source factors and
+unchanged transported means/full covariance. New residual/Jacobian tests pass.
+No confirmed transform/axis error, but no blanket certification of every source
+covariance chart or physical calibration.
+
+Timing: no found point-time-unit error or gross backlog. Actual GLIM phase
+differs ~13.8ms; valid interpolation does not exclude phase sensitivity. Causal
+impact of that difference has not been isolated by a counterfactual experiment.
+
+Priors/weighting: data point to current-time pose/velocity sensitivity and the
+ongoing motion versus source-information balance, not a proven weak initial
+anchor. CP-V21 measured GLIM short-relative-translation RMS 0.699cm Hesai versus
+1.855cm Velodyne while median translation covariance trace grows only 1.37x.
+That is a reason to audit calibration/temporal correlation, NOT a valid formula
+for a covariance multiplier. The shared CPT7 makes independence assumptions
+especially important. Known mean-only source-CBS covariance alignment remains
+unchanged; source CBS is OFF in this diagnostic.
+
+The earlier Qc=0.25 improvement is consistent with stronger motion regularity
+reducing this sensitivity. It is not proof of the unique cause or a sanctioned
+default, and indiscriminate strengthening risks hiding dynamics or adding lag.
+
+9. PROPOSED NEXT STEP — NOT EXECUTED
+
+After the user's finding in section11, prioritize explicit separation of
+continuous local odometry from the corrected graph/map pose. Do not silently
+replace the existing ONLINE product. Any future output-policy test should
+retain both products, the time-varying graph-to-odometry correction, and correct
+frame semantics for pose/velocity/covariance; compare jitter AND accumulated
+error on complete held-out sequences. No production publisher change is made.
+The first-minute output-only reconstruction is completed in section11; a
+complete validation or implementation of a new publisher is NOT executed.
+
+Also audit short-motion source uncertainty in the receiver's actual residual
+coordinates, including full 6x6 covariance and cross-axis behavior, source
+revisions and temporal overlap/correlation. First inspect the recorded high-
+correction events from this trace against the reference, not just covariance
+trace medians. Shared-IMU/reference dependence prevents interpreting this as
+an independent calibrated NEES test without further assumptions.
+
+Then select ONE justified change addressing newest-state sensitivity, and
+test it on fresh saved-replay roots with current-time ONLINE jitter, ATE/RPE,
+path, dynamics/latency and cross-sequence holdouts. Do not optimize only path
+length, conceal corrections with delayed output, or launch another Qc sweep
+without a decision. A delayed trajectory can be useful for mapping, but a
+drone controller still requires a stable and honest current-time estimate.
+
+10. ARTIFACT GUIDE AND LIMITS
+
+paired_update_trace.png: net newest-position correction magnitudes grouped by
+operation type within each 100ms cycle; connected/current-window edge lengths
+and retained-window lengths on common axes. These are not position ATE or
+displacement-vector errors; raw operation statistics are in *_analysis.json.
+paired_state_age.png: same-cohort step error and path excess versus age when
+reading the state. Lower/right means later information, not free improvement.
+comparison.json: current-window and same-cohort age products.
+numerics.json: all Jacobian, endpoint, gradient, rank and increment summaries.
+*_analysis.json / *_cycles.json: raw operation attribution and vector closure.
+*_parity.json / replay_complete.json / closeout.json: reproduction and integrity.
+
+Reference is IE-TC sharing CPT7, NOT independent prism GT. Existing rigid
+no-scale display/evaluation fits and prism offset are reused; no local refit,
+time resampling or post-hoc smoothing. Startup/tail gaps remain. Numerical
+checks cover the first-minute factors and five snapshots, not the full mission
+or every possible state. ONLINE connection length is estimated output length,
+not physical drone travel. No result establishes nonlinear stationarity.
+
+11. USER'S INCREMENTAL-POSE HYPOTHESIS — CONFIRMED OUTPUT DIFFERENCE
+
+During closeout the user recalled an old Kimera switch: relative/incremental
+pose plotting was smoother than absolute optimizer pose history. We checked
+the actual saved effective_mode_check.json for BOTH Leica-2 OFF captures:
+  --no_incremental_pose=false
+
+Pinned implementation is in the original protected manifest:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/fixed_lag_current_chart_fl4q_20261016/VioBackend.cpp
+SHA256 de1185fe77599c18cba49ea0768c6a2986d6909c19cc644b2b67a00b0da144aa
+Around1995, the flag selects W_Pose_B_lkf_from_increments_ for BackendOutput.
+Around5487--5502, it takes both previous/current poses from the current state_,
+computes previous.between(current), and composes it onto the running output.
+It is not merely a Rerun rendering preference: this is the backend odometry
+pose selected for publication. Internal graph poses remain a separate product.
+
+By contrast CP-K19 Receiver.h:203--210 writes the selected graph pose directly,
+and :314 chooses the newest graph state. Live.cpp:36--42 copies that state to
+ONLINE CSV/TUM. The name 'online_incremental' refers to the incremental solver
+publication, NOT to chaining relative pose increments as Kimera does.
+
+Let X[i|k] denote pose i in the graph at publication k. Fusion currently saves
+A[k]=X[k|k]. Kimera-style output instead maintains
+  O[k] = O[k-1] * inverse(X[k-1|k]) * X[k|k].
+The previous pose on the right is REVISED, not the one published last cycle.
+If one simply chains inverse(A[k-1])*A[k], it telescopes back to A[k] and cannot
+remove the zigzag. The saved-data control verifies this to <=9.8e-13m.
+
+An old published point stays fixed in history, while the graph can revise that
+same point before producing the next one. Thus the apparent connected ONLINE
+step contains BOTH motion over the latest interval AND correction of the old
+point. In the fixed display frame the exact decomposition closes to <=2e-15m:
+  A[k]-A[k-1] = (X[k|k]-X[k-1|k]) + (X[k-1|k]-X[k-1|k-1]).
+Here the subtraction denotes transformed prism-point positions, not SE(3)
+matrix subtraction. The p95 old-point correction is3.108cm Hesai/6.852cm Velo.
+Chaining same-snapshot relative motion removes this correction from the
+persistent path. It does NOT remove every physical/local-motion error.
+
+We reconstructed O from the saved publication snapshots with full SE(3)
+composition, starting at the same pose and reusing the SAME rigid orientation,
+translation and prism offset as the original evaluation. No new optimization,
+smoothing, weight/timestamp change, look-ahead or additional state-age delay.
+This is an offline reconstruction of a causal output policy, not a new run.
+All 595 chained prism-edge lengths match the corresponding same-snapshot edges
+to <=1.12e-14m. Fresh artifacts: incremental_publication_check.py/.json/.png and
+incremental_publication_states.npz. Exact originals remain untouched.
+
+First-minute cohort596states/595edges,0.484443335--59.984443335s:
+                                              HESAI             VELODYNE
+                                              absolute->chain   absolute->chain
+Reference path(m)                              32.608            32.608
+Estimated path(m)                              34.743->32.421    41.249->33.759
+100ms displacement-vector RMS(cm)               2.594->1.341       5.015->2.465
+1s displacement-vector RMS(cm)                  3.751->4.710       9.405->15.179
+Position RMSE, common-start translation(m)       0.377->0.503       0.952->1.948
+Endpoint displacement error(m)                  0.674->0.920       1.544->3.405
+
+The last two rows subtract each trajectory's initial position and the reference
+initial position; orientation stays the original fixed fit. They measure
+accumulated displacement error, NOT full-run aligned ATE. Original-fixed-fit
+local position RMSE is0.935->0.944m Hesai and3.001->2.983m Velodyne. This small
+apparent Velodyne improvement coexists with WORSE displacement error; an
+arbitrary common-frame origin offset can mask this distinction. No favourable
+one-metric accuracy claim is justified.
+
+At the end, chained output differs from the contemporaneous graph by0.329m/
+3.376degrees Hesai and2.415m/26.161degrees Velodyne. These orientation differences
+are BETWEEN PRODUCTS, not orientation error against GT. Chaining omits graph
+corrections to previous poses; local translation/rotation prediction errors
+can accumulate. This matters especially here because the newest fusion edge is
+substantially a prediction from older sensor evidence. Kimera's keyframe output
+and the fusion100ms newest support need not have the same evidence age.
+
+CONCLUSION CORRECTION: calling all three products 'first-published/ONLINE'
+does not make their publication semantics equivalent. Kimera ROS odometry is
+already continuous incremental odometry; fusion was raw graph-state history.
+The previous comparisons still describe the saved streams, but smoothness/path
+differences alone must not be presented as intrinsic optimizer-quality ranking.
+The user's recollection identifies an important part of the visual discrepancy.
+It is not proof that all the residual jitter is a plotting bug or that chaining
+alone solves navigation accuracy. Preserve both output products and explicitly
+represent the correction between them before selecting a production design.

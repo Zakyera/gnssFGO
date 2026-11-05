@@ -1,0 +1,202 @@
+FL4y — exact GLIM-to-Kimera interval check against reference
+2026-10-17 | retained EIG-2 FL4x and SPX-3 FL4w
+==========================================================
+
+Conclusion
+----------
+EIG-2's injected GLIM translational relative beliefs are LESS accurate than
+Kimera's CBS-OFF internal relative estimate on the exact receiver intervals.
+SPX-3 shows the opposite ordering by a large margin. This is a concrete,
+reference-backed distinction between these windows, not an inference from
+whole-trajectory ATE or covariance trace.
+
+Most EIG-2 translation error is already present in the incoming raw GLIM
+belief before temporal alignment. A hypothetical perfect GT bridge barely
+changes its aggregate translation RMS. No evidence here supports blaming
+temporal alignment as the main translational error source.
+
+The complete Kimera ON update often improves the already-CBS-affected
+pre-update relative estimate, yet its post-update translation remains worse
+than matched OFF. Thus 'each external factor makes the receiver worse' is
+NOT supported. This audit does not isolate an individual factor's causal
+effect from the rest of an update, or prove why raw GLIM beliefs have their
+observed errors. No code/model/covariance settings were modified.
+
+What was compared
+-----------------
+All292 actual G2K injections in the EIG-2 capture and289 in SPX-3.
+Each interval is about0.200s; no ATE alignment, no newly optimized graph,
+no trajectory-derived proxy for an incoming belief, no cherry-picked errors.
+The same physical receiver interval is used for the aligned measurement,
+Kimera pre-update, Kimera post-update and OFF internal controls.
+
+GLIM raw means are the actual incoming body-frame payloads logged BEFORE
+the temporal bridge (after the upstream frame path), not raw LiDAR scans.
+They are evaluated against GT on their own sender intervals. Aligned and
+frozen inserted means match exactly. Receiver covariances are unchanged.
+
+Kimera pre-injection means come from the preceding-update smoother poses
+in KIMERA_CBS_REVISION_EDGE_ROW, NOT native ROS incremental odometry or
+later/finalized poses. Code records these poses from calculateEstimate.
+They reproduce all recorded pre-injection residuals and the independently
+logged pre-injection matrices (see validation below). OFF controls use the
+same physical endpoints and the same update index; OFF/ON timestamps match.
+Post-update means use that same update's smoother snapshot. The update
+includes all normal factors and retirements, not only the new external one.
+
+Reference and coverage
+----------------------
+Dataset IE-TC /boxi/inertial_explorer/tc/odometry, world enu_origin,
+child cpt7_imu. This GNSS/INS reference shares the CPT7 IMU; it is NOT an
+independent prism ground truth, and its own uncertainty is not modeled here.
+Its short-interval orientation errors/clock/systematics can affect results.
+Every sender/receiver endpoint is bracketed; maximum used gap5ms.
+Translation is linearly interpolated; rotation uses shortest-path SO(3)
+interpolation, equivalent to the existing evaluator's quaternion SLERP.
+Integer-nanosecond source/receiver endpoints retained. No clock fitting.
+
+EIG-2 receiver support1730638817.763483017–1730638876.162965643;
+SPX-3 receiver support1730565903.672592179–1730565962.572062520.
+These cover ALL accepted G2K factors in each60s capture. This is an edge
+audit, not a replacement for the completed whole-journey ATE tables.
+The diagnostic stays in CPT7 body coordinates because that is the factor
+frame. Existing ATE/RPE at the prism lever arm are not modified or relabeled.
+
+For a transform Z and reference Zgt:
+  translation error = norm(t_Z - t_Zgt), in metres;
+  rotation error = norm(Log(R_Z^T R_Zgt)), in degrees.
+The SE(3) rho error is retained separately in JSON; it is not substituted
+silently for Cartesian translation difference. No global rigid fit or scale.
+
+Main comparison: same receiver physical intervals
+------------------------------------------------
+RMS local errors, NOT whole-trajectory ATE:
+                                 EIG-2               SPX-3
+                                 trans mm / rot deg  trans mm / rot deg
+Actual aligned GLIM injection      10.070 / .337503     3.479 / .166765
+Kimera ON before update             7.823 / .361516     9.738 / .129829
+Kimera OFF at same pre stage        4.371 / .346638    47.727 / .160570
+Kimera ON after complete update     5.911 / .331000     4.003 / .123913
+Kimera OFF after same update        3.956 / .346384    43.657 / .159642
+
+Aligned GLIM translation beats the OFF pre-stage estimate on:
+  EIG-2:55/292 intervals =18.84%; worse on81.16%.
+  SPX-3:248/289 intervals =85.81%; worse on14.19%.
+Compared with the actual ON pre-injection estimate, aligned GLIM translation
+is better on36.64% EIG-2 intervals and65.74% SPX-3 intervals.
+The ON full update improves pre-update translation on66.78% EIG-2 and
+77.51% SPX-3 intervals; it improves rotation on70.89% and67.47% respectively.
+
+Rotation tells a different story from translation. On EIG-2, aggregate
+GLIM rotation is slightly better than OFF/ON pre-stage rotation; on SPX-3
+the injected rotation is worse than the ON pre-stage rotation. Do not turn
+the translation result into an all-directions 'healthy/unhealthy' label.
+
+EIG-2 distributions
+-------------------
+Translation error mm:               median       RMS       p95       max
+Raw GLIM (sender interval)           7.061      10.020    18.338    38.487
+Aligned GLIM (receiver interval)     7.146      10.070    18.202    38.478
+Kimera ON pre                       5.471       7.823    14.465    28.662
+Kimera OFF pre                      3.447       4.371     7.872    10.574
+Kimera ON post                      4.302       5.911    10.794    16.061
+Kimera OFF post                     3.207       3.956     7.256     9.512
+
+Time bins (seconds from first native Kimera pose; assigned by receiver end):
+Bin        count   aligned G mm   ON pre mm   ON post mm   OFF pre mm
+0–20         95        8.412         5.127        3.958        4.263
+20–40       100        8.884         7.506        5.983        4.783
+40–60        97       12.435        10.021        7.275        4.017
+The ordering is present early and the translation gap increases late;
+it is not solely a handful of late solver-fallback events.
+
+Temporal alignment isolation
+----------------------------
+Let source endpoints be sa,sb and receiver endpoints ra,rb:
+  Lgt = Tgt(ra)^-1 Tgt(sa)
+  Rgt = Tgt(sb)^-1 Tgt(rb)
+  Z_oracle_bridge = Lgt * Z_raw * Rgt.
+This keeps the actual raw mean and changes ONLY the diagnostic bridge to
+ground-truth motion. It was never injected into an estimator. With a perfect
+raw belief this identity reproduces receiver GT (checked <1e-12).
+
+EIG-2 median endpoint offset magnitude16.457ms; SPX-3 about16.59ms.
+All physical endpoints precede/equal the logged causal update limit.
+
+RMS error against receiver GT:             EIG-2              SPX-3
+                                           mm / deg          mm / deg
+Raw WITHOUT alignment (diagnostic only)    10.705 / .425202    3.872 / .187676
+Actual native-IMU alignment                10.070 / .337503    3.479 / .166765
+Hypothetical perfect GT bridge             10.024 / .328109    3.447 / .131990
+Raw against its own sender GT              10.020 / .328109    3.446 / .131990
+
+Difference actual aligned versus oracle bridge:
+  EIG-2 RMS1.157mm/.129401deg; maximum2.683mm/.530891deg.
+  SPX-3 RMS .934mm/.078580deg; maximum2.679mm (rotation in JSON).
+Actual alignment improves the aggregate error over using the raw belief on
+the wrong interval. It is not exact: rotational bridge error is visible.
+For EIG-2, even perfect bridges leave~10mm translation error in the retained
+GLIM payload. This is a frozen-payload decomposition, NOT a claim about what
+a closed-loop rerun with a different bridge would produce.
+
+Interpretation limits and next decision
+--------------------------------------
+The records support examining source relative-belief quality before choosing
+receiver weights: low native GLIM ATE does not guarantee superior0.2s
+relative beliefs at their actual publication stage. A fixed 'GLIM always
+healthy,Kimera always unhealthy' interpretation fails on these intervals.
+The incoming EIG-2 translation is not a consistently better corrective signal.
+Stronger external constraints can therefore change a locally more accurate
+Kimera estimate toward a compromise; the present audit does not quantify
+the resulting accumulated global bias or isolate downstream fusion causality.
+
+Existing optimization fallbacks/cost nonincrease do not prove convergence,
+and the current test neither clears every solver issue nor diagnoses one.
+No covariance was changed, calibrated or compared to a chi-square cutoff.
+Temporary factor removal does not make all means/linearization histories
+independent. No new weighting, robust loss, source or receiver experiment.
+
+Validation/reproducibility
+-------------------------
+                                 EIG-2                  SPX-3
+Aligned/frozen/pre-residual rows  292/292/292            289/289/289
+Explicit pre-matrices            15                     15
+Missing reconstructed states      0                      0
+Max pre residual norm difference  2.65e-13               9.94e-14
+Max pre whitened relative diff    3.77e-11               2.45e-11
+Max pre explicit matrix diff      5.95e-13               4.52e-13
+Frozen mean/covariance difference  0/0                    0/0
+Reference coverage                100%                   100%
+Independent metric check diff     8.88e-16               3.89e-16
+
+SE(3) Exp checked against independent scipy.linalg.expm at zero,near-zero
+and ordinary rotations; Exp/Log roundtrips checked. Rotation errors also
+checked with independent trace/atan2 formula. Duplicate pose snapshots
+consistent; rotation orthogonality error<=2.67e-15. Frozen covariance and
+factor means match exactly; unchanged input hashes rechecked after analysis.
+Host rosbags read the local reference bags; no container or estimator started.
+
+Files and source provenance
+---------------------------
+This directory:PROTOCOL.txt,analyze.py,verify.py,eig2_results.json,
+spx3_results.json,verification.json,REPORT.txt. JSONs retain each exact
+interval,raw/aligned/pre/post/oracle transform,reference transform,all metrics,
+fallback association,summary distributions and SHA256 input manifest.
+Source run roots under /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/:
+  gnssfgo_eig2_live60_off_on_fl4x_20261017/prepared
+  gnssfgo_spx3_live60_off_on_fl4w_20261017/prepared
+Source logs used:live60_on_source/estimators.log,Kimera stdout under ros_logs,
+  live60_off_source/estimators.log,OFF/ON kimera_odometry.csv,ON acceptance.csv.
+Reference paths and hashes are in each results.json.
+
+Code trace:
+V4RL/cbs_gtsam4.3/runs/fixed_lag_current_chart_fl4q_20261016/VioBackend.cpp:
+  2899–2951:raw Expmap,pre-update native IMU bridge,logged aligned mean.
+  2966:FL4M_FROZEN_FACTOR_ROW,exact candidate mean/covariance.
+  3640–3762:read-only revision snapshots from smoother calculateEstimate.
+V4RL/cbs_gtsam4.3/src/cbs/src/bpsam/bpsam.cpp:
+  418–475:pre-injection Log(measured^-1*receiver_relative) and whitening.
+  1086:explicit receiver_preinjection_state relative-pose matrix.
+Original frozen run settings and whole-trajectory results remain unchanged.
+Base gnssFGO HEAD668d4c788983722f4acad37d1495c15d03a27e18; this audit is local.
+STOP: no estimator rerun, tuning or algorithm change.

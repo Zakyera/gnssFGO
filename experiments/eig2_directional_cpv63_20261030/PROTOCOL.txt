@@ -1,0 +1,60 @@
+CP-V63 — suspect3 directional factor/cost audit
+2026-10-30. User authorizes CP62's proposed next audit. Suspect1 parked,
+suspect2 first-event visual math passed; no hypothesis is universally excluded.
+
+Saved original CP51 update6 EIG-2 Hesai only. Audit the ACTUAL saved ordinary
+and refresh displacements using each phase's original native graph and starting
+state. Delta=base.localCoordinates(saved endpoint). NO optimizer call or source
+replay, no new solution, weights/covariance/settings changed, no CP61candidate.
+No production edits, full sequence, deletion or default promotion.
+
+For every original factor, export Gaussian H/g/constant and delta in key order.
+Split tangent into pose rotations, pose translations, velocities, accel biases,
+gyro biases. Record per-block linear driving terms and full5x5curvature cross
+terms; their sums must reproduce full directional quadratic. Separate vision,
+IMU, CBS929, native no-motion, pose/velocity/bias priors and bias-between.
+
+Evaluate base.retract(alpha*delta) at alpha0,.25,.5,.75,1,1.25, each independently
+from the same starting native caches, not a sequential update. Also central
+directional derivative probes at +/-1e-5 and +/-1e-6. Probe full step with
+poses-only, gyro-bias changes omitted, and accel-bias changes omitted. These are
+cost evaluations, NOT alternative optimized estimates or frozen-variable runs.
+
+Report three deliberately distinct visual views:
+- native cost with original cache/retriangulation/rejection policy; track every
+  valid/rejected transition and account retained/lost/new support separately;
+- fixed starting accepted set and fixed starting landmark, manual reprojection
+  cost without dropping newly bad tracks. Nonpositive depth makes this view
+  invalid, never silently zero. This restrictive diagnostic does NOT permit
+  landmark motion and must not be described as the profiled smart objective;
+- corresponding uneliminated fixed-point linear prediction, versus the native
+  landmark-eliminated pose Gaussian prediction. Native b'b constant is retained;
+  cost-change predictions avoid the CP62 constant-convention trap.
+No point refinement, gating changes, additional trajectory metrics or tuning.
+
+Checks before interpreting:
+- Release/sanitizer fixtures: existing visual math/masking/extrinsic controls,
+  exact quadratic vector-prior cost/directional identities and native path
+  endpoint reconstruction; vendor DSOs uninstrumented;
+- original snapshot bytes unchanged and native Gaussian equations reproduce
+  captured ordinary/refresh matrices relative<1e-12; end states reconstructed
+  <1e-8 mixed tangent; no fixed/marginal keys at this event;
+- sum factor Hessians/gradients and5component decomposition match full values
+  relative1e-10; known quadratic native cost equals prediction relative1e-10;
+- nonvisual nonlinear cost directional derivative and fixed-point visual
+  derivative match their appropriate linear models to normalized1e-6 at BOTH
+  finite-difference spacings. Native reduced-smart gradient is NOT compared
+  blindly to a frozen-landmark derivative;
+- native cost equals0.5*whitened residual norm squared relative1e-9;
+- independent NumPy directional identities and independent SciPy SE3 retraction/
+  manual visual cost checks, relative1e-8.
+An unexpected scientific check fails honestly; no relaxed guard or blind retry.
+Report-only serialization repair uses fresh outputs, preserving failed evidence.
+
+Fresh private roots and immutable inherited pins. Start only cbsms_ws_gpu for
+private audit/fixtures then restore both originally-stopped containers. Final
+verify protected inputs, original Hesai667 checkpoint and owned jobs exited.
+Report costs and revisions, NOT ATE, true accuracy, or nonlinear stationarity.
+Cost comparisons across changed valid sets cannot prove convergence. No further
+experiment authorized by this protocol; stop with evidence and next decision.
+

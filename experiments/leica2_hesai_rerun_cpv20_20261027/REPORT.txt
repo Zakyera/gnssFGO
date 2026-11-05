@@ -1,0 +1,65 @@
+CP-V20 — HESAI LEICA-2 FULL RERUN OVERLAY
+COMPLETED 2026-10-27. Saved-data visualization, not a new experiment.
+
+OPEN
+leica2_hesai_full_scene.rrd (17,568,850 bytes, Rerun 0.31.4).
+Reusable launcher: bash open_rerun.sh, or open the RRD directly in Rerun.
+Native viewer opened 14:35:19+02, launcher PID91443; running after3s,
+scene_viewer.log empty at verification. Existing Velodyne viewer not closed.
+scene_viewer_launch.json retains the exact localhost-only,2GB launch command.
+
+PRESENTATION
+Separate CBS OFF and CBS ON tabs, each with FOUR FULL trajectories overlaid
+in one 3D scene. Blue IE-TC reference, green GLIM first-published, orange
+Kimera ROS odometry, red fusion ONLINE; grey saved Hesai ON environment.
+No moving short-window default, smoothing, point thinning or path resampling.
+Drag to orbit; scroll to zoom; entity-tree visibility toggles can hide the map
+or individual trajectories. Full saved paths remain visible without playback.
+hesai_full_scene.png is a visually inspected native Rerun screenshot: complete
+route, four colors, surrounding point cloud and OFF/ON tabs render correctly.
+
+IDENTITY
+Original Hesai CP-K29 LEICA-2, mission2024-11-25-16-36-19,428.75s usable
+window (original bag6..434.75). Sources under
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_full_cpk29_20261023/prepared.
+NOT Velodyne, ARC-3, or the later0.5/0.25/0.1 WNOA Qc candidates.
+Every saved native sample is retained: each mode has4279GLIM,1937Kimera and
+4282fusion points;20996estimator points total. Reference85750points is shown
+in both tabs. Kimera gaps>0.5s are unconnected (12OFF/13ON); isolated points
+remain visible. No other native trajectory has such a gap. Original startup
+and tail omissions are preserved; no invented trajectory completion.
+
+ALIGNMENT
+Same CP-V10 first-published evaluation: common prism point, shared reference
+ENU origin, ONE no-scale SE(3) fit per estimator/mode using the saved common
+mask. This mask supports385.0s within a420.9s envelope; it determines only
+the rigid fit, NOT a crop of the displayed full paths. All points outside
+that mask remain displayed. No per-segment correction or forced coincidence.
+Common-mask ATE reproduction within1e-9m; all native edge lengths preserved
+within1e-10m. Largest float32 display-coordinate error<1.908e-6m.
+
+CLOUD
+All1,070,784points from22saved ON Hesai submaps; no new mapping or thinning.
+Apply saved T_world_origin, then SAME ON GLIM rigid fit and shared origin.
+Same cloud in both modes. Lidar/IMU frame consistency checked for every
+submap against saved odometry, maximum discrepancy0.000046423m.
+The saved refined submap map is contextual GLIM reconstruction, NOT independent
+ground truth. It does not substitute a refined trajectory for the green path.
+
+CHECKS AND LIMITS
+scene_recording_checks.json passes exact readback of every displayed trajectory
+vertex/edge and all cloud points.63input/helper/protocol hashes unchanged.
+Four-sequence Hesai checkpoint independently verifies all667saved files against
+originals. No baseline files, settings, covariance, binaries or datasets edited;
+no source/receiver replay, containers, builds, deletion, commit or push.
+The screenshot-only viewer produced its image then exited102 on the known
+Rerun0.31.4 shutdown panic ('Failed to take store hub from the Viewer'), as in
+CP-V11. The normal viewer is separate and opened without an error log.
+No claim that the problematic CLI schema verifier passed; SDK decode/readback
+and actual rendering provide the checks here.
+
+IE-TC shares CPT7, not independent prism GT. Connected first publications can
+show correction discontinuities; this is not a revised active-window snapshot
+or proof of physical drone zigzag. Kimera ROS output chains optimized relative
+motions; first-publication matching is not equal-latency certification. Existing
+mean-only covariance alignment approximation remains unchanged. ARC-3 left aside.

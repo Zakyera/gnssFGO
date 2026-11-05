@@ -1,0 +1,2412 @@
+{
+  "passed": true,
+  "projection_validation": {
+    "passed": true,
+    "actual_G2K_factors": 1908,
+    "unchanged_K2G_factors": 1917,
+    "capped_actual_4D_covariances": 40,
+    "raw_upstream_rows": 1908,
+    "max_covariance_error": 4.235164736271502e-21,
+    "max_residual_error": 2.582157578034927e-14,
+    "minimum_normalized_information_loss_eigenvalue": -6.357917893316892e-16,
+    "projection_setup_ms": {
+      "n": 1908,
+      "mean": 0.22418868448637316,
+      "rms": 0.27081607602828234,
+      "median": 0.14784799999999998,
+      "p95": 0.49366889999999997,
+      "max": 0.599486
+    },
+    "exact_runtime_jacobians_checked": true,
+    "raw6_observation_diagnostics_not_applied_noise": true,
+    "gravity_from_native_imu": true,
+    "alignment_approximation_unchanged": true,
+    "default_promoted": false,
+    "report_only_repair": "/home/yeranis/repos/gnssFGO/experiments/leica2_gravity_projection_cpv9_20261026/report_repair/audit.json",
+    "mean_representation_method": "polar rotation equality under original tolerance; raw residual/Jacobians unchanged",
+    "original_raw_comparison_failed_edges": 93
+  },
+  "validation_contract": "finite_recording_eof_cpk24a",
+  "terminal_omissions": {
+    "off": 0,
+    "on": 0
+  },
+  "cases": {
+    "off": {
+      "checks": {
+        "receiver": {
+          "passed": true,
+          "validation_contract": "finite_recording_eof_cpk24a",
+          "terminal_boundary": {
+            "passed": true,
+            "contract": "finite_recording_terminal_cell_only",
+            "original_zero_unsupported_gate_passed": true,
+            "excluded_versions": 0,
+            "final_partial_cell_ns": 60371000,
+            "details": [],
+            "state_clock_not_extended": true,
+            "captured_outputs_unchanged": true,
+            "omission_not_recovered": true
+          },
+          "source_coverage": {
+            "passed": true,
+            "requested_s": 428.75,
+            "imu_samples": 42875,
+            "imu_span_s": 428.7403712272644,
+            "coverage_contract": "native_keyframes_cpk22",
+            "kimera_gap_bound_s": 5.1499999999999995,
+            "native_glim": {
+              "rows": 4279,
+              "start_s": 1732549035.547153,
+              "end_s": 1732549463.346269,
+              "span_s": 427.799115896225,
+              "maximum_pose_gap_s": 0.10686612129211426,
+              "post_startup_max_gap_s": 0.10686612129211426,
+              "start_after_first_imu_s": 0.7276380062103271,
+              "tail_behind_last_imu_s": 0.21361732482910156,
+              "path_length_m": 202.7609805225614,
+              "gaps_over_1s": [],
+              "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+            },
+            "native_kimera": {
+              "rows": 1937,
+              "start_s": 1732549035.0150096,
+              "end_s": 1732549461.9106357,
+              "span_s": 426.89562606811523,
+              "maximum_pose_gap_s": 5.0999462604522705,
+              "post_startup_max_gap_s": 5.0999462604522705,
+              "start_after_first_imu_s": 0.1954946517944336,
+              "tail_behind_last_imu_s": 1.6492505073547363,
+              "path_length_m": 196.68655844919556,
+              "gaps_over_1s": [
+                {
+                  "before_index": 1927,
+                  "after_index": 1928,
+                  "start_s": 1732549425.3110552,
+                  "end_s": 1732549430.4109938,
+                  "gap_s": 5.099938631057739
+                },
+                {
+                  "before_index": 1928,
+                  "after_index": 1929,
+                  "start_s": 1732549430.4109938,
+                  "end_s": 1732549435.5109324,
+                  "gap_s": 5.099938631057739
+                },
+                {
+                  "before_index": 1929,
+                  "after_index": 1930,
+                  "start_s": 1732549435.5109324,
+                  "end_s": 1732549440.6108732,
+                  "gap_s": 5.099940776824951
+                },
+                {
+                  "before_index": 1930,
+                  "after_index": 1931,
+                  "start_s": 1732549440.6108732,
+                  "end_s": 1732549445.7108195,
+                  "gap_s": 5.0999462604522705
+                },
+                {
+                  "before_index": 1931,
+                  "after_index": 1932,
+                  "start_s": 1732549445.7108195,
+                  "end_s": 1732549450.8107617,
+                  "gap_s": 5.099942207336426
+                },
+                {
+                  "before_index": 1932,
+                  "after_index": 1933,
+                  "start_s": 1732549450.8107617,
+                  "end_s": 1732549455.910703,
+                  "gap_s": 5.099941253662109
+                },
+                {
+                  "before_index": 1935,
+                  "after_index": 1936,
+                  "start_s": 1732549456.8106928,
+                  "end_s": 1732549461.9106357,
+                  "gap_s": 5.099942922592163
+                }
+              ],
+              "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+            },
+            "kimera_processing": {
+              "passed": true,
+              "logs": [
+                "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_source/estimators.log",
+                "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_source/ros_logs/442bd0be-cf34-11f1-96f5-fa3e8f968d05/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log",
+                "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_source/ros_logs/latest/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log"
+              ],
+              "frontend_processed": 4286,
+              "synchronized_input_pairs_reference": 4287,
+              "frontend_reference_after_startup": 4284,
+              "backend_processed": 1937,
+              "sequential_native_ids": true,
+              "gaps": [
+                {
+                  "before_id": 1927,
+                  "after_id": 1928,
+                  "gap_s": 5.099938631057739,
+                  "wall_interval_s": 25.493487119674683,
+                  "frontend_counter_first": 3906,
+                  "frontend_counter_last": 3954,
+                  "backend_before_ms": 79.0477,
+                  "backend_after_ms": 75.7491,
+                  "low_disparity_lines": 4
+                },
+                {
+                  "before_id": 1928,
+                  "after_id": 1929,
+                  "gap_s": 5.099938631057739,
+                  "wall_interval_s": 25.496753931045532,
+                  "frontend_counter_first": 3956,
+                  "frontend_counter_last": 4005,
+                  "backend_before_ms": 75.7491,
+                  "backend_after_ms": 73.1669,
+                  "low_disparity_lines": 4
+                },
+                {
+                  "before_id": 1929,
+                  "after_id": 1930,
+                  "gap_s": 5.099940776824951,
+                  "wall_interval_s": 25.496175050735474,
+                  "frontend_counter_first": 4008,
+                  "frontend_counter_last": 4056,
+                  "backend_before_ms": 73.1669,
+                  "backend_after_ms": 72.0216,
+                  "low_disparity_lines": 4
+                },
+                {
+                  "before_id": 1930,
+                  "after_id": 1931,
+                  "gap_s": 5.0999462604522705,
+                  "wall_interval_s": 25.50236201286316,
+                  "frontend_counter_first": 4058,
+                  "frontend_counter_last": 4108,
+                  "backend_before_ms": 72.0216,
+                  "backend_after_ms": 73.4818,
+                  "low_disparity_lines": 4
+                },
+                {
+                  "before_id": 1931,
+                  "after_id": 1932,
+                  "gap_s": 5.099942207336426,
+                  "wall_interval_s": 25.497891902923584,
+                  "frontend_counter_first": 4110,
+                  "frontend_counter_last": 4158,
+                  "backend_before_ms": 73.4818,
+                  "backend_after_ms": 70.7668,
+                  "low_disparity_lines": 4
+                },
+                {
+                  "before_id": 1932,
+                  "after_id": 1933,
+                  "gap_s": 5.099941253662109,
+                  "wall_interval_s": 25.502195119857788,
+                  "frontend_counter_first": 4160,
+                  "frontend_counter_last": 4209,
+                  "backend_before_ms": 70.7668,
+                  "backend_after_ms": 70.1271,
+                  "low_disparity_lines": 4
+                },
+                {
+                  "before_id": 1935,
+                  "after_id": 1936,
+                  "gap_s": 5.099942922592163,
+                  "wall_interval_s": 25.492909908294678,
+                  "frontend_counter_first": 4220,
+                  "frontend_counter_last": 4269,
+                  "backend_before_ms": 63.7294,
+                  "backend_after_ms": 63.5923,
+                  "low_disparity_lines": 4
+                }
+              ],
+              "scope": "Native counters, not a new per-image receipt or branch-decision audit."
+            }
+          },
+          "transport": {
+            "imu": 42875,
+            "duplicate_imu": 0,
+            "imu_clock_lag_events": 41896,
+            "max_imu_clock_lag_ns": 2453030,
+            "belief_clock_lag_events": 0,
+            "max_belief_clock_lag_ns": 0,
+            "beliefs": 253524,
+            "duplicates": 0,
+            "published_poses": 4282,
+            "max_queue": 40,
+            "sources": {
+              "glim_velodyne": 205919,
+              "kimera_front": 47605
+            }
+          },
+          "summary": {
+            "complete": true,
+            "model": "source_wnoa_fixed_lag",
+            "lag_seconds": 7,
+            "stationarity": "not_checked_incremental_policy",
+            "events": 296400,
+            "received": 253524,
+            "absorbed_revision_policy": "seal_at_absorption",
+            "expired": 171,
+            "expired_duplicate": 0,
+            "expired_stale": 0,
+            "duplicate": 0,
+            "stale": 0,
+            "inserted": 6185,
+            "replaced": 247118,
+            "excluded": 50,
+            "unsupported_end": 0,
+            "absorbed": 6117,
+            "active": 68,
+            "pending_at_end": 0,
+            "publications": 4282,
+            "finalized": 4282,
+            "retained_supports": 71,
+            "peak_slots": 175
+          },
+          "actions": {
+            "before_initialization": 50,
+            "insert": 6185,
+            "replace": 247118,
+            "expired_revision": 171
+          },
+          "expiry": {
+            "passed": true,
+            "policy": "seal_at_absorption",
+            "expired": {
+              "versions": 171,
+              "ids": 24,
+              "changes": {
+                "endpoint_age_s": {
+                  "n": 171,
+                  "median": 26.533095397,
+                  "rms": 26.503590199136664,
+                  "p95": 38.133635892,
+                  "max": 39.829539848
+                },
+                "since_absorption_s": {
+                  "n": 171,
+                  "median": 19.444305697,
+                  "rms": 20.051726231490107,
+                  "p95": 31.044852192,
+                  "max": 32.740783848
+                },
+                "version_jump": {
+                  "n": 171,
+                  "median": 4.0,
+                  "rms": 5.055828666872714,
+                  "p95": 8.0,
+                  "max": 9.0
+                },
+                "translation_change_m": {
+                  "n": 171,
+                  "median": 0.0002567243930359028,
+                  "rms": 0.0005066699110677599,
+                  "p95": 0.0009940970910425535,
+                  "max": 0.0010664387784356875
+                },
+                "rotation_change_rad": {
+                  "n": 171,
+                  "median": 3.8934462426128555e-05,
+                  "rms": 3.8795300040742635e-05,
+                  "p95": 5.389180227340151e-05,
+                  "max": 5.9416532537347385e-05
+                },
+                "rotation_trace_ratio": {
+                  "n": 171,
+                  "median": 0.969560458962681,
+                  "rms": 0.9585067450002848,
+                  "p95": 1.010300353034831,
+                  "max": 1.0261418471815364
+                },
+                "translation_trace_ratio": {
+                  "n": 171,
+                  "median": 1.076915894820622,
+                  "rms": 1.1928801855383269,
+                  "p95": 1.7288235624943822,
+                  "max": 2.3034906024131403
+                },
+                "full_covariance_relative_frobenius": {
+                  "n": 171,
+                  "median": 0.09619635808505625,
+                  "rms": 0.31529651925013424,
+                  "p95": 0.7896099827171745,
+                  "max": 1.2570309678698828
+                }
+              }
+            },
+            "by_source": {
+              "kimera_front": {
+                "received_versions": 47605,
+                "received_ids": 1909,
+                "expired_fraction": 0.0035920596575989916,
+                "versions": 171,
+                "ids": 24,
+                "changes": {
+                  "endpoint_age_s": {
+                    "n": 171,
+                    "median": 26.533095397,
+                    "rms": 26.503590199136664,
+                    "p95": 38.133635892,
+                    "max": 39.829539848
+                  },
+                  "since_absorption_s": {
+                    "n": 171,
+                    "median": 19.444305697,
+                    "rms": 20.051726231490107,
+                    "p95": 31.044852192,
+                    "max": 32.740783848
+                  },
+                  "version_jump": {
+                    "n": 171,
+                    "median": 4.0,
+                    "rms": 5.055828666872714,
+                    "p95": 8.0,
+                    "max": 9.0
+                  },
+                  "translation_change_m": {
+                    "n": 171,
+                    "median": 0.0002567243930359028,
+                    "rms": 0.0005066699110677599,
+                    "p95": 0.0009940970910425535,
+                    "max": 0.0010664387784356875
+                  },
+                  "rotation_change_rad": {
+                    "n": 171,
+                    "median": 3.8934462426128555e-05,
+                    "rms": 3.8795300040742635e-05,
+                    "p95": 5.389180227340151e-05,
+                    "max": 5.9416532537347385e-05
+                  },
+                  "rotation_trace_ratio": {
+                    "n": 171,
+                    "median": 0.969560458962681,
+                    "rms": 0.9585067450002848,
+                    "p95": 1.010300353034831,
+                    "max": 1.0261418471815364
+                  },
+                  "translation_trace_ratio": {
+                    "n": 171,
+                    "median": 1.076915894820622,
+                    "rms": 1.1928801855383269,
+                    "p95": 1.7288235624943822,
+                    "max": 2.3034906024131403
+                  },
+                  "full_covariance_relative_frobenius": {
+                    "n": 171,
+                    "median": 0.09619635808505625,
+                    "rms": 0.31529651925013424,
+                    "p95": 0.7896099827171745,
+                    "max": 1.2570309678698828
+                  }
+                }
+              },
+              "glim_velodyne": {
+                "received_versions": 205919,
+                "received_ids": 4278,
+                "expired_fraction": 0.0,
+                "versions": 0,
+                "ids": 0,
+                "changes": {
+                  "endpoint_age_s": {
+                    "n": 0
+                  },
+                  "since_absorption_s": {
+                    "n": 0
+                  },
+                  "version_jump": {
+                    "n": 0
+                  },
+                  "translation_change_m": {
+                    "n": 0
+                  },
+                  "rotation_change_rad": {
+                    "n": 0
+                  },
+                  "rotation_trace_ratio": {
+                    "n": 0
+                  },
+                  "translation_trace_ratio": {
+                    "n": 0
+                  },
+                  "full_covariance_relative_frobenius": {
+                    "n": 0
+                  }
+                }
+              }
+            },
+            "reference_rows_not_receipts": 171,
+            "caveat": "Changes vs last accepted belief, NOT GT errors or proof that omitted corrections are harmless."
+          },
+          "mean_log_roundtrip_error": 2.545880173343562e-14,
+          "covariance_payload_error": 0.0,
+          "online_path_m": 268.7293159986347,
+          "finalized_path_m": 201.1398507857506,
+          "fused_span_s": 428.1,
+          "support_cycle_seconds": {
+            "n": 4282,
+            "mean": 0.053089715954927605,
+            "median": 0.04804717000000001,
+            "p95": 0.07567304299999997,
+            "max": 0.12616578299999998
+          },
+          "receipt_to_processing_seconds": {
+            "n": 296400,
+            "mean": 0.008031122606454116,
+            "median": 0.007106397,
+            "p95": 0.019990953000000002,
+            "max": 0.074221851
+          },
+          "monitor_output_age_s": {
+            "n": 1086,
+            "mean": 0.048295992868324124,
+            "median": 0.05015,
+            "p95": 0.090286,
+            "max": 0.100355
+          },
+          "published_during_source": 4282,
+          "max_monitor_queue": 9,
+          "protected_unchanged": 2850,
+          "claim": "live 0.2x full-usable428.75-second LEICA-2 capture; fixed-lag incremental without stationarity certificate"
+        },
+        "lifecycle": {
+          "passed": true,
+          "mode": "off",
+          "native_updates": 1937,
+          "source_injections": {
+            "g2k_injected": 0,
+            "k2g_injected": 0
+          },
+          "planned_retirements": 0,
+          "prior_refresh_updates": 0,
+          "max_cache_error": 0,
+          "observed_total_cost_increases": 18,
+          "imu_factor_cost": {
+            "median": 88.79074668423924,
+            "max": 10192.402263391714,
+            "last": 599.0799428255373
+          },
+          "stationarity_certified": false,
+          "obsolete_FL4q_executed": false,
+          "candidate_sha256": "be637ad745f73bf12596d3bf06754f56ed7bcadfdb8b4792b94c4fcfee62aad9",
+          "note": "CP-K9 equation/lifecycle gate; cost increases are observational."
+        },
+        "local": {
+          "passed": true,
+          "mode": "off",
+          "sources": {
+            "glim": {
+              "ids": 4278,
+              "versions": 205919,
+              "first": 4278,
+              "revised": 201641,
+              "provider_queries": 4278,
+              "local_joint_queries": 0
+            },
+            "kimera": {
+              "ids": 1909,
+              "versions": 47605,
+              "first": 0,
+              "revised": 0,
+              "provider_queries": 0,
+              "local_joint_queries": 47605
+            }
+          },
+          "all_payloads_exact": true,
+          "revision_provenance": "per-version native_local row plus pinned/tested provider route; no separate repeated matrix dump",
+          "limits": "native explicit information at corrected charts; not independent/calibrated likelihood"
+        }
+      },
+      "capture": {
+        "seconds": 2191.833510875702,
+        "phase": "full",
+        "mode": "off"
+      },
+      "glim_timing": {
+        "whole": {
+          "scan_ms": {
+            "n": 4278,
+            "median": 69.94101950000001,
+            "p95": 211.238651,
+            "max": 280.800332
+          },
+          "main_ms": {
+            "n": 4278,
+            "median": 31.697664,
+            "p95": 53.018694,
+            "max": 62.065208
+          },
+          "post_callback_ms": {
+            "n": 4278,
+            "median": 26.590422,
+            "p95": 177.738402,
+            "max": 249.782137
+          },
+          "scans_over_500ms": 0
+        },
+        "after5s": {
+          "scan_ms": {
+            "n": 4235,
+            "median": 70.176739,
+            "p95": 211.495322,
+            "max": 280.800332
+          },
+          "main_ms": {
+            "n": 4235,
+            "median": 31.842171,
+            "p95": 53.054416,
+            "max": 62.065208
+          },
+          "post_callback_ms": {
+            "n": 4235,
+            "median": 26.696234,
+            "p95": 178.177862,
+            "max": 249.782137
+          },
+          "scans_over_500ms": 0
+        },
+        "last20s": {
+          "scan_ms": {
+            "n": 197,
+            "median": 55.015794,
+            "p95": 72.941179,
+            "max": 86.529597
+          },
+          "main_ms": {
+            "n": 197,
+            "median": 26.184213,
+            "p95": 42.089004,
+            "max": 51.707808
+          },
+          "post_callback_ms": {
+            "n": 197,
+            "median": 24.224556,
+            "p95": 27.309178,
+            "max": 33.699729
+          },
+          "scans_over_500ms": 0
+        }
+      },
+      "glim_internal_queue_max": 0,
+      "main_prepared_hits": 7365136,
+      "main_sync_calls": 0,
+      "kimera_timing_after5s": {
+        "optimize_ms": {
+          "n": 1914,
+          "median": 80.33395,
+          "p95": 105.237,
+          "max": 126.008
+        },
+        "smoother_ms": {
+          "n": 1914,
+          "median": 25.81005,
+          "p95": 36.4545,
+          "max": 44.6597
+        },
+        "outgoing_ms": {
+          "n": 1914,
+          "median": 50.5344,
+          "p95": 63.361,
+          "max": 77.1172
+        },
+        "backend_ms": {
+          "n": 1914,
+          "median": 81.37995,
+          "p95": 106.552,
+          "max": 127.388
+        }
+      },
+      "source_coverage": {
+        "passed": true,
+        "requested_s": 428.75,
+        "imu_samples": 42875,
+        "imu_span_s": 428.7403712272644,
+        "coverage_contract": "native_keyframes_cpk22",
+        "kimera_gap_bound_s": 5.1499999999999995,
+        "native_glim": {
+          "rows": 4279,
+          "start_s": 1732549035.547153,
+          "end_s": 1732549463.346269,
+          "span_s": 427.799115896225,
+          "maximum_pose_gap_s": 0.10686612129211426,
+          "post_startup_max_gap_s": 0.10686612129211426,
+          "start_after_first_imu_s": 0.7276380062103271,
+          "tail_behind_last_imu_s": 0.21361732482910156,
+          "path_length_m": 202.7609805225614,
+          "gaps_over_1s": [],
+          "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+        },
+        "native_kimera": {
+          "rows": 1937,
+          "start_s": 1732549035.0150096,
+          "end_s": 1732549461.9106357,
+          "span_s": 426.89562606811523,
+          "maximum_pose_gap_s": 5.0999462604522705,
+          "post_startup_max_gap_s": 5.0999462604522705,
+          "start_after_first_imu_s": 0.1954946517944336,
+          "tail_behind_last_imu_s": 1.6492505073547363,
+          "path_length_m": 196.68655844919556,
+          "gaps_over_1s": [
+            {
+              "before_index": 1927,
+              "after_index": 1928,
+              "start_s": 1732549425.3110552,
+              "end_s": 1732549430.4109938,
+              "gap_s": 5.099938631057739
+            },
+            {
+              "before_index": 1928,
+              "after_index": 1929,
+              "start_s": 1732549430.4109938,
+              "end_s": 1732549435.5109324,
+              "gap_s": 5.099938631057739
+            },
+            {
+              "before_index": 1929,
+              "after_index": 1930,
+              "start_s": 1732549435.5109324,
+              "end_s": 1732549440.6108732,
+              "gap_s": 5.099940776824951
+            },
+            {
+              "before_index": 1930,
+              "after_index": 1931,
+              "start_s": 1732549440.6108732,
+              "end_s": 1732549445.7108195,
+              "gap_s": 5.0999462604522705
+            },
+            {
+              "before_index": 1931,
+              "after_index": 1932,
+              "start_s": 1732549445.7108195,
+              "end_s": 1732549450.8107617,
+              "gap_s": 5.099942207336426
+            },
+            {
+              "before_index": 1932,
+              "after_index": 1933,
+              "start_s": 1732549450.8107617,
+              "end_s": 1732549455.910703,
+              "gap_s": 5.099941253662109
+            },
+            {
+              "before_index": 1935,
+              "after_index": 1936,
+              "start_s": 1732549456.8106928,
+              "end_s": 1732549461.9106357,
+              "gap_s": 5.099942922592163
+            }
+          ],
+          "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+        },
+        "kimera_processing": {
+          "passed": true,
+          "logs": [
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_source/estimators.log",
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_source/ros_logs/442bd0be-cf34-11f1-96f5-fa3e8f968d05/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log",
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_source/ros_logs/latest/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log"
+          ],
+          "frontend_processed": 4286,
+          "synchronized_input_pairs_reference": 4287,
+          "frontend_reference_after_startup": 4284,
+          "backend_processed": 1937,
+          "sequential_native_ids": true,
+          "gaps": [
+            {
+              "before_id": 1927,
+              "after_id": 1928,
+              "gap_s": 5.099938631057739,
+              "wall_interval_s": 25.493487119674683,
+              "frontend_counter_first": 3906,
+              "frontend_counter_last": 3954,
+              "backend_before_ms": 79.0477,
+              "backend_after_ms": 75.7491,
+              "low_disparity_lines": 4
+            },
+            {
+              "before_id": 1928,
+              "after_id": 1929,
+              "gap_s": 5.099938631057739,
+              "wall_interval_s": 25.496753931045532,
+              "frontend_counter_first": 3956,
+              "frontend_counter_last": 4005,
+              "backend_before_ms": 75.7491,
+              "backend_after_ms": 73.1669,
+              "low_disparity_lines": 4
+            },
+            {
+              "before_id": 1929,
+              "after_id": 1930,
+              "gap_s": 5.099940776824951,
+              "wall_interval_s": 25.496175050735474,
+              "frontend_counter_first": 4008,
+              "frontend_counter_last": 4056,
+              "backend_before_ms": 73.1669,
+              "backend_after_ms": 72.0216,
+              "low_disparity_lines": 4
+            },
+            {
+              "before_id": 1930,
+              "after_id": 1931,
+              "gap_s": 5.0999462604522705,
+              "wall_interval_s": 25.50236201286316,
+              "frontend_counter_first": 4058,
+              "frontend_counter_last": 4108,
+              "backend_before_ms": 72.0216,
+              "backend_after_ms": 73.4818,
+              "low_disparity_lines": 4
+            },
+            {
+              "before_id": 1931,
+              "after_id": 1932,
+              "gap_s": 5.099942207336426,
+              "wall_interval_s": 25.497891902923584,
+              "frontend_counter_first": 4110,
+              "frontend_counter_last": 4158,
+              "backend_before_ms": 73.4818,
+              "backend_after_ms": 70.7668,
+              "low_disparity_lines": 4
+            },
+            {
+              "before_id": 1932,
+              "after_id": 1933,
+              "gap_s": 5.099941253662109,
+              "wall_interval_s": 25.502195119857788,
+              "frontend_counter_first": 4160,
+              "frontend_counter_last": 4209,
+              "backend_before_ms": 70.7668,
+              "backend_after_ms": 70.1271,
+              "low_disparity_lines": 4
+            },
+            {
+              "before_id": 1935,
+              "after_id": 1936,
+              "gap_s": 5.099942922592163,
+              "wall_interval_s": 25.492909908294678,
+              "frontend_counter_first": 4220,
+              "frontend_counter_last": 4269,
+              "backend_before_ms": 63.7294,
+              "backend_after_ms": 63.5923,
+              "low_disparity_lines": 4
+            }
+          ],
+          "scope": "Native counters, not a new per-image receipt or branch-decision audit."
+        }
+      }
+    },
+    "on": {
+      "checks": {
+        "receiver": {
+          "passed": true,
+          "validation_contract": "finite_recording_eof_cpk24a",
+          "terminal_boundary": {
+            "passed": true,
+            "contract": "finite_recording_terminal_cell_only",
+            "original_zero_unsupported_gate_passed": true,
+            "excluded_versions": 0,
+            "final_partial_cell_ns": 60371000,
+            "details": [],
+            "state_clock_not_extended": true,
+            "captured_outputs_unchanged": true,
+            "omission_not_recovered": true
+          },
+          "source_coverage": {
+            "passed": true,
+            "requested_s": 428.75,
+            "imu_samples": 42875,
+            "imu_span_s": 428.7403712272644,
+            "coverage_contract": "native_keyframes_cpk22",
+            "kimera_gap_bound_s": 5.1499999999999995,
+            "native_glim": {
+              "rows": 4279,
+              "start_s": 1732549035.547153,
+              "end_s": 1732549463.346269,
+              "span_s": 427.799115896225,
+              "maximum_pose_gap_s": 0.10686612129211426,
+              "post_startup_max_gap_s": 0.10686612129211426,
+              "start_after_first_imu_s": 0.7276380062103271,
+              "tail_behind_last_imu_s": 0.21361732482910156,
+              "path_length_m": 206.7338208234971,
+              "gaps_over_1s": [],
+              "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+            },
+            "native_kimera": {
+              "rows": 1938,
+              "start_s": 1732549035.0150096,
+              "end_s": 1732549462.310631,
+              "span_s": 427.2956213951111,
+              "maximum_pose_gap_s": 5.0999462604522705,
+              "post_startup_max_gap_s": 5.0999462604522705,
+              "start_after_first_imu_s": 0.1954946517944336,
+              "tail_behind_last_imu_s": 1.2492551803588867,
+              "path_length_m": 198.2256952386793,
+              "gaps_over_1s": [
+                {
+                  "before_index": 286,
+                  "after_index": 287,
+                  "start_s": 1732549092.8144822,
+                  "end_s": 1732549093.9144728,
+                  "gap_s": 1.0999906063079834
+                },
+                {
+                  "before_index": 1928,
+                  "after_index": 1929,
+                  "start_s": 1732549425.3110552,
+                  "end_s": 1732549430.4109938,
+                  "gap_s": 5.099938631057739
+                },
+                {
+                  "before_index": 1929,
+                  "after_index": 1930,
+                  "start_s": 1732549430.4109938,
+                  "end_s": 1732549435.5109324,
+                  "gap_s": 5.099938631057739
+                },
+                {
+                  "before_index": 1930,
+                  "after_index": 1931,
+                  "start_s": 1732549435.5109324,
+                  "end_s": 1732549440.6108732,
+                  "gap_s": 5.099940776824951
+                },
+                {
+                  "before_index": 1931,
+                  "after_index": 1932,
+                  "start_s": 1732549440.6108732,
+                  "end_s": 1732549445.7108195,
+                  "gap_s": 5.0999462604522705
+                },
+                {
+                  "before_index": 1932,
+                  "after_index": 1933,
+                  "start_s": 1732549445.7108195,
+                  "end_s": 1732549450.8107617,
+                  "gap_s": 5.099942207336426
+                },
+                {
+                  "before_index": 1933,
+                  "after_index": 1934,
+                  "start_s": 1732549450.8107617,
+                  "end_s": 1732549455.910703,
+                  "gap_s": 5.099941253662109
+                },
+                {
+                  "before_index": 1936,
+                  "after_index": 1937,
+                  "start_s": 1732549457.2106884,
+                  "end_s": 1732549462.310631,
+                  "gap_s": 5.099942684173584
+                }
+              ],
+              "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+            },
+            "kimera_processing": {
+              "passed": true,
+              "logs": [
+                "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared/full_on_source/estimators.log",
+                "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared/full_on_source/ros_logs/15905a6e-d127-11f1-88bf-de65640513ca/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log",
+                "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared/full_on_source/ros_logs/latest/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log"
+              ],
+              "frontend_processed": 4286,
+              "synchronized_input_pairs_reference": 4287,
+              "frontend_reference_after_startup": 4284,
+              "backend_processed": 1938,
+              "sequential_native_ids": true,
+              "gaps": [
+                {
+                  "before_id": 286,
+                  "after_id": 287,
+                  "gap_s": 1.0999906063079834,
+                  "wall_interval_s": 5.517085075378418,
+                  "frontend_counter_first": 580,
+                  "frontend_counter_last": 589,
+                  "backend_before_ms": 74.0453,
+                  "backend_after_ms": 81.1923,
+                  "low_disparity_lines": 2
+                },
+                {
+                  "before_id": 1928,
+                  "after_id": 1929,
+                  "gap_s": 5.099938631057739,
+                  "wall_interval_s": 25.47943115234375,
+                  "frontend_counter_first": 3906,
+                  "frontend_counter_last": 3954,
+                  "backend_before_ms": 175.637,
+                  "backend_after_ms": 163.421,
+                  "low_disparity_lines": 4
+                },
+                {
+                  "before_id": 1929,
+                  "after_id": 1930,
+                  "gap_s": 5.099938631057739,
+                  "wall_interval_s": 25.49368405342102,
+                  "frontend_counter_first": 3956,
+                  "frontend_counter_last": 4005,
+                  "backend_before_ms": 163.421,
+                  "backend_after_ms": 153.887,
+                  "low_disparity_lines": 4
+                },
+                {
+                  "before_id": 1930,
+                  "after_id": 1931,
+                  "gap_s": 5.099940776824951,
+                  "wall_interval_s": 25.4841468334198,
+                  "frontend_counter_first": 4008,
+                  "frontend_counter_last": 4056,
+                  "backend_before_ms": 153.887,
+                  "backend_after_ms": 145.315,
+                  "low_disparity_lines": 4
+                },
+                {
+                  "before_id": 1931,
+                  "after_id": 1932,
+                  "gap_s": 5.0999462604522705,
+                  "wall_interval_s": 25.498748064041138,
+                  "frontend_counter_first": 4058,
+                  "frontend_counter_last": 4107,
+                  "backend_before_ms": 145.315,
+                  "backend_after_ms": 138.73,
+                  "low_disparity_lines": 4
+                },
+                {
+                  "before_id": 1932,
+                  "after_id": 1933,
+                  "gap_s": 5.099942207336426,
+                  "wall_interval_s": 25.491204023361206,
+                  "frontend_counter_first": 4110,
+                  "frontend_counter_last": 4158,
+                  "backend_before_ms": 138.73,
+                  "backend_after_ms": 129.093,
+                  "low_disparity_lines": 4
+                },
+                {
+                  "before_id": 1933,
+                  "after_id": 1934,
+                  "gap_s": 5.099941253662109,
+                  "wall_interval_s": 25.470355987548828,
+                  "frontend_counter_first": 4160,
+                  "frontend_counter_last": 4209,
+                  "backend_before_ms": 129.093,
+                  "backend_after_ms": 117.671,
+                  "low_disparity_lines": 4
+                },
+                {
+                  "before_id": 1936,
+                  "after_id": 1937,
+                  "gap_s": 5.099942684173584,
+                  "wall_interval_s": 25.48423194885254,
+                  "frontend_counter_first": 4224,
+                  "frontend_counter_last": 4273,
+                  "backend_before_ms": 106.268,
+                  "backend_after_ms": 99.8652,
+                  "low_disparity_lines": 4
+                }
+              ],
+              "scope": "Native counters, not a new per-image receipt or branch-decision audit."
+            }
+          },
+          "transport": {
+            "imu": 42875,
+            "duplicate_imu": 0,
+            "imu_clock_lag_events": 41868,
+            "max_imu_clock_lag_ns": 2586938,
+            "belief_clock_lag_events": 0,
+            "max_belief_clock_lag_ns": 0,
+            "beliefs": 253661,
+            "duplicates": 0,
+            "published_poses": 4282,
+            "max_queue": 45,
+            "sources": {
+              "glim_velodyne": 206006,
+              "kimera_front": 47655
+            }
+          },
+          "summary": {
+            "complete": true,
+            "model": "source_wnoa_fixed_lag",
+            "lag_seconds": 7,
+            "stationarity": "not_checked_incremental_policy",
+            "events": 296537,
+            "received": 253661,
+            "absorbed_revision_policy": "seal_at_absorption",
+            "expired": 171,
+            "expired_duplicate": 0,
+            "expired_stale": 0,
+            "duplicate": 0,
+            "stale": 0,
+            "inserted": 6187,
+            "replaced": 247253,
+            "excluded": 50,
+            "unsupported_end": 0,
+            "absorbed": 6119,
+            "active": 68,
+            "pending_at_end": 0,
+            "publications": 4282,
+            "finalized": 4282,
+            "retained_supports": 71,
+            "peak_slots": 175
+          },
+          "actions": {
+            "before_initialization": 50,
+            "insert": 6187,
+            "replace": 247253,
+            "expired_revision": 171
+          },
+          "expiry": {
+            "passed": true,
+            "policy": "seal_at_absorption",
+            "expired": {
+              "versions": 171,
+              "ids": 24,
+              "changes": {
+                "endpoint_age_s": {
+                  "n": 171,
+                  "median": 26.556590623,
+                  "rms": 26.638503307761553,
+                  "p95": 38.5462506,
+                  "max": 40.245211366
+                },
+                "since_absorption_s": {
+                  "n": 171,
+                  "median": 19.467800923000002,
+                  "rms": 20.191939426481404,
+                  "p95": 31.4574669,
+                  "max": 33.156455366
+                },
+                "version_jump": {
+                  "n": 171,
+                  "median": 4.0,
+                  "rms": 5.055828666872714,
+                  "p95": 8.0,
+                  "max": 9.0
+                },
+                "translation_change_m": {
+                  "n": 171,
+                  "median": 0.0003125493019033825,
+                  "rms": 0.000495591338861359,
+                  "p95": 0.0009791819653118938,
+                  "max": 0.001816394810531839
+                },
+                "rotation_change_rad": {
+                  "n": 171,
+                  "median": 3.8655252134047156e-05,
+                  "rms": 7.312329729877015e-05,
+                  "p95": 0.00015615407669775365,
+                  "max": 0.00028016464967301033
+                },
+                "rotation_trace_ratio": {
+                  "n": 171,
+                  "median": 0.9579955307137653,
+                  "rms": 0.942513473730426,
+                  "p95": 1.006815834340026,
+                  "max": 1.0117635657073647
+                },
+                "translation_trace_ratio": {
+                  "n": 171,
+                  "median": 0.985274072871113,
+                  "rms": 0.9986144771708519,
+                  "p95": 1.1651861714200473,
+                  "max": 1.1799526254010697
+                },
+                "full_covariance_relative_frobenius": {
+                  "n": 171,
+                  "median": 0.10395546594545237,
+                  "rms": 0.12768864253294915,
+                  "p95": 0.23173011030409044,
+                  "max": 0.24685165009941445
+                }
+              }
+            },
+            "by_source": {
+              "kimera_front": {
+                "received_versions": 47655,
+                "received_ids": 1911,
+                "expired_fraction": 0.0035882908404154864,
+                "versions": 171,
+                "ids": 24,
+                "changes": {
+                  "endpoint_age_s": {
+                    "n": 171,
+                    "median": 26.556590623,
+                    "rms": 26.638503307761553,
+                    "p95": 38.5462506,
+                    "max": 40.245211366
+                  },
+                  "since_absorption_s": {
+                    "n": 171,
+                    "median": 19.467800923000002,
+                    "rms": 20.191939426481404,
+                    "p95": 31.4574669,
+                    "max": 33.156455366
+                  },
+                  "version_jump": {
+                    "n": 171,
+                    "median": 4.0,
+                    "rms": 5.055828666872714,
+                    "p95": 8.0,
+                    "max": 9.0
+                  },
+                  "translation_change_m": {
+                    "n": 171,
+                    "median": 0.0003125493019033825,
+                    "rms": 0.000495591338861359,
+                    "p95": 0.0009791819653118938,
+                    "max": 0.001816394810531839
+                  },
+                  "rotation_change_rad": {
+                    "n": 171,
+                    "median": 3.8655252134047156e-05,
+                    "rms": 7.312329729877015e-05,
+                    "p95": 0.00015615407669775365,
+                    "max": 0.00028016464967301033
+                  },
+                  "rotation_trace_ratio": {
+                    "n": 171,
+                    "median": 0.9579955307137653,
+                    "rms": 0.942513473730426,
+                    "p95": 1.006815834340026,
+                    "max": 1.0117635657073647
+                  },
+                  "translation_trace_ratio": {
+                    "n": 171,
+                    "median": 0.985274072871113,
+                    "rms": 0.9986144771708519,
+                    "p95": 1.1651861714200473,
+                    "max": 1.1799526254010697
+                  },
+                  "full_covariance_relative_frobenius": {
+                    "n": 171,
+                    "median": 0.10395546594545237,
+                    "rms": 0.12768864253294915,
+                    "p95": 0.23173011030409044,
+                    "max": 0.24685165009941445
+                  }
+                }
+              },
+              "glim_velodyne": {
+                "received_versions": 206006,
+                "received_ids": 4278,
+                "expired_fraction": 0.0,
+                "versions": 0,
+                "ids": 0,
+                "changes": {
+                  "endpoint_age_s": {
+                    "n": 0
+                  },
+                  "since_absorption_s": {
+                    "n": 0
+                  },
+                  "version_jump": {
+                    "n": 0
+                  },
+                  "translation_change_m": {
+                    "n": 0
+                  },
+                  "rotation_change_rad": {
+                    "n": 0
+                  },
+                  "rotation_trace_ratio": {
+                    "n": 0
+                  },
+                  "translation_trace_ratio": {
+                    "n": 0
+                  },
+                  "full_covariance_relative_frobenius": {
+                    "n": 0
+                  }
+                }
+              }
+            },
+            "reference_rows_not_receipts": 171,
+            "caveat": "Changes vs last accepted belief, NOT GT errors or proof that omitted corrections are harmless."
+          },
+          "mean_log_roundtrip_error": 2.9976021664879227e-14,
+          "covariance_payload_error": 0.0,
+          "online_path_m": 232.51215014271162,
+          "finalized_path_m": 202.80290927465484,
+          "fused_span_s": 428.1,
+          "support_cycle_seconds": {
+            "n": 4282,
+            "mean": 0.0673272836104624,
+            "median": 0.06470407150000002,
+            "p95": 0.11482417499999997,
+            "max": 0.17104281500000004
+          },
+          "receipt_to_processing_seconds": {
+            "n": 296537,
+            "mean": 0.012232763479916503,
+            "median": 0.010914368,
+            "p95": 0.032189933000000004,
+            "max": 0.11331888700000001
+          },
+          "monitor_output_age_s": {
+            "n": 1087,
+            "mean": 0.048117395777368906,
+            "median": 0.050108,
+            "p95": 0.09028,
+            "max": 0.100361
+          },
+          "published_during_source": 4282,
+          "max_monitor_queue": 9,
+          "protected_unchanged": 3027,
+          "claim": "live 0.2x full-usable428.75-second LEICA-2 capture; fixed-lag incremental without stationarity certificate"
+        },
+        "lifecycle": {
+          "passed": true,
+          "mode": "on",
+          "native_updates": 1938,
+          "source_injections": {
+            "g2k_injected": 1908,
+            "k2g_injected": 1917
+          },
+          "planned_retirements": 1892,
+          "prior_refresh_updates": 1892,
+          "max_cache_error": 2.8296857615646656e-09,
+          "observed_total_cost_increases": 0,
+          "imu_factor_cost": {
+            "median": 5.113531425075079,
+            "max": 5533.740517679464,
+            "last": 6.5849708645338545
+          },
+          "stationarity_certified": false,
+          "obsolete_FL4q_executed": false,
+          "candidate_sha256": "be637ad745f73bf12596d3bf06754f56ed7bcadfdb8b4792b94c4fcfee62aad9",
+          "note": "CP-K9 equation/lifecycle gate; cost increases are observational."
+        },
+        "local": {
+          "passed": true,
+          "mode": "on",
+          "sources": {
+            "glim": {
+              "ids": 4278,
+              "versions": 206006,
+              "first": 4278,
+              "revised": 201728,
+              "provider_queries": 4278,
+              "local_joint_queries": 0
+            },
+            "kimera": {
+              "ids": 1911,
+              "versions": 47655,
+              "first": 0,
+              "revised": 0,
+              "provider_queries": 0,
+              "local_joint_queries": 47655
+            }
+          },
+          "all_payloads_exact": true,
+          "revision_provenance": "per-version native_local row plus pinned/tested provider route; no separate repeated matrix dump",
+          "limits": "native explicit information at corrected charts; not independent/calibrated likelihood"
+        }
+      },
+      "capture": {
+        "seconds": 2193.9381539821625,
+        "phase": "full",
+        "mode": "on"
+      },
+      "glim_timing": {
+        "whole": {
+          "scan_ms": {
+            "n": 4278,
+            "median": 94.24966649999999,
+            "p95": 229.039462,
+            "max": 741.704569
+          },
+          "main_ms": {
+            "n": 4278,
+            "median": 43.2535185,
+            "p95": 70.775738,
+            "max": 102.551145
+          },
+          "post_callback_ms": {
+            "n": 4278,
+            "median": 40.86228,
+            "p95": 182.019547,
+            "max": 408.23021
+          },
+          "scans_over_500ms": 32
+        },
+        "after5s": {
+          "scan_ms": {
+            "n": 4235,
+            "median": 94.676889,
+            "p95": 229.3615,
+            "max": 741.704569
+          },
+          "main_ms": {
+            "n": 4235,
+            "median": 43.414343,
+            "p95": 70.801581,
+            "max": 102.551145
+          },
+          "post_callback_ms": {
+            "n": 4235,
+            "median": 41.19959,
+            "p95": 182.630398,
+            "max": 408.23021
+          },
+          "scans_over_500ms": 32
+        },
+        "last20s": {
+          "scan_ms": {
+            "n": 197,
+            "median": 104.777113,
+            "p95": 113.563226,
+            "max": 135.771431
+          },
+          "main_ms": {
+            "n": 197,
+            "median": 43.055164,
+            "p95": 48.456924,
+            "max": 67.788651
+          },
+          "post_callback_ms": {
+            "n": 197,
+            "median": 53.625795,
+            "p95": 61.026733,
+            "max": 63.395021
+          },
+          "scans_over_500ms": 0
+        }
+      },
+      "glim_internal_queue_max": 0,
+      "main_prepared_hits": 9250634,
+      "main_sync_calls": 0,
+      "kimera_timing_after5s": {
+        "optimize_ms": {
+          "n": 1915,
+          "median": 87.0022,
+          "p95": 187.133,
+          "max": 232.607
+        },
+        "smoother_ms": {
+          "n": 1915,
+          "median": 29.3952,
+          "p95": 73.5967,
+          "max": 88.8583
+        },
+        "outgoing_ms": {
+          "n": 1915,
+          "median": 52.496,
+          "p95": 104.671,
+          "max": 147.348
+        },
+        "backend_ms": {
+          "n": 1915,
+          "median": 88.0883,
+          "p95": 188.815,
+          "max": 234.254
+        }
+      },
+      "source_coverage": {
+        "passed": true,
+        "requested_s": 428.75,
+        "imu_samples": 42875,
+        "imu_span_s": 428.7403712272644,
+        "coverage_contract": "native_keyframes_cpk22",
+        "kimera_gap_bound_s": 5.1499999999999995,
+        "native_glim": {
+          "rows": 4279,
+          "start_s": 1732549035.547153,
+          "end_s": 1732549463.346269,
+          "span_s": 427.799115896225,
+          "maximum_pose_gap_s": 0.10686612129211426,
+          "post_startup_max_gap_s": 0.10686612129211426,
+          "start_after_first_imu_s": 0.7276380062103271,
+          "tail_behind_last_imu_s": 0.21361732482910156,
+          "path_length_m": 206.7338208234971,
+          "gaps_over_1s": [],
+          "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+        },
+        "native_kimera": {
+          "rows": 1938,
+          "start_s": 1732549035.0150096,
+          "end_s": 1732549462.310631,
+          "span_s": 427.2956213951111,
+          "maximum_pose_gap_s": 5.0999462604522705,
+          "post_startup_max_gap_s": 5.0999462604522705,
+          "start_after_first_imu_s": 0.1954946517944336,
+          "tail_behind_last_imu_s": 1.2492551803588867,
+          "path_length_m": 198.2256952386793,
+          "gaps_over_1s": [
+            {
+              "before_index": 286,
+              "after_index": 287,
+              "start_s": 1732549092.8144822,
+              "end_s": 1732549093.9144728,
+              "gap_s": 1.0999906063079834
+            },
+            {
+              "before_index": 1928,
+              "after_index": 1929,
+              "start_s": 1732549425.3110552,
+              "end_s": 1732549430.4109938,
+              "gap_s": 5.099938631057739
+            },
+            {
+              "before_index": 1929,
+              "after_index": 1930,
+              "start_s": 1732549430.4109938,
+              "end_s": 1732549435.5109324,
+              "gap_s": 5.099938631057739
+            },
+            {
+              "before_index": 1930,
+              "after_index": 1931,
+              "start_s": 1732549435.5109324,
+              "end_s": 1732549440.6108732,
+              "gap_s": 5.099940776824951
+            },
+            {
+              "before_index": 1931,
+              "after_index": 1932,
+              "start_s": 1732549440.6108732,
+              "end_s": 1732549445.7108195,
+              "gap_s": 5.0999462604522705
+            },
+            {
+              "before_index": 1932,
+              "after_index": 1933,
+              "start_s": 1732549445.7108195,
+              "end_s": 1732549450.8107617,
+              "gap_s": 5.099942207336426
+            },
+            {
+              "before_index": 1933,
+              "after_index": 1934,
+              "start_s": 1732549450.8107617,
+              "end_s": 1732549455.910703,
+              "gap_s": 5.099941253662109
+            },
+            {
+              "before_index": 1936,
+              "after_index": 1937,
+              "start_s": 1732549457.2106884,
+              "end_s": 1732549462.310631,
+              "gap_s": 5.099942684173584
+            }
+          ],
+          "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+        },
+        "kimera_processing": {
+          "passed": true,
+          "logs": [
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared/full_on_source/estimators.log",
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared/full_on_source/ros_logs/15905a6e-d127-11f1-88bf-de65640513ca/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log",
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared/full_on_source/ros_logs/latest/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log"
+          ],
+          "frontend_processed": 4286,
+          "synchronized_input_pairs_reference": 4287,
+          "frontend_reference_after_startup": 4284,
+          "backend_processed": 1938,
+          "sequential_native_ids": true,
+          "gaps": [
+            {
+              "before_id": 286,
+              "after_id": 287,
+              "gap_s": 1.0999906063079834,
+              "wall_interval_s": 5.517085075378418,
+              "frontend_counter_first": 580,
+              "frontend_counter_last": 589,
+              "backend_before_ms": 74.0453,
+              "backend_after_ms": 81.1923,
+              "low_disparity_lines": 2
+            },
+            {
+              "before_id": 1928,
+              "after_id": 1929,
+              "gap_s": 5.099938631057739,
+              "wall_interval_s": 25.47943115234375,
+              "frontend_counter_first": 3906,
+              "frontend_counter_last": 3954,
+              "backend_before_ms": 175.637,
+              "backend_after_ms": 163.421,
+              "low_disparity_lines": 4
+            },
+            {
+              "before_id": 1929,
+              "after_id": 1930,
+              "gap_s": 5.099938631057739,
+              "wall_interval_s": 25.49368405342102,
+              "frontend_counter_first": 3956,
+              "frontend_counter_last": 4005,
+              "backend_before_ms": 163.421,
+              "backend_after_ms": 153.887,
+              "low_disparity_lines": 4
+            },
+            {
+              "before_id": 1930,
+              "after_id": 1931,
+              "gap_s": 5.099940776824951,
+              "wall_interval_s": 25.4841468334198,
+              "frontend_counter_first": 4008,
+              "frontend_counter_last": 4056,
+              "backend_before_ms": 153.887,
+              "backend_after_ms": 145.315,
+              "low_disparity_lines": 4
+            },
+            {
+              "before_id": 1931,
+              "after_id": 1932,
+              "gap_s": 5.0999462604522705,
+              "wall_interval_s": 25.498748064041138,
+              "frontend_counter_first": 4058,
+              "frontend_counter_last": 4107,
+              "backend_before_ms": 145.315,
+              "backend_after_ms": 138.73,
+              "low_disparity_lines": 4
+            },
+            {
+              "before_id": 1932,
+              "after_id": 1933,
+              "gap_s": 5.099942207336426,
+              "wall_interval_s": 25.491204023361206,
+              "frontend_counter_first": 4110,
+              "frontend_counter_last": 4158,
+              "backend_before_ms": 138.73,
+              "backend_after_ms": 129.093,
+              "low_disparity_lines": 4
+            },
+            {
+              "before_id": 1933,
+              "after_id": 1934,
+              "gap_s": 5.099941253662109,
+              "wall_interval_s": 25.470355987548828,
+              "frontend_counter_first": 4160,
+              "frontend_counter_last": 4209,
+              "backend_before_ms": 129.093,
+              "backend_after_ms": 117.671,
+              "low_disparity_lines": 4
+            },
+            {
+              "before_id": 1936,
+              "after_id": 1937,
+              "gap_s": 5.099942684173584,
+              "wall_interval_s": 25.48423194885254,
+              "frontend_counter_first": 4224,
+              "frontend_counter_last": 4273,
+              "backend_before_ms": 106.268,
+              "backend_after_ms": 99.8652,
+              "low_disparity_lines": 4
+            }
+          ],
+          "scope": "Native counters, not a new per-image receipt or branch-decision audit."
+        }
+      }
+    }
+  },
+  "evaluation": {
+    "reference": {
+      "path": "/workspace/cbs_gtsam4.3/src/datasets/GrandTour/LEICA-2/2024-11-25-16-36-19_cpt7_ie_tc.bag",
+      "sha256": "5455a1a68dfcdab7dd26fdcbd528d42982725da8bc165a0208ddcd74aac6ca64",
+      "topic": "/boxi/inertial_explorer/tc/odometry",
+      "frame_ids": [
+        "enu_origin"
+      ],
+      "child_frame_ids": [
+        "cpt7_imu"
+      ],
+      "caveat": "IE-TC GNSS/INS reference shares CPT7 IMU; not independent prism GT"
+    },
+    "common_mask": {
+      "rows": 3850,
+      "start_s": 1732549035.6,
+      "end_s": 1732549425.2996283,
+      "coverage": {
+        "grid_queries": 4264,
+        "excluded_queries": 414,
+        "envelope_s": 389.6996283531189,
+        "covered_contiguous_duration_s": 384.5996332168579,
+        "segments": [
+          {
+            "start_s": 1732549035.6,
+            "end_s": 1732549092.4999456,
+            "rows": 570
+          },
+          {
+            "start_s": 1732549095.299943,
+            "end_s": 1732549230.2998142,
+            "rows": 1351
+          },
+          {
+            "start_s": 1732549231.699813,
+            "end_s": 1732549339.2997103,
+            "rows": 1077
+          },
+          {
+            "start_s": 1732549340.1997094,
+            "end_s": 1732549425.2996283,
+            "rows": 852
+          }
+        ],
+        "maximum_query_gap_s": 2.799997329711914
+      },
+      "timestamps_sha256": "6c038880e8491746ad2d7d52577422daa4c9f34694f890552f17bf4f6010218a",
+      "interpolation_gap_estimate_s": 0.5,
+      "interpolation_gap_reference_s": 0.05
+    },
+    "path_length_caveat": "Polyline through actual saved or supported queried positions; includes chords across missing intervals, not dense coverage.",
+    "convention": "Per-path rigid SE(3) no-scale alignment for ATE at prism lever arm; 1s RPE in prism frame, no global alignment",
+    "results": {
+      "off_native_glim": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_source/odom_imu.txt",
+        "sha256": "102576f81d602977c3ddbfca1fb6d62994d57779ec8c5ba38584005ae5a79a8e",
+        "full_saved_rows": 4279,
+        "full_saved_span_s": 427.799115896225,
+        "full_saved_path_length_CPT7_m": 202.7609805225614,
+        "full_saved": {
+          "rows": 4279,
+          "start_s": 1732549035.547153,
+          "end_s": 1732549463.346269,
+          "span_s": 427.799115896225,
+          "ATE_RMSE_m": 2.828134615966706,
+          "translation_RPE_1s_RMSE_m": 0.09233145907852915,
+          "rotation_RPE_1s_RMSE_deg": 1.2869047390820556,
+          "path_length_prism_m": 206.09365318999522,
+          "reference_path_length_prism_m": 205.87215064035036,
+          "rpe_pairs": 4268,
+          "error_m": {
+            "n": 4279,
+            "mean": 2.552816130854115,
+            "median": 1.9682359562644454,
+            "p95": 5.340719463539035,
+            "max": 7.00638943991474
+          }
+        },
+        "common": {
+          "rows": 3850,
+          "start_s": 1732549035.6,
+          "end_s": 1732549425.2996283,
+          "ATE_RMSE_m": 2.78091697818203,
+          "translation_RPE_1s_RMSE_m": 0.09766524047412167,
+          "rotation_RPE_1s_RMSE_deg": 1.361471676926791,
+          "path_length_prism_m": 205.14813298969796,
+          "reference_path_length_prism_m": 205.92111621723322,
+          "error_m": {
+            "n": 3850,
+            "mean": 2.3898957185969776,
+            "median": 1.6560498791740397,
+            "p95": 5.664585536450143,
+            "max": 7.151554202925647
+          },
+          "rpe_pairs": 3810
+        }
+      },
+      "off_native_kimera": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_source/kimera_odometry.csv",
+        "sha256": "7d62d57061910d47d1a334a7cccac3c2181b3826f1a6e6e53a8ecf114fb46503",
+        "full_saved_rows": 1937,
+        "full_saved_span_s": 426.89562606811523,
+        "full_saved_path_length_CPT7_m": 196.68655844919556,
+        "full_saved": {
+          "rows": 1937,
+          "start_s": 1732549035.0150096,
+          "end_s": 1732549461.9106357,
+          "span_s": 426.89562606811523,
+          "ATE_RMSE_m": 1.0970806183138457,
+          "translation_RPE_1s_RMSE_m": 0.028507200392213505,
+          "rotation_RPE_1s_RMSE_deg": 0.40550201409685976,
+          "path_length_prism_m": 200.14583756912822,
+          "reference_path_length_prism_m": 205.45148832888617,
+          "rpe_pairs": 3828,
+          "error_m": {
+            "n": 1937,
+            "mean": 0.9902604124518686,
+            "median": 0.8966135352776278,
+            "p95": 1.8851081563636503,
+            "max": 2.074277506231033
+          }
+        },
+        "common": {
+          "rows": 3850,
+          "start_s": 1732549035.6,
+          "end_s": 1732549425.2996283,
+          "ATE_RMSE_m": 1.0942333193984226,
+          "translation_RPE_1s_RMSE_m": 0.028572704843486566,
+          "rotation_RPE_1s_RMSE_deg": 0.40644931497689263,
+          "path_length_prism_m": 199.9328278928296,
+          "reference_path_length_prism_m": 205.92111621723322,
+          "error_m": {
+            "n": 3850,
+            "mean": 0.9872822078065502,
+            "median": 0.894132682794921,
+            "p95": 1.8843721173812478,
+            "max": 2.0719955620117654
+          },
+          "rpe_pairs": 3810
+        }
+      },
+      "off_fused_online": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_receiver/receiver/online_trajectory.tum",
+        "sha256": "1ba07f8d4cf4285e03c32ef5f3e26531def78abd6114b28b9e4743708471aa23",
+        "full_saved_rows": 4282,
+        "full_saved_span_s": 428.10000014305115,
+        "full_saved_path_length_CPT7_m": 268.7293159986348,
+        "full_saved": {
+          "rows": 4282,
+          "start_s": 1732549035.399515,
+          "end_s": 1732549463.499515,
+          "span_s": 428.10000014305115,
+          "ATE_RMSE_m": 2.0004237176753445,
+          "translation_RPE_1s_RMSE_m": 0.052800655773360315,
+          "rotation_RPE_1s_RMSE_deg": 2.417981664172959,
+          "path_length_prism_m": 280.15405784771053,
+          "reference_path_length_prism_m": 205.92908517419778,
+          "rpe_pairs": 4270,
+          "error_m": {
+            "n": 4282,
+            "mean": 1.776016590342622,
+            "median": 1.6109529738978348,
+            "p95": 3.7391890660854545,
+            "max": 4.224545836954356
+          }
+        },
+        "common": {
+          "rows": 3850,
+          "start_s": 1732549035.6,
+          "end_s": 1732549425.2996283,
+          "ATE_RMSE_m": 2.0060121769524923,
+          "translation_RPE_1s_RMSE_m": 0.055746747309194565,
+          "rotation_RPE_1s_RMSE_deg": 2.556960253631027,
+          "path_length_prism_m": 278.15544689687545,
+          "reference_path_length_prism_m": 205.92111621723322,
+          "error_m": {
+            "n": 3850,
+            "mean": 1.7688596368766238,
+            "median": 1.4365789890006426,
+            "p95": 3.745212684406129,
+            "max": 4.165085776728274
+          },
+          "rpe_pairs": 3810
+        }
+      },
+      "off_fused_finalized": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_receiver/receiver/finalized_trajectory.tum",
+        "sha256": "97b2d855566e246cbfac2881bb7acf2eff127950d50bb707d2bbd57de9a57d28",
+        "full_saved_rows": 4282,
+        "full_saved_span_s": 428.10000014305115,
+        "full_saved_path_length_CPT7_m": 201.1398507857506,
+        "full_saved": {
+          "rows": 4282,
+          "start_s": 1732549035.399515,
+          "end_s": 1732549463.499515,
+          "span_s": 428.10000014305115,
+          "ATE_RMSE_m": 2.0005636479249436,
+          "translation_RPE_1s_RMSE_m": 0.035255284585650366,
+          "rotation_RPE_1s_RMSE_deg": 0.5803486692808868,
+          "path_length_prism_m": 204.79669518843423,
+          "reference_path_length_prism_m": 205.92908517419778,
+          "rpe_pairs": 4270,
+          "error_m": {
+            "n": 4282,
+            "mean": 1.7761779903142128,
+            "median": 1.6141795294929944,
+            "p95": 3.744441514652044,
+            "max": 4.212751863039741
+          }
+        },
+        "common": {
+          "rows": 3850,
+          "start_s": 1732549035.6,
+          "end_s": 1732549425.2996283,
+          "ATE_RMSE_m": 2.005941158128278,
+          "translation_RPE_1s_RMSE_m": 0.037256776454173114,
+          "rotation_RPE_1s_RMSE_deg": 0.6133610402930105,
+          "path_length_prism_m": 204.56983077670407,
+          "reference_path_length_prism_m": 205.92111621723322,
+          "error_m": {
+            "n": 3850,
+            "mean": 1.7687004262567143,
+            "median": 1.4421941059030239,
+            "p95": 3.742888847485376,
+            "max": 4.136512207352051
+          },
+          "rpe_pairs": 3810
+        }
+      },
+      "baseline_on_native_glim": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_on_source/odom_imu.txt",
+        "sha256": "c86f691c3918b1eacd2adc49ee037c32364ab22671606bef739cae0257cd41c2",
+        "full_saved_rows": 4279,
+        "full_saved_span_s": 427.799115896225,
+        "full_saved_path_length_CPT7_m": 205.3398118811091,
+        "full_saved": {
+          "rows": 4279,
+          "start_s": 1732549035.547153,
+          "end_s": 1732549463.346269,
+          "span_s": 427.799115896225,
+          "ATE_RMSE_m": 0.861349290852769,
+          "translation_RPE_1s_RMSE_m": 0.038074798742164614,
+          "rotation_RPE_1s_RMSE_deg": 0.5615178266393958,
+          "path_length_prism_m": 208.66697023868363,
+          "reference_path_length_prism_m": 205.87215064035036,
+          "rpe_pairs": 4268,
+          "error_m": {
+            "n": 4279,
+            "mean": 0.7742320225202454,
+            "median": 0.6778879128562031,
+            "p95": 1.5342369953002926,
+            "max": 1.8928712928304678
+          }
+        },
+        "common": {
+          "rows": 3850,
+          "start_s": 1732549035.6,
+          "end_s": 1732549425.2996283,
+          "ATE_RMSE_m": 0.8481161882405978,
+          "translation_RPE_1s_RMSE_m": 0.0401686899848661,
+          "rotation_RPE_1s_RMSE_deg": 0.5917866143059753,
+          "path_length_prism_m": 206.80867138555516,
+          "reference_path_length_prism_m": 205.92111621723322,
+          "error_m": {
+            "n": 3850,
+            "mean": 0.7385274463293093,
+            "median": 0.5935399965611472,
+            "p95": 1.5721259058911095,
+            "max": 1.9438537096793571
+          },
+          "rpe_pairs": 3810
+        }
+      },
+      "baseline_on_native_kimera": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_on_source/kimera_odometry.csv",
+        "sha256": "e65efc6ab169fef4f1604e686e9f0ff31843c009faa1b96d5ed793e62b24f7dd",
+        "full_saved_rows": 1936,
+        "full_saved_span_s": 426.89562606811523,
+        "full_saved_path_length_CPT7_m": 197.75154272264402,
+        "full_saved": {
+          "rows": 1936,
+          "start_s": 1732549035.0150096,
+          "end_s": 1732549461.9106357,
+          "span_s": 426.89562606811523,
+          "ATE_RMSE_m": 2.5841587679499325,
+          "translation_RPE_1s_RMSE_m": 0.06201213511257897,
+          "rotation_RPE_1s_RMSE_deg": 0.5351965041315149,
+          "path_length_prism_m": 201.29426918564536,
+          "reference_path_length_prism_m": 205.45845638254474,
+          "rpe_pairs": 3824,
+          "error_m": {
+            "n": 1936,
+            "mean": 2.3534938810134918,
+            "median": 2.099420467635137,
+            "p95": 4.8053410097796165,
+            "max": 5.9875324883713406
+          }
+        },
+        "common": {
+          "rows": 3850,
+          "start_s": 1732549035.6,
+          "end_s": 1732549425.2996283,
+          "ATE_RMSE_m": 2.5853340716143904,
+          "translation_RPE_1s_RMSE_m": 0.06212471274185959,
+          "rotation_RPE_1s_RMSE_deg": 0.5361495278191114,
+          "path_length_prism_m": 200.91684707650757,
+          "reference_path_length_prism_m": 205.92111621723322,
+          "error_m": {
+            "n": 3850,
+            "mean": 2.3526862736199328,
+            "median": 2.0932908155477277,
+            "p95": 4.8239410470061115,
+            "max": 5.988523482965438
+          },
+          "rpe_pairs": 3810
+        }
+      },
+      "baseline_on_fused_online": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_on_receiver/receiver/online_trajectory.tum",
+        "sha256": "755a14455803c00216f0fae3f52868ff5cbad4f769408bb6426b330e2a1fda99",
+        "full_saved_rows": 4282,
+        "full_saved_span_s": 428.10000014305115,
+        "full_saved_path_length_CPT7_m": 229.6305651421742,
+        "full_saved": {
+          "rows": 4282,
+          "start_s": 1732549035.399515,
+          "end_s": 1732549463.499515,
+          "span_s": 428.10000014305115,
+          "ATE_RMSE_m": 1.82865836187031,
+          "translation_RPE_1s_RMSE_m": 0.05268958553007042,
+          "rotation_RPE_1s_RMSE_deg": 1.7695888484663005,
+          "path_length_prism_m": 235.13666219787342,
+          "reference_path_length_prism_m": 205.92908517419778,
+          "rpe_pairs": 4270,
+          "error_m": {
+            "n": 4282,
+            "mean": 1.6106074727816733,
+            "median": 1.3111806207730212,
+            "p95": 3.5420647087953356,
+            "max": 4.248948472740632
+          }
+        },
+        "common": {
+          "rows": 3850,
+          "start_s": 1732549035.6,
+          "end_s": 1732549425.2996283,
+          "ATE_RMSE_m": 1.86796275120257,
+          "translation_RPE_1s_RMSE_m": 0.05566077495995591,
+          "rotation_RPE_1s_RMSE_deg": 1.8716712761287477,
+          "path_length_prism_m": 233.18004152837733,
+          "reference_path_length_prism_m": 205.92111621723322,
+          "error_m": {
+            "n": 3850,
+            "mean": 1.6440163742605334,
+            "median": 1.2388040762965205,
+            "p95": 3.4814953172972842,
+            "max": 4.380511318689395
+          },
+          "rpe_pairs": 3810
+        }
+      },
+      "baseline_on_fused_finalized": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_on_receiver/receiver/finalized_trajectory.tum",
+        "sha256": "700b4b968cab1de949c758312289a62075c1edb287099571ffa877dac2d724d4",
+        "full_saved_rows": 4282,
+        "full_saved_span_s": 428.10000014305115,
+        "full_saved_path_length_CPT7_m": 202.3731886103507,
+        "full_saved": {
+          "rows": 4282,
+          "start_s": 1732549035.399515,
+          "end_s": 1732549463.499515,
+          "span_s": 428.10000014305115,
+          "ATE_RMSE_m": 1.8318143851635316,
+          "translation_RPE_1s_RMSE_m": 0.02980188569512155,
+          "rotation_RPE_1s_RMSE_deg": 0.4174287438330403,
+          "path_length_prism_m": 205.89009264508908,
+          "reference_path_length_prism_m": 205.92908517419778,
+          "rpe_pairs": 4270,
+          "error_m": {
+            "n": 4282,
+            "mean": 1.6125044627903768,
+            "median": 1.3153244232144228,
+            "p95": 3.549449322037284,
+            "max": 4.25523420114984
+          }
+        },
+        "common": {
+          "rows": 3850,
+          "start_s": 1732549035.6,
+          "end_s": 1732549425.2996283,
+          "ATE_RMSE_m": 1.8710136918497366,
+          "translation_RPE_1s_RMSE_m": 0.03139431566971024,
+          "rotation_RPE_1s_RMSE_deg": 0.43919166218530964,
+          "path_length_prism_m": 205.58763551725414,
+          "reference_path_length_prism_m": 205.92111621723322,
+          "error_m": {
+            "n": 3850,
+            "mean": 1.64557157443172,
+            "median": 1.240704969733138,
+            "p95": 3.468529290396739,
+            "max": 4.387641988815184
+          },
+          "rpe_pairs": 3810
+        }
+      },
+      "on_native_glim": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared/full_on_source/odom_imu.txt",
+        "sha256": "a8c7000119ea8f62b8e3219d41429f2551dd83ffbd0ab384083bfc2c866217b5",
+        "full_saved_rows": 4279,
+        "full_saved_span_s": 427.799115896225,
+        "full_saved_path_length_CPT7_m": 206.7338208234971,
+        "full_saved": {
+          "rows": 4279,
+          "start_s": 1732549035.547153,
+          "end_s": 1732549463.346269,
+          "span_s": 427.799115896225,
+          "ATE_RMSE_m": 0.7243069988084108,
+          "translation_RPE_1s_RMSE_m": 0.04522618421128003,
+          "rotation_RPE_1s_RMSE_deg": 0.7363557225678546,
+          "path_length_prism_m": 210.16776983279078,
+          "reference_path_length_prism_m": 205.87215064035036,
+          "rpe_pairs": 4268,
+          "error_m": {
+            "n": 4279,
+            "mean": 0.6336814742365217,
+            "median": 0.5540552218221865,
+            "p95": 1.1590645038030958,
+            "max": 2.0443260325878256
+          }
+        },
+        "common": {
+          "rows": 3850,
+          "start_s": 1732549035.6,
+          "end_s": 1732549425.2996283,
+          "ATE_RMSE_m": 0.6576604180290305,
+          "translation_RPE_1s_RMSE_m": 0.04762028533321422,
+          "rotation_RPE_1s_RMSE_deg": 0.7753430203329161,
+          "path_length_prism_m": 207.41431453678513,
+          "reference_path_length_prism_m": 205.92111621723322,
+          "error_m": {
+            "n": 3850,
+            "mean": 0.5695478732189329,
+            "median": 0.5106317398693114,
+            "p95": 1.1760386186309568,
+            "max": 1.9034418217697409
+          },
+          "rpe_pairs": 3810
+        }
+      },
+      "on_native_kimera": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared/full_on_source/kimera_odometry.csv",
+        "sha256": "b2bf5e7e82af240fa102028515d7a001e5d7efbfef1ab5125c73c8e93583a1b5",
+        "full_saved_rows": 1938,
+        "full_saved_span_s": 427.2956213951111,
+        "full_saved_path_length_CPT7_m": 198.2256952386793,
+        "full_saved": {
+          "rows": 1938,
+          "start_s": 1732549035.0150096,
+          "end_s": 1732549462.310631,
+          "span_s": 427.2956213951111,
+          "ATE_RMSE_m": 3.9493460354001915,
+          "translation_RPE_1s_RMSE_m": 0.05594256111411229,
+          "rotation_RPE_1s_RMSE_deg": 0.4285887631641486,
+          "path_length_prism_m": 201.70870188061082,
+          "reference_path_length_prism_m": 205.45057667339537,
+          "rpe_pairs": 3830,
+          "error_m": {
+            "n": 1938,
+            "mean": 3.436451868918308,
+            "median": 2.839960249730054,
+            "p95": 6.624708727673679,
+            "max": 6.909785761718703
+          }
+        },
+        "common": {
+          "rows": 3850,
+          "start_s": 1732549035.6,
+          "end_s": 1732549425.2996283,
+          "ATE_RMSE_m": 3.9379223633599096,
+          "translation_RPE_1s_RMSE_m": 0.05605077853347884,
+          "rotation_RPE_1s_RMSE_deg": 0.429595214973571,
+          "path_length_prism_m": 201.41431088919663,
+          "reference_path_length_prism_m": 205.92111621723322,
+          "error_m": {
+            "n": 3850,
+            "mean": 3.4234941645893318,
+            "median": 2.8272840289738146,
+            "p95": 6.6346163260842435,
+            "max": 6.907840637453449
+          },
+          "rpe_pairs": 3810
+        }
+      },
+      "on_fused_online": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared/full_on_receiver/receiver/online_trajectory.tum",
+        "sha256": "26e48f4ab608ceecb05a28aae89354611da48b517247032f8eee68f52550da23",
+        "full_saved_rows": 4282,
+        "full_saved_span_s": 428.10000014305115,
+        "full_saved_path_length_CPT7_m": 232.51215014271162,
+        "full_saved": {
+          "rows": 4282,
+          "start_s": 1732549035.399515,
+          "end_s": 1732549463.499515,
+          "span_s": 428.10000014305115,
+          "ATE_RMSE_m": 2.613159257138239,
+          "translation_RPE_1s_RMSE_m": 0.05323505077617164,
+          "rotation_RPE_1s_RMSE_deg": 1.8058812762556071,
+          "path_length_prism_m": 238.70215930482624,
+          "reference_path_length_prism_m": 205.92908517419778,
+          "rpe_pairs": 4270,
+          "error_m": {
+            "n": 4282,
+            "mean": 2.2726346040244456,
+            "median": 2.0480019709228516,
+            "p95": 4.731600788276586,
+            "max": 5.202209433280714
+          }
+        },
+        "common": {
+          "rows": 3850,
+          "start_s": 1732549035.6,
+          "end_s": 1732549425.2996283,
+          "ATE_RMSE_m": 2.575996443587673,
+          "translation_RPE_1s_RMSE_m": 0.05586050745649884,
+          "rotation_RPE_1s_RMSE_deg": 1.9073245638784062,
+          "path_length_prism_m": 236.63453419631855,
+          "reference_path_length_prism_m": 205.92111621723322,
+          "error_m": {
+            "n": 3850,
+            "mean": 2.2214186989031175,
+            "median": 1.887391048385379,
+            "p95": 4.635906430933613,
+            "max": 5.1021794211626155
+          },
+          "rpe_pairs": 3810
+        }
+      },
+      "on_fused_finalized": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared/full_on_receiver/receiver/finalized_trajectory.tum",
+        "sha256": "ccd25aeb7d812d881fd2dca776f56c45e00c28a4fa365bbafc64f055e5a18778",
+        "full_saved_rows": 4282,
+        "full_saved_span_s": 428.10000014305115,
+        "full_saved_path_length_CPT7_m": 202.80290927465484,
+        "full_saved": {
+          "rows": 4282,
+          "start_s": 1732549035.399515,
+          "end_s": 1732549463.499515,
+          "span_s": 428.10000014305115,
+          "ATE_RMSE_m": 2.6176513376321755,
+          "translation_RPE_1s_RMSE_m": 0.030475269932701277,
+          "rotation_RPE_1s_RMSE_deg": 0.39939588203946463,
+          "path_length_prism_m": 206.3730581610387,
+          "reference_path_length_prism_m": 205.92908517419778,
+          "rpe_pairs": 4270,
+          "error_m": {
+            "n": 4282,
+            "mean": 2.275813359236463,
+            "median": 2.052652585962287,
+            "p95": 4.73136452015204,
+            "max": 5.162572500356165
+          }
+        },
+        "common": {
+          "rows": 3850,
+          "start_s": 1732549035.6,
+          "end_s": 1732549425.2996283,
+          "ATE_RMSE_m": 2.5790987645266297,
+          "translation_RPE_1s_RMSE_m": 0.03201647578796541,
+          "rotation_RPE_1s_RMSE_deg": 0.416129878913126,
+          "path_length_prism_m": 206.01972531709464,
+          "reference_path_length_prism_m": 205.92111621723322,
+          "error_m": {
+            "n": 3850,
+            "mean": 2.2235882523294097,
+            "median": 1.9100882606445313,
+            "p95": 4.619989209642365,
+            "max": 5.093595209068717
+          },
+          "rpe_pairs": 3810
+        }
+      }
+    },
+    "covariance": {
+      "off": {
+        "kimera_front": {
+          "versions": 47605,
+          "stable_ids": 1909,
+          "revised_ids": 1909,
+          "rotation_trace_rad2": {
+            "n": 47605,
+            "mean": 2.203678433487363e-08,
+            "median": 1.966692825412969e-08,
+            "p95": 4.389119787237582e-08,
+            "max": 1.1999833070560525e-05
+          },
+          "translation_trace_m2": {
+            "n": 47605,
+            "mean": 1.4116547634304993e-06,
+            "median": 1.0125803428102625e-06,
+            "p95": 3.99529238793427e-06,
+            "max": 0.002357276150484848
+          },
+          "min_eigenvalue": 7.128404797136576e-11,
+          "max_eigenvalue": 0.001176617990839093,
+          "max_symmetry_error": 0.0,
+          "first_last_rotation_trace_ratio": {
+            "n": 1909,
+            "mean": 0.6037499090663027,
+            "median": 0.5821291252062262,
+            "p95": 0.9721434849206375,
+            "max": 1.5502018284163939
+          },
+          "first_last_translation_trace_ratio": {
+            "n": 1909,
+            "mean": 0.6394265849579875,
+            "median": 0.5262892132064745,
+            "p95": 1.3285232442296526,
+            "max": 5.72506242133956
+          }
+        },
+        "glim_velodyne": {
+          "versions": 205919,
+          "stable_ids": 4278,
+          "revised_ids": 4277,
+          "rotation_trace_rad2": {
+            "n": 205919,
+            "mean": 1.346443516328178e-07,
+            "median": 6.672325138625635e-08,
+            "p95": 5.00882158208059e-07,
+            "max": 3.1722979847120366e-06
+          },
+          "translation_trace_m2": {
+            "n": 205919,
+            "mean": 2.836439867885131e-06,
+            "median": 2.4936928467107267e-06,
+            "p95": 4.956656925353608e-06,
+            "max": 1.563611970409562e-05
+          },
+          "min_eigenvalue": 6.136513181430948e-10,
+          "max_eigenvalue": 8.900798941085855e-06,
+          "max_symmetry_error": 0.0,
+          "first_last_rotation_trace_ratio": {
+            "n": 4277,
+            "mean": 0.7731065053568204,
+            "median": 0.788159145132066,
+            "p95": 0.841810770340353,
+            "max": 1.2522940170244272
+          },
+          "first_last_translation_trace_ratio": {
+            "n": 4277,
+            "mean": 0.5579516031768461,
+            "median": 0.5699448724228845,
+            "p95": 0.6237659903528217,
+            "max": 0.6599765567328948
+          }
+        }
+      },
+      "baseline_on": {
+        "kimera_front": {
+          "versions": 47563,
+          "stable_ids": 1908,
+          "revised_ids": 1908,
+          "rotation_trace_rad2": {
+            "n": 47563,
+            "mean": 2.7102959164359863e-08,
+            "median": 2.485639809147152e-08,
+            "p95": 5.2266695410490304e-08,
+            "max": 1.1999833070560525e-05
+          },
+          "translation_trace_m2": {
+            "n": 47563,
+            "mean": 2.7931694316196194e-06,
+            "median": 1.8486078651281726e-06,
+            "p95": 7.4829741288542144e-06,
+            "max": 0.002357276150484848
+          },
+          "min_eigenvalue": 5.699543310040153e-10,
+          "max_eigenvalue": 0.001176617990839093,
+          "max_symmetry_error": 0.0,
+          "first_last_rotation_trace_ratio": {
+            "n": 1908,
+            "mean": 0.5217326705035683,
+            "median": 0.5048524620124835,
+            "p95": 0.7668588631120042,
+            "max": 4.637222795961906
+          },
+          "first_last_translation_trace_ratio": {
+            "n": 1908,
+            "mean": 0.42752166138480585,
+            "median": 0.3251763066637662,
+            "p95": 0.9562898584765025,
+            "max": 19.288064721625187
+          }
+        },
+        "glim_velodyne": {
+          "versions": 206031,
+          "stable_ids": 4278,
+          "revised_ids": 4277,
+          "rotation_trace_rad2": {
+            "n": 206031,
+            "mean": 1.3141384025947797e-07,
+            "median": 6.649932974394723e-08,
+            "p95": 4.6714337823627133e-07,
+            "max": 2.965698259248307e-06
+          },
+          "translation_trace_m2": {
+            "n": 206031,
+            "mean": 2.7695372438717875e-06,
+            "median": 2.493562409948062e-06,
+            "p95": 4.691894840548331e-06,
+            "max": 1.4652899367158564e-05
+          },
+          "min_eigenvalue": 6.144250450510339e-10,
+          "max_eigenvalue": 8.73067857385774e-06,
+          "max_symmetry_error": 0.0,
+          "first_last_rotation_trace_ratio": {
+            "n": 4277,
+            "mean": 0.7817219042898109,
+            "median": 0.7943673317693226,
+            "p95": 0.8433477071780308,
+            "max": 1.0406350757587104
+          },
+          "first_last_translation_trace_ratio": {
+            "n": 4277,
+            "mean": 0.5638966264810665,
+            "median": 0.5732527782904873,
+            "p95": 0.6249969894762373,
+            "max": 0.6667515064433658
+          }
+        }
+      },
+      "on": {
+        "kimera_front": {
+          "versions": 47655,
+          "stable_ids": 1911,
+          "revised_ids": 1911,
+          "rotation_trace_rad2": {
+            "n": 47655,
+            "mean": 2.5197851105166165e-08,
+            "median": 2.3201747002968398e-08,
+            "p95": 4.8869818349946615e-08,
+            "max": 1.1999833070560525e-05
+          },
+          "translation_trace_m2": {
+            "n": 47655,
+            "mean": 2.9328945518753274e-06,
+            "median": 1.8541416198543495e-06,
+            "p95": 9.136942292047896e-06,
+            "max": 0.002357276150484848
+          },
+          "min_eigenvalue": 7.141400356260027e-10,
+          "max_eigenvalue": 0.001176617990839093,
+          "max_symmetry_error": 0.0,
+          "first_last_rotation_trace_ratio": {
+            "n": 1911,
+            "mean": 0.5172690725006498,
+            "median": 0.5137970917459554,
+            "p95": 0.7573055917052556,
+            "max": 1.601767604111619
+          },
+          "first_last_translation_trace_ratio": {
+            "n": 1911,
+            "mean": 0.5086675544626034,
+            "median": 0.37334192717033177,
+            "p95": 1.21881100168095,
+            "max": 9.926835425193522
+          }
+        },
+        "glim_velodyne": {
+          "versions": 206006,
+          "stable_ids": 4278,
+          "revised_ids": 4277,
+          "rotation_trace_rad2": {
+            "n": 206006,
+            "mean": 1.3435991936428954e-07,
+            "median": 6.763079895494734e-08,
+            "p95": 4.6253210861975757e-07,
+            "max": 3.101460818068782e-06
+          },
+          "translation_trace_m2": {
+            "n": 206006,
+            "mean": 2.8241815350353798e-06,
+            "median": 2.5289784112059366e-06,
+            "p95": 4.836561411466019e-06,
+            "max": 1.449134294607666e-05
+          },
+          "min_eigenvalue": 5.855289645747777e-10,
+          "max_eigenvalue": 8.79181688134822e-06,
+          "max_symmetry_error": 0.0,
+          "first_last_rotation_trace_ratio": {
+            "n": 4277,
+            "mean": 0.781699279814532,
+            "median": 0.7931123879673458,
+            "p95": 0.845451186779376,
+            "max": 1.179907505701175
+          },
+          "first_last_translation_trace_ratio": {
+            "n": 4277,
+            "mean": 0.5618892292415094,
+            "median": 0.5715890676183518,
+            "p95": 0.6235368929404386,
+            "max": 0.6565319525568417
+          }
+        }
+      }
+    }
+  },
+  "protected_unchanged": 3027,
+  "identical_source_profiles": true,
+  "no_exhaustive_observer": true,
+  "no_saved_journal_repeat": true,
+  "limits": "Full usable rear-Velodyne matched pair, not an exhaustive batching-preservation certificate; IE-TC shares CPT7; no nonlinear stationarity claim."
+}

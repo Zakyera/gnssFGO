@@ -1,0 +1,492 @@
+{
+  "cases": {
+    "hesai": {
+      "jacobians": {
+        "WNOA": {
+          "factors": 5,
+          "block_step_comparisons": 60,
+          "failed_blocks": 0,
+          "max_absolute": {
+            "n": 60,
+            "max": 2.80192541390889e-09,
+            "median": 5.205835762467359e-13,
+            "p95": 1.3674131271849975e-09
+          },
+          "max_scaled": {
+            "n": 60,
+            "max": 2.7881695530078005e-09,
+            "median": 2.6029178812323785e-13,
+            "p95": 1.36724962967036e-09
+          },
+          "residual_with_jacobian_difference": 0.0
+        },
+        "source_glim_hesai": {
+          "factors": 592,
+          "block_step_comparisons": 14208,
+          "failed_blocks": 0,
+          "max_absolute": {
+            "n": 14208,
+            "max": 7.792850852681235e-09,
+            "median": 1.639336139167176e-10,
+            "p95": 1.4968630883405165e-09
+          },
+          "max_scaled": {
+            "n": 14208,
+            "max": 7.782957924366366e-09,
+            "median": 1.6194114228635676e-10,
+            "p95": 1.4592773873308165e-09
+          },
+          "residual_with_jacobian_difference": 0.0
+        },
+        "source_kimera_front": {
+          "factors": 281,
+          "block_step_comparisons": 6744,
+          "failed_blocks": 0,
+          "max_absolute": {
+            "n": 6744,
+            "max": 7.05500713751861e-09,
+            "median": 1.6307560766101975e-10,
+            "p95": 1.4297808630691948e-09
+          },
+          "max_scaled": {
+            "n": 6744,
+            "max": 7.035080749208373e-09,
+            "median": 1.6182368659623353e-10,
+            "p95": 1.4101128302846204e-09
+          },
+          "residual_with_jacobian_difference": 0.0
+        }
+      },
+      "endpoints": {
+        "glim_hesai": {
+          "factors": 592,
+          "max_reconstructed_residual_difference": 0.0,
+          "max_boundary_pose_difference": 7.327471962526033e-15,
+          "start_tau_s": {
+            "n": 592,
+            "max": 0.062227000000000005,
+            "median": 0.061380550000000006,
+            "p95": 0.061877495000000005
+          },
+          "end_tau_s": {
+            "n": 592,
+            "max": 0.062227000000000005,
+            "median": 0.061380550000000006,
+            "p95": 0.061877495000000005
+          }
+        },
+        "kimera_front": {
+          "factors": 281,
+          "max_reconstructed_residual_difference": 0.0,
+          "max_boundary_pose_difference": 3.885780586188048e-15,
+          "start_tau_s": {
+            "n": 281,
+            "max": 0.015490400000000001,
+            "median": 0.015206200000000001,
+            "p95": 0.0154538
+          },
+          "end_tau_s": {
+            "n": 281,
+            "max": 0.0154888,
+            "median": 0.0152043,
+            "p95": 0.015452
+          }
+        }
+      },
+      "linearizations": [
+        {
+          "newest": 50,
+          "snapshot": 2706,
+          "event": 1883,
+          "rows": 1002,
+          "cols": 612,
+          "column_normalized_rank": 612,
+          "rank_cutoff": 5.72371100825649e-13,
+          "column_normalized_condition": 201.6375650482746,
+          "singular_min": 0.012758461477987777,
+          "cost": 4382.862422306621,
+          "linearized_cost_at_zero": 4382.86242230662,
+          "raw_gradient_inf": 17067.401509874173,
+          "column_normalized_gradient_inf": 0.6021275062357283,
+          "linearized_optimal_cost_reduction": 0.6935058423585255,
+          "newest_linear_diagnostic_increment": {
+            "key": "x50",
+            "rot_norm": 1.694106991071908e-05,
+            "trans_norm": 5.0252454746173076e-05
+          },
+          "largest_linear_pose_translation": {
+            "key": "x50",
+            "rot_norm": 1.694106991071908e-05,
+            "trans_norm": 5.0252454746173076e-05
+          }
+        },
+        {
+          "newest": 100,
+          "snapshot": 8980,
+          "event": 5418,
+          "rows": 1482,
+          "cols": 852,
+          "column_normalized_rank": 852,
+          "rank_cutoff": 8.184320252854062e-13,
+          "column_normalized_condition": 251.1296632043384,
+          "singular_min": 0.009903670248087172,
+          "cost": 11301.652427557492,
+          "linearized_cost_at_zero": 11301.6524275575,
+          "raw_gradient_inf": 3722.6088427263912,
+          "column_normalized_gradient_inf": 0.1396490815912857,
+          "linearized_optimal_cost_reduction": 0.17743812787424787,
+          "newest_linear_diagnostic_increment": {
+            "key": "x100",
+            "rot_norm": 8.853884675350309e-05,
+            "trans_norm": 0.00011688504420135407
+          },
+          "largest_linear_pose_translation": {
+            "key": "x100",
+            "rot_norm": 8.853884675350309e-05,
+            "trans_norm": 0.00011688504420135407
+          }
+        },
+        {
+          "newest": 200,
+          "snapshot": 21660,
+          "event": 12508,
+          "rows": 1482,
+          "cols": 852,
+          "column_normalized_rank": 852,
+          "rank_cutoff": 8.368986630520993e-13,
+          "column_normalized_condition": 278.0487320728474,
+          "singular_min": 0.009146680854310875,
+          "cost": 9101.094680888487,
+          "linearized_cost_at_zero": 9101.09468088849,
+          "raw_gradient_inf": 9657.503447320181,
+          "column_normalized_gradient_inf": 0.33851163392597605,
+          "linearized_optimal_cost_reduction": 0.15305829316206723,
+          "newest_linear_diagnostic_increment": {
+            "key": "x200",
+            "rot_norm": 2.5942917265526342e-05,
+            "trans_norm": 7.11311030425126e-05
+          },
+          "largest_linear_pose_translation": {
+            "key": "x192",
+            "rot_norm": 1.3352179690099341e-05,
+            "trans_norm": 7.821979692828468e-05
+          }
+        },
+        {
+          "newest": 400,
+          "snapshot": 46932,
+          "event": 26644,
+          "rows": 1482,
+          "cols": 852,
+          "column_normalized_rank": 852,
+          "rank_cutoff": 8.125912824340409e-13,
+          "column_normalized_condition": 443.4292869529023,
+          "singular_min": 0.005568770964910749,
+          "cost": 12173.461616418017,
+          "linearized_cost_at_zero": 12173.46161641801,
+          "raw_gradient_inf": 5734.767867538514,
+          "column_normalized_gradient_inf": 0.2365326867381069,
+          "linearized_optimal_cost_reduction": 0.13909755431801235,
+          "newest_linear_diagnostic_increment": {
+            "key": "x400",
+            "rot_norm": 3.6004256572323516e-05,
+            "trans_norm": 0.0002460981102826112
+          },
+          "largest_linear_pose_translation": {
+            "key": "x400",
+            "rot_norm": 3.6004256572323516e-05,
+            "trans_norm": 0.0002460981102826112
+          }
+        },
+        {
+          "newest": 550,
+          "snapshot": 65948,
+          "event": 37277,
+          "rows": 1482,
+          "cols": 852,
+          "column_normalized_rank": 852,
+          "rank_cutoff": 8.453936798344693e-13,
+          "column_normalized_condition": 1353.1185482746737,
+          "singular_min": 0.001898605437340096,
+          "cost": 2077.336492912643,
+          "linearized_cost_at_zero": 2077.3364929126437,
+          "raw_gradient_inf": 8230.395112094822,
+          "column_normalized_gradient_inf": 0.18222542316762394,
+          "linearized_optimal_cost_reduction": 0.3556024640546635,
+          "newest_linear_diagnostic_increment": {
+            "key": "x550",
+            "rot_norm": 2.7103409971718105e-05,
+            "trans_norm": 0.0003801013139663843
+          },
+          "largest_linear_pose_translation": {
+            "key": "x544",
+            "rot_norm": 2.0231888945132447e-05,
+            "trans_norm": 0.000381592578291348
+          }
+        }
+      ],
+      "all_jacobian_checks_pass": true,
+      "all_endpoint_checks_pass": true
+    },
+    "velodyne": {
+      "jacobians": {
+        "WNOA": {
+          "factors": 5,
+          "block_step_comparisons": 60,
+          "failed_blocks": 0,
+          "max_absolute": {
+            "n": 60,
+            "max": 2.440029456263204e-09,
+            "median": 3.4716673980028645e-13,
+            "p95": 1.1761425168965897e-09
+          },
+          "max_scaled": {
+            "n": 60,
+            "max": 2.291424979539602e-09,
+            "median": 1.7358336990005646e-13,
+            "p95": 1.1741806877652106e-09
+          },
+          "residual_with_jacobian_difference": 0.0
+        },
+        "source_glim_velodyne": {
+          "factors": 592,
+          "block_step_comparisons": 14208,
+          "failed_blocks": 0,
+          "max_absolute": {
+            "n": 14208,
+            "max": 9.947901200761753e-09,
+            "median": 1.5607883822182922e-10,
+            "p95": 1.4229830017000593e-09
+          },
+          "max_scaled": {
+            "n": 14208,
+            "max": 9.944906087622872e-09,
+            "median": 1.5417656007847463e-10,
+            "p95": 1.391759053132555e-09
+          },
+          "residual_with_jacobian_difference": 0.0
+        },
+        "source_kimera_front": {
+          "factors": 281,
+          "block_step_comparisons": 6744,
+          "failed_blocks": 0,
+          "max_absolute": {
+            "n": 6744,
+            "max": 5.743136521907388e-09,
+            "median": 1.5751879885712024e-10,
+            "p95": 1.4044420833890358e-09
+          },
+          "max_scaled": {
+            "n": 6744,
+            "max": 5.3242726386869075e-09,
+            "median": 1.558460543232466e-10,
+            "p95": 1.381514996729773e-09
+          },
+          "residual_with_jacobian_difference": 0.0
+        }
+      },
+      "endpoints": {
+        "glim_velodyne": {
+          "factors": 592,
+          "max_reconstructed_residual_difference": 0.0,
+          "max_boundary_pose_difference": 5.329070518200751e-15,
+          "start_tau_s": {
+            "n": 592,
+            "max": 0.053995400000000006,
+            "median": 0.04759945,
+            "p95": 0.048924495000000005
+          },
+          "end_tau_s": {
+            "n": 592,
+            "max": 0.053995400000000006,
+            "median": 0.04759945,
+            "p95": 0.048924495000000005
+          }
+        },
+        "kimera_front": {
+          "factors": 281,
+          "max_reconstructed_residual_difference": 0.0,
+          "max_boundary_pose_difference": 5.329070518200751e-15,
+          "start_tau_s": {
+            "n": 281,
+            "max": 0.015490400000000001,
+            "median": 0.015206200000000001,
+            "p95": 0.0154538
+          },
+          "end_tau_s": {
+            "n": 281,
+            "max": 0.0154888,
+            "median": 0.0152043,
+            "p95": 0.015452
+          }
+        }
+      },
+      "linearizations": [
+        {
+          "newest": 50,
+          "snapshot": 2706,
+          "event": 1883,
+          "rows": 1002,
+          "cols": 612,
+          "column_normalized_rank": 612,
+          "rank_cutoff": 6.055364129736682e-13,
+          "column_normalized_condition": 243.3732243444859,
+          "singular_min": 0.011183030798196934,
+          "cost": 33513.345216153844,
+          "linearized_cost_at_zero": 33513.34521615384,
+          "raw_gradient_inf": 13521.184157389724,
+          "column_normalized_gradient_inf": 0.5730252028632722,
+          "linearized_optimal_cost_reduction": 0.7369927618419533,
+          "newest_linear_diagnostic_increment": {
+            "key": "x50",
+            "rot_norm": 1.0700672247664816e-05,
+            "trans_norm": 0.00016113182227174116
+          },
+          "largest_linear_pose_translation": {
+            "key": "x44",
+            "rot_norm": 3.5273462402181242e-06,
+            "trans_norm": 0.00017656096315748476
+          }
+        },
+        {
+          "newest": 100,
+          "snapshot": 8960,
+          "event": 5408,
+          "rows": 1482,
+          "cols": 852,
+          "column_normalized_rank": 852,
+          "rank_cutoff": 8.945981644658164e-13,
+          "column_normalized_condition": 283.3494745528844,
+          "singular_min": 0.00959438544911424,
+          "cost": 52310.928721928976,
+          "linearized_cost_at_zero": 52310.92872192896,
+          "raw_gradient_inf": 273.84861430047016,
+          "column_normalized_gradient_inf": 0.033865143999598044,
+          "linearized_optimal_cost_reduction": 0.007428209823915407,
+          "newest_linear_diagnostic_increment": {
+            "key": "x100",
+            "rot_norm": 2.8722979702579557e-05,
+            "trans_norm": 5.60387180688819e-05
+          },
+          "largest_linear_pose_translation": {
+            "key": "x98",
+            "rot_norm": 1.4847047171751518e-05,
+            "trans_norm": 6.521304065531078e-05
+          }
+        },
+        {
+          "newest": 200,
+          "snapshot": 21636,
+          "event": 12496,
+          "rows": 1482,
+          "cols": 852,
+          "column_normalized_rank": 852,
+          "rank_cutoff": 9.013089755580619e-13,
+          "column_normalized_condition": 311.47873172621604,
+          "singular_min": 0.008793400811416371,
+          "cost": 33228.84334405331,
+          "linearized_cost_at_zero": 33228.843344053326,
+          "raw_gradient_inf": 2187.199576114712,
+          "column_normalized_gradient_inf": 0.09855358916261014,
+          "linearized_optimal_cost_reduction": 0.04998536659448162,
+          "newest_linear_diagnostic_increment": {
+            "key": "x200",
+            "rot_norm": 1.906767962168782e-05,
+            "trans_norm": 6.875279010264536e-05
+          },
+          "largest_linear_pose_translation": {
+            "key": "x147",
+            "rot_norm": 1.557777302961303e-05,
+            "trans_norm": 0.00010434679274434114
+          }
+        },
+        {
+          "newest": 400,
+          "snapshot": 47006,
+          "event": 26681,
+          "rows": 1482,
+          "cols": 852,
+          "column_normalized_rank": 852,
+          "rank_cutoff": 8.260930566748591e-13,
+          "column_normalized_condition": 464.24285170231013,
+          "singular_min": 0.005407484926502188,
+          "cost": 25469.483715420687,
+          "linearized_cost_at_zero": 25469.48371542069,
+          "raw_gradient_inf": 718.7248618172404,
+          "column_normalized_gradient_inf": 0.03273481763687393,
+          "linearized_optimal_cost_reduction": 0.01079797895514933,
+          "newest_linear_diagnostic_increment": {
+            "key": "x400",
+            "rot_norm": 2.3212291729417188e-05,
+            "trans_norm": 0.00018139135146880118
+          },
+          "largest_linear_pose_translation": {
+            "key": "x394",
+            "rot_norm": 1.384601417074699e-05,
+            "trans_norm": 0.00018606165905272814
+          }
+        },
+        {
+          "newest": 550,
+          "snapshot": 66050,
+          "event": 37328,
+          "rows": 1482,
+          "cols": 852,
+          "column_normalized_rank": 852,
+          "rank_cutoff": 8.926276554120316e-13,
+          "column_normalized_condition": 1658.1077729226954,
+          "singular_min": 0.0016359467139041171,
+          "cost": 24177.365537103593,
+          "linearized_cost_at_zero": 24177.36553710357,
+          "raw_gradient_inf": 17986.820541885438,
+          "column_normalized_gradient_inf": 0.40491498593381803,
+          "linearized_optimal_cost_reduction": 0.27875839289924864,
+          "newest_linear_diagnostic_increment": {
+            "key": "x550",
+            "rot_norm": 4.1308350850997396e-05,
+            "trans_norm": 0.000895707476656806
+          },
+          "largest_linear_pose_translation": {
+            "key": "x542",
+            "rot_norm": 3.7303599187540315e-05,
+            "trans_norm": 0.0009092904064654124
+          }
+        }
+      ],
+      "all_jacobian_checks_pass": true,
+      "all_endpoint_checks_pass": true
+    }
+  },
+  "input_sha256": {
+    "/home/yeranis/repos/gnssFGO/experiments/leica2_paired_receiver_trace_cpv22a_20261027/hesai_parity.json": "9e47f04fb6576a9dfc266e964ac714ade288f32ae2635b542e650a4c71f196bb",
+    "/home/yeranis/results/gnssfgo_leica2_paired_receiver_trace_cpv22a_20261027/hesai_trace/jacobians.csv": "93d8c1b7fb8bd46503a9f4b4d257cab17cf3fe71cd2d783a63ba9105c44c2370",
+    "/home/yeranis/results/gnssfgo_leica2_paired_receiver_trace_cpv22a_20261027/hesai_trace/endpoint_checks.csv": "64392759f4ef255bf69cbdb9c6cdc002b0763d073c99534b83edc9e78d10bad1",
+    "/home/yeranis/results/gnssfgo_leica2_paired_receiver_trace_cpv22a_20261027/hesai_trace/linearizations.csv": "54ae295a2574cd9ea038b7fe9adc8002b4598cc0b344b1ae2cde3d31809d04c3",
+    "/home/yeranis/results/gnssfgo_leica2_paired_receiver_trace_cpv22a_20261027/hesai_trace/linearization_50.bin": "bf6b00335d57815aeace15fe36054a70500b4c13a194468b84189eba0766fe60",
+    "/home/yeranis/results/gnssfgo_leica2_paired_receiver_trace_cpv22a_20261027/hesai_trace/linearization_50_columns.csv": "bfd089649d23a981258adce9ae2f30b437a2699fcf0016508351b66cd316784a",
+    "/home/yeranis/results/gnssfgo_leica2_paired_receiver_trace_cpv22a_20261027/hesai_trace/linearization_100.bin": "5ed9e24a20a41e028cd4cb01e3e1299a60a9d20b92f8e5c469849d39566e96b0",
+    "/home/yeranis/results/gnssfgo_leica2_paired_receiver_trace_cpv22a_20261027/hesai_trace/linearization_100_columns.csv": "439767ca58b3eeafbe826f8cadd26068f7e0b6fbd4dc5f3a73d0c42fda386bf4",
+    "/home/yeranis/results/gnssfgo_leica2_paired_receiver_trace_cpv22a_20261027/hesai_trace/linearization_200.bin": "27c918dc97d5ccc0efac69a982a5735f3180f87796ba4563d5f9dfd869960708",
+    "/home/yeranis/results/gnssfgo_leica2_paired_receiver_trace_cpv22a_20261027/hesai_trace/linearization_200_columns.csv": "fd6d80655950725d276640284f86f29659031c20905e81b4923e34e27229b7fc",
+    "/home/yeranis/results/gnssfgo_leica2_paired_receiver_trace_cpv22a_20261027/hesai_trace/linearization_400.bin": "212e1507bd571defbf9efec051fdc3fc2ed42ee4718d7f65c898231fb3ae1cc4",
+    "/home/yeranis/results/gnssfgo_leica2_paired_receiver_trace_cpv22a_20261027/hesai_trace/linearization_400_columns.csv": "8707b4a860f04cf508d91df18ddaf96980401b081bb80fe279a8dcb4a45f4463",
+    "/home/yeranis/results/gnssfgo_leica2_paired_receiver_trace_cpv22a_20261027/hesai_trace/linearization_550.bin": "9f8255e1cad637f0ddd05524b8bf99d9a3316724ed2fea79e7363db5e690fff0",
+    "/home/yeranis/results/gnssfgo_leica2_paired_receiver_trace_cpv22a_20261027/hesai_trace/linearization_550_columns.csv": "3d7631c2f29c1fd212f6c009cfb04adc55df3bf458514b6020dd3350219d6333",
+    "/home/yeranis/repos/gnssFGO/experiments/leica2_paired_receiver_trace_cpv22a_20261027/velodyne_parity.json": "6a2e45d4a44b07712130904572e7145f94c0c4d39fffb7e98fd4f488baba8b6d",
+    "/home/yeranis/results/gnssfgo_leica2_paired_receiver_trace_cpv22a_20261027/velodyne_trace/jacobians.csv": "5639ad8efbaf60cd161dc05e07a404263277e53bdd67c67833ccafd53f599f54",
+    "/home/yeranis/results/gnssfgo_leica2_paired_receiver_trace_cpv22a_20261027/velodyne_trace/endpoint_checks.csv": "2f704313447d9b173efde6af9f4cc856b36eefdbd86223b225d1e9838a64b361",
+    "/home/yeranis/results/gnssfgo_leica2_paired_receiver_trace_cpv22a_20261027/velodyne_trace/linearizations.csv": "fd1d325815023a2bbd330f2e7e5215e97bd59d6e1c1e4dc84196527b3b1d853a",
+    "/home/yeranis/results/gnssfgo_leica2_paired_receiver_trace_cpv22a_20261027/velodyne_trace/linearization_50.bin": "0691f880eb6c0af3a3c7d6761bb82a359a3a666db5190a09e6f15a28dec74d5a",
+    "/home/yeranis/results/gnssfgo_leica2_paired_receiver_trace_cpv22a_20261027/velodyne_trace/linearization_50_columns.csv": "bfd089649d23a981258adce9ae2f30b437a2699fcf0016508351b66cd316784a",
+    "/home/yeranis/results/gnssfgo_leica2_paired_receiver_trace_cpv22a_20261027/velodyne_trace/linearization_100.bin": "7be87383881b767d69cb53011eb1aaabd8e0ab186a83c996bd5fe14e8c4b33ab",
+    "/home/yeranis/results/gnssfgo_leica2_paired_receiver_trace_cpv22a_20261027/velodyne_trace/linearization_100_columns.csv": "439767ca58b3eeafbe826f8cadd26068f7e0b6fbd4dc5f3a73d0c42fda386bf4",
+    "/home/yeranis/results/gnssfgo_leica2_paired_receiver_trace_cpv22a_20261027/velodyne_trace/linearization_200.bin": "d72dbee0a3932ced9fa6bb302c2ebcd3d3cba4d3581ecb6362f5daf2c4d70c8a",
+    "/home/yeranis/results/gnssfgo_leica2_paired_receiver_trace_cpv22a_20261027/velodyne_trace/linearization_200_columns.csv": "fd6d80655950725d276640284f86f29659031c20905e81b4923e34e27229b7fc",
+    "/home/yeranis/results/gnssfgo_leica2_paired_receiver_trace_cpv22a_20261027/velodyne_trace/linearization_400.bin": "42383e047eb2ef79b97f4b50f817301cfd2dc447f4d8d8a468aefbdf8b22bfbd",
+    "/home/yeranis/results/gnssfgo_leica2_paired_receiver_trace_cpv22a_20261027/velodyne_trace/linearization_400_columns.csv": "8707b4a860f04cf508d91df18ddaf96980401b081bb80fe279a8dcb4a45f4463",
+    "/home/yeranis/results/gnssfgo_leica2_paired_receiver_trace_cpv22a_20261027/velodyne_trace/linearization_550.bin": "b67919de1cf136566ef69a2a6bf969bccfd8a7ac914f7d27a954c18538cd2073",
+    "/home/yeranis/results/gnssfgo_leica2_paired_receiver_trace_cpv22a_20261027/velodyne_trace/linearization_550_columns.csv": "3d7631c2f29c1fd212f6c009cfb04adc55df3bf458514b6020dd3350219d6333",
+    "/home/yeranis/repos/gnssFGO/experiments/leica2_paired_receiver_trace_cpv22a_20261027/numerics.py": "eab76d78878cc4bbe419d271c9a28a5802f9c868cfc9dab217522102ad0b291d"
+  },
+  "interpretation": "Frozen current-chart linearized diagnostics only. Least-squares increments are not applied; no extra nonlinear solve or accepted candidate. Rank/conditioning is coordinate-normalized, not a universal certainty metric."
+}

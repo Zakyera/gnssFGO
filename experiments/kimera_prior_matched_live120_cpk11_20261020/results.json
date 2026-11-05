@@ -1,0 +1,1239 @@
+{
+  "passed": true,
+  "cases": {
+    "off": {
+      "checks": {
+        "receiver": {
+          "passed": true,
+          "source_coverage": {
+            "passed": true,
+            "requested_s": 120.0,
+            "imu_samples": 11986,
+            "imu_span_s": 119.85002708435059,
+            "native_glim": {
+              "rows": 1191,
+              "start_s": 1727775008.675043,
+              "end_s": 1727775127.674791,
+              "span_s": 118.99974799156189,
+              "maximum_pose_gap_s": 0.10099005699157715,
+              "post_startup_max_gap_s": 0.10099005699157715,
+              "start_after_first_imu_s": 0.6715681552886963,
+              "tail_behind_last_imu_s": 0.1787109375,
+              "path_length_m": 72.4073671459428
+            },
+            "native_kimera": {
+              "rows": 584,
+              "start_s": 1727775008.1553955,
+              "end_s": 1727775127.7547235,
+              "span_s": 119.59932804107666,
+              "maximum_pose_gap_s": 3.199979066848755,
+              "post_startup_max_gap_s": 0.2000434398651123,
+              "start_after_first_imu_s": 0.15192055702209473,
+              "tail_behind_last_imu_s": 0.09877848625183105,
+              "path_length_m": 69.95281060234697
+            }
+          },
+          "transport": {
+            "imu": 11986,
+            "duplicate_imu": 0,
+            "imu_clock_lag_events": 11684,
+            "max_imu_clock_lag_ns": 1038513,
+            "belief_clock_lag_events": 0,
+            "max_belief_clock_lag_ns": 0,
+            "beliefs": 70692,
+            "duplicates": 0,
+            "published_poses": 1193,
+            "max_queue": 49,
+            "sources": {
+              "glim_hesai": 56442,
+              "kimera_front": 14250
+            }
+          },
+          "summary": {
+            "complete": true,
+            "model": "source_wnoa_fixed_lag",
+            "lag_seconds": 7,
+            "stationarity": "not_checked_incremental_policy",
+            "events": 82679,
+            "received": 70692,
+            "inserted": 1770,
+            "replaced": 68897,
+            "excluded": 25,
+            "unsupported_end": 0,
+            "absorbed": 1669,
+            "active": 101,
+            "pending_at_end": 0,
+            "publications": 1193,
+            "finalized": 1193,
+            "retained_supports": 71,
+            "peak_slots": 175
+          },
+          "actions": {
+            "before_initialization": 25,
+            "insert": 1770,
+            "replace": 68897
+          },
+          "mean_log_roundtrip_error": 1.213422266312103e-13,
+          "covariance_payload_error": 0.0,
+          "online_path_m": 76.46628150799293,
+          "finalized_path_m": 72.01904343716542,
+          "fused_span_s": 119.2,
+          "support_cycle_seconds": {
+            "n": 1193,
+            "mean": 0.06875029121207041,
+            "median": 0.07046249600000004,
+            "p95": 0.10753208099999995,
+            "max": 0.19222978900000004
+          },
+          "receipt_to_processing_seconds": {
+            "n": 82679,
+            "mean": 0.011596402580183603,
+            "median": 0.009671634,
+            "p95": 0.031657651,
+            "max": 0.077171267
+          },
+          "monitor_output_age_s": {
+            "n": 611,
+            "mean": 0.04937696650081833,
+            "median": 0.050017,
+            "p95": 0.090018,
+            "max": 0.10041696
+          },
+          "published_during_source": 1193,
+          "max_monitor_queue": 13,
+          "protected_unchanged": 1825,
+          "claim": "live 0.1x bounded pilot; fixed-lag incremental without stationarity certificate"
+        },
+        "repeat": {
+          "passed": true,
+          "seconds": 60.88832092800294,
+          "archive_files_byte_identical": 73216,
+          "numeric_products_byte_identical": [
+            "online_states.csv",
+            "finalized_states.csv",
+            "online_trajectory.tum",
+            "finalized_trajectory.tum",
+            "summary.json"
+          ],
+          "receiver_executable_sha256": "53c96a2b7a762800cf2291166dc78520269098684411de641b52bee6a54dc5c9"
+        },
+        "source": {
+          "passed": true,
+          "mode": "off",
+          "native_updates": 584,
+          "source_injections": {
+            "g2k_injected": 0,
+            "k2g_injected": 0
+          },
+          "planned_retirements": 0,
+          "prior_refresh_updates": 0,
+          "max_cache_error": 0,
+          "observed_total_cost_increases": 20,
+          "imu_factor_cost": {
+            "median": 67.739319094473,
+            "max": 377846.62077033485,
+            "last": 6878.5986388755055
+          },
+          "stationarity_certified": false,
+          "obsolete_FL4q_executed": false,
+          "candidate_sha256": "be637ad745f73bf12596d3bf06754f56ed7bcadfdb8b4792b94c4fcfee62aad9",
+          "note": "CP-K9 equation/lifecycle gate; cost increases are observational."
+        },
+        "local_provenance": {
+          "passed": true,
+          "mode": "off",
+          "sources": {
+            "glim": {
+              "ids": 1189,
+              "versions": 56442,
+              "first": 1189,
+              "revised": 55253,
+              "provider_queries": 1189,
+              "local_joint_queries": 0
+            },
+            "kimera": {
+              "ids": 582,
+              "versions": 14250,
+              "first": 0,
+              "revised": 0,
+              "provider_queries": 0,
+              "local_joint_queries": 14250
+            }
+          },
+          "all_payloads_exact": true,
+          "revision_provenance": "per-version native_local row plus pinned/tested provider route; no separate repeated matrix dump",
+          "limits": "native explicit information at corrected charts; not independent/calibrated likelihood"
+        }
+      },
+      "capture": {
+        "seconds": 1246.255550146103,
+        "phase": "live120",
+        "mode": "off"
+      },
+      "revision_first_endpoint_age_s": {
+        "n": 55253,
+        "mean": 2.7333756129363835,
+        "median": 2.723808598,
+        "p95": 4.9113542290000005,
+        "max": 5.185580406000001,
+        "min": 0.40237360600000005
+      },
+      "revision_producing_update_lag_s": {
+        "n": 55253,
+        "mean": 0.12636045260119813,
+        "median": 0.12394856100000001,
+        "p95": 0.15591247600000002,
+        "max": 0.190190658,
+        "min": 0.102233689
+      },
+      "revision_within_source_history_s": {
+        "n": 55253,
+        "mean": 2.607015160335185,
+        "median": 2.5999989,
+        "p95": 4.7992111,
+        "max": 5.0,
+        "min": 0.2977018
+      },
+      "worst_revision": {
+        "edge": [
+          868,
+          870
+        ],
+        "update": 918,
+        "revision": 48,
+        "age_s": 5.185580406000001
+      },
+      "lag_margin_s": 1.8144195939999994,
+      "post5s_timing_seconds": {
+        "1": {
+          "n": 1141,
+          "mean": 0.12778122603856265,
+          "median": 0.12053759200000001,
+          "p95": 0.33981804400000004,
+          "max": 0.7348120730000001,
+          "min": 0.004678713
+        },
+        "4": {
+          "n": 1141,
+          "mean": 0.03821528728834356,
+          "median": 0.018574262,
+          "p95": 0.15018076800000002,
+          "max": 0.29164842300000005,
+          "min": 0.00758872
+        },
+        "3": {
+          "n": 1141,
+          "mean": 0.017916544707274322,
+          "median": 0.015386861000000002,
+          "p95": 0.040499097000000005,
+          "max": 0.094325503,
+          "min": 0.007952338
+        },
+        "source_finish_callback": {
+          "n": 1141,
+          "mean": 0.058307406923751096,
+          "median": 0.037288800000000004,
+          "p95": 0.19010200000000002,
+          "max": 0.380043,
+          "min": 0.0165209
+        }
+      },
+      "unpaired_profile_shutdown_tail": 1
+    },
+    "on": {
+      "checks": {
+        "receiver": {
+          "passed": true,
+          "source_coverage": {
+            "passed": true,
+            "requested_s": 120.0,
+            "imu_samples": 11986,
+            "imu_span_s": 119.85002708435059,
+            "native_glim": {
+              "rows": 1191,
+              "start_s": 1727775008.675043,
+              "end_s": 1727775127.674791,
+              "span_s": 118.99974799156189,
+              "maximum_pose_gap_s": 0.10099005699157715,
+              "post_startup_max_gap_s": 0.10099005699157715,
+              "start_after_first_imu_s": 0.6715681552886963,
+              "tail_behind_last_imu_s": 0.1787109375,
+              "path_length_m": 72.42137284993527
+            },
+            "native_kimera": {
+              "rows": 584,
+              "start_s": 1727775008.1553955,
+              "end_s": 1727775127.7547235,
+              "span_s": 119.59932804107666,
+              "maximum_pose_gap_s": 3.199979066848755,
+              "post_startup_max_gap_s": 0.2000434398651123,
+              "start_after_first_imu_s": 0.15192055702209473,
+              "tail_behind_last_imu_s": 0.09877848625183105,
+              "path_length_m": 71.7742078041355
+            }
+          },
+          "transport": {
+            "imu": 11986,
+            "duplicate_imu": 0,
+            "imu_clock_lag_events": 11665,
+            "max_imu_clock_lag_ns": 1228516,
+            "belief_clock_lag_events": 0,
+            "max_belief_clock_lag_ns": 0,
+            "beliefs": 70731,
+            "duplicates": 0,
+            "published_poses": 1193,
+            "max_queue": 48,
+            "sources": {
+              "glim_hesai": 56481,
+              "kimera_front": 14250
+            }
+          },
+          "summary": {
+            "complete": true,
+            "model": "source_wnoa_fixed_lag",
+            "lag_seconds": 7,
+            "stationarity": "not_checked_incremental_policy",
+            "events": 82718,
+            "received": 70731,
+            "inserted": 1770,
+            "replaced": 68936,
+            "excluded": 25,
+            "unsupported_end": 0,
+            "absorbed": 1669,
+            "active": 101,
+            "pending_at_end": 0,
+            "publications": 1193,
+            "finalized": 1193,
+            "retained_supports": 71,
+            "peak_slots": 175
+          },
+          "actions": {
+            "before_initialization": 25,
+            "insert": 1770,
+            "replace": 68936
+          },
+          "mean_log_roundtrip_error": 2.111648394120466e-14,
+          "covariance_payload_error": 0.0,
+          "online_path_m": 78.4926228191454,
+          "finalized_path_m": 72.19037660420419,
+          "fused_span_s": 119.2,
+          "support_cycle_seconds": {
+            "n": 1193,
+            "mean": 0.07094548364291701,
+            "median": 0.07016025199999999,
+            "p95": 0.11625251699999997,
+            "max": 0.16815779099999997
+          },
+          "receipt_to_processing_seconds": {
+            "n": 82718,
+            "mean": 0.012114149130950942,
+            "median": 0.010199931,
+            "p95": 0.032512758,
+            "max": 0.095038014
+          },
+          "monitor_output_age_s": {
+            "n": 612,
+            "mean": 0.048337970906862746,
+            "median": 0.050014,
+            "p95": 0.091241645,
+            "max": 0.100026
+          },
+          "published_during_source": 1193,
+          "max_monitor_queue": 14,
+          "protected_unchanged": 1825,
+          "claim": "live 0.1x bounded pilot; fixed-lag incremental without stationarity certificate"
+        },
+        "repeat": {
+          "passed": true,
+          "seconds": 59.12995652000245,
+          "archive_files_byte_identical": 73216,
+          "numeric_products_byte_identical": [
+            "online_states.csv",
+            "finalized_states.csv",
+            "online_trajectory.tum",
+            "finalized_trajectory.tum",
+            "summary.json"
+          ],
+          "receiver_executable_sha256": "53c96a2b7a762800cf2291166dc78520269098684411de641b52bee6a54dc5c9"
+        },
+        "source": {
+          "passed": true,
+          "mode": "on",
+          "native_updates": 584,
+          "source_injections": {
+            "g2k_injected": 580,
+            "k2g_injected": 581
+          },
+          "planned_retirements": 556,
+          "prior_refresh_updates": 556,
+          "max_cache_error": 1.6457993899444706e-09,
+          "observed_total_cost_increases": 15,
+          "imu_factor_cost": {
+            "median": 730.7917665769262,
+            "max": 683082.9400463806,
+            "last": 172027.73400529963
+          },
+          "stationarity_certified": false,
+          "obsolete_FL4q_executed": false,
+          "candidate_sha256": "be637ad745f73bf12596d3bf06754f56ed7bcadfdb8b4792b94c4fcfee62aad9",
+          "note": "CP-K9 equation/lifecycle gate; cost increases are observational.",
+          "validation_correction": {
+            "reason": "CP-K9 diagnostics are in actual Kimera node stdout, not launcher log",
+            "original_validator_sha256": "d0d0c550068df23345f0360e466677e7f4c31b5060be701c0ed825b7f2856544",
+            "corrected_checker_sha256": "50f70a9864c7192e2a26cb5187f96331d85d240a8551e39ee6276eea8467423f",
+            "actual_node_log": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_prior_live120_cpk11_20261020/prepared/live120_on_source/ros_logs/de271098-cc5f-11f1-91eb-0231b42b05ae/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log",
+            "actual_node_log_sha256": "5a8ffde60d51e9d454a92836e9ec265f664e54a576e36760c0a85ef662ca45a9",
+            "every_update_retirement_matches": true,
+            "original_failed_check_preserved": true,
+            "estimator_or_threshold_changes": false
+          }
+        },
+        "local_provenance": {
+          "passed": true,
+          "mode": "on",
+          "sources": {
+            "glim": {
+              "ids": 1189,
+              "versions": 56481,
+              "first": 1189,
+              "revised": 55292,
+              "provider_queries": 1189,
+              "local_joint_queries": 0
+            },
+            "kimera": {
+              "ids": 582,
+              "versions": 14250,
+              "first": 0,
+              "revised": 0,
+              "provider_queries": 0,
+              "local_joint_queries": 14250
+            }
+          },
+          "all_payloads_exact": true,
+          "revision_provenance": "per-version native_local row plus pinned/tested provider route; no separate repeated matrix dump",
+          "limits": "native explicit information at corrected charts; not independent/calibrated likelihood"
+        }
+      },
+      "capture": {
+        "seconds": 1249.9130148887634,
+        "phase": "live120",
+        "mode": "on"
+      },
+      "revision_first_endpoint_age_s": {
+        "n": 55292,
+        "mean": 2.7386472477117123,
+        "median": 2.7294052210000004,
+        "p95": 4.9121674010000005,
+        "max": 5.188818497000001,
+        "min": 0.402718255
+      },
+      "revision_producing_update_lag_s": {
+        "n": 55292,
+        "mean": 0.130342072239673,
+        "median": 0.12916670600000002,
+        "p95": 0.15438537500000002,
+        "max": 0.19096743000000002,
+        "min": 0.102018601
+      },
+      "revision_within_source_history_s": {
+        "n": 55292,
+        "mean": 2.608305175472039,
+        "median": 2.6000061500000005,
+        "p95": 4.7992508,
+        "max": 5.0,
+        "min": 0.2977018
+      },
+      "worst_revision": {
+        "edge": [
+          461,
+          463
+        ],
+        "update": 511,
+        "revision": 48,
+        "age_s": 5.188818497000001
+      },
+      "lag_margin_s": 1.8111815029999994,
+      "post5s_timing_seconds": {
+        "1": {
+          "n": 1141,
+          "mean": 0.15631131448290975,
+          "median": 0.15234640800000002,
+          "p95": 0.327353651,
+          "max": 0.561117305,
+          "min": 0.007201399000000001
+        },
+        "4": {
+          "n": 1141,
+          "mean": 0.040241069252410167,
+          "median": 0.018430947,
+          "p95": 0.16241133800000002,
+          "max": 0.29918335100000004,
+          "min": 0.006906266
+        },
+        "3": {
+          "n": 1141,
+          "mean": 0.01789519045398773,
+          "median": 0.014728892,
+          "p95": 0.042718040000000006,
+          "max": 0.09837644100000001,
+          "min": 0.0068810320000000005
+        },
+        "source_finish_callback": {
+          "n": 1141,
+          "mean": 0.06036327142857143,
+          "median": 0.0362888,
+          "p95": 0.204406,
+          "max": 0.398111,
+          "min": 0.015616300000000001
+        }
+      },
+      "unpaired_profile_shutdown_tail": 1
+    }
+  },
+  "evaluation": {
+    "reference": {
+      "path": "/workspace/cbs_gtsam4.3/src/datasets/GrandTour/2024-10-01-11-29-55_cpt7_ie_tc.bag",
+      "sha256": "28815a4a300624766e3ffe0e1cc0f150ac60e09e395381ca25c3e6d7e04e18e3",
+      "topic": "/boxi/inertial_explorer/tc/odometry",
+      "frame_ids": [
+        "enu_origin"
+      ],
+      "child_frame_ids": [
+        "cpt7_imu"
+      ],
+      "caveat": "IE-TC GNSS/INS reference shares CPT7 IMU; not independent prism GT"
+    },
+    "common_mask": {
+      "rows": 1160,
+      "start_s": 1727775011.5999973,
+      "end_s": 1727775127.4998868,
+      "timestamps_sha256": "23c6a34297e3bde3928306cf38b91b00a92b1b6eba863ea000ed958a09b9417e",
+      "interpolation_gap_estimate_s": 0.5,
+      "interpolation_gap_reference_s": 0.05
+    },
+    "convention": "Per-path rigid SE(3) no-scale alignment for ATE at prism lever arm; 1s RPE in prism frame, no global alignment",
+    "results": {
+      "off_native_glim": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_prior_live120_cpk11_20261020/prepared/live120_off_source/odom_imu.txt",
+        "sha256": "e92e2af3c8ffcba9e9e4e388b9fd3817018819e97079e8a6ec79bf961c190165",
+        "full_saved_rows": 1191,
+        "full_saved_span_s": 118.99974799156189,
+        "full_saved_path_length_CPT7_m": 72.4073671459428,
+        "full_saved": {
+          "rows": 1191,
+          "start_s": 1727775008.675043,
+          "end_s": 1727775127.674791,
+          "span_s": 118.99974799156189,
+          "ATE_RMSE_m": 0.028689890351478228,
+          "translation_RPE_1s_RMSE_m": 0.0257519871669278,
+          "rotation_RPE_1s_RMSE_deg": 0.4083106742473014,
+          "path_length_prism_m": 72.52425123908763,
+          "reference_path_length_prism_m": 71.77543738605036,
+          "rpe_pairs": 1179,
+          "error_m": {
+            "n": 1191,
+            "mean": 0.02399614824047971,
+            "median": 0.02111118772986442,
+            "p95": 0.04928750037928821,
+            "max": 0.12136307547120112
+          }
+        },
+        "common": {
+          "rows": 1160,
+          "start_s": 1727775011.5999973,
+          "end_s": 1727775127.4998868,
+          "ATE_RMSE_m": 0.028420012191811977,
+          "translation_RPE_1s_RMSE_m": 0.025663854184677547,
+          "rotation_RPE_1s_RMSE_deg": 0.4107555355452574,
+          "path_length_prism_m": 72.17796247709849,
+          "reference_path_length_prism_m": 71.58950310779888,
+          "error_m": {
+            "n": 1160,
+            "mean": 0.023831802777255967,
+            "median": 0.02113251690192394,
+            "p95": 0.04862963629495196,
+            "max": 0.11776061355502179
+          },
+          "rpe_pairs": 1150
+        }
+      },
+      "off_native_kimera": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_prior_live120_cpk11_20261020/prepared/live120_off_source/kimera_odometry.csv",
+        "sha256": "ef7f5ef2f516f80aa9a48068aea710b02b6b267f9b74ba6ace25f3b2350a7c80",
+        "full_saved_rows": 584,
+        "full_saved_span_s": 119.59932804107666,
+        "full_saved_path_length_CPT7_m": 69.95281060234697,
+        "full_saved": {
+          "rows": 584,
+          "start_s": 1727775008.1553955,
+          "end_s": 1727775127.7547235,
+          "span_s": 119.59932804107666,
+          "ATE_RMSE_m": 0.46301050340656147,
+          "translation_RPE_1s_RMSE_m": 0.04591233302938939,
+          "rotation_RPE_1s_RMSE_deg": 0.5534587099497955,
+          "path_length_prism_m": 70.01152599920052,
+          "reference_path_length_prism_m": 71.68422970908536,
+          "rpe_pairs": 1151,
+          "error_m": {
+            "n": 584,
+            "mean": 0.36905067272002845,
+            "median": 0.2604801938992288,
+            "p95": 1.2346330026416321,
+            "max": 1.4087667576721188
+          }
+        },
+        "common": {
+          "rows": 1160,
+          "start_s": 1727775011.5999973,
+          "end_s": 1727775127.4998868,
+          "ATE_RMSE_m": 0.4580704643961719,
+          "translation_RPE_1s_RMSE_m": 0.04592263895402193,
+          "rotation_RPE_1s_RMSE_deg": 0.5535665691757065,
+          "path_length_prism_m": 69.62802346390038,
+          "reference_path_length_prism_m": 71.58950310779888,
+          "error_m": {
+            "n": 1160,
+            "mean": 0.3653528382126631,
+            "median": 0.2590897178772162,
+            "p95": 1.2334592268645033,
+            "max": 1.3985969976617638
+          },
+          "rpe_pairs": 1150
+        }
+      },
+      "off_fused_online": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_prior_live120_cpk11_20261020/prepared/live120_off_receiver/receiver/online_trajectory.tum",
+        "sha256": "9c7cff89c6a8724038fd45adfe8f7155a2c41ade801d4c086ebb9b26c40a4519",
+        "full_saved_rows": 1193,
+        "full_saved_span_s": 119.19999980926514,
+        "full_saved_path_length_CPT7_m": 76.46628150799293,
+        "full_saved": {
+          "rows": 1193,
+          "start_s": 1727775008.583475,
+          "end_s": 1727775127.783475,
+          "span_s": 119.19999980926514,
+          "ATE_RMSE_m": 0.04775392917519229,
+          "translation_RPE_1s_RMSE_m": 0.039113919507416245,
+          "rotation_RPE_1s_RMSE_deg": 1.979094591224183,
+          "path_length_prism_m": 77.63805028352591,
+          "reference_path_length_prism_m": 71.8697437748205,
+          "rpe_pairs": 1182,
+          "error_m": {
+            "n": 1193,
+            "mean": 0.04078880594123509,
+            "median": 0.034555556388444604,
+            "p95": 0.09369346552841888,
+            "max": 0.12548566306671904
+          }
+        },
+        "common": {
+          "rows": 1160,
+          "start_s": 1727775011.5999973,
+          "end_s": 1727775127.4998868,
+          "ATE_RMSE_m": 0.04453689021076792,
+          "translation_RPE_1s_RMSE_m": 0.0396147815703804,
+          "rotation_RPE_1s_RMSE_deg": 2.0019998613503507,
+          "path_length_prism_m": 75.1968358550595,
+          "reference_path_length_prism_m": 71.58950310779888,
+          "error_m": {
+            "n": 1160,
+            "mean": 0.03739972987986655,
+            "median": 0.031038847055619816,
+            "p95": 0.09617057379636998,
+            "max": 0.12796407000750382
+          },
+          "rpe_pairs": 1150
+        }
+      },
+      "off_fused_finalized": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_prior_live120_cpk11_20261020/prepared/live120_off_receiver/receiver/finalized_trajectory.tum",
+        "sha256": "e30d004ba464d8ca4ccb3459c1b035c85d6e85db2078812b074d94b3833e7347",
+        "full_saved_rows": 1193,
+        "full_saved_span_s": 119.19999980926514,
+        "full_saved_path_length_CPT7_m": 72.01904343716544,
+        "full_saved": {
+          "rows": 1193,
+          "start_s": 1727775008.583475,
+          "end_s": 1727775127.783475,
+          "span_s": 119.19999980926514,
+          "ATE_RMSE_m": 0.04137067897022701,
+          "translation_RPE_1s_RMSE_m": 0.015931104287177346,
+          "rotation_RPE_1s_RMSE_deg": 0.3576598338312036,
+          "path_length_prism_m": 72.14702612794677,
+          "reference_path_length_prism_m": 71.8697437748205,
+          "rpe_pairs": 1182,
+          "error_m": {
+            "n": 1193,
+            "mean": 0.03329688023306565,
+            "median": 0.02735515435794723,
+            "p95": 0.09399389610613752,
+            "max": 0.11309143518480774
+          }
+        },
+        "common": {
+          "rows": 1160,
+          "start_s": 1727775011.5999973,
+          "end_s": 1727775127.4998868,
+          "ATE_RMSE_m": 0.03884149086004042,
+          "translation_RPE_1s_RMSE_m": 0.016117057660099618,
+          "rotation_RPE_1s_RMSE_deg": 0.36150230991231747,
+          "path_length_prism_m": 71.72080126507736,
+          "reference_path_length_prism_m": 71.58950310779888,
+          "error_m": {
+            "n": 1160,
+            "mean": 0.030959912989349334,
+            "median": 0.025362392423151647,
+            "p95": 0.09266167091169195,
+            "max": 0.11814002627296184
+          },
+          "rpe_pairs": 1150
+        }
+      },
+      "on_native_glim": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_prior_live120_cpk11_20261020/prepared/live120_on_source/odom_imu.txt",
+        "sha256": "daffddcb3473783ce77b5a6ef2712e24e626a18a73893db269dd8586dc6f4d91",
+        "full_saved_rows": 1191,
+        "full_saved_span_s": 118.99974799156189,
+        "full_saved_path_length_CPT7_m": 72.42137284993527,
+        "full_saved": {
+          "rows": 1191,
+          "start_s": 1727775008.675043,
+          "end_s": 1727775127.674791,
+          "span_s": 118.99974799156189,
+          "ATE_RMSE_m": 0.03455324077211354,
+          "translation_RPE_1s_RMSE_m": 0.02197381727476914,
+          "rotation_RPE_1s_RMSE_deg": 0.35497967516115075,
+          "path_length_prism_m": 72.54161180321714,
+          "reference_path_length_prism_m": 71.77543738605036,
+          "rpe_pairs": 1179,
+          "error_m": {
+            "n": 1191,
+            "mean": 0.030275926224176988,
+            "median": 0.02593422735214069,
+            "p95": 0.06372560940518351,
+            "max": 0.1141778354645556
+          }
+        },
+        "common": {
+          "rows": 1160,
+          "start_s": 1727775011.5999973,
+          "end_s": 1727775127.4998868,
+          "ATE_RMSE_m": 0.034702750389567626,
+          "translation_RPE_1s_RMSE_m": 0.02215790279065047,
+          "rotation_RPE_1s_RMSE_deg": 0.35888702854630083,
+          "path_length_prism_m": 72.04673370854535,
+          "reference_path_length_prism_m": 71.58950310779888,
+          "error_m": {
+            "n": 1160,
+            "mean": 0.030363629137989817,
+            "median": 0.026028347671026082,
+            "p95": 0.06455449367999981,
+            "max": 0.11322547012816148
+          },
+          "rpe_pairs": 1150
+        }
+      },
+      "on_native_kimera": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_prior_live120_cpk11_20261020/prepared/live120_on_source/kimera_odometry.csv",
+        "sha256": "c4b697c4bfa230ab79a76c062d6857d1b5ee3386db53bab288293607b34e0b4e",
+        "full_saved_rows": 584,
+        "full_saved_span_s": 119.59932804107666,
+        "full_saved_path_length_CPT7_m": 71.7742078041355,
+        "full_saved": {
+          "rows": 584,
+          "start_s": 1727775008.1553955,
+          "end_s": 1727775127.7547235,
+          "span_s": 119.59932804107666,
+          "ATE_RMSE_m": 0.15611370476741612,
+          "translation_RPE_1s_RMSE_m": 0.024071306595114954,
+          "rotation_RPE_1s_RMSE_deg": 0.5632897108958418,
+          "path_length_prism_m": 71.79582783288133,
+          "reference_path_length_prism_m": 71.68422970908536,
+          "rpe_pairs": 1151,
+          "error_m": {
+            "n": 584,
+            "mean": 0.14371370608855027,
+            "median": 0.13880090087143532,
+            "p95": 0.2508479871438627,
+            "max": 0.3521615969655175
+          }
+        },
+        "common": {
+          "rows": 1160,
+          "start_s": 1727775011.5999973,
+          "end_s": 1727775127.4998868,
+          "ATE_RMSE_m": 0.15496254316217647,
+          "translation_RPE_1s_RMSE_m": 0.024073479027487306,
+          "rotation_RPE_1s_RMSE_deg": 0.5633380780011953,
+          "path_length_prism_m": 71.4203345938588,
+          "reference_path_length_prism_m": 71.58950310779888,
+          "error_m": {
+            "n": 1160,
+            "mean": 0.14202590665136697,
+            "median": 0.1369816705758013,
+            "p95": 0.2538073905565976,
+            "max": 0.3584721014141894
+          },
+          "rpe_pairs": 1150
+        }
+      },
+      "on_fused_online": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_prior_live120_cpk11_20261020/prepared/live120_on_receiver/receiver/online_trajectory.tum",
+        "sha256": "4a7740ac8ea14f0026a24e0955f08230379b428a5a6bd8f549ffea18ee297002",
+        "full_saved_rows": 1193,
+        "full_saved_span_s": 119.19999980926514,
+        "full_saved_path_length_CPT7_m": 78.4926228191454,
+        "full_saved": {
+          "rows": 1193,
+          "start_s": 1727775008.583475,
+          "end_s": 1727775127.783475,
+          "span_s": 119.19999980926514,
+          "ATE_RMSE_m": 0.07858524170969698,
+          "translation_RPE_1s_RMSE_m": 0.03871318351841224,
+          "rotation_RPE_1s_RMSE_deg": 2.051555332344495,
+          "path_length_prism_m": 79.96754287431008,
+          "reference_path_length_prism_m": 71.8697437748205,
+          "rpe_pairs": 1182,
+          "error_m": {
+            "n": 1193,
+            "mean": 0.071753599286111,
+            "median": 0.06844968481720079,
+            "p95": 0.13498638244067726,
+            "max": 0.20185457199842272
+          }
+        },
+        "common": {
+          "rows": 1160,
+          "start_s": 1727775011.5999973,
+          "end_s": 1727775127.4998868,
+          "ATE_RMSE_m": 0.07738640817143992,
+          "translation_RPE_1s_RMSE_m": 0.03922072207776117,
+          "rotation_RPE_1s_RMSE_deg": 2.078140120472616,
+          "path_length_prism_m": 77.09184563604168,
+          "reference_path_length_prism_m": 71.58950310779888,
+          "error_m": {
+            "n": 1160,
+            "mean": 0.07013725204286281,
+            "median": 0.06669495232495934,
+            "p95": 0.1361402455551462,
+            "max": 0.20461916928061644
+          },
+          "rpe_pairs": 1150
+        }
+      },
+      "on_fused_finalized": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_prior_live120_cpk11_20261020/prepared/live120_on_receiver/receiver/finalized_trajectory.tum",
+        "sha256": "1c7e52cb1dd1a79187f6dea349d7433d7857f35efa2f7b8a9cae09e10a2a1bb8",
+        "full_saved_rows": 1193,
+        "full_saved_span_s": 119.19999980926514,
+        "full_saved_path_length_CPT7_m": 72.19037660420419,
+        "full_saved": {
+          "rows": 1193,
+          "start_s": 1727775008.583475,
+          "end_s": 1727775127.783475,
+          "span_s": 119.19999980926514,
+          "ATE_RMSE_m": 0.07305530234721716,
+          "translation_RPE_1s_RMSE_m": 0.01525349324322764,
+          "rotation_RPE_1s_RMSE_deg": 0.3344590604549056,
+          "path_length_prism_m": 72.32913557903129,
+          "reference_path_length_prism_m": 71.8697437748205,
+          "rpe_pairs": 1182,
+          "error_m": {
+            "n": 1193,
+            "mean": 0.06671380794880437,
+            "median": 0.06815634003523056,
+            "p95": 0.11623725349028864,
+            "max": 0.19850181388030172
+          }
+        },
+        "common": {
+          "rows": 1160,
+          "start_s": 1727775011.5999973,
+          "end_s": 1727775127.4998868,
+          "ATE_RMSE_m": 0.07238427323117778,
+          "translation_RPE_1s_RMSE_m": 0.015410763682454877,
+          "rotation_RPE_1s_RMSE_deg": 0.3386169733410982,
+          "path_length_prism_m": 71.85243403924592,
+          "reference_path_length_prism_m": 71.58950310779888,
+          "error_m": {
+            "n": 1160,
+            "mean": 0.0656654500216479,
+            "median": 0.06579682843902673,
+            "p95": 0.11795803488493001,
+            "max": 0.20362725030213097
+          },
+          "rpe_pairs": 1150
+        }
+      }
+    },
+    "covariance": {
+      "off": {
+        "kimera_front": {
+          "versions": 14250,
+          "stable_ids": 582,
+          "revised_ids": 581,
+          "rotation_trace_rad2": {
+            "n": 14250,
+            "mean": 3.226844491620494e-08,
+            "median": 2.4546369450603603e-08,
+            "p95": 7.56818656551813e-08,
+            "max": 1.153820010534807e-05
+          },
+          "translation_trace_m2": {
+            "n": 14250,
+            "mean": 6.158830483931966e-06,
+            "median": 1.654357785453019e-06,
+            "p95": 2.214909935127888e-05,
+            "max": 0.00020915973150404974
+          },
+          "min_eigenvalue": 7.272516813361836e-10,
+          "max_eigenvalue": 0.00017678133692213335,
+          "max_symmetry_error": 0.0,
+          "first_last_rotation_trace_ratio": {
+            "n": 581,
+            "mean": 0.5602509234734412,
+            "median": 0.5187732010998384,
+            "p95": 0.9365848338525792,
+            "max": 1.2070943108131427
+          },
+          "first_last_translation_trace_ratio": {
+            "n": 581,
+            "mean": 0.3669673857349351,
+            "median": 0.3290772484854335,
+            "p95": 0.7643706453537168,
+            "max": 1.0605570637466157
+          }
+        },
+        "glim_hesai": {
+          "versions": 56442,
+          "stable_ids": 1189,
+          "revised_ids": 1188,
+          "rotation_trace_rad2": {
+            "n": 56442,
+            "mean": 1.4795334173895745e-08,
+            "median": 1.453199220928209e-08,
+            "p95": 2.7127979810894488e-08,
+            "max": 5.5275353510013076e-08
+          },
+          "translation_trace_m2": {
+            "n": 56442,
+            "mean": 2.2605165134180763e-06,
+            "median": 2.189958790295045e-06,
+            "p95": 3.0368105336675126e-06,
+            "max": 6.653026560815519e-06
+          },
+          "min_eigenvalue": 1.9978740552049263e-10,
+          "max_eigenvalue": 3.199511050832862e-06,
+          "max_symmetry_error": 0.0,
+          "first_last_rotation_trace_ratio": {
+            "n": 1188,
+            "mean": 0.7703056725241034,
+            "median": 0.7749232343357443,
+            "p95": 0.8389125258773431,
+            "max": 0.8948134409514427
+          },
+          "first_last_translation_trace_ratio": {
+            "n": 1188,
+            "mean": 0.5953886866179835,
+            "median": 0.5986957661105332,
+            "p95": 0.64492955092136,
+            "max": 0.683012848054895
+          }
+        }
+      },
+      "on": {
+        "kimera_front": {
+          "versions": 14250,
+          "stable_ids": 582,
+          "revised_ids": 581,
+          "rotation_trace_rad2": {
+            "n": 14250,
+            "mean": 2.972583280433259e-08,
+            "median": 2.415632799639931e-08,
+            "p95": 6.128694756337782e-08,
+            "max": 1.153820010534807e-05
+          },
+          "translation_trace_m2": {
+            "n": 14250,
+            "mean": 6.655806219977635e-06,
+            "median": 1.7432832377667043e-06,
+            "p95": 2.6585816613504936e-05,
+            "max": 0.00027010388287753193
+          },
+          "min_eigenvalue": 8.019808342944694e-10,
+          "max_eigenvalue": 0.00019542312798392726,
+          "max_symmetry_error": 0.0,
+          "first_last_rotation_trace_ratio": {
+            "n": 581,
+            "mean": 0.5097620656425765,
+            "median": 0.5095375456747328,
+            "p95": 0.741907854167346,
+            "max": 0.9450548431976467
+          },
+          "first_last_translation_trace_ratio": {
+            "n": 581,
+            "mean": 0.3006998753789841,
+            "median": 0.25956724352072064,
+            "p95": 0.49349283603375316,
+            "max": 3.2659646059797773
+          }
+        },
+        "glim_hesai": {
+          "versions": 56481,
+          "stable_ids": 1189,
+          "revised_ids": 1188,
+          "rotation_trace_rad2": {
+            "n": 56481,
+            "mean": 1.47165197937081e-08,
+            "median": 1.4078405651517693e-08,
+            "p95": 2.6764048333458157e-08,
+            "max": 5.464219678412035e-08
+          },
+          "translation_trace_m2": {
+            "n": 56481,
+            "mean": 2.261058765707921e-06,
+            "median": 2.1829103855743025e-06,
+            "p95": 3.0831191700644554e-06,
+            "max": 6.425448933415161e-06
+          },
+          "min_eigenvalue": 2.0631061645454314e-10,
+          "max_eigenvalue": 3.3111857173771307e-06,
+          "max_symmetry_error": 0.0,
+          "first_last_rotation_trace_ratio": {
+            "n": 1188,
+            "mean": 0.7705305420813935,
+            "median": 0.7757723436812022,
+            "p95": 0.8397562799077093,
+            "max": 0.8945036767217913
+          },
+          "first_last_translation_trace_ratio": {
+            "n": 1188,
+            "mean": 0.5943472935376948,
+            "median": 0.5976713262743251,
+            "p95": 0.6440315565644409,
+            "max": 0.6831760726640402
+          }
+        }
+      }
+    }
+  },
+  "comparison_full": {
+    "native_glim": {
+      "ATE_RMSE_m": {
+        "off": 0.028689890351478228,
+        "on": 0.03455324077211354,
+        "on_minus_off": 0.005863350420635311,
+        "percent": 20.43699138896571
+      },
+      "translation_RPE_1s_RMSE_m": {
+        "off": 0.0257519871669278,
+        "on": 0.02197381727476914,
+        "on_minus_off": -0.0037781698921586573,
+        "percent": -14.671372223308666
+      },
+      "rotation_RPE_1s_RMSE_deg": {
+        "off": 0.4083106742473014,
+        "on": 0.35497967516115075,
+        "on_minus_off": -0.05333099908615063,
+        "percent": -13.061377634680616
+      },
+      "path_length_prism_m": {
+        "off": 72.52425123908763,
+        "on": 72.54161180321714,
+        "on_minus_off": 0.01736056412950404,
+        "percent": 0.023937598572754126
+      }
+    },
+    "native_kimera": {
+      "ATE_RMSE_m": {
+        "off": 0.46301050340656147,
+        "on": 0.15611370476741612,
+        "on_minus_off": -0.3068967986391453,
+        "percent": -66.28290208994775
+      },
+      "translation_RPE_1s_RMSE_m": {
+        "off": 0.04591233302938939,
+        "on": 0.024071306595114954,
+        "on_minus_off": -0.02184102643427444,
+        "percent": -47.57115352925665
+      },
+      "rotation_RPE_1s_RMSE_deg": {
+        "off": 0.5534587099497955,
+        "on": 0.5632897108958418,
+        "on_minus_off": 0.009831000946046276,
+        "percent": 1.7762844398885758
+      },
+      "path_length_prism_m": {
+        "off": 70.01152599920052,
+        "on": 71.79582783288133,
+        "on_minus_off": 1.7843018336808143,
+        "percent": 2.548582977181768
+      }
+    },
+    "fused_online": {
+      "ATE_RMSE_m": {
+        "off": 0.04775392917519229,
+        "on": 0.07858524170969698,
+        "on_minus_off": 0.03083131253450469,
+        "percent": 64.562881143027
+      },
+      "translation_RPE_1s_RMSE_m": {
+        "off": 0.039113919507416245,
+        "on": 0.03871318351841224,
+        "on_minus_off": -0.000400735989004003,
+        "percent": -1.0245354954213193
+      },
+      "rotation_RPE_1s_RMSE_deg": {
+        "off": 1.979094591224183,
+        "on": 2.051555332344495,
+        "on_minus_off": 0.07246074112031198,
+        "percent": 3.6613076222643315
+      },
+      "path_length_prism_m": {
+        "off": 77.63805028352591,
+        "on": 79.96754287431008,
+        "on_minus_off": 2.32949259078417,
+        "percent": 3.000452203883408
+      }
+    },
+    "fused_finalized": {
+      "ATE_RMSE_m": {
+        "off": 0.04137067897022701,
+        "on": 0.07305530234721716,
+        "on_minus_off": 0.03168462337699015,
+        "percent": 76.58714859331275
+      },
+      "translation_RPE_1s_RMSE_m": {
+        "off": 0.015931104287177346,
+        "on": 0.01525349324322764,
+        "on_minus_off": -0.0006776110439497066,
+        "percent": -4.253384019933282
+      },
+      "rotation_RPE_1s_RMSE_deg": {
+        "off": 0.3576598338312036,
+        "on": 0.3344590604549056,
+        "on_minus_off": -0.023200773376298,
+        "percent": -6.4868266385337385
+      },
+      "path_length_prism_m": {
+        "off": 72.14702612794677,
+        "on": 72.32913557903129,
+        "on_minus_off": 0.18210945108451426,
+        "percent": 0.25241435559875125
+      }
+    }
+  },
+  "coverage": {
+    "native_glim": {
+      "rows": {
+        "off": 1191,
+        "on": 1191
+      },
+      "start_s": {
+        "off": 1727775008.675043,
+        "on": 1727775008.675043
+      },
+      "end_s": {
+        "off": 1727775127.674791,
+        "on": 1727775127.674791
+      },
+      "span_s": {
+        "off": 118.99974799156189,
+        "on": 118.99974799156189
+      },
+      "rpe_pairs": {
+        "off": 1179,
+        "on": 1179
+      }
+    },
+    "native_kimera": {
+      "rows": {
+        "off": 584,
+        "on": 584
+      },
+      "start_s": {
+        "off": 1727775008.1553955,
+        "on": 1727775008.1553955
+      },
+      "end_s": {
+        "off": 1727775127.7547235,
+        "on": 1727775127.7547235
+      },
+      "span_s": {
+        "off": 119.59932804107666,
+        "on": 119.59932804107666
+      },
+      "rpe_pairs": {
+        "off": 1151,
+        "on": 1151
+      }
+    },
+    "fused_online": {
+      "rows": {
+        "off": 1193,
+        "on": 1193
+      },
+      "start_s": {
+        "off": 1727775008.583475,
+        "on": 1727775008.583475
+      },
+      "end_s": {
+        "off": 1727775127.783475,
+        "on": 1727775127.783475
+      },
+      "span_s": {
+        "off": 119.19999980926514,
+        "on": 119.19999980926514
+      },
+      "rpe_pairs": {
+        "off": 1182,
+        "on": 1182
+      }
+    },
+    "fused_finalized": {
+      "rows": {
+        "off": 1193,
+        "on": 1193
+      },
+      "start_s": {
+        "off": 1727775008.583475,
+        "on": 1727775008.583475
+      },
+      "end_s": {
+        "off": 1727775127.783475,
+        "on": 1727775127.783475
+      },
+      "span_s": {
+        "off": 119.19999980926514,
+        "on": 119.19999980926514
+      },
+      "rpe_pairs": {
+        "off": 1182,
+        "on": 1182
+      }
+    }
+  },
+  "matching": {
+    "runtime_covariance_provider": true,
+    "source_flags_except_receiving": true,
+    "copied_profiles": true
+  },
+  "protected_unchanged": 1825,
+  "source_repos": {
+    "glim_ros1": {
+      "clean": true,
+      "head": "fad72d6e11219e42cbbe09658341fff4512769dc"
+    },
+    "Kimera-VIO": {
+      "clean": true,
+      "head": "560ad0fd33c162ff2a0a64a1372f9b61e1d8d8f9"
+    },
+    "cbs": {
+      "clean": true,
+      "head": "ed93343e2601c1eb2d777d85fbd6171ca1cdfaf4"
+    }
+  },
+  "free_bytes": 44588998656,
+  "gnssFGO_head": "668d4c788983722f4acad37d1495c15d03a27e18",
+  "limits": "One matched120s ETH1 pair at0.10x; no stationarity/independence/1x claim. Full shared-CPT7 IE-TC reference. Finalized is delayed, not ONLINE."
+}

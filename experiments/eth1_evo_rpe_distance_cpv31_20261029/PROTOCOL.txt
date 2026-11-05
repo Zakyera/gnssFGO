@@ -1,0 +1,46 @@
+CP-V31 — ETH1 distance-based RPE using evo only
+2026-10-29
+
+Request: run RPE with a path-length increment delta = 0.5 m for ETH1.
+The user requires evo itself for all reported accuracy metrics. This task
+computes RPE only; it does not rescore or relabel historical ATE/RPE tables.
+
+Scope: original complete Hesai ETH1 CP-K23 CBS OFF/ON captures, unchanged
+receiver Qc1.0. Evaluate all three estimators, separately for saved CP-V27
+method1 (newest absolute graph poses) and CP-V28 method2 (causal accumulated
+same-update increments). Do not mix fresh CP-V29 OFF with historical ON.
+Method1 Kimera is recovered absolute backend output, not native incremental
+ROS. Method2 Kimera is native incremental ROS, not integrated a second time.
+
+Inputs: hash-verified hesai_eth1.json/.npz from CP-V27 and CP-V28, matching
+their original closeout output manifests. Reuse their identical100ms common
+grid/reference/prism-frame poses and frozen validity mask, no new fitting,
+interpolation, smoothing, projection or coverage selection. Split contiguous
+valid segments before pair selection; never connect a gap. This is common-mask
+coverage, not full346.32s scoring. IE-TC shares CPT7, not independent prism GT.
+
+Metric package: installed evo1.36.3. Direct evo_rpe CLI and evo.core.metrics.RPE
+with delta0.5, Unit.meters, all_pairs=False, pairs_from_reference=True.
+This chooses evo's DEFAULT consecutive distance pairs on the SAME reference
+path for every estimator/mode/method. No --align or --correct_scale, no local
+fit. Sampled distances may exceed0.5m; report their actual range. Tolerance0.1
+is evo's default but is unused by its consecutive-distance selector. Do not
+describe this as exact spatial resampling or overlapping all-pairs evaluation.
+
+Calculate translation_part (metres) and rotation_angle_deg (degrees), not
+point-distance magnitude or percent-per-metre. Evo computes pair selection,
+SE3 relative errors and all RMSE/mean/median/statistics. Preparation merely
+loads/splits saved arrays and converts representation to evo/TUM. If multiple
+valid segments have pairs, concatenate evo error arrays and use evo's own
+statistics API, never average segment RMSE values. Record empty-pair segments
+as excluded by the distance rule; do not relax delta or bridge gaps.
+
+Save TUM inputs via evo, exact original timestamp pair indices, every actual
+CLI command/stdout and native evo zip results, API/CLI error-array parity,
+package/source identities, results and human-readable report. Input hashes
+before/after and original Hesai checkpoint verification. Refuse overwrite.
+No estimator launch, receiver replay, container, model/parameter edit, build,
+production/default promotion, deletion, commit or push is authorized.
+
+Official metric documentation: https://github.com/MichaelGrupp/evo/wiki/Metrics
+Local evo source is the authority for this installed version's exact behavior.

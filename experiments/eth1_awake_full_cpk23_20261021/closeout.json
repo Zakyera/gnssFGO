@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "at_local_minute": "2026-10-21T13:58+03:00",
+  "method": "manual completion of authorized controller cleanup",
+  "containers": {
+    "cbsms_ws_gpu": "exited",
+    "ubuntu-jammy-humble-nvidia": "exited"
+  },
+  "owned_jobs_remaining": false,
+  "experiment_sleep_inhibitor_remaining": false,
+  "protected_files": 2391,
+  "protected_sha256_check_exit_code": 0,
+  "original_cleanup_failure_preserved": "cleanup_failed.json",
+  "experiment_failure": null,
+  "results_passed": true,
+  "capture_or_validation_or_evaluation_repeated": false,
+  "evidence": "Default docker top showed only tail, zsh and pre-existing ros2/zenoh daemons. Docker stop succeeded for both named containers; subsequent docker inspect reported exited for both. Host process check showed no CP-K23 jobs, and systemd-inhibit list contained no ETH1-CPK23 inhibitor. All protected manifest entries passed sha256sum --check."
+}

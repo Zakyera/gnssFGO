@@ -1,0 +1,57 @@
+CP-V108 EIG-2 split-IMU fresh live OFF/ON pair — 2026-11-04
+
+This dated addendum resolves PROTOCOL.txt's initial missing-input blocker and
+records the final intended launch contract. The original preparation inventory
+remains unchanged. Launch is allowed only after successful admission/prepared.
+
+User supplied the original EIG-2 AlphaSense IMU ROS bag. raw_input_audit.json
+passes the unchanged selected355.02s window at offset5.7s:3551Hesai,
+35502CPT7,70980Alpha IMU,3550left/3550right exact matched stereo timestamps.
+All input record/header times agree; Alpha median dt.004995s,maxgap.0220241s.
+Quiet-start thresholds pass. Alpha acceleration norm is about9.54m/s2, versus
+CPT7about9.83; this is recorded, not calibrated/tuned away. The inherited Alpha
+bias/white-noise model remains experimental, not a certified calibration.
+Both input profiles equal CP103 byte-for-byte; mission calibration matches to
+rounding (<1e-9), and mission-specific Alpha/CPT7 transform is used for adapter
+and static TF. New bag did not shift the selected window or playback epoch.
+
+One OFF then one ON; no retries. Both source estimators and live fusion in each.
+Corrected private Kimera985c115d3573446f65ef4ce7cc4125e514b4922fed6445ed05cbc4dbdfb70a09
+in BOTH modes. GLIM CP82/Hesai+CPT7; Kimera Alpha stereo+built-in Alpha IMU;
+general persistent/CP40/CPK9/native smart25, FL4Q0/FL4Mremove, Gaussian1,
+Alpha biasRW.0043/.000266,200Hz. Reception false OFF, true both directions ON.
+No CP106 covariance freeze, observer, deterministic seed or native-IMU override.
+Receiver CP-K19 7s source_wnoa Qcx1, independent100ms CPT7 timestamps,
+no central IMU/GNSS factors. Same priors/replacement/seal_at_absorption/EOF.
+Full6x6 Alpha-native->CPT7 conversion once; GLIM identity; observed arrivals,
+order, IDs, endpoints and all revisions retained. Source wire route unchanged.
+Failure-only prior archive enabled on Kimera; original exceptions remain fatal.
+No epsilon/weights/prior relaxation. Duration355.02s,rate.20,drain25s,
+ports11631/11632; conservative16GiB output plus5GiB storage reserve.
+
+Offline tests: host stdlib fixture30rows and CLI imports pass; independent
+mission-transform fixture passes;14negative+2real injection schemas and5EOF
+controls pass. Evaluator tests cover72401reference rows,3551supported100ms
+queries, actual CP103 Kimera parser and five synthetic EVO CLI invocations.
+These are preflight tests, NOT scientific scores. Actual Noetic fixture and
+effective source topics/body/TF/loaded DSO hash checks remain mandatory before
+sensor playback, and are owned by the exclusive finite controller.
+
+Flow: OFF capture -> strict source/payload-route/receiver/frame gates -> ON
+capture and same gates -> owned cleanup and container restoration -> saved
+Method1 EVO1.36.3/SE3/no-scale -> independent report verification -> immutable
+complete seal. Failure stops/preserves; no automatic retry or new attempt.
+After controller/supervisor exit only the one supplemental post_closeout audit.
+
+Both containers initially stopped and must be restored. Protected hashes include
+CP103's8120pins, newer CP103-107 terminal evidence, all mission inputs and fresh
+static files; successful prepared.json records the final count. Hesai checkpoint
+all667 copies/originals mandatory. No deletion, install, global build/deployment,
+old-run overwrite, SPX-3/LEICA-2 or other sequence is authorized here.
+
+Report six-curve common100ms mask separately from full-native cadence and
+DELAYED7s-finalized. Actual gaps/EOF omissions retained, no gap filling. IE-TC
+sharesCPT7, not independent prismGT. Estimated polyline is not physical travel.
+Persistent mixed-prior/native-only outgoing information remains FALSE and
+accepted; split IMUs do not remove feedback correlation. Incremental parity is
+not nonlinear stationarity, uncertainty calibration or estimator health proof.

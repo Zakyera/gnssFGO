@@ -1,0 +1,261 @@
+CP-V24 — Why fusion underperforms the healthier native estimator
+2026-10-27 | COMPLETED SAVED-DATA DIAGNOSIS | NO FIX OR NEW RUN
+
+1. Bottom line
+
+It is possible for this fusion to underperform its best source. However, that
+is a limitation to isolate, not evidence that the current result is satisfactory.
+For Leica-2 Velodyne the ORIGINAL fusion is between GLIM and Kimera, not worse
+than both. The much poorer new result belongs to PURE INCREMENTAL CHAINING.
+We must separate global trajectory accuracy from newest-point jitter.
+
+Demonstrated: newest-state source availability/prediction and correction
+stitching explain the local jitter mechanism; chaining drops useful corrections
+and introduces additional drift. Not demonstrated: a single root cause or a
+quantified allocation of the ORIGINAL roughly2m ATE between source conflict,
+belief representation, motion model, covariance assumptions and solver policy.
+No confirmed frame/interpolation/Jacobian bug in the previously tested cases.
+Those checks are not a proof that all implementation issues are absent.
+
+2. Which accuracy are we comparing?
+
+All below use ORIGINAL Qc multiplier1.0, not0.25 or0.1. ATE is rigid no-scale
+position RMSE. GLIM is FIRST-PUBLISHED, Kimera is native ROS INCREMENTAL,
+fusion absolute is first-publication graph pose. No refined GLIM substitution.
+
+Frozen all-estimator common mask,3850 queries /384.6s connected coverage:
+CBS    GLIM       Kimera     Fusion absolute ONLINE   Fusion pure chain
+OFF    2.782169   1.094234   2.006010                  3.482370 m
+ON     0.848869   2.585334   1.867962                  5.331684 m
+
+Full saved outputs, different native sampling/coverage (context, not matched):
+CBS    GLIM       Kimera     Fusion absolute ONLINE   Fusion pure chain
+OFF    2.829284   1.097081   2.000424                  3.786712 m
+ON     0.863203   2.584159   1.828658                  6.080933 m
+
+Common-mask1s relative-pose errors, translation m / rotation degrees:
+CBS    GLIM                Kimera             Fusion absolute    Pure chain
+OFF    .104567/1.449142     .028573/.406498     .055686/2.550799   .063646/2.906159
+ON     .047707/.605143      .062125/.536195     .055625/1.868470   .085802/2.044541
+
+This reveals a specific weakness that ATE alone obscures: original fusion's
+ONLINE1s rotational RPE is worse than both native products in both modes.
+Its translational ATE and1s RPE are between sources. These metrics measure
+different properties; they cannot be summarized as one estimator being better
+in every respect. Source-to-source CBS benefits and downstream fusion quality
+are also distinct questions.
+
+Source of all accuracy values: CP-V23/results.json, itself reproducing the
+CP-V10 native/original controls. CP-V24 performs no new fitting or rescoring.
+
+3. Why good native paths do not guarantee a better fused path
+
+The receiver does NOT average the displayed green and orange absolute paths.
+Receiver.h::dispatch inserts WnoaRelativeFactor(from,to,belief.mean,full C).
+Each message describes a short relative motion, generally~0.2s, plus a6x6
+LOCAL covariance; its MAIN mean can subsequently be revised. The fuser builds
+its own100ms pose/velocity/angular-velocity states and7s WNOA graph from these
+constraints. It does not have the full source graphs, visual/lidar raw factors,
+their joint posterior, or the same native publication policy. In this frozen
+receiver raw IMU observations provide a support clock only: there are no raw
+IMU/GNSS measurement factors in the fusion graph.
+
+Therefore neither exact reproduction of a native trajectory nor improvement
+over the best source is guaranteed. Losing information when exporting local
+constraints and fitting a different model is a plausible source of error;
+its numerical contribution here has NOT yet been isolated. Small errors in
+relative directions can accumulate into metres even when individual steps
+look plausible. Best-source ATE is measured after the run, using a reference;
+the receiver does not have that oracle during optimization.
+
+4. Covariance is not a reliable oracle for which path is best
+
+CP-V5 already measured retained source-relative errors at their own exact
+physical endpoints, without a fitted global alignment. Matched first-belief
+cohorts: median U=sqrt(trace(C_translation)) and RMS relative error, mm:
+
+                 U median     Actual relative error RMS
+GLIM OFF          2.085          28.638
+Kimera OFF        1.560           6.640
+GLIM ON           2.083          13.495
+Kimera ON         2.371          13.664
+
+U is a norm scale, NOT per-axis sigma or a95% bound. Median U versus RMS error
+is an indicative scale mismatch, not a calibrated coverage/NEES certificate.
+GLIM's reported LOCAL scale barely changes OFF->ON although its corrected
+MAIN relative mean improves strongly. Both sources' actual errors exceed
+these small conditional uncertainty scales. Covariance retains some health
+ranking, but is not calibrated total-error knowledge.
+
+The receiver trusts the FULL matrix, not its trace alone. Rotation, translation,
+cross terms, time brackets and motion constraints affect the result. Do not
+claim it simply always gives GLIM100x Kimera's weight; that is false here.
+Within-belief dense covariance is preserved. Separate overlapping beliefs and
+the two sources do not come with a joint inter-factor/source covariance. Shared
+CPT7 and CBS exchange mean independence is not established. Treating these as
+separate Gaussian factors is an approximation; this audit does not quantify
+its contribution or prove it is the main cause. Stable-ID revisions REPLACE
+existing factors; they are not accumulated duplicate observations.
+
+The historical mean-only source-CBS alignment/covariance approximation remains
+unchanged. It is a separate modelling concern, not a newly identified fusion
+frame bug or an explanation for all OFF behaviour.
+
+5. New full-sequence evidence: the newest output is often a prediction
+
+Read both saved journals in exact observed order, match every4282 publication
+event/time, exclude50 pre-origin versions per mode, and respect integer ceil
+right-support admission. Pending future-support factors cannot constrain a
+publication prematurely. After the initial5 publications before both source
+frontiers exist,4277 publications per mode:
+
+                                         OFF              ON
+Latest GLIM endpoint age median          152.779ms        152.784ms
+GLIM factor directly touches newest       0%               0%
+Neither source directly touches newest    55.436%          55.459%
+
+Inside the frozen common time intervals, excluding2 source-unseen startup
+publications:3844 actual fusion samples per mode. Neither-source-direct share
+50.546% OFF /50.624% ON. This is a timing cohort, not a changed ATE mask.
+On normal alternating cycles Kimera's endpoint is about88ms or188ms behind;
+GLIM about153ms behind. A GLIM endpoint in the previous100ms cell touches the
+previous supports, not the newest support. The newest state is reached through
+the WNOA link. There is still propagated source information: NOT a disconnected
+graph, NOT zero source information, and NOT wall-clock processing latency.
+
+This architecture can expose newest pose/velocity sensitivity while native
+sources publish their estimates at their own data-supported times. Equal
+physical timestamps in evaluation do not imply equal evidence age internally.
+It explains susceptibility to local prediction/correction jitter, not the
+entire large-scale ATE. Arrival reordering or timestamp shifting was NOT tried.
+
+Sparse-belief tail caveat: last advancing usable Kimera relative endpoint is
+390.395984s OFF /395.695920s ON; final endpoint age38.188460/32.888523s.
+Native Kimera still publishes sparse stationary-tail keyframes to426.995564s.
+Thus these large ages concern exported relative-belief coverage, NOT absence
+of all camera data or a stopped native estimator. Full-run Kimera age p95 is
+dominated by this tail and must not be called normal transport delay. The
+common-mask comparison excludes the long tail and STILL shows the accuracy
+gap. Interior stale intervals are listed in frontier_cohorts_complete.json.
+
+6. The visible jitter and the large-scale accuracy gap are different
+
+Existing exact-parity CP-V13/22A traces show new GLIM/Kimera beliefs change
+the newest pose and velocity much more than older active states. In first-minute
+Velodyne OFF, newest-position new-belief p95 changes are6.589cm GLIM /9.973cm
+Kimera, versus0.454/0.164mm for a1s-old state. Immediate retirement changes
+are sub-mm; support creation adds almost no adjustment beyond its existing
+WNOA prediction. Native Kimera payloads were identical to the Hesai OFF case,
+yet caused a larger response in the Velodyne-conditioned graph.
+
+This is NOT adequately explained by 'the sources always pull in opposite
+directions': CP-V13 OFF mixed-cycle GLIM/Kimera update displacements often
+point in the same direction. Insertion response is not a counterfactual test
+of whether removing either source would improve accuracy.
+
+Original full-saved absolute ONLINE versus DELAYED finalized:
+CBS    ONLINE ATE/path       Finalized ATE/path          Reference path
+OFF    2.000424/280.154m     2.000564/204.797m            205.929m
+ON     1.828658/235.137m     1.831814/205.890m            205.929m
+
+Finalized largely repairs excess path while leaving global ATE unchanged.
+It uses later observations while a state remains active; it is not a real-time
+replacement. This is strong evidence that removing zigzag alone is not the
+same as fixing accumulated trajectory error. The already-tested0.25/.1Qc
+candidates also principally improved jitter, not large-scale ATE.
+
+7. Why the new pure incremental path is worse
+
+For publication k, G[k] is current graph pose and P[k] is the revised previous
+pose from that SAME graph. Original history connected G[k-1] to G[k]. Chain
+O[k]=O[k-1] inverse(P[k]) G[k] excludes the previous-point correction and uses
+the accumulated odometry orientation. This avoids some jumps, but also drops
+useful position/orientation corrections. It is not equivalent to Kimera's
+native estimator just because both output policies are called incremental:
+their underlying motion increments, state variables and evidence ages differ.
+
+CP-V24 verifies an exact prism-point vector decomposition. Let f(T)=t+R*p_prism:
+ d[k] = f(G[k])-f(P[k]); r[k] = f(P[k])-f(G[k-1]).
+ Original increment = d[k]+r[k].
+ Chain increment = R(O[k-1]) R(P[k])^T d[k].
+ Chain-minus-graph displacement = sum(chain_increment-d) - sum(r).
+All identities pass with max component error2.15e-14m across both full runs.
+
+Previous-point corrections removed by chain, median/p95:
+OFF2.276/7.462cm; ON1.788/4.163cm. These are from each consecutive publication,
+not individual belief-update magnitudes. Some corrections alternate, others
+accumulate. EOF chain/graph prism separation6.791893m OFF /15.583488m ON.
+Accumulated rotation-frame mismatch is also present; it is between outputs,
+not a reference orientation error. Exact vectors/series in results.json and
+diagnostic_arrays.npz; their norms must not be treated as additive causal shares.
+
+Consequently pure chaining is rejected as an accuracy fix. Continuous local
+odometry can still be useful, but it needs an explicit corrected-global product
+and correction/frame/covariance semantics. No publisher redesign is implemented.
+
+8. What is ruled out, and what is not?
+
+Already checked: first-published versus refined GLIM distinction; proper
+matched masks; exact replay/output parity; full belief payload conservation;
+stable-ID replacement rather than duplicate accumulation; sampled raw lidar
+timestamp normalization and extrinsic chains; tested endpoint/Jacobian paths.
+CP-V22A tested42024 Jacobian comparisons and1746 endpoint checks, with five
+frozen linear systems per sensor case full rank and sub-mm remaining newest
+linear correction. None is a proof of global nonlinear stationarity.
+
+The initial pose anchor is already tight (sigma1e-5); stronger anchoring does
+not address a shape error after rigid-aligned ATE. No evidence supports a
+blanket arbitrary multiplier on the marginal prior. The WNOA motion prior is
+a different constraint and has already been tested as a local-jitter tradeoff.
+
+Not yet isolated: accuracy loss from each source's exported factor set versus
+its native estimator, versus damage from combining sources; model/velocity
+prediction contribution; correlation/covariance calibration contribution;
+whether a broader solver-policy issue affects global drift. No claimed single
+root cause for original ATE and no claim that the current fusion is optimal.
+
+9. Recommended next decision — ONE diagnostic, not another source campaign
+
+Use the existing Leica-2 CBS-OFF journal with the same original Qc,7s/100ms
+supports, physical endpoints, arrival order, source means/C and expiry policy.
+Run two fresh receiver-only controls: GLIM beliefs only and Kimera beliefs only.
+Compare with the existing BOTH-source baseline. Do NOT call these native
+GLIM/Kimera trajectories. Preserve original journals and independent control
+roots; admit no GT-driven tuning. Score original absolute ONLINE and DELAYED
+finalized separately at the frozen mask and same physical source endpoints;
+include prediction age, position and rotation RPE as well as ATE/path.
+
+Interpretation:
+- If single-source receiver already loses accuracy versus its native source,
+  inspect belief representation, reconstruction and prediction before blaming
+  competing sensor weights.
+- If each source survives receiver reconstruction but BOTH degrades the better
+  control, investigate conflict, covariance calibration/correlation and health
+  selection with a clearly bounded follow-up.
+- If ONLINE is poor but finalized source-time motion is good, prioritize the
+  newest-state prediction/publication interface, not global trajectory smoothing.
+
+Begin with OFF to isolate central reconstruction from source-CBS feedback.
+This proposal is NOT executed or authorized by the current diagnosis request.
+No additional full sensor capture is required for those controls.
+
+10. Audit trail and limits
+
+New artifacts: analyze.py, results.json, input_pins.json, diagnostic_arrays.npz,
+frontier_cohorts.py and frontier_cohorts_complete.json. All13 input hashes
+verified before/after the main pass; final combined main/supplement verification
+passes16 unique input files. Independent integer bracket boundary tests
+pass;8564 publication event/availability identities pass. The supplemental
+cohort uses authoritative complete JSON, not the preserved incomplete
+frontier_cohorts.json from an initial strict-JSON NaN serialization failure.
+ANALYSIS_PREFLIGHT_CORRECTION.txt records that and a corrected analysis-only
+assumption about exact clock-sample versus uniform support timestamps.
+Neither issue affected estimator code/data or CP-V23 results.
+
+No optimization, replay, build, container start/stop, source setting edit,
+default promotion, deletion, commit or push. Existing Rerun viewer untouched.
+Full fusion4282 GT-supported rows/428.1s, startup.484443s/tail.165557s. Common
+coverage384.6/428.75s=89.7026%, four segments, long terminal common omission;
+native sampling/gaps differ. IE-TC shares CPT7, not independent prism GT.
+Mean-only covariance alignment approximation unchanged. Saved prior numerical
+checks are cited as historical evidence, not rerun or enlarged certification.

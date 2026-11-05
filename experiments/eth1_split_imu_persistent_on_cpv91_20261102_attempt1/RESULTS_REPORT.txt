@@ -1,0 +1,25 @@
+CP-V91 FULL ETH1 SPLIT-IMU CBS-ON vs saved CP89 OFF
+GLIM Hesai+CPT7/HG4930; Kimera stereo+Alphasense; BOTH persistent, unchanged CP89 profiles/binaries.
+One fresh live bidirectional ON capture, no fusion. OFF is saved matched-settings CP89, not a new OFF capture.
+Method1 first/newest absolute at the physical prism; EVO1.36.3 SE3/no-scale ATE and reference-distance0.5m RPE.
+COMMON100ms: 2969rows, 296.600000s/346.32s (85.643%), 365RPEpairs.
+Role | ATE OFF -> ON m | improvement | tRPE OFF -> ON m | rRPE OFF -> ON deg | path OFF -> ON m | reference m
+GLIM | 0.038062 -> 0.041500 | -9.03% | 0.016331 -> 0.015195 | 0.336865 -> 0.333948 | 202.879510 -> 202.624335 | 201.374540
+Kimera | 0.738453 -> 0.209054 | +71.69% | 0.085253 -> 0.032740 | 0.619426 -> 0.587296 | 211.024963 -> 202.001747 | 201.374540
+
+FULL-SAVED NATIVE cadence (different support/pairs; no gap chords):
+Role | rows | support % | ATE m | tRPE m | rRPE deg | estimated/reference path m | gaps
+OFF_GLIM | 3454 | 99.705 | 0.037891 | 0.016919 | 0.254654 | 205.236377/201.475912 | 0
+OFF_Kimera | 1493 | 85.816 | 0.744750 | 0.119927 | 0.509363 | 214.718296/201.020155 | 11
+ON_GLIM | 3454 | 99.705 | 0.043435 | 0.015360 | 0.250879 | 205.054666/201.475912 | 0
+ON_Kimera | 1492 | 85.787 | 0.208661 | 0.034427 | 0.445192 | 202.447146/201.019635 | 11
+
+Detailed revision/timing/wire and native covariance/payload/input omissions: results.json.
+Only ON is a new capture; saved CP89 OFF has identical settings except reception.
+Separate IMUs do not remove peer-feedback correlation; persistent mixed-prior history remains.
+Bias RW candidate not certified Alpha calibration; covariance calibration and independence unproven.
+IE-TC shares CPT7,not independent prismGT; estimated path is not physical travel.
+Method1 newest absolute backend poses; native incremental ROS path not scored for Kimera.
+Native/common masks distinct; gaps>0.5s not bridged, incomplete supported coverage explicit.
+Actual bias/physical IMU residual histories unavailable; no nonlinear stationarity claim.
+No fusion or qualified split-body receiver adapter in this experiment.

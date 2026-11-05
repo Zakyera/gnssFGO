@@ -1,0 +1,20 @@
+2026-11-02: initial raw-data admission read all four full selected streams, then
+failed before writing input_audit.json/expected_headers.json:
+TypeError: bad operand type for abs(): 'list', audit_inputs.py line39.
+Original script preserved as audit_inputs_initial.py. Fix: convert timestamp
+delta list to numpy array before vectorized abs/max. No data/model/guard change.
+No ROS/container/source launch occurred. Re-execute read-only preparation audit
+after this correction; this is not an estimator/source retry.
+The first edit had an unmatched closing parenthesis, rejected at Python parse
+before any execution. Rewritten as a separate max_delta assignment; syntax
+checked before the corrected read-only audit. No capture or output overwritten.
+The next admission correctly found the full raw camera streams differ:3464left,
+3463right. Right lacks the image at203.898841154s; all other timestamps match.
+Historical CP-K23 full OFF source_coverage.json independently records3463
+synchronized pairs,3460processed after3initialization pairs. This is a recorded
+dataset omission,not a new processing failure. Updated full-window accounting
+uses the3463raw exact timestamp intersections and explicitly retains the one
+unmatched left header. No raw image removed or generated, no synchronizer or
+estimator change. Both raw sequences remain in expected_headers.json; native
+left/right queues must equal3463 and frontend must reconcile against actual
+Alpha finalIMU. Full60s-prefix equality remains required. No source launched.

@@ -1,0 +1,78 @@
+CP-V5 — LEICA-2 Velodyne saved-belief audit, 2026-10-24
+
+Authorization: user "Proceed" to the proposed three saved-data checks after
+the completed CP-V4 LEICA-2 covariance discussion. No new capture, optimizer,
+replay, container, tuning, build, setting change or push is authorized here.
+All CP-V4 artifacts and earlier audits are immutable. New outputs only here.
+
+Question: does uncertainty rank relative-motion error in this sequence where
+native Kimera OFF beats native GLIM OFF, and what do the actually installed
+peer beliefs show? Larger median covariance is not by itself calibration.
+
+Inputs: full_off/on_source and full_off/on_receiver under
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared.
+Reference: GrandTour/LEICA-2/2024-11-25-16-36-19_cpt7_ie_tc.bag, IE-TC odometry
+in cpt7_imu. Capture start1732549034915071665ns, duration428.75s. IE-TC shares
+CPT7 with both sources: NOT independent prism ground truth or noiseless truth.
+Retain the established full-saved/common-mask trajectory scores unchanged.
+
+1. Payload check and exact-endpoint errors
+Stream events and receipts together; require matching event index, source and
+receipt timestamp, consecutive transport revisions, native source state-index
+timestamp joins (<=1000ns export rounding), finite symmetric SPD covariance.
+Use e=Log(Z^-1 (Tref(a)^-1 Tref(b))), rotation first, right-local Pose3 tangent.
+Interpolate reference position linearly and rotation on SO(3), no extrapolation,
+max50ms reference bracket. Reuse checked FL4y geometry/FL4z measurement helpers.
+Translation rho and Cartesian translation difference remain separately saved.
+Full6x6 whitening checked against Cholesky; block diagnostics use marginal
+3x3 blocks, not Schur-conditioned blocks. sqrt(trace) is a norm scale, NOT a
+per-axis sigma or 95% confidence radius. Reference-normalized discrepancies
+are NOT formal NEES/NIS or probabilities, due unknown reference uncertainty.
+
+Separate first publications and revisions near4s of physical source age:
+choose nearest common OFF/ON source-update timestamp to endpoint+4s within
++/-150ms. Match OFF/ON by exact physical endpoint pair, never by state ID.
+Use the same eligible edge cohort for first/near4s comparisons; also summarize
+all first and common-first cohorts to disclose selection/tail gaps. Never
+pool revisions as independent samples. Report unmatched and missing-age edges.
+Cross-source outgoing intervals are NOT identical: do not call their pooled
+statistics a paired winner test or compare them directly with whole-path ATE.
+
+2. Ranking, motion, and tails
+For each source/mode/age, summarize translation and rotation separately:
+Spearman trace/error ranking, ten equal-count uncertainty bins including ties,
+and retained-error curves for lowest10,15,...100% uncertainty. No fit, gate or
+scale is applied. Define quiet descriptively using reference chord speed<.05m/s
+AND angular speed<2deg/s over the belief's own interval; other edges moving.
+Repeat ranking per group, disclose counts (no inferential significance test).
+Also use fixed30s physical-time bins; show retained fraction, not only medians.
+List worst translation-normalized discrepancies within lowest uncertainty
+quartile, and their squared-error contributions, without removing outliers.
+Changing a constant source scale cannot change its internal ordering.
+
+3. Actual source-to-source factors and receiver states
+Parse ON G2K/K2G mean-alignment rows; match raw source mean/covariance against
+recorded first payloads (report any mismatch rather than assume first-version
+identity). Join exact receiver edge, covariance-matrix row, tracked slot, and
+G2K frozen-factor mean. Score raw source endpoints, actual aligned receiver
+endpoints, and raw-mean-at-receiver negative control. Verify causal timestamps.
+Keep unchanged mean-only covariance-alignment approximation explicit: bridge
+uncertainty/transport are not reconstructed, corrected, or claimed calibrated.
+
+Where available, reconstruct Kimera pre/post same-update receiver relative
+poses from recorded revision snapshots, checking reconstructed pre residuals
+against the actual runtime residual and capped explicit pre-state matrices.
+Only verified pre states may support peer-versus-receiver comparisons. A
+post-update change includes ALL factors/new measurements, not isolated CBS
+causation. Try a same-epoch receiver outgoing LOCAL covariance join only when
+the exact receiver edge/state version is recorded and the pre mean verified;
+do not invent missing receiver uncertainty. K2G pre-state comparisons are
+limited to explicitly logged matrices if equivalent full snapshots unavailable.
+Report capped sample coverage, missing joins, and contradictions honestly.
+
+Checks: geometry exp/log synthetic tests, monotone/inverse/tied ranking tests,
+selection/bin conservation, finite values, dense-whitening agreement, input
+SHA256 before/after, unchanged completed result hashes. Refuse output overwrite.
+Deliver bounded report, machine-readable provenance and a few static figures.
+No claim of causal improvement, nonlinear stationarity, independence or global
+covariance calibration. Stop after the audit; no automatic follow-up experiment.

@@ -1,0 +1,1166 @@
+CP-K27 matched SPX-3 batched finalized-policy bounded28.0s OFF/ON — COMPLETED
+One capture per mode,0.20x,headless. No paired observer,optimizer rebuild or tuning.
+Native GLIM / native Kimera ROS odometry / concurrent ONLINE fusion.
+EOF contract: only final partial-cell omissions allowed; every omission disclosed below. No fabricated support.
+Terminal omissions OFF/ON: {'off': 0, 'on': 0}
+Reference: full-window IE-TC shares CPT7; not independent prism GT.
+Existing rigid no-scale ATE alignment and prism lever arm;1sRPE unchanged.
+
+FULL-SAVED OUTPUTS: every saved pose against reference; NOT a favorable short mask.
+role mode ATE_m tRPE1s_m rRPE1s_deg path_prism_m span_s rows
+native_glim off 0.006806 0.006139 0.243019 19.623808 27.100135 272
+native_glim on 0.006487 0.005785 0.205818 19.628738 27.100135 272
+native_kimera off 0.097535 0.034620 0.474550 19.178505 27.599759 131
+native_kimera on 0.032109 0.019979 0.488770 19.518215 27.599759 131
+fused_online off 0.024035 0.025940 1.298778 20.414664 27.400000 275
+fused_online on 0.024241 0.025064 1.300749 20.286599 27.400000 275
+fused_finalized off 0.010748 0.007420 0.245570 19.741525 27.400000 275
+fused_finalized on 0.012002 0.007448 0.236026 19.748481 27.400000 275
+
+COMMON MASK: all sources/modes, same physical timestamps.
+{"rows": 253, "start_s": 1730565901.3999991, "end_s": 1730565927.4999743, "coverage": {"grid_queries": 270, "excluded_queries": 17, "envelope_s": 26.099975109100342, "covered_contiguous_duration_s": 25.099976062774658, "segments": [{"start_s": 1730565901.3999991, "end_s": 1730565901.499999, "rows": 2}, {"start_s": 1730565902.499998, "end_s": 1730565927.4999743, "rows": 251}], "maximum_query_gap_s": 0.9999990463256836}, "timestamps_sha256": "4cea7b19cf15ccc3270c5e08fe2b20b184e1af29f1ddc64c693bfe593cdf3974", "interpolation_gap_estimate_s": 0.5, "interpolation_gap_reference_s": 0.05}
+role mode ATE_m tRPE1s_m rRPE1s_deg path_prism_m
+native_glim off 0.006555 0.006305 0.250677 19.448045
+native_glim on 0.006077 0.005923 0.212275 19.451334
+native_kimera off 0.095630 0.034691 0.475241 19.003936
+native_kimera on 0.032307 0.020019 0.489514 19.344963
+fused_online off 0.019892 0.026888 1.343753 19.673408
+fused_online on 0.020653 0.025960 1.344541 19.651610
+fused_finalized off 0.010791 0.007667 0.252544 19.416806
+fused_finalized on 0.011465 0.007714 0.243643 19.423481
+
+COVERAGE / TIMING / CONSERVATION
+off
+{
+  "checks": {
+    "receiver": {
+      "passed": true,
+      "validation_contract": "finite_recording_eof_cpk24a",
+      "terminal_boundary": {
+        "passed": true,
+        "contract": "finite_recording_terminal_cell_only",
+        "original_zero_unsupported_gate_passed": true,
+        "excluded_versions": 0,
+        "final_partial_cell_ns": 10002000,
+        "details": [],
+        "state_clock_not_extended": true,
+        "captured_outputs_unchanged": true,
+        "omission_not_recovered": true
+      },
+      "source_coverage": {
+        "passed": true,
+        "requested_s": 28.0,
+        "imu_samples": 2800,
+        "imu_span_s": 27.990002155303955,
+        "coverage_contract": "native_keyframes_cpk22",
+        "kimera_gap_bound_s": 5.1499999999999995,
+        "native_glim": {
+          "rows": 272,
+          "start_s": 1730565900.589197,
+          "end_s": 1730565927.689332,
+          "span_s": 27.10013508796692,
+          "maximum_pose_gap_s": 0.10047793388366699,
+          "post_startup_max_gap_s": 0.10047793388366699,
+          "start_after_first_imu_s": 0.7150027751922607,
+          "tail_behind_last_imu_s": 0.1748642921447754,
+          "path_length_m": 19.347811196801704,
+          "gaps_over_1s": [],
+          "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+        },
+        "native_kimera": {
+          "rows": 131,
+          "start_s": 1730565900.0726225,
+          "end_s": 1730565927.6723814,
+          "span_s": 27.599758863449097,
+          "maximum_pose_gap_s": 1.0999915599822998,
+          "post_startup_max_gap_s": 0.20000028610229492,
+          "start_after_first_imu_s": 0.19842839241027832,
+          "tail_behind_last_imu_s": 0.19181489944458008,
+          "path_length_m": 18.91552669949821,
+          "gaps_over_1s": [
+            {
+              "before_index": 1,
+              "after_index": 2,
+              "start_s": 1730565900.2726207,
+              "end_s": 1730565901.3726122,
+              "gap_s": 1.0999915599822998
+            }
+          ],
+          "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+        },
+        "kimera_processing": {
+          "passed": true,
+          "logs": [
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_stationary_preroll_cpk27_20261023/prepared/full_off_source/estimators.log",
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_stationary_preroll_cpk27_20261023/prepared/full_off_source/ros_logs/ab826f2a-ced5-11f1-9a7e-4a6c5584ed1a/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log",
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_stationary_preroll_cpk27_20261023/prepared/full_off_source/ros_logs/latest/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log"
+          ],
+          "frontend_processed": 278,
+          "synchronized_input_pairs_reference": 280,
+          "frontend_reference_after_startup": 277,
+          "backend_processed": 131,
+          "sequential_native_ids": true,
+          "gaps": [
+            {
+              "before_id": 1,
+              "after_id": 2,
+              "gap_s": 1.0999915599822998,
+              "wall_interval_s": 5.50602912902832,
+              "frontend_counter_first": 4,
+              "frontend_counter_last": 14,
+              "backend_before_ms": 1.24655,
+              "backend_after_ms": 11.8412,
+              "low_disparity_lines": 2
+            }
+          ],
+          "scope": "Native counters, not a new per-image receipt or branch-decision audit."
+        }
+      },
+      "transport": {
+        "imu": 2800,
+        "duplicate_imu": 0,
+        "imu_clock_lag_events": 2723,
+        "max_imu_clock_lag_ns": 2050839,
+        "belief_clock_lag_events": 0,
+        "max_belief_clock_lag_ns": 0,
+        "beliefs": 14654,
+        "duplicates": 0,
+        "published_poses": 275,
+        "max_queue": 42,
+        "sources": {
+          "glim_hesai": 11754,
+          "kimera_front": 2900
+        }
+      },
+      "summary": {
+        "complete": true,
+        "model": "source_wnoa_fixed_lag",
+        "lag_seconds": 7,
+        "stationarity": "not_checked_incremental_policy",
+        "events": 17455,
+        "received": 14654,
+        "absorbed_revision_policy": "seal_at_absorption",
+        "expired": 0,
+        "expired_duplicate": 0,
+        "expired_stale": 0,
+        "duplicate": 0,
+        "stale": 0,
+        "inserted": 397,
+        "replaced": 14232,
+        "excluded": 25,
+        "unsupported_end": 0,
+        "absorbed": 296,
+        "active": 101,
+        "pending_at_end": 0,
+        "publications": 275,
+        "finalized": 275,
+        "retained_supports": 71,
+        "peak_slots": 175
+      },
+      "actions": {
+        "before_initialization": 25,
+        "insert": 397,
+        "replace": 14232
+      },
+      "expiry": {
+        "passed": true,
+        "policy": "seal_at_absorption",
+        "expired": {
+          "versions": 0,
+          "ids": 0,
+          "changes": {
+            "endpoint_age_s": {
+              "n": 0
+            },
+            "since_absorption_s": {
+              "n": 0
+            },
+            "version_jump": {
+              "n": 0
+            },
+            "translation_change_m": {
+              "n": 0
+            },
+            "rotation_change_rad": {
+              "n": 0
+            },
+            "rotation_trace_ratio": {
+              "n": 0
+            },
+            "translation_trace_ratio": {
+              "n": 0
+            },
+            "full_covariance_relative_frobenius": {
+              "n": 0
+            }
+          }
+        },
+        "by_source": {
+          "kimera_front": {
+            "received_versions": 2900,
+            "received_ids": 128,
+            "expired_fraction": 0.0,
+            "versions": 0,
+            "ids": 0,
+            "changes": {
+              "endpoint_age_s": {
+                "n": 0
+              },
+              "since_absorption_s": {
+                "n": 0
+              },
+              "version_jump": {
+                "n": 0
+              },
+              "translation_change_m": {
+                "n": 0
+              },
+              "rotation_change_rad": {
+                "n": 0
+              },
+              "rotation_trace_ratio": {
+                "n": 0
+              },
+              "translation_trace_ratio": {
+                "n": 0
+              },
+              "full_covariance_relative_frobenius": {
+                "n": 0
+              }
+            }
+          },
+          "glim_hesai": {
+            "received_versions": 11754,
+            "received_ids": 270,
+            "expired_fraction": 0.0,
+            "versions": 0,
+            "ids": 0,
+            "changes": {
+              "endpoint_age_s": {
+                "n": 0
+              },
+              "since_absorption_s": {
+                "n": 0
+              },
+              "version_jump": {
+                "n": 0
+              },
+              "translation_change_m": {
+                "n": 0
+              },
+              "rotation_change_rad": {
+                "n": 0
+              },
+              "rotation_trace_ratio": {
+                "n": 0
+              },
+              "translation_trace_ratio": {
+                "n": 0
+              },
+              "full_covariance_relative_frobenius": {
+                "n": 0
+              }
+            }
+          }
+        },
+        "reference_rows_not_receipts": 0,
+        "caveat": "Changes vs last accepted belief, NOT GT errors or proof that omitted corrections are harmless."
+      },
+      "mean_log_roundtrip_error": 9.276433787785976e-15,
+      "covariance_payload_error": 0.0,
+      "online_path_m": 20.070514531614602,
+      "finalized_path_m": 19.446085255522984,
+      "fused_span_s": 27.400000000000002,
+      "support_cycle_seconds": {
+        "n": 275,
+        "mean": 0.043028717963636366,
+        "median": 0.043091398999999996,
+        "p95": 0.06645223400000001,
+        "max": 0.08897142800000002
+      },
+      "receipt_to_processing_seconds": {
+        "n": 17455,
+        "mean": 0.007155715727470639,
+        "median": 0.006432607000000001,
+        "p95": 0.017583864,
+        "max": 0.029834012000000004
+      },
+      "monitor_output_age_s": {
+        "n": 84,
+        "mean": 0.04412088079761905,
+        "median": 0.049165354499999994,
+        "p95": 0.090001,
+        "max": 0.100001
+      },
+      "published_during_source": 275,
+      "max_monitor_queue": 9,
+      "protected_unchanged": 2688,
+      "claim": "live 0.2x full28.0-second SPX-3 capture; fixed-lag incremental without stationarity certificate"
+    },
+    "lifecycle": {
+      "passed": true,
+      "mode": "off",
+      "native_updates": 131,
+      "source_injections": {
+        "g2k_injected": 0,
+        "k2g_injected": 0
+      },
+      "planned_retirements": 0,
+      "prior_refresh_updates": 0,
+      "max_cache_error": 0,
+      "observed_total_cost_increases": 0,
+      "imu_factor_cost": {
+        "median": 266.01058238420353,
+        "max": 34468.060008522865,
+        "last": 1390.7712527379224
+      },
+      "stationarity_certified": false,
+      "obsolete_FL4q_executed": false,
+      "candidate_sha256": "be637ad745f73bf12596d3bf06754f56ed7bcadfdb8b4792b94c4fcfee62aad9",
+      "note": "CP-K9 equation/lifecycle gate; cost increases are observational."
+    },
+    "local": {
+      "passed": true,
+      "mode": "off",
+      "sources": {
+        "glim": {
+          "ids": 270,
+          "versions": 11754,
+          "first": 270,
+          "revised": 11484,
+          "provider_queries": 270,
+          "local_joint_queries": 0
+        },
+        "kimera": {
+          "ids": 128,
+          "versions": 2900,
+          "first": 0,
+          "revised": 0,
+          "provider_queries": 0,
+          "local_joint_queries": 2900
+        }
+      },
+      "all_payloads_exact": true,
+      "revision_provenance": "per-version native_local row plus pinned/tested provider route; no separate repeated matrix dump",
+      "limits": "native explicit information at corrected charts; not independent/calibrated likelihood"
+    }
+  },
+  "capture": {
+    "seconds": 185.53619980812073,
+    "phase": "full",
+    "mode": "off"
+  },
+  "glim_timing": {
+    "whole": {
+      "scan_ms": {
+        "n": 271,
+        "median": 31.733804,
+        "p95": 126.741764,
+        "max": 203.494087
+      },
+      "main_ms": {
+        "n": 271,
+        "median": 6.070994,
+        "p95": 9.324489,
+        "max": 11.156586
+      },
+      "post_callback_ms": {
+        "n": 271,
+        "median": 22.815653,
+        "p95": 117.985966,
+        "max": 191.085378
+      },
+      "scans_over_500ms": 0
+    },
+    "after5s": {
+      "scan_ms": {
+        "n": 229,
+        "median": 33.5584,
+        "p95": 141.681693,
+        "max": 203.494087
+      },
+      "main_ms": {
+        "n": 229,
+        "median": 6.856716,
+        "p95": 9.393135,
+        "max": 11.156586
+      },
+      "post_callback_ms": {
+        "n": 229,
+        "median": 23.40744,
+        "p95": 130.013436,
+        "max": 191.085378
+      },
+      "scans_over_500ms": 0
+    },
+    "last20s": {
+      "scan_ms": {
+        "n": 199,
+        "median": 32.55086,
+        "p95": 112.315899,
+        "max": 195.780064
+      },
+      "main_ms": {
+        "n": 199,
+        "median": 7.160342,
+        "p95": 9.415756,
+        "max": 11.156586
+      },
+      "post_callback_ms": {
+        "n": 199,
+        "median": 23.003554,
+        "p95": 102.725115,
+        "max": 182.200766
+      },
+      "scans_over_500ms": 0
+    }
+  },
+  "glim_internal_queue_max": 1,
+  "main_prepared_hits": 49308,
+  "main_sync_calls": 0,
+  "kimera_timing_after5s": {
+    "optimize_ms": {
+      "n": 114,
+      "median": 52.429249999999996,
+      "p95": 61.7308,
+      "max": 73.6089
+    },
+    "smoother_ms": {
+      "n": 114,
+      "median": 12.9865,
+      "p95": 15.2034,
+      "max": 19.0807
+    },
+    "outgoing_ms": {
+      "n": 114,
+      "median": 38.65105,
+      "p95": 47.439,
+      "max": 57.5654
+    },
+    "backend_ms": {
+      "n": 114,
+      "median": 52.82445,
+      "p95": 62.2287,
+      "max": 74.0171
+    }
+  },
+  "source_coverage": {
+    "passed": true,
+    "requested_s": 28.0,
+    "imu_samples": 2800,
+    "imu_span_s": 27.990002155303955,
+    "coverage_contract": "native_keyframes_cpk22",
+    "kimera_gap_bound_s": 5.1499999999999995,
+    "native_glim": {
+      "rows": 272,
+      "start_s": 1730565900.589197,
+      "end_s": 1730565927.689332,
+      "span_s": 27.10013508796692,
+      "maximum_pose_gap_s": 0.10047793388366699,
+      "post_startup_max_gap_s": 0.10047793388366699,
+      "start_after_first_imu_s": 0.7150027751922607,
+      "tail_behind_last_imu_s": 0.1748642921447754,
+      "path_length_m": 19.347811196801704,
+      "gaps_over_1s": [],
+      "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+    },
+    "native_kimera": {
+      "rows": 131,
+      "start_s": 1730565900.0726225,
+      "end_s": 1730565927.6723814,
+      "span_s": 27.599758863449097,
+      "maximum_pose_gap_s": 1.0999915599822998,
+      "post_startup_max_gap_s": 0.20000028610229492,
+      "start_after_first_imu_s": 0.19842839241027832,
+      "tail_behind_last_imu_s": 0.19181489944458008,
+      "path_length_m": 18.91552669949821,
+      "gaps_over_1s": [
+        {
+          "before_index": 1,
+          "after_index": 2,
+          "start_s": 1730565900.2726207,
+          "end_s": 1730565901.3726122,
+          "gap_s": 1.0999915599822998
+        }
+      ],
+      "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+    },
+    "kimera_processing": {
+      "passed": true,
+      "logs": [
+        "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_stationary_preroll_cpk27_20261023/prepared/full_off_source/estimators.log",
+        "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_stationary_preroll_cpk27_20261023/prepared/full_off_source/ros_logs/ab826f2a-ced5-11f1-9a7e-4a6c5584ed1a/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log",
+        "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_stationary_preroll_cpk27_20261023/prepared/full_off_source/ros_logs/latest/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log"
+      ],
+      "frontend_processed": 278,
+      "synchronized_input_pairs_reference": 280,
+      "frontend_reference_after_startup": 277,
+      "backend_processed": 131,
+      "sequential_native_ids": true,
+      "gaps": [
+        {
+          "before_id": 1,
+          "after_id": 2,
+          "gap_s": 1.0999915599822998,
+          "wall_interval_s": 5.50602912902832,
+          "frontend_counter_first": 4,
+          "frontend_counter_last": 14,
+          "backend_before_ms": 1.24655,
+          "backend_after_ms": 11.8412,
+          "low_disparity_lines": 2
+        }
+      ],
+      "scope": "Native counters, not a new per-image receipt or branch-decision audit."
+    }
+  }
+}
+on
+{
+  "checks": {
+    "receiver": {
+      "passed": true,
+      "validation_contract": "finite_recording_eof_cpk24a",
+      "terminal_boundary": {
+        "passed": true,
+        "contract": "finite_recording_terminal_cell_only",
+        "original_zero_unsupported_gate_passed": true,
+        "excluded_versions": 0,
+        "final_partial_cell_ns": 10002000,
+        "details": [],
+        "state_clock_not_extended": true,
+        "captured_outputs_unchanged": true,
+        "omission_not_recovered": true
+      },
+      "source_coverage": {
+        "passed": true,
+        "requested_s": 28.0,
+        "imu_samples": 2800,
+        "imu_span_s": 27.990002155303955,
+        "coverage_contract": "native_keyframes_cpk22",
+        "kimera_gap_bound_s": 5.1499999999999995,
+        "native_glim": {
+          "rows": 272,
+          "start_s": 1730565900.589197,
+          "end_s": 1730565927.689332,
+          "span_s": 27.10013508796692,
+          "maximum_pose_gap_s": 0.10047793388366699,
+          "post_startup_max_gap_s": 0.10047793388366699,
+          "start_after_first_imu_s": 0.7150027751922607,
+          "tail_behind_last_imu_s": 0.1748642921447754,
+          "path_length_m": 19.352064386096963,
+          "gaps_over_1s": [],
+          "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+        },
+        "native_kimera": {
+          "rows": 131,
+          "start_s": 1730565900.0726225,
+          "end_s": 1730565927.6723814,
+          "span_s": 27.599758863449097,
+          "maximum_pose_gap_s": 1.0999915599822998,
+          "post_startup_max_gap_s": 0.20000028610229492,
+          "start_after_first_imu_s": 0.19842839241027832,
+          "tail_behind_last_imu_s": 0.19181489944458008,
+          "path_length_m": 19.2560346601646,
+          "gaps_over_1s": [
+            {
+              "before_index": 1,
+              "after_index": 2,
+              "start_s": 1730565900.2726207,
+              "end_s": 1730565901.3726122,
+              "gap_s": 1.0999915599822998
+            }
+          ],
+          "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+        },
+        "kimera_processing": {
+          "passed": true,
+          "logs": [
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_stationary_preroll_cpk27_20261023/prepared/full_on_source/estimators.log",
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_stationary_preroll_cpk27_20261023/prepared/full_on_source/ros_logs/2877a608-ced6-11f1-a703-4a6c5584ed1a/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log",
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_stationary_preroll_cpk27_20261023/prepared/full_on_source/ros_logs/latest/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log"
+          ],
+          "frontend_processed": 278,
+          "synchronized_input_pairs_reference": 280,
+          "frontend_reference_after_startup": 277,
+          "backend_processed": 131,
+          "sequential_native_ids": true,
+          "gaps": [
+            {
+              "before_id": 1,
+              "after_id": 2,
+              "gap_s": 1.0999915599822998,
+              "wall_interval_s": 5.502420902252197,
+              "frontend_counter_first": 4,
+              "frontend_counter_last": 13,
+              "backend_before_ms": 1.98111,
+              "backend_after_ms": 3.69627,
+              "low_disparity_lines": 2
+            }
+          ],
+          "scope": "Native counters, not a new per-image receipt or branch-decision audit."
+        }
+      },
+      "transport": {
+        "imu": 2800,
+        "duplicate_imu": 0,
+        "imu_clock_lag_events": 2715,
+        "max_imu_clock_lag_ns": 1874194000,
+        "belief_clock_lag_events": 0,
+        "max_belief_clock_lag_ns": 0,
+        "beliefs": 14677,
+        "duplicates": 0,
+        "published_poses": 275,
+        "max_queue": 46,
+        "sources": {
+          "glim_hesai": 11777,
+          "kimera_front": 2900
+        }
+      },
+      "summary": {
+        "complete": true,
+        "model": "source_wnoa_fixed_lag",
+        "lag_seconds": 7,
+        "stationarity": "not_checked_incremental_policy",
+        "events": 17478,
+        "received": 14677,
+        "absorbed_revision_policy": "seal_at_absorption",
+        "expired": 0,
+        "expired_duplicate": 0,
+        "expired_stale": 0,
+        "duplicate": 0,
+        "stale": 0,
+        "inserted": 397,
+        "replaced": 14255,
+        "excluded": 25,
+        "unsupported_end": 0,
+        "absorbed": 296,
+        "active": 101,
+        "pending_at_end": 0,
+        "publications": 275,
+        "finalized": 275,
+        "retained_supports": 71,
+        "peak_slots": 175
+      },
+      "actions": {
+        "before_initialization": 25,
+        "insert": 397,
+        "replace": 14255
+      },
+      "expiry": {
+        "passed": true,
+        "policy": "seal_at_absorption",
+        "expired": {
+          "versions": 0,
+          "ids": 0,
+          "changes": {
+            "endpoint_age_s": {
+              "n": 0
+            },
+            "since_absorption_s": {
+              "n": 0
+            },
+            "version_jump": {
+              "n": 0
+            },
+            "translation_change_m": {
+              "n": 0
+            },
+            "rotation_change_rad": {
+              "n": 0
+            },
+            "rotation_trace_ratio": {
+              "n": 0
+            },
+            "translation_trace_ratio": {
+              "n": 0
+            },
+            "full_covariance_relative_frobenius": {
+              "n": 0
+            }
+          }
+        },
+        "by_source": {
+          "kimera_front": {
+            "received_versions": 2900,
+            "received_ids": 128,
+            "expired_fraction": 0.0,
+            "versions": 0,
+            "ids": 0,
+            "changes": {
+              "endpoint_age_s": {
+                "n": 0
+              },
+              "since_absorption_s": {
+                "n": 0
+              },
+              "version_jump": {
+                "n": 0
+              },
+              "translation_change_m": {
+                "n": 0
+              },
+              "rotation_change_rad": {
+                "n": 0
+              },
+              "rotation_trace_ratio": {
+                "n": 0
+              },
+              "translation_trace_ratio": {
+                "n": 0
+              },
+              "full_covariance_relative_frobenius": {
+                "n": 0
+              }
+            }
+          },
+          "glim_hesai": {
+            "received_versions": 11777,
+            "received_ids": 270,
+            "expired_fraction": 0.0,
+            "versions": 0,
+            "ids": 0,
+            "changes": {
+              "endpoint_age_s": {
+                "n": 0
+              },
+              "since_absorption_s": {
+                "n": 0
+              },
+              "version_jump": {
+                "n": 0
+              },
+              "translation_change_m": {
+                "n": 0
+              },
+              "rotation_change_rad": {
+                "n": 0
+              },
+              "rotation_trace_ratio": {
+                "n": 0
+              },
+              "translation_trace_ratio": {
+                "n": 0
+              },
+              "full_covariance_relative_frobenius": {
+                "n": 0
+              }
+            }
+          }
+        },
+        "reference_rows_not_receipts": 0,
+        "caveat": "Changes vs last accepted belief, NOT GT errors or proof that omitted corrections are harmless."
+      },
+      "mean_log_roundtrip_error": 1.2357085840686288e-14,
+      "covariance_payload_error": 0.0,
+      "online_path_m": 19.95021366414212,
+      "finalized_path_m": 19.45935334036163,
+      "fused_span_s": 27.400000000000002,
+      "support_cycle_seconds": {
+        "n": 275,
+        "mean": 0.04248681674909091,
+        "median": 0.04114385,
+        "p95": 0.06539402900000002,
+        "max": 0.07377188900000001
+      },
+      "receipt_to_processing_seconds": {
+        "n": 17478,
+        "mean": 0.007301987848666896,
+        "median": 0.0066512955,
+        "p95": 0.018002090000000002,
+        "max": 0.028825851000000003
+      },
+      "monitor_output_age_s": {
+        "n": 84,
+        "mean": 0.03940251952380952,
+        "median": 0.03872076,
+        "p95": 0.090001,
+        "max": 0.090001
+      },
+      "published_during_source": 275,
+      "max_monitor_queue": 7,
+      "protected_unchanged": 2688,
+      "claim": "live 0.2x full28.0-second SPX-3 capture; fixed-lag incremental without stationarity certificate"
+    },
+    "lifecycle": {
+      "passed": true,
+      "mode": "on",
+      "native_updates": 131,
+      "source_injections": {
+        "g2k_injected": 126,
+        "k2g_injected": 127
+      },
+      "planned_retirements": 102,
+      "prior_refresh_updates": 102,
+      "max_cache_error": 1.640038787339909e-10,
+      "observed_total_cost_increases": 0,
+      "imu_factor_cost": {
+        "median": 12.51019738919393,
+        "max": 13873.107017253576,
+        "last": 217.29866178026037
+      },
+      "stationarity_certified": false,
+      "obsolete_FL4q_executed": false,
+      "candidate_sha256": "be637ad745f73bf12596d3bf06754f56ed7bcadfdb8b4792b94c4fcfee62aad9",
+      "note": "CP-K9 equation/lifecycle gate; cost increases are observational."
+    },
+    "local": {
+      "passed": true,
+      "mode": "on",
+      "sources": {
+        "glim": {
+          "ids": 270,
+          "versions": 11777,
+          "first": 270,
+          "revised": 11507,
+          "provider_queries": 270,
+          "local_joint_queries": 0
+        },
+        "kimera": {
+          "ids": 128,
+          "versions": 2900,
+          "first": 0,
+          "revised": 0,
+          "provider_queries": 0,
+          "local_joint_queries": 2900
+        }
+      },
+      "all_payloads_exact": true,
+      "revision_provenance": "per-version native_local row plus pinned/tested provider route; no separate repeated matrix dump",
+      "limits": "native explicit information at corrected charts; not independent/calibrated likelihood"
+    }
+  },
+  "capture": {
+    "seconds": 185.50241374969482,
+    "phase": "full",
+    "mode": "on"
+  },
+  "glim_timing": {
+    "whole": {
+      "scan_ms": {
+        "n": 271,
+        "median": 32.436189,
+        "p95": 163.811828,
+        "max": 228.638034
+      },
+      "main_ms": {
+        "n": 271,
+        "median": 6.355525,
+        "p95": 9.65166,
+        "max": 11.900208
+      },
+      "post_callback_ms": {
+        "n": 271,
+        "median": 22.554814,
+        "p95": 130.53423,
+        "max": 217.717087
+      },
+      "scans_over_500ms": 0
+    },
+    "after5s": {
+      "scan_ms": {
+        "n": 229,
+        "median": 33.651242,
+        "p95": 169.800424,
+        "max": 228.638034
+      },
+      "main_ms": {
+        "n": 229,
+        "median": 7.148864,
+        "p95": 9.732536,
+        "max": 11.900208
+      },
+      "post_callback_ms": {
+        "n": 229,
+        "median": 22.947997,
+        "p95": 141.263514,
+        "max": 217.717087
+      },
+      "scans_over_500ms": 0
+    },
+    "last20s": {
+      "scan_ms": {
+        "n": 199,
+        "median": 33.021774,
+        "p95": 163.811828,
+        "max": 204.892222
+      },
+      "main_ms": {
+        "n": 199,
+        "median": 7.266875,
+        "p95": 9.973882,
+        "max": 11.900208
+      },
+      "post_callback_ms": {
+        "n": 199,
+        "median": 22.758239,
+        "p95": 109.348521,
+        "max": 186.406196
+      },
+      "scans_over_500ms": 0
+    }
+  },
+  "glim_internal_queue_max": 1,
+  "main_prepared_hits": 55386,
+  "main_sync_calls": 0,
+  "kimera_timing_after5s": {
+    "optimize_ms": {
+      "n": 114,
+      "median": 56.15005,
+      "p95": 68.496,
+      "max": 85.3154
+    },
+    "smoother_ms": {
+      "n": 114,
+      "median": 13.32285,
+      "p95": 25.629,
+      "max": 35.6962
+    },
+    "outgoing_ms": {
+      "n": 114,
+      "median": 42.00345,
+      "p95": 50.638,
+      "max": 53.7817
+    },
+    "backend_ms": {
+      "n": 114,
+      "median": 56.54365,
+      "p95": 68.98,
+      "max": 86.0695
+    }
+  },
+  "source_coverage": {
+    "passed": true,
+    "requested_s": 28.0,
+    "imu_samples": 2800,
+    "imu_span_s": 27.990002155303955,
+    "coverage_contract": "native_keyframes_cpk22",
+    "kimera_gap_bound_s": 5.1499999999999995,
+    "native_glim": {
+      "rows": 272,
+      "start_s": 1730565900.589197,
+      "end_s": 1730565927.689332,
+      "span_s": 27.10013508796692,
+      "maximum_pose_gap_s": 0.10047793388366699,
+      "post_startup_max_gap_s": 0.10047793388366699,
+      "start_after_first_imu_s": 0.7150027751922607,
+      "tail_behind_last_imu_s": 0.1748642921447754,
+      "path_length_m": 19.352064386096963,
+      "gaps_over_1s": [],
+      "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+    },
+    "native_kimera": {
+      "rows": 131,
+      "start_s": 1730565900.0726225,
+      "end_s": 1730565927.6723814,
+      "span_s": 27.599758863449097,
+      "maximum_pose_gap_s": 1.0999915599822998,
+      "post_startup_max_gap_s": 0.20000028610229492,
+      "start_after_first_imu_s": 0.19842839241027832,
+      "tail_behind_last_imu_s": 0.19181489944458008,
+      "path_length_m": 19.2560346601646,
+      "gaps_over_1s": [
+        {
+          "before_index": 1,
+          "after_index": 2,
+          "start_s": 1730565900.2726207,
+          "end_s": 1730565901.3726122,
+          "gap_s": 1.0999915599822998
+        }
+      ],
+      "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+    },
+    "kimera_processing": {
+      "passed": true,
+      "logs": [
+        "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_stationary_preroll_cpk27_20261023/prepared/full_on_source/estimators.log",
+        "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_stationary_preroll_cpk27_20261023/prepared/full_on_source/ros_logs/2877a608-ced6-11f1-a703-4a6c5584ed1a/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log",
+        "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_stationary_preroll_cpk27_20261023/prepared/full_on_source/ros_logs/latest/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log"
+      ],
+      "frontend_processed": 278,
+      "synchronized_input_pairs_reference": 280,
+      "frontend_reference_after_startup": 277,
+      "backend_processed": 131,
+      "sequential_native_ids": true,
+      "gaps": [
+        {
+          "before_id": 1,
+          "after_id": 2,
+          "gap_s": 1.0999915599822998,
+          "wall_interval_s": 5.502420902252197,
+          "frontend_counter_first": 4,
+          "frontend_counter_last": 13,
+          "backend_before_ms": 1.98111,
+          "backend_after_ms": 3.69627,
+          "low_disparity_lines": 2
+        }
+      ],
+      "scope": "Native counters, not a new per-image receipt or branch-decision audit."
+    }
+  }
+}
+
+SOURCE COVARIANCE SUMMARY: unchanged dense6x6 scales1; rotation then translation.
+{
+  "off": {
+    "kimera_front": {
+      "versions": 2900,
+      "stable_ids": 128,
+      "revised_ids": 127,
+      "rotation_trace_rad2": {
+        "n": 2900,
+        "mean": 5.921688045500806e-08,
+        "median": 5.19885111351444e-08,
+        "p95": 9.096451969260597e-08,
+        "max": 1.1538092271224543e-05
+      },
+      "translation_trace_m2": {
+        "n": 2900,
+        "mean": 8.722484348143917e-06,
+        "median": 5.638656902508124e-06,
+        "p95": 2.5056030769829334e-05,
+        "max": 9.838898304685668e-05
+      },
+      "min_eigenvalue": 2.318969436987419e-09,
+      "max_eigenvalue": 7.995024091769693e-05,
+      "max_symmetry_error": 0.0,
+      "first_last_rotation_trace_ratio": {
+        "n": 127,
+        "mean": 0.7247226529684095,
+        "median": 0.7836086193512181,
+        "p95": 0.8977166809613553,
+        "max": 1.006317505682312
+      },
+      "first_last_translation_trace_ratio": {
+        "n": 127,
+        "mean": 0.5090831964465226,
+        "median": 0.5298328027592835,
+        "p95": 0.8821513436430112,
+        "max": 1.231978835182793
+      }
+    },
+    "glim_hesai": {
+      "versions": 11754,
+      "stable_ids": 270,
+      "revised_ids": 269,
+      "rotation_trace_rad2": {
+        "n": 11754,
+        "mean": 1.4048979491532572e-07,
+        "median": 1.3781470281992228e-07,
+        "p95": 2.2104749200911385e-07,
+        "max": 3.3595016538247704e-07
+      },
+      "translation_trace_m2": {
+        "n": 11754,
+        "mean": 2.734235024680395e-06,
+        "median": 2.6863303681707212e-06,
+        "p95": 3.3023698766695824e-06,
+        "max": 6.5219679942600714e-06
+      },
+      "min_eigenvalue": 4.919710751039812e-09,
+      "max_eigenvalue": 2.8742576869320227e-06,
+      "max_symmetry_error": 0.0,
+      "first_last_rotation_trace_ratio": {
+        "n": 269,
+        "mean": 0.7326903996218839,
+        "median": 0.7322423557752833,
+        "p95": 0.8124052918353835,
+        "max": 0.8516932730144968
+      },
+      "first_last_translation_trace_ratio": {
+        "n": 269,
+        "mean": 0.5845159201089434,
+        "median": 0.5877035866463329,
+        "p95": 0.6290017933270473,
+        "max": 0.6623459542495708
+      }
+    }
+  },
+  "on": {
+    "kimera_front": {
+      "versions": 2900,
+      "stable_ids": 128,
+      "revised_ids": 127,
+      "rotation_trace_rad2": {
+        "n": 2900,
+        "mean": 5.486110131180421e-08,
+        "median": 4.927259830216405e-08,
+        "p95": 7.36244884398436e-08,
+        "max": 1.1538092271224543e-05
+      },
+      "translation_trace_m2": {
+        "n": 2900,
+        "mean": 7.5706376889174454e-06,
+        "median": 5.067127651146945e-06,
+        "p95": 2.2384513989271075e-05,
+        "max": 8.12657059336547e-05
+      },
+      "min_eigenvalue": 2.1128827362239698e-09,
+      "max_eigenvalue": 6.628857027897339e-05,
+      "max_symmetry_error": 0.0,
+      "first_last_rotation_trace_ratio": {
+        "n": 127,
+        "mean": 0.659953794425395,
+        "median": 0.6750202309323371,
+        "p95": 0.8128069632710684,
+        "max": 0.9470999946334039
+      },
+      "first_last_translation_trace_ratio": {
+        "n": 127,
+        "mean": 0.30054855932425445,
+        "median": 0.28487413675923473,
+        "p95": 0.4546096266496038,
+        "max": 0.6733104825079286
+      }
+    },
+    "glim_hesai": {
+      "versions": 11777,
+      "stable_ids": 270,
+      "revised_ids": 269,
+      "rotation_trace_rad2": {
+        "n": 11777,
+        "mean": 1.3798108366415494e-07,
+        "median": 1.3992474150113285e-07,
+        "p95": 2.10240316901656e-07,
+        "max": 3.146434566769898e-07
+      },
+      "translation_trace_m2": {
+        "n": 11777,
+        "mean": 2.698798444935229e-06,
+        "median": 2.705122864352059e-06,
+        "p95": 3.1856950456585825e-06,
+        "max": 6.3163217551484944e-06
+      },
+      "min_eigenvalue": 4.903380356614922e-09,
+      "max_eigenvalue": 2.835761357735579e-06,
+      "max_symmetry_error": 0.0,
+      "first_last_rotation_trace_ratio": {
+        "n": 269,
+        "mean": 0.733333319990694,
+        "median": 0.734639198645526,
+        "p95": 0.8079556874931573,
+        "max": 0.85005576447731
+      },
+      "first_last_translation_trace_ratio": {
+        "n": 269,
+        "mean": 0.5853360057246408,
+        "median": 0.5872732494706515,
+        "p95": 0.628800614926083,
+        "max": 0.6673664584852357
+      }
+    }
+  }
+}
+
+LIMITS: DELAYED finalized is not ONLINE or full-history. Startup/tail gaps are
+reported in source_coverage, including sparse stationary-tail keyframes. Common
+mask segments exclude unsupported interpolation; its envelope is not dense coverage.
+Mean-only source-to-source alignment covariance approximation unchanged.
+Native sensors both still use CPT7; no central IMU/GNSS factor in7s WNOA receiver.
+Stable-ID downstream revisions replace rather than accumulate. Source CBS temporary/classic.
+No saved-journal replay or exhaustive same-input checker requested/run. Existing K16
+incomplete preservation gates remain incomplete; no default promotion or exhaustive preservation claim.
+Known post-absorption revisions are explicitly expired under CP-K19; counts and
+forgone mean/covariance changes are included in checks.receiver.expiry above.
+These changes are not GT errors; the late corrections were not incorporated.
+Raw source means,covariances,revisions,events,profiles,hashes and timing retained under:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_stationary_preroll_cpk27_20261023/prepared

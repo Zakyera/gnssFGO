@@ -1,0 +1,252 @@
+CP1 — Current GLIM covariance provenance: EIG-2 with SPX-3 contrast
+2026-10-19 | bounded saved-data/code audit only
+=================================================================
+
+Decision in brief
+-----------------
+Do not tune a covariance multiplier from the first-to-later shrinkage table.
+The actual GLIM stream changes covariance provenance: ordinary first
+publication uses the shared-native LOCAL Gaussian history; later diagnostic
+revisions use MAIN joint marginals. gnssFGO consumes both without alteration.
+This split was explicitly preserved in the S4d provider implementation, not
+introduced by this audit and not proven to be a new regression. It must be
+made explicit before calling later covariance a refinement of native-only
+uncertainty. Stable-ID replacement itself is not the problem identified here.
+
+Separately, the native-only FIRST covariance already fails to distinguish
+important EIG-2 relative-error differences. The retained diagnostics support
+local-model precision, not a calibrated bound on real motion error. No Schur
+arithmetic failure, jitter, missing endpoint cross terms, or catastrophic
+cancellation was found in the logged checks. The precise unmodelled physical
+error source is not identified by these logs. Do not assert that the prior,
+GPU cache, IMU, or correspondence model uniquely causes it.
+
+Scope and stop rule
+-------------------
+Completed only CP1 from PLAN.txt. CP2 (aligned factor covariance consistency)
+and CP3 (receiver directional influence) are NOT started. No estimator, bag,
+receiver replay, container, compiler, parameter sweep or new sequence ran.
+No estimator/configuration, covariance, CBS policy or frozen result changed.
+The scripts here read numeric telemetry and write only this new directory.
+
+Latest EIG-2 FL4x and SPX-3 FL4w: same FL4v private source builds, temporary
+classic CBS, independent100ms support clock,7s fixed-lag WNOA, no central IMU,
+Gaussian scale1. Native GLIM and Kimera still use their own IMU. No ETH1 re-
+analysis, new ATE/RPE or claims about full120s OFF completion are made here.
+
+1. Exact current code/data path
+------------------------------
+Let S=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/
+       shared_linearization_s4_provider_20261012/release_2
+Let W=/home/yeranis/repos/V4RL/cbs_gtsam4.3
+
+a. GlimCbsBridge pre-smoother hook, S/overlay/cbs_bridge.cpp:1278:
+   admitFromEnvironment admits native factors BEFORE consumeIncoming and CBS
+   insertion. Native includes LiDAR constraints, native IMU/bias factors and
+   startup constraints; it is not a LiDAR-only uncertainty calculation.
+
+b. S/source/ShadowObserver.cpp:109,141:
+   beforeRetire copies positively admitted native Gaussian cache blocks and
+   MAIN linearization Values, checking actual factor/slot identities.
+   afterRetire stages native history; commit follows successful MAIN update.
+   Non-admitted external factors are not guessed native from their type.
+
+c. S/source/NativeGaussianHistory.cpp:154-185:
+   its OWN native prior plus native factors incident on retiring keys are
+   eliminated. MAIN's mixed marginal prior is not copied. The prior reference
+   chart is checked/fixed; reset/fallback invalidates the provider.
+   Explicit received CBS Gaussian information is excluded. MAIN estimates,
+   correspondence choices and linearization history can still depend on CBS.
+   This is therefore not statistical independence or a counterfactual OFF graph.
+
+d. S/overlay/cbs_bridge.cpp:3655-3658,3699-3718:
+   current MAIN endpoint estimates define Z=X_from^-1 X_to.
+   publicationCovariance queries native history for those SAME endpoints.
+   S/source/ShadowObserver.cpp:179 computes theta.localCoordinates(current).
+   S/source/NativeGaussianHistory.cpp:217-231 obtains the joint12x12 endpoint
+   covariance and transports both endpoint charts to current MAIN estimates.
+   S/source/Provider.h:21-38 calls the unchanged Schur-relative helper using
+   that joint covariance and current poses, then checks adapter agreement.
+   There is no independent LOCAL nonlinear optimization here.
+
+e. W/src/cbs/include/cbs/utils/relative_pose_covariance.h:258-405:
+   BetweenFactor residual Jacobians, full joint information, change of
+   coordinates, Schur elimination; independently checks J P J^T including
+   cross terms. Output is right-local [phi,rho] error covariance about Z,
+   not additive uncertainty of the six serialized Log(Z) entries.
+
+f. IMPORTANT separate branch: S/overlay/cbs_bridge.cpp:1552-1562:
+   later revision export calculates CURRENT MAIN poses and directly calls
+   smoother.jointMarginalInformation, then the same Schur helper. It does NOT
+   call publicationCovariance. MAIN includes currently active received Kimera
+   factors under ON; the temporary policy removes them before marginalization,
+   not while they are still active. Mean/covariance use the same current
+   endpoints in this branch; the difference is conditioning graph, not a
+   demonstrated stale-mean/wrong-revision serialization defect.
+
+g. Saved prepared/transport_tools/live_receiver_protocol.py:28-67,78-98:
+   both first and revision rows become exact six mean +36 covariance entries
+   under the same stable ID. Source revision and source-update metadata are
+   retained. The existing receiver replaces, rather than accumulates, versions.
+   Source-to-source classic CBS remains separate; it does not broadcast these
+   diagnostic revisions while live_revision=false.
+
+Historical proof that (f) is preserved policy, not a fresh change:
+experiments/shared_linearization_s4_provider_20261012/REPORT.md:35-47,
+"Important scope boundary: later revisions". CP1 corrects any overly broad
+reading of FL4z's shorthand "shared-native GLIM covariance": this applies to
+normal first publications, not every later downstream revision.
+
+2. Recorded payload verification
+-------------------------------
+                           native-provider first    MAIN revisions
+EIG-2 OFF                         590                   26864
+EIG-2 ON                          590                   26868
+SPX-3 OFF                         590                   26662
+SPX-3 ON                          590                   26861
+
+Every source row matches the receiver event mean and ALL36 covariance entries
+exactly:109615 GLIM versions total. All2360 first matrices also match their
+SHARED_NATIVE_PROVIDER_QUERY matrix exactly. Provider admission conservation
+holds on every logged query; reset count0. Count is NOT a percentage of solver
+influence; revised versions replace previous factors, not independent samples.
+EIG-2 first replacement arrives about0.102s after first publication (median
+simulation time). Thus the downstream distinction is not just a rare tail case.
+
+The covariance provider source/bridge and libglim_ros.so match the frozen
+FL4v archive. libglim_ros SHA256:
+0114b435785ae85f58a69f1156abd1a2a320dc7138ca0b2dd4bfd56715d4ebea
+Detailed49 input/code hashes and exact-match checks:verification.json.
+
+3. Is endpoint cancellation producing an almost-zero covariance?
+---------------------------------------------------------------
+In the relative covariance
+  C = J_f P_ff J_f^T + J_t P_tt J_t^T
+      + J_f P_ft J_t^T + J_t P_tf J_f^T,
+the last two terms correctly account for correlated endpoints.
+
+The log contains mixed-unit full6D TRACE decomposition, not full endpoint
+matrices. Use it ONLY to check arithmetic/cancellation, not as a physical
+confidence measure, rotation/translation attribution or a tunable ratio.
+Median -cross/(from+to), OFF/ON:
+  EIG-2: .301551 / .300829
+  SPX-3: .444125 / .503639
+Maximum over all four captures:.712958. There is no near-total cancellation
+in this aggregate diagnostic; EIG-2 is not the more cancelling case.
+Separate directional cancellation cannot be resolved without endpoint blocks.
+
+All2360 queries report Schur mode, rank6, zero jitter and status ok.
+Maximum Schur-versus-direct matrix norm difference / covariance trace:
+8.23e-16. Decomposition sums reconcile within4.30e-6 of from+to, consistent
+with the six-significant-digit diagnostic text. Full matrix dump count0.
+This is captured arithmetic evidence, not independently reconstructed graph
+information or a calibration certificate.
+
+4. Two predeclared examples per sequence
+---------------------------------------
+Choose the median-error member of the bottom and top ON first-publication
+rho-error quartiles, tie by physical time. Selection is retrospective diagnosis,
+not a live gate. Compare identical OFF endpoints; no cherry-picked maximum.
+
+ON example              edge       reported trans norm mm    Cartesian error mm
+EIG-2 lower-error        292->294            1.545                  3.779
+EIG-2 higher-error       526->528            1.579                 15.382
+SPX-3 lower-error        569->571            1.819                  1.319
+SPX-3 higher-error       382->384            1.956                  5.553
+
+Reported norm=sqrt(trace(C_rho)), NOT a per-axis sigma or confidence radius.
+The two EIG-2 examples have about4x different error but only2.2% different
+reported uncertainty norm. Their propagated from/to/cross traces are also
+similar; this is not a large cancellation change hiding a large covariance
+change. Example details, exact timestamps, all36 entries and OFF comparisons
+are in the two evidence JSONs. SPX-3's lower-error example is in the tail and
+has no40-update comparison; it is NOT silently treated as fully revised.
+
+5. Matched revision evolution: helpful mean updates, different conditioning
+-------------------------------------------------------------------------
+Fixed cohort with recorded updates j, j+1 and j+40 in BOTH modes:
+EIG-2 550 edges; SPX-3 537 edges. Other40/53 edges excluded for tail or missing
+exact-update versions.40 updates are about4s of source time. Do not confuse
+these source-update ages with arbitrary transport revision numbers.
+
+                       first -> update+40            first -> update+40
+                       median trans norm mm          RMS translation error mm
+EIG-2 OFF                 1.578 ->1.259                  10.473 ->7.437
+EIG-2 ON                  1.578 ->1.024                  10.332 ->7.996
+SPX-3 OFF                 1.830 ->1.433                   3.526 ->2.551
+SPX-3 ON                  1.858 ->1.316                   4.082 ->3.124
+
+Median PAIRED translation covariance TRACE ratios, relative to first:
+                      next update             update+40
+EIG-2 OFF                .688962                 .639604
+EIG-2 ON                 .488972                 .424967
+SPX-3 OFF                .675385                 .614533
+SPX-3 ON                 .530999                 .478288
+
+Much of the numerical drop is already at the first replacement. However,
+that step BOTH adds observations/relinearization AND switches native-only to
+MAIN conditioning. No same-update native-versus-MAIN counterfactual is saved
+for these revised edges, so CP1 cannot assign a percentage to either cause.
+Mean errors improve with revision in all four cohorts. Do NOT revert to
+first-only beliefs. ON revised means remain worse than matched OFF in these
+translation cohorts, despite smaller reported covariance.
+
+Reference is the existing shared-CPT7 IE-TC, not independent noiseless truth.
+We recover the already-verified relative reference algebraically as
+Z_ref=Z_first Exp(e_first); OFF/ON reconstructions agree <1e-10. No new GT
+interpolation, alignment, lever-arm correction or ATE evaluation is performed.
+
+6. What the first covariance measures, and what is not established
+----------------------------------------------------------------
+It is inverse local Gaussian information marginalized to the relative pose,
+conditional on selected factors, geometry/correspondences, fixed history and
+their assumed noise. It is not an empirical error estimator that automatically
+inflates when GLIM disagrees with the physical reference.
+
+For fixed Gaussian equations H, eta, covariance comes from H, while the mean
+depends on eta. Changing the RHS can change the solution without changing
+covariance. The provider does not estimate a new error variance from GT or
+inflate C in proportion to a bad relative error. Nonlinear changes can alter H,
+but that does not guarantee calibrated error tracking.
+
+Native composition includes native IMU/bias constraints, not just LiDAR:
+W/src/glim/src/glim/odometry/odometry_estimation_imu.cpp:281-284,339-353.
+LiDAR graph creation can use fixed-target unary map factors when keyframes
+leave the active lag (odometry_estimation_gpu.cpp:209-221,249-260).
+Those map poses are conditioned constants for that factor, not extra uncertain
+graph states. These are model-scope facts, NOT isolated causes of EIG-2 error.
+
+The logs do not retain full native H, endpoint P blocks, factor-family
+information breakdown, or paired native/MAIN revised covariance snapshots for
+these captures. Therefore exact attribution to LiDAR geometry, native IMU,
+fixed-map treatment, accumulated prior, bias or reference error is unavailable.
+No attempt to manufacture those quantities or launch a new diagnostic was made.
+
+Conclusion: the first-stream confidence blind spot is real relative to the
+retained reference; the physical error mechanism remains unisolated. The
+downstream provenance split is established by code and payloads, but is NOT
+proved to cause the fusion ATE difference. Both must be distinguished from a
+Schur-complement arithmetic bug.
+
+7. Validation and bounded next decision
+---------------------------------------
+- All read original inputs retain hashes;49 input/code hashes independently
+  rechecked, including frozen provider/bridge source and actual DSO.
+- Source->event exact mean/full covariance matches109615; provider->first2360.
+- Analytical decomposition checked with an independent dense synthetic matrix;
+  fixed-H example changes mean while leaving covariance unchanged by definition.
+  These validate the audit's reasoning, not the actual sensor calibration.
+- Python syntax and git diff whitespace checked. No new C++/ASan/estimator
+  tests claimed: production code was not changed.
+- Initial analysis-only parser assertion exposed an index offset in the
+  diagnostic row parser; corrected against the emitting code before producing
+  evidence. No invalid evidence artifact or estimator change resulted.
+- No commit/push. HEAD668d4c788983722f4acad37d1495c15d03a27e18 unchanged;
+  pre-existing dirty work preserved.
+
+CP1 is complete with the stated evidence limit. Stop before CP2/CP3 and before
+any tuning. The next decision is to make intended downstream covariance
+conditioning explicit (native-only versus MAIN posterior) while preserving
+revised means, not to choose an arbitrary scale or assume replacing all
+revision covariances is automatically correct. No such change is authorized
+or implemented by this report.

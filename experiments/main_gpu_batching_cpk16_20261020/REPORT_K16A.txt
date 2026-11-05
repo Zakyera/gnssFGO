@@ -1,0 +1,145 @@
+CP-K16a — isolated MAIN batching candidate and factor correctness
+2026-10-20. FACTOR/DISPATCH GATE PASSED. NO TIMING OR DATASET RUN.
+
+SUMMARY
+=======
+Implemented the isolated opt-in MAIN batching dispatch using the EXISTING
+synchronous-compatible VGICP machinery. Built it into a private gtsam_points
+DSO retaining the CP-I3 provider and unchanged CUDA kernels. The unchanged
+CP-I1 GLIM bridge dynamically loads this candidate successfully.
+
+Factor-level checks pass: tested augmented equations, residual errors, full
+joint covariance and full6x6 relative covariance have zero observed difference
+from independent synchronous references. Exact semantic inlier/cache snapshots
+agree through changing Values and native error-cache interleaving.
+
+This does NOT establish actual MAIN-update/marginalization/provider parity:
+that is the next K16b gate. No MAIN solver lifecycle was run with batching
+enabled, and no speedup, live readiness or full-sequence admission is claimed.
+No source/receiver experiment, tuning, production/default promotion or push.
+
+IMPLEMENTATION
+==============
+Authoring:
+  /home/yeranis/repos/gnssFGO/experiments/main_gpu_batching_cpk16_20261020/
+Private source/build root:
+  /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/
+Reference: exact CP-K14/CP-I1/CP-I3 build inputs, not a catkin default rebuild.
+Read PLAN.txt and PROTOCOL_K16A.txt for the predeclared scope and tolerances.
+
+MainGpuBatch.h/.cpp:
+  Thread-local RAII scope bound to a particular ISAM2Ext identity.
+  Requires explicit CPK16_MAIN_GPU_BATCHING=1 for the wrapper path and an
+  already-attached shared-native MAIN owner. Default remains disabled.
+  Rejects unsupported Dogleg/evaluateNonlinearError modes without changing
+  optimizer settings. No process-wide hook registration or existing class
+  layout/vtable changes. Wrong owner, disabled scope and another thread cannot
+  activate it. Nested enabled scopes fail explicitly.
+  Reuses E1b.4a pure-CPU/exact-GPU/duplicate/pending-cache admission and
+  linearizeCbsLocalGraphBatched -> linearizePreservingSynchronousVGICP.
+  No new GPU kernels or ordinary store_linearized/inlier compaction.
+  Per-site request, preparation and fallback counters are available through
+  the scope API. Production logging/whole-run counter collection is not enabled.
+
+Private isam2_ext.cpp:
+  New factors, full graph, affected uncached subset and marginalization subset
+  call the new dispatcher. Candidate Gaussian factors retain original slots
+  and original synchronous ordering, including interleaved cached factors.
+  The new-factor assignment duplicates the existing UpdateImpl slot mapping;
+  elimination, relin thresholds, factor-selection rules and priors unchanged.
+  nullptr dispatch result takes the original implementation. Candidate-disabled
+  production paths are retained in the source, not rewritten as a new solver.
+
+Private incremental_fixed_lag_smoother_ext_with_fallback.cpp:
+  Opens the instance-specific scope around ordinary attached MAIN update.
+  Shared-native UpdateScope/capture/query implementation is unchanged.
+  Separate calls outside that scoped update retain the original route.
+  Actual update/fallback/replacement lifecycle remains a K16b validation item.
+
+Source changes exist ONLY as new private overlays and authoring files.
+isam2_ext.cpp.patch and wrapper .patch preserve the exact diff.
+The protected GLIM/Kimera/CBS/gtsam_points source checkouts were not edited.
+
+BUILD IDENTITY / LOADER
+======================
+Release candidate:
+  runs/main_gpu_batching_cpk16_20261020/release_1/libgtsam_points.so.1.2.1
+SHA256:
+  6f71292d29d974a0555abd9fda6b2370fdab81ca634a4e1343c216d2a762d2ca
+Changed host units only: dispatch, ISAM2Ext and outer fixed-lag wrapper.
+Other provider/link objects and the CUDA DSO are reused by recorded recipe/hash.
+See release_1/commands.json, original_link_inputs.json, checks_1/loaded_hashes.json.
+
+abi_load.json records an actual dynamic load, WITHOUT constructing a GLIM node:
+  unchanged runs/local_revision_covariance_cpi1_20261019/libglim_ros.so
+  candidate runs/main_gpu_batching_cpk16_20261020/release_1/libgtsam_points.so.1.2.1
+  unchanged runs/e1b_local_profile_20261012/release_2/libgtsam_points_cuda.so.1.2.1
+No source launch was enabled or old library replaced.
+
+One harness-only issue: the initial Release loader assertion expected the
+canonical CUDA path literally in ldd output, which prints the shared-provider
+symlink. It stopped BEFORE tests. The corrected check resolves that symlink
+to the exact expected CUDA DSO and records hashes. The same compiled executable
+then ran checks_1; no build/numerical retry or tolerance change. Original build
+commands/loader log are retained.
+
+TEST RESULTS
+============
+Release: 6 new MAIN-dispatch/factor tests +14 existing focused tests pass.
+The six new tests also pass in a second independent process.
+Host UBSan: same20 active tests pass.
+CPU ASan+UBSan: seven applicable CPU tests pass.
+Original disabled timing test remains DISABLED and was not run.
+No new optimizer lifecycle, throughput benchmark or device sanitizer run.
+Sanitizers cover changed host objects/tests; reused dependency libraries and
+CUDA device kernels are not fully instrumented. Do not claim full sanitization.
+
+New fixtures deliberately avoid global hook registration. Reused original
+fixtures run in a separate process and retain their original assertions.
+Independent ExactGpuSnapshot/FactorCopies histories preserve geometry and
+mutable state without sharing them across reference/candidate branches.
+
+Coverage:
+  fresh/used binary and unary VGICP; CPU/GPU order and null slots;
+ 28 changing-Values steps across inlier-refresh thresholds;
+  native-prepared error-cache interleaving and later residual queries;
+  full joint and dense Schur-relative covariance;
+  disabled path, wrong instance/thread, nested scope, unsupported optimizer;
+  duplicate factor pointers, pending native linearization, unknown CPU/GPU;
+  missing Values, post-preparation CPU exception and cache draining.
+
+Maximum observed new-fixture differences (Release, repeat, UBSan):
+  augmented Gaussian equations                 0
+  full joint covariance                        0
+  full6x6 relative covariance                   0
+  residual errors                              0
+  disabled/duplicate/pending/fallback equations 0
+  post-exception next-valid equations           0
+Exact tested inlier indices/anchor, live state bytes and cache lifecycle agree.
+84 equation/covariance/residual comparisons each =28 steps x3 executions,
+NOT84 distinct real-data windows. The mixed fixture has17 GPU factors and
+476 prepared/consumed factors per history; all four dispatcher site labels
+are exercised. These labels do NOT substitute for executing those solver paths.
+No assertion or tolerance was relaxed. See RESULT_K16A.json for evidence.
+
+PRESERVATION / CLEANUP
+=====================
+All2026 CP-K14 protected file hashes unchanged. Extra captured input hashes
+unchanged. HEAD/status/diff fingerprints of five source repositories unchanged.
+Original private builds/captures/settings preserved. Only one existing idle
+Noetic/CUDA container was started for compilation/tests. Before shutdown,
+docker top showed only its original tail process. It was restored to stopped;
+ubuntu-jammy-humble-nvidia remained stopped. Final inspect: both exited,false.
+Paused experiment heartbeat was not reactivated. No commits/push.
+
+DECISION AND NEXT BOUNDARY
+==========================
+K16a PASSED at factor/dispatch scope. Candidate remains private and disabled.
+Next proposed step is K16b ONLY: actual MAIN incremental/full updates, factor
+removal/slot reuse and fixed-lag marginalization, plus CP-I1/CP-I3 shared-native
+LOCAL covariance/mean parity under identical input histories.
+Report that gate before timing. Do not jump to a dataset or claim a speed gain.
+
+The separate Kimera11.10s physical revision horizon versus receiver7s retention
+failure is unchanged. This computational candidate cannot alone authorize a
+full OFF/ON retry, at0.1x or any other rate.

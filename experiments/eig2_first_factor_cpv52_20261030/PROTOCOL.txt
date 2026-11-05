@@ -1,0 +1,32 @@
+CP-V52 -- first-admission saved-checkpoint single-factor ablation, 2026-10-30
+Explicit user approval of CP-V51 next step; no sensor or full sequence replay.
+
+Input: CP-V51 Hesai EIG-2 update6, 1.599933s after capture, before any CBS history,
+marginalization or retirement. First factor is native slot929, x4->x5. Native
+no-motion206 x2->x3 is NOT CBS and remains. Four native priors remain unchanged.
+A: exact saved ON graph. B: same graph and state, null ONLY slot929. Preserve
+all native smart-factor observations/calibration/cache, IMU/PIM, bias factors,
+priors, native Jacobians and noise models. No covariance investigation/rescaling.
+
+One native ordinary GN step then one current-state refresh per arm. Require A
+initial/theta agreement <1e-12, fresh/cached equations <1e-12 relative, ordinary
+captured state <1e-6 mixed tangent norm, exact-state refresh equations <1e-12,
+chained refresh captured state <1e-5 BEFORE any B optimization. Never relax gates.
+Clone graphs for solving and separate clones for costs. Reinsert removed factor
+only into an identity-check copy and require serialized roundtrip equality.
+No iterative optimization to improve metrics. Four experimental GN steps total.
+
+Release and ASan/UBSan synthetic fixtures: single-factor removal only, initial
+state untouched, native factor retained, expected effect on a constrained pose
+chain, two steps per arm, linear backward residual. Vendor DSOs uninstrumented.
+Archive six residual components (native Pose3 Local/error coordinates, radians
+and metres), native per-family costs, poses, velocities, accelerometer and gyro
+biases before/after each phase. Compare actual saved OFF only after checking
+its initial state and non-CBS factor functions; different smart caches may remain.
+No live trajectory/ATE, true-bias, nonlinear stationarity or full-run cause claim.
+
+Preflight: both containers stopped, no competing jobs, >=4GiB free. Private
+diagnostic build only; fresh roots and exclusive output creation. Pin CP-V51
+inputs/outputs and inherited protected manifest. Retain failed evidence. Stop on
+parity/integrity/cleanup failure. Restore both originally-stopped containers,
+check owned process exit and four-sequence667-file Hesai originals at closeout.

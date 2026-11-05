@@ -1,0 +1,314 @@
+CP-V34 — EIG-2 VELODYNE / KIMERA METHOD 1 SHAKING
+Saved-data diagnosis, 2026-10-29
+================================================
+
+VERDICT
+The spikes are present in the saved MAIN graph estimates, not introduced by
+Rerun. Their dominant CBS-ON mechanism is coherent repositioning/rotation of
+Kimera's active window between optimizer updates. This is quite different from
+the robot moving backwards/forwards, or the local stereo trajectory repeatedly
+expanding and shrinking. CBS-ON amplifies the absolute-window corrections.
+
+No evidence was found for different physical IMUs accidentally treated as one,
+or a camera/LiDAR-frame transform accidentally applied on the GLIM-to-Kimera
+transport examined here. Those checks do NOT prove that all calibration,
+preintegration, covariance, marginalization or optimizer code is correct.
+
+The exact initiating defect is NOT yet identified. Prior/global anchoring and
+incremental linearization under competing, very tight peer factors is the
+strongest next investigation. Temporal mean alignment with unchanged covariance
+is a second concrete modeling limitation to isolate. Baseline OFF deformation
+also warrants native VIO/initialization checks. Do not label this a proven
+CP-K9 bug, a proven bad Velodyne calibration, or harmless plotting alone.
+
+No estimator/receiver run, build, container operation, parameter change, repair,
+default promotion, deletion or push was performed. This is original CP-V4,
+receiver Qc multiplier 1.0, not the later 0.25 ablation. WNOA is downstream and
+does not generate the GLIM beliefs arriving in Kimera.
+
+1. WHAT WAS EXAMINED
+--------------------
+Original full 355.02 s EIG-2 Velodyne OFF/ON; original Hesai EIG-2 as control.
+Exact source roots are in *_summary.json. Original selected window begins at
+1730638816563546034 ns. All times below are relative to that capture start.
+
+MAIN endpoint snapshots came from KIMERA_CBS_REVISION_EDGE_ROW in estimators.log.
+These contain saved MAIN poses, not the LOCAL covariance-only solution. We
+grouped rows by backend update and compared identical active IDs. Coverage:
+  Velodyne OFF: 1744 of 1760 successive steps
+  Velodyne ON:  1752 of 1764 successive steps
+  Hesai ON:     1744 of 1760 successive steps
+Missing IDs are explicitly listed; no invented states or gap bridging.
+
+Endpoint absolute positions reproduce the rounded original backend pose log
+within 0.085 mm. Same-update relative SE3 motion reproduces native incremental
+Kimera ROS motion within 3.04e-10 m / 1.34e-9 rad. This independently checks the
+meaning of the recovered snapshots and the Method 1 / Method 2 distinction.
+
+All complete OFF Kimera timestamp, absolute-position and orientation arrays
+are exactly identical between the Hesai and Velodyne captures. Therefore the
+OFF shaking is not caused by Velodyne peer beliefs. The small differences in
+their common-mask scores are due to different masks, not different OFF poses.
+
+2. DIRECT EVO SCORES — EXISTING CP-V32, NOT NEW CUSTOM ACCURACY METRICS
+-------------------------------------------------------------------
+EIG-2 Velodyne / Kimera:
+
+Output                   ATE OFF -> ON (m)   Path OFF -> ON (m)   RPE t (m)          RPE r (deg)
+Method 1 absolute        2.3078 -> 1.8010     290.38 -> 790.17    .4542 -> 1.0619    1.664 -> 5.072
+Method 2 incremental     1.8796 -> 1.7987     177.37 -> 183.48    .0891 -> .1053      .828 -> .985
+
+Same reference/common support: 188.02 m, 353.1/355.02 s; 349 distance-RPE pairs.
+ATE: evo1.36.3 whole-common-mask rigid SE3 alignment, no scale.
+RPE: evo1.36.3 consecutive reference-distance delta 0.5 m, no alignment; actual
+intervals 0.500141--0.601406 m. Paths are estimated common-mask paths, not physical
+distance travelled or full-native-cadence lengths. IE-TC shares CPT7 and is not
+independent prism ground truth. Existing terminal omissions remain unchanged.
+
+ON has lower global aligned absolute ATE but much worse Method 1 short-range
+consistency. Native incremental ON also worsens translation RPE by about18.2%
+and rotation RPE by about19.0%, despite about4.3% lower incremental ATE. Thus
+changing the display/output convention does NOT remove every accuracy concern.
+Historical refined-GLIM scores are irrelevant to the mechanism checks here.
+
+3. THE LARGE SPIKES ARE MOSTLY WHOLE-WINDOW CORRECTIONS
+------------------------------------------------------
+At update k, with p(i|k) the pose i after update k:
+
+  Method 1 displacement = p(k|k) - p(k-1|k-1)
+                        = [p(k-1|k) - p(k-1|k-1)] + [p(k|k) - p(k-1|k)]
+                          previous-pose revision       same-update motion
+
+This is an exact VECTOR identity. Norms of the two terms do not generally add.
+The old historical Method 1 output is not replaced when the window is revised.
+
+Native-body diagnosis over the available successive steps:
+
+Case                  Revision median / p95 / max (m)   Count >0.5m / >1m   Motion p95 / max (m)
+OFF, either LiDAR     .0164 / .6026 / 4.8496             112 / 27            .1932 / .2361
+Hesai ON              .0924 / .7251 / 2.6871             180 / 51            .1961 / .2293
+Velodyne ON           .2424 / 1.9680 / 6.3426             489 / 216           .1932 / .2371
+
+The new local movement is small; the previous-pose revision grows dramatically.
+The diagnostic norms above are NOT new ATE/RPE metrics.
+
+Concrete event: update1097, t=219.798141556 s, approximately0.2 s after update1096.
+  Previous body pose revised:                 6.342610 m
+  New movement in the current solution:       0.164165 m
+  Method 1 body-output jump:                  6.331873 m
+  Corresponding common-prism output jump:     6.411378 m
+  Shared active poses:                       25 (IDs1072..1096)
+  Coherent window rotation:                 13.940743 deg
+  Coherent yaw / tilt:                     -13.611845 / 2.891333 deg
+  Window centroid movement:                  6.008906 m
+  Maximum remaining 3D shape residual:        0.022367 m
+  Centered window extent ratio:               1.010340
+
+After removing ONE rigid transform between these two window snapshots, the
+same25points disagree by at most2.24cm. The transform explains99.99953% of the
+squared displacement of those points. This is not a per-pose fitting trick,
+nor a change to the accuracy evaluation. See window_mechanism.png.
+
+Across479 Velodyne ON events with previous-pose revision>0.5m and old window
+extent>0.5m, the median rigid-explained fraction is99.9797%; the median maximum
+shape residual is3.12cm, p95 8.19cm. Median extent ratio1.00046, p95 1.02045.
+Median absolute coherent yaw4.08deg, tilt1.02deg. This is not predominantly
+window scale pumping. Extent ratio is a geometric diagnostic, NOT a measured
+stereo scale parameter and NOT proof that metric scale is perfectly calibrated.
+
+OFF is less clean: in its112 qualifying large events, median maximum shape
+residual29.57cm, p95 84.85cm, maximum1.282m. There is real local deformation in
+parts of the OFF sequence; not every event in every mode is purely rigid.
+
+4. USER HYPOTHESIS 1 — DIFFERENT IMUs TREATED AS THE SAME
+--------------------------------------------------------
+Not supported by saved execution evidence:
+  * Actual Kimera argv remaps imu:=/boxi/cpt7/imu.
+  * Saved GLIM config uses /boxi/cpt7/imu, cpt7_imu body/IMU frame, acc_scale1,
+    imu_time_offset0 and points_time_offset0.
+  * Actual source metadata selects alphasense_front_stereo+cpt7_imu for Kimera
+    and velodyne+cpt7_imu for GLIM. Kimera T_BS is identity; rate100Hz,
+    imu_time_shift0, automatic IMU/camera time alignment disabled.
+  * Original bag preflight records35502 CPT7 messages, max gap10.001ms.
+  * Both actual body frames and Kimera external-pose-frame setting are cpt7_imu.
+
+Do not infer a different IMU from unused launch defaults, or from the historical
+directory name eth1_mono_shared_cpt7. Actual execution here is stereo/shared
+CPT7. Kimera's +Z gravity convention and GLIM's world orientation need not be
+equal world frames; this does not by itself mean different body axes/IMUs.
+
+Limits: same physical source does not imply identical preintegration/noise
+models, and no hash of every per-consumer IMU callback packet was retained.
+Wrong integration conventions or dropped/interpolated support inside a consumer
+would require the focused packet-level replay below, not a claim based on names.
+
+5. USER HYPOTHESIS 2 — WRONG BODY FRAME / BELIEF TRANSFORM
+---------------------------------------------------------
+No transport-frame error was found in the examined route:
+  * Original calibration preflight compared frozen profiles to raw TF paths:
+    left/right camera max difference1.94e-12; Velodyne2.29e-13;
+    prism7.66e-10. These establish consistency with dataset calibration, not
+    independent physical calibration accuracy.
+  * GLIM's private exporter uses MAIN from_pose.between(to_pose), where the
+    LIO graph pose is the IMU/body pose. The Velodyne extrinsic is already in
+    the LIO measurement model; it must not be applied again to that belief.
+  * All3540 incoming GLIM beliefs exactly match saved GLIM endpoint exports.
+    Recomputing endpoint relative transforms gives max translation difference
+    1.87e-14m and rotation5.20e-13deg.
+  * For all1744 Velodyne aligned candidates, incoming bag mean vs Kimera raw
+    mean differs by at most2.22e-16 per component, covariance exactly equal.
+    Same check passes all1740 Hesai candidates. No unexpected conjugation,
+    inversion or order swap occurs between these saved stages.
+  * Kimera base and external body frame are both cpt7_imu; wrapper code's
+    optional body-frame conversion branch is therefore not needed.
+  * Aligned mean and covariance exactly match the subsequent frozen candidate
+    record. Candidate count is not an assertion that every candidate merged:
+    observed merge-row counts are1699 Velodyne and1721 Hesai.
+
+The GLIM message header says map and Kimera output says odom. These world-frame
+names do NOT require rotating a body-relative belief by a guessed map-to-odom
+transform: (G*X_i)^-1*(G*X_j) = X_i^-1*X_j. Different sensor BODY frames would
+require an extrinsic conjugation; this checked route uses the same body frame.
+
+This validates the saved exporter/transport arithmetic, not every deskew,
+reprojection or covariance tangent/Jacobian computation in the estimators.
+
+6. TIMING / COVARIANCE IS A REAL REMAINING SUSPECT
+------------------------------------------------
+For matched GLIM-to-Kimera candidates (sender time minus receiver time):
+
+                                  Velodyne median / max     Hesai median / max
+Endpoint displacement in time      ~41.18 / 49.47 ms          ~17.34 / 18.83 ms
+Mean translation correction         5.879 / 32.113 mm          2.418 / 13.890 mm
+Mean rotation correction             .394 / 3.541 deg          .180 / 1.394 deg
+
+These are different sensor endpoint times, not proof of a clock error. Sender
+intervals are about200ms, matching receiver intervals about200ms. Saved source
+and logged source timestamps match exactly after the same double-to-ns rounding.
+All examined alignments obey the logged causal availability bound. Velodyne's
+existing sensor-time audit passes and all published scan intervals have IMU
+bounds; that old audit explicitly is not a full independent deskew-equation audit.
+Some interleaved GLIM pairs miss the50ms endpoint gate and are rejected/retried;
+they must not be silently treated as accepted or used to relax the guard.
+
+The code uses native-IMU temporal bridges on both ends of the relative factor.
+But the covariance is copied unchanged. Bridge uncertainty/correlations and
+the full covariance transformation are not represented. This is the previously
+declared mean-only approximation, not a newly discovered hidden frame swap.
+
+Across Velodyne candidates, marginal rotation sigmas have axis medians
+(.003673,.002856,.005637)deg; translation sigmas(2.009,1.522,1.046)mm.
+Hesai corresponding medians(.003506,.002712,.002814)deg and
+(1.083,.896,1.005)mm. These are local-coordinate marginal standard deviations,
+not calibrated total state uncertainty or independent likelihoods.
+
+At the6.34m revision event, the incoming aligned relative motion is only
+0.117894m; before update it differs from Kimera's same-edge relative estimate
+by31.86mm and0.2947deg. Temporal alignment changes the GLIM mean by6.23mm and
+0.3383deg. The rotational marginal sigmas are about.00194--.00356deg.
+After update the edge disagreement is22.57mm and0.1786deg, while the window
+moves meters. The incoming message does NOT directly command a6m step.
+
+These large disagreements compared with small reported marginal sigmas make
+uncertainty/linearization compatibility a priority. They are NOT a valid NIS
+test: receiver uncertainty and shared-IMU/cross-factor correlations are omitted.
+The magnitude of a legitimate mean correction is also not its estimation error.
+Do not claim timing caused the spikes solely from these comparisons.
+
+7. WHY PRIOR / SOLVER DIAGNOSIS COMES NEXT
+-----------------------------------------
+The graph has strong initial priors: initial position sigma1e-5m, yaw0.1deg,
+roll/pitch10deg, velocity.001m/s;25keyframe horizon, numOptimize1,
+relinearizeThreshold.01, relinearizeSkip1, wildfire.001, no Dogleg.
+Therefore 'just no/weak initial prior' is not established. What matters is the
+effective marginalized prior, fixed-variable bookkeeping and nonlinear
+linearization later in the mission, not only an initial YAML number.
+
+The executed private Kimera DSO is CP-K9, SHA256
+be637ad745f73bf12596d3bf06754f56ed7bcadfdb8b4792b94c4fcfee62aad9.
+Selectors: CPK9_PRIOR_REFRESH1, FL4Q_ENABLE0, FL4M_RETIREMENTremove.
+CP-K9 releases accounted native fixed-key locks at actual temporary-peer
+retirement after wrapping the original marginal prior in its immutable chart.
+Its historical focused tests passed; those are not proof of nonlinear
+stationarity or real-sequence conditioning at these large updates.
+OFF has no peer retirement activation and still shakes, so CP-K9 alone cannot
+explain the entire baseline symptom. ON adds both peer constraints and their
+retirement/refresh path; these effects must be separated.
+
+A correct relative pose factor is invariant under a common world transform.
+It does not directly tell Kimera where its whole window should sit in the
+world. Through interaction with IMU/visual/prior terms and linearization it can
+nevertheless change the global solution. The observed nearly rigid, yaw-heavy
+motion makes that interaction a stronger lead than wholesale scale collapse.
+This does not prove a free gauge/nullspace: the retained prior can constrain it.
+
+There is also a startup qualification: the original retained Hesai-matched
+window did NOT pass the later strict quiet-start check (gyro norm p95.01782rad/s,
+image difference2.5349). Possible initialization/bias effects remain open;
+do not change the startup crop in the first reproducer and confound the test.
+
+8. PROPOSED MINIMAL DISCRIMINATING EXPERIMENT — NOT LAUNCHED
+-----------------------------------------------------------
+First reproduce Kimera only, unchanged camera/CPT7/profile and original start,
+OFF then ON with the SAVED Velodyne incoming belief stream. No new GLIM run or
+fusion campaign is needed. Use original pacing and preserve receipt/order;
+require matching keyframe IDs, factor admission/retirement and pose histories
+before drawing conclusions from a replay. A cropped cold start near a spike
+would not reproduce the accumulated marginal prior.
+
+Bound to300sensor-seconds from the original start: this covers the large ON
+events around201--220s and the OFF peak near267.8s. Instrument only targeted
+updates to control overhead; retain failed evidence if parity fails.
+
+At each target update save full states/velocities/biases and factor graph at:
+  A. entry / native new-measurement preparation;
+  B. peer insertion and the solve;
+  C. temporary factor retirement, prior promotion and relinearization;
+  D. marginalization / final published state.
+Place hooks at the actual implementation stages; do not infer intermediate
+states from final output or conflate sequential phases when code combines them.
+
+Record prior anchors/Hessian/gradient, fixed keys and cache identities; factor
+costs split into visual, IMU, marginal prior and peer; update delta, nonlinear
+gradient and step acceptance; exact IMU packets and both temporal bridges.
+Evaluate costs on consistent snapshots and graphs. Before/after graph changes
+need not have the same objective, so a raw total-cost difference is not enough.
+
+Then use captured snapshots for read-only diagnostic clones, one question at
+a time, without modifying or promoting the baseline:
+  * Same objective, fully refreshed and converged reference solve: if the
+    original update moves meters but this stable solution does not, investigate
+    incremental cache/linearization/convergence rather than tune a weight.
+  * Prior/retirement equivalence and gauge-direction checks: if the function or
+    information changes incorrectly at removal/promotion, repair that identity.
+  * Independently reconstruct timestamp/body-frame bridges from saved packets;
+    examine properly transported uncertainty including bridge uncertainty and
+    shared-input correlations. Do not simply disable alignment or inflate a
+    covariance until the line looks smooth.
+  * If native OFF already changes local shape, inspect initialization/bias and
+    stereo smart-factor residuals/conditioning using the same frozen inputs.
+
+Success is an explained, repeatable mechanism with a targeted regression test,
+not just a lower ATE or smoother display. Only after diagnosis should one
+isolated fix be evaluated with BOTH absolute and incremental evo ATE/RPE,
+path length, coverage and retained prior/lifecycle checks.
+
+9. ARTIFACTS / LIMITS
+----------------------
+analyze_windows.py, *_events.json, *_summary.json, window_results.json:
+  full available MAIN-window diagnostics and same-update output identity checks.
+analyze_inputs.py, *_input_events.json, *_rotation_events.json, input_results.json:
+  raw/aligned/frozen message checks, endpoint timing, window yaw/tilt diagnostics.
+finish_diagnostics.py, verification.json, window_mechanism.png:
+  source export/config checks,98 frozen input hashes, reused direct-evo archives.
+closeout.json: final hashes and original four-sequence checkpoint verification.
+
+Inspection-only current wrapper/bridge sources not explicitly pinned by the
+original manifest are identified as such in verification.json; actual saved
+messages/configuration and archived backend/exporter/binary identities carry
+the historical claims. Not all current source files prove old binary identity.
+
+Saved logs lack per-stage full nonlinear objectives, prior Hessians, gradients,
+cached linear factors and bias/IMU packets. Thus the mechanism is measured,
+but the precise upstream cause remains unresolved. No assertion of nonlinear
+stationarity, statistical significance or universal estimator behavior is made.

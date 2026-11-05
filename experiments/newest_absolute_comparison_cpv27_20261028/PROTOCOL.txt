@@ -1,0 +1,35 @@
+CP-V27 — SEVEN-PAIR NEWEST ABSOLUTE GRAPH POSE COMPARISON
+2026-10-28; saved-data evaluation requested by user.
+
+Scope: four completed Hesai pairs (ETH1/EIG-2/SPX-3/LEICA-2) and three
+completed Velodyne pairs (SPX-3/EIG-2/LEICA-2). No new estimator execution,
+receiver replay, build, container launch, settings change, deletion or push.
+Retain original receiver Qc1.0; not the later0.25/.1 candidates.
+
+Primary policy: newest absolute optimized graph pose at the recorded output
+update, never later retirement/finalized poses and never accumulated increments.
+GLIM: original glim_odometry.csv. Fusion: original online_trajectory.tum.
+Kimera: W_Pose_B_lkf_from_state_ in KIMERA_BACKEND_POSE_PATH_ROW, emitted
+immediately before BackendOutput creation. This is a saved backend estimate,
+not the actual incremental /kimera_vio_ros/odometry publication.
+
+Validate the pinned implementation, complete unique monotonic keyframe IDs,
+and each same-row incremental pose against the original Kimera CSV. Recover
+timestamps from exact integer CSV header stamps, NOT the low-precision log
+timestamp. Require every publication to have exactly one corresponding row.
+Quantify six-significant-digit pose logging precision; do not claim bit-exact
+Kimera absolute reconstruction. Preserve original incremental metrics separately.
+
+Reuse CP-V10 reference, CPT7-to-prism lever arm, rigid SE(3) no-scale alignment,
+integer100ms grid and exact six-product common mask. Verify identical coverage
+and exact unchanged GLIM/fusion and native Kimera scoring. Report common-mask
+ATE, percentage CBS change, connected path and reference path. Keep full-saved
+own-sampling metrics and coverage separately, not mixed into primary rankings.
+Keep1s/10s/20s RPE and independent alignment/matrix checks in saved results.
+
+No smoothing or per-segment alignment. Timestamp matching and interpolation
+are offline evaluation operations, not equal-latency publication guarantees.
+IE-TC shares CPT7, not independent prism ground truth. Four missions/seven
+sensor pairs are not seven independent missions; Kimera OFF is repeated data
+across sensors. Original failures/terminal omissions remain disclosed.
+Preserve CP-V10/CP-V26 and all source artifacts. Hash inputs before/after.

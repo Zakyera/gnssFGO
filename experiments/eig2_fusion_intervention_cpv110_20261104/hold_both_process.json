@@ -1,0 +1,37 @@
+{
+  "started": "2026-11-04T15:37:00.059003+02:00",
+  "args": [
+    "docker",
+    "exec",
+    "-e",
+    "LD_LIBRARY_PATH=/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib",
+    "-e",
+    "OMP_NUM_THREADS=1",
+    "ubuntu-jammy-humble-nvidia",
+    "bash",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/receiver_cpk19.sh",
+    "--mode",
+    "sources",
+    "--timeline",
+    "record",
+    "--solver",
+    "isam2",
+    "--support-policy",
+    "uniform_imu",
+    "--support-period-ns",
+    "100000000",
+    "--receiver-startup-samples",
+    "59",
+    "--receiver-model",
+    "source_wnoa",
+    "--event-stream",
+    "/home/yeranis/repos/gnssFGO/experiments/eig2_fusion_intervention_cpv110_20261104/hold_both_events.csv",
+    "--out",
+    "/home/yeranis/repos/gnssFGO/experiments/eig2_fusion_intervention_cpv110_20261104/hold_both"
+  ],
+  "identity": {
+    "pid": 113179,
+    "proc_start": 2102200,
+    "command": "docker exec -e LD_LIBRARY_PATH=/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib -e OMP_NUM_THREADS=1 ubuntu-jammy-humble-nvidia bash /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/receiver_cpk19.sh --mode sources --timeline record --solver isam2 --support-policy uniform_imu --support-period-ns 100000000 --receiver-startup-samples 59 --receiver-model source_wnoa --event-stream /home/yeranis/repos/gnssFGO/experiments/eig2_fusion_intervention_cpv110_20261104/hold_both_events.csv --out /home/yeranis/repos/gnssFGO/experiments/eig2_fusion_intervention_cpv110_20261104/hold_both "
+  }
+}

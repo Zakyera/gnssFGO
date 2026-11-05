@@ -1,0 +1,69 @@
+CP-V73 -- readiness-gated full frozen-input retention comparison
+IN PROGRESS, 2026-10-31. See PROTOCOL.txt for exact scope and gates.
+
+BUILD GATES PASSED (18:21 local): Release + ASan/UBSan delivery/readiness and
+native compatibility fixtures, exact disabled-remove state/cache/tree parity,
+private backend compile/link/dependencies. Backend SHA256
+141474ecf226f863c81e5f8b70df0843b80420aa2e78f74fb48729a1958169d1.
+9091 protected files unchanged. Both containers restored stopped; owned build
+controller exited0. No sensor playback during build. Full comparison pending.
+
+LAUNCH:18:22:36 local, ONCE; supervisor45229/controller45231, launch.json and
+replay_attempt/start.json. Prepared9558 protected files; CP71 frozen inputs
+byte-identical. Status/stage receipts authoritative; do not duplicate stages.
+
+CP72 traced CP71 failure to missing due-input synchronization in the diagnostic
+replay, not to a numerical retain failure (RETAIN never started). Preserve both
+CP71 failed attempt and CP70 successful60s pair. This fresh test uses a private
+bounded readiness barrier; original source/arrival stamps and backend admission
+IDs remain unchanged. Actual enqueue acknowledgements only; no synthetic data.
+
+Implementation: ReplayReadiness.h uses steady-clock fixed2000ms timeout and
+condition-variable generation. Snapshot before queue pop prevents lost wakeup;
+no readiness mutex during queue access, no queue mutex while waiting. Actual
+ROS callback/wrapper forwarding remains independent (parallel_run=1 and nominal
+20Hz wrapper unchanged). Backend object layout unchanged. ready() preflights a
+copy of the existing schedule gate, allowing only a missing currently-due edge
+to wait; structural/duplicate/late/past-missing guards remain fatal. Original
+select() performs unchanged release bookkeeping. Accumulated inputs bounded.
+Disabled barrier passes the original popped vector through unchanged.
+
+Only VioBackend.cpp enqueue notification / collection call and private headers
+are changed. Native estimator mathematics, covariance scale/entries, matching,
+timestamp semantics, CP-K9/CP40 refresh, native smart factors and existing
+retirement selector are unchanged. Build fixtures run before any playback.
+Build source pins/commands/Release/sanitizer/native compatibility/disabled parity
+and cleanup receipts are in build_initial/ and workspace run build folders.
+
+Fresh full pair will consume CP71 frozen inputs byte-exact:1743 accepted aligned
+CP49 ON beliefs,1762 native timestamp sequence,355.02s selected full interval.
+Both arms use CBS-ON input, REMOVE is not CBS-OFF. Kimera-only, no new GLIM/fusion
+or returned-peer consumer. Conditional retention stability, not a new live
+three-estimator comparison. Original1798 unaccepted inputs remain omitted.
+Failed prefixes are not scored as full results. CP67 LOCAL provenance remains
+FAILED; this experiment does not authorize live retention/default promotion.
+
+Controller stage/status receipts are authoritative after launch. No duplicate
+capture/validation/scoring, retry or guard relaxation. Results only after both
+arms satisfy exact input/update/binding/coverage and absorption checks.
+Replay readiness wall time will be recorded separately, not claimed as solver
+time or evidence of realtime performance. Existing optimize_total timer includes
+external input collection (and therefore these waits); label it explicitly as
+inclusive. Native smoother_update timing remains separate. EVO-only Method1/no-scale SE3 and
+reference-distance0.5m RPE, full/common masks separate; IE-TC shares CPT7.
+
+FINAL CONTROLLER STATUS 2026-10-31T19:19:41.596000+02:00
+{
+  "passed": false,
+  "scored": false,
+  "error": "AssertionError(('capture_retain', 1))",
+  "cleanup_error": null,
+  "integrity_error": null,
+  "containers_restored": true,
+  "protected_files": 9558,
+  "completed": "2026-10-31T19:19:41.595880+02:00",
+  "controller_pid": 45231,
+  "controller_exiting": true,
+  "live_bidirectional_provenance_gate_passed": false,
+  "default_promotion": false
+}

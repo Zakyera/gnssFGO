@@ -1,0 +1,198 @@
+CP-V32 — ALL SEVEN PAIRS: METHOD1 / METHOD2 WITH EVO DISTANCE RPE
+Completed 2026-10-29. Original baseline Qc1.0. Saved-data evaluation only.
+
+All ATE and RPE values in these NEW tables are computed directly by evo1.36.3.
+ATE: evo_ape translation RMSE after one whole-common-mask SE3 fit, no scale.
+RPE: evo_rpe translation/rotation RMSE, delta0.5m along the reference path,
+consecutive pairs, no alignment. Exact same reference pairs across all methods,
+estimators and OFF/ON within each sensor/mission. No pair crosses a masked gap.
+Evo distance selection operates on sampled poses; actual intervals can exceed
+0.5m. This is not exact spatial resampling or overlapping --all_pairs.
+
+Estimated path: sum evo path_length over valid common segments, not physical
+travel or full-native-cadence path length. Both added RPE columns show OFF→ON.
+Positive ATE improvement means lower ON error. All metrics: lower is better.
+Counts/coverage are below; do not label these matched-mask scores full coverage.
+All historical ATE/path values reproduce within numerical precision; the NEW
+provenance is direct evo scoring, not custom formulas plus evo cross-checks.
+METHOD 1 — NEWEST ABSOLUTE OUTPUTS
+GLIM first-published MAIN, Kimera recovered absolute backend, fusion ONLINE.
+Kimera here is NOT native incremental ROS. Older points are not replaced.
+
+HESAI
+
+| Sequence | Estimator | ATE OFF (m) | ATE ON (m) | ATE improvement | Estimated path OFF → ON (m) | RPE translation OFF → ON (m) | RPE rotation OFF → ON (°) |
+|---|---|---:|---:|---:|---|---|---|
+| ETH1 | GLIM | 0.0415 | 0.0387 | +6.6% | 202.86 → 202.67 | 0.0184 → 0.0150 | 0.349 → 0.334 |
+| ETH1 | Kimera | 4.2092 | 1.6060 | +61.8% | 628.98 → 782.32 | 1.8024 → 0.8891 | 1.259 → 2.859 |
+| ETH1 | Fusion | 0.1679 | 0.1045 | +37.8% | 223.24 → 216.30 | 0.0659 → 0.0371 | 2.041 → 1.933 |
+| EIG-2 | GLIM | 0.0516 | 0.0444 | +13.9% | 189.78 → 189.90 | 0.0195 → 0.0163 | 0.638 → 0.632 |
+| EIG-2 | Kimera | 2.3101 | 1.1013 | +52.3% | 290.32 → 361.73 | 0.4529 → 0.3553 | 1.667 → 1.713 |
+| EIG-2 | Fusion | 0.1655 | 0.1346 | +18.7% | 201.53 → 200.50 | 0.0418 → 0.0361 | 2.280 → 2.219 |
+| SPX-3 | GLIM | 0.0167 | 0.0171 | -2.8% | 90.96 → 91.21 | 0.0068 → 0.0069 | 0.259 → 0.257 |
+| SPX-3 | Kimera | 0.3618 | 0.2211 | +38.9% | 102.60 → 99.11 | 0.1519 → 0.1256 | 0.711 → 1.479 |
+| SPX-3 | Fusion | 0.0421 | 0.0380 | +9.7% | 94.14 → 94.16 | 0.0301 → 0.0275 | 1.458 → 1.413 |
+| LEICA-2 | GLIM | 0.4949 | 0.4974 | -0.5% | 205.87 → 205.62 | 0.0218 → 0.0168 | 0.415 → 0.316 |
+| LEICA-2 | Kimera | 1.0058 | 0.7732 | +23.1% | 203.23 → 218.95 | 0.0361 → 0.0674 | 0.504 → 0.715 |
+| LEICA-2 | Fusion | 0.6604 | 0.5200 | +21.3% | 220.28 → 217.45 | 0.0317 → 0.0300 | 1.469 → 1.422 |
+
+VELODYNE
+
+| Sequence | Estimator | ATE OFF (m) | ATE ON (m) | ATE improvement | Estimated path OFF → ON (m) | RPE translation OFF → ON (m) | RPE rotation OFF → ON (°) |
+|---|---|---:|---:|---:|---|---|---|
+| SPX-3 | GLIM | 0.0524 | 0.0581 | -10.9% | 91.74 → 92.10 | 0.0277 → 0.0303 | 0.453 → 0.352 |
+| SPX-3 | Kimera | 0.3616 | 0.2714 | +25.0% | 102.60 → 119.31 | 0.1519 → 0.2131 | 0.711 → 1.868 |
+| SPX-3 | Fusion | 0.1246 | 0.1097 | +12.0% | 94.27 → 94.58 | 0.0376 → 0.0414 | 1.430 → 1.354 |
+| EIG-2 | GLIM | 0.2901 | 0.3335 | -15.0% | 205.07 → 202.50 | 0.1070 → 0.0768 | 0.886 → 0.816 |
+| EIG-2 | Kimera | 2.3078 | 1.8010 | +22.0% | 290.38 → 790.17 | 0.4542 → 1.0619 | 1.664 → 5.072 |
+| EIG-2 | Fusion | 0.5309 | 0.8843 | -66.6% | 213.75 → 210.83 | 0.0733 → 0.0913 | 1.919 → 1.851 |
+| LEICA-2 | GLIM | 2.7822 | 0.8489 | +69.5% | 206.50 → 207.64 | 0.0963 → 0.0436 | 1.330 → 0.555 |
+| LEICA-2 | Kimera | 1.0054 | 1.5324 | -52.4% | 203.22 → 374.13 | 0.0361 → 0.3190 | 0.504 → 1.610 |
+| LEICA-2 | Fusion | 2.0060 | 1.8680 | +6.9% | 277.60 → 233.00 | 0.0606 → 0.0523 | 3.031 → 1.716 |
+
+METHOD 2 — CAUSAL INCREMENTAL OUTPUTS
+GLIM/fusion accumulate same-update relative motions; Kimera native incremental
+ROS is used unchanged, never double-integrated. Not finalized/retired output.
+
+HESAI
+
+| Sequence | Estimator | ATE OFF (m) | ATE ON (m) | ATE improvement | Estimated path OFF → ON (m) | RPE translation OFF → ON (m) | RPE rotation OFF → ON (°) |
+|---|---|---:|---:|---:|---|---|---|
+| ETH1 | GLIM | 0.2957 | 0.4160 | -40.7% | 203.15 → 203.25 | 0.0204 → 0.0185 | 0.370 → 0.360 |
+| ETH1 | Kimera | 4.5000 | 0.3407 | +92.4% | 194.45 → 200.29 | 0.3309 → 0.0167 | 0.448 → 0.461 |
+| ETH1 | Fusion | 2.3348 | 0.4710 | +79.8% | 197.51 → 203.29 | 0.0641 → 0.0395 | 2.375 → 2.220 |
+| EIG-2 | GLIM | 0.9991 | 1.0787 | -8.0% | 189.35 → 188.99 | 0.0260 → 0.0242 | 0.667 → 0.662 |
+| EIG-2 | Kimera | 1.8810 | 0.6880 | +63.4% | 177.37 → 185.27 | 0.0888 → 0.0243 | 0.807 → 0.800 |
+| EIG-2 | Fusion | 2.7456 | 1.5829 | +42.3% | 188.03 → 189.50 | 0.0565 → 0.0551 | 3.248 → 3.342 |
+| SPX-3 | GLIM | 0.1252 | 0.1361 | -8.7% | 90.78 → 90.95 | 0.0078 → 0.0080 | 0.297 → 0.293 |
+| SPX-3 | Kimera | 0.4824 | 0.1089 | +77.4% | 88.80 → 90.40 | 0.0637 → 0.0168 | 0.474 → 0.484 |
+| SPX-3 | Fusion | 0.1746 | 0.2827 | -61.9% | 90.16 → 90.98 | 0.0697 → 0.0659 | 2.508 → 2.544 |
+| LEICA-2 | GLIM | 0.6385 | 0.6503 | -1.8% | 205.48 → 205.32 | 0.0197 → 0.0164 | 0.433 → 0.367 |
+| LEICA-2 | Kimera | 1.0949 | 0.4780 | +56.3% | 199.93 → 204.45 | 0.0269 → 0.0201 | 0.419 → 0.396 |
+| LEICA-2 | Fusion | 0.9545 | 1.0880 | -14.0% | 203.80 → 207.69 | 0.0349 → 0.0337 | 1.548 → 1.497 |
+
+VELODYNE
+
+| Sequence | Estimator | ATE OFF (m) | ATE ON (m) | ATE improvement | Estimated path OFF → ON (m) | RPE translation OFF → ON (m) | RPE rotation OFF → ON (°) |
+|---|---|---:|---:|---:|---|---|---|
+| SPX-3 | GLIM | 0.2583 | 0.2652 | -2.7% | 88.99 → 89.24 | 0.0325 → 0.0331 | 0.521 → 0.479 |
+| SPX-3 | Kimera | 0.4821 | 0.3737 | +22.5% | 88.80 → 88.75 | 0.0637 → 0.0449 | 0.474 → 0.510 |
+| SPX-3 | Fusion | 0.6531 | 0.4407 | +32.5% | 88.94 → 89.60 | 0.0700 → 0.0758 | 2.512 → 2.559 |
+| EIG-2 | GLIM | 3.2658 | 2.2872 | +30.0% | 192.54 → 190.90 | 0.1186 → 0.0957 | 1.064 → 1.005 |
+| EIG-2 | Kimera | 1.8796 | 1.7987 | +4.3% | 177.37 → 183.48 | 0.0891 → 0.1053 | 0.828 → 0.985 |
+| EIG-2 | Fusion | 3.0183 | 2.1757 | +27.9% | 188.74 → 186.96 | 0.0644 → 0.1054 | 3.487 → 2.838 |
+| LEICA-2 | GLIM | 10.1069 | 3.3311 | +67.0% | 211.47 → 204.05 | 0.1946 → 0.0543 | 1.382 → 0.606 |
+| LEICA-2 | Kimera | 1.0942 | 2.5853 | -136.3% | 199.93 → 200.81 | 0.0269 → 0.0527 | 0.419 → 0.518 |
+| LEICA-2 | Fusion | 3.4824 | 5.3317 | -53.1% | 214.39 → 208.61 | 0.0593 → 0.0824 | 2.860 → 1.870 |
+
+COMMON COVERAGE AND REFERENCE LENGTH
+
+| Sensor / sequence | Supported / capture (s) | Supported (%) | Reference path (m) | RPE pairs | Actual distance range (m) |
+|---|---:|---:|---:|---:|---|
+| hesai_eth1 | 296.7 / 346.32 | 85.7% | 201.38 | 365 | 0.500561–0.593297 |
+| hesai_eig2 | 352.3 / 355.02 | 99.2% | 188.01 | 348 | 0.500141–0.601406 |
+| hesai_spx3 | 191.7 / 197.02 | 97.3% | 90.77 | 167 | 0.500311–0.613720 |
+| hesai_leica2 | 385.0 / 428.75 | 89.8% | 205.91 | 378 | 0.500095–0.593272 |
+| velodyne_spx3 | 192.0 / 197.02 | 97.5% | 90.77 | 167 | 0.500311–0.613720 |
+| velodyne_eig2 | 353.1 / 355.02 | 99.5% | 188.02 | 349 | 0.500141–0.601406 |
+| velodyne_leica2 | 384.6 / 428.75 | 89.7% | 205.91 | 378 | 0.500095–0.593272 |
+
+Per-segment row/pair counts (zero-pair segments are not bridged):
+hesai_eth1: 2873 rows/365 pairs, 83 rows/0 pairs, 14 rows/0 pairs
+hesai_eig2: 3372 rows/348 pairs, 153 rows/0 pairs, 1 rows/0 pairs
+hesai_spx3: 2 rows/0 pairs, 1631 rows/167 pairs, 19 rows/0 pairs, 15 rows/0 pairs, 255 rows/0 pairs
+hesai_leica2: 570 rows/59 pairs, 1 rows/0 pairs, 1352 rows/112 pairs, 1079 rows/119 pairs, 849 rows/88 pairs, 5 rows/0 pairs
+velodyne_spx3: 2 rows/0 pairs, 1566 rows/167 pairs, 86 rows/0 pairs, 15 rows/0 pairs, 256 rows/0 pairs
+velodyne_eig2: 3531 rows/349 pairs, 2 rows/0 pairs
+velodyne_leica2: 570 rows/59 pairs, 1351 rows/112 pairs, 1077 rows/119 pairs, 852 rows/88 pairs
+
+METRIC AND PRODUCT QUALIFICATIONS
+---------------------------------
+RPE translation is the translation component of relative SE3 error (metres),
+not point-distance magnitude, percent drift, or ATE. Rotation is angular RMSE
+in degrees, not degrees-per-metre. ATE improvement column is NOT RPE improvement.
+Pooling uses raw evo error arrays plus evo statistics, never averaging segment
+RMSEs. ETH1 RPE is reused exactly from CP-V31; other six pairs newly evaluated.
+ATE is newly scored directly by evo for all84 product/mode/method entries.
+Pair-selection flags/settings remain exactly CP-V31. delta_tol0.1 is unused by
+evo's consecutive-distance mode. Segments with fewer than two triggered
+endpoints produce no pair; their poses still contribute to ATE and path length.
+All data are the frozen100ms grid/prism-frame poses from CP-V27/28, no new
+interpolation/smoothing, change of timestamp mask or frame transformation.
+Offline time association/SE3 reference alignment does not imply equal estimator
+latency/evidence age or an onboard causal reference correction.
+Reference IE-TC shares CPT7 with estimators; not independent prism ground truth.
+Seven sensor pairs cover four missions, not seven independent experiments.
+Shared OFF Kimera records are identical between sensors; small metric changes
+arise from common masks and distance pairing, not independent repeated runs.
+Method1 Kimera retains original six-digit log rounding bound<=0.504mm at prism.
+Original terminal omissions unchanged (Hesai EIG-2 ON1, Hesai SPX-3 OFF1/ON1,
+Velodyne SPX-3 OFF1); failed ARC cases are excluded, never labelled full runs.
+Original WNOA Qc1.0, not later0.25/.1. Fresh ETH1 CP-V29 OFF not mixed in.
+
+REPRODUCIBILITY
+---------------
+Each case folder: common and per-segment TUMs, exact pair_indices.json,
+commands.json, per-call command/log/evo ZIP, pooled RPE ZIP. Epoch-to-relative
+timestamp origin is stored, original integer pair timestamps retained.
+evo CLI config RPE: CP-V31/evo_config.json. APE: local ape_config.json.
+All CLI calls compared against evo API error arrays/statistics on same TUMs.
+Path lengths from evo per-segment, independently compared to historical tables.
+Inputs verified against old closeout manifests before scoring and after work.
+No source/receiver run, build, container, model/parameter edit, tuning, deletion,
+production/default promotion or push. Original reports and data preserved.
+Final hash/checkpoint/archive readback receipt: closeout.json.
+
+Official metric documentation: https://github.com/MichaelGrupp/evo/wiki/Metrics
+
+NUMERICAL VERIFICATION AND DESCRIPTIVE IMPROVEMENT COUNTS
+{
+  "passed": true,
+  "cases": 7,
+  "table_rows": 42,
+  "ATE_entries": 84,
+  "RPE_entries": 168,
+  "new_CLI_calls": 372,
+  "reused_ETH1_RPE_metrics": 24,
+  "input_files_verified": 225,
+  "CLI_API_error_max_difference": 0.0,
+  "old_ATE_max_difference_m": 1.1587952819525071e-14,
+  "old_path_max_difference_m": 0.0,
+  "TUM_roundtrip_pose_max_component": 7.540634783254063e-13,
+  "CBS_improvement_counts_out_of_7": {
+    "method1": {
+      "glim": {
+        "ATE_improves": 3,
+        "translation_RPE_improves": 5,
+        "rotation_RPE_improves": 7
+      },
+      "kimera": {
+        "ATE_improves": 6,
+        "translation_RPE_improves": 3,
+        "rotation_RPE_improves": 0
+      },
+      "fusion": {
+        "ATE_improves": 6,
+        "translation_RPE_improves": 5,
+        "rotation_RPE_improves": 7
+      }
+    },
+    "method2": {
+      "glim": {
+        "ATE_improves": 2,
+        "translation_RPE_improves": 5,
+        "rotation_RPE_improves": 7
+      },
+      "kimera": {
+        "ATE_improves": 6,
+        "translation_RPE_improves": 5,
+        "rotation_RPE_improves": 2
+      },
+      "fusion": {
+        "ATE_improves": 4,
+        "translation_RPE_improves": 4,
+        "rotation_RPE_improves": 4
+      }
+    }
+  }
+}

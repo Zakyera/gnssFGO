@@ -1,0 +1,32 @@
+CP-V92: saved-only ETH1 covariance consistency audit, 2026-11-02.
+Authorization: user asks whether covariances decrease more than they should.
+Use completed CP89 OFF and CP91 attempt1 ON, not historical shared-IMU runs.
+No source capture, optimizer, container, tuning, production/default change,
+deletion or trajectory rescoring. Write only new supplemental analysis files
+and mutable repository status/ledger. Preserve all original terminal artifacts.
+
+1. Match actual transmitted relative beliefs by exact physical from/to times.
+   Compare same sensor, body, endpoints and 6x6 coordinate convention.
+2. Parse native revision logs separately, convert Kimera Alpha relative means
+   and full covariances to CPT7 via author extrinsics. Match revisions by exact
+   physical source update time, not revision index or pooled sample medians.
+   First and approximately1,2,4s ages use the SAME eligible edge cohort.
+3. Reference Z=inv(T_IE(a))*T_IE(b), no world alignment/scale/prism offset.
+   e=Log(inv(Z_est)*Z_ref), right local [rotation,translation]. Full dense6x6
+   q=e' inv(C) e, plus 3D marginal blocks. Keep units rad2/m2 distinct.
+   Report uncertainty norm sqrt(trace(C)), not per-axis sigma or95%radius.
+4. Use EVO1.36.3 for Euclidean translation and rotation relative errors;
+   custom full-covariance whitening is a separate diagnostic EVO does not
+   supply. These short belief intervals are not the trajectory0.5mRPE table.
+5. Compare mean squared discrepancy to covariance, covariance ON/OFF paired
+   ratios, fixed-age shrinkage, time bins and nominal ellipsoid inclusion.
+   No inferred production covariance multiplier or independent-sample p-value.
+6. IE-TC shares CPT7 with GLIM. Reference uncertainty/cross-correlation unknown,
+   so q is normalized reference discrepancy, NOT ground-truth NEES or NIS.
+   Persistent peer-history correlation remains even with different IMUs.
+   Source beliefs do not certify post-temporal-alignment injected covariance.
+7. Preserve startup/sparse-tail omissions. Never interpolate estimator gaps
+   to invent beliefs. Reference interpolation bracket <=50ms; report actual.
+8. Save reproducible code, numeric summaries, exact selected records, plots and
+   hash verification. Validate whitening independently, SE3 Exp/Log, frame
+   invariance, EVO parity and unchanged source/terminal inputs. No rerun needed.

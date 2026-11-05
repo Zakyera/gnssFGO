@@ -1,0 +1,22 @@
+The first Release compile/link succeeded. OFF suite, ON independent GN/prior/
+Schur/LOCAL and two clean ON lifecycle passes succeeded. Rollback test failed
+because the reused OFF fixture throws on its second linearization, which is
+not a valid ON stage identifier: native forced ON update can linearize a new
+factor twice before registering/draining the staged peer. Log shows native
+unknown_update_exception rollback/retry, so the intended extra-refresh fault
+was never exercised. Candidate implementation and numerical tolerances remain
+unchanged. Preserve release_initial and host receipt (container stopped).
+
+Correct test injection is structural, not an adjusted call-count guess: a
+native PriorFactor subclass throws only after the newly staged peer has been
+registered AND pending beliefs have drained. That happens before the extra
+native refresh; no fault hook is added to candidate code. Test asserts exactly
+one thrown fault and restores both first-admission and mature ON transactions.
+This is a fixture-stage repair, not a real-data retry or numerical relaxation.
+
+Second fixture attempt also retained: net active count is not a registration
+identity in the mature window. Native bpsam.cpp4150--4205 removes scheduled
+tracking before inserting the new peer, so the count can remain constant.
+The injection now detects the EXACT newly admitted receiver edge in the
+tracked graph, plus drained pending data, not a change of net count. Explicit
+state-index receipts distinguish both fault sites. Candidate code unchanged.

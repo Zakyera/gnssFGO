@@ -1,0 +1,79 @@
+CP-V104 — interpretation of saved corrected-ON accuracy, 2026-11-04
+
+No new capture, receiver replay, optimizer run or scientific settings change.
+CP103 is the completed corrected-private-backend ON qualification. CP95 OFF/ON
+and CP91 source-only ON are historical controls, not a newly matched pair with
+the corrected backend. Failed CP99 ON is excluded. Old evidence is unchanged.
+
+COMMON100ms comparison: 2966 samples, 296.3 supported seconds of346.32 (85.56%),
+three contiguous segments,365 reference-distance0.5m pairs. All eleven primary
+curves use exactly this mask; three delayed curves use it without shrinking it.
+Method1 EVO1.36.3 CLI, SE3/no-scale ATE versus IE-TC, calibrated same prism point.
+This is NOT Leica scoring. Reference segmented path is201.374178677m.
+
+ATE RMSE metres                 CP95 OFF     CP95 ON      CP103 corrected ON
+GLIM                            0.039497     0.053071     0.038280
+Kimera                          0.737605     0.198843     0.192637
+ONLINE fusion                   0.061504     0.118626     0.094335
+DELAYED7s-finalized (separate)    0.056428     0.116118     0.091336
+Earlier CP91 source-only ON on this same mask: GLIM0.041514,Kimera0.209101.
+There was no CP91 fusion run.
+
+The previously observed GLIM ON ATE degradation did not recur in this
+realization:27.87% lower than CP95 ON and7.79% lower than CP91 ON. Kimera ATE is
+3.12% lower than CP95 ON. ONLINE fusion ATE is20.48% lower than CP95 ON, but
+still53.38% higher than historical CP95 OFF and substantially above GLIM alone.
+This changed backend plus a new realization does NOT isolate the correction's
+causal effect or prove that previous variation was purely random.
+
+CP103 common-mask RPE RMSE and segmented paths:
+Product          translation m   rotation deg   estimated/reference path m
+GLIM             0.015656        0.335889       202.743062 /201.374179
+Kimera           0.034126        0.658833       202.068532 /201.374179
+ONLINE fusion    0.036492        1.744175       214.145905 /201.374179
+DELAYED7s        0.012826        0.323322       201.969737 /201.374179
+Not every metric improved: Kimera rotational RPE rose from CP95 ON0.527284deg
+to0.658833deg. GLIM translation RPE rose0.014303->0.015656m despite lower ATE.
+The complete historical RPE/path table is in RESULTS_REPORT.txt/results.json.
+
+FULL-SAVED CP103 cadence is distinct, not a shared-mask ranking:
+Product       rows    supported s   ATE m     tRPE m    rRPE deg   path/ref m
+GLIM          3454    345.299607    .039995   .016200   .255375    205.198/201.476
+Kimera        1492    296.798338    .192608   .035937   .491098    202.537/201.018
+ONLINE        3456    345.500000    .095034   .043502  2.435615    222.793/201.478
+DELAYED7s     3456    345.500000    .091602   .012464   .268776    202.795/201.478
+Kimera has12 intervals exceeding0.5s (maximum5.099976s); no gap filling. Its
+full-saved path above excludes chords across these gaps. The full polyline
+including those chords is202.646803m; it is recorded separately in results.
+Native-cadence paths depend on sampling and point of evaluation, not physical
+travel. Raw body-frame shutdown-dump paths in the CP103 qualification report
+are NOT these prism-point/first-published evaluation paths.
+
+Coverage review: the previous CP95 common mask had2969samples. Three queries
+at300.744604,301.844604,301.944604s fail CP103 Kimera's existing0.5s support
+criterion, so were excluded from ALL curves. Earlier results were re-scored
+on the new mask; small differences from earlier printed tables are expected.
+Common coverage ends301.744604s,44.575396s before the requested window end.
+All3454 GLIM first-published CSV poses were used. The native shutdown dump
+contains3455poses: the extra final pose at346.219259s was not captured by the
+CSV (0.100005s after its last pose). It is not substituted or interpolated.
+The dump may also contain revised means; it is not the Method1 published curve.
+The missing right image203.898841154s remains omitted. Fusion accounts for
+25before-init and134expired versions, zero unsupported EOF; no new omissions
+are concealed by the scoring. DELAYED is7s fixed-lag-finalized, not ONLINE or
+full-history smoothing.
+
+Engineering qualification is unchanged: full346.32s source capture passed all
+four source/payload/receiver/frame gates;1492Kimera updates,1472persistent
+injections each direction,202995fusion versions,3456ONLINE+3456finalized poses,
+zero recorded prior failures and zero covariance payload conversion error.
+See CP103 qualification.json for retained revisions/timing/covariance evidence.
+This evaluation adds accuracy scores, not a new uncertainty-calibration test.
+IE-TC shares CPT7; separate IMUs do not remove peer-feedback correlation.
+Native-only outgoing information remains false; Alpha noise is experimental.
+Incremental parity is not nonlinear stationarity or estimator-health proof.
+
+Conclusion: the reproducible numerical defect has a qualified private fix and
+one successful full live realization. GLIM's previous ATE deterioration is not
+present here. Fusion accuracy/path inflation remains a separate unresolved
+question; these results do not establish its cause. No further run is launched.

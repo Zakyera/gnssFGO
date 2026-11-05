@@ -1,0 +1,41 @@
+CP-C5 — FOUR EXPLICITLY APPROVED FILES REMOVED
+Completed 2026-10-29 19:39:15 +02:00.
+
+Authorization: user explicitly approved the three September ETH1 presentation
+RRD exports and the original GEODE Stairs bag, and explicitly retained Livox.
+Only these four regular files were deleted, permanently (not moved to Trash):
+
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/grandtour_eth1_presentation/GrandTour_ETH1_timeline_playback_common_start_combined.rrd
+  inode 8689918; 1,595,103,549 logical bytes; 3,115,448 allocated 512-byte blocks.
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/grandtour_eth1_presentation/GrandTour_ETH1_timeline_playback_common_pose_combined.rrd
+  inode 8689920; 1,595,101,482 logical bytes; 3,115,448 allocated 512-byte blocks.
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/grandtour_eth1_presentation/GrandTour_ETH1_timeline_playback_combined.rrd
+  inode 8689916; 1,595,072,220 logical bytes; 3,115,384 allocated 512-byte blocks.
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/stage2c_d2/stairs/source_work/stairs_gamma_indexed.bag
+  inode 11149133; 3,071,682,740 logical bytes; 5,999,392 allocated 512-byte blocks.
+
+Checks: exact canonical paths, regular-file type, size, inode and single hard
+link verified before all four explicit unlinks. No recursive deletion or
+wildcard deletion. Host open-file check found no target handles; lsof warned
+only about the unrelated Docker network namespace mount. Both experiment
+containers were exited and were not changed. Targets do not intersect the
+current CP-V41 protected manifest or four-sequence Hesai checkpoint manifest.
+
+After deletion all four targets were absent. Before/after path, size, inode
+and mtime inventories match for all nine Livox bags and 54 retained immediate
+entries in the two target directories. No surrounding report, run directory,
+blueprint, runtime build or current Method 1/2 visualization was removed.
+Hesai checkpoint verification passed before and after: 4 cases, 667 files,
+originals=True. This is not a fresh full-content audit of every retained file.
+
+Allocated space reclaimed: 7,856,984,064 bytes = approximately 7.32 GiB.
+Filesystem available immediately before: 21,053,730,816 bytes.
+Filesystem available immediately after: 28,910,714,880 bytes = 26.93 GiB.
+No new backup was made; removed files cannot be recovered from Trash. GEODE
+raw-data reuse now requires another copy or reacquisition; none was verified.
+
+This supersedes CP-C3/CP-C4's historical statement that the original GEODE
+Stairs bag remains locally retained. Their original reports remain unedited.
+Livox is explicitly preserved. No estimator run, scoring, build, tuning or
+push was performed. The earlier CP-V41 storage blocker needs a fresh capacity
+check before a later authorized launch; this cleanup launched no experiment.

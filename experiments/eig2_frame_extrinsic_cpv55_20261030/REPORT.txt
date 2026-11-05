@@ -1,0 +1,272 @@
+CP-V55 — EIG-2 CAMERA/LIDAR EXTRINSICS AND BIDIRECTIONAL CBS FRAME AUDIT
+2026-10-30. SAVED-DATA AND STANDALONE NATIVE TESTS COMPLETE.
+No estimator replay, optimization, weight change, production fix or promotion.
+
+DECISION
+========
+The checked evidence does NOT support a camera/LiDAR body-frame conversion error
+as the explanation of Kimera's CBS-ON disturbance. Both source graphs estimate
+the same physical body: cpt7_imu. Their camera/LiDAR observations are brought
+into that body convention inside the respective estimator. Their exchanged CBS
+means are BODY-relative motions, NOT camera-relative versus LiDAR-relative poses.
+Therefore no extra camera-to-LiDAR conjugation belongs at this active boundary.
+Adding one now would introduce an error, not fix the observed behavior.
+
+This is a bounded conclusion: the profile/TF, endpoint, wire, insertion-log,
+native Kimera factor and synthetic checks below pass. It is NOT a universal
+proof of correct physical calibration, all asynchronous behavior, all branches,
+or calibrated covariance. In particular, a historical native GLIM inserted-factor
+matrix was not saved. That last K2G observation remains explicitly unverified.
+No covariance weights were investigated or changed.
+
+SCOPE / EVIDENCE
+================
+W = /home/yeranis/repos/V4RL/cbs_gtsam4.3
+R = /home/yeranis/repos/gnssFGO
+H = R/experiments/eig2_frame_extrinsic_cpv55_20261030
+
+Original EIG-2 mission: 2024-11-03-13-59-54, author tf_minimal and raw sensor bags.
+Saved full Hesai: W/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared
+Saved short native observation: W/runs/eig2_glim_first_edge_cpv54_20261030/prepared
+Saved original full Velodyne: W/runs/gnssfgo_eig2_velodyne_full_cpv4_20261024/prepared
+Saved actual Kimera graph: CP51 update6/before_ordinary, BOTH OFF and ON.
+CP49 is the corrected-Kimera full run. CPV4 is the older Velodyne run; its payload
+audit does not upgrade its estimator behavior or claim it contains the CP40 fix.
+
+1. WHAT THE FRAMES ACTUALLY MEAN
+==============================
+Notation: T_A_B maps a point expressed in B into coordinates expressed in A.
+B = cpt7_imu; C = camera; L = LiDAR; Wg/Wk = independent estimator world frames.
+
+Stage                  GLIM                         Kimera
+Input observation      Hesai/Velodyne points        Alphasense stereo pixels
+Inertial input         /boxi/cpt7/imu               /boxi/cpt7/imu
+Graph pose X_i         T_Wg_B(i)                    T_Wk_B(i)
+Visual/geometric       LiDAR points transformed     Camera pose = X_i*T_B_Crect
+factor frame handling  by T_B_L before matching     (rectified left camera)
+CBS mean               inv(X_i)*X_j                 inv(X_i)*X_j
+Mean's body convention B_i <- B_j                  B_i <- B_j
+Message world label    map                         odom
+Configured body        cpt7_imu                    cpt7_imu
+Boundary body change   identity                    identity
+
+The header strings map and odom are different world labels. They do not mean
+that the relative motion has to be rotated from one global map into the other.
+For any constant world transform G:
+    inv(G*X_i)*(G*X_j) = inv(X_i)*X_j.
+That cancellation is why relative body motions can be exchanged without first
+globally aligning the two independent maps. It does NOT permit changing which
+physical body or sensor is represented by X.
+
+For different physical body frames, E=T_B_S would instead require:
+    Delta_S = inv(E)*Delta_B*E
+    Delta_B = E*Delta_S*inv(E).
+This includes the lever arm; rotating only the translation vector is not enough.
+Kimera's ROS wrapper has this conjugation in its nonidentity configuration.
+Here external_pose_frame_id == base_link_frame_id == cpt7_imu, so it is skipped.
+GLIM expects the configured external body convention directly. Kimera publishes
+in that configured external convention when they differ; there is not a second
+GLIM-side camera conversion to apply.
+
+Important contract limitation: a CBS message carries a world header label but
+does not itself provide a separately enforced body-frame identity. Correctness
+therefore depends on the matched configuration. This is a future hardening
+opportunity, not an observed mismatch in these runs. No hardening patch applied.
+
+2. INDEPENDENT ORIGINAL-CALIBRATION CHECK
+======================================
+calibration_audit.py read the EIG-2 tf_minimal bag, not the prior report's numbers.
+All repeated observations of its 64 static TF edges agreed. It independently
+composed the actual sensor routes to CPT7 and compared all three saved profile
+sets, plus OFF/ON effective copied profiles and resolved frame parameters.
+
+Transform/route                         Maximum discrepancy from author TF
+Camera T_B_left / T_B_right              <=1.94e-12 matrix element
+Hesai T_L_B (inverse of author T_B_L)    2.98e-10 matrix element
+Velodyne T_L_B                          2.29e-13 matrix element
+Kimera IMU T_BS                         exactly identity
+
+The Hesai maximum corresponds to 1.71e-8 degrees and 2.02e-10 m: rounding,
+not a meaningful rotation/lever-arm discrepancy. The matrices are retained
+in calibration.json; these are not fitted to trajectory ground truth.
+
+Routes and sensor-origin distance from CPT7:
+  left: cpt7_imu -> box_base -> alphasense_base -> alphasense_front_left, .389075m
+  right: same route to alphasense_front_right, .374908m
+  Hesai: cpt7_imu -> box_base -> hesai_lidar, .305770m
+  Velodyne: cpt7_imu -> box_base -> base -> velodyne_lidar, .406745m
+The rear Velodyne route includes the robot base; it was not accidentally treated
+as the front Hesai mounting. Front-camera to each LiDAR matrices are also saved.
+Stereo baseline independently recomputed: .110084692571m.
+
+Original first sensor-message headers agree with the configured CPT7, camera
+and LiDAR frames. Left/right CameraInfo intrinsics and distortion agree exactly
+with the saved profile, resolution1440x1080, equidistant model. No left/right
+topic-label swap appears in these checks. input_headers.json explicitly records
+that these are first-message checks, not a complete stream stability audit.
+Old profile prose still says ETH-1/bootstrap. That prose is stale, but the actual
+numeric EIG-2 configuration matches EIG-2's own calibration; we did not assume
+correctness from a directory name or that stale description.
+
+3. SENSOR FRAME -> NATIVE GRAPH -> EXPORTED BELIEF
+================================================
+GLIM's profiled odometry source reads T_lidar_imu, takes its inverse, transforms
+initial/deskewed points into IMU coordinates, and optimizes X=T_world_imu. The
+LiDAR pose is separately formed as T_world_imu*T_imu_lidar. The CBS bridge queries
+the optimized X endpoints directly and exports from_pose.between(to_pose).
+It does not export the separately derived LiDAR pose or global-map optimized pose.
+
+Kimera parses T_BS as body_Pose_cam. Stereo rectification produces
+T_B_Crect=T_B_Craw*[R_rectification^-1,0]. The same rectified-left transform is
+used by the native smart stereo factors and stereo-motion body conjugation.
+The backend's CBS exporter queries native graph endpoints; it is NOT taking
+differences of the independently accumulated incremental ROS trajectory.
+Method1/Method2 plotting/scoring choices therefore do not change this CBS mean.
+An exported relative mean can use the CURRENT revised endpoint states; that is
+different from mixing two previously published absolute states from two solves.
+
+The mean wire format is SE(3) Logmap with rotation first, translation tangent
+second. The translation tangent is not generally the pose's xyz displacement.
+Both receiver paths reconstruct with SE(3) Expmap, not an xyz shortcut. The audit
+compared full 4x4 transforms, including quaternion order and translation.
+
+Native saved visual-factor check (saved_native_attempt3/results.json):
+  CP51 OFF update6:291 smart factors, body-transform/calibration discrepancy0.
+  CP51 ON update6: 291 smart factors, body-transform/calibration discrepancy0.
+  Native stereo baseline .110084692571745m.
+The reader used the retained Kimera library and saved native graph; no graph
+linearization or optimization. Before/after serialized graph bytes are identical.
+This verifies the active optical/rectification convention, not merely YAML labels.
+
+4. BOTH DIRECTIONS THROUGH ACTUAL SAVED RUNTIME
+=============================================
+All numbers below concern means. No covariance weighting statistics were used.
+
+Case/mode          GLIM wire means  Kimera wire means  G2K raw joins  K2G raw joins
+Hesai CP49 OFF          3541             1760                0             0
+Hesai CP49 ON           3541             1761             1743          1748
+Hesai CP54 OFF            90               47                0             0
+Hesai CP54 ON             90               47               42            43
+Velodyne CPV4 OFF       3540             1760                0             0
+Velodyne CPV4 ON        3540             1764             1744          1757
+
+OFF has no admissions by design; its zeros do not mean an untested ON branch
+passed. All listed wire means match a retained native endpoint/export version.
+All listed receiver raw means match sender wire means, with no unmatched keys.
+Worst wire/native or receiver-raw matrix-element discrepancy <6.70e-16.
+Native endpoint reconstruction across all logged revisions: <1.12e-12.
+CP54 GLIM native readout-to-export parity also passes for9edges/mode (<5.78e-16).
+
+G2K: spatial identity -> native endpoint-time bridge -> frozen measurement.
+All1743+42+1744 aligned/frozen means match exactly in their respective runs.
+The earlier CP51 actual native-factor audit additionally found maximum
+1.4444e-13 matrix discrepancy against frozen means across observed updates6..25.
+This is the path relevant to the first Kimera disturbance, and it reaches the
+actual inserted native factor, not just a ROS message.
+
+K2G: native Kimera mean -> configured external-body publication -> GLIM raw mean
+-> native endpoint-time bridge -> Pose3 BetweenFactor construction. Raw payload
+parity is verified for all listed admissions. Source constructs that factor
+directly from the aligned mean. CP54 did NOT serialize GLIM BetweenFactor
+measurements, so final historical GLIM factor-matrix parity cannot be claimed.
+
+The version join searches retained versions of the same source edge for a
+matching mean. It is not an independent arrival-order/stale-version audit.
+Kimera's diagnostic active revisions are not all published in classic mode;
+the larger diagnostic-row counts must not be presented as wire traffic counts.
+
+Time alignment is separate: receiver_from->sender_from, sender motion, then
+sender_to->receiver_to, composed left*mean*right in one body convention. The
+prior CP53 first-edge audit independently reproduced the native gyro bridge,
+including the16.49/16.46ms endpoint offsets. This report does not recalculate
+every historical IMU bridge from raw data or silently relabel that as a full
+timing audit. Nominal-only covariance time alignment remains the known unchanged
+approximation, not a new spatial-frame finding.
+
+5. SPECIFIC NATIVE FRAME-CONSISTENCY EXPERIMENT
+============================================
+W/runs/eig2_frame_extrinsic_cpv55_20261030/FrameTest.cpp
+Compiled against native GTSAM and the production CbsRelativeFrameConversion.cpp.
+1000 deterministic random nonidentity sensor transforms with translations and
+noncommuting rotations; independent absolute body/sensor endpoints generate
+the expected relative motion. Checks include both directions, different world
+origins, identity actual branch, Expmap/Logmap, native BetweenFactor zero error,
+lever arms, and spatially consistent endpoint-time composition.
+
+Release and ASan/UBSan both PASS:
+  maximum pose matrix error 5.33e-15;
+  right-tangent conjugation finite-difference Jacobian error 1.95e-9;
+  missing / inverse / double / erroneous world-map conversions detected in
+  all1000cases EACH. These negative controls show the test is sensitive to the
+  mistakes being investigated, rather than merely checking identity matrices.
+The covariance adjoint check is coordinate algebra only, NOT a study of weight,
+scale, information dominance or statistical covariance calibration.
+
+A separate native PIM prediction check rotates world pose, velocity and gravity
+together (including a180degree gravity-world flip). Body-relative predictions
+agree to7.22e-16. Different gravity/world conventions do not by themselves imply
+different physical body frames. They would be wrong if only some quantities
+were transformed; the test explicitly transforms all of them consistently.
+
+6. SECONDARY FINDINGS — NOT THE CBS-ON CAUSE
+=========================================
+A) Right-camera visualization metadata defect:
+StereoCamera.cpp:65 forms B_Pose_camRrect_ using LEFT camera body pose rather
+than RIGHT. Native readback confirms the right-camera metadata has the same
+origin as the left, despite the actual .110085m stereo baseline, and their
+reported rectified orientations differ1.19224degrees instead of being parallel.
+The backend uses LEFT rectified pose plus the CORRECT stereo calibration, as
+the291factor checks prove. The right-pose getter feeds visualization/playground
+metadata, not the active stereo factor or CBS export/insertion path. The checked
+runs are headless. This cannot be used as an explanation for the poisoned
+Kimera CBS mean or the body trajectories in the current Rerun exports. No fix
+applied under this diagnostic task; keep it separate from the CBS investigation.
+
+B) Saved GLIM process maps include OpenCV3 and4; Kimera maps use OpenCV4 core.
+This is dependency-hygiene evidence, not a demonstrated frame or estimator bug.
+The checked CBS means use Eigen/GTSAM and match native endpoints. A standalone
+camera reader initially mixed OpenCV versions due to an inherited test build
+recipe; it was repaired in a fresh attempt using the actual camera compile
+recipe and OpenCV4 link. Do not conflate that new test-executable fault with a
+failure in the original campaign. All failed attempts remain saved.
+
+7. LIMITS AND RECOMMENDED DECISION
+================================
+We have strong evidence against wrong-camera-versus-LiDAR body interpretation,
+inverse/static calibration mismatch, missing lever arm, double spatial transform,
+map-versus-odom conversion, quaternion ordering or Expmap translation corruption
+in the tested EIG-2 paths. The causal G2K first-admission factor is covered by
+native evidence. It is not justified to change the extrinsics or add a transform.
+
+What remains unproved:
+  - physical accuracy/rigidity of the manufacturer's calibration itself;
+  - native GLIM final inserted-factor matrices, absent from historical observer;
+  - every possible asynchronous/order/linearization issue outside captured checks;
+  - complete historical source-to-binary equivalence for every explanatory file.
+source_audit.json distinguishes7historically pinned explanatory sources from
+8current-source explanations. Runtime payloads, library maps, saved visual
+factor data and native numerical tests supply separate evidence; none replaces
+the missing provenance with an assumption.
+
+Do not resume blind frame fixes or covariance tuning from this result. The next
+frame-specific experiment, ONLY if closing the last K2G observation gap is
+needed, is a short passive GLIM factor-measurement capture with unchanged settings,
+not another full mission. No such capture was launched here. Otherwise this
+audit supports returning to why a correctly expressed conflicting relative
+motion drives the coupled native window response; it does not yet establish
+that covariance weighting alone is the cause.
+
+8. REPRODUCIBILITY / CLOSEOUT
+===========================
+Evidence: calibration.json, input_headers.json, payloads.json, source_audit.json,
+native_attempt1/native_test.json, saved_native_attempt3/results.json.
+BUILD_REPAIR.txt preserves the standalone build/reader issues and exact repairs;
+no failed estimator run was retried and no numerical acceptance threshold relaxed.
+Analysis scripts and native sources are retained with exclusive output receipts.
+Current diagnostic footprint approximately25MiB native +0.5MiB reports.
+
+verification.json at2026-10-30T17:34:00+02:00:9952protected files unchanged,
+10037unique checked inputs, original Hesai4cases/667files PASS. Both containers
+restored stopped. All standalone commands returned; no source/receiver/controller
+was started. Zero estimator replay/optimization/production edits/weight changes.
+complete.json and retained_manifest.json provide final report/artifact identity.

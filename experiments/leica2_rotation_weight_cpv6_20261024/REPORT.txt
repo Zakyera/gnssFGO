@@ -1,0 +1,21 @@
+CP-V6 PREPARING: single G2K rotation-variance10 intervention.
+Private build complete; no capture launched yet. Both containers initially
+stopped, free~17GiB. Noetic container temporarily started for isolated build.
+Unmodified rebuild is BYTE-IDENTICAL to baseline libcbs.so (SHA256
+82f85c2a307a9d9a849b2b8f09bb5c1e026ad80a4ef0a633c903d30cca712476).
+Candidate SHA256
+1b56f533e82719f19bb0ba010b4328e7b4c2f416f24582ce41c18b4d02453c68.
+1000 dense SPD cases and default/direction/type isolation tests passed.
+Initial test compile include-path error corrected to frozen bundled Eigen;
+first Docker path lookup failed before compile; no estimator/capture retry.
+See PROTOCOL.txt for predeclared formula, scope and metrics.
+
+Pre-capture infrastructure failure: generated receiver_cpk19.sh omitted the
+original executable bits. Receiver --check failed before either receiver or
+source capture directory was created. Scoped cleanup passed and both containers
+stopped. No estimator data/result/retry. Fresh CP-V6A preparation preserves
+execute bits; this failed harness and logs remain intact.
+
+Controller finished 2026-10-24T14:11:48.150139+03:00: STOPPED/FAILED
+{"failure": {"stage": "capture_on", "error": "CalledProcessError(1, ['python3', '/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_rotation_weight_cpv6_20261024/prepared/run_case_on.py', 'full', 'on'])", "at": "2026-10-24T14:11:22.408151+03:00"}, "cleanup_error": null}
+No automatic retry. Scope-limited inhibitor releases when controller exits.

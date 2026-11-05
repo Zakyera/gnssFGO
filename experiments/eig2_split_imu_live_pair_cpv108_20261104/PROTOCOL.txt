@@ -1,0 +1,48 @@
+CP-V108 — EIG-2 split-IMU live OFF/ON pair: preparation, not launched
+2026-11-04
+
+Authority: user requests EIG-2 next before further covariance work. Prepare
+one full live matched OFF/ON pair with GLIM, Kimera and concurrent gnssFGO
+fusion. SPX-3 and LEICA-2 remain future intentions, not active captures.
+
+Scientific contract: latest CP103 qualified private Kimera prior-preservation
+correction in BOTH arms; CP82 GLIM, Gaussian1, persistent receive ON on both
+sides and receive false OFF. GLIM Hesai+CPT7/HG4930; Kimera front Alphasense
+stereo+built-in Alpha IMU. Preserve CP103 Alpha experimental noise model,
+200Hz, initializer/priors, native smart25states, CP40/CPK9, FL4Q0/FL4Mremove,
+native IMU support override unset. Verify mission TF/calibration before use.
+Receiver CP-K19 seven-second source_wnoa Qc x1, independent100ms CPT7 clock,
+no central IMU/GNSS factors; same priors/replacement/seal_at_absorption/EOF.
+Preserve actual arrivals/order/full revisions and full6x6 frame conversion.
+Do NOT promote CP106 first-covariance freeze or introduce other covariance
+handling/tuning. Persistent feedback correlation remains accepted, not fixed.
+
+Mission2024-11-03-13-59-54. Intended prior full usable window: offset5.7s,
+duration355.02s, rate0.20x,25s drain. Recorded bounds previously established:
+1730638816563546034 to1730639171583546034ns. Recheck against ALL selected
+streams, including the newly required Alpha IMU; do not shift epoch silently.
+
+Preparation blocker: original EIG-2 alphasense_imu ROS bag missing locally.
+The camera bag contains camera/image topics only. Existing Kleinkram CLI
+returned Not Authenticated on a read-only mission query. No credential access,
+login flow, download, data conversion or source playback performed.
+Required file:2024-11-03-13-59-54_alphasense_imu.bag in
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/datasets/GrandTour/EIG-2/.
+Public HuggingFace alphasense_imu.tar is a ZARR product, not the original bag;
+do not substitute/convert it without validating timing and message fidelity.
+
+Before launch still required: full raw selected-window audit including Alpha
+rate/gaps/quiet initializer and matched stereo; fresh profiles/harness and
+mission-specific adapter/calibration qualification; strict schema/EOF tests;
+actual host+Noetic adapter fixture; evaluator contract tests; complete protected
+manifest/checkpoint/storage admission; fresh ports/sessions and executable modes.
+No launch/prepared/start/complete receipt may be fabricated from this inventory.
+
+Finite intended flow: OFF capture and gates, ON capture and gates, owned cleanup
+and originally-stopped container restoration, saved-only Method1 EVO1.36.3
+SE3/no-scale IE-TC evaluation at calibrated prism point, reference-distance0.5m
+translation/rotation RPE, path/coverage/revisions/timing/covariance and omissions.
+Six-curve common100ms mask distinct from full-saved cadence; DELAYED7s-finalized
+separate from ONLINE. IE-TC sharesCPT7 and is not independent prism GT; path is
+estimated polyline, not physical travel. No scoring until valid full captures.
+Stop/preserve on failure; no automatic retries, deletion or global deployment.

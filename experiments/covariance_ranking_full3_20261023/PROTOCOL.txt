@@ -1,0 +1,66 @@
+Saved-data covariance ranking diagnostics, 2026-10-23
+
+Scope: user-authorized diagnostics 1 and 2 only. Reuse completed CP-K23 ETH1,
+CP-K24/24A EIG-2 and CP-K26 SPX-3 journals, source timestamps and IE-TC reference.
+No estimator/solver/container/replay execution, covariance change, fitting,
+gating, tuning, build, commit or push. Preserve all previous artifacts.
+
+Question 1: Does larger reported block uncertainty correspond to larger actual
+relative-reference error? Plot ten approximately equal-count uncertainty bins.
+x = sqrt(mean(trace(Sigma_block))) in each bin; y = RMS norm of the corresponding
+SE(3) tangent error block. Keep translation (mm) and rotation (degrees) separate.
+The y=x line is a magnitude guide under ideal assumptions, not a calibration
+certificate. Report signed rank correlation descriptively; no p-values.
+
+Question 2: Does selecting the lowest-covariance beliefs reduce error? Plot RMS
+error of lowest-trace fractions 10%,15%,...,100%, divided by the all-belief RMS
+on the same cohort. Include all covariance ties at the cutoff. A ratio below 1
+means the selected beliefs are better than the all-belief average. This does
+not simulate fusion or authorize dropping factors. Report the full-cohort RMS
+alongside ratios, since a normalized curve cannot compare absolute OFF/ON error.
+
+Population fixed before computing errors:
+For each source independently, match OFF/ON by exact (from_ns,to_ns). Do not
+match GLIM endpoints to Kimera endpoints, or match integer IDs across runs.
+Target source age = 4.00 s after the belief's physical endpoint, tolerance +/-
+0.15 s. Match the exact current source-update timestamp in OFF and ON; among
+common candidates in that interval, choose closest to 4 s, ties earlier.
+Update timestamps come from the saved source odometry header seq/stamp mapping.
+Check its body-frame identity and consistency with wire endpoint timestamps
+within 1 microsecond (wire seconds decimal encoding). No use of arrival time
+as source maturity. Preserve arrival/revision metadata in output samples.
+First and near-4s main plots use exactly the SAME matched eligible beliefs.
+Expose all exclusions, actual ages, endpoint coverage and full first-publication
+summaries as coverage context. Do not describe these cohorts as every factor.
+No selection uses errors or covariance values. The 4s cutoff is an analysis
+cohort choice, not a runtime parameter or recommendation.
+
+Reuse FL4y SE(3) exp/log and IE-TC loader plus the prior full-run configurations.
+e = Log(inverse(Expmap(mu)) * inverse(Tref(t_from)) * Tref(t_to)).
+Use ||rho|| for translation and ||phi|| for rotation, corresponding to the
+right-local covariance blocks. Retain Cartesian translation error separately
+to relate these plots to the previous time-series plots. No global alignment,
+prism lever arm, temporal bridge, covariance transport or noise-floor estimate.
+Reference interpolation must have brackets <=50 ms; no extrapolation.
+
+Hash/preserve journals, receipts, native timestamp CSVs, previous audit/sample
+files, reference bags and imported helper code. Cross-check every first value
+against the previously validated first-publication sample values. Verify unit
+conversions, finite/SPD selected covariance matrices, same endpoint cohorts,
+same physical update epochs, bin conservation, sorted thresholds, endpoint
+coverage, and input hashes. Revisions are not independent trials. Do not pool
+missions or OFF/ON into one fitted scale. No independence-based confidence
+intervals or significance tests are requested.
+
+Interpretation limits:
+IE-TC shares CPT7; source/reference uncertainty and cross-correlations unknown.
+These are reference discrepancies, not true NEES/NIS or independent truth.
+Trace discards directions and cross terms. These diagnostics cannot certify
+full-matrix calibration or factor dominance. Selecting small uncertainty may
+also select slower/easier portions of motion; no causal health claim.
+Four-second cohorts exclude unmatched and insufficiently mature histories.
+ETH1 native Kimera continues after new short-belief endpoints cease near302s.
+Inputs include incoming source versions, not solely fuser-accepted factors;
+known absorbed revisions / finite-recording EOF omissions remain preserved.
+Fixed scaling cannot change a source/block's within-run ranking. Keep source
+exchange, covariance alignment and WNOA unchanged. Stop after reporting.

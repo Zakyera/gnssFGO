@@ -1,0 +1,38 @@
+CP-K10: bounded real-data gate for CP-K9, 2026-10-19
+User Proceed explicitly authorizes one run, no retries or subsequent method.
+
+ETH1 bag0--111s,0.10x,25s drain; front Alphasense stereo+CPT7;25states.
+Reuse CP-K5 raw_glim_inputs.bag byte-for-byte including all arrival timestamps.
+Same111s schedule1100messages; historical first-publication LOCAL covariance,
+raw means aligned by unchanged Kimera native-IMU bridge. Existing covariance
+alignment approximation remains. One-way conditional saved-input diagnostic:
+GLIM is not running and cannot react to Kimera. No gnssFGO, GNSS or full346s.
+
+Only intentional estimator difference from CP-K5:
+private CP-K9 Kimera DSO be637ad745f73bf12596d3bf06754f56ed7bcadfdb8b4792b94c4fcfee62aad9
+and explicit CPK9_PRIOR_REFRESH=1. FL4Q_ENABLE=0,FL4M_RETIREMENT=remove.
+Same libcbs.so, sensor/profile, Gaussian dense scales1, classic temporary CBS,
+0.20s horizon,one pair/update,native Kimera IMU path (override unset).
+No tuning, model/profile/guard alteration, new build or production promotion.
+
+Fresh root and ROS port11458; exclusive capture admission;8GiB admission and
+5GiB runtime reserve. Before playback verify loaded private DSOs, full argv
+(including all repeated flagfiles), node env, profile and input hashes.
+Stop on existing rollback/recovery/crash guards or candidate failure; no guard
+bypass, auto retry or prefix-as-full score. Capture objective/retirement and
+CPK9_PRIOR_REFRESH rows plus native odometry, wire messages and revision logs.
+
+On completion: validate finite monotonic original ROS odometry,111s coverage,
+zero FL4q, actual candidate/prior retirement activity, exact ordered1100 wire
+payloads and dense covariance equality in receiver alignment rows. Compare
+mechanism chronology and prior IMU-error growth against retained CP-K5. Ordinary
+objective increases are observations, not a new gate or stationarity claim.
+Score original Kimera only with existing IE-TC evaluator/lever-arm/SE3 no-scale
+ATE and1sRPE; all saved poses plus common mask with existing CP-K4b ordinaryOFF.
+IE-TC shares CPT7; not independent prism ground truth. No GLIM/fusion score.
+
+On failure: save evidence and exact prefix provenance; do not run full-window
+validation/scoring, edit repair or launch again. Restore the container's stopped
+state only after owned jobs exit. No commits/push. CP-K8 full-run admission
+remains blocked unless later separately justified; this test alone is not a
+new matched three-estimator result.

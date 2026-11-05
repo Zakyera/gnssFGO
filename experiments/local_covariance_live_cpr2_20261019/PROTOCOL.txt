@@ -1,0 +1,33 @@
+CP-R2: one cached-LOCAL EIG-2 live gate (2026-10-19)
+=================================================
+Authorized: one fresh short CBS-OFF run; stop before any60s OFF/ON campaign.
+Duration30s, bagoffset5.7s, mission2024-11-03-13-59-54; headless0.10x,
+25s drain. Same frozen EIG-2 profiles, Hesai/CPT7/frontstereo, source lag5s,
+Kimera25states/native IMU support. Source receiving OFF both ways, classic
+temporary lifecycle bookkeeping, exports/revisions enabled. Scales1/Gaussian.
+Same CP-I1 native_local bridge, now CP-I3 release_v2 cached Gaussian provider.
+No estimator rebuild, nonlinear algorithm change, covariance math change,
+dropping versions, lag extension, rate reduction or tuning.
+Unchanged private FL4q Kimera and FL4e7s fixed-lag source-WNOA receiver,
+independent100ms supports, no central IMU/GNSS, stable-ID revision replacement.
+
+Require fresh directories/session/port11448; protect all CP-R1 inputs/hashes
+plus candidate provider and this harness. Existing8GiB preflight/5GiB reserve,
+no duplicate/overwrite/automatic retry and failure guards remain.
+30s coverage gates: GLIM>=280poses, Kimera>=135poses, each span>=28s;
+existing startup/tail/gap checks and receiver span>=28s. Complete final drain.
+Source nonincreasing-objective gate, exact LOCAL provenance and payload
+conservation, no late absorption failure, queue<1000/supportp95<=.8s,
+bounded supports/slots, deterministic saved-journal replay byte equality.
+Actual mapped libraries checked BEFORE playback. Original/default binaries
+and previous captures untouched. Only new private launch/configuration copies.
+
+Validation correction: Kimera belief payloads are in estimators.log; LOCAL
+joint-query telemetry is independently checked in Kimera ROS stdout. This
+repairs the old validator, not estimation or covariance.
+Compare revision-root timings on identical source timestamps against CP-R1
+and frozen FL4x; report full-new-window tails separately. Do not mistake query
+speedup for whole-GLIM speedup or certify longer/ON/1x operation.
+This is a timing/provenance gate, not a new accuracy comparison. Retain all
+native and online/finalized receiver products; no partial-window ATE claims.
+Stop and report after validation, or immediately on a capture/validation failure.

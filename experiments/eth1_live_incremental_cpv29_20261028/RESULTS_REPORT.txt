@@ -1,0 +1,38 @@
+CP-V29 FULL ETH1 HESAI CBS-OFF — live incremental GLIM output
+
+Full saved native cadence; ATE rigid SE3/no scale; metres.
+Product | ATE RMSE | estimated path | reference path | rows | span seconds
+glim_absolute | 0.046827 | 205.011 | 201.476 | 3454 | 345.300
+glim_incremental_live | 0.324791 | 204.522 | 201.476 | 3454 | 345.300
+kimera_absolute_graph | 4.266148 | 755.449 | 201.031 | 1492 | 342.598
+kimera_incremental_native | 4.496229 | 196.007 | 201.031 | 1492 | 342.598
+fusion_absolute_online | 0.164516 | 236.813 | 201.478 | 3456 | 345.500
+fusion_incremental_observer | 2.383948 | 199.279 | 201.478 | 3456 | 345.500
+fusion_delayed_finalized | 0.154099 | 201.910 | 201.478 | 3456 | 345.500
+
+Common mask: {"grid_queries": 3421, "valid_queries": 2970, "excluded_queries": 451, "supported_s": 296.7, "capture_s": 346.32, "supported_capture_percent": 85.67221067221067, "first_s": 3.744603691, "last_s": 302.044603691, "envelope_s": 298.3, "start_gap_s": 3.744603691, "tail_gap_s": 44.27539630899997, "segments": [{"first_s": 3.744603691, "last_s": 290.944603691, "rows": 2873}, {"first_s": 291.64460369100004, "last_s": 299.84460369100003, "rows": 83}, {"first_s": 300.744603691, "last_s": 302.044603691, "rows": 14}]}
+Product | ATE RMSE | path | 1s translation RPE | 1s rotation RPE deg
+glim_absolute | 0.047625 | 202.947 | 0.020945 | 0.372716
+glim_incremental_live | 0.338390 | 203.337 | 0.023586 | 0.402894
+kimera_absolute_graph | 4.209184 | 628.984 | 1.911286 | 1.305397
+kimera_incremental_native | 4.500022 | 194.452 | 0.440804 | 0.568332
+fusion_absolute_online | 0.168695 | 222.662 | 0.065671 | 2.927378
+fusion_incremental_observer | 2.488463 | 197.574 | 0.083373 | 2.928387
+fusion_delayed_finalized | 0.157991 | 201.214 | 0.015948 | 0.334308
+
+Live GLIM parity checks: {"rows": 3454, "independent_quaternion_chain_max": 2.496847173460992e-11, "telescoping_max": 2.4769519768597092e-11, "graph_reconstruction_max": 1.202038468761657e-12, "prism_edge_length_max_m": 6.682154829462661e-14, "active_pose_rows": 173182, "publication_pose_max": 0.0, "rounded_stamp_max_error_ns": 50, "missing_pairs": 0, "passed": true, "live_vs_independent_max_matrix_errors": {"current": 0.0, "previous": 0.0, "incremental": 2.1925927740085172e-10, "graph_T_odom": 4.740314807349932e-10, "ros_vs_live_csv": 0.0}, "live_ros_rows": 3454, "observer_csv_rows": 3456, "bag_topic_rows": {"/glim/cbs/odometry": 3454, "/glim/incremental_pose_cpv29": 3454}, "no_interior_receipt_omission": true, "excluded_unrecorded_shutdown_observer_rows": [{"index": "3454", "stamp_ns": "1727775354074655056", "availability_ros_ns": "1727775354174397482", "wall_ns": "1793226356131630847", "current_px": "-76.381910675534499", "current_py": "-32.249683817469268", "current_pz": "1.6096649398104703", "current_qx": "0.73786508022580977", "current_qy": "-0.6748679943976984", "current_qz": "-0.0026496743964017039", "current_qw": "0.010064429769327242", "previous_px": "-76.380814097197046", "previous_py": "-32.250232629329965", "previous_pz": "1.6095839434643102", "previous_qx": "0.73786027537582366", "previous_qy": "-0.67487290450244042", "previous_qz": "-0.0026079136799171329", "previous_qw": "0.010098295746960223", "incremental_px": "-76.679378714443146", "incremental_py": "-31.85321703457041", "incremental_pz": "-1.5654483880413459", "incremental_qx": "0.73519389374779021", "incremental_qy": "-0.67445152174781942", "incremental_qz": "-0.067749276299090153", "incremental_qw": "-0.0038883122065125233", "graph_T_odom_px": "-0.058825225817827231", "graph_T_odom_py": "0.24097025628223889", "graph_T_odom_pz": "5.6033110720824304", "graph_T_odom_qx": "-0.054203098397849661", "graph_T_odom_qy": "-0.038629733319835116", "graph_T_odom_qz": "0.0021875582235197795", "graph_T_odom_qw": "0.99778002706667146"}, {"index": "3455", "stamp_ns": "1727775354174658060", "availability_ros_ns": "1727775354174397482", "wall_ns": "1793226356188056365", "current_px": "-76.382419239024728", "current_py": "-32.248118693074261", "current_pz": "1.6079419941756528", "current_qx": "0.7378671752674314", "current_qy": "-0.67486616318554415", "current_qz": "-0.0026784753799085747", "current_qw": "0.010025927374806006", "previous_px": "-76.381930537891719", "previous_py": "-32.249247072137308", "previous_pz": "1.6087129709658536", "previous_qx": "0.73787031209945608", "previous_qy": "-0.67486254326843442", "previous_qz": "-0.0026702992070973736", "previous_qw": "0.010040902233255796", "incremental_px": "-76.67991554171418", "incremental_py": "-31.852011719723617", "incremental_pz": "-1.5660529588969936", "incremental_qx": "0.73518962887028316", "incremental_qy": "-0.6744552623290091", "incremental_qz": "-0.067757476404135958", "incremental_qw": "-0.0039029620137446758", "graph_T_odom_px": "-0.059323302808053313", "graph_T_odom_py": "0.24226829753983736", "graph_T_odom_pz": "5.6044904867905831", "graph_T_odom_qx": "-0.054171541695131109", "graph_T_odom_qy": "-0.038630813918803651", "graph_T_odom_qz": "0.0021935807277724006", "graph_T_odom_qw": "0.99778168578420545"}], "unrecorded_tail_span_s": 0.20000815400000002, "unrecorded_tail_ros_clock_minus_physical_ns": [99742426, -260578], "all_observer_rows_chain_max": 2.1925927740085172e-10, "all_observer_rows_checks": {"rows": 3456, "independent_quaternion_chain_max": 2.496847173460992e-11, "telescoping_max": 2.4769519768597092e-11, "graph_reconstruction_max": 1.2025935802739696e-12, "prism_edge_length_max_m": 6.682154829462661e-14}, "latency_ros_ms": [115.4760795, 122.0451313, 127.87415], "physical_stamps_exact": true, "incremental_frame": "glim_incremental_odom_cpv29", "newest_pose_body": "cpt7_imu"}
+
+Old full saved -> fresh full saved ATE / path:
+glim_absolute: 0.041080 -> 0.046827 m; 205.058 -> 205.011 m
+kimera_incremental_native: 4.496229 -> 4.496229 m; 196.007 -> 196.007 m
+fusion_absolute_online: 0.166126 -> 0.164516 m; 237.711 -> 236.813 m
+glim_incremental_live: 0.284405 -> 0.324791 m; 204.353 -> 204.522 m
+fusion_incremental_observer: 2.245444 -> 2.383948 m; 199.220 -> 199.279 m
+
+IE-TC shares CPT7; not independent prism ground truth.
+Method2 is the same output rule, not equal latency or cadence.
+GLIM incremental output is additional and never fed back into estimation.
+Fusion incremental pairs come from byte-parity-verified reporting replay.
+Delayed finalized fusion is not online or full-history.
+Full native polyline may include gap chords; common path does not bridge gaps.
+New capture may differ stochastically; observer does not improve optimizer.

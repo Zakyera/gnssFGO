@@ -1,0 +1,54 @@
+CP-K20 — full ETH1 live matched OFF/ON with explicit finalization, 2026-10-21
+
+Authorized by user Proceed after the CP-K19 focused and retained-prefix gate.
+One fresh CBS-OFF then one CBS-ON, only after OFF capture and ordinary gates
+pass. No automatic retry, overwrite or reuse of failed experiment outputs.
+Offset0,346.32s selected-topic window,0.20x,headless,25sdrain,ROS port11470.
+Start1727775007855396309ns/end1727775354175396309ns includes last Hesai
+record1727775354174658060ns; later camera/IMU-only tail is excluded.
+
+Sources exactly CP-K17/K18: Hesai+CPT7 GLIM5s and front Alphasense stereo+CPT7
+Kimera25states. K16a MAIN batching,CP-I1/CP-I3 all-LOCAL dense covariance
+every version,corrected MAIN means. CP-K9 Kimera private DSO unchanged:
+CPK9_PRIOR_REFRESH=1,FL4Q_ENABLE=0,FL4M_RETIREMENT=remove,native IMU override
+unset. Classic active_window_temporary source CBS,never source live_revision.
+Gaussian scales1,0.20s horizon,one pair/update,no health/robust/tuning.
+Existing mean-only source alignment/covariance approximation unchanged.
+
+Receiver: CP-K19 private executable SHA256
+4b08a7f5ba97f5e4ec22959df23367df79eebf5d644dc19d939747dcd4566d6e
+with --absorbed-revision-policy seal_at_absorption identically OFF/ON.
+Unchanged FL4e7s fixed-lag source_wnoa,independent100ms support clock,
+59 startup clock samples,no central IMU/GNSS,unchanged Qc/priors/full covariance.
+Active stable-ID versions replace. At absorption seal last accepted payload;
+known later versions are audited as expired WITHOUT solver insertion.
+This intentionally forgoes late corrections, not unlimited revision preservation.
+Unknown old first arrivals,invalid covariance,changed endpoints,duplicate
+conflicts and pending retirement remain errors. No guard relaxation.
+
+H=/home/yeranis/repos/gnssFGO/experiments/eth1_finalization_full_cpk20_20261021
+P=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_finalization_full_cpk20_20261021/prepared
+V=/home/yeranis/results/gnssfgo_eth1_finalization_full_cpk20_20261021
+For each successful capture, run each missing gate ONCE with
+/home/yeranis/.local/share/pipx/venvs/evo/bin/python:
+P/validate_local.py MODE; P/validate_candidate.py MODE; P/validate_case.py check MODE.
+Existing passed artifacts are inspected, not overwritten. Expired records are
+included once in receipt conservation; sealed_reference is not another receipt.
+Check against last accepted payload and actual absorption before expiration.
+Report counts/source/IDs,endpoint ages,forgone mean and full covariance changes.
+Before ON require these three gates then P/preflight_on.py ONCE and
+python3 P/run_case_on.py full on ONCE. OFF uses P/run_case.py full off.
+Stop on failure/blocker; owned controller cleans up. No automatic retries.
+
+After BOTH validate, run P/evaluate_fl4f.py in existing Noetic container then
+python3 H/summarize.py once. Report original GLIM,original Kimera ROS odometry,
+and concurrent ONLINE fusion: ATE,1s translation/rotation RPE,path lengths,
+full-saved and common-mask coverage. DELAYED fixed-lag-finalized is separate,
+not ONLINE/full-history. IE-TC shares CPT7,not independent prism ground truth.
+Disclose startup/internal/tail gaps. Retain all means,covariances,revisions,
+payload/provenance/lifecycle and timing data,including expired payloads.
+No exhaustive observer or saved-journal solver repeat; K19 already tested the
+new lifecycle. No nonlinear stationarity or universal accuracy/speed claim.
+No rebuild,model/covariance/lag/Qc/priors/source change,default promotion,push,
+other method or sequence. Stop containers after all owned jobs exit.
+Persistent follow-up requires separate user approval; do not enable silently.

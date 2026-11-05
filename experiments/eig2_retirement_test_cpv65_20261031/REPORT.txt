@@ -1,0 +1,134 @@
+CP-V65 -- temporary-CBS retirement hypothesis: test built / saved screen complete
+2026-10-31. Native causal comparison NOT RUN; no root-cause verdict or fix.
+Authority: analysis.json, event_manifest.json, verification.json and complete.json.
+
+BOTTOM LINE
+The hypothesis is testable, but the actual lifecycle is a rolling set of roughly
+24 active GLIM factors, not all external information switching off between
+messages. The oldest individual factor is removed before its endpoint is
+marginalized. Whether that particular removal causes a correction/reversal is
+not inferable from its co-occurrence with a new factor and new native data.
+
+The executable saved-data screen and controlled 2x2 protocol are now built.
+The saved CP51 native graphs stop at25, whereas retirement begins at30. This
+task cannot claim to have executed a native removal counterfactual. Extending
+the old observer blindly would also fail to preserve its original-chart priors:
+their serialization must be implemented and validated before a passive capture.
+No source capture, optimizer, production rebuild, weight or policy change ran.
+
+ACTUAL FACTOR LIFECYCLE -- FULL CORRECTED HESAI EIG2 CP49
+1762logged updates;1743insertions;1720removals;23remain in final active window.
+No logged post-update state has zero active peer factors after first admission.
+Median active count24, maximum24 (startup naturally begins with one).
+Completed factor lifetime: median4.7999615s, min4.5999578s, max5.5999593s.
+1688 of1720retirement updates also insert new peer information. There are32
+removal-without-new-insertion updates, still with new native observations and
+evolving estimator history; they are not randomized causal controls.
+
+First admission: update6, capture1.599933s.
+First marginalization: update26, capture5.59990s (saved CP50 chronology).
+First retirement: update30, capture6.399890s:
+  remove original x4->x5, slot929;
+  insert x28->x29, slot6725;
+  active count24->24;3state keys scheduled for marginalization.
+This is lag-boundary expiry, not a one-update on/off GLIM switch.
+An active-factor count is not an information-rank or confidence certificate.
+
+METHOD1 DECOMPOSITION -- REVISIONS ARE NOT PHYSICAL MOVEMENT
+Every eligible first-publication segment was decomposed using the preceding
+pose as saved in BOTH its original publication and the current solution:
+  published step = within-current-solution step + previous-pose revision.
+Translation is a vector identity in the common world frame. Rotations use exact
+composition, not addition/subtraction of angle magnitudes. Maximum identity
+errors1.39e-17m and1.36e-15matrix norm respectively.
+
+                                   CBS OFF        CBS ON
+Eligible individual steps             1730          1733
+Previous-pose revision median       .004947m      .075240m
+Previous-pose revision p95          .025091m      .443045m
+Previous-pose revision maximum      .288107m     2.736418m
+Revisions greater than .5m                0            69
+Adjacent-step pairs available          1721          1723
+Published directions reverse            106           485
+Within-solution directions reverse       55            40
+
+Reversal means negative dot product of consecutive translation vectors, with
+both lengths>1e-9m. It includes genuine turns and near-stationary noise: NOT a
+universal unhealthy-motion threshold or an accuracy statistic. Within-solution
+steps here come from successive corrected windows; this is NOT one full-history
+joint solution. It does show that the two output definitions behave differently.
+30OFF and28ONadjacent steps lack required overlapping saved poses and are
+explicitly omitted. OFF/ON descriptive aggregates use their own eligible masks,
+not a claimed common-mask ATE/RPE comparison. Within each mode the published and
+within-solution comparisons use exactly the same eligible observations.
+
+The sums of segment lengths on these INCOMPLETE native eligible masks are:
+  OFF published185.246714m, within-solution183.339944m;
+  ON published323.200201m, within-solution183.635699m.
+These are neither the existing EVO common-grid path table nor full-saved results,
+and neither is independent physical distance. Do not overwrite earlier tables.
+There is no new EVO ATE/RPE metric and no inference that a shorter path is truer.
+
+PRE-RETIREMENT CONTROL AND EVENT SELECTION
+All24eligible ONsteps6..29 already have nonzero revisions (median7.06mm,
+maximum67.77mm, previous-orientation revision maximum3.31deg) before peer
+retirement. Some correction-direction reversals also precede retirement.
+This excludes retirement as the initiator of EVERY correction; it does not
+exclude a later contribution to the much larger sawtooth pattern.
+
+Deterministically selected early native-test events:
+update  time(s)  previous-pose position revision (observed, NOT removal effect)
+28      5.99989          6.07mm   no-retirement control
+29      6.19989         67.77mm   no-retirement control
+30      6.39989         19.20mm   first retirement
+31      6.59989          4.23mm
+32      6.79989         25.72mm
+33      6.99988          8.23mm
+34      7.19988          9.15mm
+35      7.39988          9.22mm
+Thus a dramatic jump at the first retirement is not evident in this position
+measure. The causal effect could still be masked by simultaneous insertion or
+native updates, which is why the controlled contrast is needed.
+Later follow-up anchors: first>.5m at295/59.399422s (.632243m); maximum at
+1203/240.997971s (2.736418m). A10s prefix does NOT cover either later event.
+
+CAUSAL TEST DESIGN -- DO NOT CHANGE FREQUENCY OR STRENGTH
+Identical saved pre-marginalization native checkpoint, same new camera/IMU data,
+same initial states, caches, noise, priors and all unaffected factors:
+ A actual: old factor removed, new peer factor included.
+ B removal control: old retained for this solve, new included.
+ C old retained, new omitted.
+ D old removed, new omitted.
+A-B isolates immediate retirement with incoming information held fixed; B-C
+isolates admission with old information held fixed; the four-arm interaction
+exposes nonadditivity. No comparing removal-only extra steps to ordinary fused
+updates. Every arm uses exactly one native ordinary step plus one refresh.
+
+A must reproduce actual native equations and states before counterfactuals are
+admitted. All targets must be exact native factor identities. Preserved priors
+keep original anchors/functions, smart factors stay native. Retaining an old
+factor is legal only before its endpoint is marginalized; no dangling keys and
+no persistent policy promotion. B/C end before marginalization. Each event
+starts independently from the original baseline, not a modified prior event.
+Measure actual output/revision vectors, window shape, bias/velocity and native
+fit; do not assume improved residual fit or less revision means more accuracy.
+See PROTOCOL.txt for exact gates, contrasts, materiality levels and exclusions.
+
+READINESS / WHAT IS STILL REQUIRED
+All32requested native phase snapshots at28..35 are absent. CP51 only saved
+6..25. No amount of pose-log processing recovers the missing graph/cache/prior.
+Before any capture: extend a PRIVATE serializer for fl4l::OriginalChartPrior,
+preserve original coefficients/anchors, add post-marginalization observation,
+test actual marginalization/retirement nonmutation and Release/sanitizer fixtures.
+Then a separately authorized unchanged-settings10s passive prefix can provide
+the early snapshots. It is not a full-run retry or a candidate fix. If the
+early causal effect is small, that does not close the later severe-event question.
+
+VERIFICATION / PRESERVATION
+Nine deterministic fixtures, including100random world-coordinate invariance
+cases; wrong rotation order, early expiry and wrong retired slot are detected.
+Independent raw-xyz scanner cross-checks10389vectors; no source replay.
+All12analyzed input files hash-identical before/after; saved source outputs not
+edited. Four-sequence original/copied667-file checkpoint verified separately.
+Both containers remain stopped; no experiment jobs launched. No deletion/push.
+Final checks and precise artifact hashes are in verification.json/complete.json.

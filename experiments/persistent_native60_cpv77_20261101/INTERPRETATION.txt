@@ -1,0 +1,74 @@
+CP-V77 FINAL INTERPRETATION — 2026-11-01
+
+PASS: one60s EIG-2 Hesai Kimera-only conditional comparison of corrected
+active_window_temporary/remove versus the existing general persistent policy
+with CP76 compatibility. Both use saved CBS-ON input; neither is CBS-OFF.
+This is not the FL4m RETAIN selector or an exact historical binary replay.
+
+FULL-SAVED METHOD1 (298 identical physical timestamps in each arm)
+Metric                         Temporary     Persistent     Improvement
+ATE RMSE (m)                    0.093192       0.057444       38.36%
+0.5m translation RPE RMSE (m)    0.113062       0.031230       72.38%
+0.5m rotation RPE RMSE (deg)     2.495136       0.889706       64.34%
+Estimated polyline path (m)     41.410951      34.935135
+Reference path (m)             34.462534      34.462534
+Path excess                    20.162%         1.371%
+Late40..60s previous-pose
+revision p95 (m)                0.297709       0.042279       85.80%
+Late revision maximum (m)       0.632243       0.087347
+Mean optimize time (ms)        74.837        110.667          47.88% slower
+
+Same-update movement in the late interval remains nearly unchanged:
+mean0.092467 ->0.092301m. The reduction in jagged first-published paths coincides
+with much smaller revisions, not just an artificially shortened movement scale.
+No output smoothing, weight/covariance scaling, prior-strength change or new build.
+
+COMMON100ms MASK:596/596 queries,59.5s supported (99.17% of60s), no exclusions;
+ATE0.084683 ->0.057071m (32.61% better), path39.244902 ->34.628409m,
+reference34.756967m, tRPE0.074352 ->0.027355m, rRPE1.405793 ->1.054627deg.
+Keep this interpolated cadence separate from the full-saved native table.
+Native span0.199946383..59.799417809s,59.599471426s, no gaps over0.5s.
+
+CONTROLLED INPUT / ACTUAL ADMISSION
+Each received all590 original raw wire beliefs byte-exact and in order.
+All298 native timestamps and all292 admitted sender/receiver identities,
+backend update IDs and physical endpoint times happen to agree between arms.
+They were not forced by a replay schedule. Native mean alignment was recomputed
+from each arm's own causal state, so the inserted aligned means need not agree.
+Native final matching decisions in each arm:292 queued/admitted,272 timestamp
+rejections,24 still retrying. Two additional received beliefs have no match
+decision row before the final update. Do not claim all590 became factors or
+zero terminal omission. Retry-event totals6830/6831 count repeated attempts.
+Temporary explicitly retires268 factors; persistent has no temporary retirement.
+CP76 runtime assertions check slot/replacement/marginal consumption, but no
+new per-boundary persistent absorption-count logs exist. Do not invent counts.
+
+CONCLUSION
+The existing general persistent policy substantially improves this60s published
+output and independently supports the earlier CP70 temporary-retirement finding.
+It is evidence that losing the external correction at temporary retirement is
+an important contributor here. It is not proof that retention alone explains
+all differences: general persistent has mode-specific solve/replacement behavior,
+and this native test does not freeze the subsequently aligned measurements.
+The prior CP70 frozen-input test provides the more targeted retirement evidence.
+No universal fix, full-mission completion or live bidirectional safety is claimed.
+
+Residual caveats: persistent's mean IMU cost is1438.55 versus1373.60, so not all
+internal residuals improve. Total graph objective values are not directly
+comparable across modes with different retained/marginalized information.
+No nonlinear stationarity or real-time performance claim from this0.20x run.
+IE-TC shares CPT7; not independent prism GT. All ATE/RPE are EVO1.36.3,
+SE3/no-scale ATE and reference-distance0.5m RPE, first-published absolute poses.
+Estimated path length is not physical distance travelled.
+
+SCOPE / CLOSEOUT
+No GLIM/fusion replay and no consumer of Kimera's outgoing belief topic.
+Saved input retains original ON feedback history. CP67 mixed-prior LOCAL
+provenance gate remains failed: do not return this as native-only evidence.
+No production/default promotion or automatic full/live run.
+601 static/input hashes and212 closed output hashes verified. Four-sequence
+Hesai checkpoint verifies667 original/saved files. Both containers restored
+stopped; controller72061 and all recorded host stage jobs exited. Source cbs
+and Kimera-VIO git trees clean. No deletion or push.12 EVO archives cross-checked.
+Original complete.json/REPORT.txt and controller evidence remain unchanged;
+post_closeout.json supplies the subsequent read-only admission/ownership audit.

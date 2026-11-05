@@ -1,0 +1,1567 @@
+{
+  "passed": true,
+  "capture": {
+    "passed": true,
+    "updates": 44,
+    "snapshots": 168,
+    "bytes": 471194572,
+    "max_live_factors": 1058,
+    "observer_seconds_sum": 6.962855949,
+    "observer_seconds_max": 0.078824562,
+    "clones_only_roundtrip": true
+  },
+  "coverage": {
+    "passed": true,
+    "requested_s": 12.0,
+    "input_receipts": {
+      "/boxi/cpt7/imu": {
+        "rows": 1186,
+        "first_ns": 1727775008003475000,
+        "last_ns": 1727775019853477000,
+        "all_raw_stamps_equal": true
+      },
+      "/boxi/alphasense/imu": {
+        "rows": 2369,
+        "first_ns": 1727775007990930309,
+        "last_ns": 1727775019853926962,
+        "all_raw_stamps_equal": true
+      }
+    },
+    "both_receivers_on": true,
+    "external_injections": {
+      "G2K_queued": 40,
+      "G2K_persistent": 40,
+      "K2G_persistent": 40
+    },
+    "raw_unmatched_camera_headers": {
+      "left_only_ns": [],
+      "right_only_ns": []
+    },
+    "frontend": {
+      "received_pairs": 121,
+      "preinitialization": 3,
+      "processed": 117,
+      "terminal_unsupported": 1,
+      "terminal_camera_after_last_imu_ms": 1.402
+    },
+    "backend_rows": 44,
+    "limits": "Native counters and exact timestamps, not an instrumented per-frame branch trace",
+    "native_glim": {
+      "rows": 111,
+      "start_s": 1727775008.675043,
+      "end_s": 1727775019.675117,
+      "span_s": 11.000073909759521,
+      "maximum_pose_gap_s": 0.10051512718200684,
+      "post_startup_max_gap_s": 0.10051512718200684,
+      "start_after_first_imu_s": 0.6715681552886963,
+      "tail_behind_last_imu_s": 0.1783602237701416,
+      "path_length_m": 2.060877469909245,
+      "gaps_over_1s": [],
+      "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+    },
+    "native_kimera": {
+      "rows": 44,
+      "start_s": 1727775008.1553955,
+      "end_s": 1727775019.7553296,
+      "span_s": 11.599934101104736,
+      "maximum_pose_gap_s": 3.199979066848755,
+      "post_startup_max_gap_s": 0.19999909400939941,
+      "start_after_first_imu_s": 0.16446495056152344,
+      "tail_behind_last_imu_s": 0.09859752655029297,
+      "path_length_m": 2.103850078057593,
+      "gaps_over_1s": [
+        {
+          "before_index": 1,
+          "after_index": 2,
+          "start_s": 1727775008.3553946,
+          "end_s": 1727775011.5553737,
+          "gap_s": 3.199979066848755
+        }
+      ],
+      "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+    }
+  },
+  "covariance_reproduction": {
+    "updates": 23,
+    "max_full_matrix_relative_error": 2.5595472658591666e-13,
+    "rows": [
+      {
+        "update": 3,
+        "full_matrix_relative_error": 1.680118253404936e-14
+      },
+      {
+        "update": 4,
+        "full_matrix_relative_error": 6.925106475153988e-14
+      },
+      {
+        "update": 5,
+        "full_matrix_relative_error": 6.558065035722275e-14
+      },
+      {
+        "update": 6,
+        "full_matrix_relative_error": 7.098642586959069e-14
+      },
+      {
+        "update": 7,
+        "full_matrix_relative_error": 4.032765955694133e-14
+      },
+      {
+        "update": 8,
+        "full_matrix_relative_error": 9.075901722685716e-14
+      },
+      {
+        "update": 9,
+        "full_matrix_relative_error": 8.545679953235514e-14
+      },
+      {
+        "update": 10,
+        "full_matrix_relative_error": 4.0767921563544656e-14
+      },
+      {
+        "update": 11,
+        "full_matrix_relative_error": 2.4283743675418018e-14
+      },
+      {
+        "update": 12,
+        "full_matrix_relative_error": 3.6598760356911116e-14
+      },
+      {
+        "update": 13,
+        "full_matrix_relative_error": 4.528760187029491e-14
+      },
+      {
+        "update": 14,
+        "full_matrix_relative_error": 9.167089488926474e-14
+      },
+      {
+        "update": 15,
+        "full_matrix_relative_error": 1.5965074936540544e-13
+      },
+      {
+        "update": 16,
+        "full_matrix_relative_error": 2.5595472658591666e-13
+      },
+      {
+        "update": 17,
+        "full_matrix_relative_error": 1.0512305291586505e-13
+      },
+      {
+        "update": 18,
+        "full_matrix_relative_error": 1.7675698529833839e-13
+      },
+      {
+        "update": 19,
+        "full_matrix_relative_error": 1.7932679722877228e-13
+      },
+      {
+        "update": 20,
+        "full_matrix_relative_error": 1.0898433371046616e-13
+      },
+      {
+        "update": 21,
+        "full_matrix_relative_error": 2.0808913706550754e-13
+      },
+      {
+        "update": 22,
+        "full_matrix_relative_error": 1.3521810843055232e-13
+      },
+      {
+        "update": 23,
+        "full_matrix_relative_error": 1.246922822462915e-13
+      },
+      {
+        "update": 24,
+        "full_matrix_relative_error": 7.996756188074629e-14
+      },
+      {
+        "update": 25,
+        "full_matrix_relative_error": 1.074244365143191e-13
+      }
+    ]
+  },
+  "cache_reset_sensitivity": [
+    {
+      "update": 3,
+      "relative_matrix_difference": 0.0,
+      "translation_trace_ratio": 1.0
+    },
+    {
+      "update": 4,
+      "relative_matrix_difference": 0.015314187914261384,
+      "translation_trace_ratio": 1.0011209936069436
+    },
+    {
+      "update": 5,
+      "relative_matrix_difference": 0.0,
+      "translation_trace_ratio": 1.0
+    },
+    {
+      "update": 6,
+      "relative_matrix_difference": 0.0014653175331178381,
+      "translation_trace_ratio": 0.9984716254668001
+    },
+    {
+      "update": 7,
+      "relative_matrix_difference": 0.0013032436374964432,
+      "translation_trace_ratio": 0.9990075144920726
+    },
+    {
+      "update": 8,
+      "relative_matrix_difference": 0.014740366771655806,
+      "translation_trace_ratio": 1.0131158724963627
+    },
+    {
+      "update": 9,
+      "relative_matrix_difference": 0.0001548135461681718,
+      "translation_trace_ratio": 0.9999015945936353
+    },
+    {
+      "update": 10,
+      "relative_matrix_difference": 0.0001608325794924678,
+      "translation_trace_ratio": 1.0000327162616407
+    },
+    {
+      "update": 11,
+      "relative_matrix_difference": 0.004736847148873955,
+      "translation_trace_ratio": 1.0036204101594919
+    },
+    {
+      "update": 12,
+      "relative_matrix_difference": 0.005893926608684379,
+      "translation_trace_ratio": 1.0045390592273629
+    },
+    {
+      "update": 13,
+      "relative_matrix_difference": 0.003888750638952747,
+      "translation_trace_ratio": 1.0027648003877319
+    },
+    {
+      "update": 14,
+      "relative_matrix_difference": 5.116605040725385e-05,
+      "translation_trace_ratio": 0.99996307531773
+    },
+    {
+      "update": 15,
+      "relative_matrix_difference": 0.07157283317588528,
+      "translation_trace_ratio": 1.0657401566851037
+    },
+    {
+      "update": 16,
+      "relative_matrix_difference": 0.0,
+      "translation_trace_ratio": 1.0
+    },
+    {
+      "update": 17,
+      "relative_matrix_difference": 0.00036828670861320246,
+      "translation_trace_ratio": 0.9996746464355093
+    },
+    {
+      "update": 18,
+      "relative_matrix_difference": 0.003369765134861503,
+      "translation_trace_ratio": 0.9977303444862597
+    },
+    {
+      "update": 19,
+      "relative_matrix_difference": 1.9800669813031334e-05,
+      "translation_trace_ratio": 1.0000121587267705
+    },
+    {
+      "update": 20,
+      "relative_matrix_difference": 4.639625886652291e-05,
+      "translation_trace_ratio": 0.9999687002880494
+    },
+    {
+      "update": 21,
+      "relative_matrix_difference": 0.00022369234793979205,
+      "translation_trace_ratio": 1.000198018019732
+    },
+    {
+      "update": 22,
+      "relative_matrix_difference": 0.000783071363042194,
+      "translation_trace_ratio": 0.9999572495028658
+    },
+    {
+      "update": 23,
+      "relative_matrix_difference": 0.00045640215795550345,
+      "translation_trace_ratio": 0.9999611252230367
+    },
+    {
+      "update": 24,
+      "relative_matrix_difference": 0.0005182707877946056,
+      "translation_trace_ratio": 0.9996738549422323
+    },
+    {
+      "update": 25,
+      "relative_matrix_difference": 0.0004929187310674818,
+      "translation_trace_ratio": 0.9996323977856393
+    }
+  ],
+  "fixed_measurement_state_contrasts": [
+    {
+      "update": 3,
+      "sequence_time_s": 3.8999760150909424,
+      "fixed_measurement_set_smart_factors": 271,
+      "old_pose_information": {
+        "smart": 271,
+        "valid": 135,
+        "nonzero": 135,
+        "touch": 271,
+        "touch_nonzero": 135,
+        "H_trace": 73803848.31699884
+      },
+      "new_pose_information": {
+        "smart": 271,
+        "valid": 135,
+        "nonzero": 135,
+        "touch": 271,
+        "touch_nonzero": 135,
+        "H_trace": 73803848.31699884
+      },
+      "global_status_changes": {},
+      "endpoint_status_changes": {},
+      "visual_H_trace_ratio": 1.0,
+      "original_native_translation_traces": {
+        "old": 1.3253203441177822e-06,
+        "new": 1.3253203441177822e-06,
+        "capture": 1.3253203441177822e-06
+      },
+      "within_capture_fixed_factor_translation_traces": {
+        "initial_freshcache": 1.6549506046825931e-06,
+        "ordinary_freshcache": 1.4931579638889465e-06,
+        "refreshed_freshcache": 1.325320344117782e-06,
+        "refreshed_savedcache": 1.325320344117782e-06
+      }
+    },
+    {
+      "update": 4,
+      "sequence_time_s": 4.099975109100342,
+      "fixed_measurement_set_smart_factors": 320,
+      "old_pose_information": {
+        "smart": 320,
+        "valid": 100,
+        "nonzero": 100,
+        "touch": 288,
+        "touch_nonzero": 90,
+        "H_trace": 84631157.51350538
+      },
+      "new_pose_information": {
+        "smart": 320,
+        "valid": 99,
+        "nonzero": 99,
+        "touch": 288,
+        "touch_nonzero": 91,
+        "H_trace": 87166970.25995518
+      },
+      "global_status_changes": {
+        "VALID -> DEGENERATE": 2,
+        "OUTLIER -> VALID": 1
+      },
+      "endpoint_status_changes": {
+        "OUTLIER -> VALID": 1
+      },
+      "visual_H_trace_ratio": 1.0299631107614844,
+      "original_native_translation_traces": {
+        "old": 9.739363310533075e-07,
+        "new": 9.631981834307728e-07,
+        "capture": 9.609235025598637e-07
+      },
+      "within_capture_fixed_factor_translation_traces": {
+        "initial_freshcache": 1.1137480003458834e-06,
+        "ordinary_freshcache": 9.75303844483632e-07,
+        "refreshed_freshcache": 9.620006916629663e-07,
+        "refreshed_savedcache": 9.609235025598349e-07
+      }
+    },
+    {
+      "update": 5,
+      "sequence_time_s": 4.299973964691162,
+      "fixed_measurement_set_smart_factors": 366,
+      "old_pose_information": {
+        "smart": 366,
+        "valid": 114,
+        "nonzero": 114,
+        "touch": 274,
+        "touch_nonzero": 61,
+        "H_trace": 75969029.37597814
+      },
+      "new_pose_information": {
+        "smart": 366,
+        "valid": 114,
+        "nonzero": 114,
+        "touch": 274,
+        "touch_nonzero": 62,
+        "H_trace": 75525853.74212727
+      },
+      "global_status_changes": {
+        "VALID -> FAR_POINT": 1,
+        "VALID -> OUTLIER": 1,
+        "FAR_POINT -> VALID": 2
+      },
+      "endpoint_status_changes": {
+        "VALID -> OUTLIER": 1,
+        "FAR_POINT -> VALID": 2
+      },
+      "visual_H_trace_ratio": 0.9941663644054533,
+      "original_native_translation_traces": {
+        "old": 1.0861215086471897e-06,
+        "new": 1.0839855757833128e-06,
+        "capture": 1.0863373252703927e-06
+      },
+      "within_capture_fixed_factor_translation_traces": {
+        "initial_freshcache": 1.2757383426369483e-06,
+        "ordinary_freshcache": 1.0785528233730204e-06,
+        "refreshed_freshcache": 1.086337325270416e-06,
+        "refreshed_savedcache": 1.086337325270416e-06
+      }
+    },
+    {
+      "update": 6,
+      "sequence_time_s": 4.4999730587005615,
+      "fixed_measurement_set_smart_factors": 402,
+      "old_pose_information": {
+        "smart": 402,
+        "valid": 116,
+        "nonzero": 116,
+        "touch": 271,
+        "touch_nonzero": 61,
+        "H_trace": 73208588.9928144
+      },
+      "new_pose_information": {
+        "smart": 402,
+        "valid": 112,
+        "nonzero": 112,
+        "touch": 271,
+        "touch_nonzero": 57,
+        "H_trace": 72956479.95126782
+      },
+      "global_status_changes": {
+        "VALID -> FAR_POINT": 5,
+        "OUTLIER -> VALID": 2,
+        "VALID -> OUTLIER": 1
+      },
+      "endpoint_status_changes": {
+        "VALID -> FAR_POINT": 4,
+        "VALID -> OUTLIER": 1,
+        "OUTLIER -> VALID": 1
+      },
+      "visual_H_trace_ratio": 0.9965562914814363,
+      "original_native_translation_traces": {
+        "old": 1.4471539528819554e-06,
+        "new": 1.7829500672584996e-06,
+        "capture": 1.798243497291224e-06
+      },
+      "within_capture_fixed_factor_translation_traces": {
+        "initial_freshcache": 1.8497494561860928e-06,
+        "ordinary_freshcache": 1.7999621370747237e-06,
+        "refreshed_freshcache": 1.7954951077255415e-06,
+        "refreshed_savedcache": 1.7982434972912937e-06
+      }
+    },
+    {
+      "update": 7,
+      "sequence_time_s": 4.699971914291382,
+      "fixed_measurement_set_smart_factors": 460,
+      "old_pose_information": {
+        "smart": 460,
+        "valid": 125,
+        "nonzero": 125,
+        "touch": 250,
+        "touch_nonzero": 57,
+        "H_trace": 78498615.90644588
+      },
+      "new_pose_information": {
+        "smart": 460,
+        "valid": 122,
+        "nonzero": 122,
+        "touch": 250,
+        "touch_nonzero": 56,
+        "H_trace": 75714754.49367504
+      },
+      "global_status_changes": {
+        "VALID -> FAR_POINT": 4,
+        "VALID -> OUTLIER": 1,
+        "OUTLIER -> VALID": 2,
+        "FAR_POINT -> BEHIND_CAMERA": 1
+      },
+      "endpoint_status_changes": {
+        "VALID -> FAR_POINT": 2,
+        "OUTLIER -> VALID": 1,
+        "FAR_POINT -> BEHIND_CAMERA": 1
+      },
+      "visual_H_trace_ratio": 0.9645361719996615,
+      "original_native_translation_traces": {
+        "old": 1.5609174256488723e-06,
+        "new": 1.9286888062014317e-06,
+        "capture": 2.4088272422577496e-06
+      },
+      "within_capture_fixed_factor_translation_traces": {
+        "initial_freshcache": 2.520954686392544e-06,
+        "ordinary_freshcache": 2.415669630174968e-06,
+        "refreshed_freshcache": 2.4064365161286616e-06,
+        "refreshed_savedcache": 2.408827242257703e-06
+      }
+    },
+    {
+      "update": 8,
+      "sequence_time_s": 4.899971008300781,
+      "fixed_measurement_set_smart_factors": 513,
+      "old_pose_information": {
+        "smart": 513,
+        "valid": 139,
+        "nonzero": 139,
+        "touch": 288,
+        "touch_nonzero": 69,
+        "H_trace": 76837598.80665502
+      },
+      "new_pose_information": {
+        "smart": 513,
+        "valid": 140,
+        "nonzero": 140,
+        "touch": 288,
+        "touch_nonzero": 70,
+        "H_trace": 85009219.80522521
+      },
+      "global_status_changes": {
+        "VALID -> FAR_POINT": 6,
+        "OUTLIER -> VALID": 7,
+        "FAR_POINT -> BEHIND_CAMERA": 2
+      },
+      "endpoint_status_changes": {
+        "FAR_POINT -> BEHIND_CAMERA": 2,
+        "VALID -> FAR_POINT": 5,
+        "OUTLIER -> VALID": 6
+      },
+      "visual_H_trace_ratio": 1.1063492499177685,
+      "original_native_translation_traces": {
+        "old": 1.9456735280692525e-06,
+        "new": 1.643288149684949e-06,
+        "capture": 2.1904263835982995e-06
+      },
+      "within_capture_fixed_factor_translation_traces": {
+        "initial_freshcache": 1.9594785121005335e-06,
+        "ordinary_freshcache": 2.1183513474713575e-06,
+        "refreshed_freshcache": 2.2191557367581396e-06,
+        "refreshed_savedcache": 2.1904263835981966e-06
+      }
+    },
+    {
+      "update": 9,
+      "sequence_time_s": 5.0999696254730225,
+      "fixed_measurement_set_smart_factors": 543,
+      "old_pose_information": {
+        "smart": 543,
+        "valid": 123,
+        "nonzero": 123,
+        "touch": 299,
+        "touch_nonzero": 58,
+        "H_trace": 66457496.17645478
+      },
+      "new_pose_information": {
+        "smart": 543,
+        "valid": 123,
+        "nonzero": 123,
+        "touch": 299,
+        "touch_nonzero": 54,
+        "H_trace": 75086247.81079607
+      },
+      "global_status_changes": {
+        "OUTLIER -> VALID": 5,
+        "FAR_POINT -> BEHIND_CAMERA": 8,
+        "VALID -> OUTLIER": 2,
+        "OUTLIER -> FAR_POINT": 1,
+        "VALID -> FAR_POINT": 3
+      },
+      "endpoint_status_changes": {
+        "FAR_POINT -> BEHIND_CAMERA": 7,
+        "VALID -> OUTLIER": 2,
+        "OUTLIER -> FAR_POINT": 1,
+        "OUTLIER -> VALID": 1,
+        "VALID -> FAR_POINT": 3
+      },
+      "visual_H_trace_ratio": 1.129838650728439,
+      "original_native_translation_traces": {
+        "old": 1.6497439192582259e-06,
+        "new": 2.034986146982502e-06,
+        "capture": 2.1901446848483788e-06
+      },
+      "within_capture_fixed_factor_translation_traces": {
+        "initial_freshcache": 1.665056989760877e-06,
+        "ordinary_freshcache": 1.8214528691853904e-06,
+        "refreshed_freshcache": 2.189929162770603e-06,
+        "refreshed_savedcache": 2.190144684848313e-06
+      }
+    },
+    {
+      "update": 10,
+      "sequence_time_s": 5.299968719482422,
+      "fixed_measurement_set_smart_factors": 543,
+      "old_pose_information": {
+        "smart": 543,
+        "valid": 106,
+        "nonzero": 106,
+        "touch": 288,
+        "touch_nonzero": 36,
+        "H_trace": 61446140.248049706
+      },
+      "new_pose_information": {
+        "smart": 543,
+        "valid": 110,
+        "nonzero": 110,
+        "touch": 288,
+        "touch_nonzero": 42,
+        "H_trace": 82090770.3724857
+      },
+      "global_status_changes": {
+        "VALID -> FAR_POINT": 5,
+        "OUTLIER -> VALID": 11,
+        "FAR_POINT -> BEHIND_CAMERA": 9,
+        "OUTLIER -> FAR_POINT": 1,
+        "VALID -> OUTLIER": 2
+      },
+      "endpoint_status_changes": {
+        "OUTLIER -> VALID": 8,
+        "FAR_POINT -> BEHIND_CAMERA": 7,
+        "VALID -> OUTLIER": 2
+      },
+      "visual_H_trace_ratio": 1.3359792826871864,
+      "original_native_translation_traces": {
+        "old": 2.8096133098451577e-06,
+        "new": 1.6721802436908431e-06,
+        "capture": 1.6555903553597575e-06
+      },
+      "within_capture_fixed_factor_translation_traces": {
+        "initial_freshcache": 1.6509169216728857e-06,
+        "ordinary_freshcache": 1.6225721803033515e-06,
+        "refreshed_freshcache": 1.6556445200869827e-06,
+        "refreshed_savedcache": 1.6555903553597469e-06
+      }
+    },
+    {
+      "update": 11,
+      "sequence_time_s": 5.499967575073242,
+      "fixed_measurement_set_smart_factors": 570,
+      "old_pose_information": {
+        "smart": 570,
+        "valid": 107,
+        "nonzero": 107,
+        "touch": 288,
+        "touch_nonzero": 38,
+        "H_trace": 59888925.07352401
+      },
+      "new_pose_information": {
+        "smart": 570,
+        "valid": 107,
+        "nonzero": 107,
+        "touch": 288,
+        "touch_nonzero": 49,
+        "H_trace": 90160266.86859018
+      },
+      "global_status_changes": {
+        "VALID -> DEGENERATE": 16,
+        "OUTLIER -> VALID": 16,
+        "FAR_POINT -> BEHIND_CAMERA": 10,
+        "OUTLIER -> FAR_POINT": 1
+      },
+      "endpoint_status_changes": {
+        "OUTLIER -> VALID": 11,
+        "FAR_POINT -> BEHIND_CAMERA": 8
+      },
+      "visual_H_trace_ratio": 1.5054580919243892,
+      "original_native_translation_traces": {
+        "old": 3.3654641678929658e-06,
+        "new": 1.5308127326358412e-06,
+        "capture": 1.4791631449984014e-06
+      },
+      "within_capture_fixed_factor_translation_traces": {
+        "initial_freshcache": 1.2691046347226785e-06,
+        "ordinary_freshcache": 1.4042980374869218e-06,
+        "refreshed_freshcache": 1.4845183222761132e-06,
+        "refreshed_savedcache": 1.479163144998415e-06
+      }
+    },
+    {
+      "update": 12,
+      "sequence_time_s": 5.699966669082642,
+      "fixed_measurement_set_smart_factors": 599,
+      "old_pose_information": {
+        "smart": 599,
+        "valid": 100,
+        "nonzero": 100,
+        "touch": 306,
+        "touch_nonzero": 31,
+        "H_trace": 45781064.08205879
+      },
+      "new_pose_information": {
+        "smart": 599,
+        "valid": 132,
+        "nonzero": 132,
+        "touch": 306,
+        "touch_nonzero": 57,
+        "H_trace": 84845400.06983939
+      },
+      "global_status_changes": {
+        "OUTLIER -> VALID": 29,
+        "FAR_POINT -> BEHIND_CAMERA": 4,
+        "FAR_POINT -> VALID": 3
+      },
+      "endpoint_status_changes": {
+        "OUTLIER -> VALID": 23,
+        "FAR_POINT -> VALID": 3,
+        "FAR_POINT -> BEHIND_CAMERA": 3
+      },
+      "visual_H_trace_ratio": 1.8532858895057789,
+      "original_native_translation_traces": {
+        "old": 2.3400091418395175e-05,
+        "new": 2.3319661378693075e-06,
+        "capture": 1.7591112624224024e-06
+      },
+      "within_capture_fixed_factor_translation_traces": {
+        "initial_freshcache": 1.0942629463567655e-06,
+        "ordinary_freshcache": 1.571459764973443e-06,
+        "refreshed_freshcache": 1.7670959726300873e-06,
+        "refreshed_savedcache": 1.7591112624224308e-06
+      }
+    },
+    {
+      "update": 13,
+      "sequence_time_s": 5.899965286254883,
+      "fixed_measurement_set_smart_factors": 599,
+      "old_pose_information": {
+        "smart": 599,
+        "valid": 71,
+        "nonzero": 71,
+        "touch": 306,
+        "touch_nonzero": 5,
+        "H_trace": 54890326.64770889
+      },
+      "new_pose_information": {
+        "smart": 599,
+        "valid": 102,
+        "nonzero": 102,
+        "touch": 306,
+        "touch_nonzero": 28,
+        "H_trace": 70280314.42685446
+      },
+      "global_status_changes": {
+        "DEGENERATE -> VALID": 4,
+        "OUTLIER -> VALID": 24,
+        "FAR_POINT -> BEHIND_CAMERA": 6,
+        "BEHIND_CAMERA -> FAR_POINT": 1,
+        "BEHIND_CAMERA -> VALID": 4,
+        "OUTLIER -> BEHIND_CAMERA": 1,
+        "VALID -> OUTLIER": 1
+      },
+      "endpoint_status_changes": {
+        "FAR_POINT -> BEHIND_CAMERA": 4,
+        "OUTLIER -> VALID": 20,
+        "BEHIND_CAMERA -> FAR_POINT": 1,
+        "BEHIND_CAMERA -> VALID": 4,
+        "OUTLIER -> BEHIND_CAMERA": 1,
+        "VALID -> OUTLIER": 1
+      },
+      "visual_H_trace_ratio": 1.2803770485448176,
+      "original_native_translation_traces": {
+        "old": 3.3111182963898415e-05,
+        "new": 5.279823276016431e-06,
+        "capture": 2.4670814102216136e-06
+      },
+      "within_capture_fixed_factor_translation_traces": {
+        "initial_freshcache": 1.1929127635546061e-06,
+        "ordinary_freshcache": 1.9410852679917434e-06,
+        "refreshed_freshcache": 2.4739023978611105e-06,
+        "refreshed_savedcache": 2.4670814102215637e-06
+      }
+    },
+    {
+      "update": 14,
+      "sequence_time_s": 6.099964380264282,
+      "fixed_measurement_set_smart_factors": 640,
+      "old_pose_information": {
+        "smart": 640,
+        "valid": 99,
+        "nonzero": 99,
+        "touch": 283,
+        "touch_nonzero": 27,
+        "H_trace": 50326747.751183316
+      },
+      "new_pose_information": {
+        "smart": 640,
+        "valid": 121,
+        "nonzero": 121,
+        "touch": 283,
+        "touch_nonzero": 45,
+        "H_trace": 68842473.62908845
+      },
+      "global_status_changes": {
+        "OUTLIER -> VALID": 24,
+        "FAR_POINT -> BEHIND_CAMERA": 6,
+        "BEHIND_CAMERA -> FAR_POINT": 2,
+        "OUTLIER -> BEHIND_CAMERA": 1,
+        "VALID -> OUTLIER": 2
+      },
+      "endpoint_status_changes": {
+        "BEHIND_CAMERA -> FAR_POINT": 2,
+        "OUTLIER -> BEHIND_CAMERA": 1,
+        "OUTLIER -> VALID": 20,
+        "VALID -> OUTLIER": 2
+      },
+      "visual_H_trace_ratio": 1.3679102406824963,
+      "original_native_translation_traces": {
+        "old": 1.2446152948413396e-05,
+        "new": 5.100671395893805e-06,
+        "capture": 1.299316201888509e-06
+      },
+      "within_capture_fixed_factor_translation_traces": {
+        "initial_freshcache": 2.15320757950768e-06,
+        "ordinary_freshcache": 1.300694933108429e-06,
+        "refreshed_freshcache": 1.2992682250506693e-06,
+        "refreshed_savedcache": 1.2993162018885924e-06
+      }
+    },
+    {
+      "update": 15,
+      "sequence_time_s": 6.2999632358551025,
+      "fixed_measurement_set_smart_factors": 680,
+      "old_pose_information": {
+        "smart": 680,
+        "valid": 105,
+        "nonzero": 105,
+        "touch": 286,
+        "touch_nonzero": 32,
+        "H_trace": 52448846.50401377
+      },
+      "new_pose_information": {
+        "smart": 680,
+        "valid": 126,
+        "nonzero": 126,
+        "touch": 286,
+        "touch_nonzero": 50,
+        "H_trace": 66936976.441509925
+      },
+      "global_status_changes": {
+        "OUTLIER -> VALID": 24,
+        "FAR_POINT -> BEHIND_CAMERA": 6,
+        "BEHIND_CAMERA -> FAR_POINT": 2,
+        "OUTLIER -> BEHIND_CAMERA": 1,
+        "VALID -> OUTLIER": 2,
+        "FAR_POINT -> OUTLIER": 1,
+        "VALID -> FAR_POINT": 1
+      },
+      "endpoint_status_changes": {
+        "OUTLIER -> VALID": 21,
+        "VALID -> OUTLIER": 2,
+        "FAR_POINT -> OUTLIER": 1,
+        "VALID -> FAR_POINT": 1
+      },
+      "visual_H_trace_ratio": 1.2762335285369415,
+      "original_native_translation_traces": {
+        "old": 8.973125362239836e-06,
+        "new": 4.498526242829846e-06,
+        "capture": 1.3402652149118898e-06
+      },
+      "within_capture_fixed_factor_translation_traces": {
+        "initial_freshcache": 1.2614308137964547e-06,
+        "ordinary_freshcache": 1.3403991480932103e-06,
+        "refreshed_freshcache": 1.4283744601399147e-06,
+        "refreshed_savedcache": 1.3402652149120052e-06
+      }
+    },
+    {
+      "update": 16,
+      "sequence_time_s": 6.499962329864502,
+      "fixed_measurement_set_smart_factors": 730,
+      "old_pose_information": {
+        "smart": 730,
+        "valid": 112,
+        "nonzero": 112,
+        "touch": 272,
+        "touch_nonzero": 25,
+        "H_trace": 57922232.24134103
+      },
+      "new_pose_information": {
+        "smart": 730,
+        "valid": 152,
+        "nonzero": 152,
+        "touch": 272,
+        "touch_nonzero": 61,
+        "H_trace": 84449778.70298849
+      },
+      "global_status_changes": {
+        "OUTLIER -> VALID": 42,
+        "FAR_POINT -> BEHIND_CAMERA": 6,
+        "BEHIND_CAMERA -> FAR_POINT": 2,
+        "OUTLIER -> BEHIND_CAMERA": 1,
+        "VALID -> OUTLIER": 2,
+        "VALID -> FAR_POINT": 1,
+        "BEHIND_CAMERA -> VALID": 1,
+        "BEHIND_CAMERA -> OUTLIER": 2
+      },
+      "endpoint_status_changes": {
+        "VALID -> FAR_POINT": 1,
+        "OUTLIER -> VALID": 37,
+        "BEHIND_CAMERA -> VALID": 1,
+        "BEHIND_CAMERA -> OUTLIER": 2,
+        "VALID -> OUTLIER": 1
+      },
+      "visual_H_trace_ratio": 1.4579855684966827,
+      "original_native_translation_traces": {
+        "old": 1.6280786152556638e-05,
+        "new": 2.309154156873359e-06,
+        "capture": 1.1835765413418097e-06
+      },
+      "within_capture_fixed_factor_translation_traces": {
+        "initial_freshcache": 1.0950680212439544e-06,
+        "ordinary_freshcache": 1.1806092536336918e-06,
+        "refreshed_freshcache": 1.1835765413416447e-06,
+        "refreshed_savedcache": 1.1835765413416447e-06
+      }
+    },
+    {
+      "update": 17,
+      "sequence_time_s": 6.699961185455322,
+      "fixed_measurement_set_smart_factors": 791,
+      "old_pose_information": {
+        "smart": 791,
+        "valid": 134,
+        "nonzero": 134,
+        "touch": 302,
+        "touch_nonzero": 44,
+        "H_trace": 61589951.43855905
+      },
+      "new_pose_information": {
+        "smart": 791,
+        "valid": 184,
+        "nonzero": 184,
+        "touch": 302,
+        "touch_nonzero": 89,
+        "H_trace": 107640389.22604385
+      },
+      "global_status_changes": {
+        "OUTLIER -> VALID": 57,
+        "FAR_POINT -> BEHIND_CAMERA": 6,
+        "BEHIND_CAMERA -> FAR_POINT": 3,
+        "OUTLIER -> BEHIND_CAMERA": 1,
+        "VALID -> OUTLIER": 2,
+        "VALID -> FAR_POINT": 5,
+        "FAR_POINT -> OUTLIER": 1
+      },
+      "endpoint_status_changes": {
+        "OUTLIER -> VALID": 50,
+        "VALID -> OUTLIER": 1,
+        "VALID -> FAR_POINT": 4,
+        "FAR_POINT -> OUTLIER": 1,
+        "BEHIND_CAMERA -> FAR_POINT": 1
+      },
+      "visual_H_trace_ratio": 1.747694010335823,
+      "original_native_translation_traces": {
+        "old": 9.73234159042696e-06,
+        "new": 1.430525873772033e-06,
+        "capture": 9.772270859078815e-07
+      },
+      "within_capture_fixed_factor_translation_traces": {
+        "initial_freshcache": 9.201152033840543e-07,
+        "ordinary_freshcache": 9.56207170178246e-07,
+        "refreshed_freshcache": 9.769091415921818e-07,
+        "refreshed_savedcache": 9.772270859078989e-07
+      }
+    },
+    {
+      "update": 18,
+      "sequence_time_s": 6.899960041046143,
+      "fixed_measurement_set_smart_factors": 791,
+      "old_pose_information": {
+        "smart": 791,
+        "valid": 124,
+        "nonzero": 124,
+        "touch": 292,
+        "touch_nonzero": 26,
+        "H_trace": 62410026.67565676
+      },
+      "new_pose_information": {
+        "smart": 791,
+        "valid": 179,
+        "nonzero": 179,
+        "touch": 292,
+        "touch_nonzero": 80,
+        "H_trace": 133729265.42472304
+      },
+      "global_status_changes": {
+        "OUTLIER -> VALID": 60,
+        "VALID -> OUTLIER": 2,
+        "FAR_POINT -> BEHIND_CAMERA": 6,
+        "BEHIND_CAMERA -> FAR_POINT": 3,
+        "OUTLIER -> BEHIND_CAMERA": 1,
+        "VALID -> FAR_POINT": 3
+      },
+      "endpoint_status_changes": {
+        "VALID -> FAR_POINT": 2,
+        "OUTLIER -> VALID": 56,
+        "BEHIND_CAMERA -> FAR_POINT": 1
+      },
+      "visual_H_trace_ratio": 2.1427528964169564,
+      "original_native_translation_traces": {
+        "old": 6.156111787004104e-06,
+        "new": 7.492001383435534e-07,
+        "capture": 7.431179665329668e-07
+      },
+      "within_capture_fixed_factor_translation_traces": {
+        "initial_freshcache": 7.59017507130996e-07,
+        "ordinary_freshcache": 7.313107084704892e-07,
+        "refreshed_freshcache": 7.4143134474297e-07,
+        "refreshed_savedcache": 7.431179665330712e-07
+      }
+    },
+    {
+      "update": 19,
+      "sequence_time_s": 7.099958896636963,
+      "fixed_measurement_set_smart_factors": 820,
+      "old_pose_information": {
+        "smart": 820,
+        "valid": 150,
+        "nonzero": 150,
+        "touch": 300,
+        "touch_nonzero": 49,
+        "H_trace": 75992476.3785658
+      },
+      "new_pose_information": {
+        "smart": 820,
+        "valid": 198,
+        "nonzero": 198,
+        "touch": 300,
+        "touch_nonzero": 91,
+        "H_trace": 144857150.03121957
+      },
+      "global_status_changes": {
+        "OUTLIER -> VALID": 54,
+        "VALID -> OUTLIER": 2,
+        "FAR_POINT -> BEHIND_CAMERA": 7,
+        "BEHIND_CAMERA -> FAR_POINT": 2,
+        "OUTLIER -> BEHIND_CAMERA": 1,
+        "VALID -> FAR_POINT": 7,
+        "FAR_POINT -> VALID": 3
+      },
+      "endpoint_status_changes": {
+        "VALID -> FAR_POINT": 6,
+        "OUTLIER -> VALID": 45,
+        "FAR_POINT -> VALID": 3
+      },
+      "visual_H_trace_ratio": 1.9062038366745149,
+      "original_native_translation_traces": {
+        "old": 3.515765429005582e-06,
+        "new": 7.38003911726063e-07,
+        "capture": 5.534429370443322e-07
+      },
+      "within_capture_fixed_factor_translation_traces": {
+        "initial_freshcache": 5.626018624170854e-07,
+        "ordinary_freshcache": 5.536512487336821e-07,
+        "refreshed_freshcache": 5.534496662057529e-07,
+        "refreshed_savedcache": 5.534429370442983e-07
+      }
+    },
+    {
+      "update": 20,
+      "sequence_time_s": 7.299957990646362,
+      "fixed_measurement_set_smart_factors": 820,
+      "old_pose_information": {
+        "smart": 820,
+        "valid": 139,
+        "nonzero": 139,
+        "touch": 295,
+        "touch_nonzero": 34,
+        "H_trace": 74628507.50731644
+      },
+      "new_pose_information": {
+        "smart": 820,
+        "valid": 193,
+        "nonzero": 193,
+        "touch": 295,
+        "touch_nonzero": 85,
+        "H_trace": 162016038.52241576
+      },
+      "global_status_changes": {
+        "VALID -> OUTLIER": 4,
+        "OUTLIER -> VALID": 58,
+        "FAR_POINT -> BEHIND_CAMERA": 6,
+        "BEHIND_CAMERA -> FAR_POINT": 2,
+        "OUTLIER -> BEHIND_CAMERA": 1,
+        "VALID -> FAR_POINT": 6,
+        "BEHIND_CAMERA -> OUTLIER": 1,
+        "FAR_POINT -> VALID": 6,
+        "FAR_POINT -> OUTLIER": 1
+      },
+      "endpoint_status_changes": {
+        "VALID -> FAR_POINT": 4,
+        "OUTLIER -> VALID": 50,
+        "BEHIND_CAMERA -> OUTLIER": 1,
+        "FAR_POINT -> VALID": 6,
+        "VALID -> OUTLIER": 1,
+        "FAR_POINT -> OUTLIER": 1
+      },
+      "visual_H_trace_ratio": 2.1709671536246655,
+      "original_native_translation_traces": {
+        "old": 5.110263812684254e-06,
+        "new": 5.938184829069289e-07,
+        "capture": 5.069789274764572e-07
+      },
+      "within_capture_fixed_factor_translation_traces": {
+        "initial_freshcache": 4.881290714133566e-07,
+        "ordinary_freshcache": 5.066883031109903e-07,
+        "refreshed_freshcache": 5.069630591820663e-07,
+        "refreshed_savedcache": 5.069789274764613e-07
+      }
+    },
+    {
+      "update": 21,
+      "sequence_time_s": 7.499956846237183,
+      "fixed_measurement_set_smart_factors": 820,
+      "old_pose_information": {
+        "smart": 820,
+        "valid": 133,
+        "nonzero": 133,
+        "touch": 292,
+        "touch_nonzero": 25,
+        "H_trace": 76062516.93824087
+      },
+      "new_pose_information": {
+        "smart": 820,
+        "valid": 190,
+        "nonzero": 190,
+        "touch": 292,
+        "touch_nonzero": 80,
+        "H_trace": 180978955.40195924
+      },
+      "global_status_changes": {
+        "VALID -> OUTLIER": 4,
+        "OUTLIER -> VALID": 61,
+        "FAR_POINT -> BEHIND_CAMERA": 6,
+        "BEHIND_CAMERA -> FAR_POINT": 5,
+        "OUTLIER -> BEHIND_CAMERA": 1,
+        "VALID -> FAR_POINT": 5,
+        "FAR_POINT -> VALID": 5
+      },
+      "endpoint_status_changes": {
+        "VALID -> FAR_POINT": 2,
+        "OUTLIER -> VALID": 53,
+        "FAR_POINT -> VALID": 5,
+        "BEHIND_CAMERA -> FAR_POINT": 3,
+        "VALID -> OUTLIER": 1
+      },
+      "visual_H_trace_ratio": 2.3793448164344273,
+      "original_native_translation_traces": {
+        "old": 4.7650554156398615e-06,
+        "new": 5.565743058617296e-07,
+        "capture": 4.655415937386138e-07
+      },
+      "within_capture_fixed_factor_translation_traces": {
+        "initial_freshcache": 4.6902443889070745e-07,
+        "ordinary_freshcache": 4.6556718916119336e-07,
+        "refreshed_freshcache": 4.6563377936316693e-07,
+        "refreshed_savedcache": 4.6554159373867184e-07
+      }
+    },
+    {
+      "update": 22,
+      "sequence_time_s": 7.699955940246582,
+      "fixed_measurement_set_smart_factors": 820,
+      "old_pose_information": {
+        "smart": 820,
+        "valid": 130,
+        "nonzero": 130,
+        "touch": 287,
+        "touch_nonzero": 20,
+        "H_trace": 74906929.50260502
+      },
+      "new_pose_information": {
+        "smart": 820,
+        "valid": 185,
+        "nonzero": 185,
+        "touch": 287,
+        "touch_nonzero": 74,
+        "H_trace": 185712636.94366893
+      },
+      "global_status_changes": {
+        "VALID -> OUTLIER": 5,
+        "OUTLIER -> VALID": 61,
+        "FAR_POINT -> BEHIND_CAMERA": 6,
+        "BEHIND_CAMERA -> FAR_POINT": 2,
+        "OUTLIER -> BEHIND_CAMERA": 1,
+        "VALID -> FAR_POINT": 6,
+        "FAR_POINT -> VALID": 5,
+        "OUTLIER -> FAR_POINT": 1
+      },
+      "endpoint_status_changes": {
+        "FAR_POINT -> VALID": 5,
+        "VALID -> FAR_POINT": 2,
+        "VALID -> OUTLIER": 2,
+        "OUTLIER -> VALID": 53,
+        "OUTLIER -> FAR_POINT": 1
+      },
+      "visual_H_trace_ratio": 2.4792450868942697,
+      "original_native_translation_traces": {
+        "old": 6.000514592292568e-06,
+        "new": 5.368339019441299e-07,
+        "capture": 4.7391046572397905e-07
+      },
+      "within_capture_fixed_factor_translation_traces": {
+        "initial_freshcache": 4.322817540327164e-07,
+        "ordinary_freshcache": 4.734711649152944e-07,
+        "refreshed_freshcache": 4.7389020581597603e-07,
+        "refreshed_savedcache": 4.739104657239828e-07
+      }
+    },
+    {
+      "update": 23,
+      "sequence_time_s": 7.899954795837402,
+      "fixed_measurement_set_smart_factors": 845,
+      "old_pose_information": {
+        "smart": 845,
+        "valid": 136,
+        "nonzero": 136,
+        "touch": 287,
+        "touch_nonzero": 16,
+        "H_trace": 73732765.54764238
+      },
+      "new_pose_information": {
+        "smart": 845,
+        "valid": 190,
+        "nonzero": 190,
+        "touch": 287,
+        "touch_nonzero": 66,
+        "H_trace": 194022449.5837916
+      },
+      "global_status_changes": {
+        "VALID -> OUTLIER": 3,
+        "OUTLIER -> VALID": 61,
+        "FAR_POINT -> BEHIND_CAMERA": 7,
+        "BEHIND_CAMERA -> FAR_POINT": 2,
+        "OUTLIER -> BEHIND_CAMERA": 1,
+        "VALID -> FAR_POINT": 8,
+        "FAR_POINT -> VALID": 4,
+        "FAR_POINT -> OUTLIER": 2,
+        "OUTLIER -> FAR_POINT": 2
+      },
+      "endpoint_status_changes": {
+        "OUTLIER -> VALID": 52,
+        "VALID -> FAR_POINT": 1,
+        "VALID -> OUTLIER": 1,
+        "FAR_POINT -> OUTLIER": 2,
+        "OUTLIER -> FAR_POINT": 2,
+        "FAR_POINT -> BEHIND_CAMERA": 1
+      },
+      "visual_H_trace_ratio": 2.6314278074708066,
+      "original_native_translation_traces": {
+        "old": 9.142414745543874e-06,
+        "new": 6.593987871857538e-07,
+        "capture": 5.27120531579643e-07
+      },
+      "within_capture_fixed_factor_translation_traces": {
+        "initial_freshcache": 4.418974691408205e-07,
+        "ordinary_freshcache": 5.264111082762203e-07,
+        "refreshed_freshcache": 5.271000398865718e-07,
+        "refreshed_savedcache": 5.271205315796698e-07
+      }
+    },
+    {
+      "update": 24,
+      "sequence_time_s": 8.099953651428223,
+      "fixed_measurement_set_smart_factors": 876,
+      "old_pose_information": {
+        "smart": 876,
+        "valid": 150,
+        "nonzero": 150,
+        "touch": 292,
+        "touch_nonzero": 29,
+        "H_trace": 88288424.7302194
+      },
+      "new_pose_information": {
+        "smart": 876,
+        "valid": 206,
+        "nonzero": 206,
+        "touch": 292,
+        "touch_nonzero": 77,
+        "H_trace": 230574925.51358017
+      },
+      "global_status_changes": {
+        "OUTLIER -> VALID": 64,
+        "FAR_POINT -> BEHIND_CAMERA": 6,
+        "BEHIND_CAMERA -> FAR_POINT": 3,
+        "OUTLIER -> BEHIND_CAMERA": 3,
+        "VALID -> FAR_POINT": 8,
+        "FAR_POINT -> VALID": 3,
+        "VALID -> OUTLIER": 3,
+        "OUTLIER -> FAR_POINT": 1
+      },
+      "endpoint_status_changes": {
+        "OUTLIER -> VALID": 50,
+        "BEHIND_CAMERA -> FAR_POINT": 1,
+        "OUTLIER -> BEHIND_CAMERA": 2,
+        "VALID -> OUTLIER": 2,
+        "OUTLIER -> FAR_POINT": 1
+      },
+      "visual_H_trace_ratio": 2.6116099162278847,
+      "original_native_translation_traces": {
+        "old": 4.1308763025614595e-06,
+        "new": 5.736392838483795e-07,
+        "capture": 4.919743397965779e-07
+      },
+      "within_capture_fixed_factor_translation_traces": {
+        "initial_freshcache": 5.106797881563413e-07,
+        "ordinary_freshcache": 4.923061378968216e-07,
+        "refreshed_freshcache": 4.91813884797096e-07,
+        "refreshed_savedcache": 4.919743397965692e-07
+      }
+    },
+    {
+      "update": 25,
+      "sequence_time_s": 8.299952507019043,
+      "fixed_measurement_set_smart_factors": 876,
+      "old_pose_information": {
+        "smart": 876,
+        "valid": 152,
+        "nonzero": 152,
+        "touch": 291,
+        "touch_nonzero": 31,
+        "H_trace": 90730605.88238364
+      },
+      "new_pose_information": {
+        "smart": 876,
+        "valid": 206,
+        "nonzero": 206,
+        "touch": 291,
+        "touch_nonzero": 79,
+        "H_trace": 244287566.81648806
+      },
+      "global_status_changes": {
+        "OUTLIER -> VALID": 65,
+        "FAR_POINT -> BEHIND_CAMERA": 7,
+        "BEHIND_CAMERA -> FAR_POINT": 3,
+        "VALID -> FAR_POINT": 11,
+        "FAR_POINT -> VALID": 3,
+        "VALID -> OUTLIER": 3,
+        "FAR_POINT -> OUTLIER": 1,
+        "OUTLIER -> FAR_POINT": 1
+      },
+      "endpoint_status_changes": {
+        "OUTLIER -> VALID": 51,
+        "FAR_POINT -> OUTLIER": 1,
+        "BEHIND_CAMERA -> FAR_POINT": 1,
+        "VALID -> FAR_POINT": 1,
+        "FAR_POINT -> BEHIND_CAMERA": 1,
+        "VALID -> OUTLIER": 2,
+        "OUTLIER -> FAR_POINT": 1
+      },
+      "visual_H_trace_ratio": 2.692449415946413,
+      "original_native_translation_traces": {
+        "old": 3.889158050769509e-06,
+        "new": 5.390181210036441e-07,
+        "capture": 4.75835862438662e-07
+      },
+      "within_capture_fixed_factor_translation_traces": {
+        "initial_freshcache": 4.932004722426455e-07,
+        "ordinary_freshcache": 4.7597988616073293e-07,
+        "refreshed_freshcache": 4.7566094412195183e-07,
+        "refreshed_savedcache": 4.7583586243865653e-07
+      }
+    }
+  ],
+  "historical_pose_differences_event23": {
+    "median_translation_m": 0.03606867606538529,
+    "max_translation_m": 0.06209838831388097,
+    "median_rotation_deg": 2.1808914699265003,
+    "max_rotation_deg": 2.3910826932977054
+  },
+  "bias_feedback": {
+    "exact_matches": [
+      {
+        "newest_factor_update": 5,
+        "integrated_interval": [
+          4,
+          5
+        ],
+        "bias_exactly_matches_MAIN_update": 3
+      },
+      {
+        "newest_factor_update": 6,
+        "integrated_interval": [
+          5,
+          6
+        ],
+        "bias_exactly_matches_MAIN_update": 4
+      },
+      {
+        "newest_factor_update": 7,
+        "integrated_interval": [
+          6,
+          7
+        ],
+        "bias_exactly_matches_MAIN_update": 5
+      },
+      {
+        "newest_factor_update": 8,
+        "integrated_interval": [
+          7,
+          8
+        ],
+        "bias_exactly_matches_MAIN_update": 6
+      },
+      {
+        "newest_factor_update": 9,
+        "integrated_interval": [
+          8,
+          9
+        ],
+        "bias_exactly_matches_MAIN_update": 7
+      },
+      {
+        "newest_factor_update": 10,
+        "integrated_interval": [
+          9,
+          10
+        ],
+        "bias_exactly_matches_MAIN_update": 8
+      },
+      {
+        "newest_factor_update": 11,
+        "integrated_interval": [
+          10,
+          11
+        ],
+        "bias_exactly_matches_MAIN_update": 9
+      },
+      {
+        "newest_factor_update": 12,
+        "integrated_interval": [
+          11,
+          12
+        ],
+        "bias_exactly_matches_MAIN_update": 10
+      },
+      {
+        "newest_factor_update": 13,
+        "integrated_interval": [
+          12,
+          13
+        ],
+        "bias_exactly_matches_MAIN_update": 11
+      },
+      {
+        "newest_factor_update": 14,
+        "integrated_interval": [
+          13,
+          14
+        ],
+        "bias_exactly_matches_MAIN_update": 12
+      },
+      {
+        "newest_factor_update": 15,
+        "integrated_interval": [
+          14,
+          15
+        ],
+        "bias_exactly_matches_MAIN_update": 13
+      },
+      {
+        "newest_factor_update": 16,
+        "integrated_interval": [
+          15,
+          16
+        ],
+        "bias_exactly_matches_MAIN_update": 14
+      },
+      {
+        "newest_factor_update": 17,
+        "integrated_interval": [
+          16,
+          17
+        ],
+        "bias_exactly_matches_MAIN_update": 15
+      },
+      {
+        "newest_factor_update": 18,
+        "integrated_interval": [
+          17,
+          18
+        ],
+        "bias_exactly_matches_MAIN_update": 16
+      },
+      {
+        "newest_factor_update": 19,
+        "integrated_interval": [
+          18,
+          19
+        ],
+        "bias_exactly_matches_MAIN_update": 17
+      },
+      {
+        "newest_factor_update": 20,
+        "integrated_interval": [
+          19,
+          20
+        ],
+        "bias_exactly_matches_MAIN_update": 18
+      },
+      {
+        "newest_factor_update": 21,
+        "integrated_interval": [
+          20,
+          21
+        ],
+        "bias_exactly_matches_MAIN_update": 19
+      },
+      {
+        "newest_factor_update": 22,
+        "integrated_interval": [
+          21,
+          22
+        ],
+        "bias_exactly_matches_MAIN_update": 20
+      },
+      {
+        "newest_factor_update": 23,
+        "integrated_interval": [
+          22,
+          23
+        ],
+        "bias_exactly_matches_MAIN_update": 21
+      },
+      {
+        "newest_factor_update": 24,
+        "integrated_interval": [
+          23,
+          24
+        ],
+        "bias_exactly_matches_MAIN_update": 22
+      },
+      {
+        "newest_factor_update": 25,
+        "integrated_interval": [
+          24,
+          25
+        ],
+        "bias_exactly_matches_MAIN_update": 23
+      }
+    ],
+    "interpretation": "PIM biasHat matches the previously delivered MAIN estimate at k-2 on all21 checked intervals; no frontend per-call trace."
+  },
+  "gate": {
+    "profile_outlier_threshold_pixels": 3.0,
+    "implementation": "maximum individual mono reprojection norm, not average despite comments",
+    "invalid_hessian": "ZERO_ON_DEGENERACY",
+    "landmark_distance_m": 10
+  },
+  "scope": {
+    "source_captures": 1,
+    "source_binaries_changed": false,
+    "optimizer_runs": 0,
+    "accuracy_scores_computed": 0,
+    "fusion_runs": 0
+  },
+  "limitations": [
+    "One fresh12s diagnostic, not a matched historical repeat or full-sequence result; observer added6.96s aggregate wall-time and can alter scheduling.",
+    "The fixed measurement set belongs to CP98. CP91/CP95 actual visual observations remain unavailable; cross-run state sensitivity is proven on this set, not a complete decomposition of their historic difference.",
+    "Historical variants replace poses only and test smart factors only. No claim to reproduce historical velocity/bias/IMU covariance or full nonlinear stationarity.",
+    "Different counts of rejected/accepted factors can change confidence legitimately. This does not certify covariance calibration, statistical independence or prove the whole-run GLIM ATE cause.",
+    "PIM biasHat proves the bias used by preintegration, not every frontend callback or RANSAC use. The observed two-update feedback timing is not labelled a bug.",
+    "No tuning or scientific build changes. Offline fixture compile type mismatch was corrected in a new preserved analysis_v2; capture was not repeated."
+  ]
+}

@@ -1,0 +1,10 @@
+Initial host-only admission rejected before container/source launch because the
+unchanged shared qualify_runtime.py validates both full_off.json and full_on.json.
+The ON-only preparation had omitted full_off.json along with unused OFF source
+files. Preserve this failure; no prepared.json/start.json/launch.json existed.
+
+Repair: copy only the missing OFF CONFIGURATION DESCRIPTOR to a fresh path,
+normalized roots/port/session exactly as ON. It is used by the byte-identical
+adapter fixture, not a capture. No OFF source files are restored, the driver CLI
+accepts ON only, and the finite controller launches only ON. No estimator/model,
+adapter implementation, dependency installation or input recording change.

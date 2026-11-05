@@ -1,0 +1,107 @@
+{
+  "passed": true,
+  "initial_rotation_parity_deg": 7.952714406589872e-16,
+  "timeline": {
+    "log": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_insertion_cpv51_20261030/prepared/full_on_source/ros_logs/3961b47e-d460-11f1-9dc7-d66892b01dc6/glim_rosnode-1-stdout.log",
+    "prior_events": [
+      {
+        "line": 900,
+        "row": "inserted,x4,x6,total_active=1",
+        "wall_s": "1793364535.814253698",
+        "sensor_clock_s": "1730638817.998674269"
+      },
+      {
+        "line": 902,
+        "row": "slot_tracked,x4,x6,slot=45,total_active=1",
+        "wall_s": "1793364535.814822359",
+        "sensor_clock_s": "1730638817.998674269"
+      }
+    ],
+    "export": {
+      "line": 986,
+      "wall_s": "1793364536.279387647",
+      "sensor_clock_s": "1730638818.089891267"
+    },
+    "conclusion": "One K2G factor x4->x6 was already present before GLIM5->7 export; not an untouched ON LIO estimate. OFF same-edge comparison is separate, not a causal removal experiment."
+  },
+  "source_provenance": [
+    {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/glim_ros1/src/glim_ros/cbs_bridge.cpp",
+      "sha256": "662d59428dca5f13f53a9bd897422cc0dd56fa3cc607b4aaffc3df0042419ad1",
+      "protected_hash_match": true,
+      "use": "Pinned source corroboration"
+    },
+    {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/glim_ros1/src/glim_ros/glim_ros.cpp",
+      "sha256": "29fc0f5188e2f3027f9f037ccb9289622dff6dfd1118b4b423cbcff1165581fa",
+      "protected_hash_match": true,
+      "use": "Pinned source corroboration"
+    },
+    {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/glim/src/glim/odometry/odometry_estimation_imu.cpp",
+      "sha256": "fa3ffbafe101f97657299f4b8e698b8852b007f2416af96b15a0bdd61230053d",
+      "protected_hash_match": null,
+      "use": "Current-source explanation only; historical source hash not established by this manifest. Runtime numeric/frame checks are separate."
+    },
+    {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/Kimera-VIO-ROS/src/KimeraVioRos.cpp",
+      "sha256": "59cb3243c5c2d5331e46cab251676c25e4b87b0440d11401e7225d4dddd6c00b",
+      "protected_hash_match": null,
+      "use": "Current-source explanation only; historical source hash not established by this manifest. Runtime numeric/frame checks are separate."
+    },
+    {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/Kimera-VIO/include/kimera-vio/imu-frontend/CbsNativeImuMeanBridge.h",
+      "sha256": "c87b0df67c9a720dd0e7dd24e12f2de35dfbd08cb2c5835d63db7e6a0e73b952",
+      "protected_hash_match": null,
+      "use": "Current-source explanation only; historical source hash not established by this manifest. Runtime numeric/frame checks are separate."
+    },
+    {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/Kimera-VIO/src/imu-frontend/ImuFrontend.cpp",
+      "sha256": "6d393debd4d84eff67a47f8793e4b5b75f8e2e05c62a85b20ff07b5dd8bd3026",
+      "protected_hash_match": true,
+      "use": "Pinned source corroboration"
+    },
+    {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/Kimera-VIO/src/dataprovider/DataProviderModule.cpp",
+      "sha256": "e6d19afc9f80341849cb0c2755a054452e4810038044ae695b0cb9a7cafd678e",
+      "protected_hash_match": null,
+      "use": "Current-source explanation only; historical source hash not established by this manifest. Runtime numeric/frame checks are separate."
+    },
+    {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/Kimera-VIO/src/utils/ThreadsafeImuBuffer.cpp",
+      "sha256": "30eda20d795fda6a61fef8d561e4146d3019935890db02129d644070f1295abb",
+      "protected_hash_match": null,
+      "use": "Current-source explanation only; historical source hash not established by this manifest. Runtime numeric/frame checks are separate."
+    },
+    {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_insertion_cpv51_20261030/VioBackend.cpp",
+      "sha256": "de1185fe77599c18cba49ea0768c6a2986d6909c19cc644b2b67a00b0da144aa",
+      "protected_hash_match": true,
+      "use": "Pinned source corroboration"
+    }
+  ],
+  "frame_note": "Payload header map is configured world label. Both body configurations cpt7_imu, saved PIM body rotation identity. Incoming raw rotation equals native MAIN endpoint relative rotation; actual inserted rotation equals reconstructed native bridge. This audits this edge, not all calibration or binary source semantics.",
+  "input_sha256": {
+    "/home/yeranis/repos/gnssFGO/experiments/eig2_first_rotation_cpv53_20261030/analysis.json": "0aaf10c02b76ed17844c2f439e64384cb46f2105adbb531c31da6a28bd194ab3",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_first_rotation_cpv53_20261030/extracted/pim.csv": "4f18f104e7eb932ceba3c04cd40484648ffc590d123edfe98e81e32be31d6f9e",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_insertion_cpv51_20261030/prepared/full_on_source/ros_logs/3961b47e-d460-11f1-9dc7-d66892b01dc6/glim_rosnode-1-stdout.log": "7810167f93413971c546934ec17f991a6a9ae6d0d2f8cad91d7855551319b123",
+    "/home/yeranis/repos/gnssFGO/experiments/eig2_first_rotation_cpv53_20261030/protected_manifest.json": "5d9f6629c4d9f5414b56555fa439666921cb25063ac6a214fa59d29edce07913",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/glim_ros1/src/glim_ros/cbs_bridge.cpp": "662d59428dca5f13f53a9bd897422cc0dd56fa3cc607b4aaffc3df0042419ad1",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/glim_ros1/src/glim_ros/glim_ros.cpp": "29fc0f5188e2f3027f9f037ccb9289622dff6dfd1118b4b423cbcff1165581fa",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/glim/src/glim/odometry/odometry_estimation_imu.cpp": "fa3ffbafe101f97657299f4b8e698b8852b007f2416af96b15a0bdd61230053d",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/Kimera-VIO-ROS/src/KimeraVioRos.cpp": "59cb3243c5c2d5331e46cab251676c25e4b87b0440d11401e7225d4dddd6c00b",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/Kimera-VIO/include/kimera-vio/imu-frontend/CbsNativeImuMeanBridge.h": "c87b0df67c9a720dd0e7dd24e12f2de35dfbd08cb2c5835d63db7e6a0e73b952",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/Kimera-VIO/src/imu-frontend/ImuFrontend.cpp": "6d393debd4d84eff67a47f8793e4b5b75f8e2e05c62a85b20ff07b5dd8bd3026",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/Kimera-VIO/src/dataprovider/DataProviderModule.cpp": "e6d19afc9f80341849cb0c2755a054452e4810038044ae695b0cb9a7cafd678e",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/Kimera-VIO/src/utils/ThreadsafeImuBuffer.cpp": "30eda20d795fda6a61fef8d561e4146d3019935890db02129d644070f1295abb",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_insertion_cpv51_20261030/VioBackend.cpp": "de1185fe77599c18cba49ea0768c6a2986d6909c19cc644b2b67a00b0da144aa",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_insertion_cpv51_20261030/prepared/full_on_source/grandtour_launch_used.launch": "23464bcf5dc3a9c093433059a0769aac741fdc97b085cd48e2faefd252230364",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_insertion_cpv51_20261030/prepared/full_on_source/resolved_kimera_params.yaml": "32a2c07f3287d018b7feeb8e25adff8eccaf3fa4b334b7ed975eda780da42c89",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_insertion_cpv51_20261030/prepared/full_on_source/resolved_glim_params.yaml": "12ca8012e1c8dec92bb4929ef6d99ba4d8c51e81c873f6abab4c8df49b808826",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_insertion_cpv51_20261030/prepared/full_on_source/kimera_profile/ImuParams.yaml": "5ad9440e467332fb7bbf17768513245f87034c0e14a8baba9dffc910e12e5014",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_insertion_cpv51_20261030/prepared/full_on_source/glim_config/config_ros.json": "42060569a566fcdaf44f7c47b8f0f115cffe18e7055c43f8d8dc65c7ca2fdf1b",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_insertion_cpv51_20261030/prepared/full_on_source/glim_config/config_sensors.json": "4727c6247db81d7317ceda5e43b60249598c7e32834c54bab35cc0b3d1afe449",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_insertion_cpv51_20261030/prepared/full_on_source/effective_mode_check.json": "f08124e953bbd0323e69c811629519978eb99e5ba2b9f7f975be51deffe82a1f"
+  },
+  "limitation": "Not all current explanatory source files have historical source-hash provenance; no blanket source/binary identity claim. GLIM contemporaneous bias/PIM was not saved."
+}

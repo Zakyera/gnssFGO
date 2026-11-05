@@ -1,0 +1,146 @@
+CP-V61 — Track-local triangulation candidate
+2026-10-30 | EIG-2 Hesai | saved CP51 update6 | suspect1
+
+OUTCOME
+The experimental candidate removes the tested arbitrary-world-origin dependence,
+but DOES NOT materially suppress Kimera's first-belief rotation/bias response.
+It passes the predeclared coordinate gates with unchanged native thresholds.
+No production patch or full sequence was run. This is a useful negative causal
+result: correcting this numerical inconsistency is not, by itself, the solution
+to the large first-event response. It does not prove the full zigzag is fixed,
+nor rule out effects of different cache history over a longer run.
+
+INTERVENTION AND SCOPE
+First LEFT camera in each track's native observation order defines the local
+frame. Native algebraic DLT uses locally expressed mono cameras; a valid point
+is transformed back. Stereo right-camera baseline, missing-right handling and
+measurement order match native code. Same rank tolerance1, cheirality,10m
+distance,3px max reprojection, sigma3, EPI=false, LOST=false, smart Jacobians
+and Schur elimination. This changes the algebraic numerical representation,
+so landmark estimates and rank/rejection outcomes can change even though
+thresholds and physical data do not. No claim of original algorithm equivalence.
+
+Private harness calls native decideIfTriangulate before native linearization.
+Only a normal freshness trigger installs a candidate point/status and current
+camera cache. Original warm history is preserved. Function/parameter/measurement/
+calibration/body/key bytes are checked unchanged. Production headers/binaries
+untouched; no source replay or full-trajectory scoring, no covariance tuning.
+
+Saved CP51 first CBS admission: capture1.599933183s, bagoffset7.299933183s,
+GLIM5->7 / Kimera x4->x5, factor929. No fixed/marginal keys at update6.
+A original native: ordinary+refresh.
+B local-frame candidate: ordinary+refresh from identical saved original state.
+C same candidate translated[3,-2,1]m with pose-prior/point/camera caches transformed,
+then outputs transformed back. Six real saved native GNsteps, fixtures separate.
+Post-evaluations use clones, NOT extra solves. A uses original DLT for
+post-evaluation; B/C use candidate DLT.
+
+SAFETY AND REPRODUCTION GATES
+Release and ASan/UBSan synthetic fixtures pass: exact stereo point, left-only
+degeneracy, behind camera, far point, outlier; translation and rigid-coordinate
+invariance; missing point-back-transform negative control; warm cache identity
+and native freshness trigger. Vendor shared libraries not sanitizer-instrumented.
+No compile/test failure or retry occurred.
+
+Original A matches captured ordinary and exact-start refresh equations exactly.
+Ordinary state discrepancy3.337355466e-10 mixed tangent norm;
+chained refresh discrepancy1.228787997e-10. Initial/theta exact serialized bytes.
+Linear backward residuals7.13e-18..2.41e-17, NOT nonlinear stationarity.
+
+COORDINATE INVARIANCE
+Cold candidate diagnostics only:338smart factors x3saved physical states,
+each compared with translation and rotation+translation =2028comparisons.
+Rotation is smart geometry only, not a rotated IMU/gravity model.
+All classifications identical under coordinate transforms.
+Maximum transformed landmark difference1.140865e-12m.
+Maximum relative native Gaussian difference8.367980e-10.
+Maximum relative cost difference6.300511e-13.
+Predeclared gates: point<1e-7m; equations/cost<1e-7; no gates relaxed.
+
+Independent NumPy DLT/rank/guard calculation matches1014/1014native candidate
+classifications and815valid landmarks, maxpoint difference1.047908e-12m.
+Independent SciPy verifies440state metrics, maxdifference2.78e-16.
+These checks establish the tested numerical consistency, not universal proof
+for every degenerate geometry, threshold boundary or world-coordinate magnitude.
+
+ACTUAL SOLVES / VISUAL SUPPORT
+                                     Original A    Candidate B    Shifted C
+Used ordinary visual factors              285            285          285
+Used refresh visual factors               266            266          266
+Final post-evaluation valid factors        267            267          267
+Candidate ordinary retriangulations         -              0            0
+Candidate refresh retriangulations          -            338          338
+
+At refresh A/B have exactly the SAME accepted set. Seven already rejected
+tracks change rejection label (outlier -> behind-camera):683,762,798,814,818,
+820,821. These tracks contribute zero in both arms; no support recovery.
+B/C agree in all freshness decisions, used classifications and post-evaluation
+classifications. B/C final maximum position difference3.47e-13m and rotation
+difference7.01e-10deg; mixed tangent norm3.19e-10. Ordinary mixed norm2.15e-9,
+well inside1e-6 gate.
+
+Cold diagnostics at saved initial/postordinary/postrefresh have282/266/267
+valid candidate factors. The initial282 cold result is NOT the used285 warm
+support: original caches were deliberately not cleared. Thus this experiment
+does not test a candidate populated from startup or its prior history.
+
+STATE RESPONSE (revisions, NOT reference errors or ATE)
+Previously existing states x0..x5, before admission -> after ordinary+refresh:
+                                      Original A          Candidate B
+Max rotation revision, deg             .322580686          .322537187
+Max position revision, mm              5.72191375          5.71920157
+Max velocity revision, m/s             .010760554          .010757929
+Max accel-bias revision, m/s2           .022847923          .022831259
+Max gyro-bias revision, rad/s           .007460941          .007460878
+Common tilt revision, deg              .078591948          .078507896
+
+Net maximum rotation revision decreases only0.0135%;
+gyro-bias revision decreases only0.00084%. These are not accuracy improvements.
+Ordinary A/B are EXACTLY identical: maxoldrotation.283702664deg and maxgyrobias
+.007135653rad/s already occur while original warm caches and285visual factors
+remain unchanged. The candidate first acts at refresh.
+
+Direct A/B final differences across all seven states are at most4.62846
+micrometers position and0.000122236deg rotation; velocity4.25739e-6m/s,
+accel-bias1.73057e-5m/s2 andgyro-bias1.27005e-6rad/s.
+
+FINAL RESIDUAL COSTS
+                                      Original A          Candidate B
+IMU summed cost                        1.25375444          1.25274747
+Bias-between summed cost              15.74933075         15.74594504
+CBS cost                              44.27887239         44.26611385
+CBS rotation residual, deg              .01721610           .01721035
+CBS translation Log norm, m             .00665862           .00665796
+
+Smart costs93.700511(original post-evaluation) vs93.626418(candidate). These
+conditional rejected-support costs are NOT a common independent accuracy or
+merit criterion. No covariance-calibration conclusion.
+
+INTERPRETATION / DECISION
+CP60 established a real coordinate-consistency problem in native algebraic
+triangulation/rejection. CP61 demonstrates a deterministic local-frame remedy
+for the tested coordinate sensitivity without relaxing rejection thresholds.
+However, fixing that sensitivity barely changes this first saved response.
+Do not present it as THE CBS-ON zigzag bug or promote a full rerun on this basis.
+
+Chronology matters: the large ordinary-step rotation response precedes the
+retriangulation/support loss measured at refresh. Those subsequent losses can
+modify refresh, but cannot be the trigger of that already completed first
+ordinary-step response. This does not exclude pre-existing visual weaknesses,
+other smart-factor issues, or later accumulation. Original-conditioned cached
+history remains a stated limitation; there is no propagated-candidate result.
+
+Stay on suspect1 as requested. This narrows the world-origin branch for the
+first event; it does not silently close all suspect1 or advance to suspect2.
+No further experiment is launched. The next decision should explicitly separate
+the remaining historical-cache question from the already tested first-event
+retriangulation effects; do not repeat origin shifts or tune a favorable frame.
+
+ARTIFACTS / CLOSEOUT
+LocalFrame.cpp, private release/san binaries and results/ under corresponding
+V4RL/runs/eig2_local_frame_cpv61_20261030 root.
+analysis.json, independent_check.json preserve derived data and exact input hashes.
+verification.json / complete.json certify final protected hashes, original
+Hesai667 checkpoint, no owned jobs and both originally-stopped containers restored.
+No source replay, full sequence, estimator-default change, deletion or push.
+

@@ -1,0 +1,149 @@
+CP-V50 — Hesai EIG-2 first-admission / onset / removal investigation
+2026-10-30. SAVED-DATA DIAGNOSIS COMPLETE; ROOT CAUSE NOT YET IDENTIFIED.
+
+Conclusion
+----------
+The corrected CP-V49 OFF/ON pair confirms poor CBS-ON published Kimera behavior.
+The early ON window tilt is already larger before the FIRST marginalization or
+temporary-peer-factor removal. A retirement-only explanation cannot explain that
+early symptom. Export/transport/frozen-mean joins and the logged ownership ledger
+pass. This does NOT certify all live equations/caches or establish a specific bug.
+No new run, optimizer, build, weight/covariance analysis or production change.
+
+1. Timeline — separate first response from abnormal behavior
+-----------------------------------------------------------
+All times below are sensor time after the selected capture start, NOT wall time.
+Add 5.7s for original bag time. First native pose is at capture time0.199946383s.
+State IDs are Kimera update IDs. Rotations are revisions of OLD overlapping poses,
+not vehicle rotation between consecutive timestamps. Tilt excludes pure yaw.
+
+time(s) | k   | observation
+1.59993 |   6 | First admission x4->x5, GLIM sender5->7. First OFF/ON pose difference.
+4.59991 |  21 | Old-window tilt OFF0.14857deg / ON1.62394deg; no marginalization/removal.
+5.19990 |  24 | Tilt OFF1.51327deg / ON2.34085deg; no marginalization/removal.
+5.39990 |  25 | Tilt OFF0.32711deg / ON3.43465deg; no marginalization/removal.
+5.59990 |  26 | First marginalization (x/v/b for oldest state); no CBS removal yet.
+6.39989 |  30 | First CBS removal: x4->x5, exact original slot929. First retirement refresh.
+59.39942| 295 | First observed previous-state POSITION revision>0.5m: ON0.63224m.
+198.59832|991 | First observed previous-state position revision>1m.
+
+Recorded active poses are exactly identical OFF/ON at updates1--5. At6 the maximum
+ON-vs-OFF active-pose difference is7.08mm/0.403deg. The first response to a factor
+is expected: this is NOT automatically the time a bug first occurs. Both modes
+cross1deg window tilt at19; a1deg threshold alone would not isolate this failure.
+OFF never crosses2deg in the observable old-window comparisons. ON reaches
+2.34deg at24 and3.43deg at25. Thresholds are descriptive, not universal health tests.
+
+Native final weighted IMU costs, OFF->ON (not RMSE or unweighted physical error):
+k6 .05314->1.23746; k9 .35230->10.89036; k21 1.31134->69.63315;
+k24 2.63664->284.56061; k25 7.84023->308.36982; k295 1.30845->1681.55768.
+Every logged ON total pre->final objective decreases on its audited updated graph.
+This does not establish nonlinear convergence/stationarity or sound output.
+
+2. What the zigzag represents
+-----------------------------
+At59.39942s (k295), ON revises the previously published state by0.63224m, while
+the movement between the old and new state WITHIN the new solution is0.09351m.
+Connecting first publications gives a0.62274m segment. OFF at exactly that same
+timestamp revises its previous state by0.00419m and publishes a0.09970m segment.
+This is a real unstable absolute-output behavior, not a claim the vehicle moved
+0.62m or that the renderer invents points. The optimizer is revising old states.
+
+All69 ON revisions>0.5m have reconstructible overlapping old-window geometry.
+A common rigid rotation+translation explains a median99.99755% of squared
+old-pose positional changes (minimum99.93735%). Remaining per-window maximum
+shape residual median7.95mm, maximum27.16mm. Window extent ratio median1.00030,
+range0.99113--1.01735. These events are predominantly rigid window movements,
+not primarily a wildly expanding/contracting window. This is NOT a global scale
+accuracy test. Original CP-V49 coverage/missing-revision IDs remain unchanged;
+analysis.json separately lists steps missing the stronger whole-window comparison.
+
+Relative factors constrain X_i^-1 X_j. A COMMON world transform of both endpoints
+leaves that relative transform unchanged. Thus fitting GLIM relative measurements
+well does not by itself guarantee stable placement/orientation of Kimera's window.
+How the native visual/inertial/initial-prior terms and solver handle those window
+directions remains to be established. No assertion that gravity tilt is a free
+gauge of the entire visual-inertial problem; IMU/priors do constrain it.
+
+3. Insertion and timing checks
+------------------------------
+3541 GLIM endpoint exports and3541 incoming beliefs checked. Reconstructing the
+exported relative pose from its two saved endpoint poses gives max position error
+2.58e-14m and rotation5.88e-13deg. Export->incoming mean component error0;
+incoming->Kimera raw mean maximum2.23e-16. No reversed transform in this chain.
+
+1743 aligned/frozen/pre/post candidate joins across1723 updates, no missing
+geometry. Receiver endpoint IDs match physical native timestamps exactly; both
+sender endpoints are causal and within the existing50ms association guard.
+Actual endpoint offsets14.303--18.832ms. They are not silently treated as zero:
+native-IMU mean alignment left-composes receiver_from->sender_from and right-
+composes sender_to->receiver_to. This direction is algebraically appropriate.
+Aligned and frozen means/IDs match exactly. Independently reconstructed pre-
+insertion residual agrees with native log to5.26e-11 (reported numeric units).
+Profiles and effective arguments point both estimators to /boxi/cpt7/imu;
+GLIM body/base frame is cpt7_imu. Six saved sensor/backend/profile files match
+between OFF and ON. Header frame_id='map' alone is NOT evidence of a body mismatch.
+
+Alignment corrections: median0.17882deg/2.421mm, maximum1.39429deg/13.903mm.
+This checks the saved mean chain, NOT an independent replay of IMU bridge
+integration: the actual bridge anchor velocity/bias/PIM history is not retained
+as complete CP-V49 solver checkpoints. A subtle alignment/model issue is not
+categorically ruled out. Calibration accuracy is not proved by profile equality.
+
+First edge (k6): pre-insertion disagreement0.10180deg/4.486mm; ordinary solve
+0.02443deg/4.929mm; after extra refresh0.01917deg/5.168mm. These are unweighted
+SE3 edge residual norms (translation uses Logmap), not EVO RPE/ATE. Improved
+relative-edge fit is compatible with a moving absolute window; it does not
+show that the whole problem is correctly linearized or converged.
+
+4. Temporary ownership/removal audit
+-----------------------------------
+Replayed the LOGGED ledger over all1762 ON updates:1743 staged insertions,
+1743 tracked slots,1720 scheduled removals;23 remain in the final active window.
+Every active count reconciles; every removal refers to the same edge/slot that
+was inserted; no simultaneously reused live slot, duplicate active edge, missing
+staged insertion, or removal of an endpoint still within the lag cutoff.
+1755 graph-change force-relinearize/full-solve actions logged. No recovery,
+rollback, missing-slot retry or staged-factor-drop event detected.
+At30 the first edge's original slot929 is removed, and x28->x29 is inserted;
+active count24->24. The last23 factors are last-window contents, not a leak claim.
+
+Exact archived CP-V40 backend/refresh/smoother source hashes match their build
+manifest. Inspected order: identify removals -> ordinary update/insertion/removal
+-> extra current-state native refresh -> objective audit -> marginalization.
+The extra refresh calls BaseSAM::update with NO new factors/values; it does not
+consume pending CBS a second time. Runtime guards check ownership, slots,
+endpoints and full variable relinearization. Passing guards and logged accounting
+do NOT independently prove correct cached Gaussian factors/Jacobians/linearization
+points. Current shared BPSAM/bridge source inspection is separately pinned; do
+not confuse it with the three exact archived compiler-input matches above.
+
+5. Narrow next question; no candidate patch is justified yet
+----------------------------------------------------------
+Investigate the PRE-retirement solve, starting from the common state before6,
+then the growing discrepancy through21--25. Need full X/V/b, linearization
+points/deltas, native IMU preintegration, visual/smart state, graph factor IDs
+and cached/fresh linear equations at pre-update, post-ordinary and post-refresh.
+CP-V49 has only edge residuals between ordinary and refresh, not those complete
+intermediate states. It cannot tell which phase makes the window move, nor whether
+the solver used stale/wrong equations or correctly followed problematic equations.
+
+Proposed next decision: an instrumentation-only short matched Hesai prefix with
+identical settings, retaining the first-admission and pre-marginalization snapshots.
+First verify the observation run preserves behavior; then compare cached versus
+fresh native equations before considering any fix. No stronger priors, changed
+covariance, altered smart factors or further full run proposed as a fix here.
+No such capture/build/solver test has been launched or authorized by this report.
+
+Evidence and preservation
+-------------------------
+PROTOCOL.txt: scope. analyze.py/analysis.json/edge_events.json/window_events.json:
+geometry and residuals. transport_means.py/transport_means.json: mean chain.
+chronology.py/chronology.json: exact first difference, thresholds and slot ledger.
+verify.py/verification.json:2026-10-30T14:20:27+02:00 PASS.
+42 analyzed inputs unchanged;272 original CP-V49 outputs,7593 protected files,
+88 original reporting inputs, four-sequence667 copied AND original files verified.
+100 independent SE3/exponential/composition fixtures passed (errors<2.67e-15).
+Both containers still exited; original launcher66944/controller66951 absent.
+All source runs/optimizer calls/builds/estimator modifications in this task: ZERO.
+No new accuracy metrics or covariance conclusions. CP-V49 EVO results preserved.

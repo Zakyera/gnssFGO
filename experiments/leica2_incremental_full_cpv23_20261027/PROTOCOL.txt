@@ -1,0 +1,49 @@
+CP-V23 — Full LEICA-2 Velodyne publication-policy comparison,2026-10-27
+User approved a full saved receiver-only OFF/ON replay following CP-V22A.
+
+Inputs: original CP-V4 full_off_receiver/events.csv and full_on_receiver/events.csv
+under /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared.
+Full428.75s capture, 4282saved support states per mode. OFF then ON once each.
+Fresh result root /home/yeranis/results/gnssfgo_leica2_incremental_full_cpv23_20261027.
+Preserve original CP-K19 source_wnoa7s/100ms, ORIGINAL Qc/prior settings,
+support clock, exact source payloads/availability/order, stable-ID replacement,
+seal_at_absorption and EOF. No0.25/.1candidate, sensor playback, GLIM/Kimera
+run, source CBS change, timing change, tuning, filtering or added state age.
+
+Private CP-K19 Receiver.h copy adds only an observer call after publication
+estimate and an include. Live.cpp remains byte-identical. Observer reads
+current and previous Pose3 from the SAME existing graph estimate; logs two
+poses/publication only. No solver query beyond the existing estimate, no added
+optimization, no insertion into the graph. Compare source delta exactly.
+
+Require entire original ONLINE/finalized CSV/TUM byte parity, exact summary,
+all deterministic event metadata, and all publication commit payloads. Stop
+on failure; no automatic source/numerical retry or gate relaxation. Keep failed
+evidence. Require >8GiB free before each replay. Preserve all existing roots.
+
+Offline chain O[k]=O[k-1] inverse(X[k-1|k]) X[k|k], starting at X[0|0].
+Save as CHAINED incremental odometry, separate from ABSOLUTE graph ONLINE.
+Also retain X[k|k] inverse(O[k]) as graph-to-odometry correction. Do not assign
+the original graph covariance or velocity blindly to the chained frame.
+Published-to-published relative-transform control must telescope to original;
+chain edge lengths must equal same-snapshot edges at the prism point. Validate
+first-minute OFF against existing CP-V22A reconstruction. No future poses used.
+
+Score whole saved interval and frozen CP-V10 common mask, original lever arm,
+IE-TC reference, SE(3) rigid no-scale fits,1s translation/rotation RPE. Keep
+original-fit comparison separately from independently fitted ATE. Report path,
+100ms displacement error, endpoint displacement, graph/odometry correction,
+coverage and startup/tail gaps. No smoothing-only success claim. DELAYED
+finalized is separate; IE-TC shares CPT7, not independent prism GT.
+
+Rerun saved full trajectories: OFF/ON tabs, reference, absolute fusion and
+chained fusion, with unchanged native GLIM/Kimera available as context and
+same saved Velodyne cloud. Keep original alignment on both fusion products in
+the primary overlay; never hide accumulated drift by per-segment alignment.
+Verify recording vertices/edges and inspect a native screenshot. Save launcher.
+
+Start only originally stopped ubuntu-jammy-humble-nvidia for private build and
+replay. Noetic remains stopped. Verify owned jobs exit before restoring Humble.
+Pin inputs/dependencies; verify original Hesai checkpoint. Update REPORT.txt,
+runtime ledger and AGENTS.md. No commit/push/deletion/default promotion or next
+method/dataset run. No unattended recurring automation needed.

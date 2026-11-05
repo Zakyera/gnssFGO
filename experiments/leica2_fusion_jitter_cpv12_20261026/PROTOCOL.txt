@@ -1,0 +1,32 @@
+CP-V12: saved-data Leica-2 Velodyne fusion ONLINE jitter diagnosis, 2026-10-26.
+User approved the preceding proposed diagnosis, not a tuning experiment.
+
+Original CP-V4 baseline OFF/ON, unchanged files and source/receiver settings.
+First inspect CP-V11 selected 380--390s worst OFF fully common-supported window;
+also report whole saved receiver coverage to avoid making it representative.
+Compare identical state IDs/timestamps in online_states and finalized_states.
+Use the same prism point, CP-V11 single no-scale rigid fits for overlay, and
+shared-CPT7 IE-TC reference. No smoothing or decimation of estimator samples.
+Finalized output is delayed at retirement/EOF, not a simultaneous window
+snapshot, not ONLINE, and not full-history optimization.
+
+Compute departure of the next published state from a 100ms SE(3) WNOA
+constant-body-twist extrapolation of the PREVIOUS SAVED online state/velocity.
+This is a measurable net correction relative to stale published information,
+NOT the optimizer's actual internal pre-update innovation: intervening source
+updates may already have revised the prior support state.
+Decompose differences of online versus finalized consecutive displacement
+vectors exactly into the difference of their same-state correction vectors.
+Keep scalar path-length change separate from this vector identity.
+
+Read the ordered event/progress logs and selected immutable commit records;
+count actual inserted/replaced GLIM/Kimera factors by publication interval,
+distinct from wire arrivals/pending/no-op/expired events. Record update timing
+and endpoint ages. Simultaneous source influences cannot be causally separated
+without per-update fused states, which were not logged. No unobserved internal
+state, marginal-prior condition or factor-information dominance inferred.
+No comparison of raw Qc and source covariance traces as though same variables.
+
+Pin and verify all consumed original files. New analysis/report/figures only.
+No replay, estimator build, new source capture, containers, covariance/lag/
+prior change, deletion, promotion, commit or push. Preserve the open Rerun view.

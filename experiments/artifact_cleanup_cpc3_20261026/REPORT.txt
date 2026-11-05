@@ -1,0 +1,72 @@
+CP-C3: obsolete non-GrandTour stage cleanup
+COMPLETED 2026-10-26 15:26:25 local (+02:00).
+
+Authorization: user explicitly said "Clean it up" after review of ten old
+stage folders. Only those ten explicit roots were modified. GrandTour runs,
+current /results, working source/build trees, and original datasets were not
+cleanup targets. No estimator, experiment, scoring, rebuild, tuning or Git push.
+
+RESULT
+- Permanently removed 39,985 files/symlinks and 5,502 empty directories.
+- Removed obsolete derived/corrupt bag copies, Rerun recordings, bulk runtime
+  logs, per-message/per-update traces, and isolated stage build products.
+- Recovered 60,356,849,664 bytes = 56.21 GiB during deletion.
+- Net free-space gain from prepared-plan baseline, including the new archive:
+  55.55 GiB. Available space increased from 12.51 GiB to 68.07 GiB.
+- This was NOT a Trash move. Deleted bulk payloads have no backup from this
+  operation and should be treated as permanently removed.
+
+RETAINED
+- 12,922 original entries retained and verified: source copies, safety patches
+  and archives, reports, configurations, scripts, summary/analysis tables,
+  figures and final trajectories. Unknown file classes defaulted to retain.
+- Additional retained_compact_archive.tar.gz: 12,921 entries, 700,572,056 bytes
+  (668.12 MiB), content hashes verified before deletion. Symlinks were archived
+  without following them. This archive contains RETAINED material only, not
+  the deleted raw captures or generated builds.
+- Original GEODE Stairs recording remains at:
+  /home/yeranis/repos/V4RL/cbs_gtsam4.3/stage2c_d2/stairs/source_work/stairs_gamma_indexed.bag
+  SHA256 932a5490497634d8e0497c0013c973d804dc892d37d1c0cab661e20141be514d
+  Its .orig.bag was verified byte-identical before removal; corrupt-resume
+  artifacts were identified in the original Stage 2C-D2 report and removed.
+
+Approximate retained size in each stage root (du -sh):
+stage2a_implementation    29 MiB
+stage2c_b                 23 MiB
+stage2c_c                2.9 MiB
+stage2c_d1                40 MiB
+stage2c_d2               2.9 GiB (almost entirely the original sensor bag)
+stage2c_medium            23 MiB
+stage3a_characterization  38 MiB
+stage16_diagnosis        1.1 GiB (source copies, fixtures, provenance preserved)
+stage17_diagnosis        235 MiB
+stage18_diagnosis        7.0 MiB
+
+PROTECTION AND CLOSEOUT
+- 3,558 before/after protected-file SHA256 and resolved-path checks pass.
+  Set includes the union of nine current baseline/ablation experiment
+  manifests, CP-V8 scoring inputs, and all 14 first-published GLIM odometry
+  files needed for the pending corrected evaluation.
+- Protected paths and resolved dependencies had no intersection with any
+  of the ten cleanup roots. No source-tree symlink was followed for deletion.
+- Four-sequence Hesai checkpoint: PASS before and after, all 667 saved files
+  checked against originals. Current GrandTour scientific artifacts unchanged.
+- No experiment processes found immediately before deletion. Both containers
+  cbsms_ws_gpu and ubuntu-jammy-humble-nvidia were already stopped and stayed
+  untouched. No process termination or container start was performed.
+- Original historical reports are retained unedited. Decommission notices
+  make clear that old exhaustive replay/visualization/build paths may now
+  require reconstruction. No claim that deleted attempts remain reproducible.
+- Stage15, stage2b, stage2c_audit, clean_glim_ws, clean_kimera_ws, normal build,
+  src, runs and all folders outside the explicit ten roots were left alone.
+
+AUDIT FILES
+PROTOCOL.txt and cleanup.py: exact scope and classification rules.
+inventory.json / plan.json: pre-deletion file identities, decisions and sizes.
+protected_before.json: current protected hashes/resolved paths.
+archive_verified.json: archive content-verification receipt and archive SHA256.
+deletion_started.json / deleted.jsonl: execution receipt and exact removed paths.
+completion.json: successful retained/protected verification and free space.
+
+GLIM first-published-versus-refined accuracy rescoring remains pending and was
+not performed by this cleanup task.

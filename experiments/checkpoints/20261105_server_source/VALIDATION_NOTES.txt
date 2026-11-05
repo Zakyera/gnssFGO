@@ -1,0 +1,31 @@
+Source checkpoint validation notes — 2026-11-05
+================================================
+The archive hash check passed for all 4,898 selected files and all 441 copied
+original source/configuration inputs. No source run or build was executed.
+
+All 1,186 selected Python sources parsed with ast.parse; none was imported or run.
+Of 2,558 JSON-labelled files, 2,456 parsed as strict JSON. An additional 98 GLIM
+configuration files parsed after removing comments in memory while preserving
+quoted strings. Their original bytes were not changed. The four remaining files
+are historical incomplete serialization artifacts, intentionally retained:
+  experiments/eig2_counterfactual_cpv36_20261029/diagnostic_results.json
+  experiments/eig2_visual_math_cpv62_20261030/analysis.json
+  experiments/eth1_split_imu_fusion_cpv94_20261102/preflight_incomplete_serialization.json
+  experiments/leica2_fusion_gap_diagnosis_cpv24_20261027/frontier_cohorts.json
+These must not be treated as successful machine-readable current configurations.
+The original verification.json reports strict parsing literally; it is preserved.
+
+git diff --cached --check reported 1,566 historical whitespace warnings (including
+stored patch/diff context). Those original bytes were preserved, not reformatted.
+The new collector, README and validation note had no whitespace warnings.
+
+Limited scans found no matches for private-key headers, GitHub/OpenAI/AWS/Slack
+token formats, credentials embedded in HTTP URLs, or literal credential assignment
+patterns. This is a bounded accidental-secret check, not a comprehensive security
+audit or a guarantee against every possible credential format.
+
+The actual checkpoint includes selection.json, verification.json and this note
+in addition to the selected payload. Existing experiment artifacts were not edited.
+The oversized historical mechanical_copy.diff and bulk provenance/data remain
+local; exclusion reasons are in selection.json. The many per-event archives and
+raw outputs were never candidates for this source-only push.

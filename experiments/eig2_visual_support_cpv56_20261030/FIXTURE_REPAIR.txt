@@ -1,0 +1,8 @@
+attempt_build1 compiled/linked but synthetic outlier evaluation threw const char*.
+Exact cause: fixture used default SmartProjectionParams IGNORE_DEGENERACY, whose
+Hessian path attempts Jacobians for a rejected point. Actual saved Kimera uses
+BackendParams degeneracyMode=1 (ZERO_ON_DEGENERACY). attempt_build2 changes ONLY
+fixture constructor to (HESSIAN,ZERO_ON_DEGENERACY); saved-data parameters are
+always deserialized unchanged. Numerical gates, thresholds, diagnostic algorithm
+and real inputs unchanged. Original failed logs/source/cleanup retained and pinned.
+No real checkpoint evaluation or graph/source run happened in either failed attempt.

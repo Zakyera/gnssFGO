@@ -1,0 +1,47 @@
+CP-V9 FULL LEICA-2 VELODYNE DECISION REPORT
+=========================================
+
+One fresh projected CBS-ON capture versus saved CP-V4 OFF/original ON; no fresh OFF or repeat.
+Capture428.75s at0.20x; native GLIM/Kimera and concurrent ONLINE fusion. Delayed is separate.
+Fixed gravity-axis+translation 4D factor, dense M C M^T; no detector, reference-based gate or multiplier.
+New factor uses exact local Jacobian; original default approximate BetweenFactor unchanged.
+Unchanged mean-only covariance alignment; shared CPT7 IE-TC, not independent ground truth.
+
+COMMON SUPPORTED GRID: {"capture_s": 428.75, "common_supported_s": 384.6, "baseline_supported_s": 384.6, "queries": 3850, "excluded": 414, "first_s": 0.684928335, "last_s": 390.38492833500004}
+
+Common metrics: ATE m | 1s tRPE m/rRPE deg | 10s t/r | 20s t/r | supported path m
+off          native_glim     2.780918 | 0.097665/1.361491 | 0.679739/5.699727 | 1.061129/8.113843 | 205.103
+baseline_on  native_glim     0.848116 | 0.040169/0.591864 | 0.268531/2.440978 | 0.518917/3.585525 | 206.728
+on           native_glim     0.657661 | 0.047621/0.775407 | 0.292384/3.328192 | 0.511787/4.736050 | 207.310
+off          native_kimera   1.094234 | 0.028573/0.406498 | 0.231711/0.648563 | 0.426659/1.036665 | 199.927
+baseline_on  native_kimera   2.585334 | 0.062125/0.536195 | 0.398361/2.008376 | 0.750430/3.325698 | 200.814
+on           native_kimera   3.937924 | 0.056051/0.429651 | 0.438396/1.392250 | 0.779991/2.501693 | 201.288
+off          fused_online    2.006010 | 0.055686/2.550799 | 0.297395/3.012000 | 0.485766/3.628106 | 277.600
+baseline_on  fused_online    1.867962 | 0.055625/1.868470 | 0.251357/2.537982 | 0.465994/3.446077 | 233.002
+on           fused_online    2.575997 | 0.055825/1.903737 | 0.255055/2.364822 | 0.466286/3.002893 | 236.242
+
+PREDECLARED SCREEN: FAIL / do not promote
+Kimera_ATE_20pct_gain: {"passed": false, "candidate": 3.9379244842821803, "original_on": 2.5853339705686893, "maximum_ratio": 0.8, "change_percent": 52.31782543807928}
+Kimera_20s_rotation_20pct_gain: {"passed": true, "candidate": 2.5016928666669025, "original_on": 3.325698039810179, "maximum_ratio": 0.8, "change_percent": -24.776908885880346}
+Kimera_10s_gravity_axis_nonregression: {"passed": false, "candidate": 1.283834206781491, "original_on": 0.9123192944719998, "maximum_ratio": 1, "change_percent": 40.72202731659902}
+Kimera_20s_gravity_axis_nonregression: {"passed": false, "candidate": 2.3979053100028183, "original_on": 1.731774604737779, "maximum_ratio": 1, "change_percent": 38.46520808439173}
+Kimera_anchor0_heading_RMS_deg: {"passed": true, "candidate": 10.805734535436624, "original_on": 11.132655040145425, "maximum_ratio": 1, "change_percent": -2.93659062936823}
+Kimera_anchor0_terminal_heading_deg: {"passed": true, "candidate": 18.756928052062875, "original_on": 21.310362139796894, "maximum_ratio": 1, "change_percent": -11.982124334553212}
+Kimera_anchor1_heading_RMS_deg: {"passed": true, "candidate": 10.823790562042122, "original_on": 11.15250590910896, "maximum_ratio": 1, "change_percent": -2.947457277725851}
+Kimera_anchor1_terminal_heading_deg: {"passed": true, "candidate": 18.76545035145304, "original_on": 21.313372084575974, "maximum_ratio": 1, "change_percent": -11.954568817230049}
+Kimera_anchor5_heading_RMS_deg: {"passed": true, "candidate": 11.019018505903958, "original_on": 11.394323543921265, "maximum_ratio": 1, "change_percent": -3.293789548546988}
+Kimera_anchor5_terminal_heading_deg: {"passed": true, "candidate": 18.973768421533464, "original_on": 21.380365860775782, "maximum_ratio": 1, "change_percent": -11.256109717268403}
+native_glim_ATE_nonregression: {"passed": true, "candidate": 0.6576613069552334, "original_on": 0.848116349042482, "maximum_ratio": 1.1, "change_percent": -22.456239913576848}
+native_glim_10s_translation_nonregression: {"passed": true, "candidate": 0.29238352971250453, "original_on": 0.26853117295484463, "maximum_ratio": 1.1, "change_percent": 8.882528048864868}
+native_glim_20s_translation_nonregression: {"passed": true, "candidate": 0.5117873273717852, "original_on": 0.5189174649850115, "maximum_ratio": 1.1, "change_percent": -1.3740407857407932}
+fused_online_ATE_nonregression: {"passed": false, "candidate": 2.5759967193276725, "original_on": 1.8679619777055874, "maximum_ratio": 1.05, "change_percent": 37.90413028062607}
+fused_online_10s_translation_nonregression: {"passed": true, "candidate": 0.25505533766508515, "original_on": 0.25135694728128627, "maximum_ratio": 1.1, "change_percent": 1.4713698681501297}
+fused_online_20s_translation_nonregression: {"passed": true, "candidate": 0.4662861182377706, "original_on": 0.4659940217758927, "maximum_ratio": 1.1, "change_percent": 0.0626824483208388}
+coverage: {"passed": true, "candidate_supported_s": 384.6, "baseline_supported_s": 384.6, "minimum_ratio": 0.99}
+operational_gates: {"passed": true, "evidence": "results.json plus original sensor/LOCAL/lifecycle/receiver/projected-factor gates"}
+GLIM_scan_p95_ms: {"passed": true, "observed": 229.3615, "budget_ms": 500.0}
+Kimera_backend_p95_ms: {"passed": true, "observed": 188.815, "budget_ms": 1000.0}
+
+Full-saved/native/ONLINE/DELAYED, all covariance/revision/timing evidence: RESULTS_REPORT.txt/results.json.
+A screen pass is not independent confirmation or a production policy. A failure rejects this single intervention; no sweep/retry.
+Stopped at this experiment. Baseline artifacts unchanged.

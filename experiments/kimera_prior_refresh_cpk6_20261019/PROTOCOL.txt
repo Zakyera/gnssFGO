@@ -1,0 +1,34 @@
+CP-K6: immutable marginal prior + fresh surviving IMU local model
+2026-10-19. Bounded synthetic gate only; no estimator/dataset or production edit.
+
+Question: after a temporary external correction and removal, can surviving
+native factors be linearized at the current estimate while the existing native
+marginal prior retains exactly its original energy function/chart?
+Reuse FL4p OriginalChartPrior.h, not the failed universal FL4q solver policy.
+
+Use actual local GTSAM Pose3/velocity/bias, manifold-preintegrated ImuFactor,
+Gaussian elimination and iSAM2 where applicable. Pin small synthetic values
+before testing. Native marginal = Schur of native retiring factors only;
+retaining the expiring external factor is a negative/provenance control, NOT
+a proposed policy. No covariance scaling/sensor model changes.
+
+Required checks (dimensionless relative errors normalize by1+reference norm):
+1. Native Schur Hessian/RHS/constant vs independent dense elimination <1e-8.
+2. Prior energy at displaced states equals original anchored Gaussian <1e-10.
+   Naively resetting its anchor must fail a nontrivial negative control.
+3. Fresh prior+surviving IMU/bias local slope vs independent central finite
+   differences <1e-5 relative, multiple nonzero prescribed perturbations.
+4. Stale old-anchor IMU model demonstrates a nonzero slope mismatch; actual
+   local IMU derivatives still agree with numerical derivatives.
+5. Dropped external factors cannot enter the new prior or refreshed native
+   graph; retained external control changes information. Current states may
+   remain influenced by past corrections; no statistical independence claim.
+6. Inputs/original prior/nonlinear factors stay unchanged after query; repeat
+   determinism and focused ASan/UBSan (vendor DSOs uninstrumented) checks.
+
+A passing fixture proves a coordinate/information-preservation operation, not
+nonlinear convergence, visual smart-factor validity or ETH1 stability. In
+particular blindly unfixing iSAM2 anchors or resetting the prior at the latest
+estimate is forbidden. No step-size/iteration/covariance tuning by trajectory GT.
+Stop with implementable next integration requirement or explicit limitation;
+do not call a mathematical fixture a production fix. No new global optimizer.

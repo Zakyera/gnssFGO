@@ -1,0 +1,36 @@
+CP-V88: one ETH1 Alphasense CBS-OFF60 bias-random-walk-only ablation.
+User "Proceed" authorizes the single test proposed in CP-V87 on2026-11-02.
+Reference CP85 Alpha pilot and CP86 CPT7 control remain immutable.
+Use CP85 complete Alpha profiles/raw inputs/current private binaries. Change
+ONLY accelerometer_random_walk to0.0043 and gyroscope_random_walk to0.000266
+in the NEW private ImuParams.yaml. No other estimator parameter or source edit.
+Retain Alpha200Hz, white-noise densities, camera T_BS, identity IMU T_BS,
+initialization, initial priors, native smart25states, CP76/CP40/CPK9/FL4Q0,
+FL4Mremove and native IMU-support override unset. GLIM Hesai+CPT7 remains
+co-running for matched load, unchanged CP82/MAIN/all-LOCAL settings.
+Same60s offset0 window,0.20x/25s drain. Both publish but both receive=false.
+No fusion/CBS-ON/full sequence, sensor calibration/time/filter changes, builds,
+parameter sweep, default promotion, deletion, source retry or further experiment.
+
+Fresh unique roots and port11589. Exact profile parity must show ONLY two
+changed scalars. Pre-playback verify actual copied profiles, loaded binaries,
+subscriptions/body and both receiversOFF. Source coverage uses corrected exact
+CP86 input/initialization/EOF accounting adapted to actual Alpha final IMU time,
+not the obsolete CP85 heuristic. No numerical/coverage/integrity guard relaxation.
+10GiB preflight/5GiB runtime storage floor; containers must start stopped and
+return stopped. Only exact owned processes may be cleaned. Fail closed; no retry.
+Single exclusive controller owns capture, coverage, cleanup, saved EVO and report.
+
+Method1 EVO1.36.3 only: newest absolute poses at common prism point, SE3/no-scale
+ATE, reference-distance delta0.5m translation/rotation RPE. Reuse CP85/86 saved
+scores ONLY on identical timestamps/reference RPE pairs, otherwise explicitly
+rescore saved data on the new common mask without another source capture.
+Full-native and common100ms results separate; gaps>0.5s never bridged.
+Retain existing revision/covariance/velocity/timing/objective diagnostics unchanged.
+No new internal bias trace is available without changing current logging/build;
+do not infer actual bias histories from poses or claim causal isolation beyond
+this one model intervention. Bias constraints are not external covariance weights.
+Success supports bias-model sensitivity, NOT certified Alpha noise calibration,
+physical independence or absence of calibration/timing error. Failure retained.
+IE-TC sharesCPT7,not independent prismGT. Path is estimated polyline,not travel.
+Incremental update diagnostics are not nonlinear stationarity.

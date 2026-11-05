@@ -1,0 +1,11 @@
+2026-11-04, before any receiver process or container launch:
+Initial host-only prepare.py stopped at ldd admission: host lacks
+libboost_serialization.so.1.74.0,libboost_filesystem.so.1.74.0 and
+libboost_timer.so.1.74.0. This is not a scientific replay failure or retry.
+Original CP103 launched the exact receiver inside ubuntu-jammy-humble-nvidia,
+not directly on the host. Correct the execution environment to that existing
+container; retain exact executable, wrapper and library path. No installation,
+rebuild, scientific setting change or source run. No prepared/variant output
+existed at the failed check. Raw host probe is retained in host_ldd.txt.
+Container start/stop is owned by the finite replay controller; cbsms stays
+stopped and Ubuntu is restored to its initially stopped state on termination.

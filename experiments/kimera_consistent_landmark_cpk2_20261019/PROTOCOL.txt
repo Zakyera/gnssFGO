@@ -1,0 +1,39 @@
+CP-K2: consistent conditional stereo landmark minimization
+Authorized 2026-10-19, after CP-K1 identified the derivative mismatch.
+
+Single hypothesis: Schur elimination and the checked nonlinear visual error
+agree locally when both use a conditionally stationary landmark for the SAME
+stereo residual (uL,uR,v), calibration, body extrinsics and noise. No duplicated
+vertical observation from monocular triangulation, covariance rescaling,
+robustification, threshold tuning, cap increase or unchanged-step acceptance.
+
+Stage A only initially: saved CP-K1 update531 factors, plus focused synthetic
+fixtures. Freeze captured valid/invalid activity; do not drop a valid factor
+to improve cost. Initialize from its retained landmark and solve 3 unknowns.
+Do not mutate the saved inputs, estimator builds or global/default headers.
+Use existing GTSAM residual/Jacobian/whitening and Schur routines. The inner
+bounded damped GN solve is a numerical implementation of conditional maximum
+likelihood, not a new measurement. Reject nonfinite, behind-camera, singular
+or nonstationary results. Maximum30 accepted inner iterations,12 damping
+trials per iteration. Scaled landmark-gradient stopping threshold1e-10 times
+(1+sqrt(2*cost)); convergence must be measured, never inferred from no change.
+
+Predeclared gates: all173 captured valid factors must terminate; no invalid
+factor activation; cost nonincrease within1e-12*(1+originalcost); Schur slope
+vs central FD at alpha.001,.01,.1 tolerance1e-8 per factor and1e-7 summed;
+independent dense Schur/QR relative error<=1e-9; deterministic repeat;
+missing-right measurements and nonidentity extrinsics; input/cache nonmutation;
+Release and focused ASan/UBSan (linked libraries not instrumented).
+If a gate fails, preserve exact evidence and stop before source replay.
+
+Stage B may integrate in a private fallback ONLY after Stage A. Must preserve
+ordinary successful updates, marginal-prior charts, sparse slots/native factor
+identity, native covariance logic, and transactional rollback. The accepted
+cost, committed caches and relinearized equations must agree. No silent
+cached-point -> DLT substitution at commit, no new persistent measurement.
+An end-to-end source prefix through531 is allowed only after those tests.
+No full346s OFF/ON retry, GLIM run, fusion, tuning, defaults or push.
+
+Recovery: CP-K1 artifacts and all historical protected manifest files unchanged.
+Both containers initially stopped; start only cbsms_ws_gpu for private builds
+and restore it stopped after owned work ends. No heartbeat reactivation.

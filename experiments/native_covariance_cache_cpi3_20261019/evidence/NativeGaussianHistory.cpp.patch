@@ -1,0 +1,67 @@
+--- baseline/NativeGaussianHistory.cpp
++++ candidate/NativeGaussianHistory.cpp
+@@ -68,6 +68,10 @@
+   std::map<Id, Entry> active;
+   gtsam::GaussianFactorGraph prior;
+   gtsam::Values theta;
++  // Query-only memoization owned by this immutable committed epoch. The tree
++  // contains native equations only. Access is single-threaded, like history.
++  mutable gtsam::GaussianBayesTree::shared_ptr query_tree;
++  mutable std::size_t query_preparations = 0;
+   gtsam::GaussianFactorGraph graph() const {
+     auto result = prior.clone();
+     for (const auto& item : active) result.add(*item.second.factor);
+@@ -78,6 +82,7 @@
+     : mode_(mode), committed_(new State) {}
+ NativeGaussianHistory::~NativeGaussianHistory() = default;
+ Id NativeGaussianHistory::epoch() const { return committed_->epoch; }
++std::size_t NativeGaussianHistory::queryPreparations() const { return committed_->query_preparations; }
+ std::size_t NativeGaussianHistory::activeCount() const { return committed_->active.size(); }
+ std::size_t NativeGaussianHistory::absorbedCount() const { return committed_->absorbed; }
+ std::size_t NativeGaussianHistory::removedCount() const { return committed_->removed; }
+@@ -97,6 +102,10 @@
+     require(s.generation == committed_->generation, "wrong generation; reset required");
+     require(s.epoch == committed_->epoch + 1, "stale or skipped epoch");
+     auto next = std::make_unique<State>(*committed_);
++    // Never inherit query preparation into a proposed epoch, even if its
++    // numerical equations happen to be identical. Abort leaves committed intact.
++    next->query_tree.reset();
++    next->query_preparations = 0;
+     // Prior references never move. In MAIN's normal fixed-lag path these keys
+     // must remain fixed; a solver reset/rebase requires invalidation, not copying
+     // the external-information-bearing MAIN marginal into this history.
+@@ -202,19 +211,28 @@
+   return committed_->graph();
+ }
+ gtsam::Values NativeGaussianHistory::theta(Id expected) const {
+-  (void)graph(expected);
++  require(mode_ == Mode::Shadow && expected != 0 && expected == committed_->epoch,
++          "disabled, uninitialized or stale query");
+   return committed_->theta;
+ }
+ EndpointCovariance NativeGaussianHistory::covariance(Id expected, gtsam::Key from,
+     gtsam::Key to, const gtsam::Vector6& df, const gtsam::Vector6& dt) const {
+   require(from != to && df.allFinite() && dt.allFinite(), "invalid endpoint query");
+-  auto native = graph(expected);
++  require(mode_ == Mode::Shadow && expected != 0 && expected == committed_->epoch,
++          "disabled, uninitialized or stale query");
+   require(committed_->theta.exists(from) && committed_->theta.exists(to),
+           "endpoint absent from committed native history");
+-  auto h = native.hessian().first;
+-  certifiedRankCheck(h);
+-  auto tree = native.eliminateMultifrontal(gtsam::Ordering::COLAMD, gtsam::EliminateCholesky);
+-  auto joint = tree->jointMarginalCovariance({from, to});
++  if (!committed_->query_tree) {
++    auto native = committed_->graph();
++    auto h = native.hessian().first;
++    certifiedRankCheck(h);
++    // Install only after successful rank validation and elimination. No failed
++    // preparation can leave a usable partial cache or bypass the next check.
++    auto tree = native.eliminateMultifrontal(gtsam::Ordering::COLAMD, gtsam::EliminateCholesky);
++    committed_->query_tree = std::move(tree);
++    ++committed_->query_preparations;
++  }
++  auto joint = committed_->query_tree->jointMarginalCovariance({from, to});
+   EndpointCovariance out;
+   out.joint_theta.resize(12,12);
+   out.joint_theta << joint.at(from,from), joint.at(from,to),

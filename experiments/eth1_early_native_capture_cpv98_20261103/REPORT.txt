@@ -1,0 +1,92 @@
+CP-V98 -- controlled native visual-information diagnosis
+2026-11-03. One authorized12s ETH1 CBS-ON capture, then saved-only contrasts.
+
+RESULT
+Changed pose estimates ALONE, holding the complete recorded visual measurements
+fixed, produce a large change in which smart factors contribute information.
+This is a demonstrated mechanism, not yet proof of a covariance bug or the
+cause of the full-run CP91->CP95 GLIM ATE regression.
+
+At7.8999548s/update23, evaluate the SAME845 CP98 smart factors, with freshly
+computed triangulation in each branch, at the exact saved CP91 and CP95 MAIN
+poses (all native key timestamps match; no reconstructed poses):
+                                      CP91 poses        CP95 poses
+All valid/nonzero smart factors        136               190
+Endpoint-touching smart factors        287               287
+Nonzero endpoint contributors          16                66
+Global visual Hessian trace            73,732,765.55      194,022,449.58
+Trace ratio2.63143. These traces are NOT relative covariance ratios.
+52 endpoint factors change OUTLIER->VALID; two lose validity, net+50.
+Across all factors61 switch OUTLIER->VALID and11 lose validity, with other
+distance/cheirality transitions. Full per-factor rows and23update contrasts are
+in runs/eth1_early_native_capture_cpv98_20261103/analysis_v2/results.
+
+Frozen Kimera smart-factor outlier threshold is3pixels. Pinned GTSAM actually
+checks the MAXIMUM individual mono reprojection-error norm, despite comments
+calling it average. Invalid smart factors contribute zero Hessian under native
+ZERO_ON_DEGENERACY. Thus pose/triangulation changes can switch whole tracks from
+zero to nonzero information without a new camera measurement or changed weight.
+This closely resembles the original CP97 endpoint20->70 pattern, but the old
+complete measurement sets were not saved, so this is not a full historical
+causal decomposition. Historical pose differences at this event reach6.21cm
+and2.39deg; no assertion that they are infinitesimal or solely gauge changes.
+
+COVARIANCE AND CACHE CHECK
+The new capture reproduces the low-covariance regime: translation trace at7.9s
+is5.2712053e-7m2, compared with CP91 9.1424147e-6 and CP95 6.5939879e-7m2.
+For all23 pre-marginalization updates3..25, build the captured LOCAL graph by
+excluding explicit peer Pose3-between factors while preserving the native
+initial0->1 factor, native priors, IMU,bias and smart factors. The independent
+GTSAM Marginals/full12x12 between-Jacobian propagation reproduces the logged
+full6x6 native outgoing covariance: max relative matrix error2.56e-13.
+Explicit peer population k-3 and one native pose-between checked each update;
+no marginal priors allowed in this primary test. No jitter/scaling introduced.
+
+Resetting every smart triangulation cache at the SAME current state changes
+the event covariance by only0.04564% in matrix norm. Across23updates the largest
+such change is7.1573%, not an order of magnitude. A stale cache does not explain
+the large drop at the captured7.9s event. This does not exclude every cache
+effect in the historic runs or later windows.
+Within the capture, holding factors fixed and changing initial->optimized
+states does not monotonically shrink covariance. At7.9s translation trace
+4.4190e-7(initial)->5.2641e-7(ordinary)->5.2710e-7(refreshed), fresh caches.
+Do NOT attribute the whole historical drop to a single optimizer refresh.
+
+BIAS FEEDBACK
+Native snapshots include X/V/b and actual IMU PIM biasHat, not an inferred bias.
+On all21 checked newest intervals(k5..25), PIM biasHat exactly matches MAIN bias
+from update k-2. At7.9s it matches k21. This confirms earlier MAIN bias feeds
+preintegration; it is not labelled a bug. Every frontend callback/RANSAC bias use
+was not logged, so changed visual measurements through that path remain open.
+
+CAPTURE AND INTEGRITY
+Same CP91 profiles/private source DSOs, both persistent/scales1, GLIM Hesai+
+CPT7 and Kimera Alpha stereo+AlphaIMU. No model/weight/calibration/default edit,
+no estimator build, fusion, OFF rerun, full sequence or deletion. One12s window
+at.20x/25sdrain. Exact118Hesai/1186CPT7/2369Alpha headers and121stereo pairs;
+3preinit+117processed+1terminal unsupported image pair after lastAlphaIMU by
+1.402ms; omission retained.44Kimera/111GLIM outputs;40insertions each direction.
+168native snapshots (471,194,572bytes), four phases for updates2..43; every
+roundtrip/coverage/numerical gate passed. Clone-only observer cost6.96286s total,
+max78.825ms per snapshot. Scheduling may differ; not an exact historic replay.
+The captured LOCAL output is still based on CBS-influenced MAIN states; excluding
+explicit peer factors does not imply independent native-only information.
+
+All773 admission pins, CP91/95 immutable terminal results, CP96/97 evidence and
+Hesai667copies/originals preserved. Both originally stopped containers restored.
+Original raw inputs and captured snapshots unchanged. Failed initial preparation
+span assertion and first offline fixture constructor compile failure preserved;
+no source retry. Offline analysis_v2 corrects only that diagnostic fixture type.
+Final process/hash/container audit is recorded separately in complete.json.
+
+CONCLUSION / NEXT DECISION
+There is direct evidence for state-dependent visual outlier/triangulation gating
+changing native information before any marginalization. There is no demonstrated
+matrix-transformation/inversion/scaling error in this test. More accepted camera
+constraints can legitimately reduce covariance; they can also give conditional
+confidence that does not capture state-selection/feedback uncertainty.
+We have not established calibration or the causal effect on full-run GLIM ATE.
+Before changing weights or the outlier threshold, the next useful saved-data
+check is whether the newly accepted tracks and returned low-covariance beliefs
+are genuinely consistent, distinguishing improved geometry from overconfidence.
+Any IE-TC residual check is a reference comparison, not independent prism truth.

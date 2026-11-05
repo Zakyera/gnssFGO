@@ -1,0 +1,71 @@
+CP-K4 — ordinary incremental Kimera-only OFF control
+2026-10-19: BLOCKED AT PREFLIGHT; ZERO DATA PLAYBACK. Not an estimator failure.
+
+Requested bounded control
+-------------------------
+One ETH1 first111s Kimera-only CBS-OFF at0.10x, exact CP-K1 private binaries,
+front stereo/CPT7,25states,numOptimize1. The only algorithmic change in copied
+launches is existing FL4Q_ENABLE=1 ->0. No GLIM, fusion, CBS-ON, tuning, source
+edit or rebuild. Protocol.txt and launch.diff retain the planned intervention.
+
+What actually happened
+----------------------
+The existing CP-K1 test executable passed disabled/ordinary exact parity,
+smart-cache nonmutation, retirement, rollback and deterministic synthetic
+checks. This is a new execution of the existing fixture, not a new sanitizer
+run. R/preflight_tests.json retains the result; prior sanitizer evidence is
+not relabeled as newly run.
+
+One startup attempt created roscore, camera bridges and Kimera, but failed
+before recorder/player startup. The controller tested literal string equality:
+  actual:   .../off_capture/ros_logs/../objective.csv
+  expected: .../off_capture/objective.csv
+The nested launch constructs the first string from ROS_LOG_DIR. These are the
+same resolved path. This was my harness bug, NOT a wrong covariance, solver,
+sensor setting or Kimera numerical failure. The preceding actual-node checks
+for FL4Q_ENABLE=0, retirement=remove, no IMU override, and unchanged flags passed.
+The complete preflight receipt was not reached, so full effective-runtime
+validation is NOT claimed. failed.txt contains AssertionError() at line57 of
+the launched controller, recorded by its finally-cleanup path.
+
+No bag data were played: no started.json, play.log, objective.csv, acceptance.csv
+or outputs.bag exists. The Kimera log reports orderly manual shutdown. All three
+owned process groups exited with returncode0 and Kimera's process is gone.
+No trajectory, ATE/RPE, update44/531 comparison, or source success is available.
+Do not describe this as the requested111s control or a new Kimera failure.
+
+Harness correction, checked without replay
+-----------------------------------------
+Use Path(actual).resolve()==Path(expected).resolve(); separately assert revision
+logging is enabled. A focused check reproduces the former false rejection,
+accepts the equivalent path, and still rejects a different destination.
+The correction does not alter a numerical guard, estimator code or launch.
+Python3.8-compatible streaming SHA256 was also prepared BEFORE the startup
+attempt (the host-only file_digest API is unavailable in the Noetic container).
+
+preflight_fix_validation.json records:
+  passed=true, source_playback_count=0, protected_files_unchanged=2013.
+All profiles/private binaries/old captures/protected code are unchanged.
+Only the new harness differs from its prelaunch manifest. That original receipt
+is retained, NOT overwritten to conceal the correction. Controller hashes:
+ launched fa5b50935ae6a4c2e344fc4ffe42e249a77b22341fed6974904d0ac7f62da9f4
+ corrected d8b671dc2df30e870f6db7c62b6bee913af40bf645337b254e9f3d03bbf571d0
+
+Stop and next decision
+----------------------
+No automatic retry, extra experiment, solver redesign or production promotion.
+Preserve this failed preflight directory. A separately authorized launch must
+use fresh artifacts/a fresh receipt rather than bypass the duplicate-directory
+guard. The same bounded OFF question remains unanswered; CP-K2 stays on hold.
+No full CP-R7 retry or heartbeat resumed. No Git commit/push.
+After verifying no owned ROS/estimator jobs remained, cbsms_ws_gpu was restored
+to stopped. ubuntu-jammy-humble-nvidia remains stopped. git diff --check passes;
+HEAD remains668d4c788983722f4acad37d1495c15d03a27e18. Pre-existing work preserved.
+
+Paths
+-----
+H=/home/yeranis/repos/gnssFGO/experiments/kimera_incremental_control_cpk4_20261019
+R=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/kimera_incremental_control_cpk4_20261019
+Retained evidence: R/off_capture/{failed.txt,cleanup.json,kimera.log},
+R/pre_capture_receipt.json, R/preflight_tests.json, H/launch.diff,
+H/check_preflight_fix.py, H/preflight_fix_validation.json.

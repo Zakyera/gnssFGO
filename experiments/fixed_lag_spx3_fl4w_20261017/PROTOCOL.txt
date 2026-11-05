@@ -1,0 +1,41 @@
+FL4w — SPX-3 matched60s live OFF/ON, 2026-10-17
+================================================
+Authorization: a different GrandTour dataset with the same settings as ETH1,
+60seconds OFF and ON. Select SPX-3 by retained bags/calibration readiness.
+Mission2024-11-02-17-43-10, bag window32–92s, rate0.10x, source drain25s.
+No optimization/source/covariance changes or rebuilds. No automatic retries.
+Do not overwrite existing runs. OFF must finish and validate before ON.
+
+Freeze FL4v shared settings: GLIM Hesai+CPT75s, front-stereo+CPT7 Kimera25
+states, classic active_window_temporary, source live_revision=false,
+native-IMU mean alignment enabled, horizon0.20s, one pair/update, stride1,
+full Schur-relative6x6, scales1, Gaussian, no health weighting or Huber.
+Use SPX-3's saved September27 source profile trees, not ETH1's copied files.
+Native Kimera IMU override unset. Downstream full revisions remain enabled.
+Headless, no source factor graph inspectors/presentation in the critical path.
+GLIM shared-native covariance provider and FL4q Kimera DSO unchanged.
+Receiver: independent100ms clock after59samples, source-WNOA7s fixed lag,
+same Qc/priors, no central IMU/GNSS factors, Gaussian scales1, stable-ID
+replacement, unchanged publication/retirement/late-version policies.
+Kimera SHA2566ce24c266b0f0e2561f0c05de2a661a72d5a4d9335df7c3cdfa0a4c77af9b4ae.
+Receiver SHA25653c96a2b7a762800cf2291166dc78520269098684411de641b52bee6a54dc5c9.
+
+Runtime: isolated new root/port11445; existing Noetic and Humble containers,
+preserve initial stopped state after task. At least8GiB free before start,
+5GiB reserve. Existing fault/rollback/FL4Q/queue<1000/deadline checks unchanged.
+For60s scale only duration-dependent coverage guards: >=570GLIM, >=270Kimera,
+>=58s native source span; existing first/last/gap checks retained. Source
+accepted-step costs must be nonincreasing; no stationarity claim. Receiver
+no pending/unsupported-at-end, exact covariance conservation, <=71supports,
+<=200slots, p95whole-support<=.8s; deterministic saved-journal replay required.
+
+Score all saved native GLIM/native Kimera ROS odometry/ONLINE fusion poses,
+plus DELAYED fixed-lag finalized separately, against SPX-3 IE-TC over the
+whole traveled section with the unchanged ETH1 evaluator (reference path
+only adapted). Same no-scale SE3 ATE, prism lever arm and1s RPE; report actual
+spans/counts, reference coverage, path lengths and a matched common-time table.
+IE-TC sharesCPT7, is not independent prism. Do not substitute a partial prism
+subset or call a common mask the entire requested60s. Keep full belief/covariance
+histories and source/receiver provenance for later interpretation, not tuning.
+
+Stop after this comparison or first failure. No other sequence or follow-up fix.

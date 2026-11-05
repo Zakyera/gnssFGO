@@ -1,0 +1,152 @@
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_alpha_bias_rw_full_off_cpv89_20261102/prepared/active_window_on.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_persistent_on_cpv91_20261102/prepared/active_window_on.launch
+@@ -17,7 +17,7 @@
+   -->
+ 
+   <arg name="glim_config_path"
+-       default="/workspace/cbs_gtsam4.3/runs/eth1_alpha_bias_rw_full_off_cpv89_20261102/prepared/input_profiles/glim_config"/>
++       default="/workspace/cbs_gtsam4.3/runs/eth1_split_imu_persistent_on_cpv91_20261102/prepared/input_profiles/glim_config"/>
+   <arg name="kimera_mode" default="mono"/>
+   <arg name="kimera_enable" default="true"/>
+   <arg name="kimera_params_folder"/>
+@@ -111,7 +111,7 @@
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_stride" value="20"/>
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_max_updates" value="40"/>
+ 
+-  <include file="/workspace/cbs_gtsam4.3/runs/eth1_alpha_bias_rw_full_off_cpv89_20261102/prepared/glim_profile_on.launch">
++  <include file="/workspace/cbs_gtsam4.3/runs/eth1_split_imu_persistent_on_cpv91_20261102/prepared/glim_profile_on.launch">
+     <arg name="config_path" value="$(arg glim_config_path)"/>
+     <arg name="glim_node_output" value="$(arg diagnostic_node_output)"/>
+     <arg name="glim_input_imu_topic" value="$(arg glim_input_imu_topic)"/>
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_alpha_bias_rw_full_off_cpv89_20261102/prepared/coverage_control.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_persistent_on_cpv91_20261102/prepared/coverage_control.py
+@@ -27,10 +27,17 @@
+ assert int(re.search(r'Initialize Pipeline: timestamp = (\d+)',text)[1])==kt[0]
+ updates=set(map(int,re.findall(r'KIMERA_BACKEND_SPINONCE_TIMING_ROW,(\d+),',text)))
+ assert sorted(updates)==list(range(len(rows)))
+-alltext='\n'.join(p.read_text() for p in [S/'estimators.log',*S.glob('ros_logs/*/*stdout.log')])
++logpaths={p.resolve() for p in [S/'estimators.log',*S.glob('ros_logs/*/*stdout.log')]}
++alltext='\n'.join(p.read_text() for p in sorted(logpaths))
+ assert not re.search(r'IndeterminantLinearSystem|terminate called|Assertion.*failed|local_update_failure|\[FATAL\]|CPV40.*FAIL',alltext)
+-assert not any(v in alltext for v in ['persistent_odom_applied','injected_persistent','injected_active_window','sender_odom_queued'])
+-result=dict(passed=True,requested_s=duration,input_receipts=imu,both_receivers_off=True,external_injections=0,
++assert 'persistent_odom_applied' in alltext and 'injected_persistent' in alltext and 'sender_odom_queued' in alltext
++assert 'injected_active_window' not in alltext
++injections={tag:len(re.findall(pattern,alltext)) for tag,pattern in {
++    'G2K_queued':r'CBS_BPSAM_ODOM_ADD_ROW_G2K[^\n]*sender_odom_queued',
++    'G2K_persistent':r'CBS_ODOM_FACTOR_COVARIANCE_ROW,G2K[^\n]*persistent_odom_applied',
++    'K2G_persistent':r'GLIM_CBS_ODOM_INJECT_ROW[^\n]*injected_persistent'}.items()}
++assert all(injections.values()),injections
++result=dict(passed=True,requested_s=duration,input_receipts=imu,both_receivers_on=True,external_injections=injections,
+     raw_unmatched_camera_headers=a['raw_unmatched_camera_headers'],
+     frontend=dict(received_pairs=len(cam),preinitialization=init_index,processed=max(front),terminal_unsupported=int((cam>lastimu).sum()),
+     terminal_camera_after_last_imu_ms=float((cam[-1]-lastimu)*1e-6)),backend_rows=len(rows),
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_alpha_bias_rw_full_off_cpv89_20261102/prepared/glim_profile_on.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_persistent_on_cpv91_20261102/prepared/glim_profile_on.launch
+@@ -117,7 +117,7 @@
+         <env name="GLIM_SHARED_NATIVE_PROVIDER" value="shared_native"/>
+         <env name="CPV82_GLIM_PERSISTENT_COMPAT" value="1"/>
+         <env name="GLIM_REVISION_COVARIANCE_POLICY" value="native_local"/>
+-        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/eth1_alpha_bias_rw_full_off_cpv89_20261102/prepared/off_source/e1b_profile.jsonl"/>
++        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/eth1_split_imu_persistent_on_cpv91_20261102/prepared/off_source/e1b_profile.jsonl"/>
+ 		<param name="config_path" value="$(arg config_path)" />
+ 		<param name="glim_dump_path" value="$(arg glim_dump_path)" />
+ 		<param name="deterministic_input_event_log_path" value="$(arg glim_deterministic_input_event_log_path)" />
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_alpha_bias_rw_full_off_cpv89_20261102/prepared/source.env
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_persistent_on_cpv91_20261102/prepared/source.env
+@@ -2,7 +2,7 @@
+ # to off_source/on_source and CBSMS_CBS_ENABLE to false/true.
+ : "${CBSMS_RUN_NAME:?Set fresh EIG-2 source run name}"
+ : "${CBSMS_CBS_ENABLE:?Set false or true}"
+-export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/eth1_alpha_bias_rw_full_off_cpv89_20261102/prepared
++export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/eth1_split_imu_persistent_on_cpv91_20261102/prepared
+ export CBSMS_RUN_NAME CBSMS_CBS_ENABLE
+ export ROS_LOG_DIR="${CBSMS_RUN_ROOT}/${CBSMS_RUN_NAME}/ros_logs"
+ export CBSMS_PROJECT_ROOT=/workspace/cbs_gtsam4.3
+@@ -12,7 +12,7 @@
+ export CBSMS_POST_PLAYBACK_DRAIN_SEC=25
+ export CBSMS_BAG_RATE=0.20
+ export CBSMS_SEED_CLOCK_SECS=1727775007
+-export CBSMS_ROS_MASTER_PORT=11590
++export CBSMS_ROS_MASTER_PORT=11591
+ export CBSMS_USE_EXISTING_ROS_MASTER=false
+ export CBSMS_KIMERA_MODE=stereo
+ # The recovered classic Kimera source path is "current", not experimental RIGHT.
+@@ -35,7 +35,7 @@
+ export CBSMS_KIMERA_RECEIVER_AUDIT_MAX_SAMPLES=40
+ export CBSMS_KIMERA_RECEIVER_AUDIT_STRIDE=20
+ export CBSMS_DIAGNOSTIC_NODE_OUTPUT=log
+-export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/eth1_alpha_bias_rw_full_off_cpv89_20261102/prepared/input_profiles/glim_config
+-export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/eth1_alpha_bias_rw_full_off_cpv89_20261102/prepared/input_profiles/kimera_profile
++export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/eth1_split_imu_persistent_on_cpv91_20261102/prepared/input_profiles/glim_config
++export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/eth1_split_imu_persistent_on_cpv91_20261102/prepared/input_profiles/kimera_profile
+ 
+ export CBSMS_DATASET_DIR=/workspace/cbs_gtsam4.3/src/datasets/GrandTour
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_alpha_bias_rw_full_off_cpv89_20261102/prepared/source_runner_on.sh
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_persistent_on_cpv91_20261102/prepared/source_runner_on.sh
+@@ -43,8 +43,8 @@
+ run_dir="${run_root}/${run_name}"
+ experiment_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ launch_file="${experiment_dir}/active_window_on.launch"
+-[[ "${cbs_enable}" == false && "${cbs_direction}" == bidirectional && "${duration_sec}" == 346.32 && "${bag_rate}" == 0.20 && "${bag_start_sec}" == 0 && "${mission}" == 2024-10-01-11-29-55 && "${kimera_mode}" == stereo ]] || { echo "CP-V89 ETH1 split-IMU full OFF346.32 only." >&2; exit 2; }
+-glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-/workspace/cbs_gtsam4.3/runs/eth1_alpha_bias_rw_full_off_cpv89_20261102/prepared/input_profiles/glim_config}"
++[[ "${cbs_enable}" == true && "${cbs_direction}" == bidirectional && "${duration_sec}" == 346.32 && "${bag_rate}" == 0.20 && "${bag_start_sec}" == 0 && "${mission}" == 2024-10-01-11-29-55 && "${kimera_mode}" == stereo ]] || { echo "CP-V91 ETH1 split-IMU full ON346.32 only." >&2; exit 2; }
++glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-/workspace/cbs_gtsam4.3/runs/eth1_split_imu_persistent_on_cpv91_20261102/prepared/input_profiles/glim_config}"
+ kimera_profile_source="${CBSMS_KIMERA_PROFILE_SOURCE:-}"
+ kimera_calibration_overlay="${CBSMS_KIMERA_CALIBRATION_OVERLAY:-${project_root}/src/cbsms/config/grandtour_kimera/eth1_mono_shared_cpt7}"
+ reference_bag="${CBSMS_REFERENCE_BAG:-${dataset_dir}/${mission}_ap20_prism_position.bag}"
+@@ -583,7 +583,7 @@
+   "kimera_receive_cbs_beliefs=${kimera_receive_external_beliefs}" \
+   "glim_cbs_mode=${glim_cbs_mode}" \
+   "kimera_cbs_odom_factor_mode=persistent" \
+-  "experiment=eth1_alpha_bias_rw_full_off_cpv89_20261102" \
++  "experiment=eth1_split_imu_persistent_on_cpv91_20261102" \
+   "glim_sensor_pair=hesai+cpt7_imu" \
+   "kimera_sensor_pair=${kimera_sensor_pair}" \
+   "glim_body_frame=cpt7_imu" \
+@@ -641,5 +641,5 @@
+ fi
+ 
+ touch "${run_dir}/complete.marker"
+-echo "CP-V89 ETH1 split-IMU CBS-OFF60 source run complete: ${run_dir}"
++echo "CP-V91 ETH1 split-IMU persistent CBS-ON346.32 source run complete: ${run_dir}"
+ echo "GLIM rows=${glim_rows}, Kimera rows=${kimera_rows}, EKF rows=${ekf_rows}, G2K messages=${g2k_messages}, G2K injected=${g2k_injected}, K2G injected=${k2g_injected}"
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_alpha_bias_rw_full_off_cpv89_20261102/prepared/verify_effective_on.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_split_imu_persistent_on_cpv91_20261102/prepared/verify_effective_on.py
+@@ -15,7 +15,7 @@
+ assert os.environ['CBSMS_MISSION']=='2024-10-01-11-29-55'
+ assert os.environ['CBSMS_BAG_START_SEC']=='0'
+ enabled = os.environ['CBSMS_CBS_ENABLE'] == 'true'
+-assert not enabled, 'CP-V89 requires BOTH source receivers disabled'
++assert enabled, 'CP-V91 requires BOTH source receivers enabled'
+ assert os.environ['CBSMS_KIMERA_MODE'] == 'stereo'
+ assert os.environ['CBSMS_CBS_PROTOCOL'] == 'classic'
+ assert os.environ['CBSMS_CBS_LIVE_REVISION_ENABLE'] == 'false'
+@@ -37,7 +37,7 @@
+     glim_factor_graph_inspector_enable=False, glim_cbs_export_endpoint_audit_enable=True)
+ for key, value in expected.items():
+     assert glim[key] == value, (key, glim.get(key), value)
+-assert glim['glim_cbs_receive_external_beliefs'] is False
++assert glim['glim_cbs_receive_external_beliefs'] is True
+ import subprocess
+ glim_bus = subprocess.check_output(['rosnode', 'info', '/glim_rosnode'], text=True)
+ subscriptions = glim_bus.split('Subscriptions:', 1)[1].split('Publications:', 1)[0]
+@@ -52,7 +52,7 @@
+ assert kimera['cbs_external_pose_frame_id']=='cpt7_imu'
+ import tf
+ import rospy
+-rospy.init_node('cpv89_frame_preflight', anonymous=True)
++rospy.init_node('cpv91_frame_preflight', anonymous=True)
+ listener=tf.TransformListener()
+ import time
+ deadline=time.monotonic()+10
+@@ -147,6 +147,8 @@
+ with (source/'effective_mode_check.json').open('x') as f:
+     json.dump(dict(passed=True, checked_before_playback=True, playback_rate=0.20, requested_s=346.32, glim=expected,
+                    actual_profile_sha256=profile_checks,actual_imu_parameters=imu_params,
++                   kimera_body='alphasense_imu',glim_body='cpt7_imu',wire_body='cpt7_imu',
++                   T_alphasense_cpt7=matrix.tolist(),kimera_receive=True,glim_receive=True,
+                    kimera=expected_flags, kimera_native_only_outgoing_information=False, mixed_prior_feedback_user_accepted=True, kimera_candidate_env={k:env(pid)[k] for k in ('CPK9_PRIOR_REFRESH','FL4Q_ENABLE','FL4M_RETIREMENT','CPV40_REFRESH','CPV38_OFF_REFRESH','CPV76_PERSISTENT_COMPAT')}, kimera_pid=pid, kimera_argv=argv,
+                    kimera_maps=loaded,glim_maps=glim_loaded,glim_persistent_compat=env(glim_pid)['CPV82_GLIM_PERSISTENT_COMPAT'],glim_revision_covariance='native_local',cached_provider_sha256='6f71292d29d974a0555abd9fda6b2370fdab81ca634a4e1343c216d2a762d2ca'), f, indent=2)
+-print('CP-V89 split IMU topics/body transform and current private builds verified; BOTH CBS receivers OFF.')
++print('CP-V91 split IMU topics/body transform and current private builds verified; BOTH CBS receivers ON, persistent.')

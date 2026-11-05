@@ -1,0 +1,138 @@
+CP-K10 — bounded saved-input ETH1 Kimera ON gate for CP-K9
+COMPLETED AND POST-VALIDATED, 2026-10-20 local time.
+Directory date20261019 is the preparation/authorization date.
+
+Outcome and scope
+-----------------
+One111s Kimera-only capture completed at0.10x, with539 finite monotonic native
+ROS odometry outputs,511 temporary-factor retirements and no rollback/recovery,
+crash or FL4q call. It passes CP-K5's102.199s/update495 stop. All five owned
+process groups exited0; no source rerun, new build, tuning or full experiment.
+
+This validates the bounded prior-handling candidate on CONDITIONAL SAVED GLIM
+INPUTS, not fresh live bidirectional CBS or three-estimator/fusion performance.
+No GLIM or gnssFGO node ran. CP-K8's full-run admission is not automatically
+promoted; another experiment needs explicit authorization and its own gate.
+
+Exact settings
+--------------
+Same CP-K5 raw_glim_inputs.bag, original serialized messages/arrival times,
+ETH1 sensor bags, front Alphasense stereo+CPT7,25states,0.20s CBS horizon,
+one pair/update, Gaussian dense covariance scale1, schur_relative_between,
+classic active_window_temporary, retirement=remove, native Kimera IMU override
+unset. The old covariance mean-alignment approximation is unchanged.
+CPK9_PRIOR_REFRESH=1; FL4Q_ENABLE=0 explicitly inside the actual node.
+No new covariance math, source weighting, optimization iteration setting or
+recovery-guard change. Kimera still uses its own IMU; no central fuser ran.
+
+Loaded private libkimera_vio.so SHA256:
+be637ad745f73bf12596d3bf06754f56ed7bcadfdb8b4792b94c4fcfee62aad9
+Same private libcbs.so SHA256:
+82f85c2a307a9d9a849b2b8f09bb5c1e026ad80a4ef0a633c903d30cca712476
+Full argument list, repeated flagfiles, nested env, loadedDSOs and hashes checked
+before playback. See on_capture/preflight.json and pre_capture_receipt.json.
+Prior CP-K9 tests/build were reused; no default/installed source changed here.
+
+Post-processing correction, explicitly retained
+----------------------------------------------
+The ORIGINAL frozen validator FAILED before scoring: expected1100 messages,
+recorded1099. This was a100ms error in its assumed query start, not data loss.
+Earliest selected record is front_right camera at1727775007855396309ns;
+the actual111s playback cutoff is1727775118855396309ns. The checker had assumed
+1727775007.955396s instead of1727775007.855396309s.
+Message1099->1101 is timestamped1727775118887266167ns,31.869858ms AFTER the
+true cutoff and therefore was correctly not played. All1099 messages actually
+scheduled are an exact ordered byte-identical prefix of the saved input.
+
+No capture, protected checker, playback window or estimator guard was edited.
+A separate validate_score_actual_window.py derives the selected-topic record
+boundary from the exact recorded play arguments and input bags. It passed;
+the original failed assertion is retained in postprocessing_correction.json.
+This is the only protocol bookkeeping correction:1100planned ->1099actually
+scheduled. No automatic source retry or changed acceptance of estimator failure.
+
+Mechanism evidence
+------------------
+The first28 objective rows (updates0--27) match CP-K5 byte-for-byte. First
+difference is28, exactly the first retirement/promotion. All492 common logged
+source/receiver endpoint bindings and timestamps match CP-K5 exactly.
+511 prior promotions; maximum relative difference from existing cached Gaussian
+equations5.34288994472978e-10 (predeclared promotion tolerance1e-8).
+The immutable original prior is preserved; this does NOT restore eliminated
+nonlinear information or certify exact nonlinear convergence.
+
+Kimera internal IMU-factor post-update error (observational, not true NIS):
+update        old CP-K5 ON             CP-K10 candidate ON
+44            91672.094511             607.336804
+438           424123283.028805         5519.821495
+463           2034294692.645745        21088.877962
+494           12083171573.883106       1315.366254
+495           3190006156.919335        32218.772177
+Old495 is AFTER its built-in rollback/retry; new495 needs no recovery.
+Common first496updates max old/new=1.208317e10/135891.594488;
+median655648.450536/653.293556. Observed total-cost increases128/1.
+Across all539newupdates: IMU-error max241023.072129,median706.808701;
+8total-cost increases. Ordinary OFF's full max377846.620770,median44.075245.
+The large old runaway is not reproduced, but ON still has larger median IMU
+error than OFF. Do not equate completion/nonincrease statistics with stationarity,
+uniform numerical conditioning, or a calibrated probability/health metric.
+
+Payload and coverage
+--------------------
+1099/1099 scheduled incoming payloads exact and ordered;535alignment rows,
+all36 covariance entries identical (maxdifference0), raw means maxdifference
+1.6653345369377348e-16.13125revision diagnostic rows retained.
+Recorder-/clock sampling offset relative to original arrivals:
+min-1.023850ms,median-.480226ms,max+.024969ms; original replay timestamps unchanged.
+539finite native poses; same saved count and endpoint span as ordinary OFF.
+First1727775008155395209ns,last1727775118754777583ns;span110.599382374s.
+Actual-window head gap.299998900s,tail gap.100618726s. Both have the existing
+3.199978953s maximum startup odometry gap; no invented/interpolated poses are
+added across this gap for primary saved-pose ATE. Not continuous111s coverage.
+
+Native Kimera evaluation ONLY
+-----------------------------
+Existing evaluator/lever arm, rigid SE3(no scale),1sRPE, shared-CPT7 IE-TC
+/boxi/inertial_explorer/tc/odometry. This is NOT independent prism ground truth.
+ATE scores ALL539 saved poses in each case, not a short prism-overlap subset.
+RPE uses existing valid1s interpolation pairs;1061pairs, no new evaluator.
+
+All-saved pose evaluation (110.599382s span; existing startup gap disclosed):
+Case                             ATE m      tRPE m    rRPE deg   path m*
+Existing ordinary Kimera OFF      .306224    .034986   .553292    62.096513
+Candidate Kimera ON(saved input)  .129063    .018499   .570773    63.208117
+*Evaluation path after existing CPT7-to-prism lever arm; reference63.243896m.
+Raw CPT7 native paths: OFF62.105456m,ON63.274912m.
+ATE and translation RPE improve; rotation RPE is slightly worse. The existing
+OFF uses ordinary FL4Q=0; CP-K9 is inactive without temporary CBS retirements
+(exact OFF parity was tested in CP-K9). OFF was not rerun in this task.
+
+Common10Hz mask:1073rows,span110.399895s,32excluded grid rows due to startup
+gap; same valid1sRPE pairs. ATE OFF/ON=.303841/.128488m;
+tRPE=.034986/.018499m;rRPE=.553292/.570773deg;
+evaluation path61.835323/62.931764m,reference63.252576m.
+No complete-window metric is invented for failed CP-K5. No new native GLIM or
+fusion metrics exist here. Do not relabel this as matched live CBS-OFF/ON.
+
+Evidence and preservation
+-------------------------
+H=/home/yeranis/repos/gnssFGO/experiments/kimera_incremental_prior_live_cpk10_20261019
+R=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/kimera_incremental_prior_live_cpk10_20261019
+H:PROTOCOL.txt,prepare.py,REPORT.txt,audit_mechanism.py,mechanism.json,
+correct_validation_boundary.py,postprocessing_correction.json.
+R:launch/profile/input copies,preflight_tests.json,protected_before.json,
+pre_capture_receipt.json,run_case.py,original and corrected validators,
+on_capture/{preflight.json,started.json,status.json,capture_complete.json,
+cleanup.json,outputs.bag,objective.csv,kimera.log,validation.json,evaluation.json}.
+Final preservation/container checks are R/integrity.json. Both previously
+stopped containers are restored to stopped after all owned jobs exit.
+Integrity passed:2162protected files and28prepared-manifest entries unchanged.
+No commit/push; gnssFGO HEAD668d4c788983722f4acad37d1495c15d03a27e18.
+Pre-existing dirty work is retained, not claimed clean.
+
+Decision
+--------
+CP-K9 now has a positive bounded real-data mechanism test beyond the reproduced
+failure, with exact common inputs and no guard bypass/tuning. Retain this
+private candidate/settings as the next controlled-test configuration; do not
+silently promote production or launch full ETH1. No additional run in this task.

@@ -1,0 +1,20 @@
+CP-V75 -- Existing general persistent mode / corrected backend compatibility
+2026-10-31. User approved the proposed compatibility check, before another run.
+
+Question: can cbs_odom_factor_mode=persistent use the corrected CP-K9/CP40
+Kimera backend without undoing the CBS-OFF repair or bypassing invariants?
+Inspect the exact CP73 private headers/backend, linked CBS implementation,
+existing native tests and historical mode records. Distinguish general
+persistent from active_window_temporary + FL4M_RETIREMENT=retain and from the
+unrelated persistent covariance/main-backend sidecar selectors.
+
+This is a source/saved-evidence audit only. No estimator implementation edit,
+build, native solve, container start, capture, replay, scoring, launch/default
+change, guard relaxation, covariance/weight tuning, deletion or push. Preserve
+all CP69-74 outputs. New evidence and report only in this fresh directory;
+update repository AGENTS.md and runtime plan as required by the runbook.
+
+Acceptance: exact call-path/guard and ownership analysis, existing-test coverage
+and minimal missing compatibility work explicitly identified. Static checks
+are not runtime tests, numerical validation or proof of a mathematical defect.
+No later bounded/full experiment is authorized automatically by this check.

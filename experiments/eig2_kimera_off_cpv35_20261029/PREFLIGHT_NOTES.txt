@@ -1,0 +1,21 @@
+2026-10-29, before any dataset replay:
+Initial observer fixture directly used BPSAM::update + marginalizeLeaves
+without the fixed-lag wrapper's additional re-elimination bookkeeping. It
+crashed on an ordinary BASELINE update, before that update's observer call.
+Release and ASan evidence preserved under P/build_release and P/build_san.
+This is not an EIG-2 estimator failure and not evidence of the target bug.
+Corrected fixture uses the same real fixed-lag wrapper as the source and the
+existing CP-K9 chain fixture; gates repeated in distinct *_wrapper folders.
+No estimator/model/covariance/guard changed. No capture retry has occurred.
+
+A mistakenly addressed historical build.py --help call rejected its argument
+before making any directory or build; baseline hashes remain to be checked.
+Initial new-build Docker invocation was socket-denied before execution; scoped
+permission used for actual private builds. No production build invoked.
+
+New saved-data finding: original objective.csv is Kimera's FL4M copied-factor
+audit, verified from actual ROS launch environment and writer/row IDs; both
+OFF histories match exactly (1761 rows). Earlier CP-V34 wording that saved
+logs lacked nonlinear objective evidence was incomplete: aggregate same-graph
+native-IMU/prior costs ARE saved. Full graph/velocity/bias/anchor snapshots
+remain absent, and are the only reason for the newly instrumented reproducer.

@@ -1,0 +1,222 @@
+CP-V68 -- EXISTING PERSISTENT / RETAIN MODE RECONCILIATION
+2026-10-31. COMPLETE SOURCE/HISTORY AUDIT; NO NEW ESTIMATOR TEST.
+
+DECISION
+The user is correct: permanent-factor functionality must not be reinvented.
+Both the general persistent mode and the more controlled FL4m retain switch
+already exist. The FL4m selector/audit header is BYTE-IDENTICAL in CP66, and
+its retirement scheduling branch is unchanged apart from whitespace. The
+recent work adds causal and provenance evidence, not a new retention method.
+
+Reuse active_window_temporary + FL4M_RETIREMENT=retain for a future isolated
+retirement comparison, NOT a switch to the broader persistent mode. First
+validate compatibility with the corrected CP-K9/CP40 backend in private
+synthetic tests. Do not disable the corrected refresh or bypass its guards.
+No new sidecar architecture is needed merely to answer the diagnostic question
+whether retaining the old information reduces sustained published zigzag.
+Bidirectional retention still has the separate LOCAL provenance problem.
+
+1. EXISTING OPTIONS ARE NOT INTERCHANGEABLE
+
+Option                       Admission / update                 Expiry
+active_window_temporary       Current receiver-edge dedup,       Remove old peer
+ + remove                    staged/active guards, forced       before solve and
+                             native solve, CP40 refresh          marginalization
+
+active_window_temporary       Same admission and ordinary        Keep old peer in
+ + FL4m retain               solve policy; historically         solve, then absorb
+                             isolated expiry intervention       at marginalization
+
+persistent                   Different cross-update best-       Ordinary fixed-lag
+                             match/replacement rules; not       absorption; not
+                             the active-window guard path       forever in memory
+
+There is also temporary_linear (temporary augmented delta solve); it is NOT
+the current active-window-temporary mode. A Boolean with "temporary" in its
+name must not be used without checking the explicit mode selector. Explicit
+persistent and active-window choices override legacy Boolean resolution.
+
+The general persistent path can accept same-edge replacements / alternative
+sender matches where the active-window path skips an already-active receiver
+edge. Its force-solve and recovery paths also differ. Thus "switch persistent"
+would not isolate only the loss of an expiring factor. "Permanent" here means
+its INFORMATION may survive in the marginal prior, not keeping expired states
+and factor objects forever or holding a pose fixed.
+
+Source references (W=/home/yeranis/repos/V4RL/cbs_gtsam4.3):
+  W/runs/eig2_retirement_capture_cpv66_20261031/VioBackend.cpp
+    :165..176 selector definitions; :518..535 parser;
+    :3056..3106 persistent-only cross-update match policy.
+  W/src/cbs/src/bpsam/bpsam.cpp
+    :199..206 legacy resolution; :2741ff admission;
+    :2841ff active/pending receiver dedup; :2920ff persistent alternatives;
+    :3640ff active-window transaction/recovery; :4205ff forced solve.
+  W/runs/eig2_retirement_capture_cpv66_20261031/RetirementAudit.h:11..15
+    existing remove/retain switch.
+
+2. WHAT WAS ALREADY KNOWN, AND WHAT RECENT TESTS ADD
+
+September historical persistent runs:
+  They already used persistent factors; ordinary marginalization could retain
+  their information. The historical audits explicitly warned that LOCAL removal
+  of explicit peer slots did not prove removal from historical marginal priors.
+  Exact old binary identity was not fully archived. Older native trajectory
+  scores are not automatically the current Method1 first-absolute-pose scores.
+
+October15 FL4m (completed, not rerun):
+  Two94s ETH1 Kimera-only frozen-input comparisons;450 identical post-alignment
+  GLIM factors,454 native outputs each,426 retirement events each. First28
+  outputs/objectives identical before retirement. Remove versus retain changed
+  the full subsequent histories. Late native ~0.2s interval translation-error
+  RMS29.226 ->5.336mm; objective-increasing updates83 ->1. These historical
+  diagnostic values are NOT EVO ATE / 0.5m RPE / Method1 path-length scores.
+  Retention already helped then. FL4m preceded CP-K9 and CP40, so it did not
+  answer whether the retirement effect persists after the current refresh fix.
+
+October19 CP-I2:
+  Removal-before-marginalization passed native-information-prior checks at the
+  actual charts. Its report explicitly excludes persistent/retain certification.
+  It does not claim statistical independence or equality to CBS-OFF estimation.
+
+October31 CP66 (completed, not rerun):
+  Corrected EIG-2 Hesai backend; same-checkpoint old-factor/new-factor2x2.
+  Selected late previous-pose revisions, removed -> retained for ONE update:
+    50.3995s: .335969 -> .062328m
+    59.3994s: .639667 -> .107762m
+    59.5994s: .449398 -> .019526m
+  This isolates an immediate retirement contribution after the CBS-OFF repair.
+  It is not a continuous retained trajectory, and not every native cost/bias
+  metric improved. Independent branches must not be stitched into a path.
+
+October31 CP67 (completed, not rerun):
+  At the50.4s boundary, native Gaussian marginalization preserved the retained
+  solution without another jump. The original-chart adapter preserved the
+  mixed prior function on diagnostic copies. The real BPSAM LOCAL fixture
+  confirmed absorbed peer information remains after explicit slots disappear.
+  That failed the predeclared gate for the proposed LIVE BIDIRECTIONAL run;
+  CP67's failed gate remains failed, not relabeled by this audit.
+
+In short: FL4m was earlier causal evidence on an older backend. CP66 strengthens
+the immediate-cause diagnosis on the corrected backend. CP67 establishes a
+one-boundary handover and a concrete provenance limitation. None is a completed
+60s retained run on the corrected backend, nor proof of a universal CBS cure.
+
+3. EXACT CURRENT COMPATIBILITY OBSTACLES
+
+The inherited retain code is present, but four distinct checks prevent simply
+enabling it or substituting the general persistent mode:
+
+  a. NativePriorRefresh.h:11..19 requires FL4M_RETIREMENT=remove.
+  b. include/cbs/bpsam/bpsam.h:96..101 requires ActiveWindowTemporary,
+     cached Gaussian factors and native Gauss-Newton (not persistent mode).
+  c. incremental_fixed_lag_bpsam_smoother.h:236..243 requires every expiring
+     peer slot to be scheduled for deletion before prior promotion.
+  d. BpsamOnRefresh.inc:44..52 requires that a scheduled expired peer is already
+     absent during the post-ordinary/post-refresh check, before marginalization.
+
+OnRefresh.h:7..10 also requires CP-K9 enabled. Turning CP-K9 off is therefore
+not a shortcut: it fails CP40's prerequisite and sacrifices the tested repair.
+These are explicit supported-mode contracts, not evidence that the unchanged
+OriginalChartPrior mathematics intrinsically forbids an inherited peer prior.
+CP67 tested that representation at one boundary; repeated integration remains
+unvalidated. No guard or implementation was changed in CP68.
+
+Any private compatibility extension must replace remove-only assertions with
+equally strict, mode-aware invariants, NOT simply delete checks:
+  - Remove mode stays byte/numerically identical to the existing reference.
+  - Retain mode verifies original slot/pointer/keys, an actually marginalizing
+    endpoint, no scheduled deletion of that retained slot, and unchanged native
+    staged/active residual bounds, including the retained old factor.
+  - Exactly one ordinary solve and one CP40 refresh; no duplicate admission.
+  - Immutable prior anchors/coefficients, owned-lock accounting, smart factors
+    and full rollback remain intact; no resetting priors or stronger weights.
+  - After marginalization: retained explicit peer consumed exactly once, no
+    stale keys/slots/tracking, Schur parity and boundary continuity verified.
+  - Current code commits retiring tracking before marginalizeLeaves and prunes
+    after it. Test this actual order and whole-update rollback; do not assume
+    that a missing tracking entry proves successful absorption.
+
+4. LOCAL EXPORT: REAL ISSUE, BUT NOT A REASON TO REDESIGN BEFORE DIAGNOSIS
+
+CP66 VioBackend.cpp:3546 selects smoother_->setMarginalizationGraph(LOCAL), then
+getOdometryBeliefs. This is the MAIN smoother's filtered relative-belief path,
+not the separate pose-covariance sidecar. bpsam.cpp:4737ff removes tracked CBS
+factors/anchors, not contributions inside a mixed marginal prior.
+
+For live bidirectional retention, claiming these outgoing matrices are native-
+information-only would therefore be unsupported. A peer-excluding history or
+another verified export policy is a later design requirement under that contract.
+This is not covariance scaling/calibration, nor proof that the current remove
+baseline has this same explicit inherited-peer contribution.
+
+But the immediate mechanism question can be tested WITHOUT a new feedback loop:
+freeze a recorded incoming GLIM stream, run Kimera alone under remove/retain,
+and do not deliver Kimera outputs to another estimator or to fusion. This does
+not repair LOCAL provenance; it isolates a different, narrower question. The
+saved CP66 ON stream already contains its original bidirectional history, which
+would be held fixed in both arms, not called independent or feedback-free data.
+No newly changed Kimera output would return to the sender in this diagnostic.
+
+5. REUSE PLAN -- PROPOSED, NOT EXECUTED OR LIVE-ADMITTED
+
+First bounded gate: extend the existing CP40/CP-K9 private synthetic integration
+tests to the inherited FL4m retain branch. Reuse, rather than replace:
+  - FL4m RetirementAudit.h and unchanged retirement scheduling branch;
+  - CP-K9 OriginalChartPrior promotion and its ownership/function tests;
+  - CP40 ordinary+refresh and rollback fixtures, including smart-cache identity;
+  - FL4m test.cpp native-only/remove/retain/persistent reference fixture;
+  - CP67 independent Schur and marginalization/provenance diagnostics.
+Test enabled/disabled parity, identical pre-retirement behavior, repeated
+marginalizations, retained-factor residual rejection, and injected failures
+before/after refresh and marginalization. Release and sanitizers precede data.
+Retain's LOCAL result must be labeled mixed, not forced to pass native-only.
+
+Only after that gate, a separately scoped conditional experiment would reuse
+FL4m's prepare_inputs.py, run_case.py and validate.py in FRESH roots, adapted to:
+  - EIG-2 Hesai's original quiet start, bag offset5.7s,60sensor-seconds EACH;
+   0.20x,25s drain, unchanged cameras/CPT7/25states/weights/guards.
+  - The SAME corrected backend in A remove and B retain; no GLIM/fusion live.
+  - Identical recorded post-alignment means,36 covariance entries, arrival
+    order/times, receiver endpoints and accepted-update identities. Freeze
+    alignment in BOTH arms so changing the receiver does not change its inputs.
+  - One fresh matched conditional remove control is required; the old CP66
+    live capture is a reference, not automatically an identical replay control.
+  - Validate exact payload/binding/admission parity and pre-retirement output
+    parity, then report full Method1 ATE, EVO0.5m translation/rotation RPE,
+    same-mask/full-saved path lengths and coverage. No custom ATE/RPE substitute.
+  - Record previous-pose revisions and within-solution motion separately,
+    biases, native costs, all retirement events and failures. Compare the whole
+    60s and preselected late40..60s interval, not only favorable events.
+  - Stop on guard/payload/cleanup/storage failure; preserve failures, no retries
+    or parameter search. No extrapolation to bidirectional/full-mission results.
+
+Input feasibility inventory: CP66's preserved ON log contains292 shaped
+post-alignment rows,292 unique sender edges,292 unique receiver edges across
+285 updates (6..297); the recorded CBS bag exists. These are candidate input
+rows, NOT a newly validated accepted-wire replay set. Exact wire joins, arrival
+causality and applied-factor bindings still need verification before replay.
+No frozen bag was created, no replay harness adapted and no capture launched.
+
+6. AUDIT / PRESERVATION
+
+audit.cjs is a read-only static inventory, not a native runtime test. audit.json
+records17 passing source assertions and33 source/report/binary/data identities.
+CP66 private backend SHA256 still matches its capture:
+526952811bbda6dbba5dcaff183c7264c8fe7a38baed95f2b3a7e6dec5588015.
+The old selector header equality and retirement-branch equality are checked,
+not inferred from matching names. Existing results were read, not recomputed.
+Production CBS and Kimera repositories were clean at inspection; gnssFGO had
+pre-existing documentation/untracked evidence, preserved. Only this audit root,
+AGENTS.md and the runtime ledger are authored changes. No source/model/build,
+weight/covariance change, data deletion, container mutation or push.
+See complete.json for final hash recheck and original Hesai checkpoint result.
+
+Key historical reports under /home/yeranis/repos/gnssFGO:
+  experiments/fixed_lag_retirement_fl4m_20261015/REPORT.txt
+  experiments/kimera_native_prior_cpi2_20261019/REPORT.txt
+  experiments/kimera_incremental_prior_cpk9_20261019/REPORT.txt
+  experiments/kimera_on_incremental_refresh_cpv40_20261029/REPORT.txt
+  experiments/eig2_retirement_capture_cpv66_20261031/REPORT.txt
+  experiments/eig2_marginal_handover_cpv67_20261031/REPORT.txt
+  CLASSIC_CBS_RESTORATION_AND_REVISION_COMPARISON.md
+  GRANDTOUR_CBS_HISTORICAL_SETTINGS_AUDIT.md

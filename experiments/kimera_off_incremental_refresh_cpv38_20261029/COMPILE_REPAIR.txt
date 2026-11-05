@@ -1,0 +1,8 @@
+release_initial: unchanged baseline and disabled candidate both compiled, ran,
+and produced byte-identical pose/covariance dumps. The active test harness then
+failed compilation because smartState() lacked a closing brace. No active test
+executed. Added that brace only; candidate headers, models and tolerances are
+unchanged. Initial compile logs/commands/receipts and protection hashes remain.
+release_bracefix reuses completed disabled-parity evidence and builds/runs the
+previously unexecuted active suite. Build helper changed only to avoid duplicating
+the completed baseline/disabled stage. No dataset/estimator numerical retry.

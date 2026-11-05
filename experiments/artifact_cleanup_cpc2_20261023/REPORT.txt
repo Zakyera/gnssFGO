@@ -1,0 +1,46 @@
+CP-C2: decommission superseded numerical trial payloads
+Status: COMPLETED 2026-10-23 23:48:53 local.
+
+Authorization: user explicitly requested deletion of unnecessary old runs,
+then clarified that failed/superseded trials should not keep gigabytes of data.
+
+Scope: the five exact roots in cleanup.py under /home/yeranis/results:
+stationary_consensus_20261006, local_prediction_20261007,
+serial_qr_20261007, bounded_polish_20261007, exact_accel_20261007.
+These are early WNOA/WNOJ numerical engineering trials, not current experiments.
+
+Delete snapshot histories (original and repeat) and per-case debug CSV traces.
+Retain small root reports/scripts/configuration, builds/source snapshots/logs,
+each case summary.json/final trajectory.tum/online_trajectory.tum, and two
+specifically referenced saved-graph regression fixtures: bounded_polish on_wnoj
+snapshot_1155 and local_prediction on_wnoj snapshot_1174. Retaining a report
+does not imply keeping the entire failed trial or selecting it as a baseline.
+
+Keep current Hesai CP-K23/24A/28/29 and Velodyne CP-V2 artifacts, all source
+datasets, working runtime dependencies and current protected paths unchanged.
+No models, settings, experiment launches, commits or pushes in this task.
+
+Save exact inventory before permanent deletion; verify retained hashes and
+current pinned paths afterward. Not a Trash move and not a content backup.
+Old detailed replay/reanalysis needing deleted snapshots/traces is intentionally
+no longer possible from these pruned outputs. Reports retain historical outcomes.
+
+Results:
+- Permanently removed 35598 old snapshot directories and637 top-level debug CSVs,
+  153285 files total. Both primary and repeated trial histories were pruned.
+- Recovered22892322816bytes =21.32GiB actual free-space increase; includes
+  directory metadata. Combined with previous CP-C1,26.75GiB recovered.
+- Available disk after deletion38018592768bytes =35.41GiB.
+- Retained files in the five old roots total351260672allocatedbytes (~335MiB),
+  mostly code/builds and the two regression fixtures, not bulk run histories.
+- All1380 retained-file SHA256 checks pass; all2770 current protected-file
+  SHA256 checks pass. No live controller/source/replay process was found before
+  deletion. The two experiment containers had already been stopped.
+- Four-sequence Hesai checkpoint verification against originals passes:
+  4cases,667savedfiles. Velodyne CP-V2/current runtime paths unchanged.
+
+Audit files: plan.json, deleted_file_manifest.json, preserved_file_manifest.json,
+deletion_started.json, deleted_targets.jsonl, completion.json. Deletion inventory
+records file paths/metadata, not content backups. No undelete promise.
+DECOMMISSIONED_CPC2.txt added to each old root after retained-hash verification.
+No experiment launched, source dataset deleted, settings changed or Git push.

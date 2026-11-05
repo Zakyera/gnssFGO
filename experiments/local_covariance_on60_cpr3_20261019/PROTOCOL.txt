@@ -1,0 +1,35 @@
+CP-R3 — one explicitly authorized60s EIG-2 CBS-ON run
+====================================================
+2026-10-19 user: proceed to60sec CBS-ON after CP-R2's30sec OFF passed.
+This is STANDALONE ON, not a matched60s OFF/ON comparison. No new OFF capture.
+EIG-2 mission2024-11-03-13-59-54, offset5.7s, duration60s, playback0.10x,
+drain25s. Same Hesai/CPT7/frontstereo profiles as FL4x/CP-R1/CP-R2.
+GLIM5s lag, Kimera25states and native IMU path (support override unset).
+Classic active_window_temporary bidirectional CBS, no source live_revision;
+native-IMU mean alignment, .20s horizon,1pair/update,stride1,startdelay0.
+Full6x6 schur relative covariances, scales1, Gaussian, no health weighting.
+Private CP-I1 GLIM bridge/native_local plus CP-I3 release_v2 provider unchanged
+from CP-R2. Actual maps/hash before playback. Shared-native/GPU batching.
+Unchanged private FL4q Kimera and FL4e receiver,7s fixed-lag WNOA, independent
+100ms supports, no centralIMU/GNSS, frozenQc/priors and stable-ID replacement.
+Headless, inspectors off; retain native trajectories, revisions/fullcovariance,
+live ONLINE fusion and distinct DELAYED finalized output.
+
+Fresh root/session/port11449; protect frozeninputs and privatecandidate hashes.
+No duplicate/overwrite/retry.8GiBinitial/5GiBreserve; existingfailureguards.
+Admission is the user-authorized standalone ON plus validated CP-R2 gates,
+NOT a fabricated complete60s OFF. Preserve all remaining source/receiver checks.
+Require >=570nativeGLIM,>=270nativeKimera poses,>=58s spans, existing
+startup/tail/gap checks; bothCBS directions inject and covertail.
+AllLOCAL provenance and exact source->transport->receiver payload conservation;
+no pending/unsupported-end/stale/duplicates/lateabsorptionfailure. Supports<=71,
+slots<=200,peakqueue<1000,supportservicep95<=.8s; deterministic journal replay.
+No stationarity certificate is claimed for incremental receiver or source.
+Stop on any failure. No accuracy result from incomplete capture.
+
+If successful, use frozen EIG-2 evaluator math: full IE-TC/CPT7 reference,
+known prism leverarm, perpath no-scaleSE3 ATE,1s translation/rotationRPE.
+Report fullsaved output spans and common ON-only mask, path lengths, coverage.
+IE-TC shares CPT7: not independent prismGT. No shortprism substitute.
+Retrospective fixedlag finalized is not online. No60sOFF comparison implied.
+Stop after result; no tuning, nextsequence, sourcebuild or Gitpush.

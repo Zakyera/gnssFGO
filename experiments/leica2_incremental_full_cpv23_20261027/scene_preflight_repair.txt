@@ -1,0 +1,8 @@
+The first CP-V23 scene-builder preflight stopped before creating any RRD.
+It compared CP-V23 absolute nanoseconds with CP-V11 capture-relative
+nanoseconds. Exact differences were the documented capture epoch
+1732549034915071665 ns for all 4282 points in both modes; all absolute
+display positions matched the old scene with maximum difference 0.0 m.
+CP-V11 prepare.py explicitly stores ts-epoch. Repair normalizes old context
+timestamps by adding that same recorded epoch and retains exact timestamp
+equality. No tolerance relaxation, trajectory edit, scoring change or replay.

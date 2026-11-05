@@ -1,0 +1,37 @@
+CP-K9: incremental original-prior adapter, 2026-10-19
+
+Authorization: user Proceed after pinned CP-K8 settings. Implement and validate
+one isolated backend candidate; no dataset playback or full-run retry here.
+
+Preserve CP-K8 settings, all old sources/captures/builds and model/covariance
+semantics. Experimental CPK9_PRIOR_REFRESH=1 requires FL4Q_ENABLE=0,
+FL4M_RETIREMENT=remove and active_window_temporary (not temporary_linear).
+Both OFF/ON use the same policy. Only actual temporary-peer retirement invokes
+promotion. No global objective test, LM, core rebuild, new factor weights,
+landmark solver, convergence iteration or covariance-scale change.
+
+For every native LinearContainerFactor, preserve its original Gaussian and
+anchor using byte-identical FL4q OriginalChartPrior.h. Stage wrappers, verify
+keys/cache and fixed-key ownership, then swap factor objects in the same slots
+and release the verified locks. Never reset a prior anchor or discard prior
+information. Native iSAM2 controls subsequent relinearization/solve. Existing
+source retirement/removal, rollback guard and marginalization remain unchanged.
+Existing transaction utility restores core, mutable smart caches and LOCAL
+cache if the experimental update throws. No-retirement produces no promotion.
+
+Predeclared bounded integration checks:
+1) exact state/delta/slot/non-prior identity before/after promotion;
+2) prior energy relative error <=1e-10; initial Gaussian equivalence <=1e-8;
+3) fresh vs cached equations and Bayes-tree solution relative error <=1e-7
+   after forced native relinearization (fixture diagnostic, not new runtime rule);
+4) two native removal/marginalization cycles; no removed peer in new prior;
+5) immutable old anchor and coefficients; native smart factor unchanged;
+6) disabled and no-retirement updates exactly match ordinary reference;
+7) invalid fixed-key/cache/selector rejection leaves filter unchanged;
+8) repeat Release output identical and focused ASan/UBSan clean. Vendor DSOs
+   remain uninstrumented; synthetic tests do not certify real-data convergence.
+
+If the gate fails, preserve evidence and diagnose that single candidate; do not
+relax tolerances or branch into other methods. Build private Kimera DSO only
+after focused correctness gates pass. Do not launch ROS/bag playback. Restore
+any pre-existing stopped container used for compilation after owned work ends.

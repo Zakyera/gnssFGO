@@ -1,0 +1,159 @@
+CP-V60 — Does the arbitrary world origin change Kimera's response?
+2026-10-30 | EIG-2 Hesai | saved CP51 first CBS admission | suspect1
+
+OUTCOME
+YES: the native smart-factor triangulation/rejection path is coordinate
+dependent, and that dependence changes the native refresh solution. This is
+a demonstrated numerical-consistency problem, not a camera/LiDAR extrinsic
+conversion mistake. It is NOT proof that this problem causes the full-run
+zigzag, and no fix has been implemented or promoted.
+
+At the tested event, initial warm caches make the first ordinary solve
+effectively invariant. The difference appears when retriangulation runs for
+refresh: nine previously valid visual factors are lost solely because of the
+arbitrary coordinate translation. The final solutions differ by at most
+0.158546mm and0.00565807deg across all seven poses. The much larger original
+early rotation/bias disturbance remains in both representations.
+
+EXPERIMENT (same physical problem, not a parameter sweep)
+CP51 full_on_source/checkpoints/update_6, capture1.599933183s,
+GLIM5->7 / Kimera x4->x5 first CBS belief, factor929.
+A: original native graph/state, one ordinary GN step and one refresh GN step.
+B: translate the world by fixed[3,-2,1]m, the same diagnostic shift used inCP56.
+Translate every pose position, pose-prior mean, cached landmark and cached
+camera position. Leave rotations, world velocities, biases, IMU PIM/gravity,
+relative beliefs, camera calibration, images/observations and weights unchanged.
+Preserve native cache freshness, rank/depth/10m/3px rejection and smart Schur
+elimination. No cache clearing, point refinement or factor deletion. Translate
+B output poses back before comparison. Four real saved-graph GNsteps total.
+Pure world translation leaves local pose tangent coordinates and these noise
+models unchanged; no covariance scaling or estimated alignment is involved.
+
+COORDINATE TRANSFORMATION CONTROLS
+Three identical physical saved states checked: initial, postordinary, postrefresh.
+All356 factor instances at each state enumerated:338smart+18nonvisual.
+Unknown/marginal factor types fail closed; no fixed or marginal keys at update6.
+Every nonvisual factor (IMU, relative CBS/no-motion, pose/velocity/bias priors,
+bias-between) matches in corresponding coordinates:
+  maximum relative Gaussian difference1.64155e-16;
+  maximum relative native cost difference3.46750e-12.
+For smart factors, hold native A's landmark/status fixed and translate that
+landmark plus its camera cache consistently. These read-only controls are NOT
+used to alter either solved arm. Every control Gaussian/cost passes1e-8:
+  maximum relative Gaussian difference9.30565e-10;
+  maximum relative cost difference3.46750e-12 across all factor controls.
+Native cache-retriangulation decisions match in corresponding coordinates.
+Smart function/parameter/measurement/calibration/keys/body bytes unchanged.
+Independent NumPy checks3138 camera/point transformations: maximum geometric
+discrepancy1.98603e-15m. Rotations and non-position state components unchanged.
+Release and ASan/UBSan fixtures pass, including intentionally missing prior or
+landmark translation negative controls and native two-step pose-chain parity.
+Vendor shared libraries are not sanitizer-instrumented.
+
+ORIGINAL REPRODUCTION
+Original ordinary equations relative difference0.
+Original exact-start refresh equations relative difference0.
+Original ordinary state vs captured state3.337355466e-10 mixed tangent norm;
+chained refresh state vs captured state1.228787997e-10.
+Initial/theta identity checked by exact serialized bytes, not exact-zero SE3Log.
+Input snapshots remain byte-identical before/after; protected hashes retained.
+Backward residuals5.73e-18..2.41e-17 are linear numerical checks, NOT nonlinear
+stationarity. No saved-graph test/build failure occurred in this experiment.
+
+WHERE COORDINATE DEPENDENCE APPEARS
+Natural native triangulation at IDENTICAL PHYSICAL SAVED STATES:
+                            A valid    translated valid    status changes
+Initial (preserved caches)     285            285                 0
+Postordinary                  266            257                18
+Postrefresh                   267            262                11
+
+At postordinary, six valid tracks become rank-degenerate:
+255,272,353,367,374,461.
+Three valid tracks become reprojection outliers:706,707,779.
+The other nine status changes are between already-invalid classes and do not
+remove additional contributions. No invalid track becomes valid at this state.
+266smart Gaussian factors change by >1e-8 relative norm, including changes in
+landmarks which remain valid. Maximum valid-point disagreement after undoing
+translation0.410787m at postordinary and1.081155m at postrefresh.
+The fixed-point controls above distinguish this from changing actual camera
+geometry or a failure to translate the pose prior.
+1352native classification comparisons at the two post-step physical states
+match CP56's original/translated results exactly; that earlier DLT/rank
+calculation was independently reproduced with NumPy. CP56's FAILED native
+origin-invariance gate remains failed, not waived by these successful controls.
+
+ACTUAL SOLVES (each arm follows its own ordinary result)
+                                     A original         B translated
+Nonzero visual factors, ordinary         285                285
+Nonzero visual factors, refresh          266                257
+Final post-evaluation valid count        267                261
+
+Final post-evaluation is NOT a third solve; it uses each arm's own final state.
+Thus B's261 differs from262 at the fixed original postrefresh state above.
+Twelve final post-evaluation statuses differ between actual A/B, versus eleven
+when exactly the same physical final state is held fixed.
+
+REVISIONS OF PREVIOUSLY EXISTING STATES x0..x5 (not ATE or GT errors)
+                                     A original          B translated
+Ordinary common tilt, deg             .0429935012         .0429934979
+Ordinary max rotation, deg            .2837026641         .2837026627
+Ordinary max position, mm             1.8936160            1.8936160
+Ordinary max gyro-bias, rad/s          .0071356532         .0071356532
+
+Refresh-only common tilt, deg         .0818410624         .0815509864
+Refresh-only max rotation, deg        .0898603496         .0893512905
+Refresh-only max position, mm         4.0504977            3.9692624
+Refresh-only max gyro-bias, rad/s      .0007364828         .0007969025
+
+NET before admission -> after ordinary+refresh:
+Common tilt, deg                      .0785919482         .0787028118
+Maximum rotation revision, deg        .3225806858         .3258788905
+Maximum position revision, mm         5.7219138            5.6462338
+Maximum velocity revision, m/s        .0107605540         .0107173682
+Maximum accel-bias revision, m/s2      .0228479232         .0228765113
+Maximum gyro-bias revision, rad/s      .0074609410         .0074909054
+
+Net maximum rotation revision is1.022%larger and gyro-bias revision0.402%larger
+in the translated representation. This is NOT a trajectory accuracy comparison.
+Direct A-vs-B maxima across x0..x6 after ordinary:
+position4.17e-13m; rotation4.75e-9deg (effectively unchanged).
+Direct A-vs-B maxima after refresh, after undoing translation:
+position0.158546mm; rotation0.00565807deg; velocity0.000225340m/s;
+accel-bias0.000186853m/s2; gyro-bias0.0000805812rad/s.
+Independent SciPy check of250 scalar state-difference metrics agrees<=2.22e-16.
+
+FINAL NATIVE COSTS / CBS RESIDUALS
+IMU summed cost:                 1.25375444 -> 1.23667543
+Bias-between summed cost:       15.74933075 ->15.29179684
+CBS cost:                      44.27887239 ->42.77491975
+CBS rotation residual, deg:       .01721610 ->  .01660987
+CBS translation Log norm, m:      .00665862 ->  .00664111
+Smart cost sums are conditional on rejection and cannot establish a better
+solution when the valid set changes. No calibrated-covariance conclusion.
+
+CONCLUSION AND NEXT DECISION
+This is a real coordinate-consistency defect/property in native algebraic
+triangulation/rank/rejection, demonstrably influencing the refresh graph.
+It is not evidence of wrong GLIM-to-Kimera body/extrinsic conversion.
+The initial ordinary response is invariant, and the early .32deg rotational
+revision remains in both representations. This test therefore does NOT show
+that origin dependence explains the main first-event response. Accumulation
+over later updates and the full trajectory remains untested.
+
+The next narrowly scoped candidate, only if authorized, is triangulation in a
+deterministic track-local camera frame, then transforming the landmark back.
+First demand coordinate-invariance and exact-projection fixtures with unchanged
+physical measurements/weights and explicit original rejection tests. Then test
+the same saved ordinary+refresh event against the original, with any changed
+valid sets disclosed. This is NOT just choosing a more favorable world origin,
+not covariance tuning, not an implemented fix and not a full-run launch.
+Stay on suspect1; do not silently move to suspect2.
+
+ARTIFACTS AND CLOSEOUT
+Origin.cpp and private binaries under matching V4RL/runs root; no production
+files modified. results/ holds controls, natural fixed-state differences, all
+state values, costs and before/after original snapshots. analysis.json and
+independent_check.json retain complete data/input hashes. complete.json and
+verification.json certify protected pins, all667 original Hesai checkpoint
+files, owned jobs exited and both originally-stopped containers restored.
+No source replay, ATE scoring, cleanup/deletion, default promotion or push.

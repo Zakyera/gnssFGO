@@ -1,0 +1,44 @@
+--- preflight_on.py-before-review
++++ preflight_on.py
+@@ -18,7 +18,7 @@
+  for k in ('sequence','ros_master_uri','receiver_binary'):c.pop(k)
+  for source in c['sources']:source.pop('session')
+ assert cfg[0]==cfg[1]
+-result=dict(passed=True,admission='same28.0s OFF passes all gates before matched ON',
++result=dict(passed=True,admission='same30.0s OFF passes all gates before matched ON',
+  protected_unchanged=len(manifest),receiver_config_unchanged=True)
+ with (P/'preflight_on.json').open('x') as f:json.dump(result,f,indent=2)
+ print(json.dumps(result,indent=2))
+--- validate_case.py-before-review
++++ validate_case.py
+@@ -173,7 +173,7 @@
+         monitor_output_age_s=stat(ages),published_during_source=published_during_source,
+         max_monitor_queue=max(m['queued'] for m in monitored),
+         protected_unchanged=len(manifest),
+-        claim='live 0.2x full28.0-second SPX-3 capture; fixed-lag incremental without stationarity certificate')
++        claim='live 0.2x bounded30.0-second SPX-3 capture; fixed-lag incremental without stationarity certificate')
+     RESULT.mkdir(parents=True,exist_ok=False)
+     with (RESULT/'expired_details.json').open('x') as f:json.dump(audit.details,f,indent=2)
+     with (RESULT/'validation.json').open('x') as f:json.dump(result,f,indent=2)
+--- source_runner.sh-before-review
++++ source_runner.sh
+@@ -43,7 +43,7 @@
+ run_dir="${run_root}/${run_name}"
+ experiment_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ launch_file="${experiment_dir}/active_window.launch"
+-[[ "${cbs_enable}" == false && "${cbs_direction}" == bidirectional && "${duration_sec}" == 30.0 && "${bag_rate}" == 0.20 && "${bag_start_sec}" == 29.0 ]] || { echo "Prepared SPX-3 full28.0-second 0.20x OFF fixed-lag capture only." >&2; exit 2; }
++[[ "${cbs_enable}" == false && "${cbs_direction}" == bidirectional && "${duration_sec}" == 30.0 && "${bag_rate}" == 0.20 && "${bag_start_sec}" == 29.0 ]] || { echo "Prepared SPX-3 bounded30.0-second 0.20x OFF fixed-lag capture only." >&2; exit 2; }
+ glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/input_profiles/glim_config}"
+ kimera_profile_source="${CBSMS_KIMERA_PROFILE_SOURCE:-}"
+ kimera_calibration_overlay="${CBSMS_KIMERA_CALIBRATION_OVERLAY:-${project_root}/src/cbsms/config/grandtour_kimera/eth1_mono_shared_cpt7}"
+--- source_runner_on.sh-before-review
++++ source_runner_on.sh
+@@ -43,7 +43,7 @@
+ run_dir="${run_root}/${run_name}"
+ experiment_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ launch_file="${experiment_dir}/active_window_on.launch"
+-[[ "${cbs_enable}" == true && "${cbs_direction}" == bidirectional && "${duration_sec}" == 30.0 && "${bag_rate}" == 0.20 && "${bag_start_sec}" == 29.0 ]] || { echo "Prepared SPX-3 full28.0-second 0.20x classic CBS-ON fixed-lag capture only." >&2; exit 2; }
++[[ "${cbs_enable}" == true && "${cbs_direction}" == bidirectional && "${duration_sec}" == 30.0 && "${bag_rate}" == 0.20 && "${bag_start_sec}" == 29.0 ]] || { echo "Prepared SPX-3 bounded30.0-second 0.20x classic CBS-ON fixed-lag capture only." >&2; exit 2; }
+ glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_smoke_cpv2_20261023/prepared/input_profiles/glim_config}"
+ kimera_profile_source="${CBSMS_KIMERA_PROFILE_SOURCE:-}"
+ kimera_calibration_overlay="${CBSMS_KIMERA_CALIBRATION_OVERLAY:-${project_root}/src/cbsms/config/grandtour_kimera/eth1_mono_shared_cpt7}"

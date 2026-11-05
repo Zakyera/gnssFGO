@@ -1,0 +1,74 @@
+CP-V89 COMPLETE. One authorized full346.32s ETH1 CBS-OFF validation of CP88.
+Started ONCE2026-11-02T15:58:08+02:00:launcher45569 exited,supervisor45570,
+controller45572 proc_start2239673. Receipts are authoritative; verify host IDs.
+Admission passed3716protected files/Hesai667,12.417GBfree,3.545GBforecast.
+Startup effective profiles/body/subscriptions/loaded libraries verified before
+playback;GLIM Hesai+CPT7 / Kimera Alpha,both CBS receiversOFF,no fusion.
+Profiles/binaries byte-identical to CP88,biasRW.0043/.000266 retained.
+Raw full audit:3462Hesai,34618CPT7,69186Alpha,3464left/3463right images.
+One right absent203.898841154s,3463exact stereo pairs agreeshistoricalCP-K23;
+inputs unchanged. Preparation helper corrections are in PREPARATION_REPAIR.txt,
+not source failures or retries. No other source capture launched.
+Controller completed16:28:43local. Once-only supplemental post-closeout audit
+passed16:29:51:controller45572,supervisor45570 and all stage identities exited;
+both originally-stopped containers restored stopped.3716protected files,
+148immutable terminal outputs,28report inputs and Hesai667copies/originals
+verify;CP88 and earlier evidence remain pinned. No capture/scoring retry.
+The mutable status report is updated; complete.json and its hashed outputs are
+unchanged. Experiment-only heartbeat PAUSED following completion notification.
+
+METHOD1 RESULTS (first/newest absolute poses,not native incremental Kimera).
+EVO1.36.3 only; SE3 alignment with no scale; reference-distance delta0.5m
+translation/rotation RPE. Each body is transformed to the physical prism point.
+COMMON100ms mask:2970queries,296.7s supported/346.32s=85.672211%,365RPEpairs.
+Estimator         ATE m      tRPE m    rRPE deg  path m      reference m
+GLIM CPT7         0.038060   0.016331  0.336865  202.881834  201.375536
+Kimera Alpha      0.738754   0.085253  0.619426  211.027943  201.375536
+
+FULL-SAVED NATIVE CADENCE (different timestamps/masks; no gap bridging):
+Estimator         ATE m      tRPE m    rRPE deg  path m      reference m
+GLIM CPT7         0.037891   0.016919  0.254654  205.236377  201.475912
+Kimera Alpha      0.744750   0.119927  0.509363  214.718296  201.020155
+GLIM:3454saved poses,0.819647..346.119254s,345.299607s supported (99.705361%),
+0gaps>0.5s,366RPEpairs. Source native coverage has3455poses;one early native
+pose is absent from saved ROS CSV. Report uses only retained actual CSV poses.
+Kimera:1493poses,0.299999..342.898091s,297.198336s supported (85.816105%),
+11gaps>0.5s,353RPEpairs. Startup3.199979s gap and sparse ~5.1s keyframes after
+302.098307s are not bridged. Last pose3.421552s before last Alpha IMU. Acquisition
+completed the requested full window;this does NOT mean dense full-time output.
+All34618CPT7/69186Alpha IMU stamps exactly conserved.3463stereo pairs=
+3preinitialization+3460processed+0terminal unsupported. Zero external injections.
+The single missing-right/unmatched-left raw observation remains an omission.
+
+EXACT EARLY-PREFIX REGRESSION:
+First60s rescored on CP88's exact561query/46reference-pair mask with its own
+alignment: Kimera ATE0.144141m,tRPE0.074174m,rRPE1.002433deg,path26.190106m
+vs25.304035mreference. These values reproduce CP88 exactly. Do not compare
+pilot-only ATE directly to full-window-aligned ATE as an equal-window test.
+
+RETAINED DIAGNOSTICS:
+Kimera previous-state revisions:1475paired steps of1493poses;17unpaired step
+IDs explicitly listed in results.json. Translation median/p95/max=
+0.011463/0.113872/0.748554m;3>0.5m and0>1m. Rotation p95/max0.304137/1.072541deg.
+Same-update motion max0.212285m vs published absolute-step max0.926628m.
+Optimization1493updates:mean/p95/max187.025/353.724/464.763ms.
+36778logged Kimera6x6 revision-edge covariances:all finite,symmetric,positive
+definite; median rotation trace5.433613e-8rad2 and translation trace4.208529e-6m2;
+p95 traces1.019531e-7rad2/2.700998e-5m2. This is not a calibration/consistency
+test or a GLIM-vs-Kimera transported-uncertainty comparison. No live peer payload
+exchange occurred. Increment parity maxima2.908135e-10m/1.317135e-9rad are
+implementation consistency checks,not nonlinear stationarity.
+Report verification:15EVO CLI calls;CLI/API error difference0,TUM roundtrip
+max1.554312e-15. Saved data only;no additional scoring launched by closeout.
+
+INTERPRETATION/LIMITS:
+The candidate completed the full acquisition and exactly reproduced the short
+pilot;the original catastrophic short-pilot behavior did not reappear at that
+scale. Residual Kimera error,three>0.5m revisions and sparse ending remain;
+run/report pass is not proof of estimator health. No matched full CPT7-Kimera
+or original-Alpha control was captured. Experimental biasRW is not certified
+Alpha calibration. Actual IMU bias histories/physical residuals unavailable.
+No fusion/ON or next sequence authorized;split-body belief/fusion adapter remains
+unqualified. Separate IMUs do not eliminate peer-feedback correlation. IE-TC
+shares CPT7,not independent prism ground truth. Paths are estimated polylines,
+not physical travel. No defaults promoted. Terminal artifacts remain immutable.

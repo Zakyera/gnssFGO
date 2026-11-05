@@ -1,0 +1,37 @@
+{
+  "pid": 88,
+  "time": 1793119082.1084657,
+  "command": [
+    "taskset",
+    "-c",
+    "2",
+    "/home/yeranis/results/gnssfgo_receiver_finalization_cpk19_20261021/live",
+    "--absorbed-revision-policy",
+    "seal_at_absorption",
+    "--mode",
+    "sources",
+    "--timeline",
+    "record",
+    "--solver",
+    "isam2",
+    "--support-policy",
+    "uniform_imu",
+    "--support-period-ns",
+    "100000000",
+    "--receiver-startup-samples",
+    "59",
+    "--receiver-model",
+    "source_wnoa",
+    "--event-stream",
+    "/home/yeranis/results/gnssfgo_leica2_single_source_controls_cpv25_20261027/kimera_only_events.csv",
+    "--out",
+    "/home/yeranis/results/gnssfgo_leica2_single_source_controls_cpv25_20261027/kimera_only"
+  ],
+  "environment_overrides": {
+    "LD_LIBRARY_PATH": "/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "E2B_ENDPOINT_CACHE": "0",
+    "E2_EXACT_LINEARIZATION_CACHE": "0"
+  }
+}

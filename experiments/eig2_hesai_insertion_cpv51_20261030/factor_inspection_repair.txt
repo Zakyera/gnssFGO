@@ -1,0 +1,10 @@
+First supplemental saved-factor audit failed its report-only assumption that
+all PriorFactor objects were the three initial priors. Actual snapshots contain
+x0/v0/b0 initial priors PLUS native low-disparity zero-velocity v3 prior.
+They also retain native no-motion PoseBetween x2->x3 (not a CBS factor).
+Evidence: original factor_inspection/off.log and snapshot own_graph.csv.
+Original failed output/source retained. Fresh factor_inspection_v2 requires all
+four existing priors, verifies their function signatures across120 snapshots,
+and joins actual CBS factors by admitted endpoints. No solver/capture repeated,
+no estimator or gate changed. Legacy aggregate family labels are explicitly
+qualified in factor_audit.json and REPORT.txt.

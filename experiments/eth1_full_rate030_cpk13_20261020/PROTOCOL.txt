@@ -1,0 +1,40 @@
+CP-K13: explicitly authorized matched full ETH1 CBS-OFF/ON,2026-10-20.
+
+User: "let's run the full sequences", following CP-K12's successful60s ON
+at0.30x. Scope is full ETH1 OFF then ON, not other GrandTour sequences.
+OFF must pass all four gates before ON. One source launch per mode; fresh
+exclusive outputs and port11461. No automatic retry on failure or gate bypass.
+
+Use exact CP-K11/K12 private binaries,profiles and model. CP-K9 Kimera
+prior-refresh1,FL4q0,retirement remove,source-native IMU override unset.
+CP-I1/CP-I3 all-LOCAL full covariance every GLIM version,corrected MAIN means,
+Kimera LOCAL covariance,classic active_window_temporary bidirectional CBS
+only in ON; export enabled in both modes. No source live_revision.
+Hesai+CPT7 GLIM5s/front Alphasense stereo+CPT7 Kimera25states. Gaussian scales1,
+unchanged mean-only source alignment approximation,no health/Huber/tuning.
+FL4e7s fixed-lag source_wnoa,100ms independent clock,59sample startup,
+unchanged Qc/priors,downstream stable-ID replacement,no central IMU/GNSS.
+Headless0.30x,25sdrain,no synchronous presentation or graph inspectors.
+
+Bag offset0,through the last selected Hesai record,rounded UP to1ms from
+the exact first SELECTED input record. Read-only bag preflight derives and
+pins346.32s:the older346.22s used a different bag epoch. Do not truncate the
+last scan to preserve an incorrect label,or include camera/IMU-only tails.
+Disclose source initialization and terminal scan-support gaps separately.
+Rate/duration and new root/session/port are the only capture changes from
+the validated settings. Reuse CP-K12 actual-Kimera-node runtime monitoring
+and per-update retirement/prior checks. No numerical threshold changes.
+
+Validate each mode: LOCAL payload conservation,source coverage/effective
+settings,receiver exact accounting,Kimera lifecycle/prior equality <=1e-8,
+and saved receiver-journal deterministic replay. The repeat is not a source
+rerun. Retain means/full6x6covariances/revisions and availability times,
+native ROS odometry,ONLINE and DELAYED fixed-lag-finalized fusion separately.
+After BOTH pass, use existing full-saved/common-mask IE-TC evaluation:
+native GLIM,native Kimera,fusion ONLINE; ATE,1s t/r-RPE,path lengths/coverage.
+IE-TC shares CPT7,not independent prism GT. Never label delayed as online,
+incremental/nonincrease as nonlinear stationarity,or a failed prefix as full.
+
+Stop on failure; preserve evidence. No builds,model/source edits,covariance
+changes,tuning,deletion,commit/push,default promotion or next method/sequence.
+Restore both initially-stopped containers only after all owned work finishes.

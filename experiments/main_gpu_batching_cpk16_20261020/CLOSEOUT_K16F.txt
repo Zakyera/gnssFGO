@@ -1,0 +1,21 @@
+CP-K16f corrected eight-second attempt — closeout,2026-10-20
+
+RESULT_K16F.json passed; no validation rerun or result overwrite.
+k16f_source_2/integrity_after.json passed:
+2026protected files,7pinned inputs,28prepared files and five source repository
+HEAD/status/diff fingerprints unchanged. Candidate and observer hashes match.
+Updates in this closeout are experiment reports and the gnssFGO progress ledger,
+not the protected estimator/runtime inputs.
+
+paired/cleanup.json reports all owned jobs exited0:
+master,node,observer,record,bag.
+Before stopping, docker top cbsms_ws_gpu showed only tail -f /dev/null;
+ubuntu-jammy-humble-nvidia was already exited and was not started for this check.
+Stopped the idle cbsms_ws_gpu container. Final docker inspect:
+ /cbsms_ws_gpu exited
+ /ubuntu-jammy-humble-nvidia exited
+Both restored to their original stopped state.
+
+No automation, commits, pushes, default promotion, Kimera/fusion run or next
+experiment. Original failed k16f_source_1 and RESULT_K16F_PENDING.json preserved.
+Stop after reporting this bounded pass and the separate Kimera retention blocker.

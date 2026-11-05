@@ -1,0 +1,63 @@
+CP-V83 — 60s EIG-2 HESAI, BOTH GLIM AND KIMERA PERSISTENT, LIVE
+User approved CP82 compatibility restoration and the conditional single60s
+integration test. CP82 release/UBSan/actual bridge/native-history/GPU/disabled
+parity gates passed. This is NOT approval for a full sequence or campaign.
+
+One fresh CBS-ON capture, exactly60.0s from bag offset5.7s, start epoch
+1730638816563546034ns. Same EIG-2 Hesai/front Alphasense stereo/shared CPT7
+profile as CP80. Fresh GLIM/Kimera live bidirectional exchange and concurrent
+gnssFGO fusion. NOT saved-belief replay. No fresh OFF or temporary control.
+Only differences from CP80: requested window, private GLIM admission opt-in,
+GLIM persistent receiver mode, and mode/window-specific validation expectations.
+
+GLIM: CP82 release_4 libglim_ros SHA256
+aecc729f4bf51548950b8cb997c3dcd474e30cabe23785c4011e6b22f7dbe918;
+CPV82_GLIM_PERSISTENT_COMPAT=1, inject_persistent,5s, unchanged CP-K16 MAIN GPU
+batching, shared_native/native_local dense covariance every version, corrected
+MAIN means. Classic duplicate policy, native matching/IMU mean alignment;
+not live_revision replacement. Existing persistent factor code unchanged.
+Kimera: exact CP76 private backend/libcbs, general persistent, CP-K9/CP40,
+native smart factors25states, FL4Q0, FL4Mremove inert in persistent, native
+IMU override unset. No CP66 observer, CP70/73 scheduling, stronger weights.
+Both Gaussian scale1, health/DCS off, frozen capped diagnostics40/20.
+Headless0.20x,25sdrain. Same calibration/no tuning/default promotion.
+Receiver: CP-K19 7s source_wnoa Qc x1.0, independent100ms supports, no central
+IMU/GNSS, unchanged priors, stable-ID replacement/seal_at_absorption and finite
+recording EOF policy. DELAYED fixed-lag-finalized output reported separately.
+
+Historical CP66 raw bag audit supplies this EXACT60s crop:600Hesai frames,
+600stereo pairs,6000CPT7 IMU samples,12000IE-TC reference records. Verify the
+same input files by size/mtime/SHA; reuse selected timestamp/header audit.
+597..600frontend outputs after unchanged startup; >=590GLIM first publications.
+Kimera >280native poses, first0..1s,last59..60.1s,maxgap<=1.1s. Same sensor
+stream/coverage/native ID conservation, source payload routes, Gaussian symmetry/
+positive-definiteness, receiver EOF/lifecycle and <1000queue/5GiB reserve gates.
+No GLIM temporary removal tag; no temporary Kimera retirements. Actual mapped
+library paths, opt-in env, mode, subscriptions and profile checked BEFORE playback.
+Both directions must inject. No numerical fallback/recovery or guard relaxation.
+Synthetic CP82 checks cover explicit retained-factor identities/absorption;
+live logs do not provide a complete per-peer marginal absorption genealogy.
+
+Scientific limitation remains explicitly accepted by user: persistent Kimera
+LOCAL marginal history can contain absorbed peer information and return it to
+GLIM/fusion. Native-only information provenance remains FALSE; covariance
+calibration/independence not certified. Mean-only covariance alignment unchanged.
+Symmetric persistence does not imply identical estimator internals or uncertainty.
+
+Single exclusive finite controller, fresh roots and receipts. No duplicate
+capture, gate, scoring or retries. On numerical/integrity failure stop, preserve
+prefix, restore owned processes/initially-stopped containers. Do not modify
+protected files after preparation/launch. Protect CP82candidate/test evidence,
+CP80/CP78 outputs, frozen binaries and original four-sequence Hesai667 checkpoint.
+One controller owns startup/capture/gates/cleanup/saved-EVO/report verification.
+
+Method1: first/newest absolute outputs, never revised/incremental substitution.
+EVO1.36.3 only: SE3/no-scale ATE; reference-distance delta0.5m translation and
+rotation RPE. Full-saved60s native cadence and common100ms mask distinct, source
+gap<=0.5s/reference<=50ms; gaps retained/excluded. IE-TC shares CPT7, not independent
+prism GT. Estimated polyline is not physical distance travelled. Incremental
+checks are not nonlinear stationarity. No matched OFF/ON improvement claim.
+
+After completion report accuracy/coverage, source revisions/timing, covariance
+version/payload summaries and omissions. Do not promote defaults or start full
+or cross-sequence experiments automatically.

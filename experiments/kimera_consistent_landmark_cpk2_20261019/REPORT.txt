@@ -1,0 +1,119 @@
+CP-K2 — conditional stereo landmark fallback: NOT READY TO INTEGRATE
+2026-10-19; saved data only, no estimator/source/bag replay.
+
+Outcome
+-------
+The proposed conditional-landmark implementation fixes the derivative mismatch
+for most retained visual factors, including the dominant offending factor.
+It fails the predeclared all-factor gate. It is NOT an integrated or certified
+repair of Kimera's update531 failure. The production build remains untouched.
+
+What was implemented
+--------------------
+Standalone ConditionalStereo.h minimizes the same existing whitened stereo
+residual in one 3D landmark at fixed camera poses. It reuses GTSAM's residual,
+body extrinsics, missing-right handling, whitening and Schur construction.
+No covariance/noise/measurement changes. At a stationary landmark, E^T b=0,
+so the held-point and Schur gradients agree (envelope theorem locally).
+This is valid locally only where a suitable finite conditional solution exists;
+it is not a guarantee that every cached triangulation has such a solution.
+
+The existing smart-factor activity set was held fixed only for this diagnostic:
+173 valid factors attempted, 514 captured invalid/zero factors not activated.
+Invalid factors were not silently removed from an estimator to lower its cost.
+Nothing was linked into a production or candidate Kimera estimator.
+
+Saved-factor result
+-------------------
+171/173 active factors completed conditional solves and all three directional
+finite differences (alpha .001,.01,.1). On this successful subset:
+- maximum per-factor Schur-vs-FD slope difference:7.739743755869977e-10;
+- summed Schur slope:-.00033325873149597644;
+- summed numerical slope at alpha .01:-.00033325872651323988;
+- summed visual cost:29.559409502707094 ->25.319852225674957.
+These subset statistics MUST NOT be called an all-factor or full-graph pass.
+
+Dominant CP-K1 factor109497 now agrees:
+- original retained cost:.927614387601295;
+- conditionally optimized cost:.11908598803618968;
+- Schur slope:-.00017297666776416477;
+- numerical slope alpha .01:-.00017297666792329136.
+This supports CP-K1's mechanism diagnosis, not whole-update acceptance.
+
+Failures and why the candidate was stopped
+-----------------------------------------
+Two valid captured factors,106675 and108819, failed the bounded stationarity
+gate. No iteration cap, covariance, measurement, or outer acceptance guard was
+relaxed to hide them. In particular106675 has three left observations and ZERO
+valid right observations despite being stored as a smart-stereo factor.
+
+For106675 the retained point is8.1896m deep /8.3960m from the first camera.
+During conditional minimization its point moved outward to a world-coordinate
+norm of order1.7million metres while the cost decreased. Thus the problem is
+not simply needing one more small finite-landmark correction. The code did not
+accept this as stationary: scaled gradient1.6964e-9 exceeded1.2860e-10.
+
+An independent read-only inverse-depth profile using the same measurements,
+sigma3 and camera geometry confirms decreasing cost along a far-depth branch:
+ first-camera depth       optimized-angular cost
+ 8.1896m                  .521377171605
+ 10m                      .371503371320
+ 20m                      .136798986555
+ 100m                     .049307596299
+ 1,000m                   .041501724094
+ 10,000m                  .040957161263
+ 1,000,000m               .040899870465
+ infinity limit           .040899294409
+The diagnostic reproduces the saved initial cost within4.2e-12. It is evidence
+of this escaping branch, NOT a proof of the global optimum or of the true
+landmark's physical distance. No infinity factor was added to the estimator.
+The original profile's landmarkDistanceThreshold=10 remains untouched; this
+unconstrained diagnostic must not be installed as if it preserved that policy.
+
+Separately, native Schur normal-equation elimination at factor107229 differed
+from an independent QR projector reference by4.72545e-8 relative (predeclared
+gate1e-9). Do not relax the gate or infer this small numerical discrepancy caused
+the original stop. No replacement covariance mathematics was installed.
+
+Development and validation record
+---------------------------------
+All attempts are retained under the new run directory with distinct names.
+Initial normal-equation/very-tight cost-tie handling hit a numerical plateau.
+Direct QR for the same damped3D least-squares step and gradient-decreasing ties
+within the predeclared1e-12 cost tolerance resolved that numerical issue, but
+did NOT resolve the two escaping-depth factors. The final all-factor test exits
+1 and records passed:false. No failure was retried as a source experiment.
+
+Synthetic Release tests pass: nonidentity body extrinsics, missing-right rows,
+dense Schur reference, deterministic repeat, input/cache nonmutation, negative
+depth and singular-point rejection. Focused ASan/UBSan fixture status and final
+historical-file/container checks are in final_checks.json. Linked libraries are
+not sanitizer-instrumented; leak detection is disabled. No general production
+transaction, covariance, source replay or whole-update success is claimed.
+
+Decision and next engineering step
+----------------------------------
+Reject this conditional-minimization candidate for integration. Do not rerun
+full ETH1, change gates, drop factors, cap their depth, or introduce infinity
+handling as an unannounced workaround.
+
+The next bounded design is a fallback that optimizes pose increments AND the
+temporary 3D landmark increments jointly, checks the same joint stereo cost,
+and consistently eliminates the landmark increments from the damped system.
+That avoids requiring each landmark to reach a finite optimum with all poses
+held fixed. It is a candidate direction, not a demonstrated cure. It must first
+prove derivative/step/cost consistency on saved factors, and later commit/cache
+and transaction parity, before any source prefix. No permanent landmark prior,
+covariance scale change or method promotion follows from this report.
+
+Artifacts
+---------
+Report/source:repos/gnssFGO/experiments/kimera_consistent_landmark_cpk2_20261019/
+Runs:repos/V4RL/cbs_gtsam4.3/runs/kimera_consistent_landmark_cpk2_20261019/
+release_all_run.log,release_all_factors.csv,release_all_status.json
+release_trace_run.log (escaping point trace), *_sources (preserved attempts)
+depth_profile.py,json (independent read-only depth profile)
+san_fixtures_* (focused sanitizer fixtures), final_checks.json
+Original CP-K1/CP-R7 inputs/builds/logs retained. No commits, push or heartbeat.
+
+CONDITIONAL_LANDMARK_GATE_FAILED_NO_INTEGRATION

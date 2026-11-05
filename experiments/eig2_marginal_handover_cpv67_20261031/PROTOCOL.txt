@@ -1,0 +1,49 @@
+CP-V67 -- saved EIG-2 Hesai marginalization handover and provenance test
+2026-10-31. User authorized the proposed gated follow-up to CP-V66.
+
+Stage 1 is saved-only: update250 (50.399505 sensor seconds), old CBS slot48863
+x224->x225, outgoing keys b224/v224/x224. Original capture and all CP-V66
+artifacts remain immutable. No source launch, weight/covariance scaling, model,
+frame, smart-factor policy or production change. Use native GTSAM libraries in
+an isolated executable. Source covariance matrices are examined ONLY to establish
+information provenance, not tune weights or assess calibration.
+
+Before counterfactual conclusions, reconstruct the recorded after-refresh
+Gaussian equations and reproduce native marginalization against the saved
+after_marginalization snapshot. Relative H/RHS tolerance1e-8; survivor-state
+mixed tangent tolerance1e-5. Gaussian reconstruction is not restoration of the
+original incremental Bayes-tree history. Explicitly report this distinction.
+
+Use the CP-V66 ordinary+refresh retained branch with identical physical inputs;
+reproduce its saved state (1e-5 mixed tangent) and carry its cached Gaussian
+through native ISAM2::marginalizeLeaves. Check against independent dense Schur
+elimination (1e-8 relative), surviving solution continuity (1e-5), no dangling
+keys, exactly-once old-factor absorption, and prior original-anchor function
+preservation (1e-9 normalized across displaced states). Native cache equation
+constant discrepancies are reported separately from H/RHS; no nonlinear
+stationarity claim and no ATE/RPE calculation.
+
+Separate fixed-chart probe: at the factual recorded chart, add ONLY oldfactor,
+marginalize with/without it, remove all remaining explicit pose-between peer
+factors, and compare surviving information. Compare a real BPSAM LOCAL-export
+fixture before/after peer absorption, with unchanged geometry, against native
+factor-only control. Trace exact active binary/source path for Kimera's odometry
+export, not an unrelated pose-covariance sidecar.
+
+Synthetic Release + ASan/UBSan tests precede real-data evaluation. Include
+native Schur parity, peer absorption, no-peer control, duplicate-information
+negative and preserved original-chart functions. Vendor libraries not sanitized.
+Save original failed attempts; no blind retry or relaxed scientific guard.
+Independent NumPy dense Schur/linear checks after native output, immutable input
+hashes, original Hesai checkpoint verification, owned process exits and both
+originally-stopped containers restored at closeout. Fresh output roots only.
+
+LIVE GATE: a continuous60s candidate is authorized ONLY if information is not
+re-exported as LOCAL after peer absorption, no double counting/locking, and
+handover checks pass. A failed provenance gate stops before source launch; report
+the design requirement rather than silently introduce another estimator or
+relax a guard. No live retention flag is enabled by this saved-only harness.
+
+Limit: one marginalization boundary is not sustained trajectory accuracy. Do
+not stitch independent branches. If provenance fails, forward continuation and
+EVO Method1 ATE/0.5m RPE remain unrun; report explicitly.

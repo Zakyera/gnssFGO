@@ -1,0 +1,165 @@
+CP-V17 ARC-3 full Velodyne OFF/ON at Qc0.25 — OFF FAILED; ON NOT LAUNCHED.
+Status correction2026-10-27: capture_off failed23:42:35+02; receiver reported
+indeterminate linear system near x3029. Broken pipe was secondary. Last
+committed receiver event213543 at305.93227591s; this is a failed prefix, NOT
+a full726.38s result. Kimera native poses/beliefs became extreme around305s;
+GLIM stayed locally smooth. Known input gaps are not coincident: camera missing
+left at162.698s, >1s lidar gaps start501.864s. Actual raw inputs near the failure
+remain continuous. Exact solver conditioning mechanism is not proven.
+arc3/closeout.json passed23:43:33+02: both containers stopped,2874pins unchanged.
+New separate CP-V18 ON diagnostic explicitly authorized2026-10-27; this does
+not relabel CP-V17 or modify its protected scripts. Read the fresh CP-V18
+launch/status receipts before acting. No OFF retry. Historical chronology:
+
+LAUNCHED ONCE 2026-10-26 23:16:17+02:00. LauncherPID19368/controllerPID19375.
+OFF capture started23:16:33; playback observed at23:17. Startup confirmation
+23:17:45: effective source/sensor gates passed, actual live receiver executable
+SHA9da4f4d0a8ab76498ff3a282afd3e06af5c6a337f20ce99c2b0e07cdc2aa2ed1
+matches verified CP-V15 Qc0.25.829IMU/2721beliefs, both GLIM2412/Kimera309,
+77ONLINE poses; queue0/max22, no duplicate beliefs or failure marker. This is
+startup evidence only, NOT full-case validation or a numerical accuracy result.
+Read startup_observation.json and current arc3/status.json; never duplicate.
+Both containers running for owned work, scoped sleep/lid/session inhibitors
+active. Controller must finish/clean up before restoring originally stopped.
+Prelaunch review passes all2874protected pins and original Hesai checkpoint
+4cases/667saved files. No persistent automation created; finite controller owns
+the rest of this pair. Expected total about2h10-20min including checks/scoring,
+not a guarantee against failure or longer validation.
+
+LATEST UPDATE 2026-10-26: user said proceed to the explicit gap-aware proposal.
+admit_gap_aware_v2.py passes: start1731934117040035611/end1731934843420035611ns,
+726.38s, bag offset0.2s;7028available scans,7262available stereo pairs.
+All interior recorded gaps and70partial scans retained. Earliest supported
+quiet start0.2s; raw LiDAR-only tail2.50s after last included scan excluded.
+Tail boundary extended10ms to include existing future IMU bracket, not to change
+source processing. Original admission_boundary_failure.txt/v1 script retained.
+Matched OFF/ON use the SAME verified CP-V15 Qc0.25 receiver, all6dimensions,
+fourfold original motion information; source Gaussian CBS scales stay1.
+No rebuild or source/model/calibration changes. Private sources/profiles byte-
+identical to CP-V2. New scan coverage checks every available interior scan in
+BOTH first-published CSV and revised export, accepting raw gaps only; synthetic
+extra loss/duplicate/shift/nonfinite/tail-loss cases rejected. Native Kimera
+frontend count uses available pairs; runtime/lifecycle/receiver guards unchanged.
+Primary six-product common mask uses CP-V10 first-published GLIM/Kimera/ONLINE
+geometry with no gap bridging; secondary refined/finalized clearly separate.
+
+Finite controller: arc3/run_pair.py. Actual launch/status: launch.json,
+arc3/status.json, arc3/start.json, pair.log. Prepared/validation exact roots:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026/prepared
+/home/yeranis/results/gnssfgo_arc3_velodyne_qcquarter_cpv17_20261026
+Do not duplicate. OFF must pass all four gates before ON; stops on failure;
+saved-data evaluation and summary automatic after both pass, then owned cleanup.
+Final reports will be arc3/RESULTS_REPORT.txt and arc3/results.json; primary
+scorer evaluation_full/summary.json. No persistent automation, no source retries.
+Expected playback61minutes per mode plus checks. Resource forecast<=14GiB pair
+with8GiB reserve;~30GiB available before launch. No deletion authorized.
+
+HISTORICAL INPUT REVIEW BELOW (before subsequent gap-aware approval):
+2026-10-26. Raw-input review complete; explicit gap-aware admission decision needed.
+
+User request: full new ARC-3 Velodyne matched CBS-OFF/ON, Qc0.25 times ORIGINAL
+(fourfold original motion information), to test whether Kimera helps weak lidar.
+No estimator settings, private binaries, calibration, old captures or bags changed.
+Both containers stayed stopped throughout; actual final inspect confirms exited,
+PID0. No source capture, receiver replay, model build, retry, promotion or push.
+
+INPUT FINDINGS
+
+Mission2024-11-18-13-48-19 is present under
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/datasets/GrandTour/ARC-3/.
+Required rear-Velodyne/front-stereo/CPT7/IE-TC/TF bags exist. Raw span is about
+729s, versus prior CP-V4 missions under600s. The initial new-script duration
+sanity range was explicitly adapted to700..730s before checking ARC-3; no
+estimator deadline or physical-quality threshold was relaxed.
+
+1. Stereo:7265left and7266right images. Exactly ONE missing left image at
+1731934279738235734ns,162.898200123s after the first selected-topic timestamp.
+Left gap199.998ms, right maximum100.04603ms; no timestamp regression or
+record/header offset. This is an interior recorded omission, not a boundary
+frame, a running estimator failure, or evidence that the whole camera recording
+is unusable. Strict old full-equality/<110ms admission fails.
+
+2. Velodyne:7054recorded clouds.70inter-record gaps exceed150ms. Six exceed1s:
+start relative to selected-topic epoch(s) / gap(s)
+502.064204389 / 1.601849
+503.666053389 / 1.899058
+505.565111389 / 1.698717
+507.364688389 / 1.499609
+508.864297389 / 1.799595
+510.663892389 / 1.600446
+These are actual absent input records, not GLIM runtime backlog. A requirement
+that every native GLIM output gap be<=1s is inappropriate for claiming these
+are processing failures without accounting for the corresponding input gaps.
+The old check is preserved; no candidate capture was launched to fail it.
+
+3. All7054clouds have the expected frame/header/field layout and finite xyz/time,
+positive point counts and strictly increasing normalized first-point stamps.
+Signed point offsets stay within the existing physical bounds. However70clouds
+span less than80ms, with minimum60.986092ms versus median99.512367ms and
+maximum102.203067ms. Thus the old80..110ms full-scan-span prerequisite fails.
+Point counts min/median/max7982/16595/21696. These look like partial temporal
+scans, not malformed binary layout. No claim of packet-loss mechanism is made.
+Their exact timestamps/counts/offsets are preserved in cloud_diagnosis.json.
+
+4. CPT7:72779records, maximum10.001ms gap, no regressions. IMU is continuous
+through the lidar gap cluster. Recorded stereo is continuous there too; its
+single missing-left event is at a different epoch. This makes the lidar gap
+cluster scientifically interesting for the requested complementary-sensor test.
+
+5. Full old calibration/CameraInfo/static-transform comparisons and a raw
+quiet-start candidate passed before the later input assertions. The earliest
+quiet grid candidate preceded the first IE-TC record; diagnostic-v2 requires
+a candidate after all leading sensor/reference records and then reached the
+cloud-span check. End must also respect the shorter stereo recording: its last
+image is1731934843332801006ns, while last Velodyne is1731934845904344000ns.
+The~2.57s lidar-only tail cannot be called full stereo-supported comparison.
+No completed bag_preflight.json/admitted physical window has been issued.
+
+WHAT THIS MEANS
+
+These findings do NOT prove GLIM or Kimera will fail, nor that camera rescue
+works. ARC-3 has real input degradation and is a useful stress case. But it
+does not meet the clean-input prerequisites frozen for the previous campaign.
+Silently broadening those checks and calling it the same clean-data gate would
+hide an experimental change. No source run was attempted or labelled complete.
+
+RECOMMENDED NEXT DECISION
+
+Explicitly authorize a full as-recorded ARC-3 stress comparison with input-aware
+coverage accounting. Keep all original bags/physical times and known missing/
+partial scans; no synthetic frames, temporal filling, or interior cropping.
+Use unchanged native synchronization/preprocessing and all estimator/solver/
+covariance/lifecycle/retention guards, plus Qc0.25 in BOTH receiver modes.
+Validate observed output against the audited available raw input, separately
+report recorded absences and unexpected processing loss. Recognize exactly the
+audited stereo omission and partial scan timestamps, not blanket permission to
+ignore future mismatches. Runtime numeric/malformed/unknown-retired-first-arrival
+failures must still stop the case. OFF must pass the new explicit contract before
+ON. No automatic source retry, tuning or method fallback.
+
+Evaluate the full mutually supported journey and the lidar-gap cluster
+separately; don't make the primary whole-sequence result a favorable crop.
+Use first-published GLIM, native Kimera, concurrent ONLINE fusion; full-saved
+and gap-aware common masks, ATE/1s RPE/path lengths, coverage/covariance/timing.
+Report refined GLIM/finalized fusion separately and acknowledge shared-CPT7
+IE-TC and unchanged mean-only covariance alignment. Missing sensor data and
+algorithmic geometric weakness are different explanations; do not conflate them.
+Expected playback alone at0.20x is about2hours for both modes, plus checks.
+About30GiB free; source/receiver storage forecast and frozen reserves must be
+checked again before admission. No persistent follow-up enabled by this task.
+
+EVIDENCE / CHRONOLOGY
+
+preflight.py + preflight_failure.txt: original strict stereo assertion preserved.
+diagnose_stereo.py / stereo_diagnosis.json: complete raw header inventory.
+input_diagnostics.py / input_diagnostics_failure.txt: reference-start issue,
+explicitly diagnostic rather than an admission pass.
+input_diagnostics_v2.py / input_diagnostics_v2_failure.txt: first partial scan
+violates the old80ms minimum; no source run or relaxed acceptance.
+diagnose_lidar_imu.py / lidar_imu_diagnosis.json: exact raw record gaps.
+diagnose_clouds.py / cloud_diagnosis.json: full7054cloud geometry/time layout.
+Velodyne bagSHA256 a513700c25365abbcd53c44bb0ec4663ceb0fda33cff3c67435e315c88c961f4;
+2161614390bytes, mtime_ns1793021928533366217 unchanged during audit.
+The installed ROS ApproximateTime header and existing Kimera provider were
+read-only inspected; they are not a runtime pairing certificate for ARC-3.
+No numerical or source rerun occurred. All failed input-check evidence retained.

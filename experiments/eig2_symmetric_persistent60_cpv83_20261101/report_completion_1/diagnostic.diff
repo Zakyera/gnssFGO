@@ -1,0 +1,8 @@
+--- /home/yeranis/repos/gnssFGO/experiments/eig2_off_refresh_full_cpv39_20261029/analyze.py
++++ /home/yeranis/repos/gnssFGO/experiments/eig2_symmetric_persistent60_cpv83_20261101/report_completion_1/short_log_summary.py
+@@ -16,4 +16,4 @@
+     assert np.array_equal(cost[:,0],np.arange(len(cost)))
+     sym=float(np.max(abs(cc-cc.transpose(0,2,1))));assert sym<1e-10
+     eigen=np.linalg.eigvalsh(cc);assert eigen.min()>0
+-    return dict(optimize_ms=stats(tt[:,1]),smoother_ms=stats(tt[:,5]),rows=len(cost),post_solve_total_cost=stats(cost[:,5]),post_solve_imu_cost=stats(cost[:,7]),post_solve_imu_cost_after_250s=stats(cost[1250:,7]),native_prior_counter_max=int(cost[:,3].max()),covariance=dict(rows=len(cc),first=first,active=active,symmetry_max=sym,eigenvalue_min=float(eigen.min()),rot_trace_rad2=stats(np.trace(cc[:,:3,:3],axis1=1,axis2=2)),translation_trace_m2=stats(np.trace(cc[:,3:,3:],axis1=1,axis2=2)))),cost,tt
++    return dict(optimize_ms=stats(tt[:,1]),smoother_ms=stats(tt[:,5]),rows=len(cost),post_solve_total_cost=stats(cost[:,5]),post_solve_imu_cost=stats(cost[:,7]),post_solve_imu_cost_after_250s=None,after_250s_note='Not applicable: this recording is 60s',native_prior_counter_max=int(cost[:,3].max()),covariance=dict(rows=len(cc),first=first,active=active,symmetry_max=sym,eigenvalue_min=float(eigen.min()),rot_trace_rad2=stats(np.trace(cc[:,:3,:3],axis1=1,axis2=2)),translation_trace_m2=stats(np.trace(cc[:,3:,3:],axis1=1,axis2=2)))),cost,tt

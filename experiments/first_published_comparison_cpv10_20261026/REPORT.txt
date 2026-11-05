@@ -1,0 +1,193 @@
+CP-V10 — FIRST-PUBLISHED OUTPUT COMPARISON
+Completed 2026-10-26; saved-data rescoring only.
+
+EXECUTIVE CONCLUSION
+
+The earlier cross-estimator comparison mixed revised GLIM poses with first-published Kimera and fusion ONLINE. That was a reporting mismatch. This report corrects it without rerunning any estimator.
+However, refinement does NOT account for the large previous ATE advantage: on identical timestamps it improves GLIM ATE in13/14 cases by0.030% to7.090%, and worsens one case by0.184%. All14 within-mode estimator ATE rankings are unchanged. GLIM is lowest in12/14, Kimera in2/14, fusion ONLINE in0/14.
+Refinement matters more to local smoothness: GLIM1s translation RPE improves by5.13--19.58% across the14 cases. On Velodyne EIG-2 it removes10.42m OFF/9.54m ON from the matched10Hz path, while ATE improves only2.22%/0.92%.
+CBS remains mixed: first-published GLIM ATE improves3/7 pairs; Kimera and fusion ONLINE improve6/7 each. Fusion ONLINE still never has the lowest ATE among the three on a matched baseline. Leica-2 Velodyne OFF remains a real Kimera-better-than-GLIM case. Its CBS ON improves GLIM strongly but damages Kimera.
+Use this first-publication table for online-output accuracy claims. Preserve the old values as explicitly labelled revised-GLIM results, not discarded/invalid numerical measurements. Do not claim that this study measures equal latency or proves fusion cannot be useful.
+
+1. EXACTLY WHAT IS COMPARED
+
+GLIM: /glim/cbs/odometry in glim_odometry.csv. First optimized MAIN estimate for the newest scan after that update and current temporary CBS application. Not an unoptimized initial guess, not LOCAL-belief means, and not odom_imu.txt.
+Kimera: /kimera_vio_ros/odometry in kimera_odometry.csv, unchanged. Saved --no_incremental_pose=false means its published pose chains optimized consecutive-keyframe increments. It is not the absolute newest smoother pose, nor the final revision of every state.
+Fusion ONLINE: online_trajectory.tum, unchanged. The newest100ms support is saved once per support cycle; later updates do not replace old file rows. This remains a valid first-publication product, not a snapshot of the fully revised active window.
+Supplement only: GLIM odom_imu.txt retains revised active-window poses at retirement; remaining active tail is flushed at EOF. It is neither first publication nor full-history smoothing. Fusion FINALIZED is not included in the primary comparison.
+
+2. PRIMARY COMMON-MASK POSITION ATE
+
+All values in meters; each cell is CBS OFF / ON. Same reference times for all six products within each sequence. Rigid SE(3) no-scale best-fit alignment is estimated separately for each trajectory. Lowest is better. This is reference-aligned trajectory error, not raw absolute navigation error.
+
+| Sensor / sequence | GLIM first | Kimera published | Fusion ONLINE |
+|---|---|---|---|
+| Hesai ETH1 | 0.0415 / 0.0387 | 4.5000 / 0.3407 | 0.1679 / 0.1045 |
+| Hesai EIG-2 | 0.0516 / 0.0444 | 1.8810 / 0.6880 | 0.1655 / 0.1346 |
+| Hesai SPX-3 | 0.0167 / 0.0171 | 0.4824 / 0.1089 | 0.0421 / 0.0380 |
+| Hesai LEICA-2 | 0.4949 / 0.4974 | 1.0949 / 0.4780 | 0.6604 / 0.5200 |
+| Velodyne SPX-3 | 0.0524 / 0.0581 | 0.4821 / 0.3737 | 0.1246 / 0.1097 |
+| Velodyne EIG-2 | 0.2901 / 0.3335 | 1.8796 / 1.7987 | 0.5309 / 0.8843 |
+| Velodyne LEICA-2 | 2.7822 / 0.8489 | 1.0942 / 2.5853 | 2.0060 / 1.8680 |
+
+CBS percentage improvement =100*(OFF-ON)/OFF. Positive is better; negative is worse. Descriptive single-run differences, not statistical significance.
+
+| Sensor / sequence | GLIM ATE | Kimera ATE | Fusion ATE |
+|---|---|---|---|
+| Hesai ETH1 | +6.64% | +92.43% | +37.76% |
+| Hesai EIG-2 | +13.87% | +63.42% | +18.69% |
+| Hesai SPX-3 | -2.79% | +77.43% | +9.67% |
+| Hesai LEICA-2 | -0.52% | +56.35% | +21.26% |
+| Velodyne SPX-3 | -10.94% | +22.49% | +12.02% |
+| Velodyne EIG-2 | -14.97% | +4.31% | -66.56% |
+| Velodyne LEICA-2 | +69.49% | -136.27% | +6.88% |
+
+Important small change: Hesai SPX-3 GLIM was essentially tied using revised poses (full-saved0.016576/0.016559m). First-published common ATE is0.016652/0.017117m: ON is2.79% worse, an absolute difference of0.465mm. Do not inflate that tiny difference into a major failure.
+
+3. HOW MUCH DID GLIM REFINEMENT HELP?
+
+Identical eight-product maturity mask for each row; positive benefit means refined ATE is lower. The primary and maturity masks are identical except one terminal100ms query removed for Velodyne SPX-3 and EIG-2. This avoids comparing different start/end coverage. Millimeter differences below are ATE differences, not maximum point corrections.
+
+| Sensor / sequence | CBS | First ATE m | Refined ATE m | Benefit % | ATE reduction mm | 1s translation-RPE benefit % |
+|---|---|---|---|---|---|---|
+| Hesai ETH1 | OFF | 0.041498 | 0.040254 | +2.998 | +1.244 | +10.12 |
+| Hesai ETH1 | ON | 0.038741 | 0.037264 | +3.811 | +1.477 | +11.85 |
+| Hesai EIG-2 | OFF | 0.051577 | 0.051115 | +0.895 | +0.462 | +14.74 |
+| Hesai EIG-2 | ON | 0.044421 | 0.044503 | -0.184 | -0.082 | +10.88 |
+| Hesai SPX-3 | OFF | 0.016652 | 0.016530 | +0.733 | +0.122 | +5.13 |
+| Hesai SPX-3 | ON | 0.017117 | 0.016530 | +3.426 | +0.586 | +8.73 |
+| Hesai LEICA-2 | OFF | 0.494870 | 0.494722 | +0.030 | +0.148 | +9.66 |
+| Hesai LEICA-2 | ON | 0.497437 | 0.497116 | +0.064 | +0.321 | +6.22 |
+| Velodyne SPX-3 | OFF | 0.052388 | 0.050689 | +3.243 | +1.699 | +11.68 |
+| Velodyne SPX-3 | ON | 0.058126 | 0.054005 | +7.090 | +4.121 | +17.92 |
+| Velodyne EIG-2 | OFF | 0.290071 | 0.283628 | +2.221 | +6.444 | +19.58 |
+| Velodyne EIG-2 | ON | 0.333525 | 0.330460 | +0.919 | +3.066 | +18.25 |
+| Velodyne LEICA-2 | OFF | 2.782169 | 2.780918 | +0.045 | +1.251 | +6.60 |
+| Velodyne LEICA-2 | ON | 0.848869 | 0.848116 | +0.089 | +0.752 | +15.80 |
+
+Conclusion: the mismatch understated GLIM short-horizon error and roughness more than it understated global ATE. It does not reverse the main estimator ranking in these saved runs.
+
+4. COMMON-MASK ONE-SECOND RELATIVE MOTION ERROR
+
+Each cell is OFF / ON. Translation is meters; rotation is degrees. Every intervening100ms point must be supported, so no one-second interval crosses a masked gap. Orientation is measured independently of whole-path ATE alignment.
+
+Translation RPE RMSE (m)
+
+| Sensor / sequence | GLIM first | Kimera published | Fusion ONLINE |
+|---|---|---|---|
+| Hesai ETH1 | 0.02385 / 0.01832 | 0.44080 / 0.01986 | 0.06704 / 0.04811 |
+| Hesai EIG-2 | 0.02192 / 0.01785 | 0.10933 / 0.02567 | 0.04337 / 0.03922 |
+| Hesai SPX-3 | 0.00693 / 0.00725 | 0.06377 / 0.01584 | 0.02870 / 0.02815 |
+| Hesai LEICA-2 | 0.02119 / 0.01630 | 0.02857 / 0.01963 | 0.03149 / 0.02887 |
+| Velodyne SPX-3 | 0.02945 / 0.03123 | 0.06372 / 0.04916 | 0.03490 / 0.04248 |
+| Velodyne EIG-2 | 0.10734 / 0.07832 | 0.10908 / 0.10171 | 0.07221 / 0.09010 |
+| Velodyne LEICA-2 | 0.10457 / 0.04771 | 0.02857 / 0.06213 | 0.05569 / 0.05562 |
+
+Rotation RPE RMSE (deg)
+
+| Sensor / sequence | GLIM first | Kimera published | Fusion ONLINE |
+|---|---|---|---|
+| Hesai ETH1 | 0.38608 / 0.36475 | 0.56833 / 0.56022 | 2.98219 / 2.84359 |
+| Hesai EIG-2 | 0.64514 / 0.64004 | 0.84769 / 0.84195 | 2.42285 / 2.40891 |
+| Hesai SPX-3 | 0.27188 / 0.25920 | 0.48411 / 0.48412 | 1.40319 / 1.34170 |
+| Hesai LEICA-2 | 0.40703 / 0.31845 | 0.40644 / 0.41450 | 1.54406 / 1.41854 |
+| Velodyne SPX-3 | 0.48154 / 0.40408 | 0.48373 / 0.50942 | 1.34015 / 1.25695 |
+| Velodyne EIG-2 | 0.92549 / 0.84862 | 0.84576 / 1.01414 | 2.10724 / 1.99289 |
+| Velodyne LEICA-2 | 1.44914 / 0.60514 | 0.40650 / 0.53620 | 2.55080 / 1.86847 |
+
+Longer-horizon results are also retained at10s/20s in each case JSON and summary.json; identical supported start/end pairs across the six products per horizon. They are overlapping intervals, not independent trials.
+
+5. MATCHED PATH LENGTHS AND COVERAGE
+
+Meters, OFF / ON, same10Hz grid and supported segments as Section2. Reference path is identical for all six products. Gaps are not joined by a chord. These are reconstructed path lengths, not measured physical distance flown; shorter is not automatically more accurate.
+
+| Sensor / sequence | Reference m | GLIM first m | Kimera m | Fusion ONLINE m |
+|---|---|---|---|---|
+| Hesai ETH1 | 201.38 | 202.86 / 202.67 | 194.45 / 200.29 | 223.24 / 216.30 |
+| Hesai EIG-2 | 188.01 | 189.78 / 189.90 | 177.37 / 185.27 | 201.53 / 200.50 |
+| Hesai SPX-3 | 90.77 | 90.96 / 91.21 | 88.80 / 90.40 | 94.14 / 94.16 |
+| Hesai LEICA-2 | 205.91 | 205.87 / 205.62 | 199.93 / 204.45 | 220.28 / 217.45 |
+| Velodyne SPX-3 | 90.77 | 91.74 / 92.10 | 88.80 / 88.75 | 94.27 / 94.58 |
+| Velodyne EIG-2 | 188.02 | 205.07 / 202.50 | 177.37 / 183.48 | 213.75 / 210.83 |
+| Velodyne LEICA-2 | 205.91 | 206.50 / 207.64 | 199.93 / 200.81 | 277.60 / 233.00 |
+
+This comparison also controls sampling rate, but interpolation onto10Hz can suppress variations between those grid times. Therefore do not read a smaller common-grid length versus native length as an estimator improvement. Section6 retains the original sampling-rate polylines. Connecting first publications can include estimator correction jumps; it does not establish that the latest revised trajectory, or a physical drone, zigzags.
+
+| Sensor / sequence | Capture s | Supported s (%) | First / last s | Common queries | Excluded grid queries |
+|---|---|---|---|---|---|
+| Hesai ETH1 | 346.32 | 296.7 (85.7%) | 3.745 / 302.045 | 2970 | 451 |
+| Hesai EIG-2 | 355.02 | 352.3 (99.2%) | 0.736 / 354.836 | 3526 | 16 |
+| Hesai SPX-3 | 197.02 | 191.7 (97.3%) | 1.527 / 196.727 | 1922 | 39 |
+| Hesai LEICA-2 | 428.75 | 385.0 (89.8%) | 0.685 / 421.585 | 3856 | 408 |
+| Velodyne SPX-3 | 197.02 | 192.0 (97.5%) | 1.527 / 196.827 | 1925 | 36 |
+| Velodyne EIG-2 | 355.02 | 353.1 (99.5%) | 0.836 / 354.836 | 3533 | 8 |
+| Velodyne LEICA-2 | 428.75 | 384.6 (89.7%) | 0.685 / 390.385 | 3850 | 414 |
+
+Times are seconds after each frozen capture start. Supported duration sums contiguous grid segments, not last-minus-first. Full captures and full-saved evaluation remain separate from this stricter common mask.
+ETH1 common coverage stops near302.045s despite later saved poses, because sparse Kimera keyframe intervals exceed the unchanged500ms interpolation bound. Leica-2 has analogous gaps, including long sparse late segments. This is an evaluation-support limit, not evidence of missing camera measurements or a failed full capture. Detailed segments are saved in JSON.
+
+6. FULL-SAVED OUTPUT SCORES AND PATHS (SECONDARY)
+
+Every actual saved pose has a reference bracket. These rows use each product's own timestamps, span, and sampling rate; they are not matched-time cross-estimator rankings. Native polyline lengths can bridge long saved-sample gaps. ATE is meters; path meters. Refined GLIM is explicitly separate.
+
+| Sensor / sequence | Product | ATE OFF / ON m | Native path OFF / ON m | Rows OFF / ON | Span OFF / ON s |
+|---|---|---|---|---|---|
+| Hesai ETH1 | GLIM first-published | 0.041080 / 0.039021 | 205.06 / 205.29 | 3454 / 3454 | 345.300 / 345.300 |
+| Hesai ETH1 | Kimera published | 4.496229 / 0.340930 | 196.01 / 200.64 | 1492 / 1493 | 342.598 / 342.598 |
+| Hesai ETH1 | Fusion ONLINE | 0.166126 / 0.103489 | 237.71 / 225.88 | 3456 / 3456 | 345.500 / 345.500 |
+| Hesai ETH1 | GLIM refined (supplement) | 0.039683 / 0.037421 | 203.08 / 203.09 | 3455 / 3455 | 345.400 / 345.400 |
+| Hesai EIG-2 | GLIM first-published | 0.051679 / 0.044643 | 192.14 / 193.17 | 3543 / 3543 | 354.199 / 354.199 |
+| Hesai EIG-2 | Kimera published | 1.882644 / 0.688834 | 178.19 / 185.98 | 1761 / 1761 | 354.697 / 354.797 |
+| Hesai EIG-2 | Fusion ONLINE | 0.167508 / 0.135765 | 225.56 / 221.25 | 3545 / 3545 | 354.400 / 354.400 |
+| Hesai EIG-2 | GLIM refined (supplement) | 0.051085 / 0.044555 | 189.32 / 189.49 | 3543 / 3543 | 354.199 / 354.199 |
+| Hesai SPX-3 | GLIM first-published | 0.016722 / 0.017180 | 91.19 / 91.57 | 1962 / 1962 | 196.099 / 196.099 |
+| Hesai SPX-3 | Kimera published | 0.483414 / 0.110169 | 89.09 / 90.71 | 958 / 956 | 196.798 / 196.798 |
+| Hesai SPX-3 | Fusion ONLINE | 0.044145 / 0.040815 | 98.64 / 97.48 | 1965 / 1965 | 196.400 / 196.400 |
+| Hesai SPX-3 | GLIM refined (supplement) | 0.016576 / 0.016559 | 90.96 / 91.03 | 1963 / 1963 | 196.199 / 196.199 |
+| Hesai LEICA-2 | GLIM first-published | 0.569257 / 0.570351 | 207.35 / 207.84 | 4279 / 4279 | 427.800 / 427.800 |
+| Hesai LEICA-2 | Kimera published | 1.097081 / 0.480025 | 200.15 / 204.70 | 1937 / 1937 | 426.896 / 427.796 |
+| Hesai LEICA-2 | Fusion ONLINE | 0.696970 / 0.565647 | 221.27 / 218.37 | 4282 / 4282 | 428.100 / 428.100 |
+| Hesai LEICA-2 | GLIM refined (supplement) | 0.569231 / 0.570179 | 206.10 / 206.12 | 4280 / 4280 | 427.899 / 427.899 |
+| Velodyne SPX-3 | GLIM first-published | 0.052088 / 0.057813 | 91.90 / 92.30 | 1962 / 1962 | 196.100 / 196.100 |
+| Velodyne SPX-3 | Kimera published | 0.483414 / 0.376635 | 89.09 / 89.06 | 958 / 956 | 196.798 / 196.698 |
+| Velodyne SPX-3 | Fusion ONLINE | 0.128743 / 0.112111 | 101.57 / 100.56 | 1965 / 1965 | 196.400 / 196.400 |
+| Velodyne SPX-3 | GLIM refined (supplement) | 0.050405 / 0.053729 | 91.04 / 91.11 | 1961 / 1961 | 196.000 / 196.000 |
+| Velodyne EIG-2 | GLIM first-published | 0.290192 / 0.333373 | 205.98 / 203.67 | 3542 / 3542 | 354.100 / 354.100 |
+| Velodyne EIG-2 | Kimera published | 1.882644 / 1.802880 | 178.19 / 184.33 | 1761 / 1765 | 354.697 / 354.697 |
+| Velodyne EIG-2 | Fusion ONLINE | 0.534328 / 0.886053 | 299.81 / 255.33 | 3545 / 3545 | 354.400 / 354.400 |
+| Velodyne EIG-2 | GLIM refined (supplement) | 0.283734 / 0.330320 | 194.99 / 193.36 | 3541 / 3541 | 354.000 / 354.000 |
+| Velodyne LEICA-2 | GLIM first-published | 2.829284 / 0.863203 | 209.04 / 215.46 | 4280 / 4280 | 427.899 / 427.899 |
+| Velodyne LEICA-2 | Kimera published | 1.097081 / 2.584159 | 200.15 / 201.29 | 1937 / 1936 | 426.896 / 426.896 |
+| Velodyne LEICA-2 | Fusion ONLINE | 2.000424 / 1.828658 | 280.15 / 235.14 | 4282 / 4282 | 428.100 / 428.100 |
+| Velodyne LEICA-2 | GLIM refined (supplement) | 2.828135 / 0.861349 | 206.09 / 208.67 | 4279 / 4279 | 427.799 / 427.799 |
+
+Full-saved starts/ends, reference row support and gap-chord counts are in the per-case JSON. GLIM CSV and refined EOF exports can differ by one final scan, another reason to use Section3's exact matched mask for refinement attribution.
+
+7. INTERPRETATION AND NEXT DECISION
+
+A. Replace mixed-maturity tables in future supervisor/online-performance discussions with Section2. Cite the old GLIM numbers only as fixed-lag-refined export results. The original reports are preserved unchanged; this report supersedes their cross-estimator first-publication interpretation.
+B. Do not rerun these seven pairs merely to fix the scoring mismatch: all14 live GLIM streams were already saved. The corrected ATE rankings do not support attributing the large GLIM/Kimera difference primarily to later refinement.
+C. The fusion question remains: on these baselines its first-published ATE never beats the best native estimator. Its output convention and arrival timing can add correction discontinuities. A future implementation-level analysis should distinguish newest-state publication, corrected active-window trajectory, and age-matched delayed products; it must not silently substitute one for another.
+D. Leica-2 Velodyne remains the strongest counterexample to universally trusting GLIM: Kimera OFF1.094m versus GLIM OFF2.782m on common timestamps. CBS flips this to GLIM0.849m and Kimera2.585m; the trust/rotation problem was not an artifact of refined GLIM scoring.
+E. No covariance coefficient or new model is selected here. Covariance-belief diagnostics remain relative-edge quantities with their own timestamps/maturity, not these absolute output ATEs; this rescoring does not recalibrate them.
+
+8. VALIDATION, PROVENANCE AND LIMITS
+
+All14 GLIM CSVs have unique strictly increasing header stamps, finite poses and map/cpt7_imu frames. All42 historical ATE values reproduce; maximum discrepancy1.55e-08m. Independent evo no-scale alignment agrees within1.21e-14m. Homogeneous-matrix RPE checks agree within3.91e-14 (translation meters / rotation degrees). Existing identity/global-transform/known-yaw/gap/exact-sample tests pass.
+All frozen input SHA256 values are rechecked before report generation and in closeout. Source code, recorded runner/topic and effective Kimera flags are included in input provenance. Header stamp, not simulated ROS logging time, is used. No new source playback, solver replay, container start, build or tuning occurred.
+Implementation evidence: GLIM cbs_bridge.cpp onSmootherUpdateFinish calls applyTemporaryFactors before publishOdometryAndRerun; publisher reads calculateEstimate(last_pose_key_). GLIM odometry_estimation_imu.cpp updates retained frames on subsequent updates; global_mapping.cpp writes retained odometry frames. Kimera VioBackend.cpp updateStates chains optimized between-keyframe motions. CP-K19 Receiver.h publish appends only s.newest to online_incremental.
+First-published products do not have proven equal wall-clock latency, identical update frequencies, or identical absolute-vs-incremental output conventions. The10Hz interpolation is an offline scoring operation, not a newly causal online output. Best-fit whole-path alignment uses future reference information; no absolute real-time control-accuracy claim.
+IE-TC GNSS/INS shares CPT7 IMU; not independent prism ground truth. The same fixed CPT7-to-prism transform is applied to estimate and reference. Mean-only source covariance alignment approximation is unchanged. No nonlinear-stationarity claim.
+Seven pairs cover four missions. SPX-3/EIG-2/Leica-2 Kimera OFF streams are byte-identical between Hesai and Velodyne, not independent repeats. Sensor replacement also changes viewpoint. No claim of statistical significance, population-wide generalization or validated0.5x operation.
+Preserved terminal factor omissions: Hesai EIG-2 ON1 (OFF0), Hesai SPX-3 OFF1/ON1, Velodyne SPX-3 OFF1/ON0; other successful baseline pairs0. ARC-5 Velodyne OFF failed numerically before full duration and ON was not run; excluded from accuracy tables, not from the reliability record. ETH1 Velodyne unavailable locally. Rejected CP-V6A/CP-V9 candidates are not baseline pairs.
+
+FILES
+
+/home/yeranis/repos/gnssFGO/experiments/first_published_comparison_cpv10_20261026/outputs/summary.json
+/home/yeranis/repos/gnssFGO/experiments/first_published_comparison_cpv10_20261026/PROTOCOL.txt
+/home/yeranis/repos/gnssFGO/experiments/first_published_comparison_cpv10_20261026/analyze.py
+outputs/<case>.json: full/common/maturity scores, gaps, inputs, validation.
+outputs/<case>.npz: integer timestamps, both masks, prism positions/rotations, common aligned errors.
+figures/01_first_published_ate.png: matched first-publication ATE; OFF blue, ON orange, log scale.
+figures/02_glim_refinement_effect.png: same-time refinement benefit for ATE and1s translation RPE.
+closeout.json: final source/output hash checks. Historical reports/captures remain unchanged.

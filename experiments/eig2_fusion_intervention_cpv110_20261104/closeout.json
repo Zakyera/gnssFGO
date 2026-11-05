@@ -1,0 +1,99 @@
+{
+  "passed": true,
+  "at": "2026-11-04T15:49:23.104166+02:00",
+  "input_pins": 13,
+  "evaluation_pins": 36,
+  "protected_files": 8873,
+  "old_terminal_outputs": {
+    "/home/yeranis/repos/gnssFGO/experiments/eig2_split_imu_live_pair_cpv108_20261104": 383,
+    "/home/yeranis/repos/gnssFGO/experiments/eig2_fusion_localization_cpv109_20261104": 14
+  },
+  "original_archive_files": 221071,
+  "output_archives": {
+    "baseline": {
+      "files": 221071,
+      "digest": "8a356fde71a9662ffa8f8b567b63604314c804c2579d536b3683b2233cf2aaea",
+      "manifest": "/home/yeranis/repos/gnssFGO/experiments/eig2_fusion_intervention_cpv110_20261104/baseline_archive_sha256.json"
+    },
+    "hold_cov": {
+      "files": 221071,
+      "digest": "f59911019062300e8c3319f9718e9910d5405cceb4eb1822d9d7887025429bd9",
+      "manifest": "/home/yeranis/repos/gnssFGO/experiments/eig2_fusion_intervention_cpv110_20261104/hold_cov_archive_sha256.json"
+    },
+    "hold_mean": {
+      "files": 221071,
+      "digest": "a5af20fbaefa86001388ced8ce013486b14f03d8e66587c3ad261102c6c346fc",
+      "manifest": "/home/yeranis/repos/gnssFGO/experiments/eig2_fusion_intervention_cpv110_20261104/hold_mean_archive_sha256.json"
+    },
+    "hold_both": {
+      "files": 221071,
+      "digest": "538171ccb83a2eb13452cb542b4149d67a7630370656b5ef72a76da10a08ef86",
+      "manifest": "/home/yeranis/repos/gnssFGO/experiments/eig2_fusion_intervention_cpv110_20261104/hold_both_archive_sha256.json"
+    }
+  },
+  "owned_processes": [
+    {
+      "pid": 110996,
+      "proc_start": 2054010,
+      "command": "/usr/bin/python3 -B /home/yeranis/repos/gnssFGO/experiments/eig2_fusion_intervention_cpv110_20261104/replay.py ",
+      "original_identity_exited": true
+    },
+    {
+      "pid": 111210,
+      "proc_start": 2054062,
+      "command": "/home/yeranis/results/gnssfgo_receiver_finalization_cpk19_20261021/live --absorbed-revision-policy seal_at_absorption --mode sources --timeline record --solver isam2 --support-policy uniform_imu --support-period-ns 100000000 --receiver-startup-samples 59 --receiver-model source_wnoa --event-stream /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/full_on_receiver/events.csv --out /home/yeranis/repos/gnssFGO/experiments/eig2_fusion_intervention_cpv110_20261104/baseline ",
+      "original_identity_exited": true
+    },
+    {
+      "pid": 111913,
+      "proc_start": 2070967,
+      "command": "/home/yeranis/results/gnssfgo_receiver_finalization_cpk19_20261021/live --absorbed-revision-policy seal_at_absorption --mode sources --timeline record --solver isam2 --support-policy uniform_imu --support-period-ns 100000000 --receiver-startup-samples 59 --receiver-model source_wnoa --event-stream /home/yeranis/repos/gnssFGO/experiments/eig2_fusion_intervention_cpv110_20261104/hold_cov_events.csv --out /home/yeranis/repos/gnssFGO/experiments/eig2_fusion_intervention_cpv110_20261104/hold_cov ",
+      "original_identity_exited": true
+    },
+    {
+      "pid": 112555,
+      "proc_start": 2086384,
+      "command": "/home/yeranis/results/gnssfgo_receiver_finalization_cpk19_20261021/live --absorbed-revision-policy seal_at_absorption --mode sources --timeline record --solver isam2 --support-policy uniform_imu --support-period-ns 100000000 --receiver-startup-samples 59 --receiver-model source_wnoa --event-stream /home/yeranis/repos/gnssFGO/experiments/eig2_fusion_intervention_cpv110_20261104/hold_mean_events.csv --out /home/yeranis/repos/gnssFGO/experiments/eig2_fusion_intervention_cpv110_20261104/hold_mean ",
+      "original_identity_exited": true
+    },
+    {
+      "pid": 113225,
+      "proc_start": 2102202,
+      "command": "/home/yeranis/results/gnssfgo_receiver_finalization_cpk19_20261021/live --absorbed-revision-policy seal_at_absorption --mode sources --timeline record --solver isam2 --support-policy uniform_imu --support-period-ns 100000000 --receiver-startup-samples 59 --receiver-model source_wnoa --event-stream /home/yeranis/repos/gnssFGO/experiments/eig2_fusion_intervention_cpv110_20261104/hold_both_events.csv --out /home/yeranis/repos/gnssFGO/experiments/eig2_fusion_intervention_cpv110_20261104/hold_both ",
+      "original_identity_exited": true
+    },
+    {
+      "pid": 111162,
+      "proc_start": 2054061,
+      "command": "docker exec -e LD_LIBRARY_PATH=/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib -e OMP_NUM_THREADS=1 ubuntu-jammy-humble-nvidia bash /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/receiver_cpk19.sh --mode sources --timeline record --solver isam2 --support-policy uniform_imu --support-period-ns 100000000 --receiver-startup-samples 59 --receiver-model source_wnoa --event-stream /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/full_on_receiver/events.csv --out /home/yeranis/repos/gnssFGO/experiments/eig2_fusion_intervention_cpv110_20261104/baseline ",
+      "original_identity_exited": true
+    },
+    {
+      "pid": 111868,
+      "proc_start": 2070965,
+      "command": "",
+      "original_identity_exited": true
+    },
+    {
+      "pid": 112512,
+      "proc_start": 2086382,
+      "command": "docker exec -e LD_LIBRARY_PATH=/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib -e OMP_NUM_THREADS=1 ubuntu-jammy-humble-nvidia bash /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/receiver_cpk19.sh --mode sources --timeline record --solver isam2 --support-policy uniform_imu --support-period-ns 100000000 --receiver-startup-samples 59 --receiver-model source_wnoa --event-stream /home/yeranis/repos/gnssFGO/experiments/eig2_fusion_intervention_cpv110_20261104/hold_mean_events.csv --out /home/yeranis/repos/gnssFGO/experiments/eig2_fusion_intervention_cpv110_20261104/hold_mean ",
+      "original_identity_exited": true
+    },
+    {
+      "pid": 113179,
+      "proc_start": 2102200,
+      "command": "docker exec -e LD_LIBRARY_PATH=/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib -e OMP_NUM_THREADS=1 ubuntu-jammy-humble-nvidia bash /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/receiver_cpk19.sh --mode sources --timeline record --solver isam2 --support-policy uniform_imu --support-period-ns 100000000 --receiver-startup-samples 59 --receiver-model source_wnoa --event-stream /home/yeranis/repos/gnssFGO/experiments/eig2_fusion_intervention_cpv110_20261104/hold_both_events.csv --out /home/yeranis/repos/gnssFGO/experiments/eig2_fusion_intervention_cpv110_20261104/hold_both ",
+      "original_identity_exited": true
+    }
+  ],
+  "containers": [
+    "/cbsms_ws_gpu exited",
+    "/ubuntu-jammy-humble-nvidia exited"
+  ],
+  "checkpoint": "PASS: 4 cases, 667 saved files; originals=True",
+  "source_runs": 0,
+  "receiver_replays": 4,
+  "new_EVO_calls": 48,
+  "no_global_changes": true
+}

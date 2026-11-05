@@ -1,0 +1,37 @@
+CP-V48 -- saved new-rotation initialization ablation, 2026-10-30
+User explicitly authorized CP-V47's proposed test. No full source run.
+
+Five independent CP-V44 checkpoints21--25; NOT a recursively replayed sequence.
+A original initialization; B changes ONLY newest pose rotation to PIM.predict
+of previous revised NavState and latest backend bias. Keep stereo translation,
+all old states, new velocity/bias, native smart observations/calibration/priors,
+CBS means/weights/Jacobians, PIMs and factor topology unchanged. No covariance
+investigation, tuning, source replay, production edits, promotion or ATE claim.
+
+Use archived native graph clone/linearize/Cholesky/retract APIs: exactly one
+ordinary step then one current-state refresh per arm. Require original arm
+cached/fresh Gaussian equations within1e-12 and ordinary state reproduction
+within1e-6 mixed-unit tangent norm. Require chained refresh reproduction within
+1e-5 and exact-captured-state refresh equations within1e-12. All five baseline
+gates must pass BEFORE B. No marginal prior/fixed keys allowed in these windows.
+Reject rather than relax a gate on failure. Original smart caches are copied;
+diagnostic costs evaluated on separate clones, not the solving graph.
+
+Fixtures in Release and ASan/UBSan: only rotation changed, corrected rotation
+residual zero, raw/corrected bias distinction exercised, two native GN steps.
+Original snapshots and pinned artifacts must remain byte-identical. Private
+Docker build only, fresh outputs/exclusive create, owned process receipts,
+restore both originally stopped containers. Preserve failures; no blind retry.
+
+Primary outcome: old-window net tilt after both steps and actual B-vs-A rotation/
+position, with ordinary/refresh contributions. Secondary: native family cost,
+physical IMU residuals and smart validity changes. Lower INITIAL residual alone
+does not count as success. Predeclared practical screen: do the severe original
+windows (net tilt>3deg) all fall by at least50% without creating another>3deg
+window? Failure of that screen is NOT proof of no smaller effect, but does not
+justify a full rerun or claiming a fix. Report all five cases, no selection.
+
+This isolates a backend seed effect only; it cannot undo earlier frontend
+rotation-guided matching, change prior ON-conditioned history, verify raw IMU
+reintegration or establish the first admission6 cause. CP-V44 differs from
+CP-V42 at6; neither a new OFF control nor full-sequence accuracy result.

@@ -1,0 +1,7 @@
+2026-10-29: first read-only closeout attempt exited1 before writing closeout.json.
+Traceback: closeout.py line21, c['output_sha256'], KeyError: 'output_sha256'.
+Exact cause: older CP-V30 closeout uses 'outputs'; CP-V33 uses 'output_sha256'.
+All preceding frozen-input and original Hesai checkpoint checks passed.
+No experiment, data rewrite or mutation of older outputs occurred. Corrected
+only the new closeout reader to support both existing receipt schemas; no
+validation guard was relaxed. Original failure retained in this receipt.

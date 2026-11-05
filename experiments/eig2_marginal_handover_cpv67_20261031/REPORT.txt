@@ -1,0 +1,117 @@
+CP-V67 -- EIG-2 Hesai saved marginalization handover / information provenance
+2026-10-31. COMPLETE DIAGNOSTIC; LIVE CANDIDATE NOT ADMITTED.
+
+DECISION
+The old constraint can be carried through marginalization without an immediate
+additional jump at the tested50.4s event. However, the current LOCAL export cannot
+separate its absorbed information from the mixed marginal prior. The proposed
+naive retain-through-marginalization candidate FAILS the predeclared provenance
+gate. No60s source candidate, forward continuation or EVO scoring was launched.
+This is a finding about the proposed retention policy, not proof that the current
+remove-before-marginalization baseline already contains that same leakage.
+
+1. REPRODUCED THE ACTUAL BOUNDARY
+Inputs: CP-V66 full_on_source/checkpoints/update_250, all four saved phases;
+old CBS48863 x224->x225; outgoing b224/v224/x224; incoming53882 x248->x249.
+The reconstructed after-refresh H/RHS equal the recorded cache exactly.
+Native ISAM2::marginalizeLeaves on that Gaussian reconstruction reproduces the
+recorded post-marginalization H/RHS exactly. Surviving-state mixed-tangent
+difference is3.66e-17. Native partial-elimination parity is1.14e-16 relative.
+This restores the recorded Gaussian equations and boundary result, NOT the
+original incremental Bayes-tree history or a continuous nonlinear replay.
+
+2. RETAINED BRANCH SURVIVES THIS BOUNDARY
+Reproduced CP-V66 B ordinary+refresh with the same initial graph, observations,
+weights and native smart behavior. Saved B state parity: positions/other states
+exact; maximum quaternion angle difference5.55e-17rad.
+The last B Gaussian goes through native marginalization: exactlyONE expired
+peer factor absorbed, no explicit copy left, no dangling marginalized keys.
+Surviving cached solution changes by3.96e-17 at the boundary; difference between
+the two-step B solution and reconstructed Gaussian solution is2.46e-8 mixed
+tangent norm, below the predeclared1e-5. No extra nonlinear iteration added.
+Thus CP-V66's approximately0.06233m previous-pose revision (vs actual0.33597m)
+is not immediately undone by THIS marginalization. No later-update guarantee.
+
+3. ORIGINAL-CHART PRIOR PRESERVATION
+The unchanged CP-K9 representation adapter preserves new marginal prior
+functions over8 displaced-state probes per branch, normalized error0. Its
+ownership check releases22 separator-key locks with no unexplained fixed keys.
+This exercises the adapter on diagnostic graph/cache copies, NOT a live policy
+change or bypass of the CP-K9/CP40 remove-only admission guards. Existing
+production code and guards remain unchanged. No sustained refresh certification.
+
+4. INFORMATION PROVENANCE GATE FAILS
+Actual BPSAM fixture, identical geometry/native factors:
+  Before absorption: real LOCAL export removes the explicit peer; compared
+  with native-only control, augmented information difference is exactly0.
+  After native marginalization: explicit peer tracking is gone, but the real
+  LOCAL export still differs from native-only control by0.342872 normalized
+  matrix norm. This synthetic number is not a real-sequence error/covariance
+  calibration result. The effect survives as part of the new marginal prior.
+
+Real checkpoint, common factual chart (no geometry/weight changes): adding only
+the old factor before native marginalization leaves a3.95349195e-5 normalized
+augmented-information difference AFTER stripping all remaining explicit
+pose-between factors. The difference is in the surviving prior, not a remaining
+explicit old edge. Independent dense verification reproduces it. Raw information
+change Frobenius3.41964877e7, RHS norm8.77285540e5; mixed units/global norm are
+NOT percentages of confidence, accuracy or amount of feedback. Minimum symmetric
+information-difference eigenvalue -1.20e-5 versus maximum2.36e7 is numerical
+roundoff scale; no calibration conclusion is inferred.
+
+The real-data stripping probe conservatively removes all pose-between factors;
+it is a fixed-chart information-provenance probe, not a new live exported
+belief or complete receiver-level feedback test. The native BPSAM fixture
+independently exercises the actual LOCAL filter and peer-tracking removal.
+The generic fixture helper counts pose-between factors (including synthetic
+native odometry) under its absorbed_peer_factors metric name; only the real
+case's target is specifically validated as the original CBS48863 factor.
+
+EXACT CODE PATH
+CP-V66/VioBackend.cpp:3546 calls smoother_->setMarginalizationGraph(LOCAL),
+then:3559/3570 getOdometryBeliefs. The relative source-to-source odometry export
+does NOT select the separate local_belief_cov_smoother_ pose-covariance sidecar.
+cbs/src/bpsam/bpsam.cpp:4737..4865 copies MAIN factors and excludes tracked CBS
+slots/anchor factors; it does not subtract contributions from mixed priors.
+:3185..3203 tracking identifies original slot/pointer/two endpoints.
+:3091..3183 prunes records once those original factors disappear.
+gtsam/nonlinear/ISAM2.cpp:535..779 absorbs touched factors and creates new
+LinearContainerFactor priors. Their internal peer contributions have no
+separate original factor slot for the LOCAL filter to remove.
+getOdometryBeliefs:2550..2586 combines MAIN pose means with the selected marginal
+information. The existing MAIN-mean/LOCAL-information convention is unchanged;
+we do not claim physical independence even for the original setup/shared IMU.
+
+CONSEQUENCE / PROPOSED NEXT DESIGN (NOT IMPLEMENTED)
+To retain corrections safely under the LOCAL provenance contract, MAIN inference
+and outgoing LOCAL information need separately maintained marginal histories,
+or another explicitly verified peer-exclusion mechanism. Removing an already
+mixed prior wholesale would discard native information too; it is not a fix.
+There is an existing pose-covariance sidecar, but its existence alone does not
+prove that it supplies the relative beliefs, uses the required prior refresh,
+or gives consistent MAIN-mean/LOCAL-information exports. Evaluate that reuse
+before designing a new subsystem. No automatic switching to that path here.
+
+This test rules in a concrete design obstacle to naive retention, not the
+impossibility of CBS or of preserving correction continuity. It does not prove
+the amount of actual feedback, eventual instability, all-sequence accuracy,
+or that every zigzag is caused by retirement. CP-V66 admission/bias effects
+remain separate. No covariance scaling/weighting investigation was performed.
+
+VALIDATION / PRESERVATION
+Fresh native root: /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/
+eig2_marginal_handover_cpv67_20261031/attempt2.
+Release and ASan/UBSan synthetic tests pass: native Schur, no-peer control,
+duplicate-information negative, prior function, actual LOCAL provenance.
+Vendor libraries not instrumented. Two real native GN steps reproduce B; other
+solves reconstruct frozen Gaussian boundaries, not new optimizer trajectories.
+Independent NumPy:11 Schur checks <=2.87e-15 relative H/RHS; survivor tangent
+differences <=5.29e-9. Maximum constant-only Schur difference2.91e-11 recorded
+separately. This is numerical parity, not nonlinear stationarity or an EVO test.
+9611 protected inputs unchanged; original four-sequence Hesai667 files PASS.
+Owned test jobs exited; both originally-stopped containers restored.
+Attempt1 failed compilation on unsupported FastMap initializer-list syntax,
+before tests. Original source/log/pins/failure preserved; attempt2 changes only
+that harness construction. No scientific threshold or runtime guard relaxed.
+No new bag/capture, default promotion, production edit, deletion or push.
+See verification.json, BUILD_REPAIR.txt and complete.json for final receipts.

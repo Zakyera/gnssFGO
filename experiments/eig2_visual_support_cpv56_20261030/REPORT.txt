@@ -1,0 +1,193 @@
+CP-V56 — First Hesai CBS insertion: visual support and triangulation
+2026-10-30. SAVED-DATA DIAGNOSIS COMPLETE; NO ROOT-CAUSE FIX.
+The strict world-coordinate invariance gate FAILED and remains failed.
+Subsequent measurement explains that failure; it does not waive the gate.
+Final preservation/cleanup authority: verification.json and complete.json.
+
+MAIN FINDINGS
+=============
+1. The first ON ordinary solve starts with285 nonzero native visual factors.
+   Its resulting poses make the next refresh use266: a real change in the
+   reconstructed native Gaussian equations, not just a trajectory plot or an
+   error-report counter. OFF uses285 at both stages.
+2. At the observed ON post-step states, clearing the triangulation cache does
+   NOT restore the lost support. Native maximum-reprojection/rank rules explain
+   the resulting classifications. These are unchanged observations becoming
+   ineffective backend factors, NOT frontend features disappearing.
+3. There IS a separate reproducible numerical sensitivity: with noisy saved
+   observations, native algebraic DLT triangulation and its rank/reprojection
+   decisions depend on the world ORIGIN. A pure world rotation passes; moving
+   only the origin changes some track classifications. Independent NumPy SVD
+   reproduces all4056 classifications and3677 returned points, max6.34e-11m.
+4. None of this yet proves the cause of the full CBS-ON zigzag or justifies
+   changing weights, disabling visual rejection, or promoting a solver fix.
+
+SCOPE / UNCHANGED INPUTS
+=======================
+Original CP-V51 Hesai EIG-2 update6: first GLIM factor929 on Kimera x4->x5,
+1.599933183s after capture start (original bag7.299933183s). Read native saved
+OFF/ON after_ordinary and after_refresh snapshots only.338 smart factors per
+graph, unchanged observations/calibrations/keys/weights/validity parameters.
+No new source capture, graph optimizer invocation, trajectory score, covariance
+weighting study, prior alteration, production change or deletion. Native DLT
+has enableEPI=false/useLOST=false: no embedded nonlinear triangulation solve.
+
+Each read/evaluation acts on clones. Original snapshots serialize byte-for-byte
+before/after. Fresh native aggregate equations at each owning theta reproduce
+its stored Gaussian equations exactly in all FOUR inspected snapshots.
+This does NOT certify nonlinear derivatives, convergence, or all cached landmark
+points being recomputed at theta. In particular, retain the cache result below.
+
+1. WHICH VISUAL CONSTRAINTS REACH WHICH STEP?
+============================================
+All338 factors remain in the nonlinear graph. An invalid smart factor returns
+a ZERO Gaussian factor under the actual ZERO_ON_DEGENERACY policy. Therefore
+factor presence/count alone does not measure usable visual support.
+
+Native nonzero visual factors           OFF          ON
+Ordinary solve at its owning theta      285          285
+Refresh solve at its owning theta       285          266
+Evaluation at final resulting poses     285          267
+
+The last row is a POST-SOLUTION evaluation, not a further executed graph solve.
+The first two rows reconstruct native linearization and match the saved whole
+Gaussian system exactly; there was no historical per-factor row-activity trace.
+These are338 track factors, not338 individual image observations or scalar rows.
+
+ON initial -> refresh linearization:
+  25valid become outliers;4valid become degenerate;10degenerate become valid.
+  Net285->266. Other previously-invalid factors also change invalidity category.
+ON initial -> final post-solution evaluation:
+  27valid become outliers;3valid become degenerate;12degenerate become valid.
+  Net285->267. These reproduce the earlier CP52 post-evaluation observation.
+OFF retains its285 valid-factor set across these two phases.
+
+The native outlier rule is MAXIMUM single-camera reprojection error >3pixels,
+not average error despite old prose comments in the profile/header. Exceeding
+that rule makes the whole track factor contribute zero, not just that sample.
+For the27 initially-valid/final-outlier tracks:
+  initial max reprojection error range  .4130--2.8593px
+  final max reprojection error range    3.0112--49.4503px
+  16tracks have valid stereo observations at every observed pose;
+  11tracks have left-only observations throughout.
+Thus missing stereo is not the sole explanation. Worst final observations
+occur at x1(12tracks),x6(11),x2(3),x3(1), not only the newest pose.
+
+These changes FOLLOW the first CBS-induced ordinary movement and alter the
+next refresh's visual support. They cannot be described as a large preexisting
+drop that happened before the first movement. CP52's identical-initial-graph
+with/without-first-factor ablation remains the causal evidence for the first
+state response; its saved no-factor arm has285valid final tracks. No rerun here.
+An amplification loop through subsequent updates remains a hypothesis, not a
+demonstrated full-run causal result.
+
+2. CACHE CHECK — NOT A BLANKET ALL-CLEAR
+======================================
+At ON after-ordinary / refresh-theta / final-estimate, warm and freshly cleared
+triangulation give the SAME validity and Gaussian matrices. The large observed
+post-step loss is therefore not repaired by recomputing those landmarks at
+those exact states.
+
+However, at the initial ON owning theta, clearing the cache changes factor571
+fromvalid todegenerate. OFF's own initial-theta check changes571 valid->outlier.
+The saved retriangulationThreshold=.001 allows landmark reuse after small pose
+changes. We have not isolated that initial cache difference with an optimizer
+ablation. Do NOT conclude that all cache-history effects are absent.
+
+Across25688 evaluations,598warm/cold status differences include synthetic
+fractional probes along observed state changes and repeated observations; they
+are NOT598 actual runtime failures. Intermediate fractions are diagnostic
+samples, not optimizer iterates. Very large relative matrix ratios occur when
+one factor becomes exactly zero; do not present these as global solver error.
+
+OFF and ON owning theta/caches need not be identical, even though CP52 verified
+the SAME supplied initial values and non-CBS factor functions for its clean A/B.
+The analysis.json field initial_OFF_ON_visual_status_and_keys_equal compares
+slots at those different owning-theta snapshots and is false; it is NOT a
+finding of different input data, physical frames, or corrupted observations.
+Function-identity multisets were already checked in CP52 (including duplicate
+identical factors); do not infer identity solely from equal counts or slot IDs.
+
+3. FAILED COORDINATE CHECK — REPRODUCED NUMERICAL SENSITIVITY
+===========================================================
+A physical world-coordinate change should not alter the camera observations
+or relative camera geometry. Original strict test applied one nonidentity
+rotation plus translation and required unchanged status and point equivariance
+within1e-6m. It failed immediately on saved noisy data, while exact-observation
+fixtures passed. Original failure and stopped-container cleanup are retained.
+
+Fresh measurement retained the SAME failed thresholds and explicitly reports
+passed=false. It counted89status changes across2704state/factor comparisons and
+2210point discrepancies above1e-6m. These include repeated states, not89distinct
+tracks or runtime events. The combined-transform worst point discrepancy was
+1.107m. No graph optimization used these artificial coordinates.
+
+A separate decomposition identifies world translation, not a body-frame flip:
+  pure rotation RzRyRx(.2,-.15,.3rad): zero status changes in1352comparisons;
+    max valid-point discrepancy1.50e-12m.
+  pure translation [3,-2,1]m, with all camera poses translated consistently:
+
+ON state                 changed status/338   valid->invalid   max point delta
+ordinary theta                  6                  4             .131m
+ordinary estimate              18                  9             .411m
+refresh theta                  18                  9             .411m
+refresh estimate               11                  5            1.081m
+
+Median valid-point deltas are.20--1.12mm; large maxima are not representative
+of every track. This deliberately3.74m coordinate-origin shift is NOT the
+actual millimetre-scale pose revision and does not reproduce the full trajectory.
+
+Exported camera matrices, stereo baseline, observations and missing-right flags
+were used in a separate NumPy homogeneous DLT/SVD calculation. It independently
+matches ALL4056native classifications and3677returned-point comparisons to
+6.34e-11m. This localizes the effect to the algebraic triangulation/rank/gating
+procedure, not source-to-source belief transformation or a serialization glitch.
+
+Explanation consistent with those calculations: homogeneous DLT minimizes an
+algebraic error with a unit-norm homogeneous point. A translation of the world
+changes that normalization for noisy, non-intersecting rays. The fixed absolute
+singular-value rank threshold1 can also change its decision. Pure rotations
+preserve the corresponding norm. There is no embedded reprojection refinement
+in the saved setup. Exact noiseless observations do not expose the same effect.
+This is a demonstrated numerical sensitivity/failed invariance property, NOT
+proof of a newly introduced CBS code regression, wrong physical calibration,
+wrong GLIM frame, or the origin of the actual CBS-ON instability.
+
+4. WHAT THIS SAYS ABOUT THE THREE SUSPECTS
+=========================================
+Suspect1, visual support: real support loss is now established in the next
+native linear system; most of this post-step loss is not stale cached status.
+Additional initial-cache and world-origin sensitivity are documented. Their
+causal importance for later shaking is untested.
+Suspect2, equation correctness: remains open. Current/fresh equations can agree
+while the nonlinear derivative or eliminated visual model is approximate.
+Suspect3, nonlinear update behavior: remains open. No optimizer ablation or
+extra iterations were run here, so no new conclusion about accepted steps.
+
+Recommended NEXT isolated check: validate the native visual pose/point Jacobians
+and landmark elimination at the SAME saved first-insertion states, with the SAME
+triangulated point, valid set and noise, against independent numerical derivatives
+and a direct joint-linear-system elimination. Distinguish that local model from
+the operational retriangulate-and-reject cost. Include the frozen original-prior
+chart as a separate check, not a simultaneous production fix. This is suspect2,
+not another full run or loosened visual gate. Not launched in CP56.
+
+REPAIRS, VALIDATION AND ARTIFACTS
+===============================
+Original compile: local interpolate helper collided with GTSAM's Lie template.
+attempt_build1: rename only. Its synthetic outlier test then threw because the
+fixture used default IGNORE_DEGENERACY, unlike actual saved Kimera mode1.
+attempt_build2: fixture mode matches saved ZERO_ON_DEGENERACY; all Release and
+ASan/UBSan fixtures pass. Real strict world-origin gate fails and stays failed.
+measure_gate_failure: quantifies failure without changing any gate/noise/input.
+gauge_decomposition: isolates rotation/translation and exports independent inputs.
+All original failed evidence preserved. Supplement build warns that a renamed,
+unused included main function lacks an explicit return; that function is not
+called. Diagnostic Release/san fixtures pass; vendor DSOs not instrumented.
+
+Core outputs: analysis.json, independent_dlt.json, measurement summary/factors
+and parity under W/runs/eig2_visual_support_cpv56_20261030/measure_gate_failure/,
+gauge decomposition exports, frozen protocols/repair notes and native sources.
+No source/controller script from previous experiments was launched.
+Both originally-stopped containers restored, owned diagnostic stages exited.
+See verification.json for final input integrity and original Hesai667 checks.

@@ -1,0 +1,40 @@
+CP73 prelaunch review, 2026-10-31
+
+Runtime threading reviewed from actual sources: KimeraVioRos::spin parallel
+branch runs data provider and pipeline independently and flushes the wrapper
+queue at nominal20Hz wall. Pipeline::enqueueExternalOdometryBeliefs forwards
+directly through VioBackendModule to the backend queue. No backend-solve mutex
+wraps that handoff. The new waiter holds no queue mutex and releases its own
+condition-variable mutex while sleeping. Producer notification under its queue
+mutex cannot deadlock: the consumer never holds the readiness mutex while
+requesting the queue mutex. Snapshot-before-pop plus generation predicate covers
+notification before actual wait; deterministic fixture exercises that boundary.
+parallel_run=1 is required by the new preflight, not silently changed.
+
+Historical CP70 VioBackend diff is restricted to one header include, actual
+enqueue acknowledgement and replacement of the initial pop with ready collection
++ diagnostic log. Existing select/requeue and all estimator code below remain.
+RecordedUpdateGate adds read-only readiness preflight on a copied scheduler and
+the narrowly scoped allow-missing-current flag; select() retains default strict
+behavior. Readiness never commits gate state. No VioBackend member/layout change.
+No production Kimera-VIO or Kimera-VIO-ROS file was modified.
+
+Readiness tests:100 concurrent handoffs, deterministic notification-in-gap,
+already ready/disabled/early/no-due paths, duplicate/late/unknown/wrong source,
+missing past/repeated update/queue cap/timeout, unrelated notifications against
+fixed deadline, multiple due entries in recorded order, all1743 schedule inputs
+with exact synthetic payload conservation. Existing release gate negatives and
+native CP69 compatibility/rollback/disabled state-cache-tree tests retained.
+ASan/UBSan instrument the fixtures, not prebuilt vendor DSOs; no broad native
+race-freedom or universal realtime certification is implied.
+
+Original CP71 frozen inputs copied byte-exact, not regenerated. Full355.02s
+window,5.7s quiet crop,0.20x,25s drain,port11573. Headless original stereo/CPT7
+profile, matching parameters and full mean/covariance values unchanged. A fresh
+finite controller will validate REMOVE completely before RETAIN. Gate failure
+stops the pipeline. Old CP71 failed evidence is included in protected hashes.
+Timing summary explicitly labels optimize wall time as including readiness;
+readiness receipts and native smoother timing are separate. No tuning/retry.
+
+Prepared/build/start/status receipts must be consulted for actual execution;
+this review itself does not assert the full comparison has passed or started.

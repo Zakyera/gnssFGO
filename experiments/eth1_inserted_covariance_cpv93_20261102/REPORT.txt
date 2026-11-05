@@ -1,0 +1,117 @@
+CP-V93 — ETH1 actual inserted external-belief covariance
+2026-11-02 — COMPLETE, saved-data diagnostic only
+
+Question corrected by the user
+------------------------------
+Study the FULL covariance matrices attached to external beliefs actually
+inserted GLIM->Kimera and Kimera->GLIM. The later internal native revisions
+studied in CP92 are a different population; their large shrinkage numbers must
+not be described as shrinkage of these inserted factor matrices.
+
+Inputs and scope
+----------------
+CP91 attempt1 BOTH-persistent split-IMU ETH1 ON, and matched-settings CP89 OFF.
+GLIM Hesai+CPT7/HG4930; Kimera front stereo+AlphaSense IMU. No fusion. No source
+run, optimizer, container, build, tuning, deletion or trajectory rescoring.
+All 1473 actual factor matrices in EACH direction examined. They describe
+relative motion over approximately 0.20 seconds, NOT global pose covariance or
+uncertainty of the complete trajectory. Sender physical intervals are matched
+exactly to OFF exports; OFF has no insertions. OFF covariance is transformed
+to the same receiver body for comparison.
+
+Actual inserted ON matrices: medians over all 1473 per direction
+---------------------------------------------------------------
+Direction       Body       tr(rotation)rad2  tr(translation)m2  sqrt(trR)deg sqrt(trT)mm
+GLIM->Kimera    Alpha IMU  1.008661457e-8    3.599459989e-6     0.00575434   1.897224
+Kimera->GLIM    CPT7 IMU   5.778727676e-8    1.202221483e-5     0.01377332   3.467307
+
+Square-root trace is root-sum marginal variance, not a per-axis standard
+deviation or a 95% confidence radius. Rotation/translation traces are kept
+separate; a combined trace mixes rad2 and m2. Full matrices/cross terms are
+retained in matrices.npz, with eigenvalue and correlation summaries in analysis.json.
+
+Matched OFF/ON comparisons
+--------------------------
+Statistic is MEDIAN OF PER-INTERVAL ON/OFF RATIOS, not ratio of global medians.
+GLIM->Kimera: 1473 matches, rotation0.999471885 (-0.0528%),
+             translation1.007178149 (+0.7178%).
+Kimera->GLIM: 1466 unambiguous matches, rotation0.813271154 (-18.6729%),
+             translation1.019091010 (+1.9091%).
+Kimera comparison excludes six ON factors whose OFF physical interval has
+multiple wire versions, plus one interval missing in OFF. All seven remain
+in the all-inserted ON summary. No arbitrary OFF version chosen.
+Every actual ON factor matches exactly one source wire message by source IDs,
+full covariance, raw relative mean and timestamps (rounding<=232ns G2K/100ns K2G).
+
+Time behavior and local exceptions
+---------------------------------
+GLIM's ON and OFF traces almost coincide throughout. No factor has rotational
+or translational trace below half its matching OFF value. No pervasive collapse
+of the GLIM covariance sent into Kimera is visible in this ETH1 run.
+
+Kimera's rotational trace is consistently smaller during parts of the run:
+median ratio0.5995 at180--210s and0.5902 at210--240s. It does not progressively
+collapse to zero. Its translation trace rises and falls substantially in BOTH
+OFF and ON, so low tail values alone are not evidence of feedback collapse.
+
+There ARE localized large ON/OFF translation differences: 13/1466 matched
+Kimera->GLIM factors have ratio<0.1, at16.62--16.82s,183.62--184.52s,
+256.62--257.52s and259.32s. Worst ratio0.0246763 at184.2196s:
+OFF9.663644910e-4m2 vsON2.384626743e-5m2 (~40.5x smaller ON).
+These often coincide with OFF covariance spikes; they are not automatically
+overconfidence. Of all matched K2G factors,7.91% have translation ratio<0.5.
+Use verification.json for each exact physical interval and full values.
+
+First/last receiver endpoint times: G2K3.899976--301.998308s;
+K2G3.819742--302.019316s. These are actual insertions, not full346.32s dense
+coverage. Sparse Kimera keyframes in the tail produce no further accepted
+short-interval factors; no covariances were fabricated beyond this support.
+Plots shade the unsupported tail and use points to avoid bridging omissions.
+
+Insertion integrity
+-------------------
+All actual matrices finite and positive definite. Maximum asymmetry G2K4.24e-22,
+K2G6.78e-21; independent Cholesky reconstruction errors <=1.36e-20.
+G2K matrices equal the time-alignment and frozen-factor matrices exactly; all
+1473 queued edges have the corresponding persistent applied matrix. Native
+BPSAM code constructs Gaussian::Covariance of this matrix, then appends factor.
+K2G matrices equal time-alignment, source-transport and factor-construction
+matrices exactly; all1473 have successful injected_persistent receipts.
+After the expected CPT7->Alpha adjoint conversion, G2K source-wire versus
+applied relative matrix difference <=6.38e-16. K2G wire versus applied matrices
+are bitwise equal. Effective source scales are1.0; health-aware scaling is OFF.
+Thus no EXTRA shrinking or unintended scalar strengthening at insertion was
+found. Source covariance can still itself be overconfident.
+Forty capped G2K inserted-factor information records additionally satisfy
+C*information=I with max error9.87e-15. No corresponding full information
+records were available for K2G; do not imply this independent test covered it.
+Pinned construction sources: CP73 VioBackend, CP82 release4 cbs_bridge,
+native bpsam.cpp and CbsRelativeFrameConversion.cpp; hashes match run manifest.
+
+Limits and conclusion
+---------------------
+This audit does NOT establish whether the covariance is statistically correct.
+Traces/eigenvalues show magnitude and shape, not whether actual errors justify
+them. No claim of healthy/calibrated uncertainty, independence or a proven
+permanent-factor failure mechanism. Persistent mixed-prior peer feedback remains.
+Mean-only timestamp alignment still leaves covariance unchanged: that
+approximation and unpropagated bridge uncertainty remain separate limitations.
+There is no post-optimization factor-noise mutation audit in this task.
+No temporary-mode comparison was run. CP92 internal-revision findings remain
+separate and do not contradict these actual first-insertion results.
+
+The focused next diagnostic, if requested, is actual aligned-belief errors
+versus covariance for the listed K2G intervals, with full cross terms and an
+explicit reference-uncertainty caveat. Do not select a weight from traces alone.
+
+Artifacts and verification
+--------------------------
+analysis.json: full summaries, exact receiver/source identities,30s bins,19pins.
+matrices.npz: all applied ON matrices, matched OFF matrices/index masks/times.
+inserted_covariance_traces.png: actual traces vs matched OFF controls.
+inserted_covariance_ratios.png: per-interval ratio with local exceptions.
+verification.json: independent original-log/matrix/trace/eigen/Cholesky checks,
+all19input hashes and148CP89+221CP91 terminal outputs unchanged.
+Both scientific plots visually inspected. Original immutable reports untouched.
+One initial analysis helper failed on a read-only ROS numpy buffer before
+writing outputs; fixed by copying that input array. No estimator run/retry.

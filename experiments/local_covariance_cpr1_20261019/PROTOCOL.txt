@@ -1,0 +1,31 @@
+CP-R1 — sequential60s LOCAL-covariance OFF/ON campaign, 2026-10-19
+================================================================
+Authorized sequences EIG-2, SPX-3, ETH1. Start EIG-2 with its established5.7s
+offset; validate matched OFF then ON before any next sequence. Remaining roots
+not launched automatically. No automatic retries or overwriting artifacts.
+
+Only estimator implementation delta from frozen FL4x: CP-I1 libglim_ros.so,
+GLIM_REVISION_COVARIANCE_POLICY=native_local. Same shared-native provider for
+first and revised GLIM beliefs. Kimera unchanged, CP-I2 temporary-native-prior
+gate passed. This is explicit native information at corrected charts, not
+independent/calibrated uncertainty. Means/linearization/shared IMU remain coupled.
+
+Same frozen sensors/profiles/classic temporary bidirectional CBS; not source
+live_revision. Native source IMU convention unchanged. Headless0.10x,25s drain,
+60s playback. GLIM5s lag, Kimera25states; .20s horizon, onepair/update,scale1.
+Same FL4q Kimera and FL4e7s fixed-lag WNOA,100ms independent clock,59startupIMU
+samples for timing only; no centralIMU/GNSS, no robust/health/scaling/tuning.
+Exact Qc/priors/receiver JSON and scripts copied unchanged except identity paths.
+
+Gate: frozen guards retained570GLIM/270Kimera minimum,58s span, source tail/gaps,
+no failures/rollbacks, exact source->transport->factor covariance conservation,
+deterministic receiver replay,71supports/200slots,maxqueue<1000,p95cycle<=.8s,
+8GiBinitial/5GiBreserve. Loaded DSOs and selectors checked BEFORE playback.
+Additional per-revision provenance gate and Kimera LOCAL query log check.
+Do not silently switch to MAIN, skip failed updates, relax gates or auto-retry.
+
+Evaluation: same full-saved native GLIM/native Kimera ROS/ONLINE fusion versus
+full-window IE-TC reference, unchanged SE3 no-scale/lever-arm/1sRPE conventions.
+Also common-grid OFF/ON; delayed fixed-lag finalized fusion separate. Report
+actual startup/GT coverage and paths; no11s prism subset. IE-TC shares CPT7.
+Retain all diagnostics/covariances; do not infer performance from prior tests.

@@ -1,0 +1,14 @@
+CP-V85 attempt1: one isolated ETH1 OFF60 split-IMU source pilot.
+The first attempt failed strictly before bag playback; original source has no
+rosbag.log, sensor recorders, output CSVs or complete.marker. Its controller and
+supervisor exited and closeout passed, both previously-stopped containers stopped.
+Fresh root/port11587; original evidence pinned, no artifacts overwritten.
+Diff reviewed: only supported GLIM mode selector (and corresponding admission
+expectation), paths and port differ. Both receive flags remain false and the
+OFF60 guard rejects other modes. Camera/IMU/GLIM profiles and binaries exact.
+Preserve all numerical/coverage/storage guards. No retry after sensor failure.
+Original protocol's intended persistent selectors with inactive receiving now
+matches launch. This is not turning CBS ON or changing estimator mathematics.
+Re-audit raw inputs, author transform/noise and protected evidence before launch.
+Controller owns bounded capture, zero-injection/coverage gates, restoration and
+saved-only EVO. No fusion, new builds, full sequence, ON or default promotion.

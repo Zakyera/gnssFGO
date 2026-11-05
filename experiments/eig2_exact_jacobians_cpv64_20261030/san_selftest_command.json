@@ -1,0 +1,13 @@
+[
+  "docker",
+  "exec",
+  "-e",
+  "LD_LIBRARY_PATH=/workspace/cbs_gtsam4.3/runs/kimera_on_incremental_refresh_cpv40_20261029/private_build:/workspace/cbs_gtsam4.3/devel/lib",
+  "-e",
+  "ASAN_OPTIONS=detect_leaks=0:halt_on_error=1",
+  "-e",
+  "UBSAN_OPTIONS=halt_on_error=1",
+  "cbsms_ws_gpu",
+  "/workspace/cbs_gtsam4.3/runs/eig2_exact_jacobians_cpv64_20261030/san",
+  "selftest"
+]

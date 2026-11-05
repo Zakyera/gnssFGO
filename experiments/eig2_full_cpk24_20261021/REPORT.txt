@@ -1,0 +1,100 @@
+CP-K24 full EIG-2 matched OFF/ON — SCORED WITH EXPLICIT TERMINAL-FACTOR OMISSION
+
+Latest status: CP-K24A saved-data review completed after user authorization.
+Both supplemental finite-recording validations and all remaining receiver
+checks passed. Original zero-unsupported ON failure/status below are preserved.
+One final Kimera factor is still omitted; no estimator/source/solver rerun,
+protected script edit, fabricated support, tuning or output change occurred.
+Full report: /home/yeranis/repos/gnssFGO/GNSSFGO_EIG2_FULL_CPK24_REFERENCE_REPORT_20261021.md
+Detailed products: results_eof_review.json and RESULTS_REPORT_EOF_REVIEW.txt.
+The chronology below records the original capture and failure, not a retry.
+
+User-designated ETH1 reference saved permanently at:
+/home/yeranis/repos/gnssFGO/GNSSFGO_ETH1_FULL_CPK23_REFERENCE_REPORT_20261021.md
+Root/repository AGENTS.md point future tasks to that report.
+
+EIG-2 bag preflight PASSED: exact hashes match retained CP-R4, selected3551Hesai,
+35502IMU,3550stereo pairs with identical left/right headers; IE-TC covers window.
+Offset5.7s + duration355.02s through final Hesai (not older305s crop).
+Preparation passed2464protected hashes, identical model/binaries/source profiles,
+syntax/XML checks and reviewed harness diff. Window/count/path changes only;
+new cleanup command fixes the prior Docker top formatting issue.
+
+One-shot controller launched ONCE2026-10-21 at14:34:19local,PID133089,toolsession
+79125. Temporary sleep/idle/lid inhibitor PID133087 verified. Originally both
+containers stopped. OFF effective launch checks PASSED before playback;
+native GLIM, native Kimera and WNOA fusion are concurrent at0.20x. Initial
+receiver output progressing with queued0 and output age0.080004dataset seconds.
+This is startup evidence, NOT a completed full result.
+
+Do not duplicate or manually run its owned stages. Controller handles OFF,
+three gates, ON only if OFF passes, same gates, evaluation, summary and cleanup.
+Read status.json, stage logs and prepared/full_*_control for current status.
+Expected final products: RESULTS_REPORT.txt and results.json in this directory;
+evaluation_full/summary.json and raw trajectories/covariance/revision histories
+under the run root in PROTOCOL.txt. No tuning, retries or pushes authorized.
+
+Controller finished 2026-10-21T15:36:38.380197+03:00: STOPPED/FAILED
+{"failure": {"stage": "validate_on_receiver", "error": "CalledProcessError(1, ['/home/yeranis/.local/share/pipx/venvs/evo/bin/python', '/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eig2_full_cpk24_20261021/prepared/validate_case.py', 'check', 'on'])", "at": "2026-10-21T15:36:21.190386+03:00"}, "cleanup_error": null}
+No automatic retry. Scope-limited inhibitor releases when controller exits.
+
+Read-only follow-up: both355.02s captures completed. OFF passed all three gates;
+ON passed source coverage, all-LOCAL covariance provenance and Kimera lifecycle
+checks, but receiver validator stopped at validate_case.py:110, requiring zero
+unsupported_at_end records. Receiver summary reports exactly1 such belief out
+of213677 received versions, pending_at_end0,3545ONLINE/finalized publications.
+It is Kimera1759->1760 revision0, last physical endpoint1730639171560675100ns.
+Last receiver support1730639171548930000ns is11.7451ms earlier; next100ms support
+1730639171648930000ns lies after last clock1730639171579221000ns. Existing EOF
+code explicitly marks this unbracketed final factor unsupported; no missing
+expired-revision policy or solver crash is established by this gate failure.
+This is an end-of-recording support issue. The comparison has NOT passed all
+gates and evaluation/summary stages did NOT run. Do not label it validated.
+
+ON native saved spans: GLIM354.199316s/3543poses, Kimera354.797183s/1761poses;
+native source coverage passed, all covariance payloads exact. ON source CBS
+injected1740G2K and1746K2G;1717retirements/prior refreshes passed. Do not infer
+accuracy from these lifecycle metrics. Both full captures and all raw outputs
+retained; no rerun, gate relaxation, scoring or model change performed.
+Cleanup passed15:36:38local: both containers exited,2464protected hashes intact.
+
+CP-K24A saved-data resolution (2026-10-21): existing Receiver.h::end and its
+legacy test explicitly exclude a pending measurement needing future support
+at EOF. A separate predicate applied equally OFF/ON checks the final partial
+100ms cell, measured endpoint<=last real clock, retained first endpoint,
+causal arrival, exact EOF classification/conservation and unchanged graph shape.
+One valid/four invalid integer boundary tests passed. Original validate_case.py
+and its failed log remain unchanged; every other original check completed.
+Supplemental gates: /home/yeranis/results/gnssfgo_eig2_full_cpk24_20261021/eof_review/{off,on}/validation.json.
+
+Existing evaluate_fl4f.py scored ORIGINAL outputs ONCE. No truncation or replay.
+Full-saved metrics (ATE m,1s translation RPE m,1s rotation RPE deg,path m):
+native GLIM OFF .051085,.018645,.634210,189.321356
+native GLIM ON  .044555,.015874,.629456,189.489614
+native Kimera OFF 1.882644,.108961,.844753,178.190542
+native Kimera ON   .688834,.025637,.840830,185.977289
+fusion ONLINE OFF .167508,.043220,2.413468,225.562174
+fusion ONLINE ON  .135765,.039077,2.399313,221.245882
+DELAYED finalized OFF .166193,.021705,.666499,188.511761
+DELAYED finalized ON  .132314,.014837,.666964,188.669543
+ATE improves12.78%GLIM,63.41%Kimera,18.95%ONLINEfusion; final20.39%separate.
+All saved poses scored vs shared-CPT7 IE-TC,not independent prism ground truth.
+Saved spans354.199sGLIM,354.697/354.797sKimera,354.400sfusion. Initial5.7s excluded
+by established profile; startup/tail gaps disclosed. Common3526timestamps cover
+352.299664s within354.099662s envelope; identical-mask ATE confirms direction.
+
+OFF/ON213710/213677received versions;5283/5282insertions;208377/208344replacements;
+50initial exclusions each;0expired;0/1terminal unsupported;0pending. ON1740G2K,
+1746K2G,1717Kimera retirements/prior refreshes. Covariance payload error0; allLOCAL
+provenance passes. GLIM median trace rises~1.3--1.4%;Kimera medians fall but its
+translationp95rises38.62%; do not infer one universal scale or factor dominance.
+MAIN prepared consumptions4,691,886/4,943,020,zeroMAIN synchronous calls;queue max1.
+Supportcycle median49.094/50.416ms,p9577.996/78.138ms. No throughput failure found.
+No nonlinear stationarity or exhaustive batching certificate, no saved-journal
+repeat. Omitted final factor's counterfactual impact remains unknown.
+
+Scoring container restored stopped after verifying only idle tail remained;
+Humble remained stopped. Supplemental closeout/eof_review/closeout.json verifies
+2464protected files,16saved-input fingerprints,supplemental-script hashes and
+container/owned-process status. Original closeout/status/failed.json preserved.
+No push/default promotion/next run authorized or performed.

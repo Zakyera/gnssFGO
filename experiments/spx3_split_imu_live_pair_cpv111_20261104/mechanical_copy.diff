@@ -1,0 +1,769 @@
+--- /home/yeranis/repos/gnssFGO/experiments/eig2_split_imu_live_pair_cpv108_20261104/validate_source.py
++++ /home/yeranis/repos/gnssFGO/experiments/spx3_split_imu_live_pair_cpv111_20261104/validate_source.py
+@@ -17,13 +17,13 @@
+ def read(p):return json.loads(p.read_text())
+ coverage=read(S/'source_coverage.json');effective=read(S/'effective_mode_check.json')
+ assert (S/'complete.marker').exists() and coverage['passed'] and effective['passed']
+-assert effective['checked_before_playback'] and coverage['requested_s']==355.02
++assert effective['checked_before_playback'] and coverage['requested_s']==197.02
+ assert effective['kimera_candidate_env']['CPV40_REFRESH']=='1'
+ assert effective['glim']['glim_cbs_mode']=='inject_persistent'
+ assert effective['glim']['glim_cbs_receive_external_beliefs'] is (mode=='on')
+-assert coverage['frontend']['received_pairs']==3550
++assert coverage['frontend']['received_pairs']==1970
+ assert coverage['native_kimera']['rows']==coverage['backend_rows']>10
+-assert coverage['native_glim']['rows']>=3530
++assert coverage['native_glim']['rows']>=1950
+ assert not (S/'acceptance.csv').exists()
+ assert effective['private_kimera_sha256']=='985c115d3573446f65ef4ce7cc4125e514b4922fed6445ed05cbc4dbdfb70a09'
+ assert Path(effective['prior_failure_archive']).name=='prior_failures'
+--- /home/yeranis/repos/gnssFGO/experiments/eig2_split_imu_live_pair_cpv108_20261104/validate_case.py
++++ /home/yeranis/repos/gnssFGO/experiments/spx3_split_imu_live_pair_cpv111_20261104/validate_case.py
+@@ -50,9 +50,9 @@
+     assert cfg['source_protocol']=='classic'
+     assert json.loads((OUT/'summary.json').read_text())['stationarity']=='not_checked_incremental_policy'
+     source_cov=json.loads((SRC/'source_coverage.json').read_text())
+-    assert source_cov['passed'] and source_cov['requested_s']==355.02
+-    assert source_cov['native_glim']['rows']>=3530
+-    assert source_cov['frontend']['received_pairs']==3550
++    assert source_cov['passed'] and source_cov['requested_s']==197.02
++    assert source_cov['native_glim']['rows']>=1950
++    assert source_cov['frontend']['received_pairs']==1970
+     assert source_cov['native_kimera']['rows']==source_cov['backend_rows']>10
+     metadata=(SRC/'run_metadata.txt').read_text()
+     markers=['mode=cbs_'+MODE,
+@@ -134,7 +134,7 @@
+         assert indices==list(range(len(indices))),name
+     times=[int(p['timestamp_ns']) for p in online]
+     assert all(b-a==100_000_000 for a,b in zip(times,times[1:]))
+-    assert (times[-1]-times[0])*1e-9>=353.02
++    assert (times[-1]-times[0])*1e-9>=195.02
+     assert [r[1:3] for r in online_records]==[r[1:3] for r in final_records]
+     path={}
+     for name,products in [('online',online),('finalized',final)]:
+@@ -174,7 +174,7 @@
+         monitor_output_age_s=stat(ages),published_during_source=published_during_source,
+         max_monitor_queue=max(m['queued'] for m in monitored),
+         protected_unchanged=len(manifest),
+-        claim='fresh live 0.2x full355.02-second EIG-2 split-IMU capture; fixed-lag incremental without stationarity certificate')
++        claim='fresh live 0.2x full197.02-second SPX-3 split-IMU capture; fixed-lag incremental without stationarity certificate')
+     RESULT.mkdir(parents=True,exist_ok=False)
+     with (RESULT/'expired_details.json').open('x') as f:json.dump(audit.details,f,indent=2)
+     with (RESULT/'validation.json').open('x') as f:json.dump(result,f,indent=2)
+--- /home/yeranis/repos/gnssFGO/experiments/eig2_split_imu_live_pair_cpv108_20261104/validate_local.py
++++ /home/yeranis/repos/gnssFGO/experiments/spx3_split_imu_live_pair_cpv111_20261104/validate_local.py
+@@ -46,7 +46,7 @@
+   values=histories[b['i'],b['j']]
+   if not values or values[-1]!=payload:values.append(payload)
+  for (i,j),values in histories.items():expected[source,str(i),str(j)]=values
+- if kind=='glim':assert first>=3530 and revisions>0 and len(provenance)==revisions and pending is None
++ if kind=='glim':assert first>=1950 and revisions>0 and len(provenance)==revisions and pending is None
+  else:assert tmp>0
+  result[kind]=dict(ids=len(histories),versions=sum(map(len,histories.values())),first=first,revised=revisions,provider_queries=queries,local_joint_queries=tmp)
+ actual=collections.defaultdict(list)
+--- /home/yeranis/repos/gnssFGO/experiments/eig2_split_imu_live_pair_cpv108_20261104/evaluate.py
++++ /home/yeranis/repos/gnssFGO/experiments/spx3_split_imu_live_pair_cpv111_20261104/evaluate.py
+@@ -21,7 +21,7 @@
+     from scipy.spatial.transform import Rotation
+     sys.path.append('/home/yeranis/.local/share/pipx/venvs/rosbags/lib/python3.12/site-packages')
+     from rosbags.highlevel import AnyReader
+-    path=W/'src/datasets/GrandTour/EIG-2/2024-11-03-13-59-54_cpt7_ie_tc.bag'
++    path=W/'src/datasets/GrandTour/SPX-3/2024-11-02-17-43-10_cpt7_ie_tc.bag'
+     ts=[];pp=[];qq=[]
+     with AnyReader([d.pin(path)]) as reader:
+         for conn,_,raw in reader.messages(connections=[c for c in reader.connections if c.topic=='/boxi/inertial_explorer/tc/odometry']):
+@@ -32,7 +32,7 @@
+     return physical((ts,np.array(pp),Rotation.from_quat(qq).as_matrix()),'cpt7')
+ 
+ def main():
+-    assert importlib.metadata.version('evo')=='1.36.3' and duration==355.02
++    assert importlib.metadata.version('evo')=='1.36.3' and duration==197.02
+     assert d.read(H/'capture_complete.json')['passed'] and d.read(H/'closeout.json')['passed']
+     assert not O.exists() and not (H/'results.json').exists()
+     for mod in (b,d,d.m,d.m.c,d.m.c.b,a,a.g,d.u,d.d39,d.d39.v):d.pin(mod.__file__)
+@@ -92,7 +92,7 @@
+     coverage=d.m.c.coverage(grid,valid,epoch,duration)
+     improvement={role:100*(common['off_'+role]['ATE_RMSE_m']-common['on_'+role]['ATE_RMSE_m'])/common['off_'+role]['ATE_RMSE_m']
+                  for role in ('glim','kimera','fusion_online','fusion_delayed')}
+-    result=dict(passed=True,task='CP-V108',evo_version='1.36.3',capture_s=duration,method='Method1 first absolute publication',
++    result=dict(passed=True,task='CP-V111',evo_version='1.36.3',capture_s=duration,method='Method1 first absolute publication',
+         common=common,full_saved=full,common_coverage=coverage,common_RPE_pairs=len(pairs),common_segments=info,
+         ATE_improvement_percent=improvement,diagnostics=diagnostic,verification=d.checks,
+         new_evo_CLI_calls=len(d.commands),fresh_matched_off_on=True,receiver_Qc_multiplier=1.,
+@@ -103,7 +103,7 @@
+         omissions=dict(raw_unmatched_camera_headers=audit['raw_unmatched_camera_headers'],
+             source_max_interpolation_gap_s=.5,reference_max_gap_s=.05,delayed='seven-second fixed-lag-finalized, not ONLINE or full-history',
+             covariance='relative beliefs, not global state uncertainty; calibration/feedback independence not proven'))
+-    lines=['CP-V108 FRESH FULL EIG-2 SPLIT-IMU LIVE OFF/ON + FUSION',
++    lines=['CP-V111 FRESH FULL SPX-3 SPLIT-IMU LIVE OFF/ON + FUSION',
+         'GLIM Hesai+CPT7/HG4930; Kimera stereo+Alphasense IMU. Both persistent in ON; both reception OFF in OFF.',
+         'Receiver7s source_wnoa Qc x1.0; actual live arrival/revision journals, no reconstructed replay.',
+         'Method1 EVO1.36.3 SE3/no-scale ATE; reference-distance delta0.5m RPE, same physical prism.',
+@@ -121,9 +121,9 @@
+     lines+=['','DELAYED is seven-second fixed-lag-finalized, NOT ONLINE. Paths are estimated polylines, not physical travel.',
+         'IE-TC shares CPT7. Separate IMUs do not remove persistent feedback correlation. Native-only outgoing information remains FALSE.',
+         'Alpha bias RW is an experimental candidate, not certified calibration. Numerical checks are not nonlinear stationarity/health certification.',
+-        'All3550 raw stereo pairs matched; actual native keyframe gaps retained; no interpolation across >0.5s.',
++        'All1970 raw stereo pairs matched; actual native keyframe gaps retained; no interpolation across >0.5s.',
+         'Full revision/timing/native+transport covariance/payload/EOF summaries and omissions: results.json.',
+-        'Both arms are fresh EIG-2 captures with the same corrected private Kimera binary.']
++        'Both arms are fresh SPX-3 captures with the same corrected private Kimera binary.']
+     d.save(O/'revision_events.json',revision_events);d.save(O/'commands.json',d.commands)
+     d.PINS.update(a.HASHES);assert all(d.sha(Path(p))==v for p,v in d.PINS.items())
+     d.save(O/'input_sha256.json',d.PINS);d.save(H/'results.json',result)
+--- /home/yeranis/repos/gnssFGO/experiments/eig2_split_imu_live_pair_cpv108_20261104/verify_report.py
++++ /home/yeranis/repos/gnssFGO/experiments/spx3_split_imu_live_pair_cpv111_20261104/verify_report.py
+@@ -16,7 +16,7 @@
+ for group in ('full_saved','common'):
+     assert set(r[group])==expected
+     for key,v in r[group].items():
+-        assert v['rows']>100 and v['reference_path_length_m']>100
++        assert v['rows']>100 and v['reference_path_length_m']>50
+         assert all(math.isfinite(v[k]) and v[k]>=0 for k in ('ATE_RMSE_m','path_length_m'))
+         for k in ('translation_m','rotation_deg'):
+             z=v['RPE'][k];res=file_interface.load_res_file(z['archive'])
+--- /home/yeranis/repos/gnssFGO/experiments/eig2_split_imu_live_pair_cpv108_20261104/controller.py
++++ /home/yeranis/repos/gnssFGO/experiments/spx3_split_imu_live_pair_cpv111_20261104/controller.py
+@@ -45,7 +45,7 @@
+ try:
+     status('preflight');hashes()
+     assert shutil.disk_usage(P).free>read(H/'storage_preflight.json')['required_free_bytes']
+-    inhibit=call(['systemd-inhibit','--list','--no-pager','--no-legend']);matches=[x for x in inhibit.splitlines() if 'EIG2-CPV108' in x]
++    inhibit=call(['systemd-inhibit','--list','--no-pager','--no-legend']);matches=[x for x in inhibit.splitlines() if 'SPX3-CPV111' in x]
+     assert len(matches)==1 and 'sleep' in matches[0] and 'block' in matches[0]
+     save('inhibitors.json',dict(value=inhibit))
+     started=True;step('start_containers',['docker','start',*names])
+@@ -96,7 +96,7 @@
+         status('failed',failure=failure,cleanup_error=cleanup_error)
+         with (H/'REPORT.txt').open('a') as f:f.write('\nTERMINAL FAILURE '+now()+'\n'+json.dumps(dict(failure=failure,cleanup_error=cleanup_error))+'\nNo retry; prefixes are not full-pair results.\n')
+         raise SystemExit(1)
+-save('capture_complete.json',dict(passed=True,duration_s=355.02,modes=['off','on'],fresh_live_all_estimators=True,finished=now()))
++save('capture_complete.json',dict(passed=True,duration_s=197.02,modes=['off','on'],fresh_live_all_estimators=True,finished=now()))
+ try:
+     step('evaluate',[PY,'-B',str(H/'evaluate.py')],timeout=1800)
+     step('verify_report',[PY,'-B',str(H/'verify_report.py')],timeout=300)
+@@ -106,7 +106,7 @@
+     for p in H.glob('*_process.json'):
+         z=read(p);f=Path(f"/proc/{z['pid']}/stat");jobs[str(z['pid'])]=f.exists() and f.read_text().split()[21]==z['proc_start']
+     assert not any(jobs.values()),jobs
+-    with (H/'REPORT.txt').open('a') as f:f.write('\nCOMPLETE '+now()+'\nFresh full355.02s OFF/ON with concurrent fusion; see RESULTS_REPORT.txt/results.json. Both containers restored; all protected/Hesai checks pass. Persistent correlation/native-only FALSE remains.\n')
++    with (H/'REPORT.txt').open('a') as f:f.write('\nCOMPLETE '+now()+'\nFresh full197.02s OFF/ON with concurrent fusion; see RESULTS_REPORT.txt/results.json. Both containers restored; all protected/Hesai checks pass. Persistent correlation/native-only FALSE remains.\n')
+     status('complete')
+     save('complete.json',dict(passed=True,finished=now(),fresh_matched_off_on=True,source_captures=2,receiver_captures=2,
+         protected_files=count,containers=states(),owned_stage_jobs_alive=jobs,controller_pid=os.getpid(),controller_exiting=True,
+--- /home/yeranis/repos/gnssFGO/experiments/eig2_split_imu_live_pair_cpv108_20261104/launch.py
++++ /home/yeranis/repos/gnssFGO/experiments/spx3_split_imu_live_pair_cpv111_20261104/launch.py
+@@ -4,8 +4,8 @@
+ H=Path(__file__).resolve().parent
+ assert json.loads((H/'prepared.json').read_text())['passed']
+ assert not (H/'launch.json').exists() and not (H/'start.json').exists()
+-cmd=['systemd-inhibit','--what=sleep','--mode=block','--who=EIG2-CPV108',
+-     '--why=User-authorized EIG-2 split-IMU full OFF/ON with fusion',
++cmd=['systemd-inhibit','--what=sleep','--mode=block','--who=SPX3-CPV111',
++     '--why=User-authorized SPX-3 split-IMU full OFF/ON with fusion',
+      'python3','-B',str(H/'controller.py')]
+ with (H/'launch.json').open('x') as f:
+     with (H/'controller.log').open('x') as log:
+--- /home/yeranis/repos/gnssFGO/experiments/eig2_split_imu_live_pair_cpv108_20261104/preflight_tests.py
++++ /home/yeranis/repos/gnssFGO/experiments/spx3_split_imu_live_pair_cpv111_20261104/preflight_tests.py
+@@ -25,7 +25,7 @@
+ assert test_boundaries()==dict(valid=1,rejected=4)
+ save('validator_test.json',dict(passed=True,negative_schemas=14,real_saved_schemas=2,eof_controls=5,
+     inherited_numerical_gate=str(QUAL_H/'on_candidate_validation.json'),
+-    changes='EIG2 raw duration/stereo/scan count bounds only; same corrected DSO/fatal/finite objective gates'))
++    changes='SPX3 raw duration/stereo/scan count bounds only; same corrected DSO/fatal/finite objective gates'))
+ 
+ host=[]
+ for cmd in (['python3','-B',str(P/'transport_tools/qualify_runtime.py')],
+@@ -62,12 +62,12 @@
+ import evaluate as q
+ d=q.d;a=q.a
+ reference=q.load_reference()
+-grid=np.arange(q.epoch,q.epoch+355020000000,100000000,dtype=np.int64)
++grid=np.arange(q.epoch,q.epoch+197020000000,100000000,dtype=np.int64)
+ gp,gr,valid=a.sample(reference,grid,50000000)
+ assert valid.all() and len(reference[0])>30000
+ native=q.b.kimera(QUAL_P/'full_on_source','alphasense')
+ assert len(native[0])==1492 and np.isfinite(native[1]).all()
+-old=W/'runs/eig2_symmetric_persistent_full_cpv84_20261101_attempt1/prepared/full_on_source'
++old=W/'runs/gnssfgo_spx3_stationary_full_cpk28_20261023/prepared/full_on_source'
+ oldglim=a.load_curve(old/'glim_odometry.csv')
+ assert a.sample(reference,oldglim[0],50000000)[2].all()
+ O=H/'report_contract_test';O.mkdir()
+@@ -83,6 +83,6 @@
+ assert all(c['exit']==0 for c in d.commands)
+ d.save(O/'commands.json',d.commands);d.PINS.update(a.HASHES);d.save(O/'input_sha256.json',d.PINS)
+ save('report_preflight.json',dict(passed=True,mission_reference_rows=len(reference[0]),full_reference_grid_rows=len(grid),
+-    reference_all_queries_supported=True,old_EIG2_GLIM_reference_supported=True,CP103_Kimera_Method1_rows=len(native[0]),
++    reference_all_queries_supported=True,old_SPX3_GLIM_reference_supported=True,CP103_Kimera_Method1_rows=len(native[0]),
+     synthetic_EVO_CLI_calls=len(d.commands),checks=d.checks,new_scientific_results=False,source_runs=0,receiver_replays=0))
+ print('PASS schema, EOF, host import/fixture, mission frame/Jacobian, reference/parser and synthetic EVO tests')
+--- /home/yeranis/repos/gnssFGO/experiments/eig2_split_imu_live_pair_cpv108_20261104/admission.py
++++ /home/yeranis/repos/gnssFGO/experiments/spx3_split_imu_live_pair_cpv111_20261104/admission.py
+@@ -15,7 +15,7 @@
+ for name in ('raw_input_audit.json','report_preflight.json','validator_test.json','live_adapter_test.json','host_runtime_preflight.json'):
+     assert read(H/name)['passed'],name
+ assert call(['docker','inspect','-f','{{.Name}} {{.State.Status}}','cbsms_ws_gpu','ubuntu-jammy-humble-nvidia'])=='/cbsms_ws_gpu exited\n/ubuntu-jammy-humble-nvidia exited\n'
+-for port in (11631,11632):
++for port in (11641,11642):
+     with socket.socket() as s:s.bind(('127.0.0.1',port))
+ assert all(not os.environ.get(k) for k in ('CPV66_AUDIT_DIR','CPV66_TEST_ALL','KIMERA_IMU_SAMPLE_SUPPORT','CPV102_PRIOR_FAILURE_DIR'))
+ profiles={};files=[];diff=[]
+@@ -33,14 +33,14 @@
+     for lib in ('libkimera_vio.so','libcbs.so'):
+         assert sha(P/mode/'private_build'/lib)==sha(QUAL_P/'on/private_build'/lib)
+     runner=(P/mode/'source_runner_on.sh').read_text()
+-    guard=next(x for x in runner.splitlines() if 'CP-V108 EIG-2 split-IMU full' in x and '[[' in x)
+-    assert '355.02' in guard and '5.7' in guard and '2024-11-03-13-59-54' in guard
++    guard=next(x for x in runner.splitlines() if 'CP-V111 SPX-3 split-IMU full' in x and '[[' in x)
++    assert '197.02' in guard and '29.0' in guard and '2024-11-02-17-43-10' in guard
+     assert ('${cbs_enable}" == '+str(mode=='on').lower()) in guard
+     env=(P/mode/'source.env').read_text()
+-    for expected in ('CBSMS_MISSION=2024-11-03-13-59-54','CBSMS_BAG_START_SEC=5.7','CBSMS_BAG_DURATION_SEC=355.02',
+-                     'CBSMS_BAG_RATE=0.20','CBSMS_POST_PLAYBACK_DRAIN_SEC=25','CBSMS_SEED_CLOCK_SECS=1730638815',
+-                     'CBSMS_DATASET_DIR=/workspace/cbs_gtsam4.3/src/datasets/GrandTour/EIG-2',
+-                     'CBSMS_ROS_MASTER_PORT='+str(11631+(mode=='on'))):assert expected in env,expected
++    for expected in ('CBSMS_MISSION=2024-11-02-17-43-10','CBSMS_BAG_START_SEC=29.0','CBSMS_BAG_DURATION_SEC=197.02',
++                     'CBSMS_BAG_RATE=0.20','CBSMS_POST_PLAYBACK_DRAIN_SEC=25','CBSMS_SEED_CLOCK_SECS=1730565898',
++                     'CBSMS_DATASET_DIR=/workspace/cbs_gtsam4.3/src/datasets/GrandTour/SPX-3',
++                     'CBSMS_ROS_MASTER_PORT='+str(11641+(mode=='on'))):assert expected in env,expected
+     assert ('/full_'+mode+'_source/e1b_profile.jsonl') in (P/mode/'glim_profile_on.launch').read_text()
+     for name in ('input_audit.json','expected_headers.json'):assert sha(P/name)==sha(P/mode/name)
+     actual=read(P/f'full_{mode}.json');old=read(QUAL_P/'full_on.json')
+@@ -67,12 +67,11 @@
+     assert actual==expected,filename
+ save(H/'profile_parity.json',dict(passed=True,profiles=profiles,files=files,corrected_binary_both_modes=True,
+     scientific_settings_CP103_unchanged=True,mission_specific_changes=True,source_covariance_freeze=False,
+-    operational_changes=['EIG2 bags/window/clock seed','mission rigid transform','ports/sessions','expected input counts and reference']))
++    operational_changes=['SPX3 bags/window/clock seed','mission rigid transform','ports/sessions','expected input counts and reference']))
+ with (H/'final_copy.diff').open('x') as f:f.write(''.join(diff))
+-pins=read(QUAL_P/'protected_manifest.json')
++pins=read(BASE_P/'protected_manifest.json')
+ seals={}
+-for name in (QUAL_H.name,'eth1_prior_fix_evaluation_cpv104_20261104','eth1_fusion_diagnosis_cpv105_20261104',
+-             'eth1_covariance_freeze_cpv106_20261104','eth1_covariance_provenance_cpv107_20261104'):
++for name in (BASE_H.name,'eig2_fusion_localization_cpv109_20261104','eig2_fusion_intervention_cpv110_20261104'):
+     root=E/name;z=read(root/'complete.json');assert z['passed']
+     pins.update(z['output_sha256']);pins[str(root/'complete.json')]=sha(root/'complete.json')
+     seals[name]=len(z['output_sha256'])
+@@ -81,7 +80,7 @@
+ audit=read(P/'input_audit.json')
+ for v in audit['bag_files'].values():pins[v['path']]=v['sha256']
+ pins[audit['tf']['path']]=audit['tf']['sha256']
+-pins[str(W/'src/datasets/GrandTour/EIG-2/2024-11-03-13-59-54_cpt7_ie_tc.bag')]=sha(W/'src/datasets/GrandTour/EIG-2/2024-11-03-13-59-54_cpt7_ie_tc.bag')
++pins[str(W/'src/datasets/GrandTour/SPX-3/2024-11-02-17-43-10_cpt7_ie_tc.bag')]=sha(W/'src/datasets/GrandTour/SPX-3/2024-11-02-17-43-10_cpt7_ie_tc.bag')
+ for p,v in pins.items():assert sha(p)==v,p
+ print('Preserved prior pins, terminal evidence and mission data',len(pins),flush=True)
+ jobs=[]
+@@ -95,7 +94,7 @@
+ assert 'PASS: 4 cases, 667 saved files; originals=True' in hesai
+ storage=dict(passed=True,free_bytes=shutil.disk_usage(P).free,forecast_bytes=16*2**30,
+              required_free_bytes=21*2**30,runtime_floor_bytes=5*2**30,
+-             basis='16GiB full-pair allowance exceeds CP95 9.45GiB forecast, plus5GiB reserve; EIG2 duration2.5%longer')
++             basis='16GiB full-pair allowance exceeds CP95 9.45GiB forecast, plus5GiB reserve; SPX3 window shorter than CP108; retain conservative16GiB allowance')
+ assert storage['free_bytes']>storage['required_free_bytes'];save(H/'storage_preflight.json',storage)
+ for root in (H,P):
+     for p in root.rglob('*'):
+@@ -104,7 +103,7 @@
+ save(P/'protected_manifest.json',pins)
+ out=dict(passed=True,created=datetime.datetime.now().astimezone().isoformat(),prepared_path=str(P),
+     protected_files=len(pins),hesai=hesai,prior_terminal_outputs=seals,source_captures_authorized=2,receiver_captures_authorized=2,
+-    mission='EIG-2',duration_s=355.02,offset_s=5.7,rate=.20,ports=[11631,11632],
++    mission='SPX-3',duration_s=197.02,offset_s=29.0,rate=.20,ports=[11641,11642],
+     corrected_backend_both_modes=True,source_covariance_handling_unchanged=True,old_captures_reused=False)
+ save(P/'preflight.json',out);save(H/'prepared.json',out)
+ print(json.dumps(out,indent=2))
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/full_on.json
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/full_on.json
+@@ -1,7 +1,7 @@
+ {
+-  "sequence": "EIG-2 CP-V108 full355.02s live split-IMU CBS ON",
++  "sequence": "SPX-3 CP-V111 full197.02s live split-IMU CBS ON",
+   "source_protocol": "classic",
+-  "ros_master_uri": "http://127.0.0.1:11632",
++  "ros_master_uri": "http://127.0.0.1:11642",
+   "imu_topic": "/boxi/cpt7/imu",
+   "imu_frame": "cpt7_imu",
+   "world_frame": "gnssfgo_world",
+@@ -12,11 +12,11 @@
+   "drain_timeout_wall_sec": 300,
+   "ros1_container": "cbsms_ws_gpu",
+   "receiver_container": "ubuntu-jammy-humble-nvidia",
+-  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/receiver_cpk19.sh",
++  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/receiver_cpk19.sh",
+   "sources": [
+     {
+       "id": "glim_hesai",
+-      "session": "eig2_cpv108_on_20261104",
++      "session": "spx3_cpv111_on_20261104",
+       "kind": "glim",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/ros_logs/*/glim_rosnode-*-stdout.log",
+@@ -25,7 +25,7 @@
+     },
+     {
+       "id": "kimera_front",
+-      "session": "eig2_cpv108_on_20261104",
++      "session": "spx3_cpv111_on_20261104",
+       "kind": "kimera",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/estimators.log",
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/run_case_on.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/run_case_on.py
+@@ -37,7 +37,7 @@
+     own.mkdir(exist_ok=False)
+     inside = '/workspace/'+str(own.relative_to('/home/yeranis/repos/V4RL'))
+     env_inside = '/workspace/'+str((ROOT/args.mode/'source.env').relative_to('/home/yeranis/repos/V4RL'))
+-    port = str(11631+(args.mode=='on'))
++    port = str(11641+(args.mode=='on'))
+     master_uri = 'http://127.0.0.1:'+port
+     jobs = {}
+     streams = []
+@@ -91,7 +91,7 @@
+             assert jobs['receiver'].poll() is None, 'receiver startup failed'
+             assert time.monotonic()<deadline, 'transport startup timeout'
+             time.sleep(.2)
+-        duration=355.02
++        duration=197.02
+         source_script = ('export CBSMS_RUN_NAME='+tag+'_source CBSMS_CBS_ENABLE='+('true' if args.mode=='on' else 'false')+
+           ' CBSMS_BAG_DURATION_SEC='+str(float(duration))+'; source '+shlex.quote(env_inside)+
+           '; '+identity_script('source')+
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/full_off.json
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/full_off.json
+@@ -1,7 +1,7 @@
+ {
+-  "sequence": "EIG-2 CP-V108 full355.02s live split-IMU CBS OFF",
++  "sequence": "SPX-3 CP-V111 full197.02s live split-IMU CBS OFF",
+   "source_protocol": "classic",
+-  "ros_master_uri": "http://127.0.0.1:11631",
++  "ros_master_uri": "http://127.0.0.1:11641",
+   "imu_topic": "/boxi/cpt7/imu",
+   "imu_frame": "cpt7_imu",
+   "world_frame": "gnssfgo_world",
+@@ -12,11 +12,11 @@
+   "drain_timeout_wall_sec": 300,
+   "ros1_container": "cbsms_ws_gpu",
+   "receiver_container": "ubuntu-jammy-humble-nvidia",
+-  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/receiver_cpk19.sh",
++  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/receiver_cpk19.sh",
+   "sources": [
+     {
+       "id": "glim_hesai",
+-      "session": "eig2_cpv108_off_20261104",
++      "session": "spx3_cpv111_off_20261104",
+       "kind": "glim",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/ros_logs/*/glim_rosnode-*-stdout.log",
+@@ -25,7 +25,7 @@
+     },
+     {
+       "id": "kimera_front",
+-      "session": "eig2_cpv108_off_20261104",
++      "session": "spx3_cpv111_off_20261104",
+       "kind": "kimera",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/estimators.log",
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/off/coverage_control.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/off/coverage_control.py
+@@ -5,7 +5,7 @@
+ import coverage_checks as legacy
+ S=Path(sys.argv[1]);P=Path(__file__).resolve().parent
+ a=json.loads((P/'input_audit.json').read_text());wanted=json.loads((P/'expected_headers.json').read_text());imu={}
+-duration=a['duration_s'];assert duration==355.02
++duration=a['duration_s'];assert duration==197.02
+ for topic,file in [('/boxi/cpt7/imu','cpt7_headers.csv'),('/boxi/alphasense/imu','alphasense_headers.csv')]:
+     with (S/file).open() as f:rows=list(csv.DictReader(f))
+     key=next(k for k in rows[0] if k.endswith('.stamp'));ts=[int(r[key]) for r in rows]
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/off/verify_effective_on.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/off/verify_effective_on.py
+@@ -10,10 +10,10 @@
+ 
+ root = Path(__file__).resolve().parent
+ source = Path(sys.argv[1])
+-assert os.environ['CBSMS_BAG_DURATION_SEC'] == '355.02'
++assert os.environ['CBSMS_BAG_DURATION_SEC'] == '197.02'
+ assert os.environ['CBSMS_BAG_RATE'] == '0.20'
+-assert os.environ['CBSMS_MISSION']=='2024-11-03-13-59-54'
+-assert os.environ['CBSMS_BAG_START_SEC']=='5.7'
++assert os.environ['CBSMS_MISSION']=='2024-11-02-17-43-10'
++assert os.environ['CBSMS_BAG_START_SEC']=='29.0'
+ enabled = os.environ['CBSMS_CBS_ENABLE'] == 'true'
+ assert enabled is (root.name=='on'), 'Mode mismatch'
+ assert os.environ['CBSMS_KIMERA_MODE'] == 'stereo'
+@@ -149,10 +149,10 @@
+ assert not any('SNAPSHOT' in k or 'REAL_INPUT' in k or 'GLIM_E1_REAL_AUDIT_ROOT' == k for k in env(glim_pid))
+ assert 'e1b4a_real_input' not in glim_loaded
+ with (source/'effective_mode_check.json').open('x') as f:
+-    json.dump(dict(passed=True, checked_before_playback=True, playback_rate=0.20, requested_s=355.02, glim=expected,
++    json.dump(dict(passed=True, checked_before_playback=True, playback_rate=0.20, requested_s=197.02, glim=expected,
+                    actual_profile_sha256=profile_checks,actual_imu_parameters=imu_params,
+                    kimera_body='alphasense_imu',glim_body='cpt7_imu',wire_body='cpt7_imu',
+                    T_alphasense_cpt7=matrix.tolist(),kimera_receive=enabled,glim_receive=enabled,
+                    kimera=expected_flags, kimera_native_only_outgoing_information=False, mixed_prior_feedback_user_accepted=True, kimera_candidate_env={k:env(pid)[k] for k in ('CPK9_PRIOR_REFRESH','FL4Q_ENABLE','FL4M_RETIREMENT','CPV40_REFRESH','CPV38_OFF_REFRESH','CPV76_PERSISTENT_COMPAT')}, prior_failure_archive=str(archive_dir), private_kimera_sha256='985c115d3573446f65ef4ce7cc4125e514b4922fed6445ed05cbc4dbdfb70a09', kimera_pid=pid, kimera_argv=argv,
+                    kimera_maps=loaded,glim_maps=glim_loaded,glim_persistent_compat=env(glim_pid)['CPV82_GLIM_PERSISTENT_COMPAT'],glim_revision_covariance='native_local',cached_provider_sha256='6f71292d29d974a0555abd9fda6b2370fdab81ca634a4e1343c216d2a762d2ca'), f, indent=2)
+-print('CP-V108 split IMU topics/body transform and current private builds verified; Matched requested receive mode, persistent.')
++print('CP-V111 split IMU topics/body transform and current private builds verified; Matched requested receive mode, persistent.')
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/off/glim_profile_on.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/off/glim_profile_on.launch
+@@ -117,7 +117,7 @@
+         <env name="GLIM_SHARED_NATIVE_PROVIDER" value="shared_native"/>
+         <env name="CPV82_GLIM_PERSISTENT_COMPAT" value="1"/>
+         <env name="GLIM_REVISION_COVARIANCE_POLICY" value="native_local"/>
+-        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/full_off_source/e1b_profile.jsonl"/>
++        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/full_off_source/e1b_profile.jsonl"/>
+ 		<param name="config_path" value="$(arg config_path)" />
+ 		<param name="glim_dump_path" value="$(arg glim_dump_path)" />
+ 		<param name="deterministic_input_event_log_path" value="$(arg glim_deterministic_input_event_log_path)" />
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/off/source.env
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/off/source.env
+@@ -1,18 +1,18 @@
+ # Source in the established ROS Noetic container after setting CBSMS_RUN_NAME
+ # to off_source/on_source and CBSMS_CBS_ENABLE to false/true.
+-: "${CBSMS_RUN_NAME:?Set fresh EIG-2 source run name}"
++: "${CBSMS_RUN_NAME:?Set fresh SPX-3 source run name}"
+ : "${CBSMS_CBS_ENABLE:?Set false or true}"
+-export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared
++export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared
+ export CBSMS_RUN_NAME CBSMS_CBS_ENABLE
+ export ROS_LOG_DIR="${CBSMS_RUN_ROOT}/${CBSMS_RUN_NAME}/ros_logs"
+ export CBSMS_PROJECT_ROOT=/workspace/cbs_gtsam4.3
+-export CBSMS_MISSION=2024-11-03-13-59-54
+-export CBSMS_BAG_START_SEC=5.7
+-export CBSMS_BAG_DURATION_SEC=355.02
++export CBSMS_MISSION=2024-11-02-17-43-10
++export CBSMS_BAG_START_SEC=29.0
++export CBSMS_BAG_DURATION_SEC=197.02
+ export CBSMS_POST_PLAYBACK_DRAIN_SEC=25
+ export CBSMS_BAG_RATE=0.20
+-export CBSMS_SEED_CLOCK_SECS=1730638815
+-export CBSMS_ROS_MASTER_PORT=11631
++export CBSMS_SEED_CLOCK_SECS=1730565898
++export CBSMS_ROS_MASTER_PORT=11641
+ export CBSMS_USE_EXISTING_ROS_MASTER=true
+ export CBSMS_KIMERA_MODE=stereo
+ # The recovered classic Kimera source path is "current", not experimental RIGHT.
+@@ -35,7 +35,7 @@
+ export CBSMS_KIMERA_RECEIVER_AUDIT_MAX_SAMPLES=40
+ export CBSMS_KIMERA_RECEIVER_AUDIT_STRIDE=20
+ export CBSMS_DIAGNOSTIC_NODE_OUTPUT=log
+-export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/off/input_profiles/glim_config
+-export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/off/input_profiles/kimera_profile
++export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/off/input_profiles/glim_config
++export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/off/input_profiles/kimera_profile
+ 
+-export CBSMS_DATASET_DIR=/workspace/cbs_gtsam4.3/src/datasets/GrandTour/EIG-2
++export CBSMS_DATASET_DIR=/workspace/cbs_gtsam4.3/src/datasets/GrandTour/SPX-3
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/off/active_window_on.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/off/active_window_on.launch
+@@ -17,7 +17,7 @@
+   -->
+ 
+   <arg name="glim_config_path"
+-       default="/workspace/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/off/input_profiles/glim_config"/>
++       default="/workspace/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/off/input_profiles/glim_config"/>
+   <arg name="kimera_mode" default="mono"/>
+   <arg name="kimera_enable" default="true"/>
+   <arg name="kimera_params_folder"/>
+@@ -111,7 +111,7 @@
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_stride" value="20"/>
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_max_updates" value="40"/>
+ 
+-  <include file="/workspace/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/off/glim_profile_on.launch">
++  <include file="/workspace/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/off/glim_profile_on.launch">
+     <arg name="config_path" value="$(arg glim_config_path)"/>
+     <arg name="glim_node_output" value="$(arg diagnostic_node_output)"/>
+     <arg name="glim_input_imu_topic" value="$(arg glim_input_imu_topic)"/>
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/off/coverage_checks.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/off/coverage_checks.py
+@@ -76,7 +76,7 @@
+     backend = sorted(set((w, n) for w, name, n in counters if name == 'VioBackend [ms]'))
+     assert frontend and backend
+     assert all(b[1] >= a[1] for a, b in zip(frontend, frontend[1:])), 'frontend counter regressed'
+-    assert 3547 <= frontend[-1][1] <= 3550, ('full-window frontend incomplete', frontend[-1])
++    assert 1967 <= frontend[-1][1] <= 1970, ('full-window frontend incomplete', frontend[-1])
+     assert backend[-1][1] == len(t), ('backend final count', backend[-1], len(t))
+     evidence = []
+     for i in np.flatnonzero(np.diff(t) > 1):
+@@ -88,14 +88,14 @@
+             backend_before_ms=updates[int(i)][1], backend_after_ms=updates[int(i+1)][1],
+             low_disparity_lines=sum(w is not None and lo-.3 <= w <= hi+.3 for w in low)))
+     return dict(passed=True, logs=[str(p) for p in logs], frontend_processed=frontend[-1][1],
+-        synchronized_input_pairs_reference=3550, frontend_reference_after_startup=3547,
++        synchronized_input_pairs_reference=1970, frontend_reference_after_startup=1967,
+         backend_processed=backend[-1][1], sequential_native_ids=True, gaps=evidence,
+         scope='Native counters, not a new per-image receipt or branch-decision audit.')
+ 
+ 
+ def main():
+     source = Path(sys.argv[1]); duration = float(sys.argv[2]); journal = Path(sys.argv[3])
+-    assert duration == 355.02, 'This coverage contract is for the frozen full EIG-2 window'
++    assert duration == 197.02, 'This coverage contract is for the frozen full SPX-3 window'
+     profile = (source/'kimera_profile/FrontendParams.yaml').read_text()
+     assert float(re.search(r'^max_intra_keyframe_time:\s*(\S+)', profile, re.M)[1]) == KEYFRAME_LIMIT
+     imu = []
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/off/source_runner_on.sh
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/off/source_runner_on.sh
+@@ -2,10 +2,10 @@
+ set -euo pipefail
+ 
+ project_root="${CBSMS_PROJECT_ROOT:-/workspace/cbs_gtsam4.3}"
+-dataset_dir="${CBSMS_DATASET_DIR:-${project_root}/src/datasets/GrandTour/EIG-2}"
+-mission="${CBSMS_MISSION:-2024-11-03-13-59-54}"
++dataset_dir="${CBSMS_DATASET_DIR:-${project_root}/src/datasets/GrandTour/SPX-3}"
++mission="${CBSMS_MISSION:-2024-11-02-17-43-10}"
+ duration_sec="${CBSMS_BAG_DURATION_SEC:-45.0}"
+-bag_start_sec="${CBSMS_BAG_START_SEC:-5.7}"
++bag_start_sec="${CBSMS_BAG_START_SEC:-29.0}"
+ bag_rate="${CBSMS_BAG_RATE:-0.75}"
+ post_playback_drain_sec="${CBSMS_POST_PLAYBACK_DRAIN_SEC:-25}"
+ ros_master_port="${CBSMS_ROS_MASTER_PORT:-11368}"
+@@ -43,8 +43,8 @@
+ run_dir="${run_root}/${run_name}"
+ experiment_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ launch_file="${experiment_dir}/active_window_on.launch"
+-[[ "${cbs_enable}" == false && "${cbs_direction}" == bidirectional && "${duration_sec}" == 355.02 && "${bag_rate}" == 0.20 && "${bag_start_sec}" == 5.7 && "${mission}" == 2024-11-03-13-59-54 && "${kimera_mode}" == stereo ]] || { echo "CP-V108 EIG-2 split-IMU full OFF355.02 only." >&2; exit 2; }
+-glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-/workspace/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/off/input_profiles/glim_config}"
++[[ "${cbs_enable}" == false && "${cbs_direction}" == bidirectional && "${duration_sec}" == 197.02 && "${bag_rate}" == 0.20 && "${bag_start_sec}" == 29.0 && "${mission}" == 2024-11-02-17-43-10 && "${kimera_mode}" == stereo ]] || { echo "CP-V111 SPX-3 split-IMU full OFF197.02 only." >&2; exit 2; }
++glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-/workspace/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/off/input_profiles/glim_config}"
+ kimera_profile_source="${CBSMS_KIMERA_PROFILE_SOURCE:-}"
+ kimera_calibration_overlay="${CBSMS_KIMERA_CALIBRATION_OVERLAY:-${project_root}/src/cbsms/config/grandtour_kimera/eth1_mono_shared_cpt7}"
+ reference_bag="${CBSMS_REFERENCE_BAG:-${dataset_dir}/${mission}_ap20_prism_position.bag}"
+@@ -64,7 +64,7 @@
+ export_endpoint_audit_enable="${CBSMS_EXPORT_ENDPOINT_AUDIT_ENABLE:-false}"
+ diagnostic_node_output="${CBSMS_DIAGNOSTIC_NODE_OUTPUT:-screen}"
+ kimera_bad_update_audit_dir="${CBSMS_KIMERA_BAD_UPDATE_AUDIT_DIR:-}"
+-seed_clock_secs="${CBSMS_SEED_CLOCK_SECS:-1730638815}"
++seed_clock_secs="${CBSMS_SEED_CLOCK_SECS:-1730565898}"
+ 
+ if [[ "${cbs_enable}" != true && "${cbs_enable}" != false ]]; then
+   echo "CBSMS_CBS_ENABLE must be true or false." >&2
+@@ -584,7 +584,7 @@
+   "kimera_receive_cbs_beliefs=${kimera_receive_external_beliefs}" \
+   "glim_cbs_mode=${glim_cbs_mode}" \
+   "kimera_cbs_odom_factor_mode=persistent" \
+-  "experiment=eig2_split_imu_live_pair_cpv108_20261104" \
++  "experiment=spx3_split_imu_live_pair_cpv111_20261104" \
+   "glim_sensor_pair=hesai+cpt7_imu" \
+   "kimera_sensor_pair=${kimera_sensor_pair}" \
+   "glim_body_frame=cpt7_imu" \
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/transport_tools/frame_calibration.json
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/transport_tools/frame_calibration.json
+@@ -27,6 +27,6 @@
+       1.0
+     ]
+   ],
+-  "source": "/home/yeranis/repos/gnssFGO/experiments/eig2_split_imu_live_pair_cpv108_20261104/raw_input_audit.json",
++  "source": "/home/yeranis/repos/gnssFGO/experiments/spx3_split_imu_live_pair_cpv111_20261104/raw_input_audit.json",
+   "convention": "T_Alpha_CPT7; rotation-translation tangent; native diagnostic rows ONLY"
+ }--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/transport_tools/frame_geometry.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/transport_tools/frame_geometry.py
+@@ -13,7 +13,7 @@
+ HERE = Path(__file__).resolve().parent
+ WORK = Path('/home/yeranis/repos/V4RL/cbs_gtsam4.3')
+ CASES = {
+-    'eig2': ('gnssfgo_eig2_live60_off_on_fl4x_20261017', 'EIG-2', '2024-11-03-13-59-54'),
++    'eig2': ('gnssfgo_eig2_live60_off_on_fl4x_20261017', 'SPX-3', '2024-11-02-17-43-10'),
+     'spx3': ('gnssfgo_spx3_live60_off_on_fl4w_20261017', 'SPX-3', '2024-11-02-17-43-10'),
+ }
+ 
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/transport_tools/live_receiver_protocol.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/transport_tools/live_receiver_protocol.py
+@@ -145,7 +145,7 @@
+         raise ValueError('unknown receiver_publication_policy')
+     if policy == 'fl4a_fixed_lag_incremental':
+         # Private FL4a adapter only. No nonlinear stationarity certificate is claimed.
+-        expected = '/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/receiver_cpk19.sh'
++        expected = '/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/receiver_cpk19.sh'
+         if config.get('receiver_model') != 'source_wnoa' or config.get('receiver_binary') != expected:
+             raise ValueError('FL4a policy requires the pinned fixed-lag wrapper')
+         if config.get('receiver_fixed_lag_seconds') != 7 or any(key.startswith('WNOJ_') for key in environment):
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/on/coverage_control.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/on/coverage_control.py
+@@ -5,7 +5,7 @@
+ import coverage_checks as legacy
+ S=Path(sys.argv[1]);P=Path(__file__).resolve().parent
+ a=json.loads((P/'input_audit.json').read_text());wanted=json.loads((P/'expected_headers.json').read_text());imu={}
+-duration=a['duration_s'];assert duration==355.02
++duration=a['duration_s'];assert duration==197.02
+ for topic,file in [('/boxi/cpt7/imu','cpt7_headers.csv'),('/boxi/alphasense/imu','alphasense_headers.csv')]:
+     with (S/file).open() as f:rows=list(csv.DictReader(f))
+     key=next(k for k in rows[0] if k.endswith('.stamp'));ts=[int(r[key]) for r in rows]
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/on/verify_effective_on.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/on/verify_effective_on.py
+@@ -10,10 +10,10 @@
+ 
+ root = Path(__file__).resolve().parent
+ source = Path(sys.argv[1])
+-assert os.environ['CBSMS_BAG_DURATION_SEC'] == '355.02'
++assert os.environ['CBSMS_BAG_DURATION_SEC'] == '197.02'
+ assert os.environ['CBSMS_BAG_RATE'] == '0.20'
+-assert os.environ['CBSMS_MISSION']=='2024-11-03-13-59-54'
+-assert os.environ['CBSMS_BAG_START_SEC']=='5.7'
++assert os.environ['CBSMS_MISSION']=='2024-11-02-17-43-10'
++assert os.environ['CBSMS_BAG_START_SEC']=='29.0'
+ enabled = os.environ['CBSMS_CBS_ENABLE'] == 'true'
+ assert enabled is (root.name=='on'), 'Mode mismatch'
+ assert os.environ['CBSMS_KIMERA_MODE'] == 'stereo'
+@@ -149,10 +149,10 @@
+ assert not any('SNAPSHOT' in k or 'REAL_INPUT' in k or 'GLIM_E1_REAL_AUDIT_ROOT' == k for k in env(glim_pid))
+ assert 'e1b4a_real_input' not in glim_loaded
+ with (source/'effective_mode_check.json').open('x') as f:
+-    json.dump(dict(passed=True, checked_before_playback=True, playback_rate=0.20, requested_s=355.02, glim=expected,
++    json.dump(dict(passed=True, checked_before_playback=True, playback_rate=0.20, requested_s=197.02, glim=expected,
+                    actual_profile_sha256=profile_checks,actual_imu_parameters=imu_params,
+                    kimera_body='alphasense_imu',glim_body='cpt7_imu',wire_body='cpt7_imu',
+                    T_alphasense_cpt7=matrix.tolist(),kimera_receive=enabled,glim_receive=enabled,
+                    kimera=expected_flags, kimera_native_only_outgoing_information=False, mixed_prior_feedback_user_accepted=True, kimera_candidate_env={k:env(pid)[k] for k in ('CPK9_PRIOR_REFRESH','FL4Q_ENABLE','FL4M_RETIREMENT','CPV40_REFRESH','CPV38_OFF_REFRESH','CPV76_PERSISTENT_COMPAT')}, prior_failure_archive=str(archive_dir), private_kimera_sha256='985c115d3573446f65ef4ce7cc4125e514b4922fed6445ed05cbc4dbdfb70a09', kimera_pid=pid, kimera_argv=argv,
+                    kimera_maps=loaded,glim_maps=glim_loaded,glim_persistent_compat=env(glim_pid)['CPV82_GLIM_PERSISTENT_COMPAT'],glim_revision_covariance='native_local',cached_provider_sha256='6f71292d29d974a0555abd9fda6b2370fdab81ca634a4e1343c216d2a762d2ca'), f, indent=2)
+-print('CP-V108 split IMU topics/body transform and current private builds verified; Matched requested receive mode, persistent.')
++print('CP-V111 split IMU topics/body transform and current private builds verified; Matched requested receive mode, persistent.')
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/on/glim_profile_on.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/on/glim_profile_on.launch
+@@ -117,7 +117,7 @@
+         <env name="GLIM_SHARED_NATIVE_PROVIDER" value="shared_native"/>
+         <env name="CPV82_GLIM_PERSISTENT_COMPAT" value="1"/>
+         <env name="GLIM_REVISION_COVARIANCE_POLICY" value="native_local"/>
+-        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/full_on_source/e1b_profile.jsonl"/>
++        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/full_on_source/e1b_profile.jsonl"/>
+ 		<param name="config_path" value="$(arg config_path)" />
+ 		<param name="glim_dump_path" value="$(arg glim_dump_path)" />
+ 		<param name="deterministic_input_event_log_path" value="$(arg glim_deterministic_input_event_log_path)" />
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/on/source.env
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/on/source.env
+@@ -1,18 +1,18 @@
+ # Source in the established ROS Noetic container after setting CBSMS_RUN_NAME
+ # to off_source/on_source and CBSMS_CBS_ENABLE to false/true.
+-: "${CBSMS_RUN_NAME:?Set fresh EIG-2 source run name}"
++: "${CBSMS_RUN_NAME:?Set fresh SPX-3 source run name}"
+ : "${CBSMS_CBS_ENABLE:?Set false or true}"
+-export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared
++export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared
+ export CBSMS_RUN_NAME CBSMS_CBS_ENABLE
+ export ROS_LOG_DIR="${CBSMS_RUN_ROOT}/${CBSMS_RUN_NAME}/ros_logs"
+ export CBSMS_PROJECT_ROOT=/workspace/cbs_gtsam4.3
+-export CBSMS_MISSION=2024-11-03-13-59-54
+-export CBSMS_BAG_START_SEC=5.7
+-export CBSMS_BAG_DURATION_SEC=355.02
++export CBSMS_MISSION=2024-11-02-17-43-10
++export CBSMS_BAG_START_SEC=29.0
++export CBSMS_BAG_DURATION_SEC=197.02
+ export CBSMS_POST_PLAYBACK_DRAIN_SEC=25
+ export CBSMS_BAG_RATE=0.20
+-export CBSMS_SEED_CLOCK_SECS=1730638815
+-export CBSMS_ROS_MASTER_PORT=11632
++export CBSMS_SEED_CLOCK_SECS=1730565898
++export CBSMS_ROS_MASTER_PORT=11642
+ export CBSMS_USE_EXISTING_ROS_MASTER=true
+ export CBSMS_KIMERA_MODE=stereo
+ # The recovered classic Kimera source path is "current", not experimental RIGHT.
+@@ -35,7 +35,7 @@
+ export CBSMS_KIMERA_RECEIVER_AUDIT_MAX_SAMPLES=40
+ export CBSMS_KIMERA_RECEIVER_AUDIT_STRIDE=20
+ export CBSMS_DIAGNOSTIC_NODE_OUTPUT=log
+-export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/on/input_profiles/glim_config
+-export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/on/input_profiles/kimera_profile
++export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/on/input_profiles/glim_config
++export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/on/input_profiles/kimera_profile
+ 
+-export CBSMS_DATASET_DIR=/workspace/cbs_gtsam4.3/src/datasets/GrandTour/EIG-2
++export CBSMS_DATASET_DIR=/workspace/cbs_gtsam4.3/src/datasets/GrandTour/SPX-3
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/on/active_window_on.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/on/active_window_on.launch
+@@ -17,7 +17,7 @@
+   -->
+ 
+   <arg name="glim_config_path"
+-       default="/workspace/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/on/input_profiles/glim_config"/>
++       default="/workspace/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/on/input_profiles/glim_config"/>
+   <arg name="kimera_mode" default="mono"/>
+   <arg name="kimera_enable" default="true"/>
+   <arg name="kimera_params_folder"/>
+@@ -111,7 +111,7 @@
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_stride" value="20"/>
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_max_updates" value="40"/>
+ 
+-  <include file="/workspace/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/on/glim_profile_on.launch">
++  <include file="/workspace/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/on/glim_profile_on.launch">
+     <arg name="config_path" value="$(arg glim_config_path)"/>
+     <arg name="glim_node_output" value="$(arg diagnostic_node_output)"/>
+     <arg name="glim_input_imu_topic" value="$(arg glim_input_imu_topic)"/>
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/on/coverage_checks.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/on/coverage_checks.py
+@@ -76,7 +76,7 @@
+     backend = sorted(set((w, n) for w, name, n in counters if name == 'VioBackend [ms]'))
+     assert frontend and backend
+     assert all(b[1] >= a[1] for a, b in zip(frontend, frontend[1:])), 'frontend counter regressed'
+-    assert 3547 <= frontend[-1][1] <= 3550, ('full-window frontend incomplete', frontend[-1])
++    assert 1967 <= frontend[-1][1] <= 1970, ('full-window frontend incomplete', frontend[-1])
+     assert backend[-1][1] == len(t), ('backend final count', backend[-1], len(t))
+     evidence = []
+     for i in np.flatnonzero(np.diff(t) > 1):
+@@ -88,14 +88,14 @@
+             backend_before_ms=updates[int(i)][1], backend_after_ms=updates[int(i+1)][1],
+             low_disparity_lines=sum(w is not None and lo-.3 <= w <= hi+.3 for w in low)))
+     return dict(passed=True, logs=[str(p) for p in logs], frontend_processed=frontend[-1][1],
+-        synchronized_input_pairs_reference=3550, frontend_reference_after_startup=3547,
++        synchronized_input_pairs_reference=1970, frontend_reference_after_startup=1967,
+         backend_processed=backend[-1][1], sequential_native_ids=True, gaps=evidence,
+         scope='Native counters, not a new per-image receipt or branch-decision audit.')
+ 
+ 
+ def main():
+     source = Path(sys.argv[1]); duration = float(sys.argv[2]); journal = Path(sys.argv[3])
+-    assert duration == 355.02, 'This coverage contract is for the frozen full EIG-2 window'
++    assert duration == 197.02, 'This coverage contract is for the frozen full SPX-3 window'
+     profile = (source/'kimera_profile/FrontendParams.yaml').read_text()
+     assert float(re.search(r'^max_intra_keyframe_time:\s*(\S+)', profile, re.M)[1]) == KEYFRAME_LIMIT
+     imu = []
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/on/source_runner_on.sh
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/on/source_runner_on.sh
+@@ -2,10 +2,10 @@
+ set -euo pipefail
+ 
+ project_root="${CBSMS_PROJECT_ROOT:-/workspace/cbs_gtsam4.3}"
+-dataset_dir="${CBSMS_DATASET_DIR:-${project_root}/src/datasets/GrandTour/EIG-2}"
+-mission="${CBSMS_MISSION:-2024-11-03-13-59-54}"
++dataset_dir="${CBSMS_DATASET_DIR:-${project_root}/src/datasets/GrandTour/SPX-3}"
++mission="${CBSMS_MISSION:-2024-11-02-17-43-10}"
+ duration_sec="${CBSMS_BAG_DURATION_SEC:-45.0}"
+-bag_start_sec="${CBSMS_BAG_START_SEC:-5.7}"
++bag_start_sec="${CBSMS_BAG_START_SEC:-29.0}"
+ bag_rate="${CBSMS_BAG_RATE:-0.75}"
+ post_playback_drain_sec="${CBSMS_POST_PLAYBACK_DRAIN_SEC:-25}"
+ ros_master_port="${CBSMS_ROS_MASTER_PORT:-11368}"
+@@ -43,8 +43,8 @@
+ run_dir="${run_root}/${run_name}"
+ experiment_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ launch_file="${experiment_dir}/active_window_on.launch"
+-[[ "${cbs_enable}" == true && "${cbs_direction}" == bidirectional && "${duration_sec}" == 355.02 && "${bag_rate}" == 0.20 && "${bag_start_sec}" == 5.7 && "${mission}" == 2024-11-03-13-59-54 && "${kimera_mode}" == stereo ]] || { echo "CP-V108 EIG-2 split-IMU full ON355.02 only." >&2; exit 2; }
+-glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-/workspace/cbs_gtsam4.3/runs/eig2_split_imu_live_pair_cpv108_20261104/prepared/on/input_profiles/glim_config}"
++[[ "${cbs_enable}" == true && "${cbs_direction}" == bidirectional && "${duration_sec}" == 197.02 && "${bag_rate}" == 0.20 && "${bag_start_sec}" == 29.0 && "${mission}" == 2024-11-02-17-43-10 && "${kimera_mode}" == stereo ]] || { echo "CP-V111 SPX-3 split-IMU full ON197.02 only." >&2; exit 2; }
++glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-/workspace/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/on/input_profiles/glim_config}"
+ kimera_profile_source="${CBSMS_KIMERA_PROFILE_SOURCE:-}"
+ kimera_calibration_overlay="${CBSMS_KIMERA_CALIBRATION_OVERLAY:-${project_root}/src/cbsms/config/grandtour_kimera/eth1_mono_shared_cpt7}"
+ reference_bag="${CBSMS_REFERENCE_BAG:-${dataset_dir}/${mission}_ap20_prism_position.bag}"
+@@ -64,7 +64,7 @@
+ export_endpoint_audit_enable="${CBSMS_EXPORT_ENDPOINT_AUDIT_ENABLE:-false}"
+ diagnostic_node_output="${CBSMS_DIAGNOSTIC_NODE_OUTPUT:-screen}"
+ kimera_bad_update_audit_dir="${CBSMS_KIMERA_BAD_UPDATE_AUDIT_DIR:-}"
+-seed_clock_secs="${CBSMS_SEED_CLOCK_SECS:-1730638815}"
++seed_clock_secs="${CBSMS_SEED_CLOCK_SECS:-1730565898}"
+ 
+ if [[ "${cbs_enable}" != true && "${cbs_enable}" != false ]]; then
+   echo "CBSMS_CBS_ENABLE must be true or false." >&2
+@@ -584,7 +584,7 @@
+   "kimera_receive_cbs_beliefs=${kimera_receive_external_beliefs}" \
+   "glim_cbs_mode=${glim_cbs_mode}" \
+   "kimera_cbs_odom_factor_mode=persistent" \
+-  "experiment=eig2_split_imu_live_pair_cpv108_20261104" \
++  "experiment=spx3_split_imu_live_pair_cpv111_20261104" \
+   "glim_sensor_pair=hesai+cpt7_imu" \
+   "kimera_sensor_pair=${kimera_sensor_pair}" \
+   "glim_body_frame=cpt7_imu" \
+@@ -642,5 +642,5 @@
+ fi
+ 
+ touch "${run_dir}/complete.marker"
+-echo "CP-V108 EIG-2 split-IMU persistent CBS-ON355.02 source run complete: ${run_dir}"
++echo "CP-V111 SPX-3 split-IMU persistent CBS-ON197.02 source run complete: ${run_dir}"
+ echo "GLIM rows=${glim_rows}, Kimera rows=${kimera_rows}, EKF rows=${ekf_rows}, G2K messages=${g2k_messages}, G2K injected=${g2k_injected}, K2G injected=${k2g_injected}"

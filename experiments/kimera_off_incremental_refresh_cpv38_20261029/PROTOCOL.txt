@@ -1,0 +1,50 @@
+CP-V38 — private OFF incremental current-state refresh integration
+2026-10-29. User-authorized next gate after CP-V37; NO live replay/ON.
+
+HYPOTHESIS / SINGLE CHANGE
+Extend CP-K9's immutable original-prior chart representation to an explicit
+OFF-only incremental refresh. After the normal update and before marginalizing,
+promote unanchored marginal Gaussians using the unchanged CP-K9 ownership/cache
+checks, then perform ONE empty iSAM2 update with force_relinearize/fullSolve.
+This local pinned GTSAM implementation uses forceFullSolve to select ALL nonfixed
+keys; promotion must account for every fixed key first. Full back-substitution
+completes the new step. Preserve ordinary update count/cadence, timestamps,
+factor slot ownership, native factors, measurements, noise and smart policies.
+Keep original update result bookkeeping for new-factor slots/unused keys.
+No rebuild, LM, damping, line search, weight changes, new landmarks, smart cache
+clearing, repeated convergence loop or nonlinear-cost acceptance. This is ONE
+extra GN step per cycle, not nonlinear stationarity. GTSAM may internally take
+its normal batch-reelimination path when all keys are affected.
+
+Opt-in CPV38_OFF_REFRESH=1 requires CPK9_PRIOR_REFRESH=1, FL4Q_ENABLE=0,
+FL4M_RETIREMENT=remove and existing native GN/active_window_temporary mode.
+Absent/0 preserves baseline. Reject pending/applied incoming belief state.
+Candidate update is transactional, including native mutable smart caches and
+LOCAL marginal cache. Unsupported inputs/configurations fail closed.
+
+PREDECLARED GATES (before first compile/run)
+1. Disabled wrapper outputs/covariances match unchanged CP-K9 OFF exactly;
+   repeat candidate outputs/covariances exact; native smart pointers retained.
+2. Prior conversion preserves original off-anchor energy relative <=1e-10;
+   original prior objects remain immutable through later marginalizations.
+3. Promoted refresh theta equals pre-refresh current estimate <=1e-9 in local
+   coordinates; incremental refreshed solution versus independent native graph
+   Gaussian solve <=1e-7 relative local-vector norm. No factor slot/key changes.
+4. Cache/fresh-at-theta/tree equations relative <=1e-7; native next marginal
+   equals dense Schur reference <=1e-7. These are LINEAR consistency checks.
+5. Joint LOCAL covariance agrees with independent inverse/Gaussian marginal
+   <=1e-6 relative, finite/SPD; retained cross-blocks tested. Numerical values
+   need not equal baseline because refreshed states/Jacobians can differ.
+6. Fixed-lag lifecycle repeated at least8 retirements, no stale/dangling keys.
+7. Injected failures restore states/theta/delta/tree/slots/timestamps/locks,
+   smart caches and LOCAL covariance exactly; pending peers and invalid modes
+   reject before update. Unknown ownership/cache rejection retained from CP-K9.
+8. Release twice identical, focused ASan/UBSan once; vendor DSOs uninstrumented.
+   Private Kimera DSO build/dependency gate only after tests pass. No dataset.
+
+Fresh exclusive output roots; preserve every failure and distinguish source/test
+repairs from successful validation. Do not relax tolerances after seeing results.
+Protect CP-V37/36 artifacts, original runs, RRDs and binaries; reverify667-file
+Hesai checkpoint at closeout. >=8GiB preflight, >=5GiB reserve. Start only the
+initially stopped Noetic build container and restore it; no ROS jobs.
+No production edits/default promotion, deletion, commits or push.

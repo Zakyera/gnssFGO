@@ -1,0 +1,13 @@
+attempt_build2 Release and sanitizer fixtures pass. The real audit stops on its
+FIRST saved valid point at the rigid-world point-equivariance gate (<1e-6m).
+The strict audit remains FAILED; original logs and inputs are preserved.
+
+Fresh measure_gate_failure is a diagnostic extension to measure the failed
+invariance, NOT a retry to obtain acceptance. Keep the same1e-6m threshold and
+status-equality criteria, collect all violations, and write passed=false if any
+violation occurs. No source replay, graph solve, changed saved parameters,
+disabled triangulation guard or altered weights. No live result can be promoted.
+Native DLT(no embedded refinement/LOST) is required explicitly in this readout.
+The exact-observation synthetic gate remains valid; a noisy DLT estimate need
+not be exactly equivariant under world translation. Quantify magnitude and
+whether any actual validity change occurs before assigning causal significance.

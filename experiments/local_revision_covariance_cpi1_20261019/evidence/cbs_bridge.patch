@@ -1,0 +1,58 @@
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/shared_linearization_s4_provider_20261012/release_2/overlay/cbs_bridge.cpp	2026-10-12 23:21:24.654905749 +0300
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/local_revision_covariance_cpi1_20261019/cbs_bridge.cpp	2026-10-19 08:59:14.544849627 +0300
+@@ -1,4 +1,4 @@
+-#include "Provider.h"
++#include "RevisionCovariance.h"
+ #include "LocalUpdateBatching.h"
+ #include "RuntimeProfile.h"
+ #include <glim_ros/cbs_bridge.hpp>
+@@ -681,13 +681,14 @@
+       outgoing_marginal_source_ == OutgoingMarginalSource::SidecarBatch ||
+       mode_ == Mode::ActiveWindowTemporary;
+   const bool native_provider = shared_native::providerEnabled();
++  shared_native::validateRevisionCovariance(shared_native::revisionCovariancePolicy(), native_provider);
+   if (native_provider && (mode_ != Mode::ActiveWindowTemporary ||
+       outgoing_marginal_source_ != OutgoingMarginalSource::Direct || live_revision_enable_ ||
+       outgoing_odom_covariance_mode_ != "schur_relative_between"))
+     throw std::runtime_error("shared-native provider unsupported CBS configuration");
+   ROS_INFO_STREAM("SHARED_NATIVE_PROVIDER_SETUP enabled=" << native_provider
+       << " independent_local=" << (sidecar_required && !native_provider)
+-      << " revision_covariance=unchanged_main");
++      << " revision_covariance=" << shared_native::revisionCovarianceName(shared_native::revisionCovariancePolicy()));
+   if (sidecar_required && !native_provider) {
+     sidecar_ = std::make_unique<cbs::IncrementalFixedLagBpsamSmoother>(
+         smoother_lag_sec_, bpsam_params);
+@@ -1553,11 +1554,15 @@
+           const auto from_pose = smoother.calculateEstimate<gtsam::Pose3>(from_key);
+           const auto to_pose = smoother.calculateEstimate<gtsam::Pose3>(to_key);
+           const auto mean = from_pose.between(to_pose);
+-          const auto joint = smoother.jointMarginalInformation(
+-              gtsam::KeyVector{from_key, to_key});
+-          const auto result = cbs::relative_pose_covariance::compute(
+-              joint, from_key, to_key, from_pose, to_pose, mean,
+-              outgoing_odom_covariance_mode_);
++          const auto policy = shared_native::revisionCovariancePolicy();
++          const auto result = shared_native::revisionCovariance(
++              policy, &smoother, from_key, to_key, from_pose, to_pose, [&] {
++                const auto joint = smoother.jointMarginalInformation(
++                    gtsam::KeyVector{from_key, to_key});
++                return cbs::relative_pose_covariance::compute(
++                    joint, from_key, to_key, from_pose, to_pose, mean,
++                    outgoing_odom_covariance_mode_);
++              });
+           const gtsam::Matrix6 covariance = result.covariance;
+           const bool changed =
+               gtsam::Pose3::Logmap(it->second.mean.between(mean)).norm() > 1e-12 ||
+@@ -1565,6 +1570,12 @@
+           if (changed) {
+             ++it->second.revision;
+             if (export_endpoint_audit_enable_) {
++              ROS_INFO_STREAM("GLIM_CBS_REVISION_COVARIANCE_PROVENANCE_ROW,"
++                  << from_index << "," << to_index << "," << it->second.revision
++                  << "," << update_index << ","
++                  << shared_native::revisionCovarianceName(policy));
++            }
++            if (export_endpoint_audit_enable_) {
+               ROS_INFO_STREAM(
+                 "GLIM_CBS_REVISION_BELIEF_ROW,"
+                 << std::setprecision(17) << static_cast<char>(self_agent_id_)

@@ -1,0 +1,196 @@
+FULL GRANDTOUR COVARIANCE RANKING — COMPLETED 2026-10-23
+
+Scope and outcome
+-----------------
+Two diagnostics on the saved full ETH1 CP-K23, EIG-2 CP-K24/24A and SPX-3
+CP-K26 captures: uncertainty-versus-relative-error curves, and error when
+retaining the lowest-uncertainty fraction. Translation and rotation are
+separate, at first publication and near four seconds of source revision age.
+Eight six-panel overview figures, each in PNG and SVG, are in outputs/.
+
+No source, fuser, replay or container was run. No covariance, model, launch,
+weight, guard, baseline result or previous analysis artifact was changed.
+No fitted multiplier, factor rejection or tuning recommendation is installed.
+
+Main conclusion: covariance has useful ranking information, particularly
+Kimera translation at first publication. It is NOT uniformly calibrated or
+a reliable universal health gate. Ranking quality depends on source, sequence,
+translation versus rotation, and revision age. Constant scaling can change
+overall source influence, but cannot repair an incorrectly ranked belief.
+
+These are local relative-belief errors, NOT new full-trajectory ATE results.
+The existing native GLIM/native Kimera/ONLINE fusion reports remain the
+trajectory comparison. A lower ratio on a selection curve does not establish
+that deleting those factors would improve fusion: topology/information change.
+
+1. Reading the figures
+---------------------
+*_reliability.png: x is sqrt(mean block covariance trace) in each approximately
+equal-count uncertainty bin; y is actual tangent-error norm RMS for that bin.
+Each point pools beliefs with similar reported uncertainty. Above the grey
+diagonal means reference error is larger than that reported norm scale.
+This is NOT a test against independent, perfect ground truth, a calibrated
+confidence bound, or a full-matrix NEES/NIS calculation.
+
+*_risk.png: rank beliefs by increasing block covariance trace, then retain
+10%,15%,...,100%, including ties. y = selected RMS / all-belief RMS for the
+same source/mode/age cohort. Below 1 means selection improved average error;
+above 1 means it selected a worse subset. The full RMS appears in the legend.
+OFF and ON have separate denominators: compare legend values for absolute
+accuracy, not curve height alone. No beliefs were removed from any estimator.
+
+All figures: blue OFF, orange ON; rows ETH1/EIG-2/SPX-3, columns GLIM/Kimera.
+First publication describes information when first sent. Near4s is a diagnostic
+snapshot of later revisions, not an instruction to delay online operation.
+
+2. Matched populations and validation
+------------------------------------
+Same exact endpoint intervals in OFF and ON, separately per source. Near4s
+also requires the same physical source-update timestamp in both runs; select
+closest to 4.00 s after the physical end of the belief, within +/-0.15 s.
+First and near4s figures use the SAME eligible intervals. Selection does not
+use covariance or error. Arrival delay is not used as revision age.
+
+                         First IDs OFF/ON  Common IDs  Eligible  No common
+                                                                near4s epoch
+ETH1  GLIM               3452 / 3452       3452        3413      39
+ETH1  Kimera             1473 / 1474       1473        1452      21
+EIG-2 GLIM               3541 / 3541       3541        3501      40
+EIG-2 Kimera             1744 / 1744       1690        1643      47
+SPX-3 GLIM               1930 / 1930       1930        1883      47
+SPX-3 Kimera              924 /  926        914         875      39
+
+12,767 matched intervals, each with OFF/ON first/near4s samples: 51,068 rows.
+Actual selected age approximately 3.900--4.101 s, medians approximately 4.000 s.
+Intervals are approximately 0.20 s; GLIM and Kimera intervals are NOT matched
+to each other. Cross-source figures are descriptive, not paired head-to-head
+tests at identical physical endpoints. No source-ID matching across runs.
+
+Endpoint coverage in seconds relative to each selected capture start:
+ETH1 GLIM 1.020--342.219; Kimera 0.500--298.098.
+EIG-2 GLIM 0.916--351.016; Kimera 0.400--349.397.
+SPX-3 GLIM 0.916--189.916; Kimera 0.400--189.998.
+These are endpoint envelopes, not claims of uninterrupted trajectory coverage.
+Unmatched intervals and missing near4s histories are explicitly excluded and
+listed in audit.json. All first-publication summaries, before these exclusions,
+are retained as coverage context in audit.json/cohort_audit/all_first_context.
+ETH1 native Kimera continues into the stationary tail after new short-belief
+endpoints cease near 301--302 s; this plot cannot invent later short beliefs.
+
+Read-only checks passed: 37 input/helper/protocol hashes unchanged; all first
+means/traces/errors reproduce the preceding full-run error analysis; selected
+covariances finite, symmetric and SPD; endpoint/body-frame/timestamp joins
+checked; reference interpolation brackets <=5 ms with zero unsupported rows;
+selection/bin conservation and scale-invariant ranking synthetic tests pass.
+All eight rendered figures visually inspected. See outputs/audit.json.
+
+3. Translation: does the most confident half have lower error?
+-------------------------------------------------------------
+Table entries are selected-half RMS / all-belief RMS. Smaller is better;
+1 means no benefit. Values compare within each column, not absolute OFF/ON
+performance. Actual RMS values and rank correlations are in summary.csv.
+
+Source/sequence     First OFF  First ON   Near4s OFF  Near4s ON
+GLIM ETH1             0.875     0.882       0.868       0.907
+GLIM EIG-2            0.882     0.958       0.877       0.953
+GLIM SPX-3            0.707     0.665       0.779       0.694
+Kimera ETH1           0.086     0.787       0.116       0.885
+Kimera EIG-2          0.143     0.657       0.397       0.839
+Kimera SPX-3          0.190     0.323       0.287       1.123
+
+Examples at first publication:
+- Kimera ETH1 OFF: 104.195 mm all -> 8.935 mm most-confident half.
+  ON: 6.352 mm all -> 4.997 mm half. OFF ranks its large errors better, but
+  ON is much more accurate overall. A better normalized curve is not better ATE.
+- Kimera EIG-2 ON: 7.147 -> 4.698 mm; SPX-3 ON: 9.517 -> 3.071 mm.
+- GLIM EIG-2 ON: 9.889 -> 9.472 mm, only a 4.2% reduction; rank correlation
+  0.044. By contrast GLIM SPX-3 ON: 3.285 -> 2.186 mm, a 33.5% reduction;
+  rank correlation 0.545. GLIM trace is not a universal poor-belief detector.
+
+First-publication Kimera translation rank correlations OFF/ON:
+ETH1 0.866/0.386; EIG-2 0.715/0.459; SPX-3 0.808/0.661.
+Useful signal exists; the claim that its covariance contains no reliability
+information would be wrong. This still does not certify cross-source weights.
+
+4. Important exception: confident revised SPX-3 startup beliefs
+--------------------------------------------------------------
+Kimera SPX-3 ON near4s: all 875 beliefs RMS 4.518 mm; lowest-uncertainty half
+(438 beliefs) RMS 5.075 mm, 12.3% WORSE. Spearman correlation remains positive
+at 0.604: a good typical ranking can coexist with a harmful confident tail.
+
+Inspection of the SAME retained samples locates much of this to three initial
+edges; they account for 54.65% of this cohort's total squared translation error.
+They remain included in all plots; no startup trimming or rescoring was done.
+
+SPX-3 ON      Physical end  First error   Near4s error  Near4s uncertainty
+Kimera edge   seconds      mm            mm            percentile (low first)
+0 -> 1        0.400         87.074        69.245          4.46%
+1 -> 2        0.600         88.854        56.097         30.29%
+2 -> 3        0.800        159.847        42.664         40.00%
+
+For 0->1, translation trace falls from 2.3572866e-3 to 2.6986703e-7 m^2
+(reported norm scale about 48.55 -> 0.52 mm), while relative error only falls
+87.07 -> 69.24 mm. Thus the later belief is less wrong but far more confident.
+The source update is 21, revision20, journal event line1248 (one-based);
+first version is line43. These are real recorded payloads, not plotted
+interpolation or time-alignment estimates. Same physical endpoints and body.
+
+This is a localization of the diagnostic exception, NOT a proven explanation
+of the estimator's internal cause, proof that all later revisions are bad,
+or a claim that these source factors dominated the fuser. No startup exclusion,
+age weighting or multiplier follows automatically from this observation.
+
+5. Rotation must be considered separately
+-----------------------------------------
+The same confident-half test for rotation behaves differently:
+- ETH1 Kimera ON: 1.102 first, 1.172 near4s (10.2% and 17.2% worse subsets).
+- EIG-2 GLIM ON: 1.001 first, 1.007 near4s (essentially no selection benefit).
+- SPX-3 Kimera ON: 0.638 first, 0.654 near4s (useful selection).
+Do not infer rotational reliability from a successful translation plot or
+combine m^2 and rad^2 into one trace or proposed global tuning coefficient.
+
+Magnitude also differs substantially. Across the matched cohorts, actual
+rotation-error RMS / sqrt(mean rotation trace) ranges about 5.3--51.9;
+translation ranges about 1.05--16.3. These are discrepancy ratios, NOT fitted
+covariance multipliers or statistical consistency certificates. Squaring or
+copying them into the optimizer would not be justified by this diagnostic.
+
+6. What this supports next — no action performed
+-----------------------------------------------
+Separate two questions:
+(a) calibration: how much overall trust does a source/block deserve?
+(b) ranking: does its reported uncertainty identify its worse intervals?
+A fixed positive covariance multiplier can change (a), never (b). The curves
+are unchanged if all covariances of one source/block are multiplied by a
+constant. Therefore a simple scale may be a useful controlled sensitivity
+experiment, but it cannot fix the confident-startup exception or weak ranking.
+
+Do not choose a universal ON/OFF scale, trace threshold or drop-half policy
+from these plots. First-versus-revised behavior and translation-versus-rotation
+must remain explicit. If a manual scaling experiment is later authorized,
+predeclare a small common candidate set and judge it on held-out sequences,
+with untouched source runs/means/topology; do not optimize each mission's ATE.
+No specific scale has been selected, and no follow-up run has been launched.
+
+7. Limits and retained provenance
+--------------------------------
+Reference is IE-TC, sharing CPT7 with the sources, not independent prism truth.
+Its covariance/cross-correlation with the source is unavailable; reference,
+timing/calibration errors and estimator bias can contribute to discrepancies.
+Trace removes directional/cross-term information; a block trace alone does
+not tell us optimizer information or correction influence. Overlapping edges
+and revisions are dependent; no independence-based significance tests are used.
+Low uncertainty may also select slower/easier motion, not detect health causally.
+LOCAL covariance paired with corrected MAIN means is the frozen protocol,
+not proof that the payload is statistically calibrated or independent.
+
+These samples are source versions from incoming journals, not a certificate
+that every version was installed in the receiver. ETH1 known expired revisions
+and EIG-2/SPX-3 acknowledged finite-recording EOF omissions remain unchanged.
+Peer mean-only covariance alignment is unchanged and not audited here; the
+relative reference uses each original source belief's own physical endpoints.
+
+Files: PROTOCOL.txt (predeclared method), analyze.py, outputs/audit.json,
+outputs/samples.csv (all selected values/provenance), outputs/summary.csv,
+eight PNGs and eight SVGs. supplement.json records the startup-tail inspection.
+DELIVERABLE_STATUS: SAVED_DATA_DIAGNOSTICS_COMPLETE_NO_TUNING

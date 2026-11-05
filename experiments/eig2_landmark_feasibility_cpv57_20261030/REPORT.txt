@@ -1,0 +1,159 @@
+CP-V57 — Suspect1: can the rejected visual tracks actually fit?
+2026-10-30. SAVED-DATA LANDMARK DIAGNOSIS COMPLETE; SUSPECT1 REMAINS OPEN.
+This supersedes CP56's recommendation to move to suspect2. We did not do so.
+Final verification and preservation authority: verification.json/complete.json.
+
+BOTTOM LINE
+===========
+The visual-support loss has MIXED causes at the saved first CBS insertion:
+  * Some native DLT rejections are avoidable with better landmark positions,
+    even with camera poses/observations/weights and all rejection gates fixed.
+  * Other tracks genuinely cannot satisfy the3px limit at those revised poses.
+    This is inconsistency of that fixed pose/observation configuration, not a
+    verdict that the image measurements, GLIM or Kimera are physically correct.
+  * No graph solve was run; neither improvement of the trajectory nor causation
+    of the full zigzag is demonstrated. Do NOT close suspect1 or promote a fix.
+
+SCOPE / TIMING
+==============
+CP51 Hesai EIG-2 first GLIM admission, update6 at1.599933183s after capture start
+(bag+7.299933183s), GLIM5->7 / Kimera x4->x5. Read CP56's saved native camera
+poses, measurements, calibration and activity.32factor instances lose validity
+at either the ordinary or final result; inspect all32 plus initial cache slot571.
+Three actual saved states x33slots x3coordinate representations=297readouts.
+Representations: original, artificial world translation[3,-2,1]m, pure rotation.
+No new source capture, graph optimizer, fusion run, trajectory scoring, model/
+covariance weighting study, production change, guard relaxation or deletion.
+
+The ordinary-result camera poses are the input to the NEXT refresh solve.
+Final-result checks are post-solution evaluations, NOT an additional graph solve.
+Initially285nonzero native visual factors become266at refresh; final evaluation
+has267. The following counts describe LOSSES from the initially-valid set, not
+net support: other initially-invalid tracks become valid in the same transition.
+
+RESULTS AT FIXED CAMERA POSES
+============================
+                                                     After ordinary  After final
+Initially-valid factors rejected as outliers                  25           27
+  distinct camera/observation geometries                      23           25
+A point exists satisfying ALL3px/depth/10m gates               13           14
+  distinct geometries                                        11           12
+No such point: verified numerical incompatibility             12           13
+Recovered by unconstrained original smart-L2 fitting           7            3
+Additional recovery by distance-constrained smart-L2            0            2
+Other initially-valid factors rejected by native rank           4            3
+
+All rank-rejected instances have a geometrically feasible point, but that does
+NOT establish sufficient observability. Native rank threshold1 is unchanged;
+these factors are NOT counted as admissible recoveries. No guard was bypassed.
+
+The7ordinary L2 recoveries are5distinct geometries: slots678/899,705,719,897,
+911/912. Final5recoveries are4geometries:705,706,719,911/912. Identical slots
+678/899 and911/912 are duplicate camera/observation geometries; we report both
+factor-instance and distinct-geometry denominators, not27independent landmarks.
+The existing graph's duplicate functions are not a new discovery or tested
+cause here; no factors were removed.
+
+IMPORTANT: merely finding a point that passes the MAX-error gate does NOT mean
+that the original least-squares objective selects it. Ordinary13feasible versus
+7L2-recovered and final14versus5are different claims. Do not present a minimax
+existence search as native Kimera optimization, a weight change or a ready fix.
+The final extra2L2recoveries use a constrained fit just inside the original10m
+distance bound; unbounded fits head far beyond10m and must still be rejected.
+Simply switching on an unconstrained EPI refinement would not automatically
+deliver these2recoveries. All candidate costs/depths/distances are retained.
+
+ILLUSTRATIVE ACTUAL ORDINARY-RESULT CASES
+=======================================
+Factor    Native max error   L2 max error  L2 max distance   Interpretation
+678/899        4.3681px         2.7929px        1.0998m      avoidable rejection
+705            4.9472px         2.2309px         .7633m      avoidable rejection
+911/912       21.2599px         2.2107px        7.7478m      avoidable rejection
+669            4.0911px         4.0436px        4.8652m      no feasible3px point
+712            3.0409px         3.0435px        4.6930m      L2 fails; another
+                                                          point passes2.9517px
+
+Thus a large native reprojection error does not necessarily mean the entire
+track is unusable. Conversely, better triangulation cannot rescue all of the
+lost support while holding these particular revised camera poses fixed.
+
+WHAT WAS COMPUTED AND CHECKED
+============================
+1. Independent NumPy homogeneous DLT reproduces native saved status for every
+   selected record, including rank, positive depth,10m and max3px rules. Existing
+   CP56 larger parity evidence remains intact; no failed gate was relabelled.
+2. Landmark-only nonlinear least squares: fixed cameras and measurements,
+   original residual components(uL,uR,v) for stereo, (uL,v) for missing right,
+   uniform sigma3, no robust loss or discarded observations. Separate mono-
+   triangulation objective (duplicated stereo v) retained for comparison.
+   Four deterministic initial guesses; local solver success is NOT a global
+   minimum certificate or nonlinear stationarity of the camera/IMU/CBS graph.
+3. Feasibility: with positive depth, a3px image-error circle defines a convex
+   cone for the landmark. Directional halfspaces are necessary conditions.
+   Nonnegative weighted combinations provide numerical incompatibility
+   certificates; bounded equality residual is explicitly included. Independent
+   code recognizes every used row as a valid pixel/depth/distance constraint.
+   75certificates across repeated coordinate/state comparisons,300halfspaces;
+   minimum verified contradiction margin.00171914. Not75unique tracks and not
+   formal exact-arithmetic/interval proof. No verdict from local solver failure.
+4. Feasible points checked by TWO projection implementations. Exactly-boundary
+   rounding is not accepted as a waiver: candidate searches use slightly tighter
+   interior limits, while acceptance remains strictly3px,positive depth,10m.
+5.2544independent point/projection/cost checks;39native valid smart-cost matches,
+   max discrepancy8.17e-13. Synthetic exact stereo, missing-right, analytic point
+   Jacobian finite differences, incompatible measurements and translation tests
+   pass. No unclassified geometric cases among the selected297readouts.
+
+CACHE AND WORLD-ORIGIN SUSPECTS REMAIN SEPARATE
+=============================================
+At the actual ON post-step states, CP56 warm/cold Gaussian equations and support
+agree: clearing cache does not recover the observed rejected tracks.
+Initial571 remains warm-valid/cold-rank-rejected(rank2); a geometric fit is
+possible, but this does not invalidate the native observability guard. Removing
+that cached contribution alone is an untested graph ablation, not an all-clear.
+
+Among the33selected factors, geometric feasibility classifications are unchanged
+under BOTH artificial coordinate transforms. Native DLT classifications change
+under translation, as CP56 already demonstrated. Crucially, NONE of the actual
+post-step rejected instances becomes native-valid under this particular artificial
+translation. Some change between invalid categories; final911/912, for example,
+remain invalid. This chosen origin experiment therefore does not show an origin
+change rescuing the actual lost support. It neither rules out other numerical
+origin effects nor explains the full zigzag by itself. Pure rotations pass.
+Original CP56 strict world-origin invariance failure stays FAILED.
+
+CAUSAL INTERPRETATION / NEXT CHECK WITHIN SUSPECT1
+================================================
+The first CBS factor moves the camera/IMU solution; those resulting camera poses
+then lose visual support at refresh. We have isolated a real weakness in the
+DLT-then-reject procedure for a subset, not proved the origin of the first move.
+Losing otherwise-usable constraints could amplify later pose/bias revisions.
+The incompatible subset also shows why triangulation alone may not solve it.
+
+Next causal test should isolate landmark refinement before outlier rejection,
+with unchanged rank/depth/distance/reprojection gates, observations and weights.
+First compare ORIGINAL versus refinement-only at the SAME saved post-ordinary
+state feeding refresh. Preserve the original prior function/native smart factors
+and compare old-pose rotation/translation and gyro/accel-bias revisions, not just
+valid-factor count. Keep initial-cache clearing as a SEPARATE intervention.
+If that bounded step test is promising, a controlled propagated comparison is
+still required to establish reduced shaking; frozen later ON checkpoints alone
+cannot stand in for an independently propagated alternate history.
+No such graph ablation or source replay was launched in CP57. No move to suspect2.
+
+ARTIFACTS / DIAGNOSTIC REPAIRS
+=============================
+findings.json is the consolidated numerical authority; it retains every selected
+factor/state/transform, fit, feasible point or incompatibility certificate.
+attempt_inner1/tracks.jsonl preserves the raw native/L2/LP comparisons;
+boundary_analysis.json and convex_candidates.json preserve supplementary searches.
+certificate_verification.json independently verifies all certificate constraints.
+
+Original synthetic LP boundary search returned unresolved after60cuts; preserved
+failure.json. Fresh attempt_inner1 only adds a strictly INNER candidate search.
+Rational SLSQP minimax can fail even on feasible data: failures/unresolved states
+are preserved, not treated as incompatibility. Fixed-threshold cone search finds
+valid witnesses for the remaining cases. Original consolidate.py caught a point
+rounding across3px in the second projector; CONSOLIDATION_REPAIR.txt documents the
+stricter-witness repair in consolidate_v2.py. No numerical acceptance gate relaxed.
+The old captures and CP56 evidence have not been edited or rerun.

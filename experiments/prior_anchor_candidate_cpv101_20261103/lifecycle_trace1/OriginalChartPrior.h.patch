@@ -1,0 +1,41 @@
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/persistent_compatibility_cpv76_20261101/release_fixture1/source_snapshot/OriginalChartPrior.h
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/prior_anchor_candidate_cpv101_20261103/candidate/OriginalChartPrior.h
+@@ -1,5 +1,5 @@
+-// Diagnostic reference ONLY. Never inserted into the live smoother.
+-// Adapts FL2a's immutable original-chart marginal to GTSAM 4.3 and biases.
++// CP-V101 isolated candidate, based on frozen CP76. Not deployed.
++// Preserve the immutable original-chart quadratic; never reset its anchor.
+ #pragma once
+ #include <cbs/bpsam/fixed_lag_objective_audit.h>
+ #include <gtsam/linear/HessianFactor.h>
+@@ -20,7 +20,6 @@
+   Vector eta_;
+   double constant_;
+  public:
+-  // CP-V66 passive archive access; no object layout or function change.
+   const LinearContainerFactor& cpv66Original() const { return *original_; }
+   const Values& cpv66Anchor() const { return anchor_; }
+   OriginalChartPrior(const LinearContainerFactor& factor, const Values& theta)
+@@ -40,8 +39,21 @@
+     return cbs::fixedLagFactorErrorInChart(*original_,values,anchor_);
+   }
+   GaussianFactor::shared_ptr linearize(const Values& values) const override {
+-    // Validate types and dimensions before GenericValue's unchecked cast.
++    // Keep validation before equals_: GenericValue's cast is unchecked.
+     error(values);
++    bool at_anchor = true;
++    for (Key key : keys()) {
++      if (!anchor_.at(key).equals_(values.at(key), 0.0)) {
++        at_anchor = false;
++        break;
++      }
++    }
++    // At exactly the stored anchor the chart derivative is identity and its
++    // displacement zero. Preserve the Gaussian coefficients exactly; finite
++    // differences here can falsely trip the unchanged CPK9 preservation guard.
++    // This is NOT a near-anchor threshold or a new linearization point.
++    if (at_anchor) return original_->factor()->clone();
++
+     const size_t n = H_.rows();
+     Matrix J = Matrix::Zero(n,n); Vector d(n);
+     std::vector<size_t> offsets{0};

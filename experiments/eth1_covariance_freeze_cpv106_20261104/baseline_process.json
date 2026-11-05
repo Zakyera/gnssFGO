@@ -1,0 +1,37 @@
+{
+  "started": "2026-11-04T10:52:58.049129+02:00",
+  "args": [
+    "docker",
+    "exec",
+    "-e",
+    "LD_LIBRARY_PATH=/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib",
+    "-e",
+    "OMP_NUM_THREADS=1",
+    "ubuntu-jammy-humble-nvidia",
+    "bash",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_prior_fix_live_cpv103_20261103/prepared/receiver_cpk19.sh",
+    "--mode",
+    "sources",
+    "--timeline",
+    "record",
+    "--solver",
+    "isam2",
+    "--support-policy",
+    "uniform_imu",
+    "--support-period-ns",
+    "100000000",
+    "--receiver-startup-samples",
+    "59",
+    "--receiver-model",
+    "source_wnoa",
+    "--event-stream",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_prior_fix_live_cpv103_20261103/prepared/full_on_receiver/events.csv",
+    "--out",
+    "/home/yeranis/repos/gnssFGO/experiments/eth1_covariance_freeze_cpv106_20261104/baseline"
+  ],
+  "identity": {
+    "pid": 34298,
+    "proc_start": 397999,
+    "command": "docker exec -e LD_LIBRARY_PATH=/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib -e OMP_NUM_THREADS=1 ubuntu-jammy-humble-nvidia bash /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_prior_fix_live_cpv103_20261103/prepared/receiver_cpk19.sh --mode sources --timeline record --solver isam2 --support-policy uniform_imu --support-period-ns 100000000 --receiver-startup-samples 59 --receiver-model source_wnoa --event-stream /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_prior_fix_live_cpv103_20261103/prepared/full_on_receiver/events.csv --out /home/yeranis/repos/gnssFGO/experiments/eth1_covariance_freeze_cpv106_20261104/baseline "
+  }
+}

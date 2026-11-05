@@ -1,0 +1,122 @@
+CP-V59 — Initial smart-factor571 cache: isolated causal test
+2026-10-30 | EIG-2 Hesai, saved first CBS admission, suspect1 only
+
+FINDING
+Clearing this particular initial triangulation cache does NOT materially reduce
+the early Kimera rotational/bias disturbance. The cache discrepancy is real,
+but the resulting ordinary+refresh solution barely changes. This is evidence
+against cache571 being the dominant explanation at this event, not a global
+all-clear for caching or proof of the full-run zigzag's root cause.
+No production fix, full replay, covariance change or suspect2 test was made.
+
+WHAT WAS COMPARED
+Input: CP51 full_on_source/checkpoints/update_6, capture1.599933183s
+(bag offset7.299933183s). First GLIM5->7 belief into Kimera x4->x5, slot929.
+A: exact original native cached graph and saved initial state; ordinary GN
+step followed by one refresh GN step.
+B: exactly the same initial state, factors, weights, priors and functions;
+ONLY smart-factor571's camera-pose triangulation cache cleared before ordinary.
+No second cache clear before refresh; no new landmark fit, factor removal,
+guard bypass or joint intervention with CP58.
+Native sigma3/rank1/depth/10m/3px tests, smart Jacobians and Schur unchanged.
+There are four real saved-graph GN steps total, not four source runs.
+
+REPRODUCTION AND ISOLATION
+Original ordinary Gaussian equations: exact (relative difference0).
+Original exact-start refresh Gaussian equations: exact (difference0).
+Ordinary state vs saved native state:3.3373554660e-10 mixed tangent norm.
+Chained refresh state vs saved native state:1.2287879973e-10.
+All355 untouched factor Gaussian systems exactly equal at common initial state.
+Restoring ONLY571 in modified snapshot recovers original serialized bytes.
+Original in-memory and disk snapshots unchanged. Both states were initially
+byte-identical, independently confirmed by reading the native binary archive.
+Native linear-solve backward residuals8.69e-18..2.20e-17; these checks do NOT
+establish nonlinear stationarity.
+
+CACHE AND SUPPORT
+                                  A original       B cache571 cleared
+Ordinary nonzero smart factors        285                  284
+571 at ordinary linearization       valid              degenerate
+Refresh nonzero smart factors         266                  266
+571 at refresh linearization        valid                valid
+Final post-evaluation valid count     267                  267
+
+The cold initial triangulation fails native rank testing and therefore makes
+571 contribute zero, as designed under ZERO_ON_DEGENERACY. At the resulting
+refresh state it is valid again. No classification differences remain between
+A and B in native post-evaluation after either ordinary or refresh, across all
+338 smart factors. Final post-evaluation is read-only on clones, NOT a third
+solve and NOT the support count used by the preceding refresh solve.
+
+STATE REVISIONS (not reference errors)
+Maxima over previously existing states x0..x5. Units stated explicitly.
+                                   A original           B cache571 cleared
+ORDINARY ONLY
+Common tilt, deg                    0.0429935012          0.0437781109
+Maximum position change, mm         1.8936160             1.8707402
+Maximum rotation change, deg        0.2837026641          0.2844690646
+Maximum velocity change, m/s        0.0088766924          0.0088918544
+Maximum accel-bias change, m/s2      0.0118139636          0.0119776703
+Maximum gyro-bias change, rad/s      0.0071356532          0.0071364912
+
+REFRESH ONLY (each arm's own ordinary result -> its refresh result)
+Common tilt, deg                    0.0818410624          0.0818860859
+Maximum position change, mm         4.0504977             4.0825105
+Maximum rotation change, deg        0.0898603496          0.0901597467
+Maximum velocity change, m/s        0.0055940341          0.0056089233
+Maximum accel-bias change, m/s2      0.0144797367          0.0144010372
+Maximum gyro-bias change, rad/s      0.0007364828          0.0007356384
+
+NET (before admission -> after ordinary + refresh)
+Common tilt, deg                    0.0785919482          0.0784028295
+Maximum position change, mm         5.7219138             5.7258107
+Maximum rotation change, deg        0.3225806858          0.3223883099
+Maximum velocity change, m/s        0.0107605540          0.0107626501
+Maximum accel-bias change, m/s2      0.0228479232          0.0228158538
+Maximum gyro-bias change, rad/s      0.0074609410          0.0074610022
+
+Net maximum rotation revision decreases only0.05964%; gyro-bias revision is
+essentially unchanged (+0.00082%). This is NOT a trajectory accuracy gain.
+Direct final A-to-B difference across all x0..x6:
+position<=0.005172644mm; rotation<=0.000218871deg;
+velocity<=4.684489e-6m/s; accel-bias<=3.800414e-5m/s2;
+gyro-bias<=3.737824e-7rad/s.
+
+NATIVE FINAL RESIDUALS AND COSTS
+IMU summed cost:                    1.2537544376 -> 1.2538952059
+Bias-between summed cost:          15.7493307546 ->15.7485015964
+CBS cost:                         44.2788723914 ->44.2782780039
+CBS rotation residual, deg:         0.0172160961 -> 0.0172155461
+CBS translation Log norm, m:        0.0066586217 -> 0.0066589363
+These are native costs, not covariance-calibration findings. Smart cost totals
+depend on rejected factors and are not an independent merit function.
+
+VALIDATION, PRESERVED FAILURE, AND CLOSEOUT
+Release and ASan/UBSan synthetic cache/nonmutation/restoration/two-step native
+solver fixtures pass in both builds; vendor shared libraries uninstrumented.
+Independent SciPy rotation/vector check:250 scalar metrics agree within
+2.22e-16; ordinary/final post-evaluation classification sets identical.
+Original attempt FAILED before any saved-graph solve on an overly strict
+exact-zero localCoordinates test. Both containers restored stopped. Independent
+byte parsing proved initial/theta1912-byte blocks exactly equal; CP52 already
+recorded the2.676212666e-19 tangent roundoff. Fresh attempt_exact_values replaces
+only this harness assertion with exact serialized-byte equality. Original
+source, binaries, failure and receipts preserved; no scientific guard relaxed.
+analysis.json and independent_check.json contain all per-state numbers/input
+hashes. attempt_exact_values contains the successful commands/build/receipts.
+complete.json/verification.json certify final protected-input integrity, all
+667 original saved Hesai checkpoint files, owned jobs exited and both originally
+stopped containers restored. No source capture, scoring, production update,
+default promotion, deletion or push.
+
+INTERPRETATION / BOUNDARY
+The early disturbance survives BOTH isolated checks: CP58 restoring the seven
+admissible refined landmarks, and CP59 refreshing this initial cached landmark.
+That narrows suspect1; it does not close every visual-support hypothesis.
+CP56's independently demonstrated world-origin sensitivity of native DLT/rank
+remains a separate unresolved implementation property. Its causal influence on
+the actual ordinary+refresh response is NOT measured by this cache-only test.
+Any next test should stay isolated within suspect1 and preserve the same
+physical problem while changing only coordinate representation, with proper
+transformation/parity checks. That is a proposal, not an authorized/launched
+experiment or a reason to change weights. Do not jump to suspect2 by this report.

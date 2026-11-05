@@ -1,0 +1,127 @@
+CP-K9 — isolated incremental prior-coordinate repair candidate
+2026-10-19. User authorized Proceed after CP-K8 settings lock.
+
+STATUS: FOCUSED RELEASE AND SANITIZER GATES PASSED; private Kimera DSO built and
+linked-symbol/dependency inspection passed. No dataset replay, performance
+result or full-run claim. Final protected-file receipt: validation.json.
+
+WHAT CHANGED
+One experimental header overlay in
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/kimera_incremental_prior_cpk9_20261019.
+The source tree, installed libraries and historical private builds are untouched.
+
+The existing marginal Gaussian is a function of displacement from its original
+anchor. A native unanchored LinearContainerFactor forces associated iSAM2 keys
+to stay at that anchor. Force-relinearize/full-solve flags do not override this:
+ISAM2-impl.h removes fixedVariables from the relinearization set. After a large
+temporary-CBS change, surviving nonlinear IMU/visual factors can consequently
+retain an old coordinate linearization. This is the mechanism supported by the
+earlier FL4p/CP-K6 evidence, not proof of the entire CP-K5 trajectory failure.
+
+At an ACTUAL scheduled temporary-peer retirement, CP-K9:
+  1. Stages immutable OriginalChartPrior wrappers for native marginal containers.
+  2. Checks all prior keys, matching cached Gaussians and fixed-key ownership.
+  3. Replaces only those factor objects in their existing slots; releases only
+     the now-accounted-for fixed locks. Theta, delta, Gaussian cache and tree
+     remain untouched at conversion.
+  4. Runs the existing BPSAM/iSAM2 update/removal/marginalization. Its original
+     temporary-CBS force-relinearize/full-solve behavior can now refresh them.
+
+The prior remains E(x)=0.5*d(x)^T H d(x)-eta^T d(x)+c/2, where d(x) is Local
+from the IMMUTABLE original anchor. The existing adapter transforms this prior's
+linearization to the current tangent. It does not reset the anchor or turn the
+prior into a zero-residual constraint. OriginalChartPrior.h is byte-identical
+to FL4q/CP-K6. No eliminated measurements or original nonlinear factors are
+recovered; marginalization's existing approximation remains.
+
+Unlike FL4q, this does not use global nonlinear-cost acceptance, LM, core rebuild,
+new iteration counts, or a new smart-landmark solver. It preserves native smart
+factors and June temporary-CBS staged-residual/rollback guards. Existing
+transaction support is reused only when temporary CBS factors are present;
+ordinary OFF does not gain a core-copy transaction. Promotion itself is staged
+atomically. Unknown prior/selector/mode/cache cases fail closed.
+
+EXPERIMENTAL SELECTORS (NOT A FULL-RUN LAUNCH PROFILE)
+  CPK9_PRIOR_REFRESH=1
+  FL4Q_ENABLE=0
+  FL4M_RETIREMENT=remove
+  existing active_window_temporary, temporary_linear=false
+Same policy for OFF and ON; only actual CBS retirement activates promotion.
+Default CPK9 absent/0 preserves the old code path. FL4q and CP-K9 cannot both
+be enabled. Do not substitute parent-shell overrides for nested launch values.
+No launch/controller was generated or edited; CP-K8 launch_allowed stays false.
+
+SETTINGS PRESERVED
+Classic source-to-source temporary CBS; unchanged means, LOCAL dense covariance
+calculation/scales, 0.20s horizon and one-pair policy; sensor profiles, lag,
+initialization, IMU model, smart-factor model, thresholds and guards unchanged.
+gnssFGO remains FL4e7s source WNOA,100ms independent supports,no central IMU/GNSS,
+Gaussian scales1 and downstream stable-ID replacement. No fusion code touched.
+Changed estimates/linearization can change numerical covariance values; this
+is not a promise of unchanged posterior covariances after active promotion.
+
+FOCUSED TESTS
+Uses the real private BPSAM fixed-lag wrapper and linked workspace GTSAM, not a
+mock optimizer. Small Pose3/velocity/bias/IMU/visual/temporary-peer fixture.
+All predeclared tolerances in PROTOCOL.txt retained.
+
+  Promotion Gaussian relative error               9.7320411084717064e-13
+  Original-prior off-anchor energy relative error  0
+  Refreshed cache/tree/dense relative error         1.36565453040716e-16
+  Second peer-removed marginal relative error      2.2491584937951832e-14
+
+At promotion: exact theta/delta/state/tree/cache preservation and non-prior
+pointer identity. Actual remove-before-marginalize matches an independently
+eliminated peer-removed Gaussian reference. Old prior objective stays unchanged
+through subsequent native relinearization and marginalization.
+
+Actual 12-update fixed-lag wrapper includes native stereo smart factors and
+repeated real CBS retirements. Native smart pointers remain intact. Candidate
+actually changes the ON solution (state-coordinate norm difference5.4911e-5
+in this synthetic fixture); not an accuracy metric or claimed improvement.
+OFF outputs AND covariances match ordinary OFF exactly at all12 updates.
+Deterministic repeat is exact. Injected failure after promotion/update/
+marginalization restores states, theta, timestamps, locks, tree, native smart
+caches, CBS bookkeeping, factor slots/pointers and LOCAL covariance exactly.
+Invalid fixed ownership/cache and conflicting selectors reject correctly.
+
+Release passed twice with byte-identical output. Focused ASan/UBSan passed;
+vendor GTSAM/CBS DSOs uninstrumented and leak detection disabled. Sanitizer
+link retained the inherited OpenCV3.4/4.2 dependency warnings; no sanitizer
+runtime error. No tolerance/model change or failed numerical trial was hidden.
+Two test-source type/fixture bookkeeping corrections were made before the first
+compile; initial inputs.json is retained, final current hashes in validation.json.
+
+LIMITS / NEXT DECISION
+This validates incremental coordinate/cache/retirement correctness of one
+candidate, NOT convergence on ETH1, a full-run repair, statistical independence,
+or unchanged native GTSAM behavior after activation. This intentionally permits
+boundary-key relinearization after preserving the prior's original function.
+No covariance tuning or new CBS protocol is being proposed.
+
+Next useful gate is ONE separately authorized bounded Kimera-only ON diagnostic
+using the already saved CP-K5 incoming payloads through the old102.199s failure
+(111s bound), with the original guards and no automatic retry. Ordinary OFF
+already passed this bound in CP-K4b; the code-level OFF parity gate here does
+not constitute a new real-data OFF run. Do not launch another full matched
+GLIM/Kimera/fusion experiment until the bounded gate supports it.
+
+Evidence: PROTOCOL.txt,NativePriorRefresh.h,prepare.py,test.cpp,build.py and
+final_checks.py here; generated private headers and release_initial/san_initial/
+backend_initial under the run root. No commits or push requested/performed.
+
+PRIVATE BUILD
+libkimera_vio.so SHA256:
+  be637ad745f73bf12596d3bf06754f56ed7bcadfdb8b4792b94c4fcfee62aad9
+VioBackend.cpp,OriginalChartPrior.h,CurrentChartFallback.h,RetirementAudit.h,
+LinearParityAudit.h and libcbs.so are unchanged copies of CP-K1. Changes are
+NativePriorRefresh.h plus two private CBS header hooks (no class data-layout
+change). The old FL4q code remains compiled but is disabled by the candidate
+selector contract. ldd -r found no missing dependency/unresolved symbol.
+Only the Noetic build container was started; no ROS/bag/estimator was launched.
+
+FINAL INTEGRITY: validation.json passes;2069 protected file hashes and52 CP-K8
+settings hashes unchanged. Both pre-existing containers restored to stopped;
+owned build/test jobs exited. git diff --check passed. First final-check attempt
+could not read the Docker socket under sandbox permissions; the same read-only
+check completed with scoped permission, without overwriting evidence or reruns.

@@ -1,0 +1,40 @@
+CP-V46 -- saved-checkpoint CBS equation ablation, 2026-10-30
+
+Authorization: user's "proceed" to the three-way comparison. Exactly five
+CP-V44 checkpoints, updates21--25. No source replay, scoring, covariance
+investigation, weight/prior changes, iterative optimization or live promotion.
+
+Graph/start: after_ordinary/checkpoint.bin graph and initial Values. Captured
+ordinary estimate is the reproduction target. before_ordinary estimate is the
+old-window movement reference. Five windows are independent, not propagated.
+
+B: all original factors and equations. First require cached/fresh augmented
+Hessian relative difference <=1e-12 and captured-step aggregate mixed-unit
+tangent error <=1e-6. These are reproduction gates, not stationarity criteria.
+If any B fails, preserve failure and do not interpret/execute the other arms.
+A: remove all explicit Pose3 Between CBS factors, retaining Gaussian slots,
+all native equations, identical start, initial priors and solver ordering.
+C: replace only CBS Gaussian Jacobian blocks by the full derivative of
+Local(measured, Between(p1,p2)), with identical residual and original whitening.
+No global GTSAM macro/library change. Native smart factors and initial-prior
+Jacobians are unchanged. No marginal prior/fixed variable may be present.
+
+Solve one GN step, same native EliminatePreferCholesky and sorted Values key
+ordering in each arm. A/B/C costs evaluated with identical cloned original
+nonlinear factors, reporting native-only and CBS components separately. Do not
+compare unlike objective totals as evidence of improved accuracy. Log physical
+IMU residuals, smart activity, old-window tilt/pose displacement and bias change.
+
+Controls: Release and ASan/UBSan fixtures for all twelve corrected pose columns,
+whitening/sign, same error, common-left-transform invariance, unchanged native
+Gaussian blocks and slot/key occupancy; byte-exact snapshot nonmutation and
+prior evidence hashes before/after. Vendor DSOs are not sanitizer-instrumented.
+Only the stopped Noetic container is temporarily started for this offline
+executable; restore it afterward. Humble stays stopped. No ROS launch scripts.
+
+Interpretation: A is ON-conditioned (historical estimates/visual measurements
+already influenced by ON), NOT a reproduced OFF baseline. C resembling B
+demotes the Jacobian approximation as the cause of early large tilt. A/C
+improvement would establish only single-step sensitivity, not a full solution,
+nonlinear convergence, trajectory accuracy or late-event diagnosis. Preserve
+CP-V44/45 and all frozen source settings and evidence. No blind retries.

@@ -1,0 +1,35 @@
+2026-10-29 — precise online receipt scope, not a source rerun
+
+The original strict analysis requires equal paired-file/ROS counts. Full-run
+inspection instead finds3456paired observer rows and3454ROS rows, with BOTH
+original absolute and new incremental topics containing exactly IDs0..3453.
+The independently recorded cbs.bag also contains exactly those3454IDs for each
+topic. No missing/duplicate/interior IDs. Original MAIN active-pose graph rows
+reconstruct the same3454published poses under unchanged strict CP-V28 checks.
+
+Last recorded online pose ID3453: wall2026-10-29 00:25:28.913217 local.
+Paired-only IDs3454/3455: wall00:25:56.131631/56.188056, physical times
+1727775354074655056/1727775354174658060ns. The unchanged source runner waits25s
+after playback, stops and waits for recorders, THEN signals estimator shutdown
+(source_runner.sh lines434-445). Shutdown starts00:25:56 in estimators.log.
+These two output observer callbacks occur during shutdown after recording.
+No numerical failure, no failed prefix, no permission to rerun the capture.
+
+Supplemental analyze_receipted.py selects the ACTUALLY recorded ROS output,
+validates every recorded pose against same-update graph rows/paired CSV, both
+topics' bag IDs/counts and no interior omissions. The2unrecorded terminal
+observer rows are retained and explicitly excluded from the online comparison;
+their full paired-file algebra is still checked independently. No fabricated
+ROS receipt and no changing parameters, old masks, chain math or scoring.
+All original source/receiver gates and original failed analysis are preserved.
+Online span/first/last timestamps are disclosed in results; full capture does
+not mean every topic has identical tail or sampling cadence.
+
+The first supplemental analyzer (preserved as analyze_receipted_v1.py) stopped
+before writing outputs because it applied the online ROS-clock >= physical
+stamp check to the2UNRECORDED shutdown-only callbacks too. The final callback's
+physical point-cloud timestamp is260578ns past the already stopped ROS clock
+(1727775354174397482); it was never received online. Revised analysis retains
+the STRICT availability check for EVERY actual online receipt, monotonic clock
+and wall order for all rows, and discloses the shutdown clock deltas separately.
+This does not reclassify the final callback as online or alter the trajectory.

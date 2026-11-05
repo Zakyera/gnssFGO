@@ -1,0 +1,55 @@
+CP-V111 SPX-3 full usable live OFF/ON — prelaunch review 2026-11-04
+
+Original Alpha IMU bag downloaded automatically using the existing authenticated
+Kleinkram session. Exact IDc7d6ec1f-7a72-4e09-b663-79181cc06446; size3380171bytes;
+SHA256f5c304ac0437ea8f1d5c67c34f465839019b77bbfdd25363e4558c4469b7b24f.
+No overwrite or conversion. Initial CLI-order and raw-count expectation repairs
+are preserved in PREPARATION_REPAIR.txt; neither started sources or a receiver.
+
+Raw selected window passes1971Hesai/19702CPT7/39370AlphaIMU/1970left/1970right.
+All1970stereo timestamps match; no ETH1 missing-right omission applies. Every
+selected record/header timestamp agrees. Original selected-topic epoch unchanged
+by the new IMU; exact CP-K28 quiet window29..226.02s (197.02s), through lastHesai.
+First-second quiet checks pass for both IMUs; CPT7 gyro max.010764rad/s, Alpha
+.022091rad/s. Alpha median dt.0049947s,maxgap.0220233s; CPT7maxgap.010001s.
+Alpha mean acceleration has norm~9.55m/s2 versus CPT7~9.83, retained/not tuned.
+Message white-noise covariance agrees with the inherited200Hz noise model;
+this is not independent noise calibration or justification for biasRW.
+
+Mission camera intrinsics/distortion exactly match the CP103/108 input profiles;
+camera extrinsic max differences<7.83e-10, Hesai-CPT7<2.98e-10. Input profiles
+and private source binaries are byte-identical to CP108 in both arms. Mission
+TF is used for static Alpha-CPT7 transform and receiver fixture. Independent
+geometry/full6x6/Jacobian and host stdlib fixture/CLI imports pass. Actual Noetic
+fixture plus topics/body/TF/loadedDSO/hash and persistent reception checks are
+still required by the controller before any sensor playback.
+
+No CP106/110 covariance intervention. Same Gaussian1, CP82 GLIM5s MAIN and
+all-LOCAL shared-native covariance; corrected-private Kimera985c115d, CP76/
+CP40/CPK9/native smart25, FL4Q0/FL4Mremove, Alpha biasRW.0043/.000266,200Hz.
+Same receiver CP-K19 seven-second source_wnoa,Qcx1,100ms CPT7 clock, no central
+IMU/GNSS. Only CBS reception OFF versus ON. Profiles, priors, initialization,
+logging, scales, calibration conventions, seed policy and sampling unchanged.
+Native override/CP66 observer unset, fatal prior recorder remains active.
+
+SPX3-specific changes versus CP108: bag mission/directory, selected quiet
+window/clock seed1730565898, expected input counts, fresh paths/sessions/ports
+11641/11642, mission TF fixture and IE-TC reference. Report reference-path
+sanity floor is50m instead of EIG2's100m because SPX3 is a shorter route;
+all >100sample/pair, direct EVO/archive/SE3/no-scale checks remain. This does
+not alter an estimator, factor gate, data mask, or acceptance by accuracy.
+14negative+2saved-real injection schemas,5EOF controls and5synthetic EVO
+CLI contract tests pass. Synthetic tests are not SPX3 scientific results.
+
+One finite exclusive OFF->all4gates->ON->all4gates->owned cleanup/container
+restore->saved-only Method1 EVO->report verification->complete. No retry,
+duplicate stage, build/install/delete/tuning or other sequence. Both containers
+must be initially stopped and restored stopped.16GiB conservative output
+allowance plus5GiB reserve; runtimefloor5GiB. Final host admission still must
+pass old protected hashes, CP108383/CP10914/CP110327sealed outputs and667Hesai
+checkpoint copies/originals. Successful prepared.json is required before launch.
+
+Keep full-native versus six-curve common100ms coverage, ONLINE versus7s-finalized,
+and every preinit/EOF/expired omission separate. Persistent feedback/native-only
+information FALSE remains accepted, not repaired. IE-TC sharesCPT7; path is
+estimated polyline, not physical travel; parity is not stationarity/health.

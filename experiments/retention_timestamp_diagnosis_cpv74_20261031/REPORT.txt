@@ -1,0 +1,141 @@
+CP-V74 -- WHY THE FULL RETAIN REPLAY STOPPED
+2026-10-31. COMPLETE SAVED-DATA / SOURCE DIAGNOSIS; NO NEW RUN.
+
+BOTTOM LINE
+The immediate abort came from the private recorded-update replay guard, not a
+reported optimizer exception. Before that abort, RETAIN's native keyframe
+timestamps diverged from the frozen experiment's required timestamps by one
+camera frame (approximately100ms). Kimera correctly refused the mismatched
+belief. Its ordinary internal retry then encountered the replay guard's
+"duplicate already-released edge" assertion.
+
+This identifies a limitation of the new diagnostic replay: external beliefs
+and their original admission schedule were frozen, but the adaptive visual
+frontend was still running. Equal update numbers do not guarantee equal
+physical keyframes. It does NOT establish that old persistent CBS is broken,
+that retention is accurate over the full mission, or that the estimator was
+healthy throughout the failed prefix. CP73 stays FAILED and UNSCORED.
+
+1. EXACT FIRST TIMESTAMP DIVERGENCE
+Seconds below are relative to the selected EIG-2 window epoch
+1730638816563546034ns, not wall time or the beginning of the uncropped bag.
+
+Native update       Original / REMOVE (s)       RETAIN (s)
+1551                310.597449605               310.597449605
+1552                310.797448205               310.797448205
+1553                310.997446805               310.997446805
+1554                311.197445305               311.297444605
+1555                311.397443905               311.497443105
+
+All native timestamps through1553 match exactly. First mismatch1554 is
+99.999300ms; the next is99.999200ms. REMOVE matches all1762 original timestamps
+and completes the355.02s selected window (last output354.997128976s).
+RETAIN has1556 outputs, last311.497443105s; it is not a full result.
+
+At update1555, frozen sender edge3103->3105 targets receiver1553->1554:
+  required end stamp: 1730639127760991339ns
+  actual end stamp:   1730639127860990639ns
+The native floating-point match log reports end error0.099999428s against the
+unchanged0.050000000s tolerance. It also reports a0.299997807s actual interval
+versus the0.199998379s requested interval. This is a different physical endpoint,
+not a harmless renaming of the same state or a100ms change in wall-time delivery.
+Integer bag headers above are authoritative for exact nanosecond differences.
+
+2. THE RELEASE / ACCEPTANCE / RETRY CHAIN
+a. The private gate releases3103->3105 at its original scheduled update1555
+   and adds it to released_. That means handed to matching, NOT inserted.
+b. Native matching finds the wrong endpoint time, declines insertion, and
+   requeues the same belief under the existing bounded unmatched-retry policy.
+c. Update1555 still finishes a finite native solve and publishes its pose.
+d. At update1556, the readiness/gate path sees the requeued belief in the same
+   pending queue. It is already in released_, so the gate throws
+   CPV70_DELIVERY_FAILURE: duplicate already-released edge.
+e. The finite controller preserves the failure and closes/restores containers.
+
+The received-wire audit finds1551 unique, byte-exact prefix inputs in RETAIN;
+3103->3105 appears ONCE, not twice.1549 actual admissions match the original
+prefix exactly, including receiver IDs and all covariance entries; mean
+roundtrip error<=2.78e-16.1550 release receipts are consistent with the one
+released-but-unaccepted belief. Thus the duplicate assertion here is about an
+INTERNAL RETRY, not duplicate external data or double factor insertion.
+REMOVE receives/admitted all1743 exactly. Neither arm logged a readiness wait;
+do not attribute REMOVE's successful old failure point to an observed wait.
+
+Simply allowing this retry would NOT repair the experiment: a missing past
+keyframe does not appear retroactively, and the exact original endpoint/update
+contract has already failed. Increasing the50ms tolerance, changing timestamps,
+skipping the factor or binding it to a different interval would change the test.
+No guard was removed or relaxed.
+
+3. WHY CAN KEYFRAME TIMES DIFFER?
+Kimera does not force one backend state on every fixed0.20s grid. Its frontend
+uses elapsed time, tracked features and image disparity to select keyframes.
+The saved shared profile sets min interval0.19s, max interval5s, disparity
+threshold0.5px and IMU-rotation-assisted optical-flow prediction. Backend bias
+updates feed back to the frontend's IMU prediction. A changed backend history
+can therefore affect tracking and later keyframe decisions.
+
+This is a source-supported mechanism, NOT proof of the exact trigger here.
+Nearby LOW_DISPARITY/native no-motion-factor events differ between the two
+arms, including REMOVE1551 versus RETAIN1553. The raw bag contains BOTH stereo
+images at the expected1554 time AND both at RETAIN's selected later time, with
+identical header/record stamps and consecutive camera seq10456/10457.
+There is no raw stereo gap at these timestamps.
+
+However, raw availability does not prove runtime subscriber delivery. The
+per-frame visual-health audit and verbose keyframe-reason logs were not enabled.
+Saved evidence cannot uniquely distinguish adaptive selection, tracking/IMU-
+bias feedback, or runtime image loss at this event. No explicit dropped-image
+warning was found in the retained main log; absence is not proof of no loss.
+No evidence here establishes a camera/LiDAR extrinsic error or clock offset.
+
+4. RELATION TO THE USER'S OLD CONFIGURATION
+CP73 uses existing FL4m RETAIN retirement behavior through
+active_window_temporary + FL4M_RETIREMENT=retain on the corrected CP-K9/CP40
+backend. Private compatibility and recorded-update/readiness machinery were
+added for this controlled experiment. This is NOT an exact reproduction of
+the user's broader old cbs_odom_factor_mode=persistent configuration.
+
+The broader persistent mode also differs in admission/replacement/force-solve/
+recovery behavior; see CP68 REPORT.txt. It should not be blamed for this new
+replay assertion. Conversely, this diagnosis does not certify that broader
+mode with the current corrected backend or solve CP67's mixed-prior LOCAL
+export problem. Both remain separate from this one-way conditional replay.
+
+CP70's completed60s controlled result remains evidence that retaining the old
+information reduced late revisions there. CP73 does not extend that evidence
+to the full mission. Finite objective rows are not a stability/accuracy or
+nonlinear-stationarity certificate. No failed-prefix ATE/RPE was scored.
+
+5. DECISION / BOUNDARIES
+Explain these two layers before selecting another configuration: first the
+physical-keyframe mismatch, then the misleading duplicate-retry abort. The
+full experiment froze the belief schedule but not the frontend decisions.
+Do not continue patching the error message and call the pair controlled.
+If an exact retirement-only full test is later requested, its design must
+hold frontend packets/physical endpoints fixed as well, with verified passive
+replay; that is a new scoped experiment, not an authorized implementation here.
+A native old-persistent trial is a different question and must preserve the
+corrected backend and declare its admission/export semantics explicitly.
+No such run, implementation, profile change or automatic retry was launched.
+
+6. EVIDENCE / PRESERVATION
+analysis.json: exact wire/admission counts, all timestamp mismatches, target
+belief identity, indexed raw stereo headers and source assertions.
+remove_event_excerpt.txt / retain_event_excerpt.txt: line-numbered event logs.
+input_sha256.json:20 audited saved/source identities; verification.json:
+all544 CP73 pinned outputs and20 audited inputs unchanged before/after audit.
+CP73 original complete/status/REPORT/captures remain immutable. CP73 closeout
+reported9558 protected files and four-sequence Hesai667-file checkpoint PASS,
+no cleanup/integrity error, both containers restored stopped. Owned controller
+45231/supervisor45229 were confirmed exited at the preceding status check.
+No source capture, container start, solver, build, scoring, covariance/weight
+change, production edit, data deletion, default promotion or push in CP74.
+
+Source references under /home/yeranis/repos/V4RL/cbs_gtsam4.3:
+  runs/retention_readiness_cpv73_20261031/RecordedUpdateGate.h:75,110,123
+  runs/retention_readiness_cpv73_20261031/VioBackend.cpp:2162,2180,2431,2756,3409
+  src/Kimera-VIO/src/frontend/VisionImuFrontend.cpp:175
+  src/Kimera-VIO/src/frontend/StereoVisionImuFrontend.cpp:203,307,314,346
+  src/Kimera-VIO/src/pipeline/StereoImuPipeline.cpp:141
+  src/Kimera-VIO/include/kimera-vio/imu-frontend/ImuFrontend.h:140

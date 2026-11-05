@@ -1,0 +1,357 @@
+CP-K15 — why full ETH1 became late; saved-data and build diagnosis
+2026-10-20. COMPLETED READ-ONLY DIAGNOSIS, NOT A REPAIR OR NEW RUN.
+
+User requested a detailed investigation before considering 0.10x.
+No bag, source, receiver, saved-journal solver replay, build, settings change,
+tuning, automatic retry, commit or push was performed. Existing failed CP-K13
+and CP-K14 captures remain evidence, not completed full-sequence comparisons.
+
+BOTTOM LINE
+===========
+There are TWO different failures. Simply slowing to0.10x is not a solution
+to both:
+
+1. CP-K13 at0.30x: real GLIM computation/queue delay exhausted the receiver's
+   retention margin. GLIM MAIN GPU-factor linearization is overwhelmingly the
+   expensive stage. A concrete build integration defect was identified:
+   the loaded ROS bridge's GPU linearization-hook registration is compiled out.
+
+2. CP-K14 at0.20x: the first rejected revision is KIMERA, not GLIM. Its source
+   window spans11.10 physical seconds. The receiver retains7 seconds. A5.10s
+   gap between keyframes expands Kimera's count-based window beyond that limit.
+   This is a lifecycle/retention contract mismatch, not a slow Kimera backend
+   or an overloaded gnssFGO queue. Slower playback does not shorten it.
+
+No timing result here establishes an accurate or healthy complete OFF/ON pair,
+a safe universal playback rate, or statistically calibrated covariances.
+
+EXACT INPUTS AND METHOD
+=======================
+W=/home/yeranis/repos/V4RL/cbs_gtsam4.3
+G=/home/yeranis/repos/gnssFGO
+K13=W/runs/gnssfgo_eth1_full_rate030_cpk13_20261020/prepared
+K14=W/runs/gnssfgo_eth1_full_rate020_cpk14_20261020/prepared
+H=G/experiments/eth1_latency_cpk15_20261020
+
+Read original source output timestamps, source timing rows, E1B profile records,
+export logs, receiver receipts/events/committed progress, saved runtime maps,
+archived compile/link commands, and frozen source/private overlay code.
+No inference from ATE. No rerun. Timings below are measured WALL service time,
+not CPU utilization or isolated CUDA kernel duration.
+
+analyze.py -> evidence_v2.json: current primary numerical evidence.
+complete_analysis.py -> supplement.json: profile/build corroboration.
+Each includes input hashes. Native output sequence IDs are joined to source
+update IDs; the exact failed endpoints also agree with original failure audits.
+GLIM revision0 legacy metadata stores seconds in source_update, not a key ID,
+so its age cohort excludes revision0. Kimera includes first/revised versions.
+Timestamp arithmetic uses integer ns; glog/ROS log delivery differences use
+wall timestamps with their recorded microsecond precision.
+
+The first analyzer trial exposed GLIM's legacy revision0 metadata format before
+writing evidence. The first saved evidence.json selected the LAST journal row
+as the failed event, but transport journals contain a small post-failure tail.
+It is preserved and SUPERSEDED by evidence_v2.json, which selects the FIRST
+uncommitted event using stream_progress. No experiment/checker gate changed.
+Aggregate saved-source timing includes controller-cleanup tails; tables label
+physical bins and do not assert those rows were all accepted by the receiver.
+
+A. CP-K14: KIMERA WAS NOT COMPUTATIONALLY LATE
+============================================
+First uncommitted event214557, zero-based receipt214556:
+  source kimera_front, update1484, edge1459->1460, revision24.
+  first endpoint             1727775303953732500ns
+  update1483 native stamp     1727775309953703785ns
+  update1484 native stamp     1727775315053677107ns
+  adapter receipt ROS stamp   1727775315083859947ns
+  receiver oldest support     1727775308083475000ns
+
+Exact decomposition:
+  Producing update stamp - first endpoint       11.099944607s
+  Arrival stamp - producing update stamp         0.030182840s
+  Total first-endpoint age                      11.130127447s
+  First endpoint before oldest retained support  4.129742500s
+
+Revision23 had already been absorbed at archive commit212161. Receiver
+correctly fails closed with "revision after absorption": replacing an
+individual factor already folded into a marginal prior is not ordinary
+stable-ID factor replacement.
+
+Native keyframe interval1483->1484 =5.099973322s.
+Backend-completion wall interval =25.491937s, consistent with approximately
+5.10s/0.20 playback. The backend did NOT spend25.5s optimizing that update.
+At update1484:
+  backend spinOnce                        64.0802ms wall
+  optimize total                          63.3838ms
+  smoother update                         25.3071ms
+  outgoing belief/covariance/audit work    31.4337ms
+  factor preparation                       6.60281ms
+  marginal-graph substage                  11.4605ms (inside outgoing)
+
+First failed revision's glog wall time12:08:17.093773UTC.
+Adapter receipt wall time12:08:17.100321275UTC.
+Log-to-adapter delivery =6.548275ms wall, not multiple seconds.
+Its ROS-stamp freshness30.18ms must not be confused with wall time: playback
+advances dataset time at0.20x and /clock is discretely sampled.
+
+Frontend statistics continue to advance on non-keyframes between backend
+updates; the keyframe count stays1483 and becomes1484 at the next update.
+This supports keyframe selection, not a25s backend freeze. Verbose keyframe
+reason logging was disabled, so the exact selected branch/disparity value is
+NOT retained. Do not claim insufficient features, tracking failure, or a
+particular motion/scene cause solely from the gap.
+
+Code/settings explaining this:
+- Frozen FrontendParams.yaml:64-69 sets min interval.19s, max interval5s,
+  disparity threshold.5, minNumberFeatures0 and max-disparity1000.
+- Kimera-VIO/src/frontend/VisionImuFrontend.cpp:174-226,
+  shouldBeKeyframe(): min elapsed time alone does not force a keyframe.
+  Selection uses disparity/feature/forced/max-time conditions. Stable
+  low-disparity operation can wait until the max-time condition; sample
+  discretization explains why a nominal5s threshold can produce~5.1s.
+- Frozen BackendParams.yaml:70 sets nr_states25.
+- Actual CP-K9 VioBackend.cpp:4987-4994 assigns cur_id, NOT physical time,
+  as the smoother timestamp. The comment explicitly says it counts states.
+- Same private VioBackend.cpp:3670-3768 revises existing edges while both
+  endpoints exist in state_; it has no receiver7s age limit. This logger is
+  downstream data; it does not enable source-to-source live_revision.
+- FL3i Receiver.h:175,210 rejects revision after absorption; publish():221+
+  advances retention by newest support minus lagTicks_. FL4e retains this
+  receiver contract and repairs only its separate tree-retirement ordering.
+
+Thus "25 states ~5 seconds" held while keyframes were~.2s apart but is NOT a
+guarantee. Before the long gap, edge1459's age at update1483 was~6.0s.
+Then a5.1s physical interval passes while the receiver continues advancing
+its independent100ms support clock. Kimera legitimately revises that edge
+again when processing1484; the receiver has meanwhile discarded its support.
+
+At0.10x the same physical keyframe gap would take~51s wall time. Its source
+revision history would STILL be11.10s, before any transport overhead. Faster
+computers or slower playback cannot make that history fit in7s. Different
+execution ordering could change a future trajectory/keyframe selection, but
+is not a correctness guarantee and is not grounds for simply retrying.
+
+B. CP-K13: A REAL GLIM BACKLOG
+=============================
+First uncommitted event93340, source GLIM, update1335, edge1286->1288 rev47:
+  source history                              4.900110914s
+  producing update stamp -> adapter arrival    2.129388202s
+  total first-endpoint age                     7.029499116s
+  first endpoint before retained support       .0087159s
+
+The earlier audit used the printed revision0 endpoint, giving4.900110900/
+2.129388216s; the14ns difference is serialization precision, not a different
+event or timing policy. Revision46 had been absorbed at commit93336.
+
+Producing GLIM scan1335:
+  complete scan processing       626.766084ms wall
+  main smoother update           603.259931ms
+  post-smoother callback          20.373947ms
+    outgoing+revision subsection 18.3997ms
+The previous ten scans1326--1335 averaged556.108ms, with max725.530ms.
+At0.30x a10Hz LiDAR supplies one scan per333.333ms wall. Several consecutive
+updates exceed that budget, so queue age grows. The saved async internal queue
+peaks10; its counter is NOT the sum of every input queue. At scan1335 it reports
+3 remaining internal frames and a10-frame fetched batch; new input may wait
+separately. Thus the counter alone must not be converted to total latency.
+
+The actual producer timestamp is~2.13 dataset seconds behind current arrival,
+about7.1 wall seconds at nominal0.30x. The individual626.8ms scan cost is only
+part of this accumulated age. Complete input arrival/dequeue wall spans are
+not retained, so an exact split of every upstream millisecond is unavailable.
+The multi-scan over-budget burst plus queue and timestamp records establishes
+real source backlog without inventing a precise missing queue decomposition.
+
+Export-line-to-adapter delivery at the failing GLIM row is~8.316ms wall.
+Across logged GLIM revisions: median9.09ms/p9515.37ms. The original source
+record uses ROS time captured before its revision loop; that field does not
+measure CUDA/CPU duration. This is NOT seconds of log transport delay.
+
+C. WHAT MAKES GLIM HEAVY — VERIFIED BUILD/EXECUTION PATH
+========================================================
+E1B contexts identify MAIN separately from LOCAL/covariance/revision.
+In CP-K14:
+  instrumented MAIN total                   697.066s wall
+  individual synchronous GPU linearization  664.949s wall =95.39% of MAIN
+  all complete scan timers                 806.307s wall
+  synchronous calls / complete scan time     82.47%
+  warning-output time                        4.863s wall (~.70% of MAIN)
+  GPU precomputed-linearization cache hits       0
+  old independent LOCAL optimizer contexts       0
+
+CP-K13's corresponding MAIN synchronous fraction is94.55%.
+These nested timings must not be added together. Sum of owner wall durations
+is not process uptime or total GPU occupancy. Worker-time sums were not added.
+
+The private bridge actually loaded is:
+W/runs/local_revision_covariance_cpi1_20261019/libglim_ros.so
+SHA25642df73c172232a612da965bf43ead8ec454caf08434b84e2da5de74d26cdb79f
+Runtime maps also show the expected GPU factor DSO and CP-I3 cached native
+Gaussian provider; "GPU library loaded" does NOT mean batching hook registered.
+
+Concrete build finding:
+1. glim_ros1/src/glim_ros/glim_ros.cpp:57 prints
+   "register linearization hooks" UNCONDITIONALLY.
+2. Its actual registration call at59 is inside #ifdef BUILD_GTSAM_POINTS_GPU.
+3. glim_ros1/CMakeLists.txt:71-73 defines this macro only for BUILD_WITH_CUDA.
+4. The archived compile command for the EXACT reused glim_ros.cpp.o lacks that
+   macro; current build/glim_ros/CMakeCache.txt:39 also says BUILD_WITH_CUDA=OFF.
+   The archived command/object, rather than today's cache alone, is decisive.
+5. nm inspection of that object and the loaded private libglim_ros.so finds
+   NO LinearizationHook::register_hook reference and NO GPU-set factory
+   reference. It does contain the separate explicit LOCAL batching machinery.
+6. CP-I1 release_commands.json links that same E1B4a release2 object. Saved
+   effective_mode_check.json identifies the actual loaded bridge/provider paths.
+7. Runtime profile reports zero GPU precomputed-linearization cache hits and
+   millions of synchronous fallback calls, consistent with that missing hook.
+
+This is a concrete build/integration omission on the MAIN path, not a claim
+that the GPU is unused. Each LiDAR factor still calls CUDA synchronously.
+The misleading unconditional startup message concealed the missing batching
+registration. The compiled omission predates CP-K14; slowing playback did not
+introduce it, and CP-I3 caching did not reintroduce the old LOCAL optimizer.
+
+Call path:
+  OdometryEstimationIMU::update_smoother()
+  -> IncrementalFixedLagSmootherExtWithFallback::update()
+  -> IncrementalFixedLagSmootherExt::update()
+  -> ISAM2Ext update/relinearization
+  -> LinearizationHook (empty when no GPU hook was registered)
+  -> ordinary factor->linearize()/graph.linearize()
+  -> IntegratedVGICPFactorGPU::linearize()
+  -> no prepared linearization_result
+  -> derivatives->linearize() synchronous path.
+
+Relevant files:
+- E1B overlay odometry_estimation_imu.cpp:611 identifies MAIN timing scope.
+- gtsam_points/.../optimizers/linearization_hook.cpp:12-21 constructs only
+  registered hook sets; add/linearize/calc_linear_factors iterate these sets.
+- gtsam_points/.../optimizers/isam2_ext.cpp:90-139 and237-243 invoke GPU
+  preprocessing if present; otherwise per-factor fallback remains.
+- E1B overlay integrated_vgicp_factor_gpu.cpp:185-205 times prepared-result
+  consumption versus synchronous CUDA fallback separately.
+- CP-I3 source/ShadowObserver.cpp:110-146 clones MAIN's existing Gaussian cache;
+  it does not reevaluate these nonlinear GPU factors.
+
+Why cost grows although states remain bounded:
+The5s smoother has49--50 active frame states. But keyframe targets fill toward
+15, with2 voxel levels and links to the last2 frames. A new scan has about
+14 factors early, rising to36 in the mature workload; active scan-to-keyframe
+constraints therefore grow before saturating. Some retained keyframe targets
+are represented as unary factors once outside the optimized window.
+ISAM2 relinearization work also varies by update. Bounded poses do not mean
+constant factor count or a constant number of linearizations.
+
+Selected CP-K14 physical bins (initialization<5s excluded):
+                    30--60s    120--150s    210--240s    270--300s
+scan median ms       153.72      263.10       327.20       333.21
+scan p95 ms          272.05      505.29       598.86       705.02
+MAIN median ms       128.17      228.47       301.47       307.94
+outgoing/rev median   18.78       22.17        19.13        19.35
+sync calls median      736        1450         1796         1796
+keyframe targets med     5          12           15           15
+
+Repeated factor evaluation remains expensive even after LOCAL work was fixed.
+CP-I3 revision work is not zero-cost, but is not the dominant late-run stage.
+At270--300s, scan mean400.2ms fits the0.20x average500ms budget, with tails and
+temporary queues. Max GLIM revision age in CP-K14 is5.734s, inside7s. It was not
+the first failure there. This does not guarantee arbitrary sequences or CBS-ON.
+
+D. KIMERA, RECEIVER, TRANSPORT AND VISUALIZATION
+================================================
+CP-K14 Kimera backend median/p95:
+  30--60s:74.27/81.50ms;270--300s:91.25/111.16ms.
+At ordinary~.2s physical keyframes and0.20x,~1000ms wall is available.
+Its outgoing covariance/audit work accounts for~50--57ms median in those bins,
+and factor preparation rises from~1ms to~6.6ms; real overhead but not the stop.
+
+gnssFGO is STILL the seven-second fixed-lag source-WNOA receiver, not a
+full-history graph, no central IMU factor, no GNSS.
+CP-K14 last retained dimensions:71 supports,174 slots,138 nonempty factors.
+Adapter sampled queue0 at stop, max49 over capture; no overflow.
+Recorded event service:
+  all events median .398ms, p952.135ms
+  support-publishing event alone median10.018ms,p9512.058ms
+  SUM of ALL event service between support publications:
+    median52.826ms,p9591.219ms,max141.291ms.
+The last measure includes intervening belief updates and is the appropriate
+cycle-work comparison, not merely the10ms support event.
+0.20x provides500ms wall per100ms physical support. CP-K13's corresponding
+all-event cycle median/p95 is50.402/82.006ms against333ms available.
+No evidence these receiver workloads saturated their allotted wall budget.
+
+CP-K14 adapter-receipt to receiver-service-start delay:
+median9.433ms,p9522.257ms,max63.761ms wall.
+Source-log-to-adapter delivery:
+  GLIM median9.634ms,p9516.443ms,max28.245ms.
+  Kimera median6.436ms,p9511.364ms,max22.516ms.
+The adapter polls source files every10ms; these figures are consistent with
+polling plus scheduling/parsing rather than seconds of transport blockage.
+
+Headless launch: source graph inspectors/presentation disabled. Rerun rendering
+is not responsible for this run's slowdown. Logging is substantial (CP-K14
+4,285,470 synchronous-GPU warning lines in estimators.log), but warning emission
+itself accounts for~.7% of measured MAIN time. Removing warnings alone cannot
+recover the~95% spent in the synchronous linearization scope. Other logging
+costs are included in outgoing routines, not separately certified negligible.
+
+E. RECOMMENDED NEXT ACTIONS — NOT IMPLEMENTED
+============================================
+Do NOT launch another full run at0.10x as the next diagnostic.
+Do NOT change WNOA Qc, covariance scales, factor weights, Kimera keyframe rules
+or numerical guards to conceal either failure.
+
+Priority1: make the revision/retention contract explicit.
+Receiver retention must cover each source's oldest still-revisable physical
+endpoint, delivery/processing delay, and the needed interpolation bracket.
+In shorthand:
+  retained history >= source revision horizon + delivery age + bracket margin.
+Kimera's25-state horizon does not provide a5s time bound.
+
+The correct design discussion is explicit source finalization/watermarks and
+receiver retirement, with a separately specified maximum retained history and
+late-source/backpressure policy. Pinning every live factor forever is not a
+bounded solution. Nor is silently discarding revisions after their previous
+version was absorbed. A fixed larger lag would cover this particular11.13s
+event, but choosing12s from one capture would NOT prove a general contract.
+Potential alternative: an explicitly bounded source revision-export policy;
+that intentionally changes which revisions the downstream graph receives and
+requires a declared preservation comparison. No choice is silently made here.
+
+Priority2: repair MAIN GPU-hook build integration in an isolated candidate.
+Use the existing gtsam_points batching facilities; no new solver is needed.
+Verify the hook is actually registered before constructing the main smoother,
+assert effective runtime registration/cache hits rather than trusting a log
+string, and benchmark only a short saved/frozen workload first.
+
+IMPORTANT mathematical caveat: enabling the ordinary native GPU hook is not
+automatically byte-identical to the current synchronous path.
+IntegratedVGICPFactorGPU::store_linearized() also updates inlier bookkeeping;
+store_linearized_preserving_sync()/linearizePreservingSynchronousVGICP() were
+already added for the previous LOCAL batching work for this reason.
+Check equations, correspondences/inliers, theta/cache lifecycle and outputs
+against the frozen synchronous reference before claiming a math-preserving
+speedup. Reuse that existing preservation machinery where appropriate; do not
+blindly flip a global build flag and call the numerical behavior unchanged.
+No speedup factor or validated patch is claimed by this static audit.
+
+Only after those two bounded gates should a fresh matched experiment be
+authorized, with a rate chosen from measured producer delay margins. These
+are two specific engineering issues, not an invitation to tune three-factor
+fusion against ground truth or restart a broad solver investigation.
+
+WHAT IS STILL UNKNOWN
+======================
+- Full OFF/ON completion/accuracy: both captures discussed here are failed OFF
+  prefixes; ON was never launched.
+- Exact keyframe branch/disparity at1484: not logged. The physical gap and
+  count-based horizon mismatch are directly demonstrated without that detail.
+- Exact split of upstream GLIM input waiting: no full ingress/dequeue trace.
+- Actual speedup/equation parity after MAIN hook repair: needs separate bounded
+  implementation/validation authorization, not a promise from profiling.
+- General bounded retention policy under stalled/sparse sources: must be chosen
+  explicitly; neither0.10x nor an arbitrary larger fixed lag proves it.
+
+Source files and reports remain unchanged except this diagnostic directory,
+CP-K15 ledger and a concise AGENTS.md continuation pointer. Existing heartbeat
+was not reactivated. Containers were not started. See integrity.json.

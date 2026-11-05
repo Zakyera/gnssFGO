@@ -1,0 +1,13 @@
+Original run.py preflight stopped before any receiver subprocess or output
+case directory: Python3.10 in Humble has no hashlib.file_digest. start.json
+and failed.txt preserve this harness failure. The original executable was
+never invoked, no source/controller replay needs repeating.
+
+New run_compat.py imports the unchanged run.py and replaces ONLY its hashing
+helper with streaming SHA256 supported by Python3.10. Identical SHA256
+definition, no bypassed hash assertion. Its save wrapper uses start_compat.json
+instead of overwriting start.json. Original run.py / input_pins remain frozen;
+compatibility_pins.json records the new entry point and original manifests.
+All launch commands, model settings, source subsequences and validation remain
+unchanged. Refuse any existing receiver launch receipt. This is a prelaunch
+infrastructure repair, not a retry of a numerical/estimator experiment.

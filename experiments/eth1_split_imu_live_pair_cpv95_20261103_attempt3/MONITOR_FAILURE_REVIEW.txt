@@ -1,0 +1,33 @@
+CP-V95 attempt3 — supplemental terminal monitor review, 2026-11-03
+Original failed.json,status.json,closeout.json,logs and captures left unchanged.
+
+Outcome: full346.32s OFF capture completed. Source, receiver and owned ROS master
+exit0 in full_off_control/owned_job_cleanup.json; capture_off_receipt.json exit0.
+No ON capture started; no complete.json, no paired EVO results.
+
+Failure: validate_off_source.py line41 calls injections.values(), but OFF
+source_coverage.json defines external_injections as integer0. Saved traceback is
+AttributeError: 'int' object has no attribute 'values'. OFF coverage_control.py
+line33 emits that integer; ON schema is a dictionary. No estimator crash is
+implied by this validation-harness error. Earlier assertions reached line41,
+but no candidate_validation.json was emitted and remaining gates never ran.
+
+Saved source coverage passes full input/init/EOF accounting:34618CPT7,
+69186Alpha,3463matched stereo pairs; missing right203.898841154s retained.
+Native rows3455GLIM/1493Kimera; sparse Kimera keyframe tail retained.
+Transport completed202999versions:166221GLIM+36778Kimera;3456ONLINE poses,
+zero duplicates,maxqueue47. Counts are not payload/lifecycle/scientific validation.
+
+Controller cleanup15:37:49 passed5744protected/Hesai667 and restored both
+cbsms_ws_gpu and ubuntu-jammy-humble-nvidia stopped. Independent monitor read-only
+audit rechecked all5744protected hashes, priorCP89all148/CP91all221/CP84all187
+terminal hashes and Hesai667copies/originals; all pass. Prior failed infrastructure
+evidence is covered by protected hashes. Exact proc_start receipts confirm all
+stage/controller/master/source/receiver jobs and supervisor exited, not PID-only.
+No failed-prefix scores are promoted; this is a saved full OFF capture whose
+postcapture validation is incomplete, not a completed matched OFF/ON experiment.
+
+No retry, source replay, validator rerun, scoring, settings edit or model change
+performed by monitor. Experiment-only heartbeat paused after failure notification.
+Proposed next action, not executed: supplemental schema-correct validator against
+existing OFF and remaining gates, then fresh ON continuation. No OFF recapture.

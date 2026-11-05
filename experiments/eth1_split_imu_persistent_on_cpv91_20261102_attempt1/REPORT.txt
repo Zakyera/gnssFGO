@@ -1,0 +1,79 @@
+CP-V91 attempt1 COMPLETE AND VERIFIED, 2026-11-02 18:55:39 local.
+Supplemental post_closeout completed18:57:19. This mutable status report does not
+replace RESULTS_REPORT.txt, results.json or immutable complete.json receipts.
+
+One full346.32s ETH1 source-only live CBS-ON capture at0.20x/offset0/25sdrain.
+GLIM Hesai+CPT7/HG4930; Kimera front stereo+built-in Alphasense IMU.
+BOTH persistent Gaussian1. CP89 profiles/private binaries/noise/priors/timing/
+calibration unchanged; only reception ON. Saved CP89 OFF is matched-settings
+control, not a newly repeated OFF. NO fusion, new sequence, tuning or deletion.
+Original attempt0 failed before playback due copied diagnostic-log destination;
+zero sensor capture/native initialization. Failed evidence and cleanup preserved.
+Attempt1 fixed only diagnostic destination plus fresh paths/port11592.
+
+Started ONCE18:24:53: launcher142174,supervisor142175,controller142177
+proc_start3120104. Capture PID142450. All exact owned identities now exited;
+both initially-stopped containers restored stopped. Admission10.897GBfree>
+10GiB,3.830GB forecast/5GiB runtime guard. Post-closeout verifies4940protected,
+221immutable outputs,33report inputs and Hesai667copies/originals. CP89/90 and
+attempt0 evidence preserved. Report24EVOCLI/API checks have zero error mismatch.
+
+METHOD1 EVO1.36.3, first/newest absolute poses at physical prism, SE3/no-scale
+ATE and reference-distance delta0.5m RPE. Four-curve COMMON100ms mask2969rows,
+296.6s/346.32s=85.6433356%,365RPEpairs,reference201.374540m.
+Role | ATE OFF->ON(m) | improvement | tRPE(m) | rRPE(deg) | estimated path(m)
+GLIM | .038062->.041500 | -9.03% | .016331->.015195 | .336865->.333948 | 202.879510->202.624335
+Kimera | .738453->.209054 | +71.69% | .085253->.032740 | .619426->.587296 | 211.024963->202.001747
+Original CP89 mask had2970queries; OFF rescored here on same2969queries as ON.
+Thus original Kimera.738754m differs slightly from common comparison.738453m.
+
+FULL-SAVED native cadence is a separate support/pair selection:
+Role | rows | support% | ATE(m) | tRPE(m) | rRPE(deg) | estimated/reference path(m)
+OFF GLIM |3454|99.705|.037891|.016919|.254654|205.236377/201.475912
+ON GLIM |3454|99.705|.043435|.015360|.250879|205.054666/201.475912
+OFF Kimera |1493|85.816|.744750|.119927|.509363|214.718296/201.020155
+ON Kimera |1492|85.787|.208661|.034427|.445192|202.447146/201.019635
+Kimera has11gaps>0.5s each arm and~5.1s sparse keyframes after302s; no gap
+chords or filling. Common support is not full346.32s dense estimator coverage.
+
+INPUT AND FRAME AUDIT
+All34618CPT7/69186Alpha raw timestamps conserved;3462Hesai,3463stereo pairs
+=3preinit+3460processed+0EOF. One missing right image203.898841154s retained.
+3455GLIM internal poses vs3454saved; early internal pose absent from saved stream.
+3452GLIM/1491Kimera wire means match native endpoints; Kimera same-version
+full6x6 covariance relative error4.7011e-16. Persistent insertions1473each way;
+incoming1473raw mean checks each direction pass with zero unmatched. Not all
+wire publications become factors. G2K last applied target1483 vs1491lastKimera.
+Actual Alpha/CPT7 transform error8.54e-10,30Jacobian fixturesmax1.79e-9 and
+roundtrip5.33e-15; negative controls detect wrong transforms. These are raw
+pre-time-alignment checks, not proof of unlogged final native factor covariance.
+GLIM native covariance absent from endpoint rows; no GLIM native/wire parity
+claim. Timestamp alignment still mean-only; covariance approximation unchanged.
+
+LOGGED COVARIANCE (OFF->ON; descriptive, not calibrated uncertainty proof)
+Wire median tr(rotation),tr(translation), CPT7 frame:
+GLIM 9.424585723e-9->9.473015468e-9rad2;3.441466918e-6->3.456318071e-6m2.
+Kimera 6.953351389e-8->5.754902649e-8rad2;1.094940022e-5->1.159659817e-5m2.
+Finite/symmetric/SPD. No broad collapse of the median transmitted covariances.
+Different population: ALL Kimera native-revision matrices36778OFF/36755ON:
+median rotation5.433613109e-8->3.730474961e-8rad2(-31.3%),translation
+4.208528559e-6->2.210633505e-6m2(-47.5%). Do not conflate with transmitted means.
+
+REVISIONS AND TIMING
+Kimera previous-state translation revisionp95/max OFF.113872/.748554m ->
+ON.022934/.151270m;3->0 revisions>0.5m. Rotationp95.304137->.254647deg,
+but maximum1.072541->2.569575deg. Pairedsteps1475OFF/1474ON,17missingstepIDs
+each; these diagnostics are not every native update. Optimizationmean/p95
+187.025/353.724->200.853/372.454ms at0.20x, not real-time1x certification.
+
+CONCLUSION AND LIMITS
+Kimera positional ATE/local error and estimated path improve substantially.
+GLIM ATE increases by~3.4mm on common mask; local RPE slightly improves.
+Both persistent source routes operated with the nonidentity frame bridge.
+Separate IMUs do not remove peer-feedback correlation; persistent mixed-prior
+history remains, native-only outgoing information FALSE. Alpha bias model is
+experimental; uncertainty calibration/independence not proven. Actual bias and
+physical IMU residual histories unavailable. IE-TC shares CPT7, not independent
+prismGT. Estimated polyline length is not physical travel. Incremental parity
+does not prove nonlinear stationarity or estimator health. No fusion result.
+Existing experiment-only heartbeat PAUSED; no additional experiment authorized.

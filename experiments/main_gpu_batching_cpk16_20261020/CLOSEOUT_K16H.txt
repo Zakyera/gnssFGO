@@ -1,0 +1,21 @@
+CP-K16h closeout — 2026-10-20
+
+One authorized paced GLIM-only diagnostic, deliberately stopped for checker
+runtime infeasibility. No full60s pass, numerical failure, retry or promotion.
+Exact partial evidence: RESULT_K16H_INCOMPLETE.json and REPORT_K16H.txt.
+
+Owned controller was verified by exact /proc/338/cmdline before SIGINT.
+It performed cleanup: master0, observer0, recorder0; driver92 is its explicit
+"ROS stopped during input" response to interruption. No TERM was needed.
+docker top showed only the existing idle tail entrypoint afterward.
+
+Both originally-stopped containers restored/verified exited:
+  cbsms_ws_gpu
+  ubuntu-jammy-humble-nvidia
+No estimator, receiver, replay or diagnostic process remains running.
+
+integrity_after.json PASS:2026protected,7pinned,56prepared files and five
+source Git fingerprints unchanged. Observer hash unchanged. Only separate
+diagnostic input adapter and task documentation created/updated; no installed
+library, source estimator, covariance/model/profile/default edits or push.
+Earlier failed and successful artifacts retained. No next experiment launched.

@@ -1,0 +1,174 @@
+CP-V103 — MORNING REPORT: PRIOR CORRECTION PASSED FULL LIVE QUALIFICATION
+2026-11-04, Asia/Nicosia
+
+OUTCOME
+The reproduced unchanged-anchor numerical false rejection has been corrected
+in a private Kimera backend. One fresh full 346.32-second ETH1 CBS-ON run with
+GLIM, corrected Kimera and concurrent gnssFGO fusion completed successfully.
+All four saved-data gates passed. No prior-preservation exception or failure
+archive occurred in this realization. Completion: 00:08:14 local; supplemental
+post-closeout audit: 00:11:18 local. This is a qualified correction for the
+reproduced mechanism, NOT proof of the exact unrecorded CP99 failure cause.
+
+This report is a NEW supplemental artifact. The original complete.json and its
+62 sealed outputs, including REPORT.txt, have not been changed. No old run was
+deleted or overwritten, no new OFF was run, and no EVO score was computed.
+
+WHAT WE FOUND
+CP99 stopped with "CPK9 promotion changes cached prior". Its failing prior
+matrices and exact theta were not recorded, so they cannot now be reconstructed
+from the last published pose. That limitation is about absent instrumentation,
+not a claim that deletion of old runs caused the failure.
+
+CP100 isolated a real numerical weakness in the frozen implementation: even
+when the original Gaussian and cached prior are identical, finite-difference
+chart conversion at an exactly unchanged anchor can exceed the existing 1e-8
+preservation threshold. A synthetic anisotropic prior at CP99's last published
+pose produced converted/cache error 1.5081297469405463e-8 while original/cache
+error was zero. This reproduces the exception mechanism, not CP99's actual
+failed matrix, theta or branch. CP98 saved priors and synthetic stress cases are
+kept distinct in the diagnostic reports.
+
+PRECISE CORRECTION — NO SCIENTIFIC SETTINGS RELAXATION
+OriginalChartPrior first validates the values. When every relevant value equals
+its immutable anchor at ZERO tolerance, it clones the original stored Gaussian
+instead of numerically differentiating an identity chart change. If any relevant
+value moved, the old finite-difference conversion branch remains unchanged.
+NativePriorRefresh still checks original/cache AND converted/cache at 1e-8,
+with unchanged key/ownership, lock and all-before-commit transaction rules.
+There is no epsilon match, anchor reset, noise/weight change or removed prior.
+
+A typed failure now retains the slot, keys, separate errors, original/cache/
+converted matrices and exact typed anchor. The new backend's failure-only
+recorder saves unique archives and rethrows the original exception. Disabled or
+invalid recording paths do not suppress the fatal guard. The archive format is
+native x86_64, not a cross-platform or power-loss durability guarantee.
+
+PRIVATE QUALIFICATION BEFORE THE LIVE RUN
+CP101:
+- 1,100 exact-anchor cases: frozen baseline 126 false rejections, candidate 0;
+  candidate coefficient error exactly zero. All 1,098 CP100 cases reproduced.
+- 66,660 moved-state checks, including 1e-12 perturbations: matrix and objective
+  differences from the frozen branch zero; moved values were explicitly checked.
+- 15 negative controls still reject; corrupt cache, graph pointers and locks
+  are protected. Four small synthetic iSAM2 lifecycle checks each passed 15
+  marginalization/promotion boundaries. These are not real-trajectory replays.
+CP102:
+- Rebuilding the preserved CP76 baseline reproduced the previously successful
+  b7d6829d backend byte-for-byte. The old configuration/build is verifiable.
+- Baseline and candidate both passed the CP76 compatibility suite; all 48 logged
+  metrics matched exactly, including six persistent replacement cases, nine
+  absorption boundaries and nine injected rollbacks.
+- The actual candidate DSO recorder passed three unique archives and exact
+  matrix/typed-anchor readbacks, nonoverwrite, successful-path no-write,
+  disabled/invalid-root fatal behavior and persistent transaction rollback.
+- Earlier harness/prelaunch failures remain preserved in their original paths.
+
+LIVE CONFIGURATION AND IMPLEMENTATION IDENTITY
+CP103 ran ON ONLY, once, from 23:37:10 on November 3. Full window 346.32 s,
+offset 0, playback 0.20x, source drain 25 s. Scientific settings match CP99:
+GLIM Hesai+CPT7/HG4930 CP82 persistent MAIN/shared_native/native_local, 5 s;
+Kimera front stereo+built-in Alpha IMU CP76 persistent/CP40/CPK9/smart25,
+FL4Q0/FL4Mremove, experimental biasRW .0043/.000266 at 200 Hz, Gaussian 1.
+Native IMU override and CP66 observer remain unset. Fusion is CP-K19 7-second
+fixed-lag source_wnoa, Qc x1, independent 100 ms CPT7 timestamp supports, no
+central IMU/GNSS factors, unchanged priors/replacement/seal_at_absorption/EOF.
+The Alpha-native to CPT7 mean/full-6x6 covariance conversion is applied once;
+actual arrivals, event order and retained revisions are saved.
+
+The private Kimera backend and failure-only recording are the implementation
+changes; scientific settings are unchanged and launch roots/session/port are
+fresh. No installed library was replaced. Captured maps and effective checks
+confirm this exact candidate:
+985c115d3573446f65ef4ce7cc4125e514b4922fed6445ed05cbc4dbdfb70a09
+libcbs remains byte-identical:
+82f85c2a307a9d9a849b2b8f09bb5c1e026ad80a4ef0a633c903d30cca712476
+The recorder environment was set only on Kimera to source/prior_failures.
+Preparation's missing OFF descriptor was restored before any source launch to
+satisfy the unchanged two-mode adapter fixture; ON-only CLI stayed enforced,
+and no OFF source tree/capture was created.
+
+FULL LIVE EVIDENCE
+- Exact raw IMU stamps conserved: 34,618 CPT7 and 69,186 Alpha messages.
+  Stereo: 3,463 received pairs = 3 preinitialization + 3,460 processed;
+  zero terminal unsupported camera pairs. The known unmatched left image
+  (missing right at relative 203.898841154 s) remains omitted, not gap-filled.
+- Kimera 1,492 native updates, finite numerical objectives, no recovery;
+  1,472 persistent injections in each direction, no temporary retirements.
+- Native saved GLIM: 3,455 poses over 345.399612 s, maximum gap 0.100990 s,
+  tail 0.098879 s behind last CPT7 IMU. Native Kimera: 1,492 poses over
+  343.598087 s, maximum gap 5.099976 s, tail 2.421558 s behind last Alpha IMU.
+  Its initial 3.199979 s keyframe gap and sparse tail are explicitly retained.
+- Fusion received all 202,995 versions: GLIM 166,249 / Kimera 36,746.
+  Action conservation: 4,924 inserts + 197,912 replacements + 25 before-init
+  exclusions + 134 expired revisions = 202,995. No duplicates/stale versions,
+  unsupported EOF versions or pending-at-end factors. The 134 expired Kimera
+  versions span 21 IDs and remain omitted under seal_at_absorption; their small
+  changes are not proof that the omissions are harmless.
+- All 3,456 ONLINE poses were published during the source run; 3,456 DELAYED
+  fixed-lag-finalized poses were saved separately. Fused span 345.5 s.
+  This is 7-second finalized output, not full-history smoothing.
+- Fusion covariance payload error exactly 0; mean Logmap roundtrip error
+  2.2363e-14. Source-wire joins matched all 3,452 GLIM and 1,491 Kimera messages.
+  Kimera wire covariance relative error <=4.576e-16; received means matched
+  all 1,472 logged injections per direction (pre-time-alignment checks).
+- Transported rotation/translation median covariance traces:
+  GLIM: 9.4572e-9 rad^2 / 3.4643e-6 m^2 (3,452 messages).
+  Kimera: 5.7776e-8 rad^2 / 1.1380e-5 m^2 (1,491 messages).
+  These are descriptive trace scales, NOT calibration or an OFF/ON comparison.
+  GLIM's native endpoint rows do not separately log its covariance; do not claim
+  a native-versus-wire covariance parity result for GLIM. Mean-only timestamp
+  covariance alignment approximation is unchanged.
+- Receiver support-cycle median/p95/max: 49.949 / 74.429 / 133.468 ms.
+  Receipt-to-processing median/p95/max: 10.979 / 24.391 / 101.319 ms.
+  Monitor output-age median/p95/max: 50.034 / 90.054 / 100.109 ms.
+  These are the captured 0.20x run's timings, not a real-time-rate certificate.
+
+DESCRIPTIVE SAVED PATH LENGTHS — NOT ACCURACY SCORES
+Native GLIM 201.9413 m; native Kimera 201.4864 m; fusion ONLINE 218.9020 m;
+fusion DELAYED 7-second-finalized 201.6503 m. These are polylines through each
+stream's actual saved samples, including gap chords, at different native
+cadences/coverage. They are not physical travel or common-mask comparisons.
+No matched reference path, EVO ATE/RPE, or new OFF/ON improvement was computed.
+The longer ONLINE polyline is not by itself evidence of a calibration defect.
+
+FINAL PRESERVATION / CLEANUP
+All four controller gates passed: source, payload route, receiver, frame.
+Master, source and receiver cleanup returned 0. The supplemental host audit
+verified all 13 recorded owned process identities exited, including supervisor
+104398/start1346319 and controller104400/start1346319. Both initially stopped
+containers cbsms_ws_gpu and ubuntu-jammy-humble-nvidia are restored stopped.
+All 8,120 protected hashes, the 62 complete.json output hashes, historical
+CP102/101 and original CP99/95 evidence covered by the pins, and all 667 saved
+Hesai checkpoint copies/originals passed. No source/receiver/scoring retry,
+installation, deletion, global deployment or extra sequence was performed.
+
+WHAT REMAINS UNPROVEN / NEXT DISCUSSION
+We have fixed and privately qualified a demonstrable numerical false-rejection
+mechanism and passed one full live realization with the correction. We cannot
+recover CP99's unrecorded failed matrices/theta, identify its exact branch with
+certainty, prove randomness, or explain GLIM's earlier ATE variation from this.
+Passing finite/incremental checks is not nonlinear stationarity or estimator
+health. Mixed-prior persistent peer feedback/native-only outgoing FALSE and
+uncertainty calibration/independence remain unqualified; split IMUs do not remove
+feedback correlation. Alpha bias parameters remain an experimental candidate.
+IE-TC shares CPT7 and is not an independent prism reference.
+
+The completed experiment-only heartbeat is paused; no further run was started.
+No more run is needed to finish this scoped prior-fix qualification. A later
+accuracy assessment can evaluate the newly saved ON trajectories in a fresh
+supplemental artifact, keeping this changed-backend realization distinct from
+same-binary repeatability tests and historical OFF controls. It has NOT been
+started. Further experiments or global deployment should be discussed first.
+
+AUTHORITATIVE LOCAL EVIDENCE
+This directory: PROTOCOL.txt, copy_parity.json, qualification.json,
+on_candidate_validation.json, on_local_provenance.json, frame_on.json,
+receiver_validation/on/validation.json, closeout.json, complete.json,
+post_closeout.json.
+Prepared source/receiver/control:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eth1_prior_fix_live_cpv103_20261103/prepared
+Earlier diagnosis/regressions (under /home/yeranis/repos/gnssFGO/experiments):
+prior_conversion_offline_cpv100_20261103
+prior_anchor_candidate_cpv101_20261103
+prior_anchor_integration_cpv102_20261103

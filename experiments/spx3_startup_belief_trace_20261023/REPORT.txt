@@ -1,0 +1,237 @@
+SPX-3 STARTUP BELIEF TRACE — COMPLETED 2026-10-23
+================================================
+
+Conclusion
+----------
+The suspicious three Kimera startup edges are genuine source mean/uncertainty
+mismatches, not a reporting mix-up. They start identically in CBS OFF and ON;
+CBS subsequently IMPROVES all three means. Severe uncertainty/error mismatch
+also exists in OFF. There is a concrete startup-assumption violation: Kimera
+initializes with zero velocity and initialVelocitySigma=0.001 m/s, although
+the reference shows motion at initialization. This is a strong, specific
+mechanism to investigate before global covariance tuning, not a proven sole
+cause or a proven coding defect.
+
+Crucially, 0->1 and 1->2 were NEVER inserted into gnssFGO. All versions were
+excluded because their start timestamps precede the receiver trajectory origin.
+Only 2->3 entered, with one insertion and 24 replacements, then absorption of
+revision 24 into the fixed-lag prior. These are not 25 concurrent factors.
+
+This corrects a possible interpretation of the preceding ranking plot: the
+two strongest confident outliers are real outgoing source beliefs, but not
+direct constraints used by this receiver. They cannot have harmed fusion via
+their own factors. Indirect effects through other source beliefs are not ruled
+out. The remaining accepted edge is still much more confident than its error
+against IE-TC warrants.
+
+Scope
+-----
+Saved full SPX-3 CP-K26 OFF/ON captures only; 25 versions of each of three edges
+per mode, 150 paired mean/covariance versions. No solver, source estimator,
+replay, ROS or container was run. No settings, covariance, model, previous
+results, input artifacts or source code were changed. Only this analysis
+directory was created. These are relative-belief diagnostics, not new ATEs.
+
+1. Payload and reference verification
+-------------------------------------
+Independent joins: source revision rows -> received event/receipt -> receiver
+committed action -> terminal absorbed payload. Stable IDs, revision numbers,
+physical endpoint stamps and source-update IDs all agree.
+
+For all 150 versions:
+- exported mean equals the relative pose of the same source snapshot;
+  max matrix difference 5.56e-16;
+- source mean and full 6x6 covariance match the wire exactly;
+- committed covariance matches the wire exactly; committed Logmap mean differs
+  by at most 9.94e-16 due to the Pose3 round trip;
+- covariances are finite, symmetric and strictly positive definite;
+- native timestamp vs exported nanosecond rounding <=221 ns;
+- no extrapolation of IE-TC; interpolation bracket <=5 ms.
+
+Errors use e=Log(Z^-1 * (T_ref(t_i)^-1*T_ref(t_j))), rotation first. The
+translation numbers below are ||e_translation||, not whole-trajectory ATE.
+The full matrix and error vector are saved for every version. Reference is
+IE-TC in cpt7_imu; it shares CPT7 with the sources and is not independent GT.
+Unknown reference/model uncertainty prevents a formal statistical consistency
+certificate. No same-frame absolute alignment is needed for these relatives.
+
+2. What actually happened at startup
+-----------------------------------
+Capture starts after the established 32 s bag offset. Kimera's first pose is
+at capture+0.199708728 s, timestamp1730565903072597379ns. BOTH saved profiles:
+
+    autoInitialize: 1
+    initialVelocitySigma: 0.001
+
+Both runtime logs explicitly report the stationary-initialization assumption,
+and both first native odometry records contain zero velocity. The code path
+selects initializeFromIMU, creates a zero velocity initial state and adds an
+isotropic velocity prior with that sigma. This is Kimera source initialization,
+NOT central-IMU fusion; the receiver remains no-central-IMU WNOA.
+
+IE-TC symmetric position differences around that first pose give speed
+0.39051 m/s over +/-20 ms and0.38909 m/s over +/-50 ms. The three subsequent
+approximately200ms reference intervals have chord speeds:
+
+Edge     Physical interval after capture start     Reference chord speed
+0->1     0.199709--0.399707 s                       0.46349 m/s
+1->2     0.399707--0.599705 s                       0.46771 m/s
+2->3     0.599705--0.799704 s                       0.55790 m/s
+
+Thus a stationary/near-zero-velocity initialization assumption is inconsistent
+with the observed physical motion at this crop boundary. A wrong tight prior
+can bias motion estimates while the conditional graph covariance shrinks as
+more factors accumulate. LOCAL covariance still includes local initialization
+and model assumptions; excluding external factors is not protection against
+a wrong local prior. This explains a plausible mechanism, not its quantitative
+share of the error. No prior ablation has been run and none is claimed.
+
+All selected OFF/ON means AND covariances are exactly identical through source
+update4. The first incoming G2K alignment is update5, source edge1->3 aligned
+onto Kimera3->4. All three tracked edges first differ at that same update:
+0->1rev4,1->2rev3,2->3rev2. The startup errors therefore precede CBS injection.
+
+3. CBS helps the means; confidence nevertheless outruns accuracy
+---------------------------------------------------------------
+Last jointly valid version is revision24, approximately4.8s source age.
+Uncertainty below is sqrt(trace(Sigma_translation)), in mm. This is a norm
+scale, NOT per-axis sigma or a calibrated confidence bound.
+
+Edge    First error  Last OFF error  Last ON error  OFF uncertainty  ON uncertainty
+0->1       87.074        79.325         68.782           0.699          0.489
+1->2       88.854        86.806         55.795           1.506          1.064
+2->3      159.847        94.542         43.185           2.411          1.610
+
+First->last covariance TRACE contraction:
+             OFF          ON
+0->1        4822x        9848x
+1->2         291x         583x
+2->3         168x         376x
+
+For the accepted ON2->3 edge, first publication has159.847mm error and31.211mm
+uncertainty norm scale. At revision2 it improves to32.127mm error with24.837mm
+uncertainty. At revision24 the error is43.185mm, while uncertainty is1.610mm.
+The last belief represents69.117mm displacement versus111.579mm reference
+displacement. The source has become much more certain without becoming
+correspondingly close to the reference.
+
+This is not only a trace artifact. Last ON2->3 translation error-direction
+sigma is1.127mm; sqrt(e_t^T Sigma_tt^-1 e_t)=42.102. Using the complete6x6
+matrix gives sqrt(e^T Sigma^-1 e)=81.705. OFF values are64.410 and119.518,
+respectively. These are reference-normalized discrepancies: NOT logged
+optimization residuals, NOT NIS, and NOT probabilities of source correctness.
+CBS ON has the lower discrepancy in this accepted example despite reporting
+the smaller covariance. "Lower covariance made this factor worse than OFF"
+is not established by these data.
+
+Near4s values reproduce the previous ranking analysis exactly. Last-valid
+values above are deliberately distinguished from that earlier near4s snapshot.
+
+4. Exact receiver lifecycle
+---------------------------
+Receiver origin is1730565903454194000ns, capture+0.581305349s in both modes.
+It tests the physical START of a belief, not its later receipt time.
+
+0->1: all25versions -> before_initialization; zero installed factors.
+1->2: all25versions -> before_initialization; zero installed factors.
+2->3: rev0 arrives capture+0.814sOFF/+0.812sON; queued until its future
+       support is ready, inserted at+0.881305349s (commit95,slot6).
+       rev1..24 replace the same stable ID, removing its old slot each time.
+       rev20 accepted atcommit1479,slot103.
+       rev24 accepted atcommit1994,slot123, receipt+5.615s.
+       rev24 absorbed atcommit3495, capture+7.681306349s, as support0 retires.
+
+The 2->3 endpoints use interpolation brackets[0,1] and[2,3] of the independent
+100ms receiver grid. The factor is Gaussian with the unscaled full covariance.
+Its residual is Local(measured, interpolated_from.between(interpolated_to)).
+It remains in the receiver's marginalized information after absorption. This
+is distinct from temporary source-to-source CBS retirement semantics.
+
+We have proven that this confident factor was used. We have NOT quantified
+its actual incremental influence on fusion: retained records do not contain
+the simultaneous complete historical receiver states and all factor residuals
+before/after each insertion. Combining separately published online/finalized
+poses would invent such a snapshot. No counterfactual removal/replay was run.
+
+5. Important refinement to the previous ranking conclusion
+----------------------------------------------------------
+The original graph ranked RECEIVED source payloads, not only installed ones.
+Recompute the identical SPX-3 Kimera near4s cohort after excluding ONLY the
+two known before-initialization IDs, without error-based trimming or tuning.
+The confidence-half threshold is recomputed within each stated population.
+
+Population                            N    All RMS    Confident-half RMS  Ratio
+ON all received                      875    4.518mm       5.075mm         1.123
+ON eligible after startup exclusion  873    3.371mm       2.767mm         0.821
+OFF all received                     875   22.735mm       6.516mm         0.287
+OFF eligible after startup exclusion 873   22.424mm       3.519mm         0.157
+
+Thus the headline inversion in that specific ON panel does NOT carry over to
+the receiver-eligible cohort. Covariance has useful ranking information there;
+the accepted2->3 outlier still shows that ranking is not calibration. Original
+plots/results remain unchanged; this is a lifecycle-aware supplemental view.
+No actual factors were removed. This does not validate a confidence gate or
+predict ATE improvement from selection. The other sequences/rotation panels
+are not reanalysed by this narrow result.
+
+6. Interpretation and bounded next question
+-------------------------------------------
+Established: real startup error, correctly transported covariance, OFF/ON
+identity before CBS, subsequent improvement from the ON run, severe remaining
+source uncertainty mismatch, and exact exclusion/replacement/absorption.
+
+Strong specific hypothesis: a moving crop start is incompatible with the
+stationary zero-velocity initializer and its tight prior. This is a more
+concrete explanation to test than blaming CBS covariance shrink alone or
+inventing a universal scale multiplier from these three points.
+
+Not established: the sole cause of the source bias; the proportion attributable
+to initial velocity vs orientation/bias/model/visual constraints; the exact
+change in fused trajectory caused by2->3; or universal behavior across missions.
+These three edges were selected because they were outliers, not as a random
+calibration population.
+
+Recommended next decision (NOT executed): treat startup validity as a separate
+precondition before covariance tuning. If a further mechanism test is wanted,
+predeclare one isolated initialization comparison, preserving the production
+checkpoint and evaluating downstream covariance/error after a physically
+valid startup. Do not initialize with evaluation GT, silently trim the saved
+ATEs, or globally weaken Kimera based on these startup-only observations.
+
+Evidence and reproducibility
+----------------------------
+Input root:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared
+Per mode: full_{mode}_source/{estimators.log,kimera_odometry.csv,
+kimera_profile/BackendParams.yaml}; full_{mode}_receiver/{events.csv,
+receipts.jsonl,receiver/archive/commits/*/records.txt,receiver/archive/ids/*}.
+
+Concrete runtime lines in each source estimators.log: initialization212--213.
+ON first G2K alignment324; last2->3 revision2221. Saved BackendParams.yaml
+lines7/12 give initialization mode and velocity sigma.
+
+Inspected code references (read-only; source hashes saved, not a new binary
+reproducibility certificate):
+- Kimera-VIO/include/kimera-vio/backend/VioBackend.h:171,207
+  initializeBackend/initializeFromIMU.
+- Kimera-VIO/src/initial/InitializationFromImu.cpp:21,40
+  getInitialStateEstimate; zero velocity assumption.
+- Kimera-VIO/src/backend/VioBackend.cpp:3819,5413
+  seed velocity and Gaussian prior; refreshCbsOutgoingBeliefs:3540,3666,3743
+  selects LOCAL extraction and records same-snapshot means/covariances.
+- gnssFGO/experiments/receiver_finalization_cpk19_20261021/Receiver.h:228,
+  261,283: dispatch, accept, publish/absorb; covariance directly consumed.
+- gnssFGO/experiments/receiver_endpoint_reuse_e2b_20261013/SourceWnoaModel.h:143
+  WnoaRelativeFactor::unwhitenedError.
+
+New artifacts:
+outputs/all_versions.json — full matrices, means, reference errors, lifecycle.
+outputs/all_versions.csv — scalar trace, errors, ages and receiver actions.
+outputs/audit.json — source/wire/commit checks;176 input/helper/protocol hashes,
+                    checked unchanged after analysis; selected numerical rows.
+outputs/context.json — startup/reference/ranking context and additional hashes.
+outputs/startup_revisions.png/.svg — each edge's error and uncertainty history;
+                    plots visually inspected. Each panel uses its own y scale.
+analyze.py/context.py — exclusive-create analysis scripts; no solver commands.
+
+Inspection only. No estimator/configuration change or new run authorized here.

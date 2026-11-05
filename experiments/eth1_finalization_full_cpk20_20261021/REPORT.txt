@@ -1,0 +1,44 @@
+CP-K20 — PREPARED, PRE-LAUNCH COVERAGE BLOCKER, 2026-10-21
+User authorized full ETH1 matched OFF/ON at0.20x with explicit CP-K19 receiver
+finalization equally applied. No source/model/tuning change. Previous failed
+captures remain untouched. OFF first; ON only after ordinary gates pass.
+No capture has been launched. See PROTOCOL.txt for exact frozen settings.
+Prepared preflight passes:2,249 protected files, pinned K19 executable and
+unchanged source builds/profiles/model, full346.32s window at0.20x. The new
+expired-record accounting independently passes on K19's saved archive:
+19 known expired IDs/versions, sealed references not double-counted. This was
+read-only archive analysis, not another solver replay or source run.
+
+Before launch, inspection found a separate, already-recorded native Kimera
+coverage issue that the old full-run harness would reject even after K19:
+K18 native seq1483->1484 jumps from1727775309953703785ns (exact CSV stamp)
+to1727775315053677107ns, about5.099973322s around selected-window seconds302--307.
+Both input cameras are continuous in that interval: a read-only bag query
+1727775308.5--1727775316 yields75 messages each, no inter-message gap>0.1s.
+front_left seq12033--12107; front_right12029--12103; first/last stamps
+1727775308553710485ns /1727775315953672755ns, identical to record stamps.
+This is an existing native-pose gap, not missing camera data and not caused
+by the K19 receiver (which never sends anything back to either source).
+Its underlying source cause is not investigated or claimed here.
+
+Unchanged coverage_checks.py rejects post-startup pose gaps>1s; the common
+evaluation mask also assumes contiguous100ms samples. Silently bypassing those
+guards or interpolating across5s would misrepresent coverage. The1700-pose
+minimum may also be incompatible with the observed gaps. No thresholds changed.
+Asked user whether to authorize complete data capture with explicit missing
+intervals and gap-aware comparison, or retain strict coverage and stop.
+No OFF/ON launched, no estimator/build/settings change or automatic follow-up.
+Cleanup verified: no owned experiment processes; both initially-stopped
+containers restored to exited state. Prepared files retained for continuation.
+
+POLICY CONFIRMATION AFTER CP-K21 (2026-10-21)
+User confirms retaining current windows/model and ignoring expired GLIM/Kimera
+revisions. Existing pinned CP-K19 wrapper already enables seal_at_absorption
+for both modes; no solver patch/rebuild required. Decision is recorded in
+GNSSFGO_EXPIRED_REVISION_POLICY_20261021.txt. Last accepted information remains
+in the prior; only subsequent known-ID revisions expire without solver change.
+Full live validation remains pending. CP-K21 now explains the native5.1s
+intervals as normal low-disparity keyframe selection, not a source stall.
+Prepared capture/validation files remain unchanged: the separate coverage and
+gap-aware evaluation preparation is not silently bypassed by this decision.
+No new full capture, solver test, build, tuning or push in this policy step.

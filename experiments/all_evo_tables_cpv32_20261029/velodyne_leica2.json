@@ -1,0 +1,558 @@
+{
+  "case": "velodyne_leica2",
+  "sensor": "Velodyne",
+  "sequence": "LEICA-2",
+  "original_receiver_Qc_multiplier": 1.0,
+  "epoch_ns": 1732549034915071665,
+  "timestamp_origin_ns": 1732549035600000000,
+  "common_coverage": {
+    "grid_queries": 4264,
+    "valid_queries": 3850,
+    "excluded_queries": 414,
+    "supported_s": 384.6,
+    "capture_s": 428.75,
+    "supported_capture_percent": 89.70262390670554,
+    "first_s": 0.684928335,
+    "last_s": 390.38492833500004,
+    "envelope_s": 389.70000000000005,
+    "start_gap_s": 0.684928335,
+    "tail_gap_s": 38.36507166499996,
+    "segments": [
+      {
+        "first_s": 0.684928335,
+        "last_s": 57.584928335,
+        "rows": 570
+      },
+      {
+        "first_s": 60.384928335000005,
+        "last_s": 195.384928335,
+        "rows": 1351
+      },
+      {
+        "first_s": 196.78492833500002,
+        "last_s": 304.38492833500004,
+        "rows": 1077
+      },
+      {
+        "first_s": 305.284928335,
+        "last_s": 390.38492833500004,
+        "rows": 852
+      }
+    ]
+  },
+  "segments": [
+    {
+      "segment": 0,
+      "rows": 570,
+      "pairs": 59,
+      "reference_path_m": 32.60792528366232,
+      "first_s": 0.684928335,
+      "last_s": 57.584928335,
+      "actual_min_m": 0.5016375248357843,
+      "actual_max_m": 0.5920893656395361
+    },
+    {
+      "segment": 1,
+      "rows": 1351,
+      "pairs": 112,
+      "reference_path_m": 60.22223579894272,
+      "first_s": 60.384928335000005,
+      "last_s": 195.384928335,
+      "actual_min_m": 0.5001413753515553,
+      "actual_max_m": 0.5855132384742632
+    },
+    {
+      "segment": 2,
+      "rows": 1077,
+      "pairs": 119,
+      "reference_path_m": 65.05829324778364,
+      "first_s": 196.78492833500002,
+      "last_s": 304.38492833500004,
+      "actual_min_m": 0.5000947057639227,
+      "actual_max_m": 0.5932716314063171
+    },
+    {
+      "segment": 3,
+      "rows": 852,
+      "pairs": 88,
+      "reference_path_m": 48.024903895034676,
+      "first_s": 305.284928335,
+      "last_s": 390.38492833500004,
+      "actual_min_m": 0.5012332859324964,
+      "actual_max_m": 0.5902800532710124
+    }
+  ],
+  "reference_path_length_m": 205.91335822542334,
+  "RPE_pairs": 378,
+  "results": {
+    "method1_off_glim": {
+      "method": "method1",
+      "mode": "off",
+      "estimator": "GLIM",
+      "ATE_RMSE_m": 2.7821689969285504,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method1_off_glim_ape.zip",
+      "path_length_m": 206.49962761386917,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.09628699528446731,
+            "mean": 0.05513833010201741,
+            "median": 0.035128487971136366,
+            "std": 0.07893636686896599,
+            "min": 0.004895807497326716,
+            "max": 0.7083738969125344,
+            "sse": 3.50450810422437
+          },
+          "pairs": 378,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method1_off_glim_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 1.3300236013213877,
+            "mean": 0.8223175135384305,
+            "median": 0.5465559563041887,
+            "std": 1.0453500308508565,
+            "min": 0.033684394620859155,
+            "max": 10.29810230944091,
+            "sse": 668.6679308671834
+          },
+          "pairs": 378,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method1_off_glim_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method1_off_kimera": {
+      "method": "method1",
+      "mode": "off",
+      "estimator": "Kimera",
+      "ATE_RMSE_m": 1.0053748809069143,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method1_off_kimera_ape.zip",
+      "path_length_m": 203.22308033740478,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.036100479604564216,
+            "mean": 0.030470855954013255,
+            "median": 0.02525040948290927,
+            "std": 0.019359017669017497,
+            "min": 0.0017185519691987538,
+            "max": 0.11215638003973563,
+            "sse": 0.49262646926287246
+          },
+          "pairs": 378,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method1_off_kimera_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 0.5035279719793138,
+            "mean": 0.4311468407406245,
+            "median": 0.3941845679543762,
+            "std": 0.2601015576365876,
+            "min": 0.034492302356917304,
+            "max": 1.9336735184245575,
+            "sse": 95.83827821779701
+          },
+          "pairs": 378,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method1_off_kimera_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method1_off_fusion": {
+      "method": "method1",
+      "mode": "off",
+      "estimator": "Fusion",
+      "ATE_RMSE_m": 2.006010451400694,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method1_off_fusion_ape.zip",
+      "path_length_m": 277.6000251338498,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.06058829058316455,
+            "mean": 0.04841581677604197,
+            "median": 0.03991487654924186,
+            "std": 0.03642594736858217,
+            "min": 0.006845396131677002,
+            "max": 0.3333116664481644,
+            "sse": 1.3876156812886147
+          },
+          "pairs": 378,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method1_off_fusion_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 3.030672941849979,
+            "mean": 2.1416489091648225,
+            "median": 1.7533873134012,
+            "std": 2.144369005170223,
+            "min": 0.11348011065418558,
+            "max": 26.108555979260647,
+            "sse": 3471.9218656144867
+          },
+          "pairs": 378,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method1_off_fusion_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method1_on_glim": {
+      "method": "method1",
+      "mode": "on",
+      "estimator": "GLIM",
+      "ATE_RMSE_m": 0.848868788963257,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method1_on_glim_ape.zip",
+      "path_length_m": 207.64191923762752,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.04363088381748289,
+            "mean": 0.03651904960308127,
+            "median": 0.030743893689909572,
+            "std": 0.023874945838313007,
+            "min": 0.006297171519794013,
+            "max": 0.1943497479603464,
+            "sse": 0.719581220578593
+          },
+          "pairs": 378,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method1_on_glim_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 0.5549989101762638,
+            "mean": 0.47636069490619215,
+            "median": 0.4018507330253781,
+            "std": 0.2847881293968031,
+            "min": 0.04210996706777247,
+            "max": 1.7490785093759502,
+            "sse": 116.43299273220572
+          },
+          "pairs": 378,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method1_on_glim_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method1_on_kimera": {
+      "method": "method1",
+      "mode": "on",
+      "estimator": "Kimera",
+      "ATE_RMSE_m": 1.5324455097350453,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method1_on_kimera_ape.zip",
+      "path_length_m": 374.13059479381866,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.31902905133938747,
+            "mean": 0.21539094121579277,
+            "median": 0.14828866006147046,
+            "std": 0.23534289460420177,
+            "min": 0.013058665548668979,
+            "max": 2.2551796756100937,
+            "sse": 38.4726644562366
+          },
+          "pairs": 378,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method1_on_kimera_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 1.6096707846735145,
+            "mean": 1.2372486116103747,
+            "median": 0.967129931642245,
+            "std": 1.029687286558229,
+            "min": 0.08344448789634329,
+            "max": 11.491921660746884,
+            "sse": 979.4131332418874
+          },
+          "pairs": 378,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method1_on_kimera_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method1_on_fusion": {
+      "method": "method1",
+      "mode": "on",
+      "estimator": "Fusion",
+      "ATE_RMSE_m": 1.8679619777055843,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method1_on_fusion_ape.zip",
+      "path_length_m": 233.00187996933863,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.05226633060497715,
+            "mean": 0.04477267022888396,
+            "median": 0.04047766767053315,
+            "std": 0.02696622545860616,
+            "min": 0.0036906621957442246,
+            "max": 0.222761826538644,
+            "sse": 1.0326088010355154
+          },
+          "pairs": 378,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method1_on_fusion_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 1.7156159597520586,
+            "mean": 1.5583606698714116,
+            "median": 1.438971380791176,
+            "std": 0.7175305874692044,
+            "min": 0.1620616757919106,
+            "max": 6.236082271966909,
+            "sse": 1112.5818098725595
+          },
+          "pairs": 378,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method1_on_fusion_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method2_off_glim": {
+      "method": "method2",
+      "mode": "off",
+      "estimator": "GLIM",
+      "ATE_RMSE_m": 10.10688105684251,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method2_off_glim_ape.zip",
+      "path_length_m": 211.47376027196046,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.1946275698951722,
+            "mean": 0.11799864430907732,
+            "median": 0.04989259428205088,
+            "std": 0.15477794062630498,
+            "min": 0.005706068642228094,
+            "max": 1.1502278805351607,
+            "sse": 14.31859878412745
+          },
+          "pairs": 378,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method2_off_glim_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 1.381502922907339,
+            "mean": 0.8988945336503359,
+            "median": 0.63575922834991,
+            "std": 1.04906574788002,
+            "min": 0.04311522619819743,
+            "max": 10.116478893414271,
+            "sse": 721.4320232285748
+          },
+          "pairs": 378,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method2_off_glim_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method2_off_kimera": {
+      "method": "method2",
+      "mode": "off",
+      "estimator": "Kimera",
+      "ATE_RMSE_m": 1.0942339145911995,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method2_off_kimera_ape.zip",
+      "path_length_m": 199.92663545858804,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.026920347725313987,
+            "mean": 0.023606592248396424,
+            "median": 0.02125670486634098,
+            "std": 0.012939626117850843,
+            "min": 0.001297142949041163,
+            "max": 0.08648394815927193,
+            "sse": 0.27393853598438717
+          },
+          "pairs": 378,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method2_off_kimera_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 0.41943558267514924,
+            "mean": 0.3599168099192927,
+            "median": 0.3444239225640373,
+            "std": 0.21537432054811376,
+            "min": 0.019353793434637646,
+            "max": 1.1526267326142448,
+            "sse": 66.50010662930785
+          },
+          "pairs": 378,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method2_off_kimera_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method2_off_fusion": {
+      "method": "method2",
+      "mode": "off",
+      "estimator": "Fusion",
+      "ATE_RMSE_m": 3.48236955546218,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method2_off_fusion_ape.zip",
+      "path_length_m": 214.38901777048102,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.05932923258177525,
+            "mean": 0.048446857415246604,
+            "median": 0.03951467116366382,
+            "std": 0.03424704140986702,
+            "min": 0.0036894592718442216,
+            "max": 0.34186677314505987,
+            "sse": 1.3305440630446204
+          },
+          "pairs": 378,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method2_off_fusion_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 2.859521646498454,
+            "mean": 2.1820396989510575,
+            "median": 1.7834872502200039,
+            "std": 1.848125211936358,
+            "min": 0.20413627867497314,
+            "max": 23.338406073068985,
+            "sse": 3090.854609687841
+          },
+          "pairs": 378,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method2_off_fusion_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method2_on_glim": {
+      "method": "method2",
+      "mode": "on",
+      "estimator": "GLIM",
+      "ATE_RMSE_m": 3.331124020926426,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method2_on_glim_ape.zip",
+      "path_length_m": 204.0530755546618,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.05425728395542106,
+            "mean": 0.044014794515951014,
+            "median": 0.03558946740739369,
+            "std": 0.031726183601842185,
+            "min": 0.0031486693949665406,
+            "max": 0.2852159184183057,
+            "sse": 1.1127763819188543
+          },
+          "pairs": 378,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method2_on_glim_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 0.6062571571413394,
+            "mean": 0.5208287415274935,
+            "median": 0.4539547774306085,
+            "std": 0.3102985056103012,
+            "min": 0.07888040385936992,
+            "max": 2.2154301795664217,
+            "sse": 138.9330459411673
+          },
+          "pairs": 378,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method2_on_glim_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method2_on_kimera": {
+      "method": "method2",
+      "mode": "on",
+      "estimator": "Kimera",
+      "ATE_RMSE_m": 2.5853339705686906,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method2_on_kimera_ape.zip",
+      "path_length_m": 200.81439295375986,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.05272373842952556,
+            "mean": 0.04406869408125656,
+            "median": 0.03772869537058742,
+            "std": 0.028943786828223662,
+            "min": 0.0048842674979268095,
+            "max": 0.3178026530592109,
+            "sse": 1.0507616005263416
+          },
+          "pairs": 378,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method2_on_kimera_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 0.5183589329227523,
+            "mean": 0.4504592826374438,
+            "median": 0.41467066319902685,
+            "std": 0.2564808336437129,
+            "min": 0.037707557343974824,
+            "max": 1.7465044084804495,
+            "sse": 101.56708170282783
+          },
+          "pairs": 378,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method2_on_kimera_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method2_on_fusion": {
+      "method": "method2",
+      "mode": "on",
+      "estimator": "Fusion",
+      "ATE_RMSE_m": 5.331683703742211,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method2_on_fusion_ape.zip",
+      "path_length_m": 208.61060505281532,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.08238881227780248,
+            "mean": 0.06450373013359381,
+            "median": 0.05114247093775475,
+            "std": 0.051256074639007214,
+            "min": 0.005738177023719571,
+            "max": 0.5938722141152556,
+            "sse": 2.5658323948707573
+          },
+          "pairs": 378,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method2_on_fusion_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 1.869987381787641,
+            "mean": 1.6453135231950433,
+            "median": 1.5329496936659637,
+            "std": 0.8887047982522147,
+            "min": 0.1770301861206123,
+            "max": 6.461384046178027,
+            "sse": 1321.8103614410086
+          },
+          "pairs": 378,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_leica2/method2_on_fusion_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    }
+  },
+  "verification": {
+    "TUM_roundtrip_pose_max_component": 1.807581861967833e-15,
+    "CLI_API_error_max_difference": 0.0,
+    "old_ATE_max_difference_m": 5.10702591327572e-15,
+    "old_path_max_difference_m": 0.0,
+    "historical_hashes_verified": true,
+    "masks_and_reference_identical": true
+  },
+  "original_terminal_omissions": {
+    "off": 0,
+    "on": 0
+  },
+  "new_CLI_calls": 108
+}

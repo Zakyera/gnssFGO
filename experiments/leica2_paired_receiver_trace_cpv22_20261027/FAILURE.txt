@@ -1,0 +1,17 @@
+CP-V22 initial diagnostic attempt: observer bug, not an estimator failure.
+2026-10-27. Private build completed. Hesai replay process exited SIGSEGV at
+the first selected graph audit, support50 (~5.484s). Velodyne never launched.
+
+Exact cause established from the observer and GTSAM API contract:
+Diagnostics.h AuditJacobian passed an EMPTY std::vector<Matrix> to the generic
+NoiseModelFactor6::unwhitenedError for GPWNOAPrior. That API indexes H[0]...H[5]
+without resizing (runtime/include/gtsam/nonlinear/NonlinearFactor.h around756).
+The custom WnoaRelativeFactor resizes H itself, which is why its earlier checks
+worked. The first generic motion-factor audit dereferenced the empty vector.
+No numerical Jacobian failures were recorded before this observer-only crash.
+
+Repair: initialize observer J to factor->keys().size(), and check nonnull cast.
+No model/solver/source/threshold change. Preserve this complete failed attempt.
+Use fresh CP-V22A harness and result roots for the corrected observer. This is
+an identified instrumentation repair, not retrying a numerical failure for
+better results. All final interpretation requires full original-output parity.

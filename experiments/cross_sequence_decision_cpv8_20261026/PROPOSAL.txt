@@ -1,0 +1,132 @@
+CP-V8 PROPOSAL — one gravity-separated G2K information ablation
+==============================================================
+Status: design recommendation ONLY. No implementation, build or experiment
+authorized/executed by this report. Keep the baseline and CP-V6A unchanged.
+
+DECISION
+The next useful intervention is NOT another scalar covariance multiplier.
+Test whether removing only the two GLIM->Kimera tilt residual components,
+while retaining the gravity-axis rotation and three translation components,
+reduces accumulated Kimera orientation damage without losing the useful
+collaboration. Keep Kimera->GLIM and downstream fusion unchanged.
+
+This is a parameter-free STRUCTURAL ABLATION, not a proposed universal policy
+that LiDAR should never constrain tilt. It is the smallest interpretable next
+experiment that follows from the cross-sequence directional finding and the
+failed whole-rotation variance10 intervention. It is not an adaptive gate.
+If it succeeds, it justifies developing selective directional trust. If it
+fails, do not respond by sweeping tilt multipliers or adding another gate.
+
+WHY THIS, RATHER THAN MORE SCALING?
+1. GLIM incoming tilt RMS is worse than the verified Kimera pre-update state
+   in six of seven ON pairs; heading RMS is better in five. This is not merely
+   Leica-2 or merely Velodyne. Exact physical-interval matching across sensors
+   preserves the major findings for SPX-3 and LEICA-2.
+2. Whole-rotation variance10 reduced some tilt/local errors but harmed heading
+   and global position. It weakened useful and harmful components together.
+3. Actual covariance/error ranking is too inconsistent to justify selecting
+   an online gate or calibration coefficient from these records. EIG-2
+   Velodyne's smaller-tilt-uncertainty selector frequently chooses the less
+   accurate source. A disagreement magnitude alone cannot identify the culprit.
+4. A one-way K->G-only experiment would remove helpful G->K heading and
+   translation too. The proposed ablation isolates a narrower pathway.
+5. Hesai EIG-2 is a counterexample: incoming GLIM tilt is slightly healthier
+   in aggregate, yet Kimera long-horizon rotation worsens. The hypothesis is
+   incomplete; the ablation must be falsifiable and cannot be called a fix.
+
+MATHEMATICAL SPECIFICATION TO REVIEW BEFORE ANY CODE
+Let r(x)=[phi;rho] be the EXISTING six-dimensional factor residual in its
+actual right-local chart, with the existing dense SPD covariance C.
+Let g be a unit gravity direction expressed in that same residual chart.
+Use only the receiving estimator's pre-injection state/gravity and the
+measurement's nominal endpoint orientation to obtain g. Never use the IE-TC
+reference, GT heading, a future state, or a hard-coded covariance index.
+Derive the chart mapping against the real factor implementation first.
+
+Freeze g when the factor is installed, for its existing temporary lifetime.
+Define the full-row-rank 4x6 projection
+
+       M = [ g^T   0(1x3) ]
+           [ 0(3x3) I(3)  ].
+
+Use the four-dimensional residual y=M r(x), covariance C_y=M C M^T,
+and cost y^T C_y^-1 y (with the existing factor's cost normalization).
+Keep the full 4x4 covariance, including gravity-axis/translation cross terms.
+Use the projected Jacobian M J. Replace the original six-dimensional external
+factor for this ablation; never insert both and double count the measurement.
+
+This M refers to gravity-axis angular error, not an exact global Euler-yaw
+measurement. At finite rotations these notions differ. Translation means
+the retained EXISTING rho residual coordinates; SE(3) coupling remains.
+
+This is marginalization of the discarded residual components under the local
+Gaussian noise model, NOT conditioning them to zero. Do not delete rows from
+the precision matrix, diagonalize C, retain an arbitrary covariance corner,
+or set a zero residual while keeping six-dimensional whitening.
+
+For fixed M and SPD C, C_y is SPD and
+  M^T (M C M^T)^-1 M <= C^-1
+in the positive-semidefinite ordering. Thus the projected Gaussian adds no
+information relative to the original six-dimensional measurement. This does
+NOT prove nonlinear solver stability, calibrated noise, independent sources
+or unchanged translation/heading optimizer influence. Marginalization changes
+the dense conditional coupling; it intentionally removes information.
+
+The companion design_check.json tests only this linear-algebra specification.
+Any implementation still needs exact chart/Jacobian/lifecycle/default-parity
+checks on the real factor, including non-axis-aligned gravity and dense cross
+blocks. Do not rebuild the entire estimator or redesign its optimizer.
+
+ISOLATION CONTRACT
+- Private opt-in at the Kimera G2K receiving factor only; default exactly off.
+- Preserve original incoming/outgoing payloads and all-LOCAL exports.
+- K2G unchanged; receiver WNOA model, covariances, priors, supports and lag
+  unchanged. No simultaneous speed, sensor, startup, alignment or EOF changes.
+- Existing temporary-factor retirement, IDs and prior-refresh rules unchanged.
+- Log raw C, M, applied C_y, exact binding, pre/post states and timing.
+- Do not claim this repairs the known source mean-only covariance alignment.
+  Treat the ablation under the same approximation; derive its chart explicitly.
+
+BOUNDED FUTURE TEST, ONLY AFTER SEPARATE USER APPROVAL
+First: focused mathematical/implementation checks; stop if they fail.
+Then: ONE full LEICA-2 Velodyne ON at the frozen 0.20x/window, fresh outputs.
+Use saved OFF and original ON controls; do not rerun OFF automatically.
+A full window is appropriate because the negative intervention improved1s
+RPE but degraded accumulated heading over many tens of seconds. A passing
+30/60s clip is not sufficient for this hypothesis.
+
+Predeclared provisional screening criteria, on identical supported timestamps:
+- At least20% lower Kimera ATE AND20s rotation RPE than original ON.
+  Current CP-V8 common values2.5853m/3.3257deg imply about2.0683m/2.6606deg.
+- No worsening of accumulated heading or10/20s gravity-axis angular error;
+  check fixed-start anchoring at0,+1,+5s where supported.
+- GLIM ATE no more than10% worse and ONLINE fusion ATE no more than5% worse;
+  no >10% regression in their10/20s translation RPE. Retain all other metrics.
+- No numerical/lifecycle failure, materially reduced coverage, unaccounted
+  factor, protected-setting drift or workload exceeding the frozen rate budget.
+
+These percentages are proposed PRACTICAL DECISION MARGINS, not statistical
+confidence limits or covariance calibration constants. They are set before
+seeing candidate results and must not be relaxed afterward. Passing is a
+mechanism-screen result, NOT recovery to OFF accuracy: Leica Kimera OFF ATE
+is1.0942m and20s rotation RPE1.0367deg, substantially better still.
+
+Stop and report after this one screen. If it fails, retain the evidence and
+reject this intervention; do not silently tune another strength. If it passes,
+the next separately approved finite confirmation would be a matched fresh
+baseline/candidate repeat (GLIM preprocessing is not bitwise deterministic),
+then Hesai EIG-2 (useful-tilt counterexample) and Velodyne EIG-2 (fusion
+regression). These are known regression cases, not unseen holdouts. No automatic
+campaign or promotion. Generalization later requires genuinely unused data.
+
+WHAT THIS PROPOSAL WILL NOT SOLVE OR CERTIFY
+ARC-5 failed with CBS OFF, so a G2K receiving change cannot logically establish
+that receiver's numerical robustness. ONLINE path inflation/delayed differences
+also remain a separate output-quality issue. Shared CPT7/source correlation,
+mean-only covariance alignment, initialization/gaps and uncertain IE-TC
+reference are unchanged. None is silently declared fixed by better ATE.
+
+Ultimately the production objective is a measured OFF->ON improvement without
+material native-source harm across the intended domain, with safe completion
+and adequate coverage. This one ablation tests a specific information pathway;
+it is not a promise that the complete algorithm is solved.

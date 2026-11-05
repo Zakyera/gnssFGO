@@ -1,0 +1,61 @@
+CP-V106 — authorized saved-stream Kimera covariance-revision intervention
+User approved the CP105 proposed test on2026-11-04. No sensors, sources,
+builds, installations, deletions or global changes. Use only the original
+Ubuntu receiver container as the execution environment, then restore stopped;
+the source/Noetic container stays stopped. See PREPARATION_REPAIR.txt.
+One unchanged CP103 ON receiver replay, then one diagnostic variant ONLY if
+baseline parity passes. No retries to seek a pass or additional covariance sweep.
+
+Receiver: exact CP-K19 live executable and wrapper/environment used by CP103,
+7s fixed lag, source_wnoa/Qcx1,100ms CPT7 clock,59startup samples,
+seal_at_absorption, same priors, replacement, output and EOF behavior. The
+complete original regular events.csv is input, NOT events.fifo. Recorded
+availability timestamps and merged event order remain unchanged. File replay
+is accelerated wall-clock processing, not a fresh live or real-time test.
+
+Variant: for each Kimera stable ID, use the first actually inserted full6x6
+covariance at every subsequent revision. Determine that first insertion from
+the original immutable receiver commit records, then verify it against events.
+Keep all mean tokens/revisions/IDs/endpoints/times/order, every GLIM row and
+every clock/EOF row unchanged. Before-first-accepted and permanently excluded
+rows remain unchanged. Expired later rows get the same frozen matrix but stay
+expired, with the same receiver policy. No diagonalization/scalar scale/fitting.
+
+Frame definition: covariance is in the receiver's right-local relative-pose
+residual coordinates (rotation then translation) in CPT7 body basis. The
+counterfactual assigns the initial numeric covariance to the residual centered
+on each revised mean: Z_new Exp(epsilon), epsilon~N(0,C_first). This is an
+explicit new noise schedule, NOT transporting/re-expressing the original
+posterior about a new mean. No body-frame conversion or second adjoint is
+applied; fixed physical endpoints and CPT7 basis must be verified. Synthetic
+right-retraction tests and SPD/full-cross-term checks precede optimization.
+
+Admission: original CP103/104/105 terminal hashes and CP1038120protected pins,
+all667Hesai checkpoint entries, no competing jobs, both containers stopped,
+at least15GiB free (5GiB runtime guard). Frozen binary and loaded DSO identities
+recorded. Each replay bounded1200wallseconds, sequential; original outputs
+never modified. Process command/start identity and exit receipts retained.
+
+Baseline gate: bit-identical online/finalized CSV and TUM, summary, all archive
+commit/terminal/expiry files, and logical progress fields versus CP103. Ignore
+only host wallclock, service-duration and RSS progress fields. A mismatch stops
+the variant; no changing numerical tolerances after seeing a failed comparison.
+
+Variant gate: identical input tokens except declared Kimera covariance cells;
+same event/lifecycle counts, ID/revision maps, support/publication timestamps,
+EOF omissions, finite outputs/SPD matrices, exact consumed covariance parity,
+and mean-log roundtrip <=1e-12. Preserve observed failures and stop if needed.
+This is not a nonlinear-stationarity, covariance-calibration or health test.
+
+Evaluation after both exits/gates: direct EVO1.36.3 Method1 SE3/no-scale ATE and
+reference-distance0.5m translation/rotation RPE versus IE-TC at the calibrated
+prism point. Freeze the CP1042966row mask/365pairs, no gap filling; report native
+full-saved receiver cadence separately. ONLINE and7s-finalized separately.
+Baseline must reproduce existing CP104 scores/paths. Historical OFF may be
+context, not a new matched source OFF/ON. Primary causal comparison is identical
+saved ON inputs with only the covariance schedule changed.
+
+Improvement would demonstrate a contribution of this receiver weighting
+schedule conditional on this saved stream; it would not certify a production
+fix, independent beliefs or true covariance calibration. IE-TC shares CPT7;
+estimated polylines are not physical travel. No subsequent run is implicit.

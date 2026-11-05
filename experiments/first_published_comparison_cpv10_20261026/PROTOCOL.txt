@@ -1,0 +1,58 @@
+CP-V10: first-published GLIM comparison, 2026-10-26
+
+Authorization: user requests rescoring previous sequences with GLIM's initial
+published estimate, comparable to saved Kimera ROS odometry and fusion ONLINE.
+Saved-data analysis ONLY. No source run, receiver replay, build, settings change,
+covariance tuning, deletion, overwrite of historical scores or default promotion.
+
+Scope: the seven completed baseline OFF/ON pairs used by CP-V8: Hesai ETH1,
+EIG-2, corrected quiet-start SPX-3, LEICA-2; Velodyne SPX-3, EIG-2, LEICA-2.
+ARC-5 failed OFF is not a completed pair; CP-V6A/CP-V9 candidates are not baselines.
+
+Products:
+  GLIM first-published: full_{off,on}_source/glim_odometry.csv, recorded from
+    /glim/cbs/odometry. Use field.header.stamp and first optimized MAIN pose,
+    after the current update/CBS application, NOT an unoptimized initial guess.
+    Require strictly increasing unique header stamps; no first/last dedup trick.
+  Kimera: existing kimera_odometry.csv. First/current-keyframe ROS publication;
+    --no_incremental_pose=false chains optimized inter-keyframe motions.
+  Fusion: existing receiver/online_trajectory.tum, newest support once per cycle.
+  GLIM refined: odom_imu.txt, kept only as an explicitly labelled maturity
+    sensitivity comparison. Last active-window pose, EOF tail flushed; not a
+    full-history globally optimized trajectory. No substitution in primary table.
+  Fusion finalized is NOT used in the primary first-publication comparison.
+
+Geometry: reuse audited CP-V7/CP-V8 helpers. Same mission IE-TC reference,
+CPT7-to-prism rigid transform, per-path rigid SE(3) no-scale best-fit ATE.
+1/10/20-second translation and rotation RPE without global alignment. Header
+time in integer ns, integer 100ms common grid. Linear position/shortest-arc SO(3)
+interpolation, estimate brackets <=500ms, reference <=50ms, no extrapolation.
+RPE requires every intervening grid point supported; never bridge a masked gap.
+
+Primary mask: intersection of the six first-published curves (3 estimators x
+OFF/ON) and reference. Supplemental maturity mask adds both refined GLIM curves
+on the SAME grid; compute all eight scores there. Compare initial/refined on that
+identical mask, with independently fitted rigid alignment for each product.
+Report full-saved ATE/actual row counts/spans/native polyline lengths separately;
+full-saved curves have different timestamps/rates/coverage and are not the primary
+cross-estimator ranking. Common lengths use identical 10Hz grid and sum only
+contiguous supported segments. Native lengths include gap chords and rate effects.
+Report support coverage/envelope/startup/tail omissions and reference path lengths.
+
+Verification: pin all inputs before reading and rehash afterward. Reproduce all
+42 historical native GLIM/Kimera/fusion ONLINE full-saved ATE values within1e-5m;
+compare common geometry with evo's independent no-scale Umeyama alignment and
+direct homogeneous-matrix RPE checks. Run existing synthetic geometry tests.
+Keep all per-case masks/time series, exact inputs and score metadata. Refuse
+overwrite of a completed CP-V10 case; no historical output is edited.
+
+Interpretation: this fixes output-maturity mismatch, not equal wall-clock latency
+or identical output conventions. Kimera's incremental chain differs from GLIM/
+fusion newest absolute-state estimates. Resampling is offline evaluation, not a
+new online estimator. Whole-path ATE alignment itself uses future reference data.
+IE-TC shares CPT7 IMU, not independent prism ground truth. Three Kimera OFF files
+are identical across sensor variants; seven pairs cover four missions, not seven
+independent trials. Rear Velodyne changes viewpoint too. Keep known terminal
+factor omissions and unchanged mean-only source covariance-alignment approximation.
+No causal claim that refinement explains the previous accuracy advantage before
+measuring it; no nonlinear stationarity or real-time-capacity certification.

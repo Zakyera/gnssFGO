@@ -1,0 +1,74 @@
+CP-K29 — full usable LEICA-2 matched CBS-OFF/ON,2026-10-23
+=======================================================
+Authorization: "Ok I have downloaded leica2 a new sequence from grand tour
+find it to run full experiment cbs off cbs on as the others"
+One matched live pair, same CP-K28 algorithm/binaries, no model/weight tuning.
+
+MISSION AND PRE-FLIGHT
+2024-11-25-16-36-19, GrandTour/LEICA-2. Full usable selected-sensor sequence
+from stationary startup through last Hesai record. Selected-topic epoch
+1732549028915071665ns (NOT earliest unused camera-topic record in bag).
+Offset6.0s,duration428.75s,start1732549034915071665,end1732549463665071665ns;
+lastHesai1732549463660625935ns. Initial6s settling and later camera/IMU-only
+tail excluded; do not label this entire raw recording from0. Playback0.20x,
+headless,25s drain,private ROS port11479. Estimated pair75--80wallminutes.
+
+Raw images and CPT7 show quiet bag6..8 before gait. Gyro p95.00601/.00272rad/s,
+image adjacent difference median.751/.6008-bit units, accelerometer per-axis
+std<.025m/s2. Existing stationary initializer unchanged; no GT pose/velocity
+or bias injected. Reference displacement first1s.003m corroborates quiet start,
+not zero-motion certification. Crop chosen from raw sensor context, not ATE.
+Input audit hashes6bags and verifies stable sizes/mtimes.4288Hesai scans,
+42875CPT7samples,4287synchronized front stereo pairs. MaxIMUgap10.001ms.
+
+Independent CameraInfo/TF audit verifies frozen source calibration against THIS
+mission: front-left/right intrinsics/distortion/resolution exactly match;
+T_cpt7_camera maxentrydifference<2e-12, T_hesai_cpt7<3e-10, CPT7-prism<8e-10.
+Therefore complete source profiles can be reused byte-for-byte, not blindly
+transplanted from SPX-3. Detailed frame chains/matrices in bag_preflight.json.
+Hesai/PointCloud2, front Alphasense compressed stereo1440x1080@10Hz, CPT7@100Hz.
+Velodyne/Livox/side/centre cameras are NOT estimator inputs in this experiment.
+
+FROZEN METHOD
+CP-K16 MAIN GPU batching, CP-I1/I3 all-LOCAL dense6x6 covariance every outgoing
+version, corrected MAIN means. Kimera CP-K9 private DSO with
+CPK9_PRIOR_REFRESH=1,FL4Q_ENABLE=0,FL4M_RETIREMENT=remove;
+KIMERA_IMU_SAMPLE_SUPPORT unset,25-state Kimera,5s GLIM lag. Same autoInitialize
+and priors; no source rebuild. Classic bidirectional active_window_temporary
+CBS, no source live_revision; nominal.20s horizon,one pair/update,stride1,
+receive delay0,Gaussian scales1,no robust/health weighting. Native IMU mean
+alignment and existing mean-only covariance alignment approximation unchanged.
+Receiver CP-K19 FL4e7s source_wnoa, independent100ms supports after59timing
+samples,no central IMU/GNSS factors,unchanged Qc/priors,stable-ID replacement,
+seal_at_absorption. Known absorbed revisions expire with audit; unknown old
+first arrivals fail. Same finite-recording CP-K24A terminal-cell predicate in
+both modes. Explicitly count every EOF omission; never claim zero factor loss.
+
+GATES AND OWNERSHIP
+Finite pipeline: capture OFF -> validate_local/candidate/case check -> preflight
+ON -> capture ON -> same3gates -> existing evaluation -> summary -> cleanup.
+No duplicate launch, overwrite, automatic retry or follow-on experiment.
+Stop on any failure, no ON after failed OFF. Preserve immutable earlier runs.
+Input-specific bounds declared before launch: frontend4284..4287 processed,
+>=4267GLIM poses/first beliefs,>=426.75s GLIM/fusion span. Other gate semantics
+unchanged, including native sparse-keyframe coverage<=5.15s with backend/
+frontend counters, source lifecycle/cache guards, covariance payload integrity,
+receiver conservation and queue/latency guards. No fresh saved-journal replay,
+exhaustive batching or nonlinear stationarity certification.
+Disk preflight>15GiB; each source launch>8GiB; existing live5GiB reserve retained.
+Prior197s pair used2.7GB, projected429s pair~6GB. No user data deletion.
+Both containers initially stopped; finite controller restores them only after
+owned jobs exit. Scoped SystemD+GNOME sleep/idle inhibition, no host power
+policy edits or persistent automation. No build, covariance tuning, default
+promotion, commit/push or different sequence authorized.
+
+OUTPUTS
+Original/native GLIM, original/native Kimera ROS odometry and fusion ONLINE
+OFF/ON, all saved journey poses vs full-window IE-TC. Report ATE,1s translation/
+rotation RPE,paths,actual spans/startup/tail gaps. Same physical common mask as
+secondary check, report supported duration separately from time envelope.
+DELAYED fixed-lag-finalized fusion separately,never ONLINE/full-history.
+IE-TC shares CPT7, not independent prismGT. AP20 prism covers only327.68s
+inside the recording; do not substitute that subwindow as full-sequence scoring.
+Same mission-verified prism lever arm and no-scale SE3 alignment. Save complete
+source means,covariances,revisions,payloads,provenance,acceptance/expiry and timing.

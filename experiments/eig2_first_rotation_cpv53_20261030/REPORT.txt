@@ -1,0 +1,143 @@
+CP-V53 -- First GLIM belief: native rotation, transport, time and raw CPT7 audit
+2026-10-30 | Saved CP-V51 Hesai EIG-2 data only
+Final integrity/cleanup authority: verification.json and complete.json.
+
+FINDING
+The first GLIM->Kimera rotational disagreement is already present in GLIM's
+native MAIN endpoint estimates. It is not introduced by message transport or
+the measured endpoint-time correction for this edge. The ~0.10 degree mismatch
+also exists in the separate CBS-OFF GLIM estimate. No coding bug or full-run
+root cause has been established, and no fix has been deployed.
+
+Kimera's pre-insertion relative rotation closely matches raw CPT7 integration
+with its own saved pre-update gyro bias. This is a consistency check, NOT
+independent ground truth or proof that GLIM is wrong: both estimators use that
+IMU, and GLIM's contemporaneous bias/PIM/internal residuals were not saved.
+
+EXACT EVENT
+CP-V51 update6, first admitted factor929, GLIM5->7 mapped to Kimera x4->x5.
+Available at sensor time1730638818163479217ns, 1.599933183s after capture start
+1730638816563546034ns (the capture itself starts at original bag offset5.7s).
+Sender interval: 1730638817779974912 -> 1730638817979942144ns, .199967232s.
+Receiver interval:1730638817763483017 -> 1730638817963481117ns, .199998100s.
+Sender endpoints are16.491895/16.461027ms later. All endpoints precede the
+recorded causal limit. Exact camera headers verify the receiver endpoints.
+
+MEASUREMENTS (angular distance between rotations, degrees; not ATE/RPE)
+Comparison                                                        Distance
+GLIM native ON vs gyro at sender times, Kimera pre-update bias      .099529327
+GLIM native OFF vs same gyro/times/bias                             .102394095
+GLIM native ON vs native OFF, identical sender timestamps           .003942981
+GLIM time-aligned ON vs gyro at receiver times                      .099529327
+GLIM time-aligned ON vs Kimera before insertion                     .099531490
+Kimera before insertion vs gyro at receiver times                   .000003073
+GLIM native ON vs gyro at sender times, zero bias                   .115301871
+
+Small rotation vectors at RECEIVER times, degrees in CPT7 body coordinates:
+                             x              y              z
+GLIM aligned ON         -.01257063     -.00316648     -.07758291
+Kimera pre-insertion    +.07914401     -.00700027     -.03910896
+Raw gyro, saved bias    +.07914122     -.00699967     -.03910783
+These are SO(3) logarithm components, not Euler roll/pitch/yaw angles.
+The disagreement has mainly x and z components; its norm is ~.10deg over~.20s.
+A small angle at one startup edge is not itself proof of a catastrophic error.
+
+CHAIN CHECKS
+1. Reconstructed native from_pose.inverse()*to_pose equals GLIM's exported
+   MAIN mean. The one recorded incoming GLIM5->7 payload has identical mean,
+   endpoints and source103 ('g'). The actual saved factor mean matches the
+   logged time-aligned/frozen measurement. No extra unexplained rotation was
+   introduced along this checked path.
+2. Read260 original raw CPT7 samples and26 front-left camera header times in
+   the bounded context. IMU sample spacing10.000--10.001ms, frame cpt7_imu.
+   Reconstructed native frontend packets: interpolated image borders, strict
+   interior raw samples, left-held angular rates, exact integer-ns durations.
+3. Saved gyro biases at anchors4 and5 are identical:
+   [.001681633071, .000925878240, -.000693532423]rad/s.
+   Saved PIM biasHat is different:
+   [.004911918202, .001435650669, -.000924304558]rad/s.
+   Reintegrating raw samples at biasHat reproduces saved native PIM deltaR to
+   1.025e-17deg. Applying the PIM's native current-bias prediction agrees with
+   complete reintegration at current bias to1.509e-9deg. Bias correction is
+   therefore not being omitted from this checked native PIM prediction.
+4. Reconstructed left bridge(receiver_from->sender_from), native GLIM mean,
+   right bridge(sender_to->receiver_to), with the saved anchor biases, matches
+   the actual aligned rotation to6.441e-16deg. The bridge changes the raw mean
+   by.005207036deg, but leaves its discrepancy with equivalently integrated
+   gyro at.099529327deg. The16.5ms endpoint offset is not an unhandled offset
+   explaining this edge's discrepancy.
+5. A separately reported trapezoidal gyro integration changes native held-rate
+   integration by.000669368deg at sender times/.001188624deg at receiver times.
+   Neither was selected or fitted to improve agreement. This is a bounded
+   integration-convention check, not an exhaustive timing/IMU calibration audit.
+
+FRAME AND SOURCE PROVENANCE
+Both saved effective source configurations use /boxi/cpt7/imu and cpt7_imu
+as body; Kimera saved PIM has identity body-to-sensor rotation. The GLIM message
+header is 'map', the configured world label; child/body is cpt7_imu. Kimera's
+configured external-pose and base frames both equal cpt7_imu. Header 'map' alone
+does not mean a relative motion is expressed in a different physical body.
+Different world orientations cancel in a relative transform T_from^-1*T_to.
+
+Protected native GLIM bridge source obtains MAIN Pose3 endpoint estimates and
+exports their between() result. Native/export/payload equality is checked from
+saved numeric data, not just inferred from a name. Protected Kimera backend
+code and actual factor confirm the endpoint bridge. Four inspected source
+files match inherited protected hashes. Five other explanatory current files
+do not have historical source-hash coverage in this manifest; they are NOT
+claimed as certified build inputs. See support_audit.json. In particular, this
+report does not certify every historical calibration or source/binary pairing;
+the numerical PIM/bridge checks above directly test the saved native behavior.
+
+IMPORTANT FEEDBACK QUALIFICATION
+GLIM ON is not untouched LIO at this instant. Its log records Kimera k4->k5
+inserted into GLIM x4->x6, slot45, before GLIM5->7 is exported:
+  insertion sensor clock1730638817.998674269, log lines900/902;
+  export sensor clock1730638818.089891267, log line986.
+No removal intervenes. OFF same-edge export has exactly the same timestamps
+and a similar gyro disagreement (.102394deg OFF vs.099529deg ON). Therefore
+the mismatch is not unique to feedback. The OFF/ON difference is observational,
+not a new causal ablation of that GLIM-side incoming factor.
+
+RELATION TO CP-V52
+CP-V52 separately showed that adding this one complete six-DOF factor causes
+Kimera's coupled pose/velocity/bias response; omitting it returns close to OFF.
+CP-V53 identifies a pre-existing rotational inconsistency that factor carries.
+It does NOT isolate rotation from translation/cross-coupling as the sole driver,
+prove this small first response causes later full-run zigzag, establish calibrated
+confidence, or prove either estimator's relative rotation physically correct.
+Good full-sequence positional ATE does not guarantee each short relative rotation
+agrees with another estimator's IMU/bias-conditioned motion estimate.
+
+RECOMMENDED NEXT DECISION -- NOT LAUNCHED
+Before changing weights or inserting a corrective rotation, inspect GLIM's own
+state at this exact early edge: contemporaneous gyro bias, native IMU deltaR,
+bias-corrected prediction, and IMU-vs-LiDAR rotation residuals before/after its
+update. This distinguishes a legitimate bias/scan-matching compromise from an
+internal GLIM support/frame/linearization error. The saved data here lack that
+complete instantaneous GLIM state. If further capture is approved, use only a
+short unchanged-settings passive observation prefix, not another full campaign.
+Do not substitute final map biases or call raw gyro independent truth. Nothing
+in this result justifies a new tuning change or a blanket 'CBS is fixed' claim.
+
+VALIDATION / PRESERVATION
+Private Extract.cpp loads one saved native checkpoint, exports PIM/factor data,
+and serializes it before/after unchanged. Zero graph optimizer/linearizer calls.
+Release and ASan/UBSan constant-gyro/bias/direction/predict/nonmutation fixtures
+pass. External vendor DSOs are not sanitizer-instrumented; inherited mixed
+OpenCV link warnings are retained.100 SO3 inverse/world-rotation invariance
+fixtures and native interval-concatenation checks pass. Native saved initial
+relative pose vs independent CP-V52 dump agrees to7.953e-16deg.
+
+Original analyze.py, analyze_v2.py and analyze_v3.py failures are retained:
+read-only ROS buffer, incorrect diagnostic header assumption, installed reader
+API uses 'stop' rather than 'end'. Each failed before output. Fresh analyze_v4.py
+corrects only reporting/explicit frame-contract checking; all numerical gates
+unchanged. No source/solver/numerical run was retried. Details in analysis_*txt.
+
+analysis.json/raw_samples.json/support_audit.json contain exact values and pins.
+Final verification checks9861 protected artifacts, all analysis/support inputs,
+snapshot byte identity, owned extraction jobs exited, both originally-stopped
+containers restored, and the four-sequence Hesai checkpoint originals (667files).
+No source replay, covariance calculation/rescaling, production parameter/code
+change, full run, new ATE/RPE evaluation, promotion, deletion or push.

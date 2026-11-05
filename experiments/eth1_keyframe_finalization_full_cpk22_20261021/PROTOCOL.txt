@@ -1,0 +1,57 @@
+CP-K22 — matched full ETH1 with native-keyframe-aware coverage, 2026-10-21
+
+User Proceed authorizes the prepared full OFF/ON comparison after selecting
+known-expired-revision auditing. CP-K20 remains preserved/unlaunched. Fresh
+identities only; one OFF, validate, one ON. No automatic retry or overwrite.
+346.32s from selected-topic epoch1727775007855396309ns at0.20x, headless,
+25s drain, ROS port11472. End1727775354175396309ns includes last Hesai record.
+
+Identical CP-K20 source binaries, profiles, source flags and receiver model:
+K16a MAIN GPU batching; CP-I1/I3 LOCAL full dense covariance every version;
+corrected MAIN means; Kimera CP-K9 prior refresh1,FL4Q0,temporary retirement
+remove,native IMU override unset. GLIM5s,Kimera25keyframes; classic temporary
+source CBS OFF/ON, not source live_revision. Gaussian scales1,0.20s belief
+horizon,one pair/update,unchanged mean-only peer alignment approximation.
+Receiver CP-K19 SHA256
+4b08a7f5ba97f5e4ec22959df23367df79eebf5d644dc19d939747dcd4566d6e
+--absorbed-revision-policy seal_at_absorption in BOTH modes: active versions
+replace; known absorbed-ID revisions expire/audit without solver mutation.
+Last accepted information stays in prior. Unknown old first arrivals and all
+malformed/conflicting inputs still fail.7s fixed-lag source_wnoa,100ms supports,
+no central IMU/GNSS,unchanged Qc/priors. No C++ edits/builds/tuning/promotion.
+
+EXPLICIT HARNESS CHANGE, frozen before capture (not an estimator change):
+Kimera's native output is keyframe-only. Its profile permits5s between
+keyframes; with100ms images the next eligible frame can be at5.1s. Use5.15s
+maximum internal gap/tail (5s+one image period+50ms tolerance),not the previous
+1s dense-output bound. Start offset remains <=1.5s. Full IMU span unchanged.
+Replace assumed1700 keyframes with sequential native IDs,one output per backend
+update,and frontend processing evidence. Same ETH1 window has3463 synchronized
+image pairs; CP-K21 processed3460 after startup. Require3460--3463 frontend
+updates and backend/native count equality. For each >1s keyframe gap require
+frontend counters advance between bounding backend updates; log gap/counters
+and low-disparity evidence. This is not proof of every per-frame decision.
+GLIM dense coverage,transport,expiry,covariance,lifecycle and numerical gates
+unchanged. No interpolated poses are added to either native output.
+
+Every actual saved native/fusion pose is scored against IE-TC. The common mask
+may have gaps: retain existing0.5s estimate/0.05s GT interpolation bounds;
+report contiguous segments,excluded queries,actual covered duration and envelope
+separately. Do not silently bridge5s gaps or label mask envelope dense coverage.
+Path length is polyline through saved samples,not measured motion inside gaps.
+Shared-CPT7 IE-TC is not independent prism GT. ONLINE fusion separate from
+DELAYED fixed-lag-finalized output; no full-history/nonlinear stationarity claim.
+
+H=/home/yeranis/repos/gnssFGO/experiments/eth1_keyframe_finalization_full_cpk22_20261021
+P=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_keyframe_finalization_full_cpk22_20261021/prepared
+V=/home/yeranis/results/gnssfgo_eth1_keyframe_finalization_full_cpk22_20261021
+After each capture run missing gates ONCE using evo venv python:
+P/validate_local.py MODE;P/validate_candidate.py MODE;P/validate_case.py check MODE.
+Inspect existing artifacts,do not overwrite. OFF:python3 P/run_case.py full off.
+Only after all three pass:python3 P/preflight_on.py;python3 P/run_case_on.py full on.
+Stop/report on failure; let owned controller clean up. No saved-journal solver
+repeat/exhaustive observer/new source diagnostic. Saved-data coverage unit
+checks only before capture. After BOTH pass run existing evaluate_fl4f.py in
+Noetic then H/summarize.py. Preserve mean/covariance/revision/expiry/timing data.
+Restore both originally-stopped containers only after owned work exits.
+No commit/push/next experiment. Persistent follow-up requires separate approval.

@@ -1,0 +1,43 @@
+CP-V57 — stay on suspect 1: landmark rejection at the first Hesai insertion
+Authorized by the user's 2026-10-30 'proceed' after requiring suspect 1 closure.
+The earlier CP56 recommendation to advance to suspect 2 is superseded.
+
+Saved data only. Hold camera poses, observations, intrinsics, extrinsics, track
+keys, noise and all native rejection thresholds fixed. No graph optimization,
+new capture, production changes, covariance work, weights or guard relaxation.
+Independent 3-D landmark fitting is diagnostic, not a deployed replacement.
+
+Use CP56's native exported geometry and per-factor activity, pinned by its
+retained manifest. Include every initially warm-valid track-factor instance
+that becomes invalid at the actual ON ordinary or refresh result, plus the
+initial cache-sensitive slot571. Report duplicate geometries as well as factor
+instance counts. Separate the actual next-refresh equations from final post-
+solution classification, and native rank rejection from reprojection feasibility.
+
+First reproduce native DLT/status and projections. Independently fit landmark
+positions with fixed cameras using the original smart-factor reprojection
+objective (uL,uR,v for stereo; uL,v for missing right), uniform sigma3px.
+Also record mono-camera least-squares triangulation's duplicated stereo v term.
+No robust loss or dropping observations. Use analytic point Jacobians checked
+against finite differences, multiple deterministic starts and exact synthetic
+fixtures. An optimizer's failure to find a valid fit is NOT proof of impossibility.
+
+Separately seek a point satisfying the original maximum per-camera 2-D error
+<=3px, positive depth and distance<=10m. Use fixed-camera halfspace outer bounds
+on the circular reprojection constraints. Each accepted point is checked using
+the actual nonlinear projection. For infeasibility, retain nonnegative dual
+weights and independently check a numerical separating certificate. Otherwise
+report unresolved; no global guarantee from local least squares alone. The
+native DLT rank threshold1 is still required for a native-admissible candidate.
+Feasibility/minimax is an existence diagnostic, not the estimator's L2 objective.
+
+Quantify original versus artificially translated/rotated geometry separately.
+An artificial world-origin shift is NOT an observed physical motion. Do not
+attribute real rejection to origin sensitivity solely because artificial shifts
+change a classification. Reuse existing warm/cold evidence; no graph cache change.
+
+Write fresh exclusive artifacts under this root. Preserve CP56's failed strict
+invariance gate. Check source hashes before/after, original four-case Hesai
+checkpoint, stopped containers and owned-job exit. Report what can/cannot be
+concluded about suspect1. Any later propagated graph ablation must isolate a
+demonstrated mechanism; no simultaneous suspect2/3 changes or full rerun.

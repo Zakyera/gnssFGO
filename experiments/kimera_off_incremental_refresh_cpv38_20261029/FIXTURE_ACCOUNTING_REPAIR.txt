@@ -1,0 +1,14 @@
+release_bracefix active test reached/passed the independent GN, original-prior,
+cache/tree, LOCAL covariance and dense next-marginal checks. It then failed the
+test-only assertion that an OriginalChartPrior pointer must survive the cycle's
+marginalization. In this pairwise synthetic chain each promoted boundary prior
+is absorbed into the NEW native marginal during that same cycle. Zero surviving
+adapters is therefore not zero promotions. Native marginalizeLeaves replaces
+the absorbed factor; CP-V38 refresh occurs BEFORE that operation.
+
+Corrected only this invalid post-marginalization counting assertion. Direct
+incremental-reference prior checks, all-keys refresh, exact repeat, second-
+linearization fault injection, changed-output discrimination and nine real
+retirements remain required. No candidate code, models, tolerances, weights or
+data changed. Original failing log/binary retained in release_bracefix. New
+release_lifecyclefix tests the corrected harness; no dataset run or score retry.

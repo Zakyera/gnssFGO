@@ -1,0 +1,32 @@
+CP-K16a implementation authorization: user "proceed", 2026-10-20.
+Scope: private MAIN dispatch integration and factor-equation/cache correctness
+only, following PLAN.txt. No solver-lifecycle acceptance, timing or dataset.
+
+Implementation decision: explicit thread-local scope bound to the actual inner
+MAIN ISAM2Ext identity, entered only for an already attached shared-native MAIN
+wrapper and explicit CPK16_MAIN_GPU_BATCHING=1. No global factory registration.
+No existing class layouts/vtables change. Reuse E1b.4a's exact-type admission
+and E1 synchronous-compatible helper. All Gaussian outputs preserve original
+indices/order, including nulls; cached factors are excluded from new work.
+Keep the disabled and unsupported graph routes unchanged. GN-only admission;
+unsupported optimizer/error settings fail rather than silently changing them.
+
+Private roots:
+  authoring/report: /home/yeranis/repos/gnssFGO/experiments/main_gpu_batching_cpk16_20261020
+  build: /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020
+Baseline: CP-K14 all-LOCAL CP-I1/CP-I3 private library recipes and protected
+manifest. Build only changed host objects and tests against unchanged CUDA
+objects/libraries; no catkin install or source-checkout overwrite.
+
+Tolerances fixed by PLAN.txt before execution. Factor tests reuse existing
+strict tests, plus independent exact snapshots through changing Values,
+inlier-refresh thresholds, cache interleaving and counted fallback cases.
+No timing benchmark, even if old tests contain disabled timing fixtures.
+Focused Release, host UBSan and applicable CPU ASan/UBSan. Dependencies/kernels
+are not fully sanitizer-instrumented; report this explicitly.
+
+Record build attempts separately, loaded library paths/hashes, test results and
+max equation/covariance differences. Preserve failures rather than overwrite.
+On a numerical mismatch stop before K16b; no relaxed gate or automatic live run.
+Restore an initially stopped build container after owned work is finished.
+This gate does not repair the receiver revision-retention mismatch.

@@ -1,0 +1,57 @@
+CP-K28 full SPX-3 quiet-start OFF/ON — COMPLETED
+User authorized2026-10-23 after successful bounded CP-K27 startup repair.
+See PROTOCOL.txt for exact immutable settings/window and gate policy.
+Preflight passed:2763 protected hashes, unchanged inputs/binaries/profiles,
+1970 matched stereo pairs,197.02s through lastHesai. Disk free31GB before run
+(prior full pair~2.7GB). Source/receiver model settings unchanged.
+OFF launched ONCE2026-10-23T14:56:02+03:00 by finite controllerPID346069.
+Effective startup check passed before playback. Scoped SystemD and GNOME
+inhibitors held; both containers originally stopped. No persistent automation.
+Do not duplicate any stage. Controller owns OFF checks, conditional ON launch,
+ON checks, scoring, summary and cleanup. Inspect status.json/failed.json.
+Previous CP-K26 and CP-K27 results remain unchanged. Actual full-run results
+are saved in RESULTS_REPORT.txt/results.json, not inferred from the short pilot.
+
+Controller finished 2026-10-23T15:32:04.341513+03:00: COMPLETED
+{"failure": null, "cleanup_error": null}
+Both modes and three gates each passed. See RESULTS_REPORT.txt/results.json for actual native/ONLINE/delayed metrics.
+No automatic retry. Scope-limited inhibitor releases when controller exits.
+
+Verified closeout: both containers stopped;2763protected hashes unchanged.
+All three gates per mode passed, as did scoring and final summary.
+
+FULL-SAVED TRAJECTORIES (all saved poses vs shared-CPT7 IE-TC reference)
+Estimator          mode ATE_m    tRPE1s_m rRPE1s_deg path_prism_m span_s
+Original GLIM      OFF  0.016576 0.006472 0.261729   90.959121   196.199266
+Original GLIM      ON   0.016559 0.006515 0.241074   91.034397   196.199266
+Original Kimera    OFF  0.483414 0.063055 0.478671   89.092288   196.798285
+Original Kimera    ON   0.110169 0.015798 0.482754   90.706621   196.798285
+Fusion ONLINE      OFF  0.044145 0.028187 1.377564   98.640147   196.400000
+Fusion ONLINE      ON   0.040815 0.027646 1.317215   97.481972   196.400000
+DELAYED finalized  OFF  0.037843 0.007771 0.250678   90.884595   196.400000
+DELAYED finalized  ON   0.034675 0.007622 0.255111   90.983706   196.400000
+
+Kimera ATE improves strongly with CBS-ON; GLIM essentially unchanged; ONLINE
+fusion ATE improves modestly. This is not proof that uncertainty is calibrated.
+Receiver ONLINE path length/RPE differ notably from delayed finalized output;
+do not substitute finalized results for online results.
+
+Secondary common mask:1923identical queries,39unsupported queries excluded,
+191.799817s contiguous duration summed over5segments in195.299814s envelope.
+Common ATE OFF/ON: GLIM.016529/.016529m; Kimera.482278/.108849m;
+ONLINEfusion.042071/.037992m. Startup/tail and sparse-keyframe gaps disclosed
+in source_coverage and RESULTS_REPORT; saved spans are not exactly197.02s.
+
+Each mode omits ONE terminal Kimera rev0 because its endpoint needs the next
+100ms support beyond the recorded clock (missing69.995ms); same frozen EOF
+predicate passes. No fake support, no recovered factor, not zero factor loss.
+OFF insert2890/replace113709/preinit25; ON insert2887/replace113870/preinit25.
+Covariance payload error0 in both modes. Full source means/covariances/revisions,
+transport payloads, provenance, acceptance, expiry and timing histories retained.
+MAIN batched hits904768OFF/935666ON, synchronous calls0. Receiver support
+p95.064637/.062132s,max.095502/.091028s;1965ONLINE outputs each during capture.
+
+IE-TC shares CPT7, not independent prismGT. Same no-scale SE3 alignment and
+prism lever arm; existing mean-only covariance alignment approximation unchanged.
+No tuning, rebuild, default promotion, new sequence, fresh deterministic replay,
+nonlinear-stationarity/exhaustive-batching certificate, commit or push.

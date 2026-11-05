@@ -1,0 +1,41 @@
+CP-K11 validation-only blocker,2026-10-20
+
+Both120s live captures completed normally (controller complete.json, no failed.txt).
+OFF:all four frozen gates PASS. ON:LOCAL provenance and receiver check PASS.
+ON candidate validation was run ONCE and exited1:
+
+Traceback (most recent call last):
+  File ".../prepared/validate_candidate.py", line 56, in <module>
+    assert sum(p["retired"] for p in promotions) == retirements
+AssertionError
+
+Exact cause:
+The new private validator reads only live120_on_source/estimators.log.
+That launcher log contains zero CPK9_PRIOR_REFRESH rows. The candidate's stdout
+is instead saved in:
+live120_on_source/ros_logs/de271098-cc5f-11f1-91eb-0231b42b05ae/
+kimera_vio_ros-kimera_vio_ros_node-4-stdout.log
+
+Read-only localization of already-recorded evidence:
+objective.csv:584consecutive native updates,556planned retirements.
+Actual Kimera node log:556refresh rows,556retired factors,zero duplicate update
+IDs,zero per-update count mismatches. All numeric values finite.
+First refresh:backend28,line3054;last:backend583,line101574.
+Maximum cached-prior equation relative error1.6457993899444706e-9 (<1e-8).
+Both launcher and node log have zero occurrences of FL4Q,CPK9-space errors,
+active_window_rollback,active_window_retry_local_update_,Smoother recovery,
+Persistent BPSAM recovery,process has died,terminate called,Segmentation fault.
+
+This is a validator log-routing mistake,NOT evidence of a new estimator
+failure or an actual556-vs0retirement discrepancy. It also means the controller
+and candidate validator's Kimera-specific token scan was limited to the launcher
+log; retrospective node-log scan found none, but this limitation must be explicit.
+No protected controller/checker or saved output has been edited.
+No gate was relaxed or silently reclassified as passed.
+
+Per authorized protocol:STOP. ON receiver-journal repeat and OFF/ON scoring
+NOT run. No retry,new source run,tuning,build or default promotion.
+Need separately authorized postprocessing-only correction: preserved failed
+validator remains immutable; corrected checker should use the actual node log
+for the SAME lifecycle/error checks. Then,if it passes,finish existing ON journal
+repeat/evaluation without rerunning either source capture.

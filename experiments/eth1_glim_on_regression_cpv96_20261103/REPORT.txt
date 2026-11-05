@@ -1,0 +1,167 @@
+CP-V96 — CP91 versus CP95 GLIM ON regression: saved-data diagnosis
+2026-11-03. ANALYSIS COMPLETE; ROOT CAUSE OF ATE CHANGE NOT PROVEN.
+
+Bottom line
+===========
+The higher ATE is real on identical evaluation support, not a mask/configuration
+mix-up. It is principally a different broad trajectory shape, not increased
+short-distance jitter. There is also a concrete, previously hidden difference:
+some early Kimera->GLIM covariance matrices are substantially smaller in CP95,
+despite almost unchanged whole-run covariance medians. This is a lead for
+causal testing, NOT proof that these factors caused the ATE regression.
+
+No source capture, receiver replay, optimizer execution, build, tuning, deletion,
+parameter change or terminal-evidence modification took place. All results here
+are supplemental. Old CP91 and new CP95 terminal output hashes (221/426) pass.
+
+Like-for-like scoring
+=====================
+Old = CP91 ON with CP89 OFF. New = CP95 live source+fusion OFF/ON.
+All eight compared source curves have identical 2969 common100ms timestamps.
+Reference TUM and 365 reference-distance0.5m pair indices are byte-identical.
+Method1 first absolute publications, EVO1.36.3, SE3/no-scale, AP20 prism physical
+point versus IE-TC. Existing unsupported intervals/tail are not filled.
+
+                               Old            New
+GLIM OFF ATE m                 .038062        .039574
+GLIM ON ATE m                  .041500        .053058   (+27.85%; +.011558m)
+GLIM ON median APE m           .034745        .052468
+GLIM ON maximum APE m          .135183        .092266
+GLIM ON translation RPE0.5m m   .015195        .014303
+GLIM ON rotation RPE0.5m deg    .333948        .329290
+
+Full-native saved GLIM ON ATE also rises .043435->.051503m; this is not solely
+the common mask. Full-native and common-mask scores are distinct populations.
+Common coverage remains296.6/346.32s, ends301.9446s; no inference about missing
+common-mask tail from these time-bin diagnostics.
+
+Extra squared APE is3.244931m2. The30–90s and150–240s bins contribute90.00% of
+that net increase. Original global alignment is retained; these windows locate
+score contributions, NOT the causal onset of estimator error. In fixed reference
+coordinates the Y error contribution increases .795133->5.027932m2, while X/Z
+decrease. This denotes a different large-scale shape after global alignment;
+it is not a proven calibration-axis error or physical coordinate-frame bug.
+
+Supplemental EVO reference-distance RPE, same pairs across all curves at each
+distance, no pairs bridging existing gaps:
+delta(m)  pairs   old ON translation(m)  new ON translation(m)
+ .5       365       .015195               .014303
+ 5         38       .058352               .052410
+10         18       .100392               .105618
+20          9       .187769               .205997
+50          3       .367461               .323274
+Thus worsening is not uniform across distances; long-distance pair counts are
+small. These are diagnostics, not replacements for the original table.
+Independent30s and first30s-only position alignments are also saved in analysis;
+their alignment sensitivity means they must NOT be called causal drift onset.
+
+Actual inserted Kimera->GLIM beliefs
+===================================
+All1473 original sender intervals joined between runs. Raw means are evaluated
+at sender endpoints, aligned means at actual GLIM receiver endpoints, against
+the original dense IE-TC CPT7 relative motion. EVO APE on these relative SE3
+transforms is used, NOT a substitute for trajectory0.5mRPE. Maximum reference
+interpolation bracket is recorded in analysis.json. Fifteen receiver bindings
+differ; the other1458 have identical endpoints.
+
+                                Old             New
+Raw relative translation RMSE m  .007856         .007648
+Aligned translation RMSE m       .009836         .009609
+Aligned rotation RMSE deg        .132447         .131471
+Median translation trace m2      1.202221e-5     1.262778e-5
+Median rotation trace rad2       5.778728e-8     5.776501e-8
+
+The new incoming means are not worse ON AVERAGE. This does not exclude changed
+directional bias, locally poor factors, or accumulated closed-loop effects.
+Raw/aligned errors refer to different intervals; their difference alone does
+not quantify alignment error. Covariance is unchanged during recorded GLIM
+time alignment/insertion; full1473 incoming/transported/inserted matrices match.
+Existing source-frame audits remain authoritative; no insertion-scale change.
+
+IMPORTANT: comparing medians hid substantial event-specific changes.
+Matched translation-trace new/old median .983751, p5 .470022, p95 1.820116,
+minimum .073646, maximum4.510319.91/1473 are below half the old trace; two are
+below one tenth. Full-matrix generalized covariance ratios range .030707–8.601074
+with median .998566. Trace is NOT a scalar factor weight; covariance cross terms
+and directional weights must not be replaced by inverse trace.
+
+Concrete unchanged-binding examples (source-interval end time, not wall time):
+5.699967s k11->k12 ->g46->g48 in BOTH:
+ translation trace2.351883e-5 ->2.380526e-6m2 (9.88x lower);
+ aligned belief translation error .014110->.005654m.
+7.899955s k22->k23 ->g68->g70 in BOTH:
+ translation trace9.224234e-6 ->6.793287e-7m2 (13.58x lower);
+ aligned belief translation error .014848->.010524m;
+ GLIM pre/post-update translation Logmap discrepancy from the external mean:
+ old .026054->.009714m; new .024476->.003399m.
+The last observation is consistent with closer following of the new belief,
+but that update also contains native factors. It is NOT an isolated covariance
+ablation or proof that following the belief worsened GLIM's reference error.
+
+Observed divergence chronology
+==============================
+At native state1, .919669590s, GLIM differs2.367576mm/.002886deg, before any CBS.
+Initial pose is identical. Across30 pre-insertion poses, maximum difference
+is3.681792mm. First K2G insertion is update30 (state3.819741688s); its incoming
+raw mean and full covariance are EXACTLY identical between runs. Its native-IMU
+time-aligned mean differs because the receiving trajectory already differs.
+The first applied G2K interval g29->g31 (end3.919748651s, applied at Kimera update4)
+already has different means/covariance. First K2G covariance difference is
+k3->k4 at4.099975s, ratio .989057. First ratio<.5 is5.499967s. Large early
+covariance changes therefore precede the first changed GLIM binding at8.299952s.
+Endpoint mismatch alone cannot explain the beginning of covariance divergence.
+
+Fifteen K2G endpoint bindings differ, eleven before30s, last at124.099291s.
+Native duration_aware_edge matching prioritizes duration error, then endpoint
+error, among currently available states within .12s. That is a real execution
+difference, but neither its cause nor its contribution to total ATE is proven.
+G2K endpoint pairs match; five application update headers differ.
+
+Historical reproducibility evidence, not a new causal proof
+=========================================================
+CP-K16e REPORT_K16E.txt independently demonstrated scheduling-dependent GLIM
+random-grid sampling on identical raw scan/RNG reset: two selected sets in six
+two-thread calls, one set in six one-thread calls. Current saved profiles still
+enable random-grid sampling with two threads. Current source retains worker RNG
+and guided OpenMP scheduling. CP91/95 did not save equivalent prepared-cloud
+snapshots at their first divergence, so that specific mechanism cannot be
+certified as the cause or magnitude of THIS regression. Do not call it harmless.
+Fusion is downstream only; changed host scheduling is a hypothesis, not a
+feedback connection or established explanation. No thread setting was changed.
+
+Conclusion / next bounded check
+==============================
+The evidence supports a different closed-loop numerical history, including
+different early source-produced belief uncertainties and some different timing
+associations. It does NOT identify a new frame bug, insertion covariance scaling
+bug, or prove a systematic CBS degradation beyond these saved runs.
+The most useful next causal question is why Kimera's outgoing covariance differs
+so much over5–10s despite identical OFF Kimera output, and whether those early
+weights alter GLIM's later shape. Compare native Kimera information/visual support
+and retained-prior state at the first divergent covariance, then a frozen-input
+single-variable checkpoint test if the needed states can be captured. Hold native
+factors, means, endpoint IDs and application schedule fixed when testing covariance.
+Do NOT start by tuning weights or repeating a full campaign. No such capture or
+optimizer test was launched or authorized by this saved-only investigation.
+
+Limitations
+===========
+Two ON realizations do not estimate a repeatability distribution. Median trace
+stability does not establish per-event stability, calibration or independence.
+IE-TC shares CPT7 and is not independent prism GT. Separate IMUs do not eliminate
+persistent peer-feedback correlation. Logged incremental residuals are not a
+nonlinear stationarity certificate. ATE changes and covariance changes do not,
+by themselves, establish causality. Estimated path length is not physical travel.
+
+Artifacts / harness notes
+=========================
+analysis.json, belief_events.json, diagnostics.png; verification.json pins29inputs
+and verifies221old/426new terminal outputs. supplement.json adds full-matrix
+ratios and pre-CBS divergence; covariance_timeline.json/png adds the early trace
+and G2K chronology. Each supplement has its own input and output hash verification.
+The first analysis invocation stopped before outputs on the version spelling
+'v1.36.3' versus distribution '1.36.3'; changed to distribution metadata check.
+The second stopped before outputs when an existing short reference segment had
+no EVO distance pairs; the successful harness explicitly skips only segments for
+which EVO itself returns no pairs. Original0.5m results reproduce all365pairs.
+These were analysis-harness repairs, not source or scientific-setting retries.

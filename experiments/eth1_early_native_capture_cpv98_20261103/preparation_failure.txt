@@ -1,0 +1,7 @@
+The initial preparation helper stopped before admission or any Docker start or
+sensor launch: its generic span assertion required >11.7s for every raw stream.
+The exact 12s Hesai prefix has118 scans spanning11.699876070s (first at.219701729s,
+last11.919577799s). This is the unchanged CP91 raw prefix, not dropped input.
+The proposed12s window is retained. Use exact CP91-prefix equality and >11.6s
+header span, allowing the known raw start offset. Preserve existing fresh copies;
+finish only the interrupted input audit/admission. No source retry occurred.

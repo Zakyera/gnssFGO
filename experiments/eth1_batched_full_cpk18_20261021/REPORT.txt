@@ -1,0 +1,49 @@
+CP-K18 — full ETH1 batched matched OFF/ON
+Status: STOPPED/FAILED OFF,2026-10-21~00:58 local (Asia/Nicosia).
+One launch~00:32 local; no retry. ON NOT launched. No complete OFF/ON result.
+Preparation passed:2167protected hashes,exact K17 binaries/model/profiles;
+full selected-topic window346.32s verified through final Hesai record.
+effective_mode_check.json passed BEFORE playback. Controller stopped sources
+after receiver failure; owned jobs exited. Both containers restored stopped.
+User approved proceeding with follow-up, but failure discovered before activation;
+existing automation remains PAUSED. No validation/scoring or ON after failure.
+Authorized2026-10-21. Exact completed CP-K17 setup extended to346.32s at0.20x.
+Kimera and receiver unchanged; known retention risk remains. See PROTOCOL.txt.
+No accuracy result or full-sequence success claimed for this failed prefix.
+
+EXACT FAILURE (failure_evidence.json and failure_evidence.py):
+At307.231672s of requested346.32s, receiver reports
+FL4A_STREAM_FAILURE revision after absorption.
+Failing event214527 (1-based), Kimera edge1459->1460 revision24,
+source update1484. Revision23 was already absorbed at commit212131.
+Edge first epoch1727775303953732500ns, revision arrival1727775315087068015ns:
+first endpoint11.133336s old,4.129743s before oldest retained support.
+Kimera producing epoch1727775315053677107ns gives11.099945s physical history
+and0.033391s producing-epoch-to-arrival freshness. Preceding keyframe gap
+5.099973s. Backend70.106ms. This is the same edge/update/mechanism as CP-K14:
+count-based source history exceeds the receiver7s retention, not slow GLIM.
+Last sampled transport queue0,max46; last committed pending0,supports71,slots174.
+
+BATCHING TIMING, FAILED PREFIX ONLY:
+Saved GLIM scans after5s through failure:n3023,
+MAINmedian27.211948ms,p9551.808003ms,max60.795608ms;
+whole-scanmedian56.808732ms,p95132.991926ms,max298.211159ms.
+Last20s:n200,MAINmedian32.550966ms,scanmedian61.664323ms,
+scanp9582.623966ms,max88.947140ms. Zero scans>500ms in measured after5s cohort.
+4,076,638 prepared MAIN factor consumptions,zero synchronous MAIN GPU calls,
+zero aborted profiled MAIN updates; saved GLIM internal queue maximum1.
+Evidence supports sustained batching throughput over captured~307s, NOT a full
+sequence or exhaustive mathematical-preservation certificate.
+
+Partial outputs retained: native GLIM3068poses/span306.699666s;
+native Kimera1485poses/span306.898282s; ONLINEfusion3066poses/span306.5s.
+No ATE comparison on an incomplete pair.2167protected hashes unchanged.
+No Kimera/model/covariance edits, tuning, guard relaxation or journal replay.
+Next decision concerns the source revision lifetime versus receiver retention;
+no repair, longer lag or new run authorized by this report.
+
+Prepared/control root:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_batched_full_cpk18_20261021/prepared
+Inspect full_off_control/complete.json OR failed.txt and
+full_off_receiver/transport_status.json; do not start duplicate controllers.
+Both containers were originally stopped; restore only after owned work exits.

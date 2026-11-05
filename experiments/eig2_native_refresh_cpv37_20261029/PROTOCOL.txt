@@ -1,0 +1,52 @@
+CP-V37 — EIG-2 CBS-OFF saved-checkpoint native relinearization ablation
+2026-10-29. Explicitly authorized by the user; offline only.
+
+HYPOTHESIS / SINGLE INTERVENTION
+Refresh the linearization at the captured incremental estimate while retaining
+ALL native smart stereo factors, measurements, noise, native validity policies
+and the marginal prior's original function/anchor. No stronger weights, damping,
+line search, repeated nonlinear iterations, joint-landmark substitution or CBS-ON.
+
+Use CP-V36's seven immutable after-solve checkpoints:800,934,1000,1335--1338.
+Control: independently solve the original native equations at stored theta.
+Treatment: ONE undamped native-factor Gaussian solve at the current estimate,
+then retract once. Both use the same explicit key ordering/native Cholesky
+elimination. This is not a reconstruction of incremental elimination ordering.
+The control quantifies numerical differences versus the recorded incremental
+estimate; a small cached-equation residual is not nonlinear stationarity.
+No additional correction on either branch. Record any solve exception; do not
+retry with damping, tuned weights, altered rank thresholds or removed factors.
+
+PRIOR SEMANTICS
+Reuse CP-V36's immutable OriginalChartPrior: its Gaussian, original anchor and
+energy are unchanged; only its coordinate Jacobian is evaluated at the new
+state. Never naively reset the prior anchor or pretend to recover eliminated
+nonlinear measurements. Clone smart factors with original caches and let the
+unchanged native retriangulation/validity policies operate normally. No manual
+cache clearing, forced valid tracks or visual activity freeze.
+
+PREFLIGHT / NUMERICS (declared before data outcomes)
+Fresh private standalone executable only, existing CP-V36 libraries/headers.
+Release and ASan/UBSan saved synthetic fixture first, plus displaced-current
+fixture and prior energy/directional-derivative checks. Vendor DSOs are not
+sanitized. Prior energy relative error <=1e-10; directional derivative error
+<=1e-5 +1e-5*max(abs(analytic),abs(finite_difference)), epsilon1e-5.
+Original cached/fresh-theta equation relative difference <=1e-12. The original
+unanchored prior is checked in its owning chart, not at arbitrary raw Values.
+Require finite equations/states. Report linear backward error and scaled
+normal-equation residual; do not call this a nonlinear gradient certificate.
+Hash inputs/build dependencies and serialize before/after for nonmutation.
+Refuse existing outputs. Admission8GiB and runtime5GiB reserve. No source runs.
+
+OUTCOMES / LIMITS
+Report native IMU unwhitened position/rotation/velocity residuals; original-chart
+prior, native smart, bias and total costs; smart validity transitions; pose,
+velocity and bias movement; before/after relative-pose change and equation
+residuals. Native smart cost has the known error/Schur derivative mismatch;
+cost reduction alone is NOT an all-native nonlinear acceptance certificate.
+Success means the controlled comparison is valid, not that an online fix is
+certified. Mixed/worse/failed steps remain reported. No new ATE/RPE, trajectory
+reconstruction, full sequence claim, production promotion, deletion or push.
+Use the existing stopped Noetic container for build/test only, restore it after
+owned work exits. Humble stays stopped. Preserve old results and RRDs. Update
+REPORT.txt, repository AGENTS.md and runtime plan with outcome and limits.

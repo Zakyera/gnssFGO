@@ -1,0 +1,216 @@
+CP-V13 — LEICA-2 VELODYNE RECEIVER UPDATE TRACE
+2026-10-26 | COMPLETED: ORIGINAL OUTPUT REPRODUCED, MECHANISM LOCALIZED
+
+BOTTOM LINE
+The newest fusion estimate is genuinely sensitive to new source beliefs. The
+large visible zigzag is not produced by a large jump at marginalization, and
+the seven-second active trajectory is NOT swinging around as one rigid object.
+Most of the response is concentrated at the newest one or two supports. New
+GLIM and Kimera beliefs, plus extrapolation from their updated velocity state,
+produce the connected first-publication sawtooth. Later updates largely repair
+the same states within a few tenths of a second, with unchanged mathematics.
+
+Your supervisor's suggestion is a sensible hypothesis if "prior" means the
+ongoing motion constraint relative to incoming source information. This trace
+does NOT prove that the starting anchor or the marginalized historical prior
+is too weak. It also does not identify a numerically correct replacement Qc.
+No fix, covariance adjustment, lag change or source rerun was performed.
+
+1. WHAT RAN AND WHY THE RESULT IS TRUSTWORTHY
+
+One full saved receiver-journal replay each for original CP-V4 Leica-2 Velodyne
+CBS OFF and ON. No bag playback, no GLIM/Kimera run. Private observer-only
+Receiver.h and Trace.h; Live.cpp byte-identical to CP-K19. Original WNOA, Qc,
+start priors, ISAM2 policy, update order, 7s/100ms supports, stable-ID replacement,
+seal_at_absorption and EOF policy all retained.
+
+The observer uses a disposable ISAM2 copy for extra estimate queries, and
+disposable cloned factors/original-chart marginal wrappers for residual costs.
+No additional solve, factor, regularizer or marginal conversion enters the
+receiver. It records ALL retained state values before/after source updates,
+support creation, retirement, and at publication within 379.9--390.1s.
+
+PASS: ONLINE CSV/TUM AND finalized CSV/TUM are byte-identical to the original
+live outputs in BOTH modes. Each summary equals the original exactly. All
+296,400 OFF / 296,470 ON event metadata rows match, excluding replay wall-time,
+service-time and RSS fields. Selected committed records also match exactly.
+Each mode has 4,282 online and 4,282 finalized states over 428.1s.
+The fresh replay binary SHA256 is:
+c2e67106f66807ee16535fb1c5f6444908f509a5787dc669e3faa4fe194313be
+Original binary remains:
+4b08a7f5ba97f5e4ec22959df23367df79eebf5d644dc19d939747dcd4566d6e
+2,872 pinned inputs and 1,665 recorded compiler dependencies verified unchanged
+after replay. Replays took about 201s OFF / 198s ON, but these include observer
+and archive I/O: NOT optimizer-throughput measurements.
+
+Output root:
+/home/yeranis/results/gnssfgo_leica2_receiver_trace_cpv13_20261026
+Original source/receiver roots were only read. Both containers restored to
+stopped; Noetic was never started. Open Rerun visualization left untouched.
+
+2. WHICH OPERATION MOVES THE NEWEST ESTIMATE?
+
+Prism-point displacement of the SAME newest state, immediately before/after
+each applied source update, in the trace interval. Median / p95, centimetres:
+
+Operation                           CBS OFF            CBS ON
+New GLIM belief, 102 updates         3.267 / 6.426      2.081 / 6.505
+New Kimera belief, 51 updates        6.455 /12.856      3.723 / 6.944
+
+Thousands of revisions of EXISTING belief IDs generally cause much smaller
+individual movements. For OFF the p95 is 0.042cm per GLIM replacement and
+0.247cm per Kimera replacement. Their cumulative effect is not zero: net
+per-100ms-cycle RMS movement is 0.446cm GLIM and 0.629cm Kimera in OFF,
+0.375cm GLIM and 0.574cm Kimera in ON. These are vector magnitudes, not additive
+fractions of path length. Stable-ID replacements do not accumulate duplicate
+factors.
+
+Retirement/marginalization: newest-state p95 change only about 0.009cm in
+either mode; maximum OFF 0.0424cm / ON 0.0323cm. It is not the large instantaneous
+jump mechanism in this interval. This does NOT certify the marginal Hessian's
+conditioning or exclude an indirect effect of historical information.
+
+Creating a new support: its pose is almost exactly the pre-step WNOA
+prediction. Extra adjustment after that prediction has p95 0.00248cm OFF /
+0.00195cm ON, maxima below 0.0041cm. The predictor itself advances the newest
+point by a median 3.44cm OFF / 1.69cm ON per 100ms. Thus the new-state creation
+solver step is not injecting the centimetre-scale discontinuity; the current
+position/velocity already carries the source-driven response.
+
+We reconstruct every selected ONLINE step exactly as the vector sum of source
+updates, new-support movement and retirement movement. All 100 cycles per mode
+close with zero observed double-precision difference; observed publication
+positions also equal the original aligned samples exactly.
+
+The 380--390s cycles alternate GLIM-only and GLIM+Kimera. Do NOT translate this
+into "Kimera is wrong and GLIM is right": insertion order, different durations,
+availability and the pre-existing graph all condition each update. In OFF,
+GLIM and Kimera insertion displacements within the same mixed cycle usually
+point in the SAME direction (median cosine +0.803); in ON they often oppose
+(median -0.745). A simplistic two-sensors-pulling-oppositely story is inadequate.
+New-belief insertion is a localized operation attribution, not a counterfactual
+proof that removing that source would improve accuracy.
+
+3. DOES THE WHOLE WINDOW MOVE, OR MAINLY ITS NEWEST END?
+
+The concentration is pronounced. OFF new-belief p95 movement:
+
+State age behind newest       New GLIM          New Kimera
+0.0 seconds                  64.26 mm          128.56 mm
+0.1 seconds                  15.59 mm           55.73 mm
+1.0 second                    0.572 mm           0.163 mm
+3.0 seconds                   0.053 mm           0.000 mm
+6.0 seconds                   0.000 mm           0.000 mm
+
+These are actual same-state before/after values, including the incremental
+solver's existing propagation/relinearization policy. Zero movement does not
+prove exact nonlinear optimality.
+
+At each publication we now have a genuinely simultaneous seven-second window,
+unlike the separate finalized rows. Mean length over the 100 inspected windows:
+
+Product                             CBS OFF          CBS ON
+Connected first-publication points  5.460 m          3.381 m
+Simultaneously revised active path  2.471 m          2.509 m
+IE-TC at identical state times      2.397 m          2.397 m
+
+These are overlapping seven-second windows, not full-run path totals or
+independent statistical trials. The active path is substantially less inflated.
+Nevertheless its newest edge still moves too much: median 100ms edge length
+3.24cm OFF / 1.74cm ON versus 0.40cm reference. Therefore this is not merely a
+plotting mistake; current-time localization stability remains a real concern.
+
+4. HOW QUICKLY DO LATER UPDATES REPAIR A STATE?
+
+Same 90 physical states, 380.084443335--388.984443335s (8.9s), identical fixed
+original rigid alignment and prism point. No smoothing or interpolation of
+these estimates. Paths sampled when each state reaches a fixed age:
+
+State age when read                 OFF path         ON path
+First publication (age 0)           7.384 m          3.454 m
+0.1s later                         3.248 m          2.237 m
+0.2s later                         2.212 m          1.965 m
+0.3s later                         1.866 m          1.942 m
+0.5s later                         1.829 m          1.810 m
+1.0s later                         1.767 m          1.758 m
+Saved delayed finalized            1.696 m          1.729 m
+IE-TC reference                    1.606 m          1.606 m
+
+100ms displacement-vector error RMS falls from 8.30cm to 1.41cm after 0.2s
+in OFF, and from 3.65cm to 1.25cm in ON. This demonstrates fast local correction
+of the previously published samples; it does NOT improve the current-time
+estimate by itself. Delay is real: these are delayed causal products, not a
+new ONLINE score or permission to shift timestamps. Global position error
+does not disappear: fixed-fit interval position RMSE stays around 2.05--2.06m
+OFF / 1.48m ON across ages. Local jitter and large-scale drift remain distinct.
+
+5. WHAT DOES "WEAK PRIOR" MEAN HERE?
+
+A. Starting anchor: initial pose sigma is 1e-5 (rotation radians/translation
+metres). It is already tight. Initial velocity sigma10m/s and angular velocity
+sigma3rad/s do not repeatedly reset every support. Simply tightening the start
+pose is not supported as the repair for this late-run localized behaviour.
+
+B. Marginal prior: summarizes retired information in the original chart. Its
+instantaneous retirement update is tiny here, and older states remain stable.
+We have NOT measured its normalized condition number or certified stationarity.
+There is no basis here for multiplying this prior by an arbitrary weight.
+
+C. Ongoing WNOA motion prior: connects pose/velocity/angular velocity between
+supports. This is the relevant candidate if the proposed remedy means resisting
+abrupt changes at the newest end. Qc variances remain .00375 rotation / .015
+translation; the actual joint discrete Q(dt) is [dt^3/3 Qc, dt^2/2 Qc;
+dt^2/2 Qc, dt Qc]. At dt=.1, its pose-residual marginal standard deviations
+are about .001118rad and .002236m. These are NOT absolute position uncertainty
+or a maximum allowed step; pose and velocity are estimated jointly. Comparing
+these numbers directly to an arbitrary source covariance trace is invalid.
+
+The diagnostic cost totals are retained in off_analysis.json/on_analysis.json:
+70 WNOA factors, 67 explicit GLIM, 34 explicit Kimera and one original-chart
+marginal per inspected publication. OFF median half-whitened-squared-error:
+12272.6 WNOA, 6144.9 GLIM, 4819.7 Kimera, 1016.4 marginal; ON 8200.6, 3669.5,
+2914.0, 667.6. Costs differ in dimension/count and are not information weights.
+They show substantial residual tension under the current incremental solution;
+they do not establish covariance calibration, convergence, or which factor
+class should be trusted. Incoming source factors were evaluated before and
+after insertion/replacement with identical payloads; residuals are not GT error.
+
+6. DECISION / NEXT STEP (PROPOSED, NOT RUN)
+
+Do not rebuild GLIM/Kimera, change the historical anchor, or increase the lag
+as the first response. We have a deterministic receiver-only reproducer and
+can now test the motion/source balance without new sensor runs.
+
+Recommended next controlled experiment: ONE isolated receiver-only motion-prior
+strength change, with source payloads/covariances/order and all other settings
+fixed. Predeclare its Qc multiplier and test both OFF/ON full saved journals;
+do not select a multiplier after inspecting which gives the best ATE. This is
+a test of your supervisor's ongoing-motion-prior hypothesis, not a proven fix.
+Accept only if true age-zero high-frequency displacement/RPE improves without
+degrading global ATE, motion response, coverage or numerical health. Check
+moving and turning portions, not only this almost-stationary worst window.
+Continue to report delayed products separately; merely displaying age0.2s
+would hide part of the symptom while adding latency, not repair the predictor.
+If a stronger motion prior fails that tradeoff, next examine source information
+calibration and newest-state velocity/update handling, one hypothesis at a time.
+No parameter change or additional replay is authorized by this report.
+
+7. SCOPE / LIMITATIONS / DELIVERABLES
+
+The detailed trace is the previously selected worst-OFF 380--390s neighborhood,
+NOT a representative random interval or evidence for all seven baseline pairs.
+Replaying the whole journal checks reproduction, not whole-run causal tracing.
+All original source mean/covariance, revision, timing and payload evidence is
+preserved. IE-TC shares CPT7, not independent prism GT. Unchanged mean-only
+source covariance-alignment approximation remains. No nonlinear-stationarity
+claim follows from CP-K9 prior-cache checks or this incremental trace.
+
+update_trace.png: top = per-cycle component magnitudes (not scalar shares);
+middle = ONLINE edges versus latest edge in one current window versus reference;
+bottom = matching seven-second path lengths, revised window versus old ONLINE.
+state_age.png: same physical samples with explicit added delay; lower panel
+shows how new-belief effects shrink with state age. Both figures visually checked.
+off/on_analysis.json, off/on_cycles.json, off/on_windows.json, maturity.json
+contain exact numeric details. input_pins/dependency_pins, build.log/build.json,
+binary.json, launch/finish receipts, off/on_parity and replay_complete.json
+preserve implementation/operational evidence. closeout.json records final audit.

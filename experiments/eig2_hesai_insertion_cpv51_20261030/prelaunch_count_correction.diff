@@ -1,0 +1,22 @@
+--- /home/yeranis/repos/gnssFGO/experiments/eig2_hesai_insertion_cpv51_20261030/prelaunch_original/validate_local.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_insertion_cpv51_20261030/prepared/validate_local.py
+@@ -46,7 +46,7 @@
+   values=histories[b['i'],b['j']]
+   if not values or values[-1]!=payload:values.append(payload)
+  for (i,j),values in histories.items():expected[source,str(i),str(j)]=values
+- if kind=='glim':assert first>=3530 and revisions>0 and len(provenance)==revisions and pending is None
++ if kind=='glim':assert first>=90 and revisions>0 and len(provenance)==revisions and pending is None
+  else:assert tmp>0
+  result[kind]=dict(ids=len(histories),versions=sum(map(len,histories.values())),first=first,revised=revisions,provider_queries=queries,local_joint_queries=tmp)
+ actual=collections.defaultdict(list)
+--- /home/yeranis/repos/gnssFGO/experiments/eig2_hesai_insertion_cpv51_20261030/prelaunch_original/prepare.py
++++ /home/yeranis/repos/gnssFGO/experiments/eig2_hesai_insertion_cpv51_20261030/prepare.py
+@@ -54,7 +54,7 @@
+ diff=[]
+ def rebase(s):
+     for a,b in [(S.parent.name,H.name),('11549','11551'),('cpv49','cpv51'),('CP-V49','CP-V51'),
+-                ('355.02','10.0'),('353.02','8.0'),('3547','97'),('3550','100'),('3517','90'),
++                ('355.02','10.0'),('353.02','8.0'),('3547','97'),('3550','100'),('3517','90'),('3530','90'),
+                 ('750b8c8ffed61d186ec8f071d4f58f068c9b63baccefcc9fc37803d77a118f06',gate['backend_sha256'])]:s=s.replace(a,b)
+     s=s.replace('full-usable10.0-second','diagnostic-prefix10.0-second')
+     return s

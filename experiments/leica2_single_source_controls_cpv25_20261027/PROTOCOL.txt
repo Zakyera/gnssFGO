@@ -1,0 +1,60 @@
+CP-V25 — Leica-2 Velodyne CBS-OFF single-source receiver diagnostic
+2026-10-27 | User approved after CP-V24 report
+
+H=/home/yeranis/repos/gnssFGO/experiments/leica2_single_source_controls_cpv25_20261027
+R=/home/yeranis/results/gnssfgo_leica2_single_source_controls_cpv25_20261027
+P=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared
+
+Hypothesis: distinguish loss in reconstructing a source's relative beliefs
+from loss caused by combining sources. Diagnostic, not a tuned candidate.
+Use full saved CBS-OFF events.csv; exactly one GLIM-only replay and one
+Kimera-only replay, sequential, each fresh output. Reuse existing BOTH results.
+Filter out only other-source B lines. Keep all I/E and selected B rows BYTE
+IDENTICAL, including source/session/ID/revision, means/full covariance, physical
+endpoints, arrival timestamps and observed order. Retain original line mapping.
+No source capture, rosbag, GLIM/Kimera execution, CBS-ON run, retries or builds.
+
+Original executable /home/yeranis/results/gnssfgo_receiver_finalization_cpk19_20261021/live
+SHA256 4b08a7f5ba97f5e4ec22959df23367df79eebf5d644dc19d939747dcd4566d6e.
+Same original Qc1.0: variances .00375 rotation / .015 translation per axis.
+Same source_wnoa7s fixed lag, independent100ms supports/59sample startup,
+no central raw-IMU/GNSS factors, Gaussian scale1, dense C, initial priors,
+stable-ID replacement/seal_at_absorption/EOF, endpoint caches off, pinned CPU2.
+Do not alter model/calibration/timing/covariance/solver/defaults. ORIGINAL Qc,
+not0.25/.1. Original data and all other completed/failed experiments preserved.
+
+Fresh filtering must reproduce source-specific subsequences and the entire
+clock/end stream exactly. Pin relevant saved baseline files, original binary,
+source/build records and runtime libraries. Verify original manifest matches
+for selected dependencies; do not claim all unrelated bags were rehashed.
+Record actual loaded process library mappings. >8GiB free before each replay.
+Only start originally-stopped ubuntu-jammy-humble-nvidia. cbsms_ws_gpu stays
+stopped. Verify no competing jobs before execution; record owned PID/receipts.
+No blind retry. If numerical failure, preserve prefix/failure; never score it
+as full. Stop campaign on integrity, cleanup or storage failure. A second
+independent control may proceed after a clean numerical case failure.
+
+Validate completed controls:4282 ONLINE/finalized rows; exact baseline state
+times and availability; finite output and uniform100ms cadence. Retained source
+payload/action histories must match original after mapping journal event IDs
+and excluding graph slot IDs. Account expired/startup/EOF omissions; do not
+interpret single-source missing tail beliefs as missing native camera data.
+
+Evaluate rigid no-scale ATE,1s translation/rotation RPE,100ms jitter,path length,
+full-saved and frozen CP-V10 common mask, unchanged CPT7/prism convention.
+Native GLIM FIRST-PUBLISHED and Kimera ROS incremental remain primary native
+references; single-source receiver outputs are diagnostic, never native results.
+ONLINE absolute and DELAYED finalized separate; no pure-chain replacement.
+Also assess relative motion on actual source belief endpoints: for saved output
+curves this is explicitly interpolated evaluation, not simultaneous graph
+snapshot recovery nor a new online output. Preserve endpoint cohorts and gaps.
+Report receiver output prediction age/source coverage. IE-TC shares CPT7, not
+independent prism GT. No new nonlinear-stationarity claim. Mean-only source-CBS
+covariance-alignment approximation unchanged.
+
+If Kimera-only loses native accuracy, assess representation/reconstruction;
+if it preserves native accuracy but BOTH degrades, combining sources is implicated
+under these settings. Do not generalize to other sequences or claim a uniquely
+proved covariance bug. Save report/results/checks and update ledger/AGENTS.
+Verify input hashes, jobs exited, containers restored and saved Hesai checkpoint.
+No tuning, default promotion, deletion, commit/push or next experiment.

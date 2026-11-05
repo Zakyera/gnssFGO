@@ -1,0 +1,438 @@
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_refresh_full_cpv42_20261029/prepared/full_off.json
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/full_off.json
+@@ -1,7 +1,7 @@
+ {
+-  "sequence": "EIG-2 CP-V42 Velodyne full355.02s matched corrected Kimera off; original offset5.7s",
++  "sequence": "EIG-2 CP-V49 Hesai full355.02s matched corrected Kimera off; original offset5.7s",
+   "source_protocol": "classic",
+-  "ros_master_uri": "http://127.0.0.1:11542",
++  "ros_master_uri": "http://127.0.0.1:11549",
+   "imu_topic": "/boxi/cpt7/imu",
+   "imu_frame": "cpt7_imu",
+   "world_frame": "gnssfgo_world",
+@@ -12,18 +12,18 @@
+   "drain_timeout_wall_sec": 300,
+   "ros1_container": "cbsms_ws_gpu",
+   "receiver_container": "ubuntu-jammy-humble-nvidia",
+-  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_refresh_full_cpv42_20261029/prepared/receiver_cpk19.sh",
++  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/receiver_cpk19.sh",
+   "sources": [
+     {
+-      "id": "glim_velodyne",
+-      "session": "eig2_cpv42_velodyne_off_20261024",
++      "id": "glim_hesai",
++      "session": "eig2_cpv49_hesai_off_20261030",
+       "kind": "glim",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/ros_logs/*/glim_rosnode-*-stdout.log"
+     },
+     {
+       "id": "kimera_front",
+-      "session": "eig2_cpv42_velodyne_off_20261024",
++      "session": "eig2_cpv49_hesai_off_20261030",
+       "kind": "kimera",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/estimators.log"
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_refresh_full_cpv42_20261029/prepared/full_on.json
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/full_on.json
+@@ -1,7 +1,7 @@
+ {
+-  "sequence": "EIG-2 CP-V42 Velodyne full355.02s matched corrected Kimera on; original offset5.7s",
++  "sequence": "EIG-2 CP-V49 Hesai full355.02s matched corrected Kimera on; original offset5.7s",
+   "source_protocol": "classic",
+-  "ros_master_uri": "http://127.0.0.1:11542",
++  "ros_master_uri": "http://127.0.0.1:11549",
+   "imu_topic": "/boxi/cpt7/imu",
+   "imu_frame": "cpt7_imu",
+   "world_frame": "gnssfgo_world",
+@@ -12,18 +12,18 @@
+   "drain_timeout_wall_sec": 300,
+   "ros1_container": "cbsms_ws_gpu",
+   "receiver_container": "ubuntu-jammy-humble-nvidia",
+-  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_refresh_full_cpv42_20261029/prepared/receiver_cpk19.sh",
++  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/receiver_cpk19.sh",
+   "sources": [
+     {
+-      "id": "glim_velodyne",
+-      "session": "eig2_cpv42_velodyne_on_20261024",
++      "id": "glim_hesai",
++      "session": "eig2_cpv49_hesai_on_20261030",
+       "kind": "glim",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/ros_logs/*/glim_rosnode-*-stdout.log"
+     },
+     {
+       "id": "kimera_front",
+-      "session": "eig2_cpv42_velodyne_on_20261024",
++      "session": "eig2_cpv49_hesai_on_20261030",
+       "kind": "kimera",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/estimators.log"
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_refresh_full_cpv42_20261029/prepared/active_window.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/active_window.launch
+@@ -17,7 +17,7 @@
+   -->
+ 
+   <arg name="glim_config_path"
+-       default="/workspace/cbs_gtsam4.3/runs/eig2_refresh_full_cpv42_20261029/prepared/input_profiles/glim_config"/>
++       default="/workspace/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/input_profiles/glim_config"/>
+   <arg name="kimera_mode" default="mono"/>
+   <arg name="kimera_enable" default="true"/>
+   <arg name="kimera_params_folder"/>
+@@ -26,7 +26,7 @@
+   <arg name="diagnostic_node_output" default="screen"/>
+ 
+   <arg name="glim_input_imu_topic" default="/boxi/cpt7/imu"/>
+-  <arg name="glim_input_points_topic" default="/anymal/velodyne/points"/>
++  <arg name="glim_input_points_topic" default="/boxi/hesai/points"/>
+   <arg name="glim_cbs_self_agent_id" default="g"/>
+   <arg name="glim_cbs_peer_agent_id" default="k"/>
+   <arg name="glim_cbs_odometry_topic" default="/glim/cbs/odometry"/>
+@@ -111,7 +111,7 @@
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_stride" value="20"/>
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_max_updates" value="40"/>
+ 
+-  <include file="/workspace/cbs_gtsam4.3/runs/eig2_refresh_full_cpv42_20261029/prepared/glim_profile.launch">
++  <include file="/workspace/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/glim_profile.launch">
+     <arg name="config_path" value="$(arg glim_config_path)"/>
+     <arg name="glim_node_output" value="$(arg diagnostic_node_output)"/>
+     <arg name="glim_input_imu_topic" value="$(arg glim_input_imu_topic)"/>
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_refresh_full_cpv42_20261029/prepared/active_window_on.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/active_window_on.launch
+@@ -17,7 +17,7 @@
+   -->
+ 
+   <arg name="glim_config_path"
+-       default="/workspace/cbs_gtsam4.3/runs/eig2_refresh_full_cpv42_20261029/prepared/input_profiles/glim_config"/>
++       default="/workspace/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/input_profiles/glim_config"/>
+   <arg name="kimera_mode" default="mono"/>
+   <arg name="kimera_enable" default="true"/>
+   <arg name="kimera_params_folder"/>
+@@ -26,7 +26,7 @@
+   <arg name="diagnostic_node_output" default="screen"/>
+ 
+   <arg name="glim_input_imu_topic" default="/boxi/cpt7/imu"/>
+-  <arg name="glim_input_points_topic" default="/anymal/velodyne/points"/>
++  <arg name="glim_input_points_topic" default="/boxi/hesai/points"/>
+   <arg name="glim_cbs_self_agent_id" default="g"/>
+   <arg name="glim_cbs_peer_agent_id" default="k"/>
+   <arg name="glim_cbs_odometry_topic" default="/glim/cbs/odometry"/>
+@@ -111,7 +111,7 @@
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_stride" value="20"/>
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_max_updates" value="40"/>
+ 
+-  <include file="/workspace/cbs_gtsam4.3/runs/eig2_refresh_full_cpv42_20261029/prepared/glim_profile_on.launch">
++  <include file="/workspace/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/glim_profile_on.launch">
+     <arg name="config_path" value="$(arg glim_config_path)"/>
+     <arg name="glim_node_output" value="$(arg diagnostic_node_output)"/>
+     <arg name="glim_input_imu_topic" value="$(arg glim_input_imu_topic)"/>
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_refresh_full_cpv42_20261029/prepared/glim_profile.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/glim_profile.launch
+@@ -116,7 +116,7 @@
+         <env name="CPK16_MAIN_GPU_BATCHING" value="1"/>
+         <env name="GLIM_SHARED_NATIVE_PROVIDER" value="shared_native"/>
+         <env name="GLIM_REVISION_COVARIANCE_POLICY" value="native_local"/>
+-        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/eig2_refresh_full_cpv42_20261029/prepared/full_off_source/e1b_profile.jsonl"/>
++        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/full_off_source/e1b_profile.jsonl"/>
+ 		<param name="config_path" value="$(arg config_path)" />
+ 		<param name="glim_dump_path" value="$(arg glim_dump_path)" />
+ 		<param name="deterministic_input_event_log_path" value="$(arg glim_deterministic_input_event_log_path)" />
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_refresh_full_cpv42_20261029/prepared/glim_profile_on.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/glim_profile_on.launch
+@@ -116,7 +116,7 @@
+         <env name="CPK16_MAIN_GPU_BATCHING" value="1"/>
+         <env name="GLIM_SHARED_NATIVE_PROVIDER" value="shared_native"/>
+         <env name="GLIM_REVISION_COVARIANCE_POLICY" value="native_local"/>
+-        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/eig2_refresh_full_cpv42_20261029/prepared/full_on_source/e1b_profile.jsonl"/>
++        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/full_on_source/e1b_profile.jsonl"/>
+ 		<param name="config_path" value="$(arg config_path)" />
+ 		<param name="glim_dump_path" value="$(arg glim_dump_path)" />
+ 		<param name="deterministic_input_event_log_path" value="$(arg glim_deterministic_input_event_log_path)" />
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_refresh_full_cpv42_20261029/prepared/run_case.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/run_case.py
+@@ -33,7 +33,7 @@
+     own.mkdir(exist_ok=False)
+     inside = '/workspace/'+str(own.relative_to('/home/yeranis/repos/V4RL'))
+     env_inside = '/workspace/'+str((ROOT/'source.env').relative_to('/home/yeranis/repos/V4RL'))
+-    master_uri = 'http://127.0.0.1:11542'
++    master_uri = 'http://127.0.0.1:11549'
+     jobs = {}
+     streams = []
+     def start(name, command):
+@@ -47,7 +47,7 @@
+             text=True, capture_output=True, check=check)
+     def stop_pid(name):
+         # The PID is recorded by this case, command must match the owned port/run.
+-        token = '11542' if name=='master' else str(source.name)
++        token = '11549' if name=='master' else str(source.name)
+         script = ('import os,signal,sys; from pathlib import Path; p=Path(sys.argv[1]); '
+           'pid=int(p.read_text()) if p.exists() else 0; c=Path("/proc/%d/cmdline"%pid); '
+           'e=Path("/proc/%d/environ"%pid); '
+@@ -59,7 +59,7 @@
+     started = time.time()
+     try:
+         assert ros('rosparam get /rosversion',check=False).returncode != 0, 'port is already in use'
+-        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11542'
++        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11549'
+         start('master',['docker','exec','cbsms_ws_gpu','setsid','--wait','bash','-lc',master_script])
+         for _ in range(60):
+             if ros('rosparam get /rosversion',check=False).returncode==0:
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_refresh_full_cpv42_20261029/prepared/run_case_on.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/run_case_on.py
+@@ -34,7 +34,7 @@
+     own.mkdir(exist_ok=False)
+     inside = '/workspace/'+str(own.relative_to('/home/yeranis/repos/V4RL'))
+     env_inside = '/workspace/'+str((ROOT/'source.env').relative_to('/home/yeranis/repos/V4RL'))
+-    master_uri = 'http://127.0.0.1:11542'
++    master_uri = 'http://127.0.0.1:11549'
+     jobs = {}
+     streams = []
+     def start(name, command):
+@@ -48,7 +48,7 @@
+             text=True, capture_output=True, check=check)
+     def stop_pid(name):
+         # The PID is recorded by this case, command must match the owned port/run.
+-        token = '11542' if name=='master' else str(source.name)
++        token = '11549' if name=='master' else str(source.name)
+         script = ('import os,signal,sys; from pathlib import Path; p=Path(sys.argv[1]); '
+           'pid=int(p.read_text()) if p.exists() else 0; c=Path("/proc/%d/cmdline"%pid); '
+           'e=Path("/proc/%d/environ"%pid); '
+@@ -60,7 +60,7 @@
+     started = time.time()
+     try:
+         assert ros('rosparam get /rosversion',check=False).returncode != 0, 'port is already in use'
+-        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11542'
++        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11549'
+         start('master',['docker','exec','cbsms_ws_gpu','setsid','--wait','bash','-lc',master_script])
+         for _ in range(60):
+             if ros('rosparam get /rosversion',check=False).returncode==0:
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_refresh_full_cpv42_20261029/prepared/source.env
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/source.env
+@@ -2,7 +2,7 @@
+ # to off_source/on_source and CBSMS_CBS_ENABLE to false/true.
+ : "${CBSMS_RUN_NAME:?Set fresh EIG-2 source run name}"
+ : "${CBSMS_CBS_ENABLE:?Set false or true}"
+-export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/eig2_refresh_full_cpv42_20261029/prepared
++export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared
+ export CBSMS_RUN_NAME CBSMS_CBS_ENABLE
+ export ROS_LOG_DIR="${CBSMS_RUN_ROOT}/${CBSMS_RUN_NAME}/ros_logs"
+ export CBSMS_PROJECT_ROOT=/workspace/cbs_gtsam4.3
+@@ -12,7 +12,7 @@
+ export CBSMS_POST_PLAYBACK_DRAIN_SEC=25
+ export CBSMS_BAG_RATE=0.20
+ export CBSMS_SEED_CLOCK_SECS=1730638815
+-export CBSMS_ROS_MASTER_PORT=11542
++export CBSMS_ROS_MASTER_PORT=11549
+ export CBSMS_USE_EXISTING_ROS_MASTER=true
+ export CBSMS_KIMERA_MODE=stereo_shared_cpt7
+ # The recovered classic Kimera source path is "current", not experimental RIGHT.
+@@ -35,7 +35,7 @@
+ export CBSMS_KIMERA_RECEIVER_AUDIT_MAX_SAMPLES=40
+ export CBSMS_KIMERA_RECEIVER_AUDIT_STRIDE=20
+ export CBSMS_DIAGNOSTIC_NODE_OUTPUT=log
+-export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/eig2_refresh_full_cpv42_20261029/prepared/input_profiles/glim_config
+-export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/eig2_refresh_full_cpv42_20261029/prepared/input_profiles/kimera_profile
++export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/input_profiles/glim_config
++export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/input_profiles/kimera_profile
+ 
+ export CBSMS_DATASET_DIR=/workspace/cbs_gtsam4.3/src/datasets/GrandTour/EIG-2
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_refresh_full_cpv42_20261029/prepared/source_runner.sh
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/source_runner.sh
+@@ -44,7 +44,7 @@
+ experiment_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ launch_file="${experiment_dir}/active_window.launch"
+ [[ "${cbs_enable}" == false && "${cbs_direction}" == bidirectional && "${duration_sec}" == 355.02 && "${bag_rate}" == 0.20 && "${bag_start_sec}" == 5.7 ]] || { echo "Prepared EIG-2 full-usable355.02-second 0.20x OFF fixed-lag capture only." >&2; exit 2; }
+-glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-/workspace/cbs_gtsam4.3/runs/eig2_refresh_full_cpv42_20261029/prepared/input_profiles/glim_config}"
++glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-/workspace/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/input_profiles/glim_config}"
+ kimera_profile_source="${CBSMS_KIMERA_PROFILE_SOURCE:-}"
+ kimera_calibration_overlay="${CBSMS_KIMERA_CALIBRATION_OVERLAY:-${project_root}/src/cbsms/config/grandtour_kimera/eth1_mono_shared_cpt7}"
+ reference_bag="${CBSMS_REFERENCE_BAG:-${dataset_dir}/${mission}_ap20_prism_position.bag}"
+@@ -124,7 +124,7 @@
+ esac
+ 
+ bags=(
+-  "${dataset_dir}/${mission}_anymal_velodyne.bag"
++  "${dataset_dir}/${mission}_hesai.bag"
+   "${dataset_dir}/${mission}_cpt7_imu.bag"
+   "${dataset_dir}/${mission}_alphasense.bag"
+ )
+@@ -358,7 +358,7 @@
+        grep -q "${kimera_input_imu_topic}" <<<"${kimera_info}"; then
+     kimera_sensor_ready=true
+   fi
+-  if grep -q '/anymal/velodyne/points' <<<"${glim_info}" && \
++  if grep -q '/boxi/hesai/points' <<<"${glim_info}" && \
+      grep -q '/boxi/cpt7/imu' <<<"${glim_info}" && \
+      [[ "${kimera_sensor_ready}" == true ]] && \
+      [[ "${presentation_ready}" == true ]]; then
+@@ -383,7 +383,7 @@
+ fi
+ 
+ python3 "${experiment_dir}/verify_effective.py" "${run_dir}"
+-python3 "${experiment_dir}/verify_velodyne_startup.py" "${run_dir}"
++python3 "${experiment_dir}/verify_hesai_startup.py" "${run_dir}"
+ 
+ rostopic echo -p /glim/cbs/odometry >"${run_dir}/glim_odometry.csv" &
+ recorders+=("$!"); pids+=("$!")
+@@ -406,7 +406,7 @@
+ recorders+=("$!"); pids+=("$!")
+ 
+ sleep 2
+-play_topics=(/anymal/velodyne/points /boxi/cpt7/imu
++play_topics=(/boxi/hesai/points /boxi/cpt7/imu
+   /boxi/alphasense/front_left/image_raw/compressed)
+ if [[ "${kimera_mode}" != mono ]]; then
+   play_topics+=(/boxi/alphasense/front_right/image_raw/compressed)
+@@ -503,7 +503,7 @@
+   g2k_applied_tail_gap=$((kimera_last_index - g2k_applied_max_target))
+ fi
+ 
+-min_glim_rows=3530
++min_glim_rows=3517
+ # Sequential IDs, frontend completion and backend/output conservation were checked above.
+ min_kimera_rows=11
+ if (( glim_rows < min_glim_rows || kimera_rows < min_kimera_rows )); then
+@@ -579,8 +579,8 @@
+   "kimera_receive_cbs_beliefs=${kimera_receive_external_beliefs}" \
+   "glim_cbs_mode=${glim_cbs_mode}" \
+   "kimera_cbs_odom_factor_mode=active_window_temporary" \
+-  "experiment=eig2_refresh_full_cpv42_20261029" \
+-  "glim_sensor_pair=velodyne+cpt7_imu" \
++  "experiment=eig2_hesai_refresh_full_cpv49_20261030" \
++  "glim_sensor_pair=hesai+cpt7_imu" \
+   "kimera_sensor_pair=${kimera_sensor_pair}" \
+   "glim_body_frame=cpt7_imu" \
+   "kimera_body_frame=${kimera_body_frame}" \
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_refresh_full_cpv42_20261029/prepared/source_runner_on.sh
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/source_runner_on.sh
+@@ -44,7 +44,7 @@
+ experiment_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ launch_file="${experiment_dir}/active_window_on.launch"
+ [[ "${cbs_enable}" == true && "${cbs_direction}" == bidirectional && "${duration_sec}" == 355.02 && "${bag_rate}" == 0.20 && "${bag_start_sec}" == 5.7 ]] || { echo "Prepared EIG-2 full-usable355.02-second 0.20x classic CBS-ON fixed-lag capture only." >&2; exit 2; }
+-glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-/workspace/cbs_gtsam4.3/runs/eig2_refresh_full_cpv42_20261029/prepared/input_profiles/glim_config}"
++glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-/workspace/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/input_profiles/glim_config}"
+ kimera_profile_source="${CBSMS_KIMERA_PROFILE_SOURCE:-}"
+ kimera_calibration_overlay="${CBSMS_KIMERA_CALIBRATION_OVERLAY:-${project_root}/src/cbsms/config/grandtour_kimera/eth1_mono_shared_cpt7}"
+ reference_bag="${CBSMS_REFERENCE_BAG:-${dataset_dir}/${mission}_ap20_prism_position.bag}"
+@@ -124,7 +124,7 @@
+ esac
+ 
+ bags=(
+-  "${dataset_dir}/${mission}_anymal_velodyne.bag"
++  "${dataset_dir}/${mission}_hesai.bag"
+   "${dataset_dir}/${mission}_cpt7_imu.bag"
+   "${dataset_dir}/${mission}_alphasense.bag"
+ )
+@@ -358,7 +358,7 @@
+        grep -q "${kimera_input_imu_topic}" <<<"${kimera_info}"; then
+     kimera_sensor_ready=true
+   fi
+-  if grep -q '/anymal/velodyne/points' <<<"${glim_info}" && \
++  if grep -q '/boxi/hesai/points' <<<"${glim_info}" && \
+      grep -q '/boxi/cpt7/imu' <<<"${glim_info}" && \
+      [[ "${kimera_sensor_ready}" == true ]] && \
+      [[ "${presentation_ready}" == true ]]; then
+@@ -383,7 +383,7 @@
+ fi
+ 
+ python3 "${experiment_dir}/verify_effective_on.py" "${run_dir}"
+-python3 "${experiment_dir}/verify_velodyne_startup.py" "${run_dir}"
++python3 "${experiment_dir}/verify_hesai_startup.py" "${run_dir}"
+ 
+ rostopic echo -p /glim/cbs/odometry >"${run_dir}/glim_odometry.csv" &
+ recorders+=("$!"); pids+=("$!")
+@@ -406,7 +406,7 @@
+ recorders+=("$!"); pids+=("$!")
+ 
+ sleep 2
+-play_topics=(/anymal/velodyne/points /boxi/cpt7/imu
++play_topics=(/boxi/hesai/points /boxi/cpt7/imu
+   /boxi/alphasense/front_left/image_raw/compressed)
+ if [[ "${kimera_mode}" != mono ]]; then
+   play_topics+=(/boxi/alphasense/front_right/image_raw/compressed)
+@@ -503,7 +503,7 @@
+   g2k_applied_tail_gap=$((kimera_last_index - g2k_applied_max_target))
+ fi
+ 
+-min_glim_rows=3530
++min_glim_rows=3517
+ # Sequential IDs, frontend completion and backend/output conservation were checked above.
+ min_kimera_rows=11
+ if (( glim_rows < min_glim_rows || kimera_rows < min_kimera_rows )); then
+@@ -579,8 +579,8 @@
+   "kimera_receive_cbs_beliefs=${kimera_receive_external_beliefs}" \
+   "glim_cbs_mode=${glim_cbs_mode}" \
+   "kimera_cbs_odom_factor_mode=active_window_temporary" \
+-  "experiment=eig2_refresh_full_cpv42_20261029" \
+-  "glim_sensor_pair=velodyne+cpt7_imu" \
++  "experiment=eig2_hesai_refresh_full_cpv49_20261030" \
++  "glim_sensor_pair=hesai+cpt7_imu" \
+   "kimera_sensor_pair=${kimera_sensor_pair}" \
+   "glim_body_frame=cpt7_imu" \
+   "kimera_body_frame=${kimera_body_frame}" \
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_refresh_full_cpv42_20261029/prepared/validate_case.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/validate_case.py
+@@ -11,7 +11,7 @@
+ OUT=REC/'receiver'
+ CTL=P/f'full_{MODE}_control'
+ EXE=Path('/home/yeranis/results/gnssfgo_receiver_finalization_cpk19_20261021/live')
+-RESULT=Path(f'/home/yeranis/results/eig2_refresh_full_cpv42_20261029/{MODE}')
++RESULT=Path(f'/home/yeranis/results/eig2_hesai_refresh_full_cpv49_20261030/{MODE}')
+ LIB=Path('/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib')
+ 
+ def sha(p):
+@@ -50,7 +50,7 @@
+     assert json.loads((OUT/'summary.json').read_text())['stationarity']=='not_checked_incremental_policy'
+     source_cov=json.loads((SRC/'source_coverage.json').read_text())
+     assert source_cov['passed'] and source_cov['requested_s']==355.02
+-    assert source_cov['native_glim']['rows']>=3530
++    assert source_cov['native_glim']['rows']>=3517
+     assert source_cov['coverage_contract']=='native_keyframes_cpk22' and source_cov['kimera_processing']['passed']
+     assert source_cov['native_kimera']['rows']==source_cov['kimera_processing']['backend_processed']>10
+     metadata=(SRC/'run_metadata.txt').read_text()
+@@ -65,7 +65,7 @@
+     events=rows(REC/'events.csv')
+     assert events[-1][0]=='E' and sum(r[0]=='E' for r in events)==1
+     I=[r for r in events if r[0]=='I'];B=[r for r in events if r[0]=='B']
+-    assert I and B and sum(r[2]=='glim_velodyne' for r in B)>0 and sum(r[2]=='kimera_front' for r in B)>0
++    assert I and B and sum(r[2]=='glim_hesai' for r in B)>0 and sum(r[2]=='kimera_front' for r in B)>0
+     transport=json.loads((REC/'transport_complete.json').read_text())
+     summary=json.loads((OUT/'summary.json').read_text())
+     assert summary['complete'] and summary['lag_seconds']==7
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_refresh_full_cpv42_20261029/prepared/validate_local.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/validate_local.py
+@@ -12,7 +12,7 @@
+ effective=json.loads((S/'effective_mode_check.json').read_text())
+ assert effective['glim_revision_covariance']=='native_local'
+ expected={};result={}
+-for kind,source,glob in [('glim','glim_velodyne','*/glim_rosnode-*-stdout.log'),('kimera','kimera_front','*/kimera_vio_ros-kimera_vio_ros_node-*-stdout.log')]:
++for kind,source,glob in [('glim','glim_hesai','*/glim_rosnode-*-stdout.log'),('kimera','kimera_front','*/kimera_vio_ros-kimera_vio_ros_node-*-stdout.log')]:
+  paths=list((S/'ros_logs').glob(glob));assert len(paths)==1,paths
+  provider=None;pending=None;first=revisions=queries=0;tmp=0;provenance=set()
+  histories=collections.defaultdict(list)
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_refresh_full_cpv42_20261029/prepared/preflight_on.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/preflight_on.py
+@@ -2,10 +2,10 @@
+ from pathlib import Path
+ import hashlib,json
+ P=Path(__file__).resolve().parent
+-V=Path('/home/yeranis/results/eig2_refresh_full_cpv42_20261029/off')
++V=Path('/home/yeranis/results/eig2_hesai_refresh_full_cpv49_20261030/off')
+ def sha(p):
+  with Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+-for p in [P/'full_off_source/candidate_validation.json',P/'full_off_source/local_provenance.json',P/'full_off_source/velodyne_validation.json',
++for p in [P/'full_off_source/candidate_validation.json',P/'full_off_source/local_provenance.json',P/'full_off_source/hesai_validation.json',
+  V/'validation.json']:
+  assert json.loads(p.read_text())['passed'],p
+ assert (P/'full_off_control/complete.json').is_file()
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_refresh_full_cpv42_20261029/prepared/transport_tools/live_receiver_protocol.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/transport_tools/live_receiver_protocol.py
+@@ -132,7 +132,7 @@
+         raise ValueError('unknown receiver_publication_policy')
+     if policy == 'fl4a_fixed_lag_incremental':
+         # Private FL4a adapter only. No nonlinear stationarity certificate is claimed.
+-        expected = '/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_refresh_full_cpv42_20261029/prepared/receiver_cpk19.sh'
++        expected = '/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/eig2_hesai_refresh_full_cpv49_20261030/prepared/receiver_cpk19.sh'
+         if config.get('receiver_model') != 'source_wnoa' or config.get('receiver_binary') != expected:
+             raise ValueError('FL4a policy requires the pinned fixed-lag wrapper')
+         if config.get('receiver_fixed_lag_seconds') != 7 or any(key.startswith('WNOJ_') for key in environment):

@@ -1,0 +1,117 @@
+CP-V104 — SAVED CP103 CORRECTED ON vs CP95 LIVE OFF/ON and CP91 SOURCE-ONLY ON
+Method1: GLIM first-published absolute; Kimera newest absolute backend at exact native header stamps, NOT incremental ROS
+IE-TC at calibrated AP20 prism point; shared CPT7, not independent Leica/prism GT
+whole-mask SE3 per curve, no scale; RPE consecutive reference-distance0.5m within each segment
+No new capture/replay; CP103 changed backend, NOT a newly matched or same-binary repeat pair.
+COMMON100ms: 2966 rows, 296.300000s/346.32s (85.557%), 365 reference-distance0.5m pairs.
+Same original CP95 mask=False; same CP91 mask=False. Delayed curves do not shrink primary mask.
+Run/product | ATE m | translation RPE m | rotation RPE deg | segmented estimated/reference path m
+CP95_OFF_glim | 0.039497 | 0.018377 | 0.352970 | 202.9235 / 201.3742
+CP95_OFF_kimera | 0.737605 | 0.085253 | 0.619426 | 210.9675 / 201.3742
+CP95_OFF_fusion_online | 0.061504 | 0.037904 | 1.823789 | 216.1544 / 201.3742
+CP95_OFF_fusion_delayed | 0.056428 | 0.013384 | 0.337977 | 201.4174 / 201.3742
+CP95_ON_glim | 0.053071 | 0.014303 | 0.329290 | 202.4007 / 201.3742
+CP95_ON_kimera | 0.198843 | 0.035072 | 0.527284 | 201.8572 / 201.3742
+CP95_ON_fusion_online | 0.118626 | 0.035882 | 1.729998 | 213.5784 / 201.3742
+CP95_ON_fusion_delayed | 0.116118 | 0.011685 | 0.318803 | 201.8621 / 201.3742
+CP91_ON_glim | 0.041514 | 0.015195 | 0.333948 | 202.6100 / 201.3742
+CP91_ON_kimera | 0.209101 | 0.032740 | 0.587296 | 201.9966 / 201.3742
+CP103_ON_glim | 0.038280 | 0.015656 | 0.335889 | 202.7431 / 201.3742
+CP103_ON_kimera | 0.192637 | 0.034126 | 0.658833 | 202.0685 / 201.3742
+CP103_ON_fusion_online | 0.094335 | 0.036492 | 1.744175 | 214.1459 / 201.3742
+CP103_ON_fusion_delayed | 0.091336 | 0.012826 | 0.323322 | 201.9697 / 201.3742
+
+FULL-SAVED cadence: new CP103 scores; verified CP95/91 results reused unchanged.
+Product | ATE m | tRPE m | rRPE deg | segmented path/reference m | rows | supported s | gaps | new score
+CP95_OFF_glim | 0.038510 | 0.018983 | 0.274008 | 205.0901 / 201.4759 | 3454 | 345.299607 | 0 | False
+CP95_OFF_kimera | 0.744750 | 0.119927 | 0.509363 | 214.7183 / 201.0202 | 1493 | 297.198336 | 11 | False
+CP95_OFF_fusion_online | 0.059788 | 0.045185 | 2.546389 | 227.0452 / 201.4776 | 3456 | 345.500000 | 0 | False
+CP95_OFF_fusion_delayed | 0.053513 | 0.013010 | 0.284841 | 202.1722 / 201.4776 | 3456 | 345.500000 | 0 | False
+CP95_ON_glim | 0.051503 | 0.014250 | 0.241731 | 204.8656 / 201.4759 | 3454 | 345.299607 | 0 | False
+CP95_ON_kimera | 0.198362 | 0.037276 | 0.359963 | 202.3056 / 201.0196 | 1492 | 297.098337 | 11 | False
+CP95_ON_fusion_online | 0.113615 | 0.042890 | 2.425758 | 222.2407 / 201.4776 | 3456 | 345.500000 | 0 | False
+CP95_ON_fusion_delayed | 0.110691 | 0.011311 | 0.259175 | 202.6837 / 201.4776 | 3456 | 345.500000 | 0 | False
+CP91_ON_glim | 0.043435 | 0.015360 | 0.250879 | 205.0547 / 201.4759 | 3454 | 345.299607 | 0 | False
+CP91_ON_kimera | 0.208661 | 0.034427 | 0.445192 | 202.4471 / 201.0196 | 1492 | 297.098337 | 11 | False
+CP103_ON_glim | 0.039995 | 0.016200 | 0.255375 | 205.1980 / 201.4759 | 3454 | 345.299607 | 0 | True
+CP103_ON_kimera | 0.192608 | 0.035937 | 0.491098 | 202.5367 / 201.0185 | 1492 | 296.798338 | 12 | True
+CP103_ON_fusion_online | 0.095034 | 0.043502 | 2.435615 | 222.7932 / 201.4776 | 3456 | 345.500000 | 0 | True
+CP103_ON_fusion_delayed | 0.091602 | 0.012464 | 0.268776 | 202.7947 / 201.4776 | 3456 | 345.500000 | 0 | True
+
+ATE reductions versus each historical baseline (positive=lower error, not causal attribution):
+{
+  "CP95_ON_to_CP103_ON": {
+    "glim": {
+      "ATE_delta_m": -0.014790598349461268,
+      "ATE_reduction_percent": 27.869586010944527,
+      "causal_effect_claim": false,
+      "fresh_same_binary_control": false
+    },
+    "kimera": {
+      "ATE_delta_m": -0.006205937286532681,
+      "ATE_reduction_percent": 3.1210240907708044,
+      "causal_effect_claim": false,
+      "fresh_same_binary_control": false
+    },
+    "fusion_online": {
+      "ATE_delta_m": -0.02429138005224904,
+      "ATE_reduction_percent": 20.477283592700232,
+      "causal_effect_claim": false,
+      "fresh_same_binary_control": false
+    },
+    "fusion_delayed": {
+      "ATE_delta_m": -0.024781809689250048,
+      "ATE_reduction_percent": 21.34200644193045,
+      "causal_effect_claim": false,
+      "fresh_same_binary_control": false
+    }
+  },
+  "CP95_OFF_to_CP103_ON": {
+    "glim": {
+      "ATE_delta_m": -0.0012165564608128954,
+      "ATE_reduction_percent": 3.0801464615616077,
+      "causal_effect_claim": false,
+      "fresh_same_binary_control": false
+    },
+    "kimera": {
+      "ATE_delta_m": -0.544968165808015,
+      "ATE_reduction_percent": 73.88344876562711,
+      "causal_effect_claim": false,
+      "fresh_same_binary_control": false
+    },
+    "fusion_online": {
+      "ATE_delta_m": 0.032830817494039766,
+      "ATE_reduction_percent": -53.380152762518044,
+      "causal_effect_claim": false,
+      "fresh_same_binary_control": false
+    },
+    "fusion_delayed": {
+      "ATE_delta_m": 0.03490728486420914,
+      "ATE_reduction_percent": -61.861165585755344,
+      "causal_effect_claim": false,
+      "fresh_same_binary_control": false
+    }
+  },
+  "CP91_ON_to_CP103_ON": {
+    "glim": {
+      "ATE_delta_m": -0.00323335781403028,
+      "ATE_reduction_percent": 7.788688181061695,
+      "causal_effect_claim": false,
+      "fresh_same_binary_control": false
+    },
+    "kimera": {
+      "ATE_delta_m": -0.016464120616652478,
+      "ATE_reduction_percent": 7.8737585244076,
+      "causal_effect_claim": false,
+      "fresh_same_binary_control": false
+    }
+  }
+}
+
+Changed backend and separate live realization: not a controlled causal effect of the correction
+No proof of randomness, calibrated covariance, independent peer beliefs or nonlinear stationarity
+Estimated sample polylines are not physical travel; full-saved and common coverage differ
+Actual gaps/missing right image/25 pre-init and134expired CP103 versions retained; no gap filling.
+All4 CP103 runtime gates passed; uncertainty calibration and mixed-prior feedback remain unqualified.
+DELAYED7s-finalized is separate; CP91 fusion does not exist. Failed CP99 ON is excluded.
+Direct EVO CLI calls: 54; parity checks: {'TUM_roundtrip_max': 1.88933070577324e-15, 'CLI_API_error_max': 0.0}.

@@ -1,0 +1,12 @@
+CP-V53 report-only decoder repair
+
+Original analyze.py is preserved unchanged. Its first invocation failed at line
+62 (mean=a.exp(z.relative_mu)) before any output was written:
+ValueError: buffer source array is read-only
+
+Cause: the ROS bag deserializer returns a read-only numeric array; the inherited
+geometry helper passes its slice to scipy Rotation.from_rotvec, which requires
+a writable buffer in this environment. analyze_v2.py makes a writable float
+copy of the identical saved relative_mu before conversion. No values, model,
+weights, guards, input data or estimators are changed. No source replay, solver,
+validation campaign or scoring stage is retried. This is saved-data reporting.

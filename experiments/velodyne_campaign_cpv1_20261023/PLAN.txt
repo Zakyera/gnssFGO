@@ -1,0 +1,243 @@
+CP-V1 — REAR VELODYNE IN PLACE OF HESAI: MATCHED FOUR-SEQUENCE PLAN
+2026-10-23. PLANNING COMPLETE; NO NEW CAPTURE OR IMPLEMENTATION STARTED.
+
+USER OBJECTIVE
+Keep the now-working GLIM + Kimera + no-central-IMU WNOA fusion and repeat the
+four matched CBS-OFF/ON experiments using the rear Velodyne instead of Hesai.
+Test whether source reliability changes enough that Kimera becomes the better
+source on some physical intervals, and how CBS/fusion react. This is a sensor
+substitution experiment, not covariance tuning or a new fusion algorithm.
+
+Hesai experiments are complete/parked. Local compact recovery checkpoint:
+/home/yeranis/repos/gnssFGO/experiments/checkpoints/20261023_hesai_four_sequences/README.txt
+667files,55.25MB copied and SHA256 checked against originals; full large raw
+captures remain untouched at their original paths. Not a GitHub/offsite backup.
+
+1. FEASIBILITY: WHAT IS ALREADY CONFIRMED
+
+Local index + three-cloud samples + first static-TF inspection, not a full
+launch-admission audit. Evidence: inspect_inputs.py and input_inspection.json.
+
+Sequence    Rear Velodyne bag       Scans in SAME saved Hesai record-time window
+ETH1        Not found locally      unknown; obtain missing mission bag first
+EIG-2       present                3550
+SPX-3       present                1970
+LEICA-2     present                4288
+
+Missing expected ETH1 filename:2024-10-01-11-29-55_anymal_velodyne.bag.
+Searched canonical GrandTour dataset tree, Downloads and local datasets; this
+is not a claim that the file is absent from every external/unmounted drive.
+No download was started.
+
+Present bags:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/datasets/GrandTour/EIG-2/2024-11-03-13-59-54_anymal_velodyne.bag
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/datasets/GrandTour/SPX-3/2024-11-02-17-43-10_anymal_velodyne.bag
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/datasets/GrandTour/LEICA-2/2024-11-25-16-36-19_anymal_velodyne.bag
+
+All3 contain /anymal/velodyne/points, sensor_msgs/PointCloud2, frame
+velodyne_lidar, approximately10Hz. Fields x/y/z/intensity float32,ring uint16,
+time float32;22bytes/point. Samples contain16ring IDs0..15. First selected
+cloud point counts EIG16925,SPX13969,LEICA18270. These are samples, not sequence
+averages or a demonstrated estimator-accuracy ranking.
+
+The existing GrandTour Velodyne sensor overlay is reusable as a reference:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/cbsms/config/grandtour_glim/spx3_cpt7/velodyne/
+The sampled mission TF chains agree with its T_lidar_cpt7 to2.3e-13 max entry:
+velodyne_lidar -> base -> box_base -> cpt7_imu.
+T_lidar_imu xyz/xyzw:
+[-0.3864038,0.0361,0.121779,0,0.999999999199,0.000040026795,0]
+Direction: transforms CPT7-frame coordinates INTO the Velodyne frame. Verify
+the complete mission TF history before reuse; do not invert twice or rotate
+the CPT7 measurements as if they came from a different IMU.
+
+Timing is NOT the Hesai encoding. Sampled Velodyne time offsets are roughly
+-0.098206..+0.001306seconds relative to the header; other sampled scans have
+slightly different ranges. Sampled record timestamps equal header timestamps.
+GLIM already handles this: ros_cloud_converter.hpp reads FLOAT32 time;
+TimeKeeper::replace_points_stamp shifts the frame by min(time) and subtracts
+that minimum from point offsets when autoconf=true,prefer_frame_time=false.
+This preserves each absolute point time. Do not zero negative times, disable
+deskew, pretend it is a global shutter, or add an arbitrary100ms offset.
+Check this in the actual frozen runtime during the short smoke; no decoder
+rewrite is currently justified. Check first partial scan/IMU coverage explicitly.
+
+FEASIBILITY CONCLUSION: existing input format, calibration chain and GLIM code
+support this experiment. A small isolated launch/profile adaptation is needed,
+not a new estimator. This is not yet a validated Velodyne CBS/fusion run.
+
+2. FREEZE EVERYTHING EXCEPT THE SENSOR-SPECIFIC INPUT
+
+Reuse CP-K23/24A/28/29 executed harnesses/private binaries as the parent, NOT
+the historical three-GLIM runner's old algorithms/defaults/evaluation.
+
+UNCHANGED:
+- Alphasense front_left/front_right stereo cameras, mission calibration,
+  image topics and shared /boxi/cpt7/imu. Both agents output cpt7_imu poses.
+- CP-K9 Kimera private DSO; prior-refresh1,FL4Q0,retirement=remove,25keyframes,
+  source IMU override unset; same initialization/frontend/feature settings.
+- GLIM MAIN batching,5s lag, IMU noise/dynamics, native LOCAL covariance
+  provider/cache, corrected MAIN means and dense covariance for every version.
+- LiDAR preprocessing/registration numeric settings initially unchanged:
+  range limits, downsampling, neighborhood/voxel settings and initialization.
+  Do not deliberately degrade Velodyne or tune parameters from ATE. If a
+  genuine sensor-format incompatibility appears, stop and separate that repair.
+- Classic active_window_temporary bidirectional CBS,0.20s horizon,one pair
+  per update,stride1; existing endpoint/duration/alignment validity rules.
+  No source live_revision; same existing mean-only covariance alignment limit.
+- Source and fuser covariance scales1,Gaussian,no robust loss/health weights.
+- CP-K19 seven-second fixed-lag source_wnoa, independent100ms support clock,
+  same Qc/priors/initialization, no central IMU/GNSS factors, stable-ID version
+  replacement, seal_at_absorption and identical explicit terminal EOF policy.
+- Headless0.20x for BOTH modes and all missions,25s drain, same diagnostics
+  including capped40/stride20competition audit and full source revisions.
+  Do NOT combine LiDAR substitution with0.5x testing or audit removal.
+
+ALLOWLIST OF CHANGES IN NEW ISOLATED COPIES:
+- Hesai bag -> mission anymal_velodyne bag; point topic -> /anymal/velodyne/points.
+- lidar_frame_id -> velodyne_lidar and mission-verified T_lidar_imu.
+  Keep body/IMU/reference frame cpt7_imu and existing body-to-prism lever arm.
+- Per-point encoding configuration only if needed after existing autoconf
+  verification; no raw time manipulation or ad hoc clock offset.
+- Receiver/display source identity glim_hesai -> glim_velodyne while keeping
+  source kind=glim and the same GLIM peer role; fresh session/run/port names.
+  Verify adapter, validators and reports accept the new source ID consistently.
+- Derive bag playback offset, expected coverage/counts and stop time from
+  exact physical epochs for the new selected topics. Do not weaken semantics.
+
+Current frozen runner hardcodes Hesai bag, subscription readiness, playback
+topic and metadata. New profile alone is insufficient. Update ALL these in a
+fresh campaign copy plus nested launch remap, receiver registry and identity
+checks. Keep original scripts/defaults and completed manifests untouched.
+Do not copy the whole old Velodyne profile over the current profile: it also
+contains old mapping/frame/camera placeholders. Apply only the reviewed sensor
+delta; preserve current non-sensor parameters and complete Kimera profile.
+
+3. MATCH PHYSICAL WINDOWS, NOT JUST IDENTICAL BAG-OFFSET NUMBERS
+
+Primary planned capture bounds are the established quiet-start Hesai windows:
+ETH1:    1727775007855396309 ..1727775354175396309ns,346.32s
+EIG-2:   1730638816563546034 ..1730639171583546034ns,355.02s
+SPX-3:   1730565899872888651 ..1730566096892888651ns,197.02s
+LEICA-2: 1732549034915071665 ..1732549463665071665ns,428.75s
+
+Replacing a selected topic can change the rosbag playback epoch. Recompute
+offset relative to the new topic selection so cameras/CPT7 retain the SAME
+physical interval and quiet initialization. Do not blindly copy0/5.7/29/6s
+without checking the selected-topic epoch. The independent receiver clock
+must not become locked to Velodyne scan times.
+
+The3present Velodyne bags cover these windows. Their last included records
+are20--91ms before the existing end; the bags also contain later scans. Main
+comparison deliberately uses the established journey window, not a longer
+Velodyne tail scored against a shorter Hesai reference. Label it accordingly.
+
+The first included Velodyne cloud contains points preceding the capture start
+by roughly60--70ms. Check startup IMU bracketing/native warm-up; explicitly
+account for any unusable first partial scan. Preserve measured physical point
+times. If additional pre-roll is necessary, define/report it before a run and
+keep the scored comparison interval fixed; do not invent missing IMU samples.
+Do not transplant the SPX-3 bag29 quiet-start choice to another mission.
+
+4. BOUNDED EXECUTION ORDER — AFTER SEPARATE APPROVAL
+
+Stage0 DONE: save Hesai checkpoint and this plan; input feasibility inspected.
+
+Stage1: prepare ONE isolated Velodyne+CPT7 GLIM / unchanged front-stereo Kimera
+ / unchanged WNOA harness. Start with SPX-3 because its data/profile are present,
+ its quiet startup was just verified and its full comparison is shortest.
+ Read-only full-input preflight: bag hashes, full header/point-time consistency,
+ TF/extrinsics, camera/IMU identities, effective parameter diff, frozen binaries,
+ exact selected window/counts, reference coverage and disk forecast.
+ Required launch guard: GLIM actually subscribes to Velodyne, NOT Hesai; no
+ Hesai or Livox data enter estimators. Receiver ready before all source playback.
+
+Stage2: ONE30s matched live SPX-3 OFF/ON smoke from the verified quiet start.
+ It is an integration/coverage/timestamp test, not a new tuning search.
+ OFF passes the frozen source LOCAL provenance, lifecycle and receiver
+ conservation/coverage gates before ON. Verify actual normalized point times,
+ deskew/CPT7 bracketing, expected scan cadence, body frame, both CBS directions,
+ stable-ID replacements, temporary retirements, and no growing source/receiver
+ queue. Keep a complete native GLIM/native Kimera/ONLINE fusion result vsGT.
+ Stop on failure; no automatic retries/guard relaxation or source covariance fix.
+
+Stage3: after smoke review, full matched pairs ONE SEQUENCE AT A TIME:
+ SPX-3 -> EIG-2 -> LEICA-2 -> ETH1 once its missing bag is available.
+ This is an operational order, not choosing datasets by accuracy. ETH1 can be
+ moved earlier if its data become available. Finish OFF->gates->ON->gates->
+ evaluation/report/cleanup before the next sequence. No parallel datasets,
+ no new persistent monitor without approval, no reuse/overwrite of old roots.
+
+Each full pair runs all THREE estimators concurrently in both modes. Do not
+ reuse an old Kimera OFF trajectory as the new run's output even though its
+ sensors/settings are unchanged: scheduling and causal arrivals are part of
+ the comparison. Old Kimera OFF is a useful consistency control, not a substitute.
+
+STORAGE GATE: planning inspection found only about9.5GiB free on the710GiB
+ filesystem. Current captures retain a5GiB runtime reserve; a full campaign
+ cannot safely fit under this margin. Forecast journal/covariance/log volume
+ plus ETH1 input download plus reserve before any launch. Obtain additional
+ storage or explicit user-selected archival moves first as needed. Do not
+ delete, compress in-place, relocate or overwrite existing experiments without
+ authorization. The compact checkpoint is not permission to delete full logs.
+
+5. SAME DELIVERABLES, PLUS THE SENSOR-SUBSTITUTION QUESTION
+
+For EACH sequence, primary table remains:
+                 CBS OFF                  CBS ON
+Original GLIM    Velodyne+CPT7             Velodyne+CPT7 with Kimera CBS
+Original Kimera  front stereo+CPT7         same, with Velodyne-GLIM CBS
+Fusion ONLINE    GLIM+Kimera+WNOA          GLIM+Kimera+WNOA
+
+Report full-saved ATE,1s translation/rotation RPE,path lengths, timestamps,
+actual coverage/startup/tail/keyframe gaps vs the same full-window IE-TC.
+Common physical mask is a SECONDARY matched check, not a replacement with a
+favorable short GT subset. IE-TC shares CPT7; independent AP20 prism only where
+available, never label partial prism coverage as the whole journey.
+Keep DELAYED fixed-lag-finalized fusion separate and explicitly non-online.
+Compare against frozen Hesai tables using equal physical coverage where valid.
+
+Retain full6x6 first/revised source covariances, corrected means, stable IDs,
+revision ages/availability, exact endpoints, actual received/aligned peer payloads,
+acceptance/expiry/finalization counts, queue/delay and GLIM/Kimera/fusion timing.
+Reuse the existing covariance/error plotting tools. Translation and rotation
+traces separately; physical units and revision ages fixed in OFF/ON comparisons.
+Relative errors must use the SAME physical endpoints as the reported covariance;
+never compare source-native means to a different receiver interval. Distinguish
+native source uncertainty from peer covariance actually installed under the
+unchanged mean-only alignment approximation. No confidence-calibration claims
+from trace magnitude or shared-IMU reference alone.
+
+Questions to answer, without tuning to force a desired outcome:
+1. Does Velodyne-GLIM OFF actually have larger local relative errors than
+   Kimera OFF, and in which parts/directions? Whole-path ATE alone is insufficient.
+2. Does CBS ON improve the poorer source on those same intervals, and what is
+   the cost to the better source? Do not assume one sensor is always healthier.
+3. Does the source covariance reflect those changes, or remain overconfident?
+4. Does the resulting ONLINE fusion improve OFF->ON, and is the trend also
+   present in separately labeled delayed/finalized output?
+5. Does the LiDAR replacement change compute, availability and accepted-factor
+   counts? Separate this consequence from an intentional protocol change.
+
+"Velodyne is less accurate" is the hypothesis, not a guaranteed role reversal.
+Its density, mounting position, field of view and occlusions differ; the study
+measures the complete sensor substitution, not isolated ranging noise. No
+artificial corruption, covariance inflation, extra sensors, faster playback,
+changed WNOA or algorithm redesign in this first campaign.
+
+6. NEXT ACTION / STOP CONDITION
+
+Planning is complete. No estimator code/profile or launch setting was edited.
+No bags replayed, containers started, downloads, full validation reruns, new
+trajectory scores or Git pushes. Future execution needs explicit approval;
+first resolve storage headroom and prepare the ONE SPX-3 Velodyne integration
+pair. ETH1's missing Velodyne file is a separate data prerequisite.
+
+Existing implementation pointers (reuse; do not execute old experiments):
+- src/cbsms/config/grandtour_glim/spx3_cpt7/velodyne/ and README.md
+- src/cbsms/config/grandtour_glim/eig2_cpt7/README.md
+- src/glim/include/glim/util/ros_cloud_converter.hpp:64 (time field extraction)
+- src/glim/src/glim/util/time_keeper.cpp::replace_points_stamp
+- CP-K28/29 prepared/source_runner*.sh,active_window*.launch,source.env,
+  full_off/full_on.json,verify_effective*.py,validate_local.py,validate_case.py
+  (Hesai identities need isolated sensor-generalization, not a silent rename).
+All src paths above relative to /home/yeranis/repos/V4RL/cbs_gtsam4.3/.

@@ -1,0 +1,57 @@
+CP-V112 attempt1 prelaunch review, 2026-11-05. ONE fresh corrected LEICA-2 pair.
+This review is preparation evidence, not actual playback or scientific results.
+
+Authorization: user's proceed following the original CP112 OFF coverage failure.
+Original failed H/P remain immutable; the old controller must never be resumed.
+preservation_summary.json freezes 262969 regular files and two special-file
+metadata entries (symlink/FIFO); no FIFO reads. Original10253 protected hashes
+and all667Hesai copies/originals are rechecked at final admission and closeout.
+
+Cause and exact correction: expected headers use selected-topic epoch
+1732549028915071665ns; rosbag uses all-bag epoch1732549028815072565ns.
+Keep selected offset6.0s and intended absolute bounds
+1732549034915071665..1732549463665071665ns. Pass separate operational
+CBSMS_BAG_PLAYBACK_START_SEC=6.099999100 to rosbag. No sensor timestamp shift.
+Host original-bag test playback_window_test.json passed: corrected timestamp
+sequences exactly equal all unchanged expected headers for4288Hesai,42875CPT7,
+85688AlphaIMU,4287left and4287right. Old6.0 rejected on all five streams,
+reproducing1/10/20/1/1 early extra and missing tail messages. Last Hesai retained.
+
+Initial mechanical port replacement accidentally touched timestamp/fixture
+digits. Host checks rejected this before any admission/container/source launch.
+Rejected copies and initial diff remain preserved; PREPARATION_REPAIR.txt and
+preparation_repair.json record restoration from originals. All six raw-audit/
+expected-header files and conversion fixture are byte-identical to original
+CP112. Final repaired_copy.diff reviewed: paths/sessions/ports and the explicit
+playback-offset/guard/check/recording only. final_copy.diff and profile_parity.json
+from admission supersede the initial rejected-copy hashes, without erasing them.
+
+Host preflight_tests_v2.py passed:30adapter bit-parity fixtures,40mission
+geometry/Jacobian cases,14negative source schemas plus real CP89/91 schemas,
+5EOF controls, receiver/controller CLI imports, full reference support/parser
+contracts and5synthetic EVO1.36.3 CLI calls. These are not new scientific scores.
+Same CP103 corrected Kimera DSO both modes; no build or global replacement.
+All scientific profiles/private binaries and receiver math identical to CP112.
+No covariance freeze, tuning, observer, nativeIMU override or seed change.
+
+Actual Noetic adapter fixture AND five-stream playback-window test remain
+controller-owned and mandatory before ROS master/source/receiver startup.
+Each source effective check requires both offsets, unchanged DSO/maps/body/TF,
+CBS reception mode and writable Kimera-only failure archive. Exact post-capture
+header/init/EOF coverage checks remain strict; no count-only qualification.
+
+Fresh sessions leica2_cpv112a1_{off,on}_20261105 and ports11653/11654; no old
+capture reuse. One finite controller owns OFF capture+four gates, then ON+four
+gates, owned cleanup/container restoration, saved EVO, report verification.
+20GiB output allowance+5GiB reserve;5GiB runtime floor. Initial containers must
+both be stopped. All admission checks must pass before the single launch.
+No automatic retry, other sequence, tuning, build, install or deletion.
+After terminal and exact controller/supervisor exit, post_closeout.py once if
+absent; preserve immutable seals, update repository status, pause scoped monitor.
+
+Scoring/limitations unchanged: Method1 SE3/no-scale versusIE-TC, reference-distance
+0.5m RPE. Common100ms six-curve mask distinct from native cadence;7s-finalized
+distinct ONLINE/full-history. Retain revisions/arrival timing/covariance/frames/
+expired and EOF omissions; no gap filling. IE-TCsharesCPT7, not independentprismGT.
+Persistent correlation/native-onlyoutgoingFALSE and experimental Alpha model
+remain; polyline notphysicaltravel, paritynotstationarity/calibration/health.

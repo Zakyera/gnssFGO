@@ -1,0 +1,106 @@
+CP-K12 ETH1 60s CBS-ON at0.30x — CAPTURE AND VALIDATION PASS,2026-10-20
+
+One explicitly authorized run. Native GLIM,native Kimera,and gnssFGO ran
+concurrently for bag0--60s at0.30x,headless. Total controller wall245.656s
+(4min5.7s),including startup,200s nominal playback and25s drain/cleanup.
+No OFF/full-sequence run,retry,tuning,build,default promotion or push.
+
+The matched120s CP-K11 source/receiver binaries and profiles were reused
+unchanged: CP-K9 private Kimera,prior-refresh1,FL4q0,remove; all-LOCAL CP-I1/I3
+GLIM covariance with corrected MAIN means; classic temporary CBS,Gaussian1,
+Hesai+CPT7 and front Alphasense stereo+CPT7; GLIM5s/Kimera25states.
+FL4e7s source-WNOA,independent100ms support clock,unchanged Qc/priors and
+downstream stable-ID replacement,no central IMU/GNSS. Native source IMU
+override unset. Existing mean-only peer covariance alignment unchanged.
+Effective rate,duration,loaded DSOs and source settings verified BEFORE play.
+
+Only duration/rate/session/path/port changed. New harness fixes the already
+identified CP-K11 log-routing omission: runtime scan and lifecycle checker
+include actual Kimera node stdout. Same numerical thresholds,extra per-update
+retirement equality. No old controller/capture edited or gate relaxed.
+The first preparation invocation lacked sandbox Docker access BEFORE creating
+the run root or launching estimators; scoped permission resolved preparation.
+There was exactly ONE source capture.
+
+Coverage:
+591native GLIM poses,58.999369s saved span;
+284native Kimera poses,59.599654s saved span;
+593ONLINE fusion poses,59.2s span,all published while sources were running.
+Same known3.199979s Kimera startup gap;later maximum gap.200014s.
+GLIM later maxgap.100990s. Tail behind last CPT7:.179076sGLIM/.098438sKimera.
+No shortened-window result presented as the full requested60s.
+Every saved source timestamp matches the exact CP-K11 ON prefix. That longer
+run additionally finishes ONE scan stamped1727775067.774669886 using later
+IMU support;the60s capture's final GLIM stamp is1727775067.674412012.
+This endpoint difference is a documented finite-window
+support tail,not a source drop or a change in cadence.
+
+Wall time per update (ms),source statistics after first5s:
+Work                              mean      median     p95       max
+GLIM whole odometry scan          192.248   192.705    366.139   772.428
+GLIM main smoother                136.233   150.379    334.323   383.830
+GLIM post-smoother callback         44.894    23.769    168.966   211.344
+Kimera complete backend            70.407    73.395     93.377   119.110
+Kimera main smoother               24.137    23.531     34.539    62.805
+Kimera outgoing-belief work         43.871    47.744     61.956    66.932
+gnssFGO entire support cycle        52.727    50.114     83.096   122.321
+
+Nested scopes overlap:do not sum all rows. GLIM excludes ROS input preprocessor;
+Kimera backend excludes separate image frontend. Receiver support-cycle time
+sums service for all intervening journal events,not just a pure optimizer call.
+At0.30x there are333.333wallms per GLIM scan/support and~666.667ms per Kimera
+keyframe.12.39% of GLIM scans exceeded the individual333ms budget,but mean
+processing was lower and the queue absorbed bursts. Max GLIM internal queue2;
+no accumulating receiver backlog. Receiver writer max42events,finalqueue0;
+monitor-sampled queue max5. Receipt-to-processing wallp95.025714s,max.052134s.
+Output age by simulated playback clock p95.090012s,max.100013s,NOT wall latency.
+
+GLIM mean scan time by15s physical sections (first5s excluded):
+106.644,180.533,235.112,218.342ms. Work varies with the section;not constant or
+guaranteed to remain bounded on the unseen full sequence.
+Same physical prefix CP-K11/0.10x has GLIM whole-scan median226.477/p95510.418ms
+and Kimera backend116.746/150.106ms. Faster measured execution here is NOT a
+new code optimization or a deterministic speedup claim:machine load and
+causal source/CBS timing differ. Complete comparison is in results.json.
+
+Late versions:
+GLIM revision producing-update lag (simulated seconds):median.167555,
+p95.292702,max.360203. Age of oldest referenced endpoint:max5.332430s;
+minimum margin to7s receiver lag1.667570s. Old endpoint age includes the
+intentional5s source history;it is not5.33seconds of computation.
+No factor required an already-expired receiver support.
+
+Validation:
+All34159received versions=870insertions+33264replacements+25knownpreinit
+exclusions. No duplicates,pending-at-end or unsupported-end factors.
+27409GLIM versions/589IDs;6750Kimera versions/282IDs.
+LOCAL provenance and every dense covariance payload exact;mean round-trip
+error2.533976e-14. Source CBS280G2K/280K2G injections.
+256Kimera temporary-factor retirements/256prior-refresh updates match
+individually;maxcacheerror3.140903e-10<1e-8,no recovery/FL4q/error markers.
+Observed ordinary objective increases0 here;NOT stationarity certification.
+Fusion retains71supports,peak174factor slots.
+Saved receiver-journal repeat PASS in28.296s:35521archive files and all five
+state/trajectory/summary products byte-identical. Not a source rerun.
+1886protected files unchanged;no source repo edits.
+
+Decision:
+0.30x passes this60s CBS-ON throughput/coverage/lifecycle gate. It is a
+reasonable candidate rate for a separately authorized matched longer trial,
+not certification of full346s ETH1,0.5x,1x or universal safety.
+Any new OFF/ON accuracy comparison must use matching playback rates; faster
+delivery can change when peer beliefs enter the source graphs. This speed-only
+task does not select a rate by ATE or claim trajectory identity across rates.
+Trajectories,covariances,revisions and journals retained;no new accuracy scoring.
+ONLINE and DELAYED finalized fusion remain separate files.
+
+Paths:
+H=/home/yeranis/repos/gnssFGO/experiments/eth1_speed60_cpk12_20261020
+P=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_speed60_cpk12_20261020/prepared
+V=/home/yeranis/results/gnssfgo_eth1_speed60_cpk12_20261020/on
+H/results.json,H/harness.diff,H/PROTOCOL.txt;
+P/speed60_on_source/{local_provenance.json,candidate_validation.json,
+source_coverage.json,odom_imu.txt,kimera_odometry.csv,ros_logs/};
+P/speed60_on_receiver/{events.csv,receipts.jsonl,receiver/};
+V/{validation.json,repeat_validation.json,repeat_live/}.
+Final container/hash closeout is H/final_checks.json. Stop after this test.

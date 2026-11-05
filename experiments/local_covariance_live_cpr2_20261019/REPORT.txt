@@ -1,0 +1,157 @@
+CP-R2 — cached LOCAL covariance live EIG-2 gate
+2026-10-19 | PASSED, bounded30s CBS-OFF only
+================================================
+
+Outcome
+-------
+One fresh30s EIG-2 capture completed with live GLIM, live Kimera and live
+gnssFGO. The CP-R1 revision-after-absorption failure did not recur. All existing
+source, provenance, conservation, throughput and deterministic-replay gates
+passed. No ON/other sequence/60s campaign launched. No estimator/covariance
+mathematics, lag, priors, scales or playback change; no automatic capture retry.
+This validates the cache in this short OFF case, not universal real-time safety.
+
+Scope and exact setup
+---------------------
+Mission2024-11-03-13-59-54, bagoffset5.7s, duration30s,0.10x playback,25s drain.
+Fresh root:
+ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eig2_local_cov30_cpr2_20261019/prepared
+Unique port11448/session eig2_cpr2_live30_off_20261019. OFF-only harness.
+Same EIG-2 copied profiles and inputs as frozen FL4x/CP-R1. Hesai, CPT7,
+front stereo, GLIM5s lag, Kimera25states/native IMU consumption (override unset).
+Both source receive directions OFF; exports/revisions ON; classic temporary
+bookkeeping, no source live_revision, full dense covariance, Gaussian scale1.
+Same native-IMU mean alignment/horizon. Headless, graph inspectors disabled.
+
+GLIM CP-I1 bridge, GLIM_REVISION_COVARIANCE_POLICY=native_local:
+ SHA25642df73c172232a612da965bf43ead8ec454caf08434b84e2da5de74d26cdb79f
+Only new estimator dependency relative to CP-R1: CP-I3 cached provider:
+ /workspace/cbs_gtsam4.3/runs/native_covariance_cache_cpi3_20261019/release_v2/libgtsam_points.so.1.2.1
+ SHA2563f23e6115e34acc5a2f2b965b15bd4c651897c889a6c38a0a52cdb3855c0ceb7
+GLIM_SHARED_NATIVE_PROVIDER=shared_native, GPU batching unchanged. Actual mapped
+DSOs and hashes checked before playback; seven wrong-path negative tests passed.
+The unchanged CP-I1 bridge and frozen S4d dependency directory follow this
+provider directory in GLIM's LD_LIBRARY_PATH. No default-build promotion.
+Kimera private FL4q:
+ SHA2566ce24c266b0f0e2561f0c05de2a661a72d5a4d9335df7c3cdfa0a4c77af9b4ae
+Receiver unchanged FL4e candidate_live:
+ SHA25653c96a2b7a762800cf2291166dc78520269098684411de641b52bee6a54dc5c9
+7s fixed-lag WNOA; no central IMU or GNSS factors; independent100ms clock,
+59IMU startup samples for timing only. Same Qc/priors/stable-ID replacement.
+Incremental publication, NOT nonlinear-stationarity certification. CPU2/OMP1.
+
+Timing — matched physical updates, not unrelated whole-window medians
+--------------------------------------------------------------------
+64 completed updates common to all three runs, after the first5s:
+                                     median seconds       p95 seconds
+ old MAIN revision extraction           .041550             .116658
+ CP-R1 uncached LOCAL                  1.024278            2.046901
+ CP-R2 cached LOCAL                     .086050             .156997
+Ratio of the two LOCAL medians:11.90x. Median paired speed ratio:13.57x.
+Thus the regression is substantially repaired, but this matched section is
+still about2.07x the old MAIN-revision median; do not claim zero extra cost.
+
+Complete onSmootherUpdateFinish callback, including first-publication work,
+revisions and logging (same64timestamps):
+                                     median seconds       p95 seconds
+ old MAIN revision                      .069552             .155259
+ uncached LOCAL                        1.051445            2.094350
+ cached LOCAL                           .110964             .205204
+This confirms the benefit was not merely moving cost out of the revision timer.
+MAIN optimizer medians on these timestamps: .100260/.081967/.091510s for
+old MAIN/uncached LOCAL/cached LOCAL, respectively. No MAIN speedup is claimed.
+These timers do not cover all sensor preprocessing or total GLIM execution.
+
+New run's241 completed updates after5s: revision median .015086s,
+p95 .148218s, max .169307s. MAIN root median .142299s,p95 .431501s,max .449831s.
+The .015s full-new-window median is NOT the matched .086s comparison; workloads
+vary over time. Times are wall seconds. No1x capacity claim from0.10x playback.
+
+Timing-analysis caveats explicitly checked: profiler output can outlive ROS
+finish-row logging during shutdown. Excluded unpaired tails: CP-R2 one row,
+CP-R1 twelve, FL4x one; compare only completed intersecting timestamps.
+First-publication source_update metadata is a timestamp, whereas revision
+source_update is an index. For lag decomposition, map first-publication target
+indices to endpoint stamps; do not cast its timestamp as an update index.
+Two summary-script assumptions caught by assertions were corrected before
+reporting. No runtime/validation artifact or estimator was changed/repeated.
+
+Latency and receiver throughput
+-------------------------------
+12,612 GLIM revisions:
+ first-endpoint age median2.634870s,p954.846087s,
+ maximum5.156722s, leaving1.843278s relative to the7s receiver retention.
+ source-update-endpoint to arrival lag median .125652s,p95 .155060s,
+ maximum .158269s (simulated/measurement-clock seconds, NOT wall processing).
+ within-source history maximum4.999997s.
+Worst edge162->164,sourceupdate212,revision48. CP-R1 failed at7.070107s age.
+No dropped revisions, lag extension or cadence reduction was used.
+
+Receiver peak transport queue38; maximum sampled queue5; endqueue0.
+Support-cycle service median .043645s,p95 .072138s,max .113126s wall.
+Receipt-to-processed median .004296s,p95 .019883s,max .089490s wall.
+Sampled online output age max .090015s measurement-clock time.
+295/295 online poses published while sources were running. Capture controller
+wall time345.501s includes startup,300s playback,drain/cleanup.
+
+Coverage, covariance provenance and conservation
+-----------------------------------------------
+Requested30s;3000IMU samples span29.990024s.
+Native GLIM:292poses,29.100546s span,startup .711013s,tail .178465s.
+Native Kimera ROS odometry:148poses,29.599745s,startup .194562s,tail .195717s.
+Fusion ONLINE:295poses,29.4s physical span; finalized output separately retained.
+No fabricated startup poses or short-GT-overlap accuracy table.
+
+GLIM290IDs,290first LOCAL exports +12,612 LOCAL revisions =12,902versions.
+Every first matrix exactly equals its provider log; every revision has a unique
+native_local provenance row and the pinned/tested full-matrix provider path.
+Kimera146IDs/3350versions;3350tmp_marginals LOCAL query records, no MAIN fallback.
+The validator reads Kimera payloads from estimators.log and independently checks
+LOCAL query telemetry in its ROS stdout. This parser correction was exercised
+on retained CP-R1 data before capture. Kimera's printed first/revised counters
+are not populated in this generic validator;3350 is the validated version total.
+
+16,252source versions preserved exactly through diagnostic transport:
+434insertions +15,768replacements +50pre-initialization exclusions =16,252.
+434insertions =333absorbed +101active. No duplicates/stale/pending/unsupported
+at end.19,253events =3000IMU timing +16,252beliefs +one END.
+Full covariance payload error0; mean Log serialization error<=7.83e-15.
+71retained supports,175peak factor slots. No revision-after-absorption failure.
+LOCAL here certifies explicit native-information provenance, NOT independent
+or calibrated uncertainty; MAIN means/charts/sharedIMU remain coupled.
+
+Validation and reproducibility
+------------------------------
+- All copied launch files parsed, shell syntax checked, configuration diff saved.
+-1418protected input/build/configuration hashes unchanged; prior captures preserved.
+- Kimera148accepted updates: all current-chart objectives nonincreasing,
+  zero fallback/cap/cache-error/tree-error and zero source CBS injections.
+- No provider/fallback/recovery error; source/receiver completeness guards passed.
+- Receiver deterministic saved-journal replay: all5numeric products plus
+ 16,736archive files byte-identical;13.171s wall validation. This is NOT a new
+ sensor run and NOT presented as the live result.
+- CP-I3's previous55/55 Release and55/55 ASan/UBSan tests remain the code gate;
+  no rebuild or additional algorithm patch was made during this capture.
+- Both experiment containers restored stopped after confirming no owned process.
+
+Commands used (historical, NEVER rerun at these populated output roots):
+ python3 PREPARED/run_case.py live30 off
+ EVO_PYTHON PREPARED/validate_local.py off
+ EVO_PYTHON PREPARED/validate_candidate.py off
+ EVO_PYTHON PREPARED/validate_case.py check off
+ EVO_PYTHON PREPARED/validate_case.py repeat off
+EVO_PYTHON=/home/yeranis/.local/share/pipx/venvs/evo/bin/python.
+Evidence: results.json; preflight.json; harness.diff; PROTOCOL.txt; prepared
+protected_manifest.json; live30_off_{source,receiver,control}; compact evidence/.
+Receiver validation:
+ /home/yeranis/results/gnssfgo_eig2_local_cov30_cpr2_20261019/off
+
+Decision
+--------
+The tested cache is suitable to carry into a separately authorized longer
+LOCAL-covariance capture. No promise that ON/longer sequences never exceed lag.
+No ATE/RPE recomputation in this timing/provenance gate; native and fused paths
+retained. Do not infer source accuracy or covariance calibration from runtime.
+No60s comparison, other sequence, tuning, commit or push performed here.
+Base gnssFGO HEAD668d4c788983722f4acad37d1495c15d03a27e18 unchanged; work remains
+isolated uncommitted engineering evidence. Stop here and report to the user.

@@ -1,0 +1,357 @@
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_keyframe_finalization_full_cpk22_20261021/prepared/validate_case.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/validate_case.py
+@@ -10,7 +10,7 @@
+ OUT=REC/'receiver'
+ CTL=P/f'full_{MODE}_control'
+ EXE=Path('/home/yeranis/results/gnssfgo_receiver_finalization_cpk19_20261021/live')
+-RESULT=Path(f'/home/yeranis/results/gnssfgo_eth1_keyframe_finalization_full_cpk22_20261021/{MODE}')
++RESULT=Path(f'/home/yeranis/results/gnssfgo_eth1_awake_full_cpk23_20261021/{MODE}')
+ LIB=Path('/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib')
+ 
+ def sha(p):
+@@ -180,5 +180,5 @@
+ 
+ if __name__=='__main__':
+     phase=sys.argv[1]
+-    assert phase=='check', 'CP-K22 does not authorize a saved-journal solver repeat'
++    assert phase=='check', 'CP-K23 does not authorize a saved-journal solver repeat'
+     print(json.dumps(check(),indent=2))
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_keyframe_finalization_full_cpk22_20261021/prepared/glim_profile_on.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/glim_profile_on.launch
+@@ -116,7 +116,7 @@
+         <env name="CPK16_MAIN_GPU_BATCHING" value="1"/>
+         <env name="GLIM_SHARED_NATIVE_PROVIDER" value="shared_native"/>
+         <env name="GLIM_REVISION_COVARIANCE_POLICY" value="native_local"/>
+-        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_keyframe_finalization_full_cpk22_20261021/prepared/full_on_source/e1b_profile.jsonl"/>
++        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/full_on_source/e1b_profile.jsonl"/>
+ 		<param name="config_path" value="$(arg config_path)" />
+ 		<param name="glim_dump_path" value="$(arg glim_dump_path)" />
+ 		<param name="deterministic_input_event_log_path" value="$(arg glim_deterministic_input_event_log_path)" />
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_keyframe_finalization_full_cpk22_20261021/prepared/source.env
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/source.env
+@@ -2,7 +2,7 @@
+ # to off_source/on_source and CBSMS_CBS_ENABLE to false/true.
+ : "${CBSMS_RUN_NAME:?Set fresh ETH1 source run name}"
+ : "${CBSMS_CBS_ENABLE:?Set false or true}"
+-export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_keyframe_finalization_full_cpk22_20261021/prepared
++export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared
+ export CBSMS_RUN_NAME CBSMS_CBS_ENABLE
+ export ROS_LOG_DIR="${CBSMS_RUN_ROOT}/${CBSMS_RUN_NAME}/ros_logs"
+ export CBSMS_PROJECT_ROOT=/workspace/cbs_gtsam4.3
+@@ -12,7 +12,7 @@
+ export CBSMS_POST_PLAYBACK_DRAIN_SEC=25
+ export CBSMS_BAG_RATE=0.20
+ export CBSMS_SEED_CLOCK_SECS=1727775007
+-export CBSMS_ROS_MASTER_PORT=11472
++export CBSMS_ROS_MASTER_PORT=11473
+ export CBSMS_USE_EXISTING_ROS_MASTER=true
+ export CBSMS_KIMERA_MODE=stereo_shared_cpt7
+ # The recovered classic Kimera source path is "current", not experimental RIGHT.
+@@ -35,7 +35,7 @@
+ export CBSMS_KIMERA_RECEIVER_AUDIT_MAX_SAMPLES=40
+ export CBSMS_KIMERA_RECEIVER_AUDIT_STRIDE=20
+ export CBSMS_DIAGNOSTIC_NODE_OUTPUT=log
+-export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_keyframe_finalization_full_cpk22_20261021/prepared/input_profiles/glim_config
+-export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_keyframe_finalization_full_cpk22_20261021/prepared/input_profiles/kimera_profile
++export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/input_profiles/glim_config
++export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/input_profiles/kimera_profile
+ 
+ export CBSMS_DATASET_DIR=/workspace/cbs_gtsam4.3/src/datasets/GrandTour
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_keyframe_finalization_full_cpk22_20261021/prepared/PROTOCOL.txt
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/PROTOCOL.txt
+@@ -1,57 +1,42 @@
+-CP-K22 — matched full ETH1 with native-keyframe-aware coverage, 2026-10-21
++CP-K23 — explicitly reauthorized full ETH1 OFF/ON after host sleep,2026-10-21
+ 
+-User Proceed authorizes the prepared full OFF/ON comparison after selecting
+-known-expired-revision auditing. CP-K20 remains preserved/unlaunched. Fresh
+-identities only; one OFF, validate, one ON. No automatic retry or overwrite.
+-346.32s from selected-topic epoch1727775007855396309ns at0.20x, headless,
+-25s drain, ROS port11472. End1727775354175396309ns includes last Hesai record.
++User: "ok let's start again then?" after CP-K22 was interrupted by host suspend.
++Preserve CP-K22 and every older capture. One NEW matched OFF/ON attempt,not an
++automatic retry. Same346.32s selected-topic window,0.20x,headless25sdrain.
++New identities and ROS port11473; temporary sleep/idle/lid-switch inhibitor
++held by the one-shot comparison controller, released automatically on exit.
++No persistent OS power-setting change, recurring task, new build or tuning.
+ 
+-Identical CP-K20 source binaries, profiles, source flags and receiver model:
+-K16a MAIN GPU batching; CP-I1/I3 LOCAL full dense covariance every version;
+-corrected MAIN means; Kimera CP-K9 prior refresh1,FL4Q0,temporary retirement
+-remove,native IMU override unset. GLIM5s,Kimera25keyframes; classic temporary
+-source CBS OFF/ON, not source live_revision. Gaussian scales1,0.20s belief
+-horizon,one pair/update,unchanged mean-only peer alignment approximation.
+-Receiver CP-K19 SHA256
+-4b08a7f5ba97f5e4ec22959df23367df79eebf5d644dc19d939747dcd4566d6e
+---absorbed-revision-policy seal_at_absorption in BOTH modes: active versions
+-replace; known absorbed-ID revisions expire/audit without solver mutation.
+-Last accepted information stays in prior. Unknown old first arrivals and all
+-malformed/conflicting inputs still fail.7s fixed-lag source_wnoa,100ms supports,
+-no central IMU/GNSS,unchanged Qc/priors. No C++ edits/builds/tuning/promotion.
++Algorithm and coverage/evaluation contract EXACTLY CP-K22:
++GLIM5s,K16a MAIN batching,CP-I1/I3 all-LOCAL full covariance every version,
++corrected MAIN means; Kimera25keyframes,CP-K9 refresh1,FL4Q0,retirement remove,
++native IMU override unset. Classic temporary source CBS,not source live_revision;
++Gaussian scales1,0.20s belief horizon,unchanged mean-only covariance alignment.
++CP-K19 receiver4b08a7f5ba97f5e4ec22959df23367df79eebf5d644dc19d939747dcd4566d6e,
++seal_at_absorption: active revisions replace; known absorbed-ID revisions audit/
++expire without solver mutation; old unknown first arrivals still error. Same7s
++fixed-lag WNOA,100ms independent supports,no central IMU/GNSS,unchanged Qc/priors.
++Same native-keyframe coverage bound5.15s and frontend/backend conservation,
++no source or validation threshold changes. Preserve all actual outputs and
++report startup/internal/tail gaps; common-mask holes are not interpolated away.
+ 
+-EXPLICIT HARNESS CHANGE, frozen before capture (not an estimator change):
+-Kimera's native output is keyframe-only. Its profile permits5s between
+-keyframes; with100ms images the next eligible frame can be at5.1s. Use5.15s
+-maximum internal gap/tail (5s+one image period+50ms tolerance),not the previous
+-1s dense-output bound. Start offset remains <=1.5s. Full IMU span unchanged.
+-Replace assumed1700 keyframes with sequential native IDs,one output per backend
+-update,and frontend processing evidence. Same ETH1 window has3463 synchronized
+-image pairs; CP-K21 processed3460 after startup. Require3460--3463 frontend
+-updates and backend/native count equality. For each >1s keyframe gap require
+-frontend counters advance between bounding backend updates; log gap/counters
+-and low-disparity evidence. This is not proof of every per-frame decision.
+-GLIM dense coverage,transport,expiry,covariance,lifecycle and numerical gates
+-unchanged. No interpolated poses are added to either native output.
++One-shot run_pair.py executes the already-authorized stages sequentially:
++1. Verify protected hashes, fresh roots, sleep inhibitor, both containers stopped.
++2. Start the two existing containers; run P/run_case.py full off ONCE.
++3. Require OFF capture complete; run validate_local.py off,validate_candidate.py
++   off,validate_case.py check off with evo Python. Any error stops entire pair.
++4. Run P/preflight_on.py then P/run_case_on.py full on ONCE. Same three gates ON.
++5. Run P/evaluate_fl4f.py in Noetic,then H/summarize.py once. No solver replay.
++6. Verify all owned jobs exited; restore both containers stopped. Save closeout.
++No retry, overwrite, relaxed guard, other method/sequence, commit or push.
++This is a finite execution pipeline,not a scheduler or persistent follow-up.
+ 
+-Every actual saved native/fusion pose is scored against IE-TC. The common mask
+-may have gaps: retain existing0.5s estimate/0.05s GT interpolation bounds;
+-report contiguous segments,excluded queries,actual covered duration and envelope
+-separately. Do not silently bridge5s gaps or label mask envelope dense coverage.
+-Path length is polyline through saved samples,not measured motion inside gaps.
+-Shared-CPT7 IE-TC is not independent prism GT. ONLINE fusion separate from
+-DELAYED fixed-lag-finalized output; no full-history/nonlinear stationarity claim.
+-
+-H=/home/yeranis/repos/gnssFGO/experiments/eth1_keyframe_finalization_full_cpk22_20261021
+-P=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_keyframe_finalization_full_cpk22_20261021/prepared
+-V=/home/yeranis/results/gnssfgo_eth1_keyframe_finalization_full_cpk22_20261021
+-After each capture run missing gates ONCE using evo venv python:
+-P/validate_local.py MODE;P/validate_candidate.py MODE;P/validate_case.py check MODE.
+-Inspect existing artifacts,do not overwrite. OFF:python3 P/run_case.py full off.
+-Only after all three pass:python3 P/preflight_on.py;python3 P/run_case_on.py full on.
+-Stop/report on failure; let owned controller clean up. No saved-journal solver
+-repeat/exhaustive observer/new source diagnostic. Saved-data coverage unit
+-checks only before capture. After BOTH pass run existing evaluate_fl4f.py in
+-Noetic then H/summarize.py. Preserve mean/covariance/revision/expiry/timing data.
+-Restore both originally-stopped containers only after owned work exits.
+-No commit/push/next experiment. Persistent follow-up requires separate approval.
++H=/home/yeranis/repos/gnssFGO/experiments/eth1_awake_full_cpk23_20261021
++P=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared
++V=/home/yeranis/results/gnssfgo_eth1_awake_full_cpk23_20261021
++Controller writes H/status.json and per-stage logs. Never duplicate a running
++controller or manually start a stage it owns. Failure evidence is retained.
++Full-saved native GLIM,native Kimera ROS odometry,ONLINE fusion OFF/ON are primary.
++Report ATE,1s t/rRPE,path lengths,coverage,covariance/revision/expiry/timing data.
++DELAYED fixed-lag-finalized stays separate,not online/full-history. Shared-CPT7
++IE-TC is not independent prism GT. No nonlinear-stationarity certification.
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_keyframe_finalization_full_cpk22_20261021/prepared/full_on.json
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/full_on.json
+@@ -1,7 +1,7 @@
+ {
+-  "sequence": "ETH1 LOCAL CP-K22 bag0-346.32s matched ON",
++  "sequence": "ETH1 LOCAL CP-K23 bag0-346.32s matched ON",
+   "source_protocol": "classic",
+-  "ros_master_uri": "http://127.0.0.1:11472",
++  "ros_master_uri": "http://127.0.0.1:11473",
+   "imu_topic": "/boxi/cpt7/imu",
+   "imu_frame": "cpt7_imu",
+   "world_frame": "gnssfgo_world",
+@@ -12,18 +12,18 @@
+   "drain_timeout_wall_sec": 300,
+   "ros1_container": "cbsms_ws_gpu",
+   "receiver_container": "ubuntu-jammy-humble-nvidia",
+-  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_keyframe_finalization_full_cpk22_20261021/prepared/receiver_cpk19.sh",
++  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/receiver_cpk19.sh",
+   "sources": [
+     {
+       "id": "glim_hesai",
+-      "session": "eth1_cpk22_full_on_20261021",
++      "session": "eth1_cpk23_full_on_20261021",
+       "kind": "glim",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/ros_logs/*/glim_rosnode-*-stdout.log"
+     },
+     {
+       "id": "kimera_front",
+-      "session": "eth1_cpk22_full_on_20261021",
++      "session": "eth1_cpk23_full_on_20261021",
+       "kind": "kimera",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/estimators.log"
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_keyframe_finalization_full_cpk22_20261021/prepared/active_window_on.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/active_window_on.launch
+@@ -111,7 +111,7 @@
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_stride" value="20"/>
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_max_updates" value="40"/>
+ 
+-  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_keyframe_finalization_full_cpk22_20261021/prepared/glim_profile_on.launch">
++  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/glim_profile_on.launch">
+     <arg name="config_path" value="$(arg glim_config_path)"/>
+     <arg name="glim_node_output" value="$(arg diagnostic_node_output)"/>
+     <arg name="glim_input_imu_topic" value="$(arg glim_input_imu_topic)"/>
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_keyframe_finalization_full_cpk22_20261021/prepared/active_window.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/active_window.launch
+@@ -111,7 +111,7 @@
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_stride" value="20"/>
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_max_updates" value="40"/>
+ 
+-  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_keyframe_finalization_full_cpk22_20261021/prepared/glim_profile.launch">
++  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/glim_profile.launch">
+     <arg name="config_path" value="$(arg glim_config_path)"/>
+     <arg name="glim_node_output" value="$(arg diagnostic_node_output)"/>
+     <arg name="glim_input_imu_topic" value="$(arg glim_input_imu_topic)"/>
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_keyframe_finalization_full_cpk22_20261021/prepared/preflight_on.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/preflight_on.py
+@@ -2,7 +2,7 @@
+ from pathlib import Path
+ import hashlib,json
+ P=Path(__file__).resolve().parent
+-V=Path('/home/yeranis/results/gnssfgo_eth1_keyframe_finalization_full_cpk22_20261021/off')
++V=Path('/home/yeranis/results/gnssfgo_eth1_awake_full_cpk23_20261021/off')
+ def sha(p):
+  with Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+ for p in [P/'full_off_source/candidate_validation.json',P/'full_off_source/local_provenance.json',
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_keyframe_finalization_full_cpk22_20261021/prepared/glim_profile.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/glim_profile.launch
+@@ -116,7 +116,7 @@
+         <env name="CPK16_MAIN_GPU_BATCHING" value="1"/>
+         <env name="GLIM_SHARED_NATIVE_PROVIDER" value="shared_native"/>
+         <env name="GLIM_REVISION_COVARIANCE_POLICY" value="native_local"/>
+-        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_keyframe_finalization_full_cpk22_20261021/prepared/full_off_source/e1b_profile.jsonl"/>
++        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/full_off_source/e1b_profile.jsonl"/>
+ 		<param name="config_path" value="$(arg config_path)" />
+ 		<param name="glim_dump_path" value="$(arg glim_dump_path)" />
+ 		<param name="deterministic_input_event_log_path" value="$(arg glim_deterministic_input_event_log_path)" />
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_keyframe_finalization_full_cpk22_20261021/prepared/run_case_on.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/run_case_on.py
+@@ -34,7 +34,7 @@
+     own.mkdir(exist_ok=False)
+     inside = '/workspace/'+str(own.relative_to('/home/yeranis/repos/V4RL'))
+     env_inside = '/workspace/'+str((ROOT/'source.env').relative_to('/home/yeranis/repos/V4RL'))
+-    master_uri = 'http://127.0.0.1:11472'
++    master_uri = 'http://127.0.0.1:11473'
+     jobs = {}
+     streams = []
+     def start(name, command):
+@@ -48,7 +48,7 @@
+             text=True, capture_output=True, check=check)
+     def stop_pid(name):
+         # The PID is recorded by this case, command must match the owned port/run.
+-        token = '11472' if name=='master' else str(source.name)
++        token = '11473' if name=='master' else str(source.name)
+         script = ('import os,signal,sys; from pathlib import Path; p=Path(sys.argv[1]); '
+           'pid=int(p.read_text()) if p.exists() else 0; c=Path("/proc/%d/cmdline"%pid); '
+           'e=Path("/proc/%d/environ"%pid); '
+@@ -60,7 +60,7 @@
+     started = time.time()
+     try:
+         assert ros('rosparam get /rosversion',check=False).returncode != 0, 'port is already in use'
+-        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11472'
++        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11473'
+         start('master',['docker','exec','cbsms_ws_gpu','setsid','--wait','bash','-lc',master_script])
+         for _ in range(60):
+             if ros('rosparam get /rosversion',check=False).returncode==0:
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_keyframe_finalization_full_cpk22_20261021/prepared/source_runner.sh
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/source_runner.sh
+@@ -578,7 +578,7 @@
+   "kimera_receive_cbs_beliefs=${kimera_receive_external_beliefs}" \
+   "glim_cbs_mode=${glim_cbs_mode}" \
+   "kimera_cbs_odom_factor_mode=active_window_temporary" \
+-  "experiment=gnssfgo_eth1_keyframe_finalization_full_cpk22_20261021" \
++  "experiment=gnssfgo_eth1_awake_full_cpk23_20261021" \
+   "glim_sensor_pair=hesai+cpt7_imu" \
+   "kimera_sensor_pair=${kimera_sensor_pair}" \
+   "glim_body_frame=cpt7_imu" \
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_keyframe_finalization_full_cpk22_20261021/prepared/run_case.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/run_case.py
+@@ -33,7 +33,7 @@
+     own.mkdir(exist_ok=False)
+     inside = '/workspace/'+str(own.relative_to('/home/yeranis/repos/V4RL'))
+     env_inside = '/workspace/'+str((ROOT/'source.env').relative_to('/home/yeranis/repos/V4RL'))
+-    master_uri = 'http://127.0.0.1:11472'
++    master_uri = 'http://127.0.0.1:11473'
+     jobs = {}
+     streams = []
+     def start(name, command):
+@@ -47,7 +47,7 @@
+             text=True, capture_output=True, check=check)
+     def stop_pid(name):
+         # The PID is recorded by this case, command must match the owned port/run.
+-        token = '11472' if name=='master' else str(source.name)
++        token = '11473' if name=='master' else str(source.name)
+         script = ('import os,signal,sys; from pathlib import Path; p=Path(sys.argv[1]); '
+           'pid=int(p.read_text()) if p.exists() else 0; c=Path("/proc/%d/cmdline"%pid); '
+           'e=Path("/proc/%d/environ"%pid); '
+@@ -59,7 +59,7 @@
+     started = time.time()
+     try:
+         assert ros('rosparam get /rosversion',check=False).returncode != 0, 'port is already in use'
+-        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11472'
++        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11473'
+         start('master',['docker','exec','cbsms_ws_gpu','setsid','--wait','bash','-lc',master_script])
+         for _ in range(60):
+             if ros('rosparam get /rosversion',check=False).returncode==0:
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_keyframe_finalization_full_cpk22_20261021/prepared/full_off.json
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/full_off.json
+@@ -1,7 +1,7 @@
+ {
+-  "sequence": "ETH1 LOCAL CP-K22 bag0-346.32s matched OFF",
++  "sequence": "ETH1 LOCAL CP-K23 bag0-346.32s matched OFF",
+   "source_protocol": "classic",
+-  "ros_master_uri": "http://127.0.0.1:11472",
++  "ros_master_uri": "http://127.0.0.1:11473",
+   "imu_topic": "/boxi/cpt7/imu",
+   "imu_frame": "cpt7_imu",
+   "world_frame": "gnssfgo_world",
+@@ -12,18 +12,18 @@
+   "drain_timeout_wall_sec": 300,
+   "ros1_container": "cbsms_ws_gpu",
+   "receiver_container": "ubuntu-jammy-humble-nvidia",
+-  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_keyframe_finalization_full_cpk22_20261021/prepared/receiver_cpk19.sh",
++  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/receiver_cpk19.sh",
+   "sources": [
+     {
+       "id": "glim_hesai",
+-      "session": "eth1_cpk22_full_off_20261021",
++      "session": "eth1_cpk23_full_off_20261021",
+       "kind": "glim",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/ros_logs/*/glim_rosnode-*-stdout.log"
+     },
+     {
+       "id": "kimera_front",
+-      "session": "eth1_cpk22_full_off_20261021",
++      "session": "eth1_cpk23_full_off_20261021",
+       "kind": "kimera",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/estimators.log"
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_keyframe_finalization_full_cpk22_20261021/prepared/source_runner_on.sh
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/source_runner_on.sh
+@@ -578,7 +578,7 @@
+   "kimera_receive_cbs_beliefs=${kimera_receive_external_beliefs}" \
+   "glim_cbs_mode=${glim_cbs_mode}" \
+   "kimera_cbs_odom_factor_mode=active_window_temporary" \
+-  "experiment=gnssfgo_eth1_keyframe_finalization_full_cpk22_20261021" \
++  "experiment=gnssfgo_eth1_awake_full_cpk23_20261021" \
+   "glim_sensor_pair=hesai+cpt7_imu" \
+   "kimera_sensor_pair=${kimera_sensor_pair}" \
+   "glim_body_frame=cpt7_imu" \
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_keyframe_finalization_full_cpk22_20261021/prepared/validate_candidate.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_awake_full_cpk23_20261021/prepared/validate_candidate.py
+@@ -1,4 +1,4 @@
+-"""CP-K22 source lifecycle gate; no nonlinear-stationarity claim."""
++"""CP-K23 source lifecycle gate; no nonlinear-stationarity claim."""
+ import csv
+ import hashlib
+ import json

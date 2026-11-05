@@ -1,0 +1,49 @@
+CP-V32 — Consolidated Method1 / Method2 tables, evo-only accuracy metrics
+2026-10-29
+
+User: run the same0.5m distance RPE for all sequences, add columns to the big
+tables for method1 and method2. User strictly requires evo metric computation.
+
+Scope: original four Hesai pairs ETH1/EIG-2/SPX-3/LEICA-2 and three Velodyne
+pairs SPX-3/EIG-2/LEICA-2. Original Qc1.0. Saved CP-V27 method1 absolute outputs
+and CP-V28 method2 causal incremental outputs. No fresh CP-V29 OFF mix-in,
+ARC failed prefixes, candidate Qc0.25/0.1, finalized outputs or new capture.
+
+Retain frozen CP-V10 common100ms grids, poses at the prism frame, reference,
+mask, original temporal support limits and gaps. Verify CP-V27/28 arrays against
+their historical output manifests. Do not fit/interpolate or tune the data anew.
+Method1 Kimera is recovered absolute backend (rounded original logging), NOT
+native incremental ROS. Method2 Kimera is native incremental, not integrated
+twice. Same output convention is not equal cadence/latency/evidence age.
+
+RPE: reproduce CP-V31 with evo1.36.3 CLI and API, delta0.5, Unit.meters,
+pairs_from_reference=True, all_pairs=False (consecutive). Split contiguous
+valid intervals BEFORE distance selection. Evo chooses every pair and computes
+translation_part and rotation_angle_deg errors. No alignment/scale/projection.
+Delta is a sampled path-distance threshold, not exact0.5m interpolation;
+save actual ranges/pair IDs. Default tolerance0.1 does not affect consecutive
+distance pairing. Short segments with no pair remain empty; no guard relaxation.
+Pool evo error arrays across segments and use evo statistics, NOT average RMSEs.
+Reuse CP-V31 ETH1 archives/error arrays/pair IDs exactly, no repeated RPE CLI.
+
+ATE columns: compute all84 entries directly with evo_ape translation_part,
+one rigid SE3 no-scale alignment over each complete frozen common mask. No
+per-segment alignment. This replaces custom-formula provenance in the NEW
+table only; compare numerically with old entries, keep original reports intact.
+Path columns: sum evo PoseTrajectory3D.path_length on each supported segment;
+no gap chords, not physical travelled distance. Reference path uses same rule.
+Table reports existing common-mask scope, not full-saved native-cadence scope.
+
+Persist native evo ZIPs, TUM inputs, CLI receipts/logs, pooled errors, pair IDs,
+version/settings, input/output SHA256, machine-readable results and REPORT.txt.
+Re-use verified CP-V31 representation helpers without editing that experiment.
+Reject mismatched masks/reference, historical hashes, nonfinite results,
+CLI/API mismatch, path/ATE reproduction discrepancy or input modification.
+Original Hesai checkpoint must pass. Tables show ATE OFF/ON, improvement,
+estimated path OFF/ON, translation RPE OFF/ON and rotation RPE OFF/ON.
+
+IE-TC shares CPT7; not independent prism GT. Seven pairs are four physical
+missions; shared Kimera OFF records are not independent repetitions. Existing
+terminal-factor omissions remain as recorded in original reports.
+No source/receiver run, build, container, model/calibration/parameter change,
+production/default promotion, deletion, commit or push. Prior evidence retained.

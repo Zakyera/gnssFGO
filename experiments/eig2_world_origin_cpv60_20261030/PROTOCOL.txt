@@ -1,0 +1,51 @@
+CP-V60: coordinate-equivalent origin translation, suspect1, 2026-10-30
+
+User authorized CP59's next isolated world-origin test. Saved CP51 update6
+first admission only, same input as CP52/58/59. Never execute archived source
+controllers. No source replay, new dataset, weight/calibration/covariance change,
+triangulator replacement, guard relaxation, production patch or suspect2 test.
+
+Intervention: pure world translation t=[3,-2,1]m, fixed in advance from CP56.
+A original graph/initial state, one ordinary native GN step and one refresh.
+B same physical graph/initial state in translated world: each pose position,
+pose-prior mean, cached landmark and cached camera position gets +t. Rotations,
+velocities, biases, body-camera calibration, observations, relative factors,
+native IMU PIM/gravity and all noise models unchanged. Relative/local pose
+perturbations are invariant under left world translation; no covariance scaling
+or numerical replacement is needed. Transform B states back before comparison.
+Keep original cache freshness and native retriangulation policy. No cache clear
+or CP58 point refinement. Four real saved-graph GN steps total, fixtures separate.
+
+Pre-solve gates:
+- exact saved initial/theta serialized byte identity; no fixed/marginal keys;
+- original A equation parity relative<1e-12, state error<1e-6 ordinary/<1e-5
+  chained refresh; exact-start refresh equation parity separately;
+- all graph types enumerated, unknown/marginal types fail closed;
+- every nonvisual native factor at corresponding fixed states: cost/equation
+  relative error<1e-8, including shifted pose prior, IMU and relative CBS;
+- smart params, measurements, keys/calibration/body functions byte-identical;
+- for fixed native A landmark/status and current camera cache, shift both
+  geometry/cache: every factor's native equations/cost invariant to relative1e-8;
+  this read-only control is NOT used to modify either solved arm;
+- preserve cache-retriangulation decisions under translation at same states;
+- original snapshots and historical inputs unchanged.
+
+Also measure native (not forced fixed-point) smart classification, landmark and
+Gaussian changes at identical physical initial/postordinary/final saved states.
+They are results under test, NOT an invariance gate to waive or silently pass.
+Record used support in each actual solve separately from post-evaluation counts.
+Native backward residual<1e-14 is a linear numerical check, not stationarity.
+
+Release and ASan/UBSan synthetic fixtures precede real graph steps: shifted pose
+prior, relative/IMU/velocity/bias invariance, smart fixed-point projection/Hessian
+invariance, missing-prior/missing-landmark translation negative controls, native
+two-step coordinate-equivalent pose-chain solves. Vendor DSOs uninstrumented.
+Independent NumPy/SciPy checks on exported transforms/state differences.
+
+Fresh private roots and exclusive outputs; preserve failed evidence. Original
+containers stopped; start only cbsms_ws_gpu for private build/test, then restore.
+No competing jobs, no deletion/push/default promotion. Final verify all protected
+inputs, original Hesai667 checkpoint, owned jobs exited and both containers stopped.
+Report state revisions and residuals, not ATE/full-trajectory claims. A coordinate
+dependence finding is not by itself the full-run zigzag's cause or a ready fix.
+Update repository ledgers, report result, stop for the next user decision.

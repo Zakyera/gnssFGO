@@ -1,0 +1,171 @@
+CP-V110 — EIG-2 regional late-revision intervention, 2026-11-04
+
+OUTCOME
+The controlled test works, but the tested change does NOT solve the fusion
+degradation. Freezing eligible late Kimera covariance improves conventional
+ONLINE ATE by only 0.8155%; freezing means worsens it 4.1054%, and freezing
+both worsens it 2.6717%. With the original ON alignment frozen, covariance-only
+whole-trajectory error is slightly worse. Local benefits redistribute error;
+they do not remove the main ON penalty. No production policy was changed.
+
+AUTHORIZATION AND SCOPE
+User approved testing the CP109 proposal. Four full saved-stream receiver-only
+replays: unchanged CP108 ON baseline, hold_cov, hold_mean, hold_both. No source,
+sensor, OFF, additional sequence, installation, build, deletion or tuning sweep.
+Each uses the saved ordered regular events.csv, not a FIFO or fresh live feed.
+Original arrivals, event order, clock, IDs, revisions and all untargeted fields
+are retained. The receiver advances using the recorded event data; replay wall
+service times are not claimed to reproduce live wall timing.
+
+Prespecified targets: 273 Kimera physical intervals with BOTH endpoints inside
+50–70 s or 275–310 s of the selected CP108 EIG-2 window. Anchor is the last
+actually accepted revision with observed arrival minus endpoint <=2.5 s;
+anchor age must be >=2.15 s. Only subsequent eligible revisions are held:
+3393 rows (1188 early, 2205 late). Both windows are changed together, not two
+independent regional experiments. GLIM data are unchanged.
+
+Same CP-K19 executable, wrapper, loaded libraries, seven-second source_wnoa,
+Qc x1, independent 100 ms supports, startup59, priors, replacement and
+seal_at_absorption rules. No central IMU/GNSS factors. CPT7 right-local full
+6x6 covariance (rotation then translation), including cross terms, is used
+without another body conversion or diagonalization. Holding covariance while
+changing means defines synthetic noise about the current mean; it is not a
+claim to transport an old posterior to a new tangent origin.
+
+CONTROL AND VERIFICATION
+Unchanged replay is byte-identical to CP108 ON for online/finalized states,
+both TUMs, summary and all 221071 archive files. All 249253 logical progress
+rows agree; only wall processing time, service time and RSS are ignored.
+This is an exact saved-input control, not a new random source realization.
+All three variants preserve logical progress, publication/support availability
+and lifecycle counts. Actual consumed payloads match the declared intervention:
+zero covariance payload error; max mean Logmap round-trip error 7.141e-14.
+All 273 target IDs and 3393 held accepted revisions are accounted in each case.
+Original pre-50 s ONLINE positions are exactly unchanged for every variant.
+48 direct EVO command archives, masks, pair counts, original baseline scores,
+and own-fit/frozen-fit regional arithmetic independently pass verification.
+
+All cases: 249253 events, 213750 belief versions, 5284 inserts, 208415
+replacements, 50 pre-initialization exclusions, zero expired/stale/duplicate,
+one unsupported-at-end version, 5189 absorbed, 95 active, zero pending at EOF.
+3545 ONLINE and 3545 fixed-lag-finalized publications; retained supports71,
+peak slots175. No omission is hidden or filled.
+
+COMMON-MASK RESULTS
+Method1, EVO1.36.3, SE3 alignment without scale, versus calibrated-prism IE-TC.
+Use the exact CP108 six-curve common100ms mask: 3532 rows, 353.0 supported s
+(99.4310% of355.02s), 349 reference-distance delta0.5m RPE pairs.
+3542 candidate queries minus10 excluded; first0.736453966s, last354.836453966s.
+The final isolated common sample is not connected across the unsupported gap.
+Reference estimated polyline on this mask:188.013683m. All variants use this
+same reference, mask and support segmentation. ATE fits each full curve once.
+
+ONLINE                 ATE(m)    path(m)     tRPE(m)   rRPE(deg)  ATE change
+unchanged ON           0.134650  198.504324   0.041280   2.018519   baseline
+hold late covariance   0.133552  198.482293   0.041249   2.018497   +0.8155%
+hold late mean         0.140178  198.528588   0.041409   2.018690   -4.1054%
+hold both              0.138248  198.499409   0.041379   2.018663   -2.6717%
+
+7s-FINALIZED            ATE(m)    path(m)     tRPE(m)   rRPE(deg)  ATE change
+unchanged ON           0.132310  187.039614   0.018698   0.663871   baseline
+hold late covariance   0.131077  187.018877   0.018596   0.663758   +0.9317%
+hold late mean         0.137858  187.047197   0.018665   0.663720   -4.1931%
+hold both              0.135766  187.021830   0.018556   0.663618   -2.6124%
+
+Positive change means lower ATE. Finalized is delayed seven-second fixed-lag
+output, NOT ONLINE or full-history smoothing. Saved CP108 OFF ONLINE ATE on
+this same mask was0.083176073m; it was not rerun. The covariance-only variant
+removes just2.6266% of ON's excess squared error above that saved OFF result.
+
+ALIGNMENT AND REGIONAL DIAGNOSTICS
+Applying the unchanged ON alignment to every variant avoids allowing an
+intervention to move all earlier poses through a newly fitted global frame.
+Whole common-mask RMS(m), baseline / hold_cov / hold_mean / hold_both:
+ONLINE:   .13465044 / .13473989 / .14667914 / .14199616
+finalized:.13230966 / .13232591 / .14452682 / .13958193
+Thus the tiny covariance-only conventional ATE gain is alignment-sensitive;
+it is not an overall gain under a fixed baseline transform.
+
+ONLINE regional RMS with frozen baseline transform(m):
+window(s)   unchanged      hold_cov       hold_mean      hold_both
+0–50        .137941        .137941        .137941        .137941
+50–70       .126583        .119698        .125624        .117845
+70–130      .132532        .134766        .102244        .104508
+170–178     .181654        .198674        .147554        .164970
+275–290     .135345        .125994        .189563        .176181
+290–310     .184143        .171751        .252085        .231291
+298–304     .213534        .200232        .283941        .262843
+310–350     .136337        .136709        .198493        .183445
+
+Covariance-only helps locally at50–70s and near300s, but the peak remains.
+At298–304s, using each curve's own global alignment instead gives baseline
+.213534 versus covariance-held .213558m: essentially no peak reduction in
+the conventional score. At170–178s frozen-fit error worsens. Mean holding has
+mixed regional effects: early downstream benefit but substantial late harm;
+the late mean updates help overall in this joint-window experiment.
+
+Gauge-free 5s relative translation diagnostics (NOT0.5m RPE), ONLINE RMS(m):
+window(s)   unchanged      hold_cov       hold_mean      hold_both
+50–70       .079965        .078142        .079414        .077379
+275–290     .113457        .111785        .113561        .111654
+298–304     .079039        .078810        .079308        .079131
+The small short-horizon changes also do not establish a cure for accumulated
+drift. Full local diagnostics and exact arithmetic are in results.json.
+
+HOW LARGE WAS THE ACTUAL INTERVENTION?
+Held/current translation-block trace ratio, across changed event rows:
+50–70s median1.15590, p951.93695, range.38954–3.6268;77.69% increase.
+275–310s median1.13010, p951.80018, range.83695–2.56254;88.25% increase.
+Freezing is NOT uniform covariance inflation: some later original matrices
+grew, so retaining the earlier matrix reduces their trace. All matrix entries
+are held together; trace alone does not characterize directional information.
+Held/current mean difference: translation median.550/.344mm and max2.935/
+3.037mm in early/late windows; rotation median.001092/.001412deg and max
+.008171/.010017deg. These small changes can accumulate through the graph.
+
+FULL-SAVED NATIVE CADENCE — DISTINCT FROM COMMON MASK
+All3545 fusion states,354.4supported s, first.5854s,last354.9854s;
+reference polyline188.125813m. Different sampling/support changes paths/RPE.
+ONLINE                 ATE(m)    path(m)     tRPE(m)   rRPE(deg)
+unchanged ON           .135921   218.426421   .048716    2.645876
+hold late covariance   .134843   218.407974   .048711    2.645848
+hold late mean         .141403   218.442049   .048718    2.645928
+hold both              .139497   218.416775   .048700    2.645899
+7s-FINALIZED            ATE(m)    path(m)     tRPE(m)   rRPE(deg)
+unchanged ON           .132332   188.528045   .017395     .645272
+hold late covariance   .131111   188.505771   .017281     .645130
+hold late mean         .137884   188.535527   .017356     .645184
+hold both              .135802   188.508603   .017234     .645035
+Estimated path is the output polyline, not physical distance travelled.
+
+INTERPRETATION AND NEXT STEP
+Do not deploy a blanket late-covariance or mean freeze based on this result.
+This rejects the sufficiency of this particular late regional intervention,
+not every covariance/correlation explanation. Earlier beliefs, other regions,
+directional weighting, accumulated source bias and prior feedback remain.
+Saved source beliefs already contain their live CBS history; changing receiver
+inputs does not remove that history or test a feedback-free source system.
+Split IMUs do not establish independence. Alpha noise is experimental, not
+certified calibration. IE-TC shares CPT7 and is not independent prism truth.
+Payload and incremental replay parity do not certify nonlinear stationarity,
+uncertainty consistency or estimator health. This is not a NEES/NIS test.
+
+Recommended next bounded work is saved-data inspection of first/young belief
+means and directional residual/weight contributions before2.5s, tracing how
+drift accumulates through the identified windows. No further intervention or
+live run is started or implied by this recommendation.
+
+ARTIFACTS AND INTEGRITY
+results.json and48EVOarchives: exact metrics; report_verification.json:
+independent score/mask checks; validation.json: actual consumed payload and
+lifecycle; intervention_audit.json: input changes; baseline_parity.json: exact
+control; regional_intervention.png: frozen-fit regional errors;
+whole_trajectory_errors.png: own-fit whole-trajectory errors. Both plots were
+visually checked. Four receiver replays completed; both containers restored
+stopped; no source job was launched. Heartbeat remains paused.
+Final terminal authority is closeout.json plus complete.json, written only
+after verifying8873protected pins, CP108383sealed outputs, CP109seal, original
+221071archivefiles, all four new archives, exact owned process exits, both
+container states and all667Hesai checkpoint copies/originals. This report is
+not a terminal integrity receipt without those passing files. Once sealed,
+never overwrite this report or other terminal evidence; later work supplements.

@@ -1,0 +1,64 @@
+CP-V4 FINAL READ-ONLY CLOSEOUT AUDIT — 2026-10-24
+================================================
+Finite campaign finished03:40:32local. Three successful full matched pairs,
+one failed prepared pair; not all available requested experiments succeeded.
+SPX-3 197.02s, EIG-2 355.02s, LEICA-2 428.75s: captures, four gates per mode,
+scoring, summary and closeout passed. All24 saved gate artifacts checked true.
+Protected unchanged counts: SPX-3 2847,EIG-2 2847,LEICA-2 2850,ARC-5 2850.
+No validation/source/scoring stages were duplicated by the follow-up.
+
+ARC-5 FAILED PREFIX (no matched metrics)
+---------------------------------------
+Requested401.29s, raw-validated3.2s quiet startup crop. OFF only; no ON source,
+receiver or controller output root exists. No full_off_control/complete.json.
+03:39:37 controller error: receiver stopped during playback.
+Root receiver log reports exactly:
+  FL4A_STREAM_FAILURE
+  Indeterminant linear system detected while working near variable
+  8646911284551356078 (Symbol: x3758).
+This is the GTSAM linear factorization failure, not an observed timeout. The
+subsequent transport Broken pipe is downstream of receiver exit. The diagnostic
+variable is not itself a root-cause attribution. Underconstraint versus numerical
+conditioning, offending factor/history and exact failed operation are NOT
+established by this log. No source/solver rerun or model repair was attempted.
+
+Last successful stream_progress row: event256459,B,arrival1731946016688725011ns,
+3801publications,newest3800,oldest3730,68active,0pending,71supports,176slots.
+Arrival is380.596093345s after selected start1731945636092631666ns.
+Saved ONLINE prefix:3801rows,1731945636.677503..1731946016.677503,span380.0s.
+Transport's earlier last snapshot: queued0,maxqueue47,outputage0.100035s,
+218317belief versions; it is not the exact final solver accounting.
+Do not call this a complete401.29s capture or score it as a full OFF/ON pair.
+No evidence here establishes processing overload as the cause.
+
+Evidence root:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc5_velodyne_full_cpv4_20261024/prepared
+  full_off_control/failed.txt
+  full_off_receiver/receiver.log
+  full_off_receiver/transport_failed.txt and transport.log
+  full_off_receiver/receiver/stream_progress.csv and online_trajectory.tum
+  full_off_receiver/events.csv,receipts.jsonl and receiver/archive/
+Campaign arc5/failed.json,status.json,closeout.json preserve failure and cleanup.
+
+OTHER OMISSIONS
+---------------
+SNOW-3: no verified quiet initialization interval; blocked.json retained.
+ETH1: local Velodyne input absent. SPX-2: Alphasense/CPT7/IE-TC absent.
+CON-1: Alphasense/IE-TC absent. No downloads or silent sensor substitutions.
+
+SAFETY AND TERMINATION
+----------------------
+Each prepared case closeout passes and records both containers exited. Final
+host read-only checks confirm cbsms_ws_gpu and ubuntu-jammy-humble-nvidia exited;
+launcher441780,campaign441787,ARCpair494891 absent, no matching owned jobs.
+Final controller log: PASS:4cases,667saved Hesai files; originals=True.
+The four-sequence Hesai checkpoint and earlier captures remain unchanged.
+Free storage16.56GiB. No deletion,build,tuning,commit,push or default promotion.
+App automation complete-frozen-eth1-live-wnoa-comparison updated PAUSED;
+saved automation.toml independently confirms PAUSED. No new campaign scheduled.
+
+Scientific limits remain: IE-TC shares CPT7; ONLINE and DELAYED fixed-lag-
+finalized trajectories are separate; mean-only peer covariance alignment is
+unchanged. Successful incremental/coverage checks do not certify nonlinear
+stationarity, calibrated/independent uncertainty, exhaustive batching parity
+or0.5x capacity. No fresh saved-journal replay was requested or run.

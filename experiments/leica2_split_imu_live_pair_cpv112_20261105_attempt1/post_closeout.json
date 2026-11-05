@@ -1,0 +1,333 @@
+{
+  "passed": true,
+  "finished": "2026-11-05T03:17:51.689245+02:00",
+  "experiment_passed": true,
+  "protected_files": 273236,
+  "sealed_outputs_verified": 647,
+  "containers": "/cbsms_ws_gpu exited\n/ubuntu-jammy-humble-nvidia exited\n",
+  "hesai": "PASS: 4 cases, 667 saved files; originals=True\n",
+  "owned_jobs": [
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105_attempt1/start.json",
+      "pid": 86075,
+      "proc_start": "1938946",
+      "args": null,
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105_attempt1/container_playback_window_process.json",
+      "pid": 86710,
+      "proc_start": "1942845",
+      "args": [
+        "docker",
+        "exec",
+        "cbsms_ws_gpu",
+        "bash",
+        "-lc",
+        "source /opt/ros/noetic/setup.bash && python3 -B /workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/playback_window.py --noetic"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105_attempt1/capture_on_process.json",
+      "pid": 101389,
+      "proc_start": "2173389",
+      "args": [
+        "python3",
+        "-B",
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/run_case_on.py",
+        "full",
+        "on"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105_attempt1/frame_on_process.json",
+      "pid": 114633,
+      "proc_start": "2402633",
+      "args": [
+        "/home/yeranis/.local/share/pipx/venvs/evo/bin/python",
+        "-B",
+        "/home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105_attempt1/frame_on.py",
+        "on"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105_attempt1/frame_off_process.json",
+      "pid": 101326,
+      "proc_start": "2172987",
+      "args": [
+        "/home/yeranis/.local/share/pipx/venvs/evo/bin/python",
+        "-B",
+        "/home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105_attempt1/frame_off.py",
+        "off"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105_attempt1/validate_off_receiver_process.json",
+      "pid": 100936,
+      "proc_start": "2168286",
+      "args": [
+        "/home/yeranis/.local/share/pipx/venvs/evo/bin/python",
+        "-B",
+        "/home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105_attempt1/validate_case.py",
+        "check",
+        "off"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105_attempt1/validate_on_source_process.json",
+      "pid": 114215,
+      "proc_start": "2395929",
+      "args": [
+        "/home/yeranis/.local/share/pipx/venvs/evo/bin/python",
+        "-B",
+        "/home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105_attempt1/validate_source.py",
+        "on"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105_attempt1/validate_on_payload_route_process.json",
+      "pid": 114239,
+      "proc_start": "2396229",
+      "args": [
+        "/home/yeranis/.local/share/pipx/venvs/evo/bin/python",
+        "-B",
+        "/home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105_attempt1/validate_local.py",
+        "on"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105_attempt1/validate_off_payload_route_process.json",
+      "pid": 100840,
+      "proc_start": "2166986",
+      "args": [
+        "/home/yeranis/.local/share/pipx/venvs/evo/bin/python",
+        "-B",
+        "/home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105_attempt1/validate_local.py",
+        "off"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105_attempt1/container_adapter_import_process.json",
+      "pid": 86682,
+      "proc_start": "1942745",
+      "args": [
+        "docker",
+        "exec",
+        "cbsms_ws_gpu",
+        "python3",
+        "-B",
+        "/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/transport_tools/qualify_runtime.py"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105_attempt1/evaluate_process.json",
+      "pid": 115007,
+      "proc_start": "2407740",
+      "args": [
+        "/home/yeranis/.local/share/pipx/venvs/evo/bin/python",
+        "-B",
+        "/home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105_attempt1/evaluate.py"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105_attempt1/validate_on_receiver_process.json",
+      "pid": 114441,
+      "proc_start": "2397529",
+      "args": [
+        "/home/yeranis/.local/share/pipx/venvs/evo/bin/python",
+        "-B",
+        "/home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105_attempt1/validate_case.py",
+        "check",
+        "on"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105_attempt1/capture_off_process.json",
+      "pid": 86777,
+      "proc_start": "1943545",
+      "args": [
+        "python3",
+        "-B",
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/run_case_on.py",
+        "full",
+        "off"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105_attempt1/validate_off_source_process.json",
+      "pid": 100815,
+      "proc_start": "2166686",
+      "args": [
+        "/home/yeranis/.local/share/pipx/venvs/evo/bin/python",
+        "-B",
+        "/home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105_attempt1/validate_source.py",
+        "off"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105_attempt1/verify_report_process.json",
+      "pid": 115268,
+      "proc_start": "2412242",
+      "args": [
+        "/home/yeranis/.local/share/pipx/venvs/evo/bin/python",
+        "-B",
+        "/home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105_attempt1/verify_report.py"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105_attempt1/restore_containers_process.json",
+      "pid": 114724,
+      "proc_start": "2403140",
+      "args": [
+        "docker",
+        "stop",
+        "cbsms_ws_gpu",
+        "ubuntu-jammy-humble-nvidia"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105_attempt1/start_containers_process.json",
+      "pid": 86311,
+      "proc_start": "1942335",
+      "args": [
+        "docker",
+        "start",
+        "cbsms_ws_gpu",
+        "ubuntu-jammy-humble-nvidia"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/full_off_control/master_process.json",
+      "pid": 87194,
+      "proc_start": "1947037",
+      "args": [
+        "docker",
+        "exec",
+        "cbsms_ws_gpu",
+        "setsid",
+        "--wait",
+        "bash",
+        "-lc",
+        "source /opt/ros/noetic/setup.bash; python3 -c 'import os,json;from pathlib import Path;p=os.getppid();Path('\"'\"'/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/full_off_control/master.identity.json'\"'\"').write_text(json.dumps(dict(pid=p,proc_start=Path(\"/proc/%d/stat\"%p).read_text().split()[21])))'; exec roscore -p 11653"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/full_off_control/source_process.json",
+      "pid": 87734,
+      "proc_start": "1947280",
+      "args": [
+        "docker",
+        "exec",
+        "cbsms_ws_gpu",
+        "setsid",
+        "--wait",
+        "bash",
+        "-lc",
+        "export CBSMS_RUN_NAME=full_off_source CBSMS_CBS_ENABLE=false CBSMS_BAG_DURATION_SEC=428.75; source /workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/off/source.env; python3 -c 'import os,json;from pathlib import Path;p=os.getppid();Path('\"'\"'/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/full_off_control/source.identity.json'\"'\"').write_text(json.dumps(dict(pid=p,proc_start=Path(\"/proc/%d/stat\"%p).read_text().split()[21])))'; exec bash /workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/off/source_runner_on.sh"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/full_off_control/receiver_process.json",
+      "pid": 87516,
+      "proc_start": "1947179",
+      "args": [
+        "python3",
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/transport_tools/launch_grandtour_live_receiver.py",
+        "--config",
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/full_off.json",
+        "--source-run",
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/full_off_source",
+        "--out",
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/full_off_receiver",
+        "--start"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/full_on_control/master_process.json",
+      "pid": 101502,
+      "proc_start": "2176553",
+      "args": [
+        "docker",
+        "exec",
+        "cbsms_ws_gpu",
+        "setsid",
+        "--wait",
+        "bash",
+        "-lc",
+        "source /opt/ros/noetic/setup.bash; python3 -c 'import os,json;from pathlib import Path;p=os.getppid();Path('\"'\"'/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/full_on_control/master.identity.json'\"'\"').write_text(json.dumps(dict(pid=p,proc_start=Path(\"/proc/%d/stat\"%p).read_text().split()[21])))'; exec roscore -p 11654"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/full_on_control/source_process.json",
+      "pid": 102041,
+      "proc_start": "2176769",
+      "args": [
+        "docker",
+        "exec",
+        "cbsms_ws_gpu",
+        "setsid",
+        "--wait",
+        "bash",
+        "-lc",
+        "export CBSMS_RUN_NAME=full_on_source CBSMS_CBS_ENABLE=true CBSMS_BAG_DURATION_SEC=428.75; source /workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/on/source.env; python3 -c 'import os,json;from pathlib import Path;p=os.getppid();Path('\"'\"'/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/full_on_control/source.identity.json'\"'\"').write_text(json.dumps(dict(pid=p,proc_start=Path(\"/proc/%d/stat\"%p).read_text().split()[21])))'; exec bash /workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/on/source_runner_on.sh"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/full_on_control/receiver_process.json",
+      "pid": 101823,
+      "proc_start": "2176688",
+      "args": [
+        "python3",
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/transport_tools/launch_grandtour_live_receiver.py",
+        "--config",
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/full_on.json",
+        "--source-run",
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/full_on_source",
+        "--out",
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/full_on_receiver",
+        "--start"
+      ],
+      "exited": true
+    },
+    {
+      "receipt": "/home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105_attempt1/launch.json",
+      "pid": 86073,
+      "proc_start": "1938945",
+      "args": [
+        "systemd-inhibit",
+        "--what=sleep",
+        "--mode=block",
+        "--who=LEICA2-CPV112-A1",
+        "--why=User-authorized LEICA-2 split-IMU full OFF/ON with fusion",
+        "python3",
+        "-B",
+        "/home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105_attempt1/controller.py"
+      ],
+      "exited": true
+    }
+  ],
+  "all_owned_jobs_exited": true,
+  "source_wrappers_started": 2,
+  "post_audit_source_runs": 0
+}

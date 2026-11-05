@@ -1,0 +1,6 @@
+First diagnostic continuation (input_diagnostics.py) passed calibration/quiet
+and IMU checks but failed reference coverage at line159. The first quiet grid
+candidate precedes the first IE-TC record. This is an admission-window issue,
+not a running estimator failure. No bag_preflight.json or admission was issued.
+input_diagnostics_v2.py checks only candidate quiet starts after all leading
+sensor/reference records; it remains explicitly NOT ADMITTED and passed=false.

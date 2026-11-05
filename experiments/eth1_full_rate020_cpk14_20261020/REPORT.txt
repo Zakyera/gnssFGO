@@ -1,0 +1,68 @@
+CP-K14 matched full ETH1 OFF/ON at0.20x — STOPPED/FAILED OFF,2026-10-20.
+Explicit user "proceed" after proposed0.20x test. CP-K13 failure preserved.
+Only playback rate and fresh identities change; seven-second lag and strict
+late-revision check unchanged. No claim0.20x is sufficient before validation.
+OFF then ON only after four gates. No estimator rebuild or tuning.
+See PROTOCOL.txt for frozen settings and full346.32s selected-topic window.
+Both containers were stopped and no owned jobs/port11462 listener existed
+before preparation; both existing containers started for authorized work.
+H=/home/yeranis/repos/gnssFGO/experiments/eth1_full_rate020_cpk14_20261020
+P=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_full_rate020_cpk14_20261020/prepared
+V=/home/yeranis/results/gnssfgo_eth1_full_rate020_cpk14_20261020
+Preparation PASS:2026protected entries;identical binaries/profiles/model,
+coverage checks and scoring helpers. Reviewed harness.diff: only playback,
+rate-based deadline,labels and fresh output identities changed.39.1GiB free.
+OFF launched ONCE around14:42 local Cyprus time. Never duplicate this launch.
+Effective check PASS before playback:rate0.20,duration346.32,
+CPK9_PRIOR_REFRESH=1,FL4Q_ENABLE=0,FL4M_RETIREMENT=remove,
+GLIM revision covariance native_local. At14:43~6.8bagseconds,61ONLINE poses,
+both sources advancing,queue0/max19,no failure marker. This is startup only,
+not a complete/full-speed admission or accuracy result.
+Experiment-only five-minute follow-up reactivated with CP-K14 paths/settings;
+it must stop on failure/completion. Four OFF validation gates before ON.
+No completed result. No tuning or estimator/model edit.
+15:05 local progress:~275.6/346.32bagseconds,2749ONLINE poses,
+165575belief versions (GLIM131925/Kimera33650),queue0/max49.
+Owned controller,source nodes,player and receiver remain alive;no completion
+or failure marker. Passed CP-K13's136.449s stop point without that failure.
+This is partial progress only;full capture/four gates still required before ON.
+
+FAILURE CLOSEOUT (15:13+ local inspection;runtime stopped~15:08):
+OFF stopped307.228463638s from selected-input start,not346.32s.
+Controller:receiver stopped during playback.
+Receiver:FL4A_STREAM_FAILURE revision after absorption.
+ON was never launched. No full validation,repeat,scoring or automatic retry.
+
+Unlike CP-K13's GLIM revision,this offending version is KIMERA:
+event214557 (receipt index214556),edge1459->1460,revision24,sourceupdate1484.
+Endpoints1727775303953732500..1727775304153731600ns;
+arrival1727775315083859947ns;first-endpoint age11.130127447s.
+Revision23 was absorbed atcommit212161,record time1727775310983528000ns.
+Oldest retained support2995 is1727775308083475000ns;the required first
+endpoint is4.1297425s earlier. The guard correctly refuses replacement after
+the old factor has entered the marginal prior; it does not silently reinsert it.
+This is a violated revision-retention contract,not proof of a covariance fault.
+
+The Kimera source log independently contains
+KIMERA_CBS_REVISION_EDGE_ROW,1484,k,1459,1460,...,24,active
+at wall12:08:17.093773UTC. Its adapter receipt has source_record=null and no
+captured producing-update revision0 endpoint. The read-only failure helper
+initially assumed GLIM-style timing fields; it was corrected to preserve
+missing fields as null. No protected harness or experiment was changed.
+Do NOT assign the11.13s to CPU,buffering,adapter latency or window duration:
+this stop-localization evidence alone does not separate those contributions.
+
+Last sampled receiverqueue0,max49;lastcommitted71supports/174slots,
+pending0,67active source IDs;last event service6.780ms. Not queue overflow.
+Partial saved nativeGLIM3067poses/306.599645s,nativeKimera1485/306.898282s,
+fusionONLINE3066/306.5s. These are failed-prefix outputs,not the requested
+full sequence or a matched OFF/ON accuracy result.
+
+failure_evidence.json records exact event/absorption/coverage and verifies all
+2026protected hashes unchanged. Slower0.20x passed the previous136s stop but
+does NOT certify the unchanged7s contract for the complete sequence.
+No tuning,model edits,builds,guard relaxation,push,deletion or new run.
+Owned controller/source/receiver jobs exited;only baseline container services
+remained before restoring both containers to stopped. Follow-up PAUSED.
+Failure closeout is separate from the deliberately unrun all-success
+final_checks.py. Preserve evidence; any further experiment requires direction.

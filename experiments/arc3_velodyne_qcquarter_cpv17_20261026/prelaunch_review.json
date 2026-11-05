@@ -1,0 +1,95 @@
+{
+  "passed": true,
+  "geometry_tests": {
+    "passed": true,
+    "identity_and_global_transform": true,
+    "known_yaw_rate": true,
+    "gap_exclusion": true,
+    "exact_samples": true
+  },
+  "identity_gap_score": {
+    "rows": 486,
+    "start_s": 0.0,
+    "end_s": 50.0,
+    "ATE_RMSE_m": 8.610730774143109e-17,
+    "translation_RPE_1s_RMSE_m": 0.0,
+    "rotation_RPE_1s_RMSE_deg": 0.0,
+    "path_length_prism_m": 10.207380557406008,
+    "reference_path_length_prism_m": 10.207380557406008,
+    "rpe_pairs": 466,
+    "horizons": {
+      "1": {
+        "pairs": 466,
+        "translation_RMSE_m": 0.0,
+        "rotation_RMSE_deg": 0.0
+      },
+      "10": {
+        "pairs": 286,
+        "translation_RMSE_m": 0.0,
+        "rotation_RMSE_deg": 0.0
+      },
+      "20": {
+        "pairs": 86,
+        "translation_RMSE_m": 0.0,
+        "rotation_RMSE_deg": 0.0
+      }
+    },
+    "displacement_100ms_vector_error_m": {
+      "n": 484,
+      "mean": 1.051581683350408e-17,
+      "rms": 1.0516524576646572e-17,
+      "median": 1.0551917728927792e-17,
+      "p95": 1.0908510686076831e-17,
+      "max": 1.0971430020109544e-17
+    },
+    "alignment_crosscheck_m": 1.3359942598464197e-15,
+    "direct_RPE_check_max": 2.5490874450039063e-15
+  },
+  "input_negative_tests": {
+    "passed": true,
+    "raw_gap_accepted": 1,
+    "injected_losses_duplicates_shift_nonfinite_tail_rejected": 5
+  },
+  "raw_inventory_test": {
+    "passed": true,
+    "available_raw_scans": 7028,
+    "published_scans": 7027,
+    "first_raw_index": 1,
+    "last_raw_index": 7027,
+    "unexpected_interior_scan_losses": 0,
+    "max_timestamp_error_s": 0.0,
+    "recorded_gaps_over_1s": 6,
+    "contract": "Every available scan between first and last publication, no extra interior loss; raw gaps retained"
+  },
+  "protected_files": 2874,
+  "containers": [
+    "exited",
+    "exited"
+  ],
+  "qc_multiplier_original": 0.25,
+  "receiver_model_delta": "CP-V15 verified one-line Qc*0.25, unchanged initial priors",
+  "primary_products": [
+    "GLIM first-published CSV",
+    "Kimera native ROS",
+    "Fusion ONLINE"
+  ],
+  "free_bytes": 32550273024,
+  "pair_forecast_bytes": 15032385536,
+  "reserve_bytes": 8589934592,
+  "checkpoint_stdout": "PASS: 4 cases, 667 saved files; originals=True\n",
+  "window": {
+    "selected_topic_epoch_ns": 1731934116840035611,
+    "start_ns": 1731934117040035611,
+    "end_ns": 1731934843420035611,
+    "bag_offset_s": 0.2,
+    "duration_s": 726.38,
+    "seed_clock_seconds": 1731934116,
+    "last_included_scan_ns": 1731934843404066000,
+    "last_available_scan_ns": 1731934845904344000
+  },
+  "setup_notes": [
+    "First preparation command denied socket by sandbox before any outputs; authorized elevated preflight then passed",
+    "Synthetic test driver corrected single-axis scipy angle shape; production geometry unchanged",
+    "Admission v1 terminal IMU bracket failure preserved; v2 adds10ms boundary, no source retry"
+  ]
+}

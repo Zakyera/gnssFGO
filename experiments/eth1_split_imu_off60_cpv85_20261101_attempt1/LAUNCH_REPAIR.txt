@@ -1,0 +1,11 @@
+Fresh launch-only attempt; no original sensor playback occurred.
+Exact prior failure: current GLIM shared_native provider accepts only
+active_window_temporary or CP82-opt-in inject_persistent, not observe_only.
+Evidence: CP82 cbs_bridge.cpp:687-691 and original estimators.log:188-205.
+Use supported inject_persistent selector; BOTH receive flags remain FALSE.
+This restores the intended frozen OFF protocol, not an estimator/model repair.
+Only selector/expected selector and unique output paths/port11587 change.
+All profiles, binaries, author calibration, timing, noise, weights and guards
+remain byte-identical. No automatic retries on sensor/numerical/coverage failure.
+Old launch failed before recording/playback; its logs and closeout are pinned.
+This attempt, if admitted, is the first processing of the authorized60s inputs.

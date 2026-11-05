@@ -1,0 +1,185 @@
+CP-K1 — Kimera OFF update531: factor-level objective/derivative diagnosis
+2026-10-19. DIAGNOSIS COMPLETE; production repair NOT implemented/validated.
+Not a completed full ETH1 comparison. No follow-up run automatically authorized.
+
+Scope and reused evidence
+-------------------------
+The authorized CP-R7 full OFF run stopped at the same Kimera update531 already
+seen in FL4t/FL4u. No ON run is authorized until the OFF blocker is resolved.
+FL4u already reproduced exactly531 native outputs and showed: ordinary step
+raises cost2155.442364067741 ->2156.9011084293734; fallback returns unchanged
+after one iteration at lambda0.1; wrapper rejects absent sufficient decrease.
+It is NOT a ten-iteration exhaustion or a receiver throughput failure.
+FL4u also found analytic directional slope-.0012754591933174762 versus
+numerical slope about-.00020330227. A ratio near cancellation is not by itself
+a percentage error in every factor or proof of a wrong camera Jacobian.
+
+New bounded action
+------------------
+No reusable failed nonlinear graph existed in retained artifacts. One private
+logging-only Kimera OFF prefix (max111s at0.10x) collects factor-family and slot
+derivatives after the original decision has failed; original exception remains.
+No GLIM, fusion, CBS-ON, covariance/threshold/cap/solver tuning, full-sequence
+rerun, production edit or automatic retry. Same front stereo/CPT7/25-state
+profile; native source IMU path, classic temporary CBS with receive=false.
+All probes run on independent factor clones; none commits an estimator state.
+
+Pre-capture validation
+----------------------
+Original FL4q focused Release tests pass. New failed-stationary/nonmutation
+fixture passes. Correct and deliberately incorrect Jacobian localization
+fixtures pass Release and ASan/UBSan. The stationary probe passes ASan/UBSan
+too. Linked libraries are not fully sanitizer-instrumented; leaks not checked.
+All1863 protected files unchanged;43 candidate inputs/binaries frozen before
+capture. Builds are private, not installed into devel or production.
+
+Read-only analysis tools
+------------------------
+factor_derivatives.txt: original-cache factor costs, analytic directional
+slopes, central differences at alpha .001/.01/.1, triangulation statuses, and
+forced-retriangulation controls for smart factors. Snapshot retains complete
+visual measurements/calibrations/body extrinsic, cached landmarks/camera
+poses, evaluated poses, direction, full model H/g/d for follow-up without
+another bag replay. This is not a full nonlinear graph checkpoint.
+
+smart_snapshot.cpp rebuilds those visual factors only, never an estimator.
+It separates the fixed-point slope from the Schur-eliminated-landmark slope.
+If r=F dx+E dl-b, then g_fixed=-F^T b and
+g_schur=-F^T b+F^T E(E^T E)^-1 E^T b. If the current landmark is not at its
+conditional reprojection optimum, E^T b need not vanish. A cached-point cost
+and an eliminated-point linear model can then have different derivatives.
+This formula does not by itself identify the real run's cause.
+
+A noisy two-pose synthetic fixture verifies analyzer accounting:
+fixed-point numerical slope .032887914327761614;
+fixed-point analytic slope .032887914327481393;
+smart Schur slope .030746042279095987;
+Schur correction -.002141872048385395.
+No source factor or cache threshold changed in this fixture or the capture.
+
+Actual capture and exact reproduction
+-------------------------------------
+Exactly one capture; wall1102.402332s to the known exception, with0.10x playback.
+All531 native ROS odometry messages are BYTE-IDENTICAL to FL4u; all objective
+rows and non-timing acceptance columns identical. Native output spans
+108.99939445s; no output531 committed. The complete original failed-decision
+probe is identical too, including costs, gradient, lambda and stopping branch.
+This independently reproduces the pre-CP-I1/CP-I3 failure; the new GLIM LOCAL
+covariance work cannot explain this Kimera-only CBS-OFF stop.
+
+Factor-family localization at update531
+---------------------------------------
+Same direction d and alpha=.01 in every row; units are cost per alpha, NOT
+covariance/ATE/information weights. Signs describe this direction only.
+
+family         count  analytic slope       central-difference slope   gap
+bias-between      26  +.000349842246420     +.000349842246412          -7.89e-15
+IMU               26  -.000716987247788     -.000716987172620          +7.52e-11
+marginal prior     1  -.000369943415932     -.000369943450096          -3.42e-11
+smart stereo     687  -.000538370776018     +.000533786132935          +.001072156909
+
+Essentially the entire observed derivative gap is in the visual smart factors,
+NOT the IMU/bias Jacobians or original-chart marginal prior in this check.
+The visual contribution even has opposite signs in the model and cost probe.
+All three numerical step sizes agree. No triangulation validity changes occur
+across these probes; this is not a point switching from valid to invalid here.
+Of687 stored smart factors,173 are valid and514 inactive/invalid at this state.
+This count alone is not a tracking-health or failure-causation conclusion.
+
+Exact mechanism, not just correlation
+-------------------------------------
+Reconstructed all687 smart factors from saved measurements/calibration/body
+extrinsic/poses/cache: original cost, Schur slope and cached numerical slope
+reproduced EXACTLY, maximum difference0 in all three comparisons.
+
+For each valid visual factor, compute the uneliminated F,E,b and separate the
+fixed-landmark slope from the Schur correction in the equation above. Across
+all smart factors:
+  actual cached-cost numerical slope: +.0005337861329349037
+  fixed-point analytic slope:         +.0005337861394560876
+  Schur landmark correction:          -.0010721569154739632
+  resulting smart-factor slope:       -.0005383707760178759
+Maximum per-factor fixed-point derivative discrepancy:1.9436005e-11.
+Maximum Schur decomposition discrepancy:2.1684043e-19.
+Thus the camera/body projection derivative is consistent with the measured
+held-point cost. The discrepancy is precisely the eliminated landmark term,
+not an unexplained finite-difference error or a generic claim of wrong GTSAM.
+
+Largest factor slot109497,5poses: Schur slope-.000265636476456 versus
+cached-cost slope+.000418968657001. Landmark gradient norm9.26573755 is not
+zero. Slots109497/109470/109467 account for most of the net discrepancy.
+
+Code path
+---------
+W=/home/yeranis/repos/V4RL/cbs_gtsam4.3
+- W/src/gtsam/gtsam_unstable/slam/SmartStereoProjectionFactor.h:126-158:
+  reuse cached landmark while camera pose changes stay within threshold.
+- Same file:167-193: triangulation;203-243: linearization Schur-eliminates
+  the landmark;420-440: error evaluates reprojection at the selected landmark.
+- W/src/gtsam/gtsam/slam/SmartFactorBase.h:320-330,381-387: F,E,b and whitening.
+- R/VioBackend.cpp:6403-6412: retriangulationThreshold=.001 from profile,
+  embedded landmark refinement explicitly disabled (enableEPI=false),HESSIAN.
+- R/CurrentChartFallback.h:175-221: strict current-chart objective check,
+  ordinary proposal rejected, LM no-change break, then strict-decrease throw.
+- W/src/gtsam/gtsam/nonlinear/LevenbergMarquardtOptimizer.cpp:227-283:
+  small trial cost change can terminate lambda search without changing values.
+
+Why simply refreshing the cache is NOT the solution
+--------------------------------------------------
+Read-only forced retriangulation on the same saved factors gives:
+  visual cost31.012446876690 versus cached31.012932770236;
+  fresh Schur slope-.000538370175321;
+  fresh numerical slope-.000648981272282;
+  residual mismatch-.000110611096961.
+The biggest factor still has opposite slope signs after fresh triangulation.
+The triangulated point need not minimize the exact stereo reprojection
+objective. Therefore changing only the cache threshold or forcing a refresh
+does not establish a consistent nonlinear objective/gradient contract.
+No such change was installed. Enabling EPI blindly is also not certified:
+the stereo triangulator expands observations into monocular measurements,
+whereas the reported stereo residual has its own three-coordinate structure.
+
+Engineering conclusion and bounded repair boundary
+--------------------------------------------------
+The immediate stop is the custom FL4q strict-decrease fallback encountering
+no accepted decrease. The specific obstacle to certifying convergence is now
+localized: its nonlinear acceptance check and the native smart-factor reduced
+linear model do not use the same treatment of nonstationary landmarks. This
+is an integration/acceptance-contract issue, not evidence that the new GLIM
+covariance, WNOA receiver, CPU load or iteration cap caused the stop.
+
+The next defensible candidate is isolated consistent visual handling INSIDE
+the fallback: use the SAME stereo residual/noise and treat landmarks as
+nuisance variables consistently in both trial cost and Schur linearization.
+One possible implementation is conditional landmark minimization (or an
+equivalent explicit-landmark fallback), not freezing landmarks while claiming
+a marginalized derivative. Preserve native fast path, priors, factor IDs,
+covariances and transaction rollback. First prove derivative/decrease behavior
+on the retained factors, including the dominant slots; then a bounded prefix
+is needed to establish whole-update recovery. Do not assume that solving this
+contract alone guarantees full346s success or better ATE.
+
+That is a wider change than logging or a safe one-line stopping repair. It
+has NOT been silently implemented/promoted in this task. No arbitrary relaxed
+tolerance, unchanged-state acceptance, increased cap, source retuning or full
+OFF/ON retry. Precise diagnosis complete; solver repair still remains.
+
+Final safety/validation
+-----------------------
+All1863 protected and43 frozen candidate files unchanged after capture.
+Focused Release/ASan/UBSan tests passed as above; saved-factor reconstruction
+and Schur-accounting fixture passed. Production defaults unchanged. All owned
+processes exited; source container restored stopped, Humble remained stopped.
+CP-R7 heartbeat remains PAUSED; no automatic experiment resumed.
+gnssFGO HEAD668d4c788983722f4acad37d1495c15d03a27e18 unchanged; recovery branch
+engineering/cpk1-kimera-failed-factor-20261019 created as reference, not checked
+out. No commits/push; existing dirty work preserved, no clean-worktree claim.
+
+Paths
+-----
+H=this directory.
+R=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/kimera_failed_factor_cpk1_20261019
+U=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/fixed_lag_stopping_fl4u_20261017
+Protocol:H/PROTOCOL.txt; source-only instrumentation diff:H/instrumentation.diff.
+Frozen inputs:R/pre_capture_receipt.json. Capture:R/off_capture.
+Separate snapshot analyzer:R/analysis. All dataset/binary artifacts stay local.

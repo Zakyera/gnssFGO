@@ -1,0 +1,11 @@
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/kimera_failed_factor_cpk1_20261019/kimera_vio_ros.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/kimera_incremental_control_cpk4_20261019/kimera_vio_ros.launch
+@@ -450,7 +450,7 @@
+     <param name="external_odometry_rosbag_topic"
+            value="$(arg external_odom_topic)"
+            unless="$(arg online)"/>
+-    <env name="FL4Q_ENABLE" value="1"/>
++    <env name="FL4Q_ENABLE" value="0"/>
+     <env name="FL4Q_LOG" value="$(env ROS_LOG_DIR)/../acceptance.csv"/>
+     <env name="FL4M_RETIREMENT" value="remove"/>
+     <env name="FL4M_AUDIT" value="$(env ROS_LOG_DIR)/../objective.csv"/>

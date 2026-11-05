@@ -1,0 +1,19 @@
+[
+  "docker",
+  "exec",
+  "cbsms_ws_gpu",
+  "c++",
+  "-std=c++17",
+  "-O2",
+  "-DNDEBUG",
+  "-I/workspace/cbs_gtsam4.3/devel/include",
+  "-I/usr/include/eigen3",
+  "-I/workspace/cbs_gtsam4.3/src/Kimera-VIO-ROS/include",
+  "/workspace/cbs_gtsam4.3/runs/eig2_frame_extrinsic_cpv55_20261030/FrameTest.cpp",
+  "/workspace/cbs_gtsam4.3/src/Kimera-VIO-ROS/src/CbsRelativeFrameConversion.cpp",
+  "-L/workspace/cbs_gtsam4.3/devel/lib",
+  "-Wl,-rpath,/workspace/cbs_gtsam4.3/devel/lib",
+  "-lgtsam",
+  "-o",
+  "/workspace/cbs_gtsam4.3/runs/eig2_frame_extrinsic_cpv55_20261030/release"
+]

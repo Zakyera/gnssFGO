@@ -1,0 +1,17 @@
+CP69 initial replay preflight failure; preserved, no sensor playback.
+build_initial Release, sanitizer, exact remove parity and backend gates all PASS.
+replay_attempt/freeze PASS:292 accepted aligned rows joined to exact wire data.
+remove_capture stopped before rosbag record/play/started.json, no native poses.
+
+Exact cause in retained roslaunch log, node environment:
+FL4M_RETIREMENT=remove
+FL4M_AUDIT=.../replay/remove_capture/ros_logs/../objective.csv
+Harness expected literal .../replay/remove_capture/objective.csv.
+They resolve to the SAME target. This is a harness path-string assertion, not
+an estimator failure or setting mismatch. All jobs exited, containers restored.
+
+Fresh explicit replay_pathcheck and replay_attempt_pathcheck preserve old roots.
+Only check repaired to compare Path.resolve(), plus observed preflight receipt
+saved before checks. Same private binaries, launch/profile/weights/guards and
+same292 input payloads; aligned_inputs.bag and frozen_inputs.json copied byte
+identically, NOT regenerated. No failed numerical/model run retried.

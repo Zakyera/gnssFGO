@@ -1,0 +1,182 @@
+CP-R3 — EIG-2 60-second CBS-ON with cached all-LOCAL covariance
+2026-10-19 | PASSED bounded capture, provenance, conservation and replay gates
+============================================================================
+
+Outcome and scope
+-----------------
+One explicitly authorized fresh CBS-ON capture completed. Original GLIM,
+original Kimera ROS odometry and gnssFGO ran concurrently at 0.10x playback.
+All595 ONLINE receiver poses were published while the sources were running.
+The later saved-journal replay is a determinism check, not the source of the
+live claim. This is NOT a matched60s OFF/ON comparison: CP-R2 has only30s OFF
+with this cached all-LOCAL policy. Older mixed-policy OFF is not substituted.
+No retry, other sequence, tuning, new build, default promotion or Git push.
+
+Run identity / frozen settings
+------------------------------
+EIG-2 mission2024-11-03-13-59-54; bag offset5.7s; duration60s; drain25s.
+Session eig2_cpr3_live60_on_20261019, ROS port11449. Headless/inspectors off.
+Hesai /boxi/hesai/points, shared CPT7 /boxi/cpt7/imu, Alphasense front stereo.
+GLIM5s lag; Kimera25states, native IMU path (support override unset).
+Classic bidirectional active_window_temporary CBS, removal before elimination;
+source-to-source live_revision=false; native-IMU mean alignment; .20s horizon,
+one pair/update, stride1, delay0; full6x6 schur_relative_between, Gaussian,
+scales1. Corrected MAIN means remain unchanged; every first/revised covariance
+uses LOCAL native information. No MAIN fallback, health weighting or Huber.
+
+Receiver: unchanged FL4e7s fixed-lag WNOA, independent100ms support clock,
+stable-ID mean AND covariance replacement. No central IMU factor or GNSS.
+X pose/V world velocity/W body angular velocity; no acceleration/bias state.
+Qc diagonal variance [.00375,.00375,.00375,.015,.015,.015]. Initial X identity,
+V/W zero, prior sigmas X1e-5,V10,W3.59startup IMU samples for timing setup.
+CPU2/OMP1, E2 caches off. No incremental stationarity certificate is claimed.
+
+Verified actual loaded private binaries (unchanged from CP-R2):
+CP-I3 release_v2 libgtsam_points.so.1.2.1:
+  3f23e6115e34acc5a2f2b965b15bd4c651897c889a6c38a0a52cdb3855c0ceb7
+CP-I1 libglim_ros.so:
+  42df73c172232a612da965bf43ead8ec454caf08434b84e2da5de74d26cdb79f
+FL4q Kimera:
+  6ce24c266b0f0e2561f0c05de2a661a72d5a4d9335df7c3cdfa0a4c77af9b4ae
+FL4e candidate_live:
+  53c96a2b7a762800cf2291166dc78520269098684411de641b52bee6a54dc5c9
+GLIM_SHARED_NATIVE_PROVIDER=shared_native;
+GLIM_REVISION_COVARIANCE_POLICY=native_local. Cached provider precedes the
+unchanged bridge/dependencies on LD_LIBRARY_PATH. FL4Q_ENABLE=1,
+FL4M_RETIREMENT=remove; existing maximum10 fallback iterations unchanged.
+
+Coverage and reference
+----------------------
+6000IMU samples span59.990049s. GLIM592poses span59.099527s, starts.711013s
+after first IMU and ends.179509s before last IMU. Kimera298poses span59.599472s,
+startup.194562s/tail.196015s. Fusion595poses span59.400000s. Coverage gates pass;
+no extrapolation to fabricate the small startup/tail gaps.
+
+Reference: dataset IE-TC GNSS/INS /boxi/inertial_explorer/tc/odometry from
+2024-11-03-13-59-54_cpt7_ie_tc.bag, SHA256:
+cabd6722696c73c86ed219495a5a15e78c82e6452fb90c184f81d38fa557c1af.
+It shares CPT7 IMU with the estimators: NOT an independent prism reference.
+Every saved output row is reference-bracketed. No11s prism subset is used.
+Unchanged evaluator: known prism lever arm, per-path rigid SE(3) no-scale ATE,
+1s translation/rotation RPE in prism frame. Full path below uses that same
+lever-arm point; do not mix it with raw CPT7-origin path length.
+
+Full saved trajectory evaluation (all output rows within the60s capture)
+-----------------------------------------------------------------------
+Output                 ATE m      tRPE1s m   rRPE1s deg  Path m     Span s
+Original GLIM          .025336686 .015946331 .709757062  35.066057  59.099527
+Original Kimera ROS    .138204841 .027500267 .998182494  34.169923  59.599472
+Fused ONLINE           .060147653 .042979484 2.877555297 40.941998  59.400000
+Fused DELAYED finalized.045736454 .016195068 .761406832  34.876168  59.400000
+
+The finalized row contains delayed fixed-lag revisions, NOT online/as-played
+positions. Full-saved RPE pairs: GLIM580, Kimera585, fusion583 each. RPE uses
+the existing evaluator's1s sampling convention rather than just counting poses.
+Reference path on each output grid: GLIM34.850078m, Kimera34.462534m,
+fusion34.940309m; differences reflect sampling, not different reference tracks.
+
+For audit only, raw CPT7-origin paths: GLIM34.331214m, Kimera33.539826m,
+ONLINE39.032171m, finalized34.179716m. ONLINE's longer path and higher rotational
+RPE are visible limitations of this result, not grounds to tune this capture.
+
+Same-time ON-only comparison
+----------------------------
+590shared100ms samples, Unix1730638817.300000--1730638876.199944 (~58.899944s),
+580RPE pairs each. Reference path34.707934m. Mask hash:
+8bffbfc214f57689f95e284ba7a27619b19f859d1ed47541b4538d31f226b24d.
+Output                 ATE m      tRPE1s m   rRPE1s deg  Path m
+Original GLIM          .025320859 .015946307 .709754429  34.698892
+Original Kimera ROS    .136436919 .027613913 1.002064676 33.945944
+Fused ONLINE           .056217171 .043028401 2.878118090 36.885111
+Fused DELAYED finalized.045325065 .016175150 .761289524  34.412884
+Common-grid interpolation changes path length, especially for ONLINE; do not
+present the common-grid path as its full saved path. Neither table includes OFF.
+
+CBS, covariance provenance and receiver conservation
+----------------------------------------------------
+292GLIM->Kimera injections and293Kimera->GLIM injections, both directions
+verified before playback. GLIM590stable IDs/27452versions:590first LOCAL plus
+26862LOCAL revisions. Kimera296stable IDs/7100versions, with7100native joint
+query telemetry records. Source-to-transport payloads match exactly. Kimera's
+validator first/revised counters are not populated; they are not zero beliefs.
+Explicit native-information provenance does not prove statistical independence,
+calibration or absence of shared IMU/nonlinear-history effects.
+
+34552received =884insert +33618replace +50before-initialization exclusions.
+884insert =783absorbed +101active.40553events =6000IMU +34552belief +1END.
+No pending, unsupported-end, duplicate, stale or late-absorption failure.
+71retained supports;175peak slots. Covariance payload difference0; maximum
+mean Log round-trip difference3.3449e-14.1484protected files remain unchanged.
+
+All version covariance matrices finite, symmetric and positive definite in
+the retained numerical checks. Rotational/translation block trace summaries
+(revision-weighted, not independent samples or an OFF/ON weight comparison):
+Source  Rotation median/p95/max [rad^2]       Translation median/p95/max [m^2]
+GLIM    6.82379e-9/1.14509e-8/1.92180e-8      1.60218e-6/1.95316e-6/4.61242e-6
+Kimera  2.36925e-8/4.25735e-8/1.19998e-5      8.38216e-7/2.25372e-6/2.35728e-3
+Minimum eigenvalue: GLIM1.87939e-10, Kimera1.21531e-9; maximum symmetry error0.
+Full means, trace/eigen summaries and full6x6 version payloads are retained.
+
+Runtime and retention
+---------------------
+Capture/controller645.649s wall at0.10x, including startup/drain.
+Receiver support cycle wall median.048512s/p95.081658s/max.121296s.
+Receipt-to-processing wall median.008224s/p95.022172s/max.056765s.
+Transport peak queue33, sampled peak12, zero at end. All595online publications
+occurred while sources ran; maximum sampled output age.100039s measurement time.
+
+GLIM revision first-endpoint age median2.714556s/p954.902628s/max5.216840s,
+leaving1.783160s against7s retention. Worst edge436->438/update486/revision48.
+Producing-update-to-arrival lag median.132921s/p95.163075s/max.233360s in
+measurement clock at0.10x; this is NOT the corresponding wall-clock latency.
+Maximum within-source-history age4.999997s.
+
+541complete GLIM updates after5s, wall median/p95/max seconds:
+MAIN optimization root      .210369 / .495310 / .622396
+Revision-export root        .013072 / .138413 / .183194
+Native covariance context   .010903 / .036494 / .047026
+Whole finish callback       .025027 / .179184 / .231889
+One unpaired shutdown profiling row excluded, not an estimator failure.
+These ON statistics are not a matched before/after speedup comparison. The
+cache's earlier matched64-update OFF evidence remains CP-R2. No1x or universal
+long-sequence throughput claim; the prior7s overflow did not occur here.
+
+Numerical gates / deterministic replay
+--------------------------------------
+All298Kimera accepted steps nonincreasing in the current chart. Existing LM
+fallback used9times,6at its10iteration cap. Max fresh-cache error0 and cache-
+tree error4.862905e-9 below1e-8;268planned retirements. Gate passed, NOT proof
+of stationarity. Receiver also explicitly reports not_checked_incremental_policy.
+Saved-journal replay30.827s wall: five numerical products and35636archive files
+byte-identical. No code changes/new build required; prior CP-I3 Release55/55
+and focused sanitizer55/55 gates are inherited, not rerun or relabeled here.
+
+Artifacts and reproducibility
+-----------------------------
+H=/home/yeranis/repos/gnssFGO/experiments/local_covariance_on60_cpr3_20261019
+P=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eig2_local_cov60_on_cpr3_20261019/prepared
+V=/home/yeranis/results/gnssfgo_eig2_local_cov60_on_cpr3_20261019/on
+H: PROTOCOL.txt, prepare.py, preflight_on.py, harness.diff, summarize.py,
+results.json, final_checks.py/final_checks.json, compact evidence directory.
+P: resolved profiles/harness/protected_manifest.json, preflight_on.json,
+live60_on_control/complete.json, live60_on_source native trajectories/full
+beliefs/profiling/solver logs, live60_on_receiver transport and receiver outputs,
+evaluation_full/summary.json. V retains validation and repeat validation.
+
+Executed once: python3 P/run_case_on.py live60 on.
+Then /home/yeranis/.local/share/pipx/venvs/evo/bin/python with:
+  P/validate_local.py on
+  P/validate_case.py check on
+  P/validate_candidate.py on
+  P/validate_case.py repeat on
+Existing Noetic environment in cbsms_ws_gpu ran P/evaluate_fl4f.py; only mode
+selection changes to ON-only, not evaluation math. Container P prefix is
+/workspace/cbs_gtsam4.3/runs/gnssfgo_eig2_local_cov60_on_cpr3_20261019/prepared.
+Source repos remain clean; gnssFGO HEAD668d4c788983722f4acad37d1495c15d03a27e18.
+This task adds run scripts/results/reports only; see final_checks.json for
+final hashes/source HEADs and cleanliness checks. Both containers restored
+to their initial stopped state after checking no owned run remains.
+
+Decision: requested bounded60s ON experiment complete; STOP. Matched60s OFF
+and any other sequence require separate authorization. No accuracy superiority
+or universally calibrated covariance conclusion is supported by this single ON.

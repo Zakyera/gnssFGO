@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "args": [
+        "python3",
+        "-B",
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/transport_tools/qualify_runtime.py"
+      ],
+      "exit": 0,
+      "stdout": "{\"passed\": true, \"fixtures\": 30, \"host_container_payloads_bit_identical\": true, \"requires_scipy\": false}\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "python3",
+        "-B",
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/transport_tools/launch_grandtour_live_receiver.py",
+        "--help"
+      ],
+      "exit": 0,
+      "stdout": "usage: launch_grandtour_live_receiver.py [-h] --config CONFIG --source-run\n                                         SOURCE_RUN --out OUT\n                                         [--graph-snapshots]\n                                         (--check | --start)\n\nLaunch receiver only in existing containers; never start a bag/estimator.\nRequires a running ROS master before bag playback. Uses a fresh shared run\ndirectory and explicit fresh source-run log directory. --check is read-only.\n\noptions:\n  -h, --help            show this help message and exit\n  --config CONFIG\n  --source-run SOURCE_RUN\n  --out OUT\n  --graph-snapshots     extra IO; off for timing tests\n  --check\n  --start\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "python3",
+        "-B",
+        "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/spx3_split_imu_live_pair_cpv111_20261104/prepared/run_case_on.py",
+        "--help"
+      ],
+      "exit": 0,
+      "stdout": "usage: run_case_on.py [-h] [--attempt {1}] {full} {off,on}\n\npositional arguments:\n  {full}\n  {off,on}\n\noptions:\n  -h, --help     show this help message and exit\n  --attempt {1}\n",
+      "stderr": ""
+    }
+  ],
+  "Noetic_fixture_still_required": true
+}

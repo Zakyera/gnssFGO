@@ -1,0 +1,56 @@
+CP-V71 -- full EIG-2 Hesai frozen-input remove/retain comparison
+2026-10-31. User explicitly selected the full frozen-input option first.
+
+Hypothesis: CP70's reduction in Method1 publication revisions persists across
+the full 355.02-second sequence. Both arms consume CBS-ON inputs; REMOVE is NOT
+CBS-OFF. Kimera alone consumes original full CP49 ON messages, with their saved
+post-alignment means, dense covariance, original recording arrivals, physical
+receiver endpoints and original backend admission updates held fixed. Original
+feedback history is present in these inputs; no NEW returned-peer consumer,
+GLIM process or gnssFGO receiver. Not a new live bidirectional experiment.
+
+Reuse exact CP70 private backend and compatible libcbs, without rebuilding:
+libkimera_vio.so SHA256
+6e620d0f24aed055ee8f9f2f638af1b59881ff09e23ebe561614162a93d634ce.
+Reuse existing active_window_temporary FL4M_RETIREMENT remove/retain;
+CPV69_RETAIN_COMPAT for retain, K9=1, CP40=1, FL4Q=0, CP38=0. Original prior
+functions, ordinary+one native refresh, smart factors, guards, calibration,
+noise and all covariance entries unchanged. Native IMU support override unset.
+No general persistent-mode substitution, tuning or default promotion.
+
+Fresh roots and ROS port11571. Full original quietstart offset5.7s,355.02s,
+0.20x,25s drain, original front stereo/shared CPT7,25states. Headless. Copy
+CP70 launch chain/profile and binaries; confirm profile identical to CP49.
+No changes to prior roots. Freeze1743 accepted aligned beliefs and verify unique
+wire-to-log joins, exact source covariance/raw means, original arrival order,
+causal source timestamps and all recorded endpoint/update timestamps against
+1762 original native outputs before either capture. Record original omissions
+and gaps, not infer zero-loss from a completed full playback.
+
+Same tested recorded-update delivery gate: hold only already-arrived messages
+until original update; fail on missing/late/unknown/duplicate/reversed data.
+No synthetic payload or future input, no guard relaxation. Run REMOVE once,
+validate payload/order/1743admissions/update IDs/endpoint stamps and full native
+timestamp sequence, then RETAIN once with the same gates. Require exact A/B
+first30 publications before retirement, identical release schedule and complete
+absorption accounting. No source retry on numerical/model/admission failure.
+Preserve any failure, stop downstream stages, clean only exact owned jobs.
+
+After successful pair gates, EVO1.36.3 ONLY: Method1 first-published absolute
+Kimera backend poses, not ROS incremental or finalized. SE3 ATE/no scale;
+consecutive reference-distance0.5m translation/rotation RPE. Full saved and
+common100ms masks separately (sourcegap<=.5s/referencegap<=.05s), explicit
+coverage/gaps, paths and reference paths. IE-TC shares CPT7, not independent
+prism ground truth. Whole-run,40..60s and final60s previous-state revisions,
+within-update motion, IMU cost and timing; no nonlinear stationarity claim.
+No accuracy threshold used to select/retry runs.
+
+CP67 live bidirectional LOCAL provenance gate remains FAILED. Retained mixed
+marginal information cannot be called native-only or safely fed back on this
+test alone. Scope is conditional full-sequence stability, not certified CBS.
+
+Preserve CP70 complete output hashes and inherited protected manifests, CP49
+inputs/profiles, raw sensor bag hashes. >=8GiB before each capture, >=5GiB during;
+no deletion. Save exact owned process receipts, restore both originally stopped
+containers, verify original four-sequence Hesai667-file checkpoint at closeout.
+Forecast pair logs well below1GiB from CP70; reserve2GiB including reports.

@@ -1,0 +1,77 @@
+CP-K16h — paced identical-prepared-input60s diagnostic
+Status: INCOMPLETE — STOPPED FOR DIAGNOSTIC COST. 2026-10-20.
+No complete60s result; no numerical comparison failure or automatic retry.
+
+Final result: RESULT_K16H_INCOMPLETE.json. Pacing works for the processed
+prefix:254scan acknowledgements,2804exact dispatch-prefix events,247saved
+native poses spanning24.599748s,maximum interval.100990s,zero>150ms gaps.
+The last checked scan is about.100s beyond the last saved native publication
+at intentional shutdown. Requested tail34.5806s is missing: NOT a60s result.
+495paired updates/181retirements pass;61118original sync derivative requests
+equal61118candidate prepared consumptions.723194Gaussian,64764covariance,
+195576GPU-runtime comparisons. p/v/bias/equations/covariances differ0;
+rotation maximum1.399e-17rad. Maximum51active poses. No observer failure.txt.
+
+The agent explicitly stopped the owned controller after last20scan waits
+averaged30.152s (median30.559,max32.517). Remaining344scans project172.87more
+minutes at that recent rate, exceeding the frozen one-hour watchdog. This
+is a diagnostic feasibility stop, not a failed batching equation check.
+No shortened prefix was passed off as the requested60s; full validator not run.
+Exact expensive observer substage remains unlocalized; aggregate MAIN times
+include original solver, companion solver and exhaustive readback/covariance
+checks. Do not infer ordinary GLIM slowdown from this instrumented capture.
+Read-only host debugger attempt was unavailable (sudo password required);
+no debugger attached, no new profiler installed or estimator changed.
+
+All owned jobs exited: driver92 on intentional ROS-stop, others0; no TERM
+needed. Numerical observer/source libraries unchanged. Before/after integrity
+passes2026protected,7pinned,56prepared files and five source Git fingerprints.
+Next proposed work needs a separate decision: identify/make the checker cost
+bounded while retaining its mathematical/lifecycle checks. Do not launch
+another60s attempt, relax comparisons or alter production settings automatically.
+See CLOSEOUT_K16H.txt for container restoration. Kimera retention remains open.
+
+Authorized task: correct diagnostic pacing and execute one60s GLIM-only OFF
+paired correctness run. No Kimera/fusion/source-CBS/model/tuning/default edits.
+Read PROTOCOL_K16H.txt before continuing. Do not duplicate a running source.
+
+Root: /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/k16h_source_1
+Owned container: cbsms_ws_gpu; both existing containers were initially stopped.
+Controller: run_k16h.py; output paired/; port11467.
+Check paired/capture_complete.json or paired/failed.txt and cleanup.json.
+Unchanged observer: k16g_source_1/build_1/probe.so,
+ffededfc5dd8322c83310d724309992cc53982c48ef5266d809213f8accd89b0.
+Unchanged K16a/CP-I1/CP-I3 estimator DSOs. Numerical gates unchanged.
+
+Preparation corrections (NOT additional source captures):
+- Private adapter first compile used wrong removeROSArgs overload; preserved
+  driver_build/build.log. Corrected ROS API, no estimator build.
+- coverage/ found the existing direct-bag driver's strict next-scan ordering
+  assumption wrong for ETH1: LiDAR record precedes covering IMU arrival.
+- coverage_2/ demonstrated final selected scan lacks20.906ms IMU coverage.
+  Use original glim_rosnode wait(true)/AsyncOdometryEstimation EOS behavior;
+  no extra data, invented measurements or changed physical timestamps.
+- Final driver_build_4/ and coverage_3/ pass:598scans/5986IMU, maximum one raw
+  scan buffered,597fully-covered scan barriers plus one planned native-EOS terminal.
+  This is read-only preflight; actual execution never reached the final EOS drain.
+  Expected exact cross-stream dispatch plan retained; within-topic order exact.
+
+Mechanism: reuse GlimROS insert_imu/insert_frame and wait_for_odometry_idle;
+existing read-only on_insert_frame acknowledgement prevents queue-transfer
+zero-workload race. Advance only after original+companion checks finish.
+Clock follows original record timestamps, with explicit clock acknowledgement.
+The source's raw scan can wait while the required IMU records arrive. Direct
+insertion order is intentionally paced across streams, not a reproduction of
+the old ROS callback interleaving. The two solver histories see the identical
+prepared inputs and remain independent. This is NOT a throughput benchmark.
+
+Before integrity PASS:2026protected/7pinned/56prepared files, five source Git
+fingerprints. Existing K16g observer plumbing reused, not rebuilt or rerun.
+Historical progress note: startup passed; first396paired update comparisons/133retirements passed with
+p/v/bias/Gaussian/covariance difference0 and rotation roundoff1.39e-17rad.
+Final outcome is above. GPU2.5--3GB/12GB sampled, ample host memory.
+
+Because capture is incomplete, do not run the full validator or claim complete
+LOCAL wire provenance/conservation for60s. The complete-check validator is
+retained unchanged for reference, not bypassed. No push or promotion.
+Separate Kimera11.10s/7s retention-contract issue remains unresolved.

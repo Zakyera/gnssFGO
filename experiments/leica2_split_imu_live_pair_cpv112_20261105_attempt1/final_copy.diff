@@ -1,0 +1,335 @@
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105/prepared/full_on.json
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/full_on.json
+@@ -1,7 +1,7 @@
+ {
+   "sequence": "LEICA-2 CP-V112 full428.75s live split-IMU CBS ON",
+   "source_protocol": "classic",
+-  "ros_master_uri": "http://127.0.0.1:11652",
++  "ros_master_uri": "http://127.0.0.1:11654",
+   "imu_topic": "/boxi/cpt7/imu",
+   "imu_frame": "cpt7_imu",
+   "world_frame": "gnssfgo_world",
+@@ -12,11 +12,11 @@
+   "drain_timeout_wall_sec": 300,
+   "ros1_container": "cbsms_ws_gpu",
+   "receiver_container": "ubuntu-jammy-humble-nvidia",
+-  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105/prepared/receiver_cpk19.sh",
++  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/receiver_cpk19.sh",
+   "sources": [
+     {
+       "id": "glim_hesai",
+-      "session": "leica2_cpv112_on_20261104",
++      "session": "leica2_cpv112a1_on_20261105",
+       "kind": "glim",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/ros_logs/*/glim_rosnode-*-stdout.log",
+@@ -25,7 +25,7 @@
+     },
+     {
+       "id": "kimera_front",
+-      "session": "leica2_cpv112_on_20261104",
++      "session": "leica2_cpv112a1_on_20261105",
+       "kind": "kimera",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/estimators.log",
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105/prepared/run_case_on.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/run_case_on.py
+@@ -37,7 +37,7 @@
+     own.mkdir(exist_ok=False)
+     inside = '/workspace/'+str(own.relative_to('/home/yeranis/repos/V4RL'))
+     env_inside = '/workspace/'+str((ROOT/args.mode/'source.env').relative_to('/home/yeranis/repos/V4RL'))
+-    port = str(11651+(args.mode=='on'))
++    port = str(11653+(args.mode=='on'))
+     master_uri = 'http://127.0.0.1:'+port
+     jobs = {}
+     streams = []
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105/prepared/full_off.json
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/full_off.json
+@@ -1,7 +1,7 @@
+ {
+   "sequence": "LEICA-2 CP-V112 full428.75s live split-IMU CBS OFF",
+   "source_protocol": "classic",
+-  "ros_master_uri": "http://127.0.0.1:11651",
++  "ros_master_uri": "http://127.0.0.1:11653",
+   "imu_topic": "/boxi/cpt7/imu",
+   "imu_frame": "cpt7_imu",
+   "world_frame": "gnssfgo_world",
+@@ -12,11 +12,11 @@
+   "drain_timeout_wall_sec": 300,
+   "ros1_container": "cbsms_ws_gpu",
+   "receiver_container": "ubuntu-jammy-humble-nvidia",
+-  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105/prepared/receiver_cpk19.sh",
++  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/receiver_cpk19.sh",
+   "sources": [
+     {
+       "id": "glim_hesai",
+-      "session": "leica2_cpv112_off_20261104",
++      "session": "leica2_cpv112a1_off_20261105",
+       "kind": "glim",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/ros_logs/*/glim_rosnode-*-stdout.log",
+@@ -25,7 +25,7 @@
+     },
+     {
+       "id": "kimera_front",
+-      "session": "leica2_cpv112_off_20261104",
++      "session": "leica2_cpv112a1_off_20261105",
+       "kind": "kimera",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/estimators.log",
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105/prepared/off/verify_effective_on.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/off/verify_effective_on.py
+@@ -14,6 +14,8 @@
+ assert os.environ['CBSMS_BAG_RATE'] == '0.20'
+ assert os.environ['CBSMS_MISSION']=='2024-11-25-16-36-19'
+ assert os.environ['CBSMS_BAG_START_SEC']=='6.0'
++assert os.environ['CBSMS_BAG_PLAYBACK_START_SEC']=='6.099999100'
++assert json.loads((root.parent/'playback_window.json').read_text())['passed']
+ enabled = os.environ['CBSMS_CBS_ENABLE'] == 'true'
+ assert enabled is (root.name=='on'), 'Mode mismatch'
+ assert os.environ['CBSMS_KIMERA_MODE'] == 'stereo'
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105/prepared/off/glim_profile_on.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/off/glim_profile_on.launch
+@@ -117,7 +117,7 @@
+         <env name="GLIM_SHARED_NATIVE_PROVIDER" value="shared_native"/>
+         <env name="CPV82_GLIM_PERSISTENT_COMPAT" value="1"/>
+         <env name="GLIM_REVISION_COVARIANCE_POLICY" value="native_local"/>
+-        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105/prepared/full_off_source/e1b_profile.jsonl"/>
++        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/full_off_source/e1b_profile.jsonl"/>
+ 		<param name="config_path" value="$(arg config_path)" />
+ 		<param name="glim_dump_path" value="$(arg glim_dump_path)" />
+ 		<param name="deterministic_input_event_log_path" value="$(arg glim_deterministic_input_event_log_path)" />
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105/prepared/off/source.env
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/off/source.env
+@@ -2,17 +2,18 @@
+ # to off_source/on_source and CBSMS_CBS_ENABLE to false/true.
+ : "${CBSMS_RUN_NAME:?Set fresh LEICA-2 source run name}"
+ : "${CBSMS_CBS_ENABLE:?Set false or true}"
+-export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105/prepared
++export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared
+ export CBSMS_RUN_NAME CBSMS_CBS_ENABLE
+ export ROS_LOG_DIR="${CBSMS_RUN_ROOT}/${CBSMS_RUN_NAME}/ros_logs"
+ export CBSMS_PROJECT_ROOT=/workspace/cbs_gtsam4.3
+ export CBSMS_MISSION=2024-11-25-16-36-19
+ export CBSMS_BAG_START_SEC=6.0
++export CBSMS_BAG_PLAYBACK_START_SEC=6.099999100
+ export CBSMS_BAG_DURATION_SEC=428.75
+ export CBSMS_POST_PLAYBACK_DRAIN_SEC=25
+ export CBSMS_BAG_RATE=0.20
+ export CBSMS_SEED_CLOCK_SECS=1732549034
+-export CBSMS_ROS_MASTER_PORT=11651
++export CBSMS_ROS_MASTER_PORT=11653
+ export CBSMS_USE_EXISTING_ROS_MASTER=true
+ export CBSMS_KIMERA_MODE=stereo
+ # The recovered classic Kimera source path is "current", not experimental RIGHT.
+@@ -35,7 +36,7 @@
+ export CBSMS_KIMERA_RECEIVER_AUDIT_MAX_SAMPLES=40
+ export CBSMS_KIMERA_RECEIVER_AUDIT_STRIDE=20
+ export CBSMS_DIAGNOSTIC_NODE_OUTPUT=log
+-export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105/prepared/off/input_profiles/glim_config
+-export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105/prepared/off/input_profiles/kimera_profile
++export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/off/input_profiles/glim_config
++export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/off/input_profiles/kimera_profile
+ 
+ export CBSMS_DATASET_DIR=/workspace/cbs_gtsam4.3/src/datasets/GrandTour/LEICA-2
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105/prepared/off/active_window_on.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/off/active_window_on.launch
+@@ -17,7 +17,7 @@
+   -->
+ 
+   <arg name="glim_config_path"
+-       default="/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105/prepared/off/input_profiles/glim_config"/>
++       default="/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/off/input_profiles/glim_config"/>
+   <arg name="kimera_mode" default="mono"/>
+   <arg name="kimera_enable" default="true"/>
+   <arg name="kimera_params_folder"/>
+@@ -111,7 +111,7 @@
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_stride" value="20"/>
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_max_updates" value="40"/>
+ 
+-  <include file="/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105/prepared/off/glim_profile_on.launch">
++  <include file="/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/off/glim_profile_on.launch">
+     <arg name="config_path" value="$(arg glim_config_path)"/>
+     <arg name="glim_node_output" value="$(arg diagnostic_node_output)"/>
+     <arg name="glim_input_imu_topic" value="$(arg glim_input_imu_topic)"/>
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105/prepared/off/source_runner_on.sh
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/off/source_runner_on.sh
+@@ -6,6 +6,7 @@
+ mission="${CBSMS_MISSION:-2024-11-25-16-36-19}"
+ duration_sec="${CBSMS_BAG_DURATION_SEC:-45.0}"
+ bag_start_sec="${CBSMS_BAG_START_SEC:-6.0}"
++playback_start_sec="${CBSMS_BAG_PLAYBACK_START_SEC:?Exact bag-relative offset required}"
+ bag_rate="${CBSMS_BAG_RATE:-0.75}"
+ post_playback_drain_sec="${CBSMS_POST_PLAYBACK_DRAIN_SEC:-25}"
+ ros_master_port="${CBSMS_ROS_MASTER_PORT:-11368}"
+@@ -43,8 +44,8 @@
+ run_dir="${run_root}/${run_name}"
+ experiment_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ launch_file="${experiment_dir}/active_window_on.launch"
+-[[ "${cbs_enable}" == false && "${cbs_direction}" == bidirectional && "${duration_sec}" == 428.75 && "${bag_rate}" == 0.20 && "${bag_start_sec}" == 6.0 && "${mission}" == 2024-11-25-16-36-19 && "${kimera_mode}" == stereo ]] || { echo "CP-V112 LEICA-2 split-IMU full OFF428.75 only." >&2; exit 2; }
+-glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105/prepared/off/input_profiles/glim_config}"
++[[ "${cbs_enable}" == false && "${cbs_direction}" == bidirectional && "${duration_sec}" == 428.75 && "${bag_rate}" == 0.20 && "${bag_start_sec}" == 6.0 && "${playback_start_sec}" == 6.099999100 && "${mission}" == 2024-11-25-16-36-19 && "${kimera_mode}" == stereo ]] || { echo "CP-V112 LEICA-2 split-IMU full OFF428.75 only." >&2; exit 2; }
++glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/off/input_profiles/glim_config}"
+ kimera_profile_source="${CBSMS_KIMERA_PROFILE_SOURCE:-}"
+ kimera_calibration_overlay="${CBSMS_KIMERA_CALIBRATION_OVERLAY:-${project_root}/src/cbsms/config/grandtour_kimera/eth1_mono_shared_cpt7}"
+ reference_bag="${CBSMS_REFERENCE_BAG:-${dataset_dir}/${mission}_ap20_prism_position.bag}"
+@@ -420,10 +421,11 @@
+   play_topics+=(/boxi/alphasense/imu)
+ fi
+ rosbag play --quiet --clock --delay=2.0 --rate="${bag_rate}" \
+-  --start="${bag_start_sec}" --duration="${duration_sec}" "${bags[@]}" \
++  --start="${playback_start_sec}" --duration="${duration_sec}" "${bags[@]}" \
+   --topics "${play_topics[@]}" \
+   >"${run_dir}/rosbag.log" 2>&1 &
+ bag_pid=$!
++printf "selected_offset_s=%s\nrosbag_start_s=%s\n" "${bag_start_sec}" "${playback_start_sec}" >"${run_dir}/playback_offsets.txt"
+ pids+=("${bag_pid}")
+ 
+ while kill -0 "${bag_pid}" 2>/dev/null; do
+@@ -584,7 +586,7 @@
+   "kimera_receive_cbs_beliefs=${kimera_receive_external_beliefs}" \
+   "glim_cbs_mode=${glim_cbs_mode}" \
+   "kimera_cbs_odom_factor_mode=persistent" \
+-  "experiment=leica2_split_imu_live_pair_cpv112_20261105" \
++  "experiment=leica2_split_imu_live_pair_cpv112_20261105_attempt1" \
+   "glim_sensor_pair=hesai+cpt7_imu" \
+   "kimera_sensor_pair=${kimera_sensor_pair}" \
+   "glim_body_frame=cpt7_imu" \
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105/prepared/transport_tools/frame_calibration.json
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/transport_tools/frame_calibration.json
+@@ -27,6 +27,6 @@
+       1.0
+     ]
+   ],
+-  "source": "/home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105/raw_input_audit.json",
++  "source": "/home/yeranis/repos/gnssFGO/experiments/leica2_split_imu_live_pair_cpv112_20261105_attempt1/raw_input_audit.json",
+   "convention": "T_Alpha_CPT7; rotation-translation tangent; native diagnostic rows ONLY"
+ }--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105/prepared/transport_tools/live_receiver_protocol.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/transport_tools/live_receiver_protocol.py
+@@ -145,7 +145,7 @@
+         raise ValueError('unknown receiver_publication_policy')
+     if policy == 'fl4a_fixed_lag_incremental':
+         # Private FL4a adapter only. No nonlinear stationarity certificate is claimed.
+-        expected = '/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105/prepared/receiver_cpk19.sh'
++        expected = '/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/receiver_cpk19.sh'
+         if config.get('receiver_model') != 'source_wnoa' or config.get('receiver_binary') != expected:
+             raise ValueError('FL4a policy requires the pinned fixed-lag wrapper')
+         if config.get('receiver_fixed_lag_seconds') != 7 or any(key.startswith('WNOJ_') for key in environment):
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105/prepared/on/verify_effective_on.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/on/verify_effective_on.py
+@@ -14,6 +14,8 @@
+ assert os.environ['CBSMS_BAG_RATE'] == '0.20'
+ assert os.environ['CBSMS_MISSION']=='2024-11-25-16-36-19'
+ assert os.environ['CBSMS_BAG_START_SEC']=='6.0'
++assert os.environ['CBSMS_BAG_PLAYBACK_START_SEC']=='6.099999100'
++assert json.loads((root.parent/'playback_window.json').read_text())['passed']
+ enabled = os.environ['CBSMS_CBS_ENABLE'] == 'true'
+ assert enabled is (root.name=='on'), 'Mode mismatch'
+ assert os.environ['CBSMS_KIMERA_MODE'] == 'stereo'
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105/prepared/on/glim_profile_on.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/on/glim_profile_on.launch
+@@ -117,7 +117,7 @@
+         <env name="GLIM_SHARED_NATIVE_PROVIDER" value="shared_native"/>
+         <env name="CPV82_GLIM_PERSISTENT_COMPAT" value="1"/>
+         <env name="GLIM_REVISION_COVARIANCE_POLICY" value="native_local"/>
+-        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105/prepared/full_on_source/e1b_profile.jsonl"/>
++        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/full_on_source/e1b_profile.jsonl"/>
+ 		<param name="config_path" value="$(arg config_path)" />
+ 		<param name="glim_dump_path" value="$(arg glim_dump_path)" />
+ 		<param name="deterministic_input_event_log_path" value="$(arg glim_deterministic_input_event_log_path)" />
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105/prepared/on/source.env
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/on/source.env
+@@ -2,17 +2,18 @@
+ # to off_source/on_source and CBSMS_CBS_ENABLE to false/true.
+ : "${CBSMS_RUN_NAME:?Set fresh LEICA-2 source run name}"
+ : "${CBSMS_CBS_ENABLE:?Set false or true}"
+-export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105/prepared
++export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared
+ export CBSMS_RUN_NAME CBSMS_CBS_ENABLE
+ export ROS_LOG_DIR="${CBSMS_RUN_ROOT}/${CBSMS_RUN_NAME}/ros_logs"
+ export CBSMS_PROJECT_ROOT=/workspace/cbs_gtsam4.3
+ export CBSMS_MISSION=2024-11-25-16-36-19
+ export CBSMS_BAG_START_SEC=6.0
++export CBSMS_BAG_PLAYBACK_START_SEC=6.099999100
+ export CBSMS_BAG_DURATION_SEC=428.75
+ export CBSMS_POST_PLAYBACK_DRAIN_SEC=25
+ export CBSMS_BAG_RATE=0.20
+ export CBSMS_SEED_CLOCK_SECS=1732549034
+-export CBSMS_ROS_MASTER_PORT=11652
++export CBSMS_ROS_MASTER_PORT=11654
+ export CBSMS_USE_EXISTING_ROS_MASTER=true
+ export CBSMS_KIMERA_MODE=stereo
+ # The recovered classic Kimera source path is "current", not experimental RIGHT.
+@@ -35,7 +36,7 @@
+ export CBSMS_KIMERA_RECEIVER_AUDIT_MAX_SAMPLES=40
+ export CBSMS_KIMERA_RECEIVER_AUDIT_STRIDE=20
+ export CBSMS_DIAGNOSTIC_NODE_OUTPUT=log
+-export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105/prepared/on/input_profiles/glim_config
+-export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105/prepared/on/input_profiles/kimera_profile
++export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/on/input_profiles/glim_config
++export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/on/input_profiles/kimera_profile
+ 
+ export CBSMS_DATASET_DIR=/workspace/cbs_gtsam4.3/src/datasets/GrandTour/LEICA-2
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105/prepared/on/active_window_on.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/on/active_window_on.launch
+@@ -17,7 +17,7 @@
+   -->
+ 
+   <arg name="glim_config_path"
+-       default="/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105/prepared/on/input_profiles/glim_config"/>
++       default="/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/on/input_profiles/glim_config"/>
+   <arg name="kimera_mode" default="mono"/>
+   <arg name="kimera_enable" default="true"/>
+   <arg name="kimera_params_folder"/>
+@@ -111,7 +111,7 @@
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_stride" value="20"/>
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_max_updates" value="40"/>
+ 
+-  <include file="/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105/prepared/on/glim_profile_on.launch">
++  <include file="/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/on/glim_profile_on.launch">
+     <arg name="config_path" value="$(arg glim_config_path)"/>
+     <arg name="glim_node_output" value="$(arg diagnostic_node_output)"/>
+     <arg name="glim_input_imu_topic" value="$(arg glim_input_imu_topic)"/>
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105/prepared/on/source_runner_on.sh
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/on/source_runner_on.sh
+@@ -6,6 +6,7 @@
+ mission="${CBSMS_MISSION:-2024-11-25-16-36-19}"
+ duration_sec="${CBSMS_BAG_DURATION_SEC:-45.0}"
+ bag_start_sec="${CBSMS_BAG_START_SEC:-6.0}"
++playback_start_sec="${CBSMS_BAG_PLAYBACK_START_SEC:?Exact bag-relative offset required}"
+ bag_rate="${CBSMS_BAG_RATE:-0.75}"
+ post_playback_drain_sec="${CBSMS_POST_PLAYBACK_DRAIN_SEC:-25}"
+ ros_master_port="${CBSMS_ROS_MASTER_PORT:-11368}"
+@@ -43,8 +44,8 @@
+ run_dir="${run_root}/${run_name}"
+ experiment_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ launch_file="${experiment_dir}/active_window_on.launch"
+-[[ "${cbs_enable}" == true && "${cbs_direction}" == bidirectional && "${duration_sec}" == 428.75 && "${bag_rate}" == 0.20 && "${bag_start_sec}" == 6.0 && "${mission}" == 2024-11-25-16-36-19 && "${kimera_mode}" == stereo ]] || { echo "CP-V112 LEICA-2 split-IMU full ON428.75 only." >&2; exit 2; }
+-glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105/prepared/on/input_profiles/glim_config}"
++[[ "${cbs_enable}" == true && "${cbs_direction}" == bidirectional && "${duration_sec}" == 428.75 && "${bag_rate}" == 0.20 && "${bag_start_sec}" == 6.0 && "${playback_start_sec}" == 6.099999100 && "${mission}" == 2024-11-25-16-36-19 && "${kimera_mode}" == stereo ]] || { echo "CP-V112 LEICA-2 split-IMU full ON428.75 only." >&2; exit 2; }
++glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-/workspace/cbs_gtsam4.3/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/on/input_profiles/glim_config}"
+ kimera_profile_source="${CBSMS_KIMERA_PROFILE_SOURCE:-}"
+ kimera_calibration_overlay="${CBSMS_KIMERA_CALIBRATION_OVERLAY:-${project_root}/src/cbsms/config/grandtour_kimera/eth1_mono_shared_cpt7}"
+ reference_bag="${CBSMS_REFERENCE_BAG:-${dataset_dir}/${mission}_ap20_prism_position.bag}"
+@@ -420,10 +421,11 @@
+   play_topics+=(/boxi/alphasense/imu)
+ fi
+ rosbag play --quiet --clock --delay=2.0 --rate="${bag_rate}" \
+-  --start="${bag_start_sec}" --duration="${duration_sec}" "${bags[@]}" \
++  --start="${playback_start_sec}" --duration="${duration_sec}" "${bags[@]}" \
+   --topics "${play_topics[@]}" \
+   >"${run_dir}/rosbag.log" 2>&1 &
+ bag_pid=$!
++printf "selected_offset_s=%s\nrosbag_start_s=%s\n" "${bag_start_sec}" "${playback_start_sec}" >"${run_dir}/playback_offsets.txt"
+ pids+=("${bag_pid}")
+ 
+ while kill -0 "${bag_pid}" 2>/dev/null; do
+@@ -584,7 +586,7 @@
+   "kimera_receive_cbs_beliefs=${kimera_receive_external_beliefs}" \
+   "glim_cbs_mode=${glim_cbs_mode}" \
+   "kimera_cbs_odom_factor_mode=persistent" \
+-  "experiment=leica2_split_imu_live_pair_cpv112_20261105" \
++  "experiment=leica2_split_imu_live_pair_cpv112_20261105_attempt1" \
+   "glim_sensor_pair=hesai+cpt7_imu" \
+   "kimera_sensor_pair=${kimera_sensor_pair}" \
+   "glim_body_frame=cpt7_imu" \

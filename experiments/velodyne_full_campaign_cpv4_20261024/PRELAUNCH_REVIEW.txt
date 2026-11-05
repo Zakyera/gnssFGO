@@ -1,0 +1,29 @@
+CP-V4 preflight-only corrections before ANY estimator/capture launch.
+1. EIG-2 fixed established start1730638816563546034ns had two-second gyro
+   p95 .0178227927652704rad/s and resized image difference max2.5349088542.
+   Applying the NEW-mission quiet2s selection heuristic to an established
+   immutable matched window contradicted the protocol. Fixed missions retain
+   their completed-input start contract; raw metrics are recorded, not used
+   to move the start. New missions still require the predeclared quiet test.
+2. Leica2 scan1732549070545569000ns had min/max point offsets
+   -.0921998843550682/-.0016886240337044s. Entire scan preceding its header is
+   valid for the already-used native min(time) normalization. Removed erroneous
+   requirement max(time)>=0 inherited from30s sampled CP-V2 assumptions.
+   Finite fields, ordered normalized stamps, negative minimum, upper offset
+   bound, scan duration and published-output IMU bracketing remain checked.
+No data, timestamps, deskew, source estimator, covariance or receiver changes.
+No capture retry; these failures occurred only in new read-only admission code.
+3. New ARC-5/SNOW-3 initially failed quiet-start admission on a coarse1s search
+   grid. Before capture, refine the candidate start search to100ms within the
+   SAME first15s window and SAME quiet2s thresholds. This changes only search
+   resolution; do not relax thresholds or choose a start based on output ATE.
+   If still unavailable, save input/calibration/quiet metrics as blocked.json
+   and skip the sequence, not the rest of the valid independent campaign.
+Launcher CLI correction (2026-10-24 00:07 local): the first outer inhibitor
+invocation exited before the campaign/controller/containers started because
+gnome-session-inhibit requires separate option values, not --app-id=VALUE.
+Exact failure retained in campaign.log/launch.json; PID exited and containers
+both stayed stopped. Corrected outer and inner CLI syntax only. The controlled
+--verified-cli-repair launch uses separate launch_cli_repair.json and
+campaign_cli_repair.log, asserts the exact failure/no process/no campaign state,
+and cannot duplicate or retry a source capture. No estimator file changed.

@@ -1,0 +1,319 @@
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared/validate_case.py
++++ validate_case.py CP-R6
+@@ -9,7 +9,7 @@
+ OUT=REC/'receiver'
+ CTL=P/f'live60_{MODE}_control'
+ EXE=Path('/home/yeranis/results/gnssfgo_fixed_lag_failure_fl4e_20261014/candidate_live')
+-RESULT=Path(f'/home/yeranis/results/gnssfgo_spx3_local_cov60_cpr5_20261019/{MODE}')
++RESULT=Path(f'/home/yeranis/results/gnssfgo_eth1_local_cov60_cpr6_20261019/{MODE}')
+ LIB=Path('/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib')
+ 
+ def sha(p):
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared/source.env
++++ source.env CP-R6
+@@ -2,17 +2,17 @@
+ # to off_source/on_source and CBSMS_CBS_ENABLE to false/true.
+ : "${CBSMS_RUN_NAME:?Set fresh ETH1 source run name}"
+ : "${CBSMS_CBS_ENABLE:?Set false or true}"
+-export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared
++export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_local_cov60_cpr6_20261019/prepared
+ export CBSMS_RUN_NAME CBSMS_CBS_ENABLE
+ export ROS_LOG_DIR="${CBSMS_RUN_ROOT}/${CBSMS_RUN_NAME}/ros_logs"
+ export CBSMS_PROJECT_ROOT=/workspace/cbs_gtsam4.3
+-export CBSMS_MISSION=2024-11-02-17-43-10
+-export CBSMS_BAG_START_SEC=32.0
++export CBSMS_MISSION=2024-10-01-11-29-55
++export CBSMS_BAG_START_SEC=0.0
+ export CBSMS_BAG_DURATION_SEC="${CBSMS_BAG_DURATION_SEC:-60.0}"
+ export CBSMS_POST_PLAYBACK_DRAIN_SEC=25
+ export CBSMS_BAG_RATE=0.10
+-export CBSMS_SEED_CLOCK_SECS=1730565901
+-export CBSMS_ROS_MASTER_PORT=11451
++export CBSMS_SEED_CLOCK_SECS=1727775007
++export CBSMS_ROS_MASTER_PORT=11452
+ export CBSMS_USE_EXISTING_ROS_MASTER=true
+ export CBSMS_KIMERA_MODE=stereo_shared_cpt7
+ # The recovered classic Kimera source path is "current", not experimental RIGHT.
+@@ -35,7 +35,7 @@
+ export CBSMS_KIMERA_RECEIVER_AUDIT_MAX_SAMPLES=40
+ export CBSMS_KIMERA_RECEIVER_AUDIT_STRIDE=20
+ export CBSMS_DIAGNOSTIC_NODE_OUTPUT=log
+-export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared/input_profiles/glim_config
+-export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared/input_profiles/kimera_profile
++export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_local_cov60_cpr6_20261019/prepared/input_profiles/glim_config
++export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_local_cov60_cpr6_20261019/prepared/input_profiles/kimera_profile
+ 
+-export CBSMS_DATASET_DIR=/workspace/cbs_gtsam4.3/src/datasets/GrandTour/SPX-3
++export CBSMS_DATASET_DIR=/workspace/cbs_gtsam4.3/src/datasets/GrandTour
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared/run_case.py
++++ run_case.py CP-R6
+@@ -33,7 +33,7 @@
+     own.mkdir(exist_ok=False)
+     inside = '/workspace/'+str(own.relative_to('/home/yeranis/repos/V4RL'))
+     env_inside = '/workspace/'+str((ROOT/'source.env').relative_to('/home/yeranis/repos/V4RL'))
+-    master_uri = 'http://127.0.0.1:11451'
++    master_uri = 'http://127.0.0.1:11452'
+     jobs = {}
+     streams = []
+     def start(name, command):
+@@ -47,7 +47,7 @@
+             text=True, capture_output=True, check=check)
+     def stop_pid(name):
+         # The PID is recorded by this case, command must match the owned port/run.
+-        token = '11451' if name=='master' else str(source.name)
++        token = '11452' if name=='master' else str(source.name)
+         script = ('import os,signal,sys; from pathlib import Path; p=Path(sys.argv[1]); '
+           'pid=int(p.read_text()) if p.exists() else 0; c=Path("/proc/%d/cmdline"%pid); '
+           'e=Path("/proc/%d/environ"%pid); '
+@@ -59,7 +59,7 @@
+     started = time.time()
+     try:
+         assert ros('rosparam get /rosversion',check=False).returncode != 0, 'port is already in use'
+-        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11451'
++        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11452'
+         start('master',['docker','exec','cbsms_ws_gpu','setsid','--wait','bash','-lc',master_script])
+         for _ in range(60):
+             if ros('rosparam get /rosversion',check=False).returncode==0:
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared/run_case_on.py
++++ run_case_on.py CP-R6
+@@ -34,7 +34,7 @@
+     own.mkdir(exist_ok=False)
+     inside = '/workspace/'+str(own.relative_to('/home/yeranis/repos/V4RL'))
+     env_inside = '/workspace/'+str((ROOT/'source.env').relative_to('/home/yeranis/repos/V4RL'))
+-    master_uri = 'http://127.0.0.1:11451'
++    master_uri = 'http://127.0.0.1:11452'
+     jobs = {}
+     streams = []
+     def start(name, command):
+@@ -48,7 +48,7 @@
+             text=True, capture_output=True, check=check)
+     def stop_pid(name):
+         # The PID is recorded by this case, command must match the owned port/run.
+-        token = '11451' if name=='master' else str(source.name)
++        token = '11452' if name=='master' else str(source.name)
+         script = ('import os,signal,sys; from pathlib import Path; p=Path(sys.argv[1]); '
+           'pid=int(p.read_text()) if p.exists() else 0; c=Path("/proc/%d/cmdline"%pid); '
+           'e=Path("/proc/%d/environ"%pid); '
+@@ -60,7 +60,7 @@
+     started = time.time()
+     try:
+         assert ros('rosparam get /rosversion',check=False).returncode != 0, 'port is already in use'
+-        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11451'
++        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11452'
+         start('master',['docker','exec','cbsms_ws_gpu','setsid','--wait','bash','-lc',master_script])
+         for _ in range(60):
+             if ros('rosparam get /rosversion',check=False).returncode==0:
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared/verify_effective.py
++++ verify_effective.py CP-R6
+@@ -11,8 +11,8 @@
+ root = Path(__file__).resolve().parent
+ source = Path(sys.argv[1])
+ assert os.environ['CBSMS_BAG_DURATION_SEC'] == '60.0'
+-assert os.environ['CBSMS_MISSION']=='2024-11-02-17-43-10'
+-assert os.environ['CBSMS_BAG_START_SEC']=='32.0'
++assert os.environ['CBSMS_MISSION']=='2024-10-01-11-29-55'
++assert os.environ['CBSMS_BAG_START_SEC']=='0.0'
+ enabled = os.environ['CBSMS_CBS_ENABLE'] == 'true'
+ assert os.environ['CBSMS_CBS_PROTOCOL'] == 'classic'
+ assert os.environ['CBSMS_CBS_LIVE_REVISION_ENABLE'] == 'false'
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared/verify_effective_on.py
++++ verify_effective_on.py CP-R6
+@@ -11,8 +11,8 @@
+ root = Path(__file__).resolve().parent
+ source = Path(sys.argv[1])
+ assert os.environ['CBSMS_BAG_DURATION_SEC'] == '60.0'
+-assert os.environ['CBSMS_MISSION']=='2024-11-02-17-43-10'
+-assert os.environ['CBSMS_BAG_START_SEC']=='32.0'
++assert os.environ['CBSMS_MISSION']=='2024-10-01-11-29-55'
++assert os.environ['CBSMS_BAG_START_SEC']=='0.0'
+ enabled = os.environ['CBSMS_CBS_ENABLE'] == 'true'
+ assert enabled, 'ON verifier requires CBS reception enabled'
+ assert os.environ['CBSMS_CBS_PROTOCOL'] == 'classic'
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared/source_runner.sh
++++ source_runner.sh CP-R6
+@@ -43,7 +43,7 @@
+ run_dir="${run_root}/${run_name}"
+ experiment_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ launch_file="${experiment_dir}/active_window.launch"
+-[[ "${cbs_enable}" == false && "${cbs_direction}" == bidirectional && "${duration_sec}" == 60.0 && "${bag_start_sec}" == 32.0 ]] || { echo "Prepared SPX-3 60-second OFF fixed-lag capture only." >&2; exit 2; }
++[[ "${cbs_enable}" == false && "${cbs_direction}" == bidirectional && "${duration_sec}" == 60.0 && "${bag_start_sec}" == 0.0 ]] || { echo "Prepared ETH1 60-second OFF fixed-lag capture only." >&2; exit 2; }
+ glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-${project_root}/clean_glim_ws/src/glim/config_grandtour_eth1_gpu_hesai_cpt7}"
+ kimera_profile_source="${CBSMS_KIMERA_PROFILE_SOURCE:-}"
+ kimera_calibration_overlay="${CBSMS_KIMERA_CALIBRATION_OVERLAY:-${project_root}/src/cbsms/config/grandtour_kimera/eth1_mono_shared_cpt7}"
+@@ -577,7 +577,7 @@
+   "kimera_receive_cbs_beliefs=${kimera_receive_external_beliefs}" \
+   "glim_cbs_mode=${glim_cbs_mode}" \
+   "kimera_cbs_odom_factor_mode=active_window_temporary" \
+-  "experiment=gnssfgo_spx3_local_cov60_cpr5_20261019" \
++  "experiment=gnssfgo_eth1_local_cov60_cpr6_20261019" \
+   "glim_sensor_pair=hesai+cpt7_imu" \
+   "kimera_sensor_pair=${kimera_sensor_pair}" \
+   "glim_body_frame=cpt7_imu" \
+@@ -633,5 +633,5 @@
+ fi
+ 
+ touch "${run_dir}/complete.marker"
+-echo "GrandTour SPX-3 run complete: ${run_dir}"
++echo "GrandTour ETH1 run complete: ${run_dir}"
+ echo "GLIM rows=${glim_rows}, Kimera rows=${kimera_rows}, EKF rows=${ekf_rows}, G2K messages=${g2k_messages}, G2K injected=${g2k_injected}, K2G injected=${k2g_injected}"
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared/source_runner_on.sh
++++ source_runner_on.sh CP-R6
+@@ -43,7 +43,7 @@
+ run_dir="${run_root}/${run_name}"
+ experiment_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ launch_file="${experiment_dir}/active_window_on.launch"
+-[[ "${cbs_enable}" == true && "${cbs_direction}" == bidirectional && "${duration_sec}" == 60.0 && "${bag_start_sec}" == 32.0 ]] || { echo "Prepared SPX-3 60-second classic CBS-ON fixed-lag capture only." >&2; exit 2; }
++[[ "${cbs_enable}" == true && "${cbs_direction}" == bidirectional && "${duration_sec}" == 60.0 && "${bag_start_sec}" == 0.0 ]] || { echo "Prepared ETH1 60-second classic CBS-ON fixed-lag capture only." >&2; exit 2; }
+ glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-${project_root}/clean_glim_ws/src/glim/config_grandtour_eth1_gpu_hesai_cpt7}"
+ kimera_profile_source="${CBSMS_KIMERA_PROFILE_SOURCE:-}"
+ kimera_calibration_overlay="${CBSMS_KIMERA_CALIBRATION_OVERLAY:-${project_root}/src/cbsms/config/grandtour_kimera/eth1_mono_shared_cpt7}"
+@@ -577,7 +577,7 @@
+   "kimera_receive_cbs_beliefs=${kimera_receive_external_beliefs}" \
+   "glim_cbs_mode=${glim_cbs_mode}" \
+   "kimera_cbs_odom_factor_mode=active_window_temporary" \
+-  "experiment=gnssfgo_spx3_local_cov60_cpr5_20261019" \
++  "experiment=gnssfgo_eth1_local_cov60_cpr6_20261019" \
+   "glim_sensor_pair=hesai+cpt7_imu" \
+   "kimera_sensor_pair=${kimera_sensor_pair}" \
+   "glim_body_frame=cpt7_imu" \
+@@ -633,5 +633,5 @@
+ fi
+ 
+ touch "${run_dir}/complete.marker"
+-echo "GrandTour SPX-3 run complete: ${run_dir}"
++echo "GrandTour ETH1 run complete: ${run_dir}"
+ echo "GLIM rows=${glim_rows}, Kimera rows=${kimera_rows}, EKF rows=${ekf_rows}, G2K messages=${g2k_messages}, G2K injected=${g2k_injected}, K2G injected=${k2g_injected}"
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared/active_window.launch
++++ active_window.launch CP-R6
+@@ -111,7 +111,7 @@
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_stride" value="20"/>
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_max_updates" value="40"/>
+ 
+-  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared/glim_profile.launch">
++  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_local_cov60_cpr6_20261019/prepared/glim_profile.launch">
+     <arg name="config_path" value="$(arg glim_config_path)"/>
+     <arg name="glim_node_output" value="$(arg diagnostic_node_output)"/>
+     <arg name="glim_input_imu_topic" value="$(arg glim_input_imu_topic)"/>
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared/active_window_on.launch
++++ active_window_on.launch CP-R6
+@@ -111,7 +111,7 @@
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_stride" value="20"/>
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_max_updates" value="40"/>
+ 
+-  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared/glim_profile_on.launch">
++  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_local_cov60_cpr6_20261019/prepared/glim_profile_on.launch">
+     <arg name="config_path" value="$(arg glim_config_path)"/>
+     <arg name="glim_node_output" value="$(arg diagnostic_node_output)"/>
+     <arg name="glim_input_imu_topic" value="$(arg glim_input_imu_topic)"/>
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared/glim_profile.launch
++++ glim_profile.launch CP-R6
+@@ -115,7 +115,7 @@
+ 		<env name="CBS_E1B_LOCAL_UPDATE_GPU_BATCHING" value="1"/>
+         <env name="GLIM_SHARED_NATIVE_PROVIDER" value="shared_native"/>
+         <env name="GLIM_REVISION_COVARIANCE_POLICY" value="native_local"/>
+-        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared/live60_off_source/e1b_profile.jsonl"/>
++        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_local_cov60_cpr6_20261019/prepared/live60_off_source/e1b_profile.jsonl"/>
+ 		<param name="config_path" value="$(arg config_path)" />
+ 		<param name="glim_dump_path" value="$(arg glim_dump_path)" />
+ 		<param name="deterministic_input_event_log_path" value="$(arg glim_deterministic_input_event_log_path)" />
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared/glim_profile_on.launch
++++ glim_profile_on.launch CP-R6
+@@ -115,7 +115,7 @@
+ 		<env name="CBS_E1B_LOCAL_UPDATE_GPU_BATCHING" value="1"/>
+         <env name="GLIM_SHARED_NATIVE_PROVIDER" value="shared_native"/>
+         <env name="GLIM_REVISION_COVARIANCE_POLICY" value="native_local"/>
+-        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared/live60_on_source/e1b_profile.jsonl"/>
++        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_eth1_local_cov60_cpr6_20261019/prepared/live60_on_source/e1b_profile.jsonl"/>
+ 		<param name="config_path" value="$(arg config_path)" />
+ 		<param name="glim_dump_path" value="$(arg glim_dump_path)" />
+ 		<param name="deterministic_input_event_log_path" value="$(arg glim_deterministic_input_event_log_path)" />
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared/live60_off.json
++++ live60_off.json CP-R6
+@@ -1,7 +1,7 @@
+ {
+-  "sequence": "SPX-3 LOCAL CP-R5 bag32-92s matched OFF",
++  "sequence": "ETH1 LOCAL CP-R6 bag0-60s matched OFF",
+   "source_protocol": "classic",
+-  "ros_master_uri": "http://127.0.0.1:11451",
++  "ros_master_uri": "http://127.0.0.1:11452",
+   "imu_topic": "/boxi/cpt7/imu",
+   "imu_frame": "cpt7_imu",
+   "world_frame": "gnssfgo_world",
+@@ -12,18 +12,18 @@
+   "drain_timeout_wall_sec": 300,
+   "ros1_container": "cbsms_ws_gpu",
+   "receiver_container": "ubuntu-jammy-humble-nvidia",
+-  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared/receiver_fl4e.sh",
++  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_local_cov60_cpr6_20261019/prepared/receiver_fl4e.sh",
+   "sources": [
+     {
+       "id": "glim_hesai",
+-      "session": "spx3_cpr5_live60_off_20261019",
++      "session": "eth1_cpr6_live60_off_20261019",
+       "kind": "glim",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/ros_logs/*/glim_rosnode-*-stdout.log"
+     },
+     {
+       "id": "kimera_front",
+-      "session": "spx3_cpr5_live60_off_20261019",
++      "session": "eth1_cpr6_live60_off_20261019",
+       "kind": "kimera",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/estimators.log"
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared/live60_on.json
++++ live60_on.json CP-R6
+@@ -1,7 +1,7 @@
+ {
+-  "sequence": "SPX-3 LOCAL CP-R5 bag32-92s matched ON",
++  "sequence": "ETH1 LOCAL CP-R6 bag0-60s matched ON",
+   "source_protocol": "classic",
+-  "ros_master_uri": "http://127.0.0.1:11451",
++  "ros_master_uri": "http://127.0.0.1:11452",
+   "imu_topic": "/boxi/cpt7/imu",
+   "imu_frame": "cpt7_imu",
+   "world_frame": "gnssfgo_world",
+@@ -12,18 +12,18 @@
+   "drain_timeout_wall_sec": 300,
+   "ros1_container": "cbsms_ws_gpu",
+   "receiver_container": "ubuntu-jammy-humble-nvidia",
+-  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared/receiver_fl4e.sh",
++  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_local_cov60_cpr6_20261019/prepared/receiver_fl4e.sh",
+   "sources": [
+     {
+       "id": "glim_hesai",
+-      "session": "spx3_cpr5_live60_on_20261019",
++      "session": "eth1_cpr6_live60_on_20261019",
+       "kind": "glim",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/ros_logs/*/glim_rosnode-*-stdout.log"
+     },
+     {
+       "id": "kimera_front",
+-      "session": "spx3_cpr5_live60_on_20261019",
++      "session": "eth1_cpr6_live60_on_20261019",
+       "kind": "kimera",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/estimators.log"
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared/evaluate_fl4f.py
++++ evaluate_fl4f.py CP-R6
+@@ -23,7 +23,7 @@
+ import score_grandtour_prism as prism
+ import score_grandtour_relative_pose as rel
+ 
+-GT_BAG = Path('/workspace/cbs_gtsam4.3/src/datasets/GrandTour/SPX-3/2024-11-02-17-43-10_cpt7_ie_tc.bag')
++GT_BAG = Path('/workspace/cbs_gtsam4.3/src/datasets/GrandTour/2024-10-01-11-29-55_cpt7_ie_tc.bag')
+ GT_TOPIC = '/boxi/inertial_explorer/tc/odometry'
+ 
+ def sha(path):
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared/preflight_on.py
++++ preflight_on.py CP-R6
+@@ -2,7 +2,7 @@
+ from pathlib import Path
+ import hashlib,json
+ P=Path(__file__).resolve().parent
+-V=Path('/home/yeranis/results/gnssfgo_spx3_local_cov60_cpr5_20261019/off')
++V=Path('/home/yeranis/results/gnssfgo_eth1_local_cov60_cpr6_20261019/off')
+ def sha(p):
+  with Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+ for p in [P/'live60_off_source/candidate_validation.json',P/'live60_off_source/local_provenance.json',

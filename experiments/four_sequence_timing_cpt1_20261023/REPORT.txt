@@ -1,0 +1,290 @@
+CP-T1 — FOUR-SEQUENCE OPTIMIZATION AND THROUGHPUT AUDIT
+Completed 2026-10-23. Saved telemetry only; no new experiment.
+
+BOTTOM LINE
+
+0.5x is a credible next throughput test, not an operating point certified by
+these 0.20x recordings. GLIM is the limiting pipeline. Kimera and the bounded
+WNOA receiver have substantially more measured headroom. The current dominant
+sustained source cost is calculating/exporting beliefs and their covariance
+revisions, not the MAIN nonlinear solve alone. The largest CBS-ON injection
+spikes are associated with the capped passive covariance-competition audit.
+
+MAIN GPU batching is still effective: every recorded MAIN profile has zero
+synchronous GPU-linearize calls. There are no separately optimized LOCAL
+profile sessions. This is not evidence that all GPU evaluation throughout the
+process is absent: the passive audit itself performs extra factor evaluation
+and local marginal calculations outside the MAIN profiling context.
+
+No settings, covariances, revisions, diagnostics, binaries, playback rates or
+captured results were changed. No containers or estimators were launched.
+
+1. INPUTS AND MEASUREMENT CONTRACT
+
+Completed matched OFF/ON recordings, all captured concurrently/headless at0.20x:
+
+Sequence   Reference        Selected physical capture duration
+ETH1       CP-K23           346.32s
+EIG-2      CP-K24/24A        355.02s
+SPX-3      CP-K28           197.02s (corrected quiet-start capture)
+LEICA-2    CP-K29           428.75s
+
+Do not substitute the obsolete moving-start SPX-3 CP-K26 capture. EIG-2 uses
+its saved supplemental EOF-reviewed result; its original strict failure and
+terminal omission remain unchanged. This timing study does not certify new
+factor-conservation, trajectory accuracy or nonlinear stationarity properties.
+
+Frozen system: MAIN batching, every GLIM version uses all-LOCAL covariance,
+corrected MAIN means, CP-K9 Kimera, classic active_window_temporary source CBS,
+Gaussian scale1, and seven-second fixed-lag source_wnoa fusion with independent
+100ms supports, downstream stable-ID replacement, no central IMU or GNSS.
+
+Source identities, exact input paths, sizes, mtimes and SHA256 are in
+timing_v2.json (84 input files). Source source_coverage and saved comparison
+passed flags were checked. Effective playback rate is0.20 in every case.
+Input files did not change during extraction. No original artifacts overwritten.
+
+Statistics below exclude the first5 physical seconds to separate startup.
+Whole-capture, first20-after-startup and last20 statistics are also retained.
+Percentiles use nearest rank. Times are observed wall service, not CPU cycles.
+Do not sum nested timers, GPU worker sums and owner wall times.
+
+Definitions:
+- GLIM scan: full odometry insert_frame work, including MAIN wrapper, incoming
+  callbacks, native odometry covariance and outgoing first/revised beliefs.
+  Input ROS cloud preprocessing is on a separate callback (mean5.6--7.1ms).
+- Kimera backend: full keyframe backend work, including smoother, outgoing
+  beliefs/covariances/revisions. Image frontend and ROS callback are separate.
+- Fusion cycle: ALL serial belief/revision and clock work between successive
+  100ms physical-time publications. NOT merely the event that creates a support.
+  This reproduces saved validator cycle mean and median exactly for all8cases.
+  Reading/parsing the next input and writing the timing row itself are outside
+  its timer. It includes transaction/solver work and archive/output bookkeeping.
+
+2. FULL WORK PER UPDATE: MEDIAN / P95 / MAX, milliseconds
+
+Sequence/mode     GLIM scan             Kimera backend        Fusion cycle
+ETH1 OFF          61.56/153.69/446.17    82.85/136.58/159.31   55.84/107.81/146.87
+ETH1 ON           58.38/139.10/758.68    82.52/104.14/144.76   52.44/72.89/105.47
+EIG-2 OFF         55.84/143.21/255.72    88.46/110.76/160.23   51.07/78.04/140.15
+EIG-2 ON          57.68/159.96/731.37    92.04/122.50/143.62   52.66/78.16/124.23
+SPX-3 OFF         36.35/43.69/220.74     52.49/69.37/97.96     47.38/64.73/95.50
+SPX-3 ON          37.16/55.95/300.37    54.71/72.52/107.90    45.50/62.20/91.03
+LEICA-2 OFF       55.11/141.44/272.51    79.25/102.44/150.44   42.78/64.76/112.04
+LEICA-2 ON        73.21/183.06/925.68    97.21/190.60/211.90   61.57/98.48/150.15
+
+At0.5x the usual GLIM10Hz scan and fusion10Hz support each have200ms wall
+time available. Kimera keyframes are typically5Hz, giving400ms; they are NOT
+required to complete in the same200ms as a LiDAR scan. Actual variable keyframe
+timestamps, not an assumed fixed5Hz, are used for the workload estimates.
+
+Kimera frontend runs at10Hz physical time. Its whole-capture mean is23.9--35.1ms
+and maximum61--139ms across the8cases, below its200ms budget. These frontend
+means come from the cumulative native Statistics counter, not sparse sampled
+last-value percentiles. Sparse last-value samples are retained but not presented
+as a complete distribution. Backend ROS callback is included in workload totals.
+
+3. SOLVER WORK VERSUS COVARIANCE/EXPORT WORK
+
+Median / p95 milliseconds. GLIM MAIN is the instrumented smoother wrapper,
+not a newly isolated pure-linear-algebra timer. Kimera is its smoother stage.
+
+Sequence/mode     GLIM MAIN     GLIM outgoing+revisions  Kimera smoother  Kimera outgoing
+ETH1 OFF          28.79/51.96   22.54/122.97             22.70/42.60      55.47/93.82
+ETH1 ON           28.62/52.34   21.97/96.87              23.23/36.45      53.37/63.70
+EIG-2 OFF         24.57/42.04   22.48/115.24             27.58/38.51      53.63/65.57
+EIG-2 ON          25.45/43.61   22.79/113.42             29.04/49.79      54.02/65.77
+SPX-3 OFF         10.03/11.68   21.31/28.96              13.91/17.57      35.45/51.32
+SPX-3 ON          10.57/12.61   21.23/29.72              14.39/19.58      37.00/53.56
+LEICA-2 OFF       25.53/38.24   22.37/112.69             24.93/34.91      49.36/59.39
+LEICA-2 ON        30.31/44.33   34.43/135.16             32.54/74.42      58.52/105.59
+
+Shares below are ratios of TOTAL stage time to TOTAL backend/scan service in
+the same steady cohort, not ratios of medians.
+
+Sequence/mode     GLIM MAIN/post-callback   Kimera smoother/outgoing   Fusion belief events
+ETH1 OFF          38.0%/55.4%               29.0%/65.6%                81.7%
+ETH1 ON           40.0%/47.3%               30.6%/62.7%                80.6%
+EIG-2 OFF         38.3%/55.0%               33.0%/59.7%                79.2%
+EIG-2 ON          36.6%/50.5%               35.1%/56.8%                79.4%
+SPX-3 OFF         25.2%/66.6%               27.3%/67.9%                77.7%
+SPX-3 ON          23.7%/59.3%               27.9%/66.5%                77.6%
+LEICA-2 OFF       36.3%/56.3%               32.5%/60.1%                78.8%
+LEICA-2 ON        32.9%/56.0%               34.7%/58.9%                82.3%
+
+GLIM:
+- Post-callback accounts for47--67% of scan service. It includes native odometry
+  covariance, outgoing belief covariance/revisions and pose/log publication.
+- Outgoing+revision mean cost23.8--45.5ms/update. Subtracting the first-belief
+  timer leaves14--29ms/update for revisions plus active-pose export and associated
+  bookkeeping. Do NOT label that entire remainder covariance factorization.
+- LOCAL sidecar admission and expiry removal are submillisecond typical costs;
+  they are not the present sustained bottleneck.
+- MAIN synchronous GPU-linearize calls=0 in all8cases; profiler context counts
+  contain MAIN, covariance, revision, but no independent LOCAL optimization.
+
+Kimera:
+- Smoother is27--35% of backend time; outgoing work57--68%.
+- Outgoing work includes local graph preparation, full uncertainty queries,
+  first and revised beliefs and logging. It is not just writing a small CSV.
+- Nothing here identifies the native image frontend as the rate limiter.
+
+Fusion:
+- Receives approximately586--602 source-belief VERSION events per physical
+  second, although there are only10support updates/s. Stable-ID replacement
+  means these are mostly refreshed factors, not accumulating duplicate factors.
+- Belief-event handling consumes78--82% of total measured serial receiver time.
+  Each event includes covariance/identity checks, bounded transaction state,
+  factor replacement/solver work where applicable and archive bookkeeping.
+- Clock/support events consume the remainder. Timing only the publication
+  event (often around10ms) would significantly understate receiver cost.
+- Existing timers do not separate iSAM2, bounded state copy, marginalization,
+  covariance validation and I/O within a belief event. No more specific dominant
+  receiver function or GPU/CPU attribution is claimed without additional timers.
+- Retained supports=71, peak slots174--175. This is NOT full-history reoptimization.
+
+4. LARGE CBS-ON SPIKES: CAPPED PASSIVE DIAGNOSTIC
+
+The log/code association is saved in audit_spikes.json. Each ON run contains
+exactly40 successful CBS_RECEIVER_LOCAL_COMPETITION_ROW samples, no failed
+sample records. These are matched to their enclosing on_smoother_update callback.
+
+                       Injection callback WITH audit      WITHOUT audit
+Sequence               median / p95 / max ms               maximum ms
+ETH1                   317.95 /606.29 /704.06              0.516
+EIG-2                  410.90 /587.26 /680.78              0.550
+SPX-3                  200.97 /218.31 /218.49              0.496
+LEICA-2                541.81 /763.52 /818.24              0.458
+
+Every injection callback above200ms coincides with an audit sample:
+ETH1 37/37, EIG-2 37/37, SPX-3 22/22, LEICA-2 32/32.
+There is no dedicated audit-only timer, so these are enclosing-callback costs,
+not a claim that every microsecond inside that callback belongs to the audit.
+
+This is a stronger explanation than "CBS factors make the optimizer slow":
+the ordinary injection callback remains below0.55ms. The audit is a diagnostic
+of factor competition, not the normal all-LOCAL revision covariance provider.
+It evaluates local factor errors, touching-factor Hessians and constructs
+gtsam::Marginals on a local graph for each sampled incoming belief. It can
+therefore repeat costly GPU-backed work outside MAIN batching. It is capped
+at40samples withstride20; its growing early cost is not unbounded source state.
+
+Example: LEICA-2 ON at111.94s, full scan859.75ms, of which818.24ms is injection
+callback; MAIN10.41ms and post-callback28.56ms. At159.95s full scan925.68ms,
+injection663.20ms plus post-callback224.56ms. These are not900ms MAIN solves.
+
+OFF still has some export-related spikes: ETH1 at50.52s scan446.17ms includes
+410.19ms post-callback and30.97ms MAIN. Thus removing/isolation of the optional
+audit alone would not eliminate every over-budget scan.
+
+5. CONDITIONAL0.5x THROUGHPUT PROJECTION
+
+We sum observed wall service and divide by the available wall duration at0.5x.
+This is a SERIAL PIPELINE BUSY-FRACTION ESTIMATE, not whole-computer CPU/GPU
+utilization. All three pipelines run concurrently. Do not add them together
+as if one sequential thread performed all three jobs.
+
+Each cell: average / worst rolling20-physical-second window busy fraction.
+The20s physical window has40s wall time at0.5x. Includes diagnostic spikes.
+
+Sequence/mode     GLIM            Kimera backend+callback   Fusion all events
+ETH1 OFF          35.8%/72.0%     18.9%/34.2%              30.4%/50.1%
+ETH1 ON           34.2%/48.7%     17.3%/24.5%              26.0%/29.7%
+EIG-2 OFF         31.5%/47.3%     21.2%/26.6%              26.6%/30.2%
+EIG-2 ON          34.5%/49.0%     22.2%/30.7%              27.0%/30.1%
+SPX-3 OFF         18.9%/25.2%     11.8%/15.2%              23.8%/25.9%
+SPX-3 ON          21.1%/26.9%     12.6%/16.4%              23.8%/25.0%
+LEICA-2 OFF       30.4%/47.8%     17.7%/26.3%              24.0%/25.9%
+LEICA-2 ON        42.4%/62.6%     24.8%/49.3%              30.3%/41.4%
+
+Kimera frontend adds a separate estimated12--18% busy fraction at0.5x.
+GLIM ROS cloud preprocessing adds a separate roughly3% average busy fraction.
+These thread-level estimates are not a CPU-core reservation or a GPU forecast.
+
+Consequences:
+- All measured sustained20s windows have capacity in the unchanged-service
+  projection. This supports TRYING0.5x rather than assuming0.1x is necessary.
+- Bursts matter: ETH1 OFF reaches102.2% in a5s physical window; LEICA-2 ON
+  reaches95.4%, and short1s windows reach166%. A queue can briefly grow even
+  though it later drains. P95 alone is not a hard real-time guarantee.
+- In a simple fixed-service FIFO illustration, GLIM reaches about1.33s maximum
+  wall waiting in ETH1 OFF and1.17s in LEICA-2 ON at0.5x. This uses scan-ready
+  timestamps and recorded service costs; it is NOT a receiver/estimator replay,
+  arrival-chain model or retention-window acceptance certificate.
+- Raising the replay rate increases simultaneous CPU/GPU/memory/I/O demand.
+  Saved0.20x service times may increase. There is no complete hardware-utilization
+  trace here to rule that out. Clock-to-source delays and CBS availability in
+  physical time also change, potentially changing numerical trajectories.
+
+Observed0.20x health: GLIM remaining internal queue maximum1 in every case;
+receiver monitored queue maxima8--23, transport maximum37--49. Receiver
+receipt-to-processing p95 across cases18.2--31.5ms; worst whole-run maximum
+587ms in ETH1 OFF, versus35--103ms in the other7cases. This excludes upstream
+sensor-to-belief creation latency and does not validate0.5x.
+
+Early/late scan median example: LEICA-2 ON rises41.28->93.00ms from first20s
+after startup to last20s. ETH1 ON63.32->59.74ms, EIG-2 ON52.79->61.11ms,
+SPX-3 ON34.74->37.99ms. No universal monotonic full-history growth pattern is
+supported. GLIM active frames remain50; receiver supports remain71. Scene and
+factor/export workload still vary even with bounded states.
+
+6. RECOMMENDATION / STOP
+
+Recommend one explicitly authorized headless0.5x throughput test before calling
+it the official rate; no model/covariance/lag changes are indicated by this
+analysis. It should include a previously busy portion, not only quiet startup,
+retain valid quiet initialization, and keep existing conservation, expiry,
+coverage, delay and growing-queue checks. Do not relax guards to claim success.
+
+The first engineering target, IF needed, is the passive heavy competition
+audit, which should be isolated from the time-critical incoming-factor path or
+disabled only in a clearly declared throughput profile. Preserve the archived
+audit evidence. Removing it is not performed here; timing/cache effects and
+causal ordering still need a bounded comparison, not an assumption of bitwise
+identity. It must not silently disable required covariance/revision logging.
+
+The next sustained-cost target would be covariance/revision computation and
+export in GLIM/Kimera, and per-version transactions in fusion. Reuse verified
+work before considering changed publication cadence. Do not silently drop
+revisions, change uncertainty, extend lag or retune WNOA to improve timings.
+
+Decision:0.5x is plausible, with GLIM as the first bottleneck. Not yet validated.
+No higher-rate experiment or implementation change started. Stop at this audit.
+
+7. REPRODUCIBILITY AND TIMER SOURCE POINTERS
+
+Outputs here:
+- PLAN.txt: bounded three-step task.
+- analyze.py: saved-log extractor, exclusive-create timing_v2.json output.
+- timing_v2.json: authoritative statistics, cohorts, input84file hash manifest.
+- audit_spikes.py / audit_spikes.json: per-callback audit attribution.
+- timing.json: superseded intermediate extraction; DO NOT USE. It omitted
+  intervening belief service from receiver cycle accounting and mishandled
+  zero-timestamp startup entries in FIFO projection. Both fixed in v2, which
+  matches original validation cycle totals. No original run/report was altered.
+
+GLIM exact private bridge used by captures:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/local_revision_covariance_cpi1_20261019/cbs_bridge.cpp
+  onSmootherUpdate and timing1483; outgoing/revision callbacks;
+  logReceiverLocalCompetition2841, full Marginals3012, log3070,
+  appendActiveWindowTemporaryFactor3134 calls diagnostic3172.
+GLIM scan timer:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/glim/src/glim/odometry/odometry_estimation_imu.cpp
+  GLIM_ODOM_IMU_TIMING_ROW around496; callback boundaries above it.
+Async scan-ready/queue timestamps:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/glim/src/glim/odometry/async_odometry_estimation.cpp:125
+Profile contexts/owner versus worker definitions:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/e1b_local_profile_20261012/RuntimeProfile.h
+Kimera timer definitions:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/Kimera-VIO/src/backend/VioBackend.cpp
+  BACKEND_SPINONCE around2063, optimize timer around5224, outgoing revisions
+  around3684--3766. Frozen private CP-K9 timer fields match these definitions.
+Frontend Statistics counter:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/Kimera-VIO/src/utils/Statistics.cpp:290
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/Kimera-VIO/include/kimera-vio/utils/Accumulator.h:91
+Receiver service boundaries:
+/home/yeranis/repos/gnssFGO/experiments/receiver_finalization_cpk19_20261021/Live.cpp
+/home/yeranis/repos/gnssFGO/experiments/receiver_finalization_cpk19_20261021/Receiver.h
+  transaction around350; belief372; dispatch230; publication280.
+Existing full-cycle validator (each prepared run uses same accounting):
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_full_cpk29_20261023/prepared/validate_case.py:145

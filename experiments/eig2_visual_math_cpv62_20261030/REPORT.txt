@@ -1,0 +1,165 @@
+CP-V62 — Suspect2: visual Jacobians and landmark elimination
+2026-10-30 | EIG-2 Hesai | saved CP51 first CBS admission
+
+OUTCOME
+PASS: no visual Jacobian, missing-right masking, whitening, landmark-elimination
+or visual-assembly error was found in this saved first-event audit.
+An independently assembled visual system predicts essentially the SAME update.
+Therefore the observed first-belief disturbance is not explained by the tested
+visual derivative/Schur implementation. This does NOT prove the full algorithm
+is correct or the nonlinear optimum is reached.
+
+User explicitly authorized parking suspect1 and moving to suspect2. Older
+do-not-advance pointers are superseded. Suspect1 is parked, not universally
+eliminated. No production fix, full replay or weight/covariance tuning occurred.
+
+SCOPE
+Original CP51 update6 first G->K admission, capture1.599933183s,
+GLIM5->7 / Kimera x4->x5, CBS factor929.
+Three native linearization states:
+- initial: exact start of ordinary update;
+- postordinary: exact saved start of refresh;
+- postrefresh: final saved state, factor audit only.
+
+Each state has338smart factors. Accepted285/266/267; rejected53/72/71.
+Thus1014factor-state instances,818accepted and196rejected; not818distinct tracks.
+The points, poses, measurements, calibration, cache rules, valid sets and weights
+are those of the ORIGINAL native algorithm. CP61's local-frame candidate is NOT
+used. No retuning, landmark refinement, cache reset, guard relaxation or new data.
+The saved nonvisual factors are preserved but their internal derivatives are
+not independently rederived by this visual audit.
+
+METHOD / CONTROLS
+Native graph linearization on deep diagnostic clones establishes actual used
+points/statuses. At each accepted point, export native raw and whitened pose
+Jacobian F, landmark Jacobian E, RHS b, body-to-camera transform, camera poses,
+calibration, measurements and Gaussian H/g/constant. Hold the point fixed while
+differentiating. Native mutable cache/function bytes stay unchanged by the
+derivative calculations; original snapshot bytes remain unchanged throughout.
+
+Independent manual stereo projection includes body-to-camera composition,
+right baseline and missing-right handling. Central finite differences in the
+native Pose3 retraction chart use BOTH1e-5 and1e-6 spacings. Independently coded
+NumPy analytic derivatives use the body-frame skew/rotation chain and pinhole
+derivatives; no native projection derivative is used in that calculation.
+
+Explicit whitened [pose,landmark] system is eliminated independently by:
+(a) SVD projection onto the landmark-Jacobian left nullspace;
+(b) normal-system Schur solve.
+Compare Hessian and gradient, not the stored Gaussian constant indiscriminately.
+All818landmark Jacobians have full numerical rank3 under the declared
+machine-epsilon threshold. No rank truncation or damping change was introduced.
+
+Release and ASan/UBSan synthetic checks pass for nonidentity body-camera
+extrinsics, nonzero residuals, full stereo, mixed right-missing and left-only
+tracks. Wrong extrinsic chain and unmasked right-row negative controls detect
+the intended mistakes. Vendor shared libraries are not sanitizer-instrumented.
+
+DERIVATIVE AND ELIMINATION RESULTS
+All predeclared checks pass, without relaxed thresholds.
+
+Check                                        Maximum relative difference
+Pose Jacobian vs finite differences                  7.150633e-9
+Landmark Jacobian vs finite differences              7.570689e-9
+Pose Jacobian vs independent analytic                9.034576e-14
+Landmark Jacobian vs independent analytic            9.367016e-14
+RHS vs independent analytic projection               4.767055e-11
+Whitening vs exact sigma3 division                   1.668718e-16
+Native pose Hessian vs SVD elimination               9.622573e-10
+Native pose gradient vs SVD elimination              1.738036e-10
+Native pose Hessian vs normal Schur                  7.023227e-10
+Native pose gradient vs normal Schur                 1.859731e-10
+Native pose Hessian vs manual-analytic elimination   9.626523e-10
+
+Finite-difference gates were1e-6 at BOTH spacings; analytic/whitening1e-10;
+Hessian/gradient elimination1e-7. All213missing-right rows among accepted
+factor-state instances have EXACTLY zero native residual/pose/landmark rows.
+All196rejected instances have exactly zero Gaussian contribution.
+No normal-system or dense-solve conditioning warning occurred.
+
+Maximum landmark-Jacobian condition number4662.83 (normal matrix about2.17e7).
+The global dense Hessian condition number is approximately1.006e10, dependent
+on parameter units/scaling. Conditioning is reported, not interpreted as a
+physical observability verdict. Despite that conditioning, independent update
+differences are tiny and backward residuals are small.
+
+ASSEMBLY / FIRST UPDATE
+Global native matrices reproduce the original captured ordinary and exact-start
+refresh matrices EXACTLY. Native saved linear solves reproduce captured states
+to3.33736e-10 and1.04825e-10 mixed tangent norm respectively.
+Two native saved baseline linear solves only; no forward nonlinear replay.
+
+Replace visual contributions with independent eliminated systems while keeping
+all nonvisual contributions fixed. Compare both using the SAME SciPy dense
+solver so the candidate difference is not a change of solver.
+
+                                            Ordinary          Refresh
+Global H difference (explicit native J)      3.18444e-15       2.40050e-16
+Global g difference (explicit native J)      6.16076e-15       2.40662e-13
+Global H difference (manual analytic J)      3.36174e-15       2.49522e-16
+Global g difference (manual analytic J)      2.26275e-14       1.64685e-12
+
+Explicit-native-J system vs original, same dense solver:
+Max rotation-INCREMENT difference, deg      2.59244e-9        1.77451e-10
+Max translation-INCREMENT difference, m     2.92554e-13       4.51551e-14
+Max gyro-bias increment difference, rad/s    2.25200e-14       2.91267e-15
+Mixed tangent difference                    1.17622e-9        8.03766e-11
+
+Manual-analytic-J system vs original, same dense solver:
+Max rotation-INCREMENT difference, deg      2.57991e-9        1.65364e-10
+Max translation-INCREMENT difference, m     2.89445e-13       5.35897e-14
+Mixed tangent difference                    1.17019e-9        7.48383e-11
+
+These are linear increment discrepancies, not trajectory ATE or end-to-end
+accuracy improvements. Baseline dense-vs-native solver rotation increment
+difference is3.02686e-9deg ordinary and1.23319e-9deg refresh, consistent with
+the small roundoff scale. Dense backward residuals2.31e-18..1.12e-17 are linear
+numerical checks, NOT nonlinear stationarity.
+
+CONSTANT TERM: EXPECTED DIFFERENCE, NOT A POSE-UPDATE ERROR
+Native CameraSet::SchurComplement retains b'b as the Gaussian constant, while
+full elimination subtracts b'E(E'E)^-1E'b. The independently predicted constant
+difference matches the observed one. Summed differences are5.503130(initial),
+2.119949(postordinary),.692707(postrefresh). The largest individual is1.576706.
+This constant does not enter H*delta=g and therefore cannot explain this GN
+update. It matters when interpreting cost numbers; we do NOT declare all cost
+reporting or nonlinear acceptance mechanisms correct based on this observation.
+
+INTERPRETATION / NEXT DECISION
+The independent formulation produces the same first update: the visual
+information is not being lost or misdirected by the tested derivative or
+landmark-elimination implementation at this event. No fix to those components
+is justified by this audit.
+
+This does not test later fixed-lag marginalization, every future factor, nonlinear
+iteration/convergence, or whether the chosen factors/priors permit a large
+coupled rotation/bias response. It does not certify GLIM's beliefs/covariance.
+A correct linear algebra implementation can still produce undesirable output
+from its current nonlinear problem or update schedule.
+
+Recommended next scope, only if authorized: suspect3, a factor-by-factor
+directional response/cost audit along the actual first rotation/bias update,
+including the prior, IMU, vision and CBS at unchanged weights. Determine what
+resists the update, what drives it, and how true fixed-point/native residual
+costs change across ordinary and refresh. Preserve accepted-set accounting;
+do not mistake rejection-induced cost reductions for convergence or stationary
+solutions. No full sequence, stronger weights or speculative implementation.
+No suspect3 experiment has been launched.
+
+PROVENANCE / REPORTING REPAIR / CLOSEOUT
+Current relevant native source/header hashes were pinned in addition to
+inherited historical library/snapshot pins. A current explanatory source hash
+is not retrospective proof for any historically unpinned source file.
+Private VisualMath.cpp/builds/results reside in the matching V4RL/runs root.
+analysis_v2.json is the authoritative complete independent analysis.
+
+Original analyze.py and its incomplete analysis.json are preserved. Numerical
+calculations completed, but original JSON output failed on a NumPy boolean.
+Fresh analyze_v2.py / analysis_v2.json converts NumPy scalar types at output
+only. No formula/threshold changes, native extraction rerun or experiment retry.
+See REPORTING_REPAIR.txt. No build, fixture or native audit failure occurred.
+
+verification.json / complete.json certify protected inputs, original Hesai667
+checkpoint, owned jobs exited and both originally-stopped containers restored.
+No source capture, production/default change, cleanup/deletion, commit or push.
+

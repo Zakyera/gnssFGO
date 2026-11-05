@@ -1,0 +1,28 @@
+CP-V109: saved CP108 EIG-2 fusion OFF/ON discrepancy localization
+User requested locating onset/peaks and inspecting surrounding beliefs and timing.
+Authority: read-only saved-data analysis; no capture, receiver replay, new EVO
+scoring, tuning, build, installation, deletion, or changes to sealed CP108 files.
+
+Reuse CP108 comparison.npz, exact six-curve common100ms mask and saved global
+SE3/no-scale alignments; verify all pointwise error arrays against sealed EVO
+archives and ATE. All time offsets refer to the selected355.02s recording window,
+whose start is5.7s after the bag epoch. Keep invalid gaps invalid.
+Predefined localization: five-second centered RMS; ON-minus-OFF RMS >0.02m
+sustained for>=5s is a diagnostic alert, not a statistical significance test or
+causal onset. Top nonoverlapping peak centers separated>=15s. Also compute
+gauge-invariant5s relative-motion errors, without refitting any trajectory, to
+avoid confusing global alignment with physical onset. No gap crossing.
+Compare ONLINE with separately seven-second-fixed-lag-finalized output.
+
+Then examine actual received full6x6 beliefs at first, age2.5s, age4.5s and final
+accepted/absorbed revisions. Match physical endpoints and ages before comparing
+covariance. Use CPT7 body for both received beliefs and IE-TC relative reference.
+Review reference residuals, source disagreement, matrix directions, lifecycle,
+receipt/processing timing and source revisions around localized intervals.
+Normalized reference discrepancy is not calibrated NEES/NIS. IE-TC sharesCPT7;
+separate IMUs do not remove persistent feedback correlation. No causal claim
+from covariance contraction or event coincidence alone. No new run authorized.
+
+All new outputs live in this supplemental directory. Read inputs are hashed,
+checked against existing seal where available, and rechecked at closeout.
+Use static scientific figures; do not modify original evaluation products.

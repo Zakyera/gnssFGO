@@ -1,0 +1,645 @@
+{
+  "passed": true,
+  "gate": "CP-K16b",
+  "candidate_sha256": "6f71292d29d974a0555abd9fda6b2370fdab81ca634a4e1343c216d2a762d2ca",
+  "actual_wrapper_updates": 77,
+  "synthetic_arrivals": 24,
+  "retirement_updates": 19,
+  "slot_reuse_occurrences": 37,
+  "relative_pair_samples": 278,
+  "first_pair_samples": 23,
+  "later_pair_samples": 255,
+  "ordinary_and_revision_helpers_agree_exactly": true,
+  "records_per_comparison": 31086,
+  "numeric_entries_per_comparison": 1429185,
+  "exact_gpu_snapshots_per_comparison": 1105,
+  "max_state_matrix_covariance_difference": 0,
+  "wrapper_gpu_derivative_requests": 564,
+  "wrapper_reference_sync_calls": 564,
+  "wrapper_candidate_sync_calls": 0,
+  "wrapper_candidate_prepared_hits": 564,
+  "cache_mixed_check": {
+    "reused": 1,
+    "fresh": 4
+  },
+  "cache_only_check": {
+    "reused": 3,
+    "fresh": 0
+  },
+  "no_extra_gpu_evaluations_from_local_queries": true,
+  "timing_performed": false,
+  "dataset_run": false,
+  "promoted": false,
+  "limitations": [
+    "Bounded synthetic actual-solver histories, not a live GrandTour acceptance run.",
+    "Reused GPU kernels and provider/vendor objects are not fully sanitizer-instrumented.",
+    "No CUDA-device sanitizer or end-to-end speedup claim.",
+    "Source revision-window versus receiver retention mismatch is still separate.",
+    "Three invalid pre-validation harness attempts and one compile error preserved; no enabled-candidate numerical failure.",
+    "No production source changes or candidate-library rebuild in K16b."
+  ],
+  "receipts": {
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/k16b_checks_4/passed.json": {
+      "passed": true,
+      "modes": {
+        "reference": {
+          "returncode": 0,
+          "command": [
+            "/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/k16b_build_5/reference",
+            "/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/k16b_checks_4/reference.txt",
+            "0",
+            "/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/k16b_checks_4/frozen_geometry.bin"
+          ],
+          "executable_sha256": "d59cc0371dbc3984e591b51b58b364ce8a5ebd7236b1af29a9e7c898e71fe683",
+          "library_sha256": "3f23e6115e34acc5a2f2b965b15bd4c651897c889a6c38a0a52cdb3855c0ceb7",
+          "geometry_sha256": "eb02ad0aebc1c0c532b4d1f9a1ff16cd12e75d0b5b99deafb7c465dbe1d01c0a"
+        },
+        "disabled": {
+          "returncode": 0,
+          "command": [
+            "/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/k16b_build_5/candidate",
+            "/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/k16b_checks_4/disabled.txt",
+            "0",
+            "/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/k16b_checks_4/frozen_geometry.bin"
+          ],
+          "executable_sha256": "ed082f2ad26ff56b80a62d8e4122998008ff927733b1b0b2b691be072b1d5bc9",
+          "library_sha256": "6f71292d29d974a0555abd9fda6b2370fdab81ca634a4e1343c216d2a762d2ca",
+          "geometry_sha256": "eb02ad0aebc1c0c532b4d1f9a1ff16cd12e75d0b5b99deafb7c465dbe1d01c0a",
+          "comparison": {
+            "passed": true,
+            "exact_disabled": true,
+            "records": 30031,
+            "numeric_entries": 1404469,
+            "counts": {
+              "bytes": 1014,
+              "exact": 19996,
+              "matrix": 5426,
+              "state": 1420,
+              "pose": 1619,
+              "cov": 556
+            },
+            "max_absolute_differences": {
+              "matrix": 0.0,
+              "state": 0.0,
+              "translation": 0.0,
+              "orientation_rad": 0.0,
+              "pose": 0.0,
+              "cov": 0.0
+            },
+            "worst_record": {
+              "matrix": "partial/cache/6/H",
+              "state": "wrapper/76/cached/estimate/8502796096475496471",
+              "translation": "partial/estimate/8646911284551352322",
+              "orientation_rad": "partial/estimate/8646911284551352322",
+              "pose": "partial/estimate/8646911284551352322",
+              "cov": "wrapper/76/cached/publication/8646911284551352343/relative"
+            },
+            "reference_counters": {
+              "wrapper": [
+                564,
+                564,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "unattached": [
+                1,
+                1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "direct": [
+                574,
+                574,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "candidate_counters": {
+              "wrapper": [
+                564,
+                564,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "unattached": [
+                1,
+                1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "direct": [
+                574,
+                574,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "candidate_sites": [
+              "counts",
+              [
+                "0",
+                "0",
+                "0",
+                "0"
+              ]
+            ]
+          }
+        },
+        "enabled": {
+          "returncode": 0,
+          "command": [
+            "/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/k16b_build_5/candidate",
+            "/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/k16b_checks_4/enabled.txt",
+            "1",
+            "/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/k16b_checks_4/frozen_geometry.bin"
+          ],
+          "executable_sha256": "ed082f2ad26ff56b80a62d8e4122998008ff927733b1b0b2b691be072b1d5bc9",
+          "library_sha256": "6f71292d29d974a0555abd9fda6b2370fdab81ca634a4e1343c216d2a762d2ca",
+          "geometry_sha256": "eb02ad0aebc1c0c532b4d1f9a1ff16cd12e75d0b5b99deafb7c465dbe1d01c0a",
+          "comparison": {
+            "passed": true,
+            "exact_disabled": false,
+            "records": 30031,
+            "numeric_entries": 1404469,
+            "counts": {
+              "bytes": 1014,
+              "exact": 19996,
+              "matrix": 5426,
+              "state": 1420,
+              "pose": 1619,
+              "cov": 556
+            },
+            "max_absolute_differences": {
+              "matrix": 0.0,
+              "state": 0.0,
+              "translation": 0.0,
+              "orientation_rad": 0.0,
+              "pose": 0.0,
+              "cov": 0.0
+            },
+            "worst_record": {
+              "matrix": "partial/cache/6/H",
+              "state": "wrapper/76/cached/estimate/8502796096475496471",
+              "translation": "partial/estimate/8646911284551352322",
+              "orientation_rad": "partial/estimate/8646911284551352322",
+              "pose": "partial/estimate/8646911284551352322",
+              "cov": "wrapper/76/cached/publication/8646911284551352343/relative"
+            },
+            "reference_counters": {
+              "wrapper": [
+                564,
+                564,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "unattached": [
+                1,
+                1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "direct": [
+                574,
+                574,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "candidate_counters": {
+              "wrapper": [
+                564,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                564
+              ],
+              "unattached": [
+                1,
+                1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "direct": [
+                574,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                574
+              ]
+            },
+            "candidate_sites": [
+              "counts",
+              [
+                "25",
+                "23",
+                "2",
+                "0"
+              ]
+            ]
+          }
+        },
+        "ubsan": {
+          "returncode": 0,
+          "command": [
+            "/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/k16b_build_5/ubsan",
+            "/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/k16b_checks_4/ubsan.txt",
+            "1",
+            "/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/k16b_checks_4/frozen_geometry.bin"
+          ],
+          "executable_sha256": "39a5d186d04e3a1abd6fda6aeddeca7d0e56fe60059af9d9cc0ff2de77192508",
+          "library_sha256": "623f952dc7cb90bf987977c3cba9d8be144811046a5af5d84ea207a518c09e0a",
+          "geometry_sha256": "eb02ad0aebc1c0c532b4d1f9a1ff16cd12e75d0b5b99deafb7c465dbe1d01c0a",
+          "comparison": {
+            "passed": true,
+            "exact_disabled": false,
+            "records": 30031,
+            "numeric_entries": 1404469,
+            "counts": {
+              "bytes": 1014,
+              "exact": 19996,
+              "matrix": 5426,
+              "state": 1420,
+              "pose": 1619,
+              "cov": 556
+            },
+            "max_absolute_differences": {
+              "matrix": 0.0,
+              "state": 0.0,
+              "translation": 0.0,
+              "orientation_rad": 0.0,
+              "pose": 0.0,
+              "cov": 0.0
+            },
+            "worst_record": {
+              "matrix": "partial/cache/6/H",
+              "state": "wrapper/76/cached/estimate/8502796096475496471",
+              "translation": "partial/estimate/8646911284551352322",
+              "orientation_rad": "partial/estimate/8646911284551352322",
+              "pose": "partial/estimate/8646911284551352322",
+              "cov": "wrapper/76/cached/publication/8646911284551352343/relative"
+            },
+            "reference_counters": {
+              "wrapper": [
+                564,
+                564,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "unattached": [
+                1,
+                1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "direct": [
+                574,
+                574,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "candidate_counters": {
+              "wrapper": [
+                564,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                564
+              ],
+              "unattached": [
+                1,
+                1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "direct": [
+                574,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                574
+              ]
+            },
+            "candidate_sites": [
+              "counts",
+              [
+                "25",
+                "23",
+                "2",
+                "0"
+              ]
+            ]
+          }
+        }
+      }
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/k16b_checks_5/passed.json": {
+      "passed": true,
+      "modes": {
+        "reference": {
+          "returncode": 0,
+          "command": [
+            "/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/k16b_build_6/reference",
+            "/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/k16b_checks_5/reference.txt",
+            "0",
+            "/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/k16b_checks_5/frozen_geometry.bin"
+          ],
+          "executable_sha256": "15b968e2f43e5ea5d11560da1c06066a4193be5a0a48ba014f2a670a43817a14",
+          "library_sha256": "3f23e6115e34acc5a2f2b965b15bd4c651897c889a6c38a0a52cdb3855c0ceb7",
+          "geometry_sha256": "33985cd033d21fc1fee477aafa39d5233c4f209808ab3d361b6ffa56c7669ee8"
+        },
+        "disabled": {
+          "returncode": 0,
+          "command": [
+            "/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/k16b_build_6/candidate",
+            "/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/k16b_checks_5/disabled.txt",
+            "0",
+            "/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/k16b_checks_5/frozen_geometry.bin"
+          ],
+          "executable_sha256": "8467b9bbec2c8a1b2772cb1ed82f6c1ba3ef3f2e9be58cf77bef845dabdf3cf7",
+          "library_sha256": "6f71292d29d974a0555abd9fda6b2370fdab81ca634a4e1343c216d2a762d2ca",
+          "geometry_sha256": "33985cd033d21fc1fee477aafa39d5233c4f209808ab3d361b6ffa56c7669ee8",
+          "comparison": {
+            "passed": true,
+            "exact_disabled": true,
+            "records": 1055,
+            "numeric_entries": 24716,
+            "counts": {
+              "bytes": 91,
+              "exact": 728,
+              "pose": 96,
+              "matrix": 140
+            },
+            "max_absolute_differences": {
+              "translation": 0.0,
+              "orientation_rad": 0.0,
+              "pose": 0.0,
+              "matrix": 0.0
+            },
+            "worst_record": {
+              "translation": "incremental/1/estimate/8646911284551352343",
+              "orientation_rad": "incremental/1/estimate/8646911284551352343",
+              "pose": "incremental/1/estimate/8646911284551352343",
+              "matrix": "incremental/1/cache/69/H"
+            },
+            "reference_counters": {
+              "incremental": [
+                4,
+                4,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "candidate_counters": {
+              "incremental": [
+                4,
+                4,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "candidate_sites": null
+          }
+        },
+        "enabled": {
+          "returncode": 0,
+          "command": [
+            "/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/k16b_build_6/candidate",
+            "/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/k16b_checks_5/enabled.txt",
+            "1",
+            "/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/k16b_checks_5/frozen_geometry.bin"
+          ],
+          "executable_sha256": "8467b9bbec2c8a1b2772cb1ed82f6c1ba3ef3f2e9be58cf77bef845dabdf3cf7",
+          "library_sha256": "6f71292d29d974a0555abd9fda6b2370fdab81ca634a4e1343c216d2a762d2ca",
+          "geometry_sha256": "33985cd033d21fc1fee477aafa39d5233c4f209808ab3d361b6ffa56c7669ee8",
+          "comparison": {
+            "passed": true,
+            "exact_disabled": false,
+            "records": 1055,
+            "numeric_entries": 24716,
+            "counts": {
+              "bytes": 91,
+              "exact": 728,
+              "pose": 96,
+              "matrix": 140
+            },
+            "max_absolute_differences": {
+              "translation": 0.0,
+              "orientation_rad": 0.0,
+              "pose": 0.0,
+              "matrix": 0.0
+            },
+            "worst_record": {
+              "translation": "incremental/1/estimate/8646911284551352343",
+              "orientation_rad": "incremental/1/estimate/8646911284551352343",
+              "pose": "incremental/1/estimate/8646911284551352343",
+              "matrix": "incremental/1/cache/69/H"
+            },
+            "reference_counters": {
+              "incremental": [
+                4,
+                4,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "candidate_counters": {
+              "incremental": [
+                4,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                4
+              ]
+            },
+            "candidate_sites": null
+          }
+        },
+        "ubsan": {
+          "returncode": 0,
+          "command": [
+            "/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/k16b_build_6/ubsan",
+            "/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/k16b_checks_5/ubsan.txt",
+            "1",
+            "/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/k16b_checks_5/frozen_geometry.bin"
+          ],
+          "executable_sha256": "7310a8c6ec384c22bd69416e901ddb9f498e786e21002748b9d4062ead16275f",
+          "library_sha256": "623f952dc7cb90bf987977c3cba9d8be144811046a5af5d84ea207a518c09e0a",
+          "geometry_sha256": "33985cd033d21fc1fee477aafa39d5233c4f209808ab3d361b6ffa56c7669ee8",
+          "comparison": {
+            "passed": true,
+            "exact_disabled": false,
+            "records": 1055,
+            "numeric_entries": 24716,
+            "counts": {
+              "bytes": 91,
+              "exact": 728,
+              "pose": 96,
+              "matrix": 140
+            },
+            "max_absolute_differences": {
+              "translation": 0.0,
+              "orientation_rad": 0.0,
+              "pose": 0.0,
+              "matrix": 0.0
+            },
+            "worst_record": {
+              "translation": "incremental/1/estimate/8646911284551352343",
+              "orientation_rad": "incremental/1/estimate/8646911284551352343",
+              "pose": "incremental/1/estimate/8646911284551352343",
+              "matrix": "incremental/1/cache/69/H"
+            },
+            "reference_counters": {
+              "incremental": [
+                4,
+                4,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "candidate_counters": {
+              "incremental": [
+                4,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                4
+              ]
+            },
+            "candidate_sites": null
+          }
+        }
+      }
+    },
+    "/home/yeranis/repos/gnssFGO/experiments/main_gpu_batching_cpk16_20261020/INTEGRITY_K16B_FINAL.json": {
+      "passed": true,
+      "protected_files": 2026,
+      "protected_changed": [],
+      "input_changed": [],
+      "source_repositories_changed": [],
+      "candidate_sha256": "6f71292d29d974a0555abd9fda6b2370fdab81ca634a4e1343c216d2a762d2ca"
+    },
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/abi_load.json": {
+      "command": [
+        "/usr/bin/python3",
+        "-c",
+        "\nimport ctypes,json\nfrom pathlib import Path\nctypes.CDLL('/workspace/cbs_gtsam4.3/runs/local_revision_covariance_cpi1_20261019/libglim_ros.so',mode=ctypes.RTLD_GLOBAL)\npaths=sorted(set(l.split()[-1] for l in Path('/proc/self/maps').read_text().splitlines()\n                 if 'libglim_ros.so' in l or 'libgtsam_points.so' in l or 'libgtsam_points_cuda.so' in l))\nprint(json.dumps(paths))\n"
+      ],
+      "returncode": 0,
+      "stdout": "[\"/workspace/cbs_gtsam4.3/runs/e1b_local_profile_20261012/release_2/libgtsam_points_cuda.so.1.2.1\", \"/workspace/cbs_gtsam4.3/runs/local_revision_covariance_cpi1_20261019/libglim_ros.so\", \"/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/release_1/libgtsam_points.so.1.2.1\"]\n",
+      "stderr": "",
+      "passed": true
+    }
+  },
+  "authored_files": {
+    "PROTOCOL_K16B.txt": "d180b27074031fbdaf48c23c2790570c42828b54217ae81f8656350c37dc0338",
+    "REPORT_K16A.txt": "8ec172726a916d956b133a13bf510d8c76d962999d2b956c7f217e5e793eb10d",
+    "summarize_k16b.py": "6d8ba53a17ef13c654050882ba0412b7dc51380a8e1ab20f1dc5b7f8a02421be",
+    "test_incremental.cpp": "1738763717699a6f6fe609fd2e0092ab095898251141561374594ee829a57f37",
+    "prepare_k16a.py": "3b172af87ac10351953ea663f4a2b355b27f3d55a518be4fa92925843c2f52f1",
+    "PROTOCOL_K16A.txt": "0ef9765366cb1b4d49f68a73b6f464a131717cad57a0893bef37ad31d521e87a",
+    "run_release_checks.py": "fd50689c043fedc4320b98eaf66d62da9bb7bc4b787ad47f88649b8b6f896c21",
+    "summarize_k16a.py": "86ffa67817043c46db97f6e6fff4a6746ebbbed09662000383f4b84d0c8d810f",
+    "check_abi.py": "d7782a6fec0c28271de3db79834c79ec6358b2582901937dc413101f01d726f7",
+    "integrity_k16b.py": "aaea64ac3fedbce3b0d40b5fc0f98a2d622484748159fdb13b1c44eefcaf1e28",
+    "build_k16a.py": "d65824203ac727c7802933bcd1059081bcb1697ac76488d1f60b629f9a4f91d1",
+    "test_main_batch.cpp": "c868614d6bb03f898c67c1f4a8244db866fbf103e9575d8d2d00029051763f76",
+    "PLAN.txt": "7fe060374b72b21d596913c27f54dbba93f0e86cec856945748c697b6a2c2a7e",
+    "build_k16b.py": "6b8c6cc18a227b3a4fce127f0f3449f8c8f6a1ab3d8175fe2a66302c448c0ee6",
+    "REPORT_K16B.txt": "adee23680eacd357181b03c26eb54ff709e3fa6e4ed0de0007c407679d800c02",
+    "compare_k16b.py": "6d3d05d27c091bff04eadeb8ecdcf21c6d9501a95808bb64d85491bf32d14af5",
+    "MainGpuBatch.cpp": "ef850ec85ca8fb0b8b51f502e4883f8ffc45219b0ce306921f295b792e0e7111",
+    "test_main_lifecycle.cpp": "7dbcf52a7e38ed2dfed3e71c452ba65d5ea851f51dd1ab7cdacd2e42bec73815",
+    "run_k16b.py": "69180c7705a126329c0bbfbf1d3317939b277e71620768f577cfec9bca9317d0"
+  }
+}

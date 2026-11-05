@@ -1,0 +1,183 @@
+CP-K16d — matched60s real-source GLIM acceptance
+2026-10-20. CAPTURES COMPLETE; MATCHED PRESERVATION GATE NOT PASSED.
+
+BOTTOM LINE
+===========
+Actual GLIM odometry scan processing is substantially faster with the isolated
+MAIN batching library. Whole-window median190.733->45.215ms (~4.22x);
+p95364.072->169.160ms (~2.15x). MAIN itself142.633->13.531ms median.
+However, this is NOT an accepted production repair: fresh-run poses, covariance
+values and revision histories differ. No candidate promotion or full run.
+
+This does not establish that batching mathematics is wrong, nor that the
+differences are harmless. K16a/b/c's identical-input equation/cache/lifecycle
+gates remain passed. These real runs do not freeze post-preprocessing GPU state.
+We must isolate the first real optimized update before claiming preservation.
+The separate Kimera source-history versus receiver-retention defect remains.
+
+SCOPE / INPUTS / PRESERVATION
+=============================
+User approved the proposed matched60s source check and asked about Kimera.
+Only native GLIM ran, first reference then candidate, sequentially, headless
+at0.20x with25s drain. NO Kimera, gnssFGO, external received CBS factors, GNSS,
+GT evaluation, library rebuild, model/guard/weight change or tuning.
+CP-K14 frozen ETH1 resolved parameters and complete GLIM profile copied.
+Shared-native covariance provider, native_local for EVERY version, corrected
+MAIN means, classic active_window_temporary, horizon.20s,onepair/update.
+Output identities/paths are the only ROS parameter differences.
+
+Run root:
+ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/
+   k16d_source_1
+Authoring/report:
+ /home/yeranis/repos/gnssFGO/experiments/main_gpu_batching_cpk16_20261020
+
+Immutable gtsam_points library SHA256:
+ reference CP-I3:
+  3f23e6115e34acc5a2f2b965b15bd4c651897c889a6c38a0a52cdb3855c0ceb7
+ candidate K16a:
+  6f71292d29d974a0555abd9fda6b2370fdab81ca634a4e1343c216d2a762d2ca
+Unchanged CP-I1 bridge:
+ 42df73c172232a612da965bf43ead8ec454caf08434b84e2da5de74d26cdb79f
+Candidate only CPK16_MAIN_GPU_BATCHING=1 and candidate library selected first.
+Actual loaded paths/hashes, effective parameters and no inbound CBS publisher
+verified BEFORE playback. No global GPU-hook registration or blind flag flip.
+
+Exact requested window1727775007855396309..1727775067855396309ns.
+Only Hesai and CPT7 played:598LiDAR and5986IMU messages, same sequence/header
+timestamps, input-window serialized-payload hashes and immutable bag identities.
+Without camera playback the first sensor record is148.078691ms after the old
+selected-topic epoch. Player duration59.851921309s preserves the SAME physical
+end; no sensor data exists in that empty prefix. No camera or Kimera work.
+
+Each receives all598/5986 messages and publishes591native poses at identical
+physical timestamps;589first outgoing ROS beliefs. Recorder bytes and passive
+observer agree exactly WITHIN each capture. No dropped input, crash, provider
+failure, covariance reset or output nonfiniteness detected.
+Native output1727775008675043106..1727775067674412012ns spans58.999368906s:
+ startup.819646797s,tail.180984297s. All saved online poses retained, no favorable
+subset. Final buffered frame591 is computed only during shutdown, not native
+online output; excluded from online timing/work cohort. It is not silently
+represented as a60s online output span.
+
+TIMING — MILLISECONDS, ALL590 TIMED ONLINE SCANS
+==============================================
+                              Reference median/p95/max     Batched median/p95/max
+Complete odometry scan        190.733/364.072/412.228       45.215/169.160/231.547
+MAIN smoother                142.633/336.548/386.333       13.531/26.693/32.407
+Post-smoother callback        21.843/149.318/201.986        24.380/155.915/213.376
+Outgoing/revision subsection  20.524/147.265/197.975        22.281/151.880/208.842
+
+Filled10--60s cohort:
+ scan median/p95:194.422/366.297 ->45.529/150.959ms.
+ MAIN median/p95:162.996/339.947 ->14.687/27.297ms.
+Last20s:
+ scan median/p95:213.261/401.968 ->46.421/126.809ms.
+ MAIN median/p95:179.161/372.523 ->16.931/29.052ms.
+
+The remaining callback/export work was NOT optimized and is now a substantial
+part of the scan cost. Do not start a new export redesign on this evidence.
+No scan in either run exceeded the500ms input budget at0.20x.
+Sampled internal processed queue max1 in each; this is NOT total pipeline age.
+Native stamp->ROS receipt age median/p95/max:
+ reference137.007/176.830/187.830ms;
+ candidate112.030/115.317/116.976ms.
+These are DATASET-clock ages, not wall service times or pure network latency.
+
+Actual MAIN derivative requests:
+ reference295832, all synchronous;
+ candidate294972, all prepared-cache consumptions, ZERO MAIN sync calls.
+Thus activation is verified, but work counts are NOT identical in these fresh
+runs (860difference,<.3%). Do not describe this as the exact-workload K16c test.
+Other GPU work outside MAIN remains unchanged. Existing sync-warning cost
+remains in the reference; gain is path time, not an isolated kernel benchmark.
+Total paced capture wall times340.323/340.352s include startup/drain and are
+not speedup measures. One fresh pair, not a repeated thermally controlled
+whole-system throughput certification. No1x or full-sequence claim.
+
+WHY THE MATCHED PRESERVATION GATE IS NOT PASSED
+==============================================
+Initialization/native frame0 is EXACTLY equal. First optimized frame1 already
+differs:
+ timestamp1727775008775065899ns;
+ position.001830444086m; rotation.000050759293rad.
+This precedes fixed-lag marginalization, received CBS (none), Kimera (absent)
+and fusion (absent). It directs the next investigation to the first MAIN
+optimization and its prepared inputs, not the later receiver-retention failure.
+
+Across all591same-time native poses, WITHOUT alignment:
+ position difference RMS.072865214m,max.138807544m;
+ orientation difference RMS.010894607rad,max.020640686rad (~1.183deg).
+These are between-run differences, NOT ground-truth ATE or evidence of which
+trajectory is more accurate. Native path lengths26.206257/26.326870m.
+
+Both publish589first beliefs. Revised rows26782reference versus26834candidate:
+ total27371versus27423versions. All27371reference keys are present in candidate;
+ candidate has52additional versions. Original strict compare_k16d.py stops at
+ "source ID/revision topology mismatch"; no passed comparison.json is written.
+Existing first covariance provider->export matrices match EXACTLY within each
+run; every revision carries native_local provenance, covariance finite SPD.
+LOCAL extraction policy remains correct, but matching policies are NOT evidence
+that the resulting uncertainty values are numerically unchanged.
+
+For27371common belief versions:
+ covariance relative Frobenius difference median1.976%,p9512.560%,max46.290%;
+ maximum individual covariance-entry difference4.00530109e-7.
+Mean changes also exist. Full distributions/raw differences are retained.
+No scaling, tuning, threshold relaxation or filtering away disagreeing versions.
+
+Saved metadata: per-frame preprocessed point COUNT, integrated IMU COUNT,
+active-frame COUNT and marginalization COUNT match. New-factor count differs
+on24updates, first atframe39 (reference8/candidate10), AFTER first pose divergence.
+Equal counts do not prove equal deskewed points, point covariances, voxel maps,
+inlier buffers or their readiness. The frozen preprocessing profile uses
+random-grid sampling and2threads; its existence alone is NOT proof of a
+nondeterminism cause. We have not captured exact live GPU state at frame1.
+
+STOP / NEXT DECISION
+====================
+Stop here, no automatic retry or additional capture. Candidate remains isolated.
+The narrow next proposed test is an exact real first-update input/state comparison:
+same preprocessed/deskewed arrays, covariance/voxel/inlier state and linearization
+Values, original versus disabled/enabled candidate. Then compare Gaussian
+equations and first update. Do not spend another full60s/full sequence trying
+to diagnose a difference visible atframe1. This needs separate authorization.
+Do not assume it is a batching bug or excuse it as normal nondeterminism.
+
+Kimera's independent unresolved blocker:
+ CP-K14 update1484 followed a5.10s keyframe gap;25active states spanned11.10s.
+ Receiver retains7s; revision24 arrived after revision23's information had
+ already been absorbed. Actual Kimera backend64.08ms, freshness30ms: not a
+ slow backend. Slower playback or this GLIM speedup cannot solve it.
+ Need an explicit source revision-finalization/receiver-retention contract
+ before another full fusion attempt; neither lag nor guard was changed here.
+ Do not conflate it with the earlier CP-K9 incremental-prior repair.
+
+CHECKER CORRECTION / CLOSEOUT
+=============================
+One reference postprocessing count assumption corrected before candidate:
+timed frames1..591 versus native0..590; shutdown tail accounted explicitly.
+Original traceback and reasoning retained in VALIDATION_NOTE_K16D.txt.
+No capture repeated, numerical limit relaxed or source file changed.
+Structural mismatch in final paired comparison is a REAL open gate, not
+another checker-count correction. difference_analysis.json diagnoses it and
+explicitly sets acceptance_passed=false; it does not replace the failed gate.
+
+INTEGRITY_K16D_BEFORE/FINAL.json:2026protected files,pinned inputs and five source
+repo fingerprints unchanged. Both owned captures/recorders/masters exited0.
+No remaining owned jobs; both pre-existing containers restored stopped.
+No installed/default changes, library rebuild, automated follow-up, commit/push
+or other experiment. No nonlinear stationarity/covariance-calibration claim.
+
+EVIDENCE
+========
+H/PROTOCOL_K16D.txt,prepare_k16d.py,run_source_k16d.py,input_k16d.py,
+observe_k16d.py,validate_k16d.py,compare_k16d.py,analyze_difference_k16d.py,
+wire_k16d.py,integrity_k16d.py,VALIDATION_NOTE_K16D.txt.
+Run root/prepared.json,input_manifest.json,wire_check.json,difference_analysis.json.
+Run root/{reference,batched}/:
+ startup.json,maps.txt,effective_params.json,node.log,e1b_profile.jsonl,
+ receipts.csv,outputs.bag,validation.json,capture_complete.json,cleanup.json,
+ immutable launch commands/process receipts and saved GLIM dumps.
+
+CP_K16D_REAL_SOURCE_PRESERVATION_NOT_VALIDATED

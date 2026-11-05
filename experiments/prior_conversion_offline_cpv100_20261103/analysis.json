@@ -1,0 +1,198 @@
+{
+  "question": "Can frozen CPK9 promotion reject solely because conversion perturbs an identical prior/cache?",
+  "answer": "Yes: demonstrated numerical false rejection in isolated unchanged-anchor tests.",
+  "threshold": 1e-08,
+  "first_test": {
+    "count": 196,
+    "rejected": 70,
+    "min_error": 3.617280883747192e-13,
+    "max_error": 0.00012078123097891867
+  },
+  "nearby_test": {
+    "count": 902,
+    "rejected": 56,
+    "min_error": 2.050187878984535e-10,
+    "max_error": 2.3935519867683947e-08
+  },
+  "first_groups": {
+    "origin0": {
+      "count": 3,
+      "rejected": 0,
+      "min_error": 5.505073865470242e-11,
+      "max_error": 1.0099420353563321e-10
+    },
+    "origin1": {
+      "count": 3,
+      "rejected": 0,
+      "min_error": 4.41572800463469e-09,
+      "max_error": 9.294378721707228e-09
+    },
+    "origin2": {
+      "count": 3,
+      "rejected": 3,
+      "min_error": 1.1238486146243065e-08,
+      "max_error": 2.365553228030372e-08
+    },
+    "origin3": {
+      "count": 3,
+      "rejected": 3,
+      "min_error": 6.540929937329953e-08,
+      "max_error": 1.3767834050847106e-07
+    },
+    "origin4": {
+      "count": 3,
+      "rejected": 3,
+      "min_error": 2.993987172814729e-07,
+      "max_error": 6.301966585982973e-07
+    },
+    "origin5": {
+      "count": 3,
+      "rejected": 3,
+      "min_error": 5.100510637314573e-05,
+      "max_error": 0.00012078123097891867
+    },
+    "origin6": {
+      "count": 3,
+      "rejected": 0,
+      "min_error": 2.259429824333124e-09,
+      "max_error": 4.755476436361466e-09
+    },
+    "unshifted": {
+      "count": 35,
+      "rejected": 0,
+      "min_error": 3.617280883747192e-13,
+      "max_error": 1.345528861857676e-11
+    },
+    "shift1": {
+      "count": 35,
+      "rejected": 0,
+      "min_error": 4.3760640023036183e-10,
+      "max_error": 9.292469362582505e-09
+    },
+    "shift2": {
+      "count": 35,
+      "rejected": 0,
+      "min_error": 2.723431580945107e-10,
+      "max_error": 6.648875943746414e-09
+    },
+    "shift3": {
+      "count": 35,
+      "rejected": 23,
+      "min_error": 3.6453709114081483e-09,
+      "max_error": 8.425386662003733e-08
+    },
+    "shift4": {
+      "count": 35,
+      "rejected": 35,
+      "min_error": 8.931498309087778e-07,
+      "max_error": 5.533410758982968e-05
+    }
+  },
+  "nearby_groups": {
+    "synthetic": {
+      "count": 164,
+      "rejected": 56,
+      "min_error": 1.4967994232365687e-09,
+      "max_error": 2.3935519867683947e-08
+    },
+    "saved_translated": {
+      "count": 738,
+      "rejected": 0,
+      "min_error": 2.050187878984535e-10,
+      "max_error": 9.400245055809668e-09
+    }
+  },
+  "representative_pose_synthetic_prior_example": {
+    "label": "synthetic_nearby_shape2_index20",
+    "dimension": 6,
+    "original_cache_error": 0,
+    "converted_cache_error": 1.5081297469405463e-08,
+    "rejected": true,
+    "exact_anchor_control_error": 0,
+    "self_local_norm": 0,
+    "jacobian_identity_error": 1.0736796407834097e-08,
+    "step_errors": {
+      "0.001": 1.0300997410762354e-10,
+      "0.0001": 1.5685291779790137e-10,
+      "1.0000000000000001e-05": 2.425303782448939e-09,
+      "9.9999999999999995e-07": 1.5081297469405463e-08,
+      "9.9999999999999995e-08": 2.603333012297587e-07
+    }
+  },
+  "representative_pose": {
+    "source": "last published CP99 pose1475; NOT failed theta at update1476",
+    "position": [
+      8.672789906320816,
+      82.15889280701087,
+      4.272652190999145
+    ],
+    "quaternion_xyzw": [
+      -0.09373492640277502,
+      -0.058385719301346756,
+      0.1014050752205833,
+      0.9886970624946703
+    ]
+  },
+  "example_prior": {
+    "type": "synthetic SPD unary Pose3 Hessian",
+    "H_diagonal": [
+      1,
+      1,
+      1,
+      1,
+      1000000,
+      1
+    ],
+    "eta": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "constant": 1
+  },
+  "controls": {
+    "original_cache_error_zero_all": true,
+    "exact_unchanged_anchor_clone_error_zero_all": true,
+    "deliberate_cache_corruption_rejected": true,
+    "failed_promotion_graph_and_locks_unchanged": true,
+    "frozen_header_implementation_used": true,
+    "no_guard_tolerance_change": true
+  },
+  "scope": {
+    "source_runs": 0,
+    "optimizer_runs": 0,
+    "estimator_builds": 0,
+    "standalone_diagnostic_builds": 2,
+    "production_fix_applied": false,
+    "actual_cp99_failure_reproduced": false,
+    "settings_changes": 0
+  },
+  "limits": [
+    "CP99 failure magnitude, failed branch and actual prior/anchor were not recorded.",
+    "Synthetic unary prior is not reconstructed CP99 marginal prior.",
+    "All35 original saved CP98 priors pass; they cover early8.5-12s, not the failed299.5s event.",
+    "All738 nearby-translated saved-prior cases also pass.56/164 synthetic nearby cases reject.",
+    "CP98 recorder stores aggregate cache, not per-slot cache; constructed identical per-prior cache isolates conversion only.",
+    "World-coordinate stress translations and finite-difference step sweep are diagnostic controls, not live configuration changes.",
+    "Exact-anchor clone is a control, not an implemented production fix or a proof for moved-anchor linearization.",
+    "This does not establish the cause of GLIM ATE regression or validate covariance calibration."
+  ],
+  "next_step": "Private isolated unchanged-anchor exact-Gaussian implementation plus unchanged moved-anchor behavior, corruption/ownership/type/rollback regressions and separate failure-branch logging; require approval before any new live ON.",
+  "diagnostic_artifact_sha256": {
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/prior_conversion_offline_cpv100_20261103/probe.cpp": "d72a8c3a074204892170daffb69724201922db5f756eb6ec51794a991409627a",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/prior_conversion_offline_cpv100_20261103/nearby.cpp": "e232afe2dd7cc8ec74b5cf110059c16f761185281bcb9195b82e2b8e240676ec",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/prior_conversion_offline_cpv100_20261103/probe": "5f8d49b68856bbfea39d981a2c9e9b03bf0b89d83b5e7c912a88562792e8d8f2",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/prior_conversion_offline_cpv100_20261103/nearby": "d319b6332bdd6972ed2698e84107a1fa838f94c6bae0f1b6c2d1608fca4ca084",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/prior_conversion_offline_cpv100_20261103/dependencies.d": "eb2953002dc6e67c5f331122af0719d60f22162f5a994bf8df04480252fd75c4",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/prior_conversion_offline_cpv100_20261103/nearby_dependencies.d": "0b40fd0767e391d140b2b6c512671c648f827fd2df5008b47d549ee74d05f633",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/prior_conversion_offline_cpv100_20261103/results/cases.jsonl": "5f36cc86ea4497bdb14ed8f0143c3a60b84b96c4b7a96288537f1c2d3ccebbea",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/prior_conversion_offline_cpv100_20261103/nearby_results/cases.jsonl": "f864359d0a913f7d6032fb88c21e38cb5d59f2d9c58b41381ccc064426cd17ec",
+    "/home/yeranis/repos/gnssFGO/experiments/prior_conversion_offline_cpv100_20261103/PROTOCOL.txt": "b72ee9aa9e69eba7a887fdefe1ea46930a17a7be5911a0f13839748c61e0dd2c",
+    "/home/yeranis/repos/gnssFGO/experiments/prior_conversion_offline_cpv100_20261103/analyze.py": "978683a98a1c9dc4e29581abc9d45ca984c300a75208a437f6634d7af4fce93e",
+    "/home/yeranis/repos/gnssFGO/experiments/prior_conversion_offline_cpv100_20261103/probe.log": "8001f43954afcb723697cbdfb35f7f9b93defdc232b66e63b87d198b89048a7b",
+    "/home/yeranis/repos/gnssFGO/experiments/prior_conversion_offline_cpv100_20261103/nearby_stage1/probe.log": "f6f47493122fbc6ae39b3cd2871bdd3e6fac35b1c5b163a4bb98394c9ab58a47"
+  }
+}

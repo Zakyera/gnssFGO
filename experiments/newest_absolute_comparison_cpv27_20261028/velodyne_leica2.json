@@ -1,0 +1,633 @@
+{
+  "case": "velodyne_leica2",
+  "sensor": "Velodyne",
+  "sequence": "LEICA-2",
+  "capture_s": 428.75,
+  "policy": "newest_absolute_graph_pose_at_output_update",
+  "original_receiver_Qc_multiplier": 1.0,
+  "reference": {
+    "path": "/workspace/cbs_gtsam4.3/src/datasets/GrandTour/LEICA-2/2024-11-25-16-36-19_cpt7_ie_tc.bag",
+    "sha256": "5455a1a68dfcdab7dd26fdcbd528d42982725da8bc165a0208ddcd74aac6ca64",
+    "topic": "/boxi/inertial_explorer/tc/odometry",
+    "frame_ids": [
+      "enu_origin"
+    ],
+    "child_frame_ids": [
+      "cpt7_imu"
+    ],
+    "caveat": "IE-TC GNSS/INS reference shares CPT7 IMU; not independent prism GT"
+  },
+  "common_coverage": {
+    "grid_queries": 4264,
+    "valid_queries": 3850,
+    "excluded_queries": 414,
+    "supported_s": 384.6,
+    "capture_s": 428.75,
+    "supported_capture_percent": 89.70262390670554,
+    "first_s": 0.684928335,
+    "last_s": 390.38492833500004,
+    "envelope_s": 389.70000000000005,
+    "start_gap_s": 0.684928335,
+    "tail_gap_s": 38.36507166499996,
+    "segments": [
+      {
+        "first_s": 0.684928335,
+        "last_s": 57.584928335,
+        "rows": 570
+      },
+      {
+        "first_s": 60.384928335000005,
+        "last_s": 195.384928335,
+        "rows": 1351
+      },
+      {
+        "first_s": 196.78492833500002,
+        "last_s": 304.38492833500004,
+        "rows": 1077
+      },
+      {
+        "first_s": 305.284928335,
+        "last_s": 390.38492833500004,
+        "rows": 852
+      }
+    ]
+  },
+  "mask_identical_to_CPV10": true,
+  "common": {
+    "off_kimera_absolute": {
+      "ATE_RMSE_m": 1.0053748809069152,
+      "path_length_m": 203.22308033740478,
+      "reference_path_length_m": 205.91335822542334,
+      "horizons": {
+        "1": {
+          "pairs": 3810,
+          "translation_RMSE_m": 0.037847562825810435,
+          "rotation_RMSE_deg": 0.5198508493463602
+        },
+        "10": {
+          "pairs": 3450,
+          "translation_RMSE_m": 0.2133580853591309,
+          "rotation_RMSE_deg": 0.9402384463324682
+        },
+        "20": {
+          "pairs": 3050,
+          "translation_RMSE_m": 0.39236666269724846,
+          "rotation_RMSE_deg": 1.3394635393058894
+        }
+      },
+      "evo_alignment_difference_m": 8.881784197001252e-16,
+      "direct_RPE_check_max": 1.201816424156732e-14
+    },
+    "off_kimera_rounded_incremental_control": {
+      "ATE_RMSE_m": 1.0942328845460194,
+      "path_length_m": 199.92665159638454,
+      "reference_path_length_m": 205.91335822542334,
+      "horizons": {
+        "1": {
+          "pairs": 3810,
+          "translation_RMSE_m": 0.0285729817904643,
+          "rotation_RMSE_deg": 0.40649829362882084
+        },
+        "10": {
+          "pairs": 3450,
+          "translation_RMSE_m": 0.23171136110899668,
+          "rotation_RMSE_deg": 0.648563989403566
+        },
+        "20": {
+          "pairs": 3050,
+          "translation_RMSE_m": 0.4266592151741141,
+          "rotation_RMSE_deg": 1.0366661845596423
+        }
+      },
+      "evo_alignment_difference_m": 1.3322676295501878e-15,
+      "direct_RPE_check_max": 1.0158540675320182e-14
+    },
+    "off_glim_initial": {
+      "ATE_RMSE_m": 2.782168996928551,
+      "path_length_m": 206.49962761386917,
+      "reference_path_length_m": 205.91335822542334,
+      "horizons": {
+        "1": {
+          "pairs": 3810,
+          "translation_RMSE_m": 0.10456722516903738,
+          "rotation_RMSE_deg": 1.4491422095274133
+        },
+        "10": {
+          "pairs": 3450,
+          "translation_RMSE_m": 0.6752627964230442,
+          "rotation_RMSE_deg": 5.704781771668526
+        },
+        "20": {
+          "pairs": 3050,
+          "translation_RMSE_m": 1.0528775271969852,
+          "rotation_RMSE_deg": 8.09640545195779
+        }
+      },
+      "evo_alignment_difference_m": 4.440892098500626e-16,
+      "direct_RPE_check_max": 1.1823875212257917e-14
+    },
+    "off_kimera": {
+      "ATE_RMSE_m": 1.0942339145912046,
+      "path_length_m": 199.92663545858804,
+      "reference_path_length_m": 205.91335822542334,
+      "horizons": {
+        "1": {
+          "pairs": 3810,
+          "translation_RMSE_m": 0.028573119895265477,
+          "rotation_RMSE_deg": 0.4064983966277124
+        },
+        "10": {
+          "pairs": 3450,
+          "translation_RMSE_m": 0.23171130247123525,
+          "rotation_RMSE_deg": 0.6485633663774873
+        },
+        "20": {
+          "pairs": 3050,
+          "translation_RMSE_m": 0.42665911644100607,
+          "rotation_RMSE_deg": 1.036665351560772
+        }
+      },
+      "evo_alignment_difference_m": 5.10702591327572e-15,
+      "direct_RPE_check_max": 2.1344037648418634e-14
+    },
+    "off_fusion_online": {
+      "ATE_RMSE_m": 2.0060104514006953,
+      "path_length_m": 277.6000251338498,
+      "reference_path_length_m": 205.91335822542334,
+      "horizons": {
+        "1": {
+          "pairs": 3810,
+          "translation_RMSE_m": 0.05568591723671164,
+          "rotation_RMSE_deg": 2.550798986631079
+        },
+        "10": {
+          "pairs": 3450,
+          "translation_RMSE_m": 0.2973948223865743,
+          "rotation_RMSE_deg": 3.0120004700134277
+        },
+        "20": {
+          "pairs": 3050,
+          "translation_RMSE_m": 0.48576575354445517,
+          "rotation_RMSE_deg": 3.6281062739478394
+        }
+      },
+      "evo_alignment_difference_m": 1.3322676295501878e-15,
+      "direct_RPE_check_max": 8.1601392309949e-15
+    },
+    "on_kimera_absolute": {
+      "ATE_RMSE_m": 1.5324455097350402,
+      "path_length_m": 374.13059479381866,
+      "reference_path_length_m": 205.91335822542334,
+      "horizons": {
+        "1": {
+          "pairs": 3810,
+          "translation_RMSE_m": 0.33257168387849545,
+          "rotation_RMSE_deg": 1.8354963458748947
+        },
+        "10": {
+          "pairs": 3450,
+          "translation_RMSE_m": 0.49732812382208275,
+          "rotation_RMSE_deg": 2.6550729385369793
+        },
+        "20": {
+          "pairs": 3050,
+          "translation_RMSE_m": 0.6451291548498574,
+          "rotation_RMSE_deg": 2.897071247857039
+        }
+      },
+      "evo_alignment_difference_m": 5.10702591327572e-15,
+      "direct_RPE_check_max": 1.1934897514720433e-14
+    },
+    "on_kimera_rounded_incremental_control": {
+      "ATE_RMSE_m": 2.585333610110276,
+      "path_length_m": 200.8143312384252,
+      "reference_path_length_m": 205.91335822542334,
+      "horizons": {
+        "1": {
+          "pairs": 3810,
+          "translation_RMSE_m": 0.0621256040666392,
+          "rotation_RMSE_deg": 0.5361948944079155
+        },
+        "10": {
+          "pairs": 3450,
+          "translation_RMSE_m": 0.39836023484265287,
+          "rotation_RMSE_deg": 2.0083758755499215
+        },
+        "20": {
+          "pairs": 3050,
+          "translation_RMSE_m": 0.7504292373068511,
+          "rotation_RMSE_deg": 3.3256980739970654
+        }
+      },
+      "evo_alignment_difference_m": 1.7763568394002505e-15,
+      "direct_RPE_check_max": 1.4335754805472334e-14
+    },
+    "on_glim_initial": {
+      "ATE_RMSE_m": 0.8488687889632562,
+      "path_length_m": 207.64191923762752,
+      "reference_path_length_m": 205.91335822542334,
+      "horizons": {
+        "1": {
+          "pairs": 3810,
+          "translation_RMSE_m": 0.04770734321041277,
+          "rotation_RMSE_deg": 0.6051432761865865
+        },
+        "10": {
+          "pairs": 3450,
+          "translation_RMSE_m": 0.29093618584240344,
+          "rotation_RMSE_deg": 2.4747818706023526
+        },
+        "20": {
+          "pairs": 3050,
+          "translation_RMSE_m": 0.539169547481683,
+          "rotation_RMSE_deg": 3.5929168155088984
+        }
+      },
+      "evo_alignment_difference_m": 7.771561172376096e-16,
+      "direct_RPE_check_max": 1.1199374760906267e-14
+    },
+    "on_kimera": {
+      "ATE_RMSE_m": 2.5853339705686893,
+      "path_length_m": 200.81439295375986,
+      "reference_path_length_m": 205.91335822542334,
+      "horizons": {
+        "1": {
+          "pairs": 3810,
+          "translation_RMSE_m": 0.06212502626310382,
+          "rotation_RMSE_deg": 0.5361950747397731
+        },
+        "10": {
+          "pairs": 3450,
+          "translation_RMSE_m": 0.3983609506696568,
+          "rotation_RMSE_deg": 2.0083756005213123
+        },
+        "20": {
+          "pairs": 3050,
+          "translation_RMSE_m": 0.7504302167085789,
+          "rotation_RMSE_deg": 3.325698039810179
+        }
+      },
+      "evo_alignment_difference_m": 1.3322676295501878e-15,
+      "direct_RPE_check_max": 2.3647750424515834e-14
+    },
+    "on_fusion_online": {
+      "ATE_RMSE_m": 1.8679619777055874,
+      "path_length_m": 233.00187996933863,
+      "reference_path_length_m": 205.91335822542334,
+      "horizons": {
+        "1": {
+          "pairs": 3810,
+          "translation_RMSE_m": 0.05562456359525833,
+          "rotation_RMSE_deg": 1.8684699483540899
+        },
+        "10": {
+          "pairs": 3450,
+          "translation_RMSE_m": 0.25135694728128627,
+          "rotation_RMSE_deg": 2.5379816430431914
+        },
+        "20": {
+          "pairs": 3050,
+          "translation_RMSE_m": 0.4659940217758927,
+          "rotation_RMSE_deg": 3.4460772651993725
+        }
+      },
+      "evo_alignment_difference_m": 3.1086244689504383e-15,
+      "direct_RPE_check_max": 1.6403545188836688e-14
+    }
+  },
+  "full_saved": {
+    "off_kimera_absolute": {
+      "ATE_RMSE_m": 1.0072324879247092,
+      "rows": 1937,
+      "reference_supported_rows": 1937,
+      "first_s": 0.099937912,
+      "last_s": 426.99556373900003,
+      "span_s": 426.895625827,
+      "tail_gap_s": 1.7544362609999666,
+      "native_polyline_length_m": 203.8918432440522,
+      "reference_native_polyline_length_m": 205.4514886891198,
+      "gap_chord_count": 12,
+      "evo_alignment_difference_m": 3.552713678800501e-15
+    },
+    "off_kimera_rounded_incremental_control": {
+      "ATE_RMSE_m": 1.0970795612060065,
+      "rows": 1937,
+      "reference_supported_rows": 1937,
+      "first_s": 0.099937912,
+      "last_s": 426.99556373900003,
+      "span_s": 426.895625827,
+      "tail_gap_s": 1.7544362609999666,
+      "native_polyline_length_m": 200.14566189098602,
+      "reference_native_polyline_length_m": 205.4514886891198,
+      "gap_chord_count": 12,
+      "evo_alignment_difference_m": 6.661338147750939e-16
+    },
+    "off_glim_initial": {
+      "ATE_RMSE_m": 2.8292843119329576,
+      "rows": 4280,
+      "reference_supported_rows": 4280,
+      "first_s": 0.6320813310000001,
+      "last_s": 428.53073030800005,
+      "span_s": 427.89864897700005,
+      "tail_gap_s": 0.21926969199995483,
+      "native_polyline_length_m": 209.03827098366529,
+      "reference_native_polyline_length_m": 205.87215484495775,
+      "gap_chord_count": 0,
+      "evo_alignment_difference_m": 8.881784197001252e-16
+    },
+    "off_kimera": {
+      "ATE_RMSE_m": 1.0970806149102903,
+      "rows": 1937,
+      "reference_supported_rows": 1937,
+      "first_s": 0.099937912,
+      "last_s": 426.99556373900003,
+      "span_s": 426.895625827,
+      "tail_gap_s": 1.7544362609999666,
+      "native_polyline_length_m": 200.14583756912822,
+      "reference_native_polyline_length_m": 205.4514886891198,
+      "gap_chord_count": 12,
+      "evo_alignment_difference_m": 1.1102230246251565e-15
+    },
+    "off_fusion_online": {
+      "ATE_RMSE_m": 2.0004237169559853,
+      "rows": 4282,
+      "reference_supported_rows": 4282,
+      "first_s": 0.48444333500000003,
+      "last_s": 428.584443335,
+      "span_s": 428.1,
+      "tail_gap_s": 0.16555666499999688,
+      "native_polyline_length_m": 280.15405784771053,
+      "reference_native_polyline_length_m": 205.92908513096825,
+      "gap_chord_count": 0,
+      "evo_alignment_difference_m": 1.3322676295501878e-15
+    },
+    "on_kimera_absolute": {
+      "ATE_RMSE_m": 1.5370429558661385,
+      "rows": 1936,
+      "reference_supported_rows": 1936,
+      "first_s": 0.099937912,
+      "last_s": 426.99556373900003,
+      "span_s": 426.895625827,
+      "tail_gap_s": 1.7544362609999666,
+      "native_polyline_length_m": 395.2553692469793,
+      "reference_native_polyline_length_m": 205.45845666217065,
+      "gap_chord_count": 13,
+      "evo_alignment_difference_m": 0.0
+    },
+    "on_kimera_rounded_incremental_control": {
+      "ATE_RMSE_m": 2.584158379951547,
+      "rows": 1936,
+      "reference_supported_rows": 1936,
+      "first_s": 0.099937912,
+      "last_s": 426.99556373900003,
+      "span_s": 426.895625827,
+      "tail_gap_s": 1.7544362609999666,
+      "native_polyline_length_m": 201.29407251838467,
+      "reference_native_polyline_length_m": 205.45845666217065,
+      "gap_chord_count": 13,
+      "evo_alignment_difference_m": 0.0
+    },
+    "on_glim_initial": {
+      "ATE_RMSE_m": 0.8632026121708362,
+      "rows": 4280,
+      "reference_supported_rows": 4280,
+      "first_s": 0.6320813310000001,
+      "last_s": 428.53073030800005,
+      "span_s": 427.89864897700005,
+      "tail_gap_s": 0.21926969199995483,
+      "native_polyline_length_m": 215.46308686073985,
+      "reference_native_polyline_length_m": 205.87215484495775,
+      "gap_chord_count": 0,
+      "evo_alignment_difference_m": 1.7763568394002505e-15
+    },
+    "on_kimera": {
+      "ATE_RMSE_m": 2.5841587669052384,
+      "rows": 1936,
+      "reference_supported_rows": 1936,
+      "first_s": 0.099937912,
+      "last_s": 426.99556373900003,
+      "span_s": 426.895625827,
+      "tail_gap_s": 1.7544362609999666,
+      "native_polyline_length_m": 201.29426918564536,
+      "reference_native_polyline_length_m": 205.45845666217065,
+      "gap_chord_count": 13,
+      "evo_alignment_difference_m": 2.220446049250313e-15
+    },
+    "on_fusion_online": {
+      "ATE_RMSE_m": 1.8286583612312055,
+      "rows": 4282,
+      "reference_supported_rows": 4282,
+      "first_s": 0.48444333500000003,
+      "last_s": 428.584443335,
+      "span_s": 428.1,
+      "tail_gap_s": 0.16555666499999688,
+      "native_polyline_length_m": 235.13666219787342,
+      "reference_native_polyline_length_m": 205.92908513096825,
+      "gap_chord_count": 0,
+      "evo_alignment_difference_m": 1.3322676295501878e-15
+    }
+  },
+  "kimera_reconstruction_checks": {
+    "off": {
+      "rows": 1937,
+      "first_keyframe": 0,
+      "last_keyframe": 1936,
+      "every_id_unique_contiguous_and_matches_csv": true,
+      "exact_header_stamps_used": true,
+      "rounded_log_timestamps_not_used": true,
+      "every_increment_pose_within_log_rounding_bounds": true,
+      "increment_position_max_difference_m": 6.889296797004849e-05,
+      "increment_quaternion_max_component_difference": 4.999847931230761e-07,
+      "graph_quaternion_norm_max_error": 6.723064729374784e-07,
+      "graph_prism_position_rounding_bound_m": 7.182084378436684e-05,
+      "graph_rotation_rounding_bound_rad": 2.000010000058334e-05,
+      "logged_no_incremental_pose": false,
+      "graph_vs_increment_position_max_m": 1.961571990767609,
+      "source_log": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_source/estimators.log",
+      "rounded_incremental_common_ATE_difference_m": 1.0300451851463777e-06,
+      "rounded_incremental_full_ATE_difference_m": 1.053704283826562e-06
+    },
+    "on": {
+      "rows": 1936,
+      "first_keyframe": 0,
+      "last_keyframe": 1935,
+      "every_id_unique_contiguous_and_matches_csv": true,
+      "exact_header_stamps_used": true,
+      "rounded_log_timestamps_not_used": true,
+      "every_increment_pose_within_log_rounding_bounds": true,
+      "increment_position_max_difference_m": 6.979570162875675e-05,
+      "increment_quaternion_max_component_difference": 4.998167832948042e-07,
+      "graph_quaternion_norm_max_error": 6.773101406398752e-07,
+      "graph_prism_position_rounding_bound_m": 7.182084391262423e-05,
+      "graph_rotation_rounding_bound_rad": 2.000010000058334e-05,
+      "logged_no_incremental_pose": false,
+      "graph_vs_increment_position_max_m": 4.629238169097048,
+      "source_log": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_on_source/estimators.log",
+      "rounded_incremental_common_ATE_difference_m": 3.604584133398703e-07,
+      "rounded_incremental_full_ATE_difference_m": 3.869536913114757e-07
+    }
+  },
+  "unchanged_product_checks": {
+    "off_glim_initial": {
+      "common_ATE_difference_m": 0.0,
+      "full_ATE_difference_m": 0.0,
+      "common_path_difference_m": 0.0
+    },
+    "off_kimera": {
+      "common_ATE_difference_m": 0.0,
+      "full_ATE_difference_m": 0.0,
+      "common_path_difference_m": 0.0
+    },
+    "off_fusion_online": {
+      "common_ATE_difference_m": 0.0,
+      "full_ATE_difference_m": 0.0,
+      "common_path_difference_m": 0.0
+    },
+    "on_glim_initial": {
+      "common_ATE_difference_m": 0.0,
+      "full_ATE_difference_m": 0.0,
+      "common_path_difference_m": 0.0
+    },
+    "on_kimera": {
+      "common_ATE_difference_m": 0.0,
+      "full_ATE_difference_m": 0.0,
+      "common_path_difference_m": 0.0
+    },
+    "on_fusion_online": {
+      "common_ATE_difference_m": 0.0,
+      "full_ATE_difference_m": 0.0,
+      "common_path_difference_m": 0.0
+    }
+  },
+  "synthetic_geometry_tests": {
+    "passed": true,
+    "identity_and_global_transform": true,
+    "known_yaw_rate": true,
+    "gap_exclusion": true,
+    "exact_samples": true
+  },
+  "old_input_products": {
+    "off_glim_initial": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_source/glim_odometry.csv",
+      "sha256": "4009e24f5541a38f7eb6859d8cb9d4be13dfc39ab28c702b46aaaed8728f9903",
+      "rows": 4280,
+      "first_s": 0.6320813310000001,
+      "last_s": 428.53073030800005,
+      "span_s": 427.89864897700005,
+      "csv_gate": {
+        "rows": 4280,
+        "duplicate_or_nonmonotonic_stamps": 0,
+        "frames": [
+          "map"
+        ],
+        "children": [
+          "cpt7_imu"
+        ],
+        "quaternion_norm_max_error": 2.3314683517128287e-15,
+        "max_stamp_gap_s": 0.10686612200000001
+      }
+    },
+    "off_kimera": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_source/kimera_odometry.csv",
+      "sha256": "7d62d57061910d47d1a334a7cccac3c2181b3826f1a6e6e53a8ecf114fb46503",
+      "rows": 1937,
+      "first_s": 0.099937912,
+      "last_s": 426.99556373900003,
+      "span_s": 426.895625827
+    },
+    "off_fusion_online": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_receiver/receiver/online_trajectory.tum",
+      "sha256": "1ba07f8d4cf4285e03c32ef5f3e26531def78abd6114b28b9e4743708471aa23",
+      "rows": 4282,
+      "first_s": 0.48444333500000003,
+      "last_s": 428.584443335,
+      "span_s": 428.1
+    },
+    "off_glim_refined": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_source/odom_imu.txt",
+      "sha256": "102576f81d602977c3ddbfca1fb6d62994d57779ec8c5ba38584005ae5a79a8e",
+      "rows": 4279,
+      "first_s": 0.6320813310000001,
+      "last_s": 428.43119722700004,
+      "span_s": 427.79911589600005
+    },
+    "on_glim_initial": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_on_source/glim_odometry.csv",
+      "sha256": "51dc63bd3915041d6d1e3e3a6b0e5c8cd0a37111dad135713bf05dc67c425443",
+      "rows": 4280,
+      "first_s": 0.6320813310000001,
+      "last_s": 428.53073030800005,
+      "span_s": 427.89864897700005,
+      "csv_gate": {
+        "rows": 4280,
+        "duplicate_or_nonmonotonic_stamps": 0,
+        "frames": [
+          "map"
+        ],
+        "children": [
+          "cpt7_imu"
+        ],
+        "quaternion_norm_max_error": 1.5543122344752192e-15,
+        "max_stamp_gap_s": 0.10686612200000001
+      }
+    },
+    "on_kimera": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_on_source/kimera_odometry.csv",
+      "sha256": "e65efc6ab169fef4f1604e686e9f0ff31843c009faa1b96d5ed793e62b24f7dd",
+      "rows": 1936,
+      "first_s": 0.099937912,
+      "last_s": 426.99556373900003,
+      "span_s": 426.895625827
+    },
+    "on_fusion_online": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_on_receiver/receiver/online_trajectory.tum",
+      "sha256": "755a14455803c00216f0fae3f52868ff5cbad4f769408bb6426b330e2a1fda99",
+      "rows": 4282,
+      "first_s": 0.48444333500000003,
+      "last_s": 428.584443335,
+      "span_s": 428.1
+    },
+    "on_glim_refined": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_on_source/odom_imu.txt",
+      "sha256": "c86f691c3918b1eacd2adc49ee037c32364ab22671606bef739cae0257cd41c2",
+      "rows": 4279,
+      "first_s": 0.6320813310000001,
+      "last_s": 428.43119722700004,
+      "span_s": 427.79911589600005
+    }
+  },
+  "original_terminal_omissions": {
+    "off": 0,
+    "on": 0
+  },
+  "off_on": {
+    "glim_initial": 69.48895664136911,
+    "kimera_absolute": -52.42528322894563,
+    "fusion_online": 6.881742495345213
+  },
+  "input_sha256": {
+    "/home/yeranis/repos/gnssFGO/experiments/newest_absolute_comparison_cpv27_20261028/analyze.py": "efc8759345163e8368d2be5736857c4fcf1656e421dc9e314279f5ec12e33e3f",
+    "/home/yeranis/repos/gnssFGO/experiments/newest_absolute_comparison_cpv27_20261028/PROTOCOL.txt": "b19f99af1274e6c10e384be168150299caa180864a09547407875365750c96c6",
+    "/home/yeranis/repos/gnssFGO/experiments/first_published_comparison_cpv10_20261026/analyze.py": "78091650c4e9d040bfdbe3822e8fcb12405405c86dd07c564a8734c74056ab7e",
+    "/home/yeranis/repos/gnssFGO/experiments/cross_sequence_decision_cpv8_20261026/analyze.py": "03e9829282e597c99bd96f416eaea0bb587540a298e8ea30ddc86accdca9f7fb",
+    "/home/yeranis/repos/gnssFGO/experiments/leica2_drift_attribution_cpv7_20261025/analyze.py": "39cbdf58d0dafd0d2cd29d8b857fd6175314618bce358c4c2014d5ad8acf51c8",
+    "/home/yeranis/repos/gnssFGO/experiments/fixed_lag_eig2_g2k_reference_fl4y_20261017/analyze.py": "f450f8fd936426cd677b3b5eac231bcc12f7fa060f03d9c4105ce75c5ded9124",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/fixed_lag_current_chart_fl4q_20261016/VioBackend.cpp": "de1185fe77599c18cba49ea0768c6a2986d6909c19cc644b2b67a00b0da144aa",
+    "/home/yeranis/repos/gnssFGO/experiments/first_published_comparison_cpv10_20261026/outputs/velodyne_leica2.json": "c1420f7c39f6aa03d03d6db0842f887fcec563ac045183e9e3c781b58560674d",
+    "/home/yeranis/repos/gnssFGO/experiments/first_published_comparison_cpv10_20261026/outputs/velodyne_leica2.npz": "fbdde07fc94df0341466415dc8e59d54444fbcd7f9980225b2f9a1aa3b17b62f",
+    "/home/yeranis/repos/gnssFGO/experiments/velodyne_full_campaign_cpv4_20261024/leica2/results.json": "77250f87a755147b3009f1ba1f3bc0443f163948e0f3a001df8e05ea2e54b9da",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/datasets/GrandTour/LEICA-2/2024-11-25-16-36-19_cpt7_ie_tc.bag": "5455a1a68dfcdab7dd26fdcbd528d42982725da8bc165a0208ddcd74aac6ca64",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/protected_manifest.json": "5e479ad40d2e19a1df8c9bab04dfd37fb75627c51fbae2b64f89deb85b33b4ad",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_source/effective_mode_check.json": "b7ad907b1ce3eaaf25b0050f3181acc5c1e0b8436c1e6b7fe9c898ccc58d6997",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_source/estimators.log": "a0f0a78517901d50ef601bbd97ae7d7bf9afbae5e5a92b4bf009b93004ae2bfe",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_source/kimera_odometry.csv": "7d62d57061910d47d1a334a7cccac3c2181b3826f1a6e6e53a8ecf114fb46503",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_source/glim_odometry.csv": "4009e24f5541a38f7eb6859d8cb9d4be13dfc39ab28c702b46aaaed8728f9903",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_receiver/receiver/online_trajectory.tum": "1ba07f8d4cf4285e03c32ef5f3e26531def78abd6114b28b9e4743708471aa23",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_on_source/effective_mode_check.json": "87d99940c87bec0bb2446946eedb43d176da62a1aaef7a6a0b9cef4968aabd25",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_on_source/estimators.log": "f64a2d28621089a9d7dd4da6b9d62090931b1ee7a962a7a0610f07b61e9e1e4e",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_on_source/kimera_odometry.csv": "e65efc6ab169fef4f1604e686e9f0ff31843c009faa1b96d5ed793e62b24f7dd",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_on_source/glim_odometry.csv": "51dc63bd3915041d6d1e3e3a6b0e5c8cd0a37111dad135713bf05dc67c425443",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_on_receiver/receiver/online_trajectory.tum": "755a14455803c00216f0fae3f52868ff5cbad4f769408bb6426b330e2a1fda99"
+  },
+  "input_hashes_unchanged": true
+}

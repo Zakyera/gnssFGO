@@ -1,0 +1,67 @@
+CP-K16b — actual MAIN lifecycle / shared-native provider parity
+2026-10-20. Authorized by user "proceed"; no timing or dataset run.
+
+Use the immutable K16a release_1 candidate and unchanged CP-I3 reference.
+Build only new diagnostic executables in new k16b_* directories. No solver,
+CUDA kernel, bridge, covariance or production setting edits are planned.
+Every invocation uses a fresh output file. Stop on first unexplained mismatch.
+
+One deterministic small GPU/CPU fixture exercises actual ISAM2Ext and the
+actual shared-native outer fixed-lag wrapper. Three process modes:
+  original provider, candidate disabled, candidate explicitly enabled.
+No global GPU hook registration. No shallow GPU or smoother snapshots.
+Each process owns its own geometry/state. All processes must load identical
+frozen device geometry bytes, including voxel hash/reduction output; repeating
+GPU voxel insertion is not an exact-input oracle. Compare exact input and live
+inlier/cache snapshots as well as matrices; reference objects are never shared
+with a candidate process.
+
+Wrapper fixture includes pose/velocity/bias, native IMU, native GPU LiDAR and
+CPU constraints; native admission occurs before external factors are appended.
+Temporary external factors are removed before their endpoints retire; also
+exercise same-edge replacement and slot reuse. Repeated updates query first
+and later versions of all supported short relative pairs using the existing
+CP-I1/CP-I3 publication/revision helpers. LOCAL queries may not invoke MAIN
+fallback or GPU work. Multiple independent owners must not cross-activate.
+Toy geometry, fixed lag and priors serve lifecycle coverage only and do not
+modify any production profile.
+
+Inspect actual per-update keys, slots, relinearization decisions, retiring keys,
+Gaussian cache and marginal priors, native IDs/versions, full joint/relative
+covariance and corrected MAIN relative means. Counters prove actual batching
+and cached reuse; profiler durations are not benchmark results.
+A direct actual ISAM2Ext fixture covers explicit batch/incremental paths and
+partial-clique marginalization if the ordinary wrapper does not cover them.
+Any uncovered site is reported, not silently called tested.
+
+Predeclared K16 tolerances unchanged:
+ CPU matrix 1e-12 + 1e-12*maxabs(reference);
+ GPU/downstream Gaussian matrix 1e-8 + 1e-6*maxabs(reference);
+ full joint/relative covariance 1e-10 + 1e-6*maxabs(reference);
+ pose translation/velocity/bias 1e-9; rotation 1e-10 rad.
+ Keys, slots, selected sets, retirement decisions and inlier/cache state exact.
+ Nonfinite output, unexpected fallback, invalid provider or mismatch stops gate.
+Compare candidate-disabled to original exactly as an additional routing check.
+Host UBSan uses the existing instrumented candidate; no claim of sanitized
+CUDA kernels or reused dependencies. No GPU-device sanitizer claim.
+
+Freeze hashes of protected baseline files and source worktree fingerprints
+from K16a; verify unchanged at end. Restore originally stopped build container
+when owned work finishes. No ON/OFF experiment, timing, automatic retry,
+promotion, commit/push or retention-policy change.
+
+Diagnostic-harness corrections (libraries and tolerances unchanged):
+ - checks_1 reference stopped in the new test callback at first marginalization:
+   it used post-retirement slots for the pre-retirement snapshot. The corrected
+   callback uses admission IDs and checks surviving slots only. Original saved.
+ - checks_2 disabled comparison rejected independently reinserted GPU geometry;
+   first native GPU matrix difference9.1552734375e-05. Enabled case not started.
+   Cross-process geometry must use exact saved device bytes (as the existing
+   ExactGpuSnapshot oracle specifies), not just identical CPU source points.
+   Freeze/verify geometry before comparing, preserving the strict exact
+   disabled gate. This is test-input repair, not tolerance relaxation.
+ - checks_3 frozen geometry gave exactly equal reference/disabled numerical
+   outputs and decisions, but the exact byte gate rejected the new diagnostic
+   serializer's omitted voxel-intensity array (allocated/zeroed even without
+   source intensities). Add that array to the frozen image; preserve checks_3.
+   No enabled-candidate solver test had run in these stopped attempts.

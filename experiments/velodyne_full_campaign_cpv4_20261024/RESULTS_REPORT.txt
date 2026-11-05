@@ -1,0 +1,131 @@
+CP-V4 FULL VELODYNE CAMPAIGN — 2026-10-24T03:40:32.746366+03:00
+Matched original/native GLIM, original/native Kimera, concurrent ONLINE WNOA fusion.
+0.20x, frozen CP-V2 settings. Full-saved metrics vs shared-CPT7 IE-TC, not independent prism GT.
+DELAYED fixed-lag-finalized fusion is separate; not online/full-history.
+Startup/tail/keyframe gaps and common-mask scores are in each sequence RESULTS_REPORT.txt.
+
+dataset role mode ATE_m tRPE1s_m rRPE1s_deg path_prism_m span_s rows
+SPX-3 native_glim off 0.050405 0.025637 0.447996 91.038051 196.000234 1961
+SPX-3 native_glim on 0.053729 0.025275 0.362703 91.106891 196.000234 1961
+SPX-3 native_kimera off 0.483414 0.063055 0.478671 89.092288 196.798285 958
+SPX-3 native_kimera on 0.376635 0.049016 0.507959 89.055736 196.698286 956
+SPX-3 fused_online off 0.128743 0.034302 1.317034 101.568640 196.400000 1965
+SPX-3 fused_online on 0.112111 0.041748 1.235156 100.562792 196.400000 1965
+SPX-3 fused_finalized off 0.130321 0.018166 0.346118 90.883957 196.400000 1965
+SPX-3 fused_finalized on 0.110282 0.022631 0.320416 90.799025 196.400000 1965
+EIG-2 native_glim off 0.283734 0.086222 0.913074 194.985220 354.000055 3541
+EIG-2 native_glim on 0.330320 0.063956 0.827864 193.363740 354.000055 3541
+EIG-2 native_kimera off 1.882644 0.108961 0.844753 178.190542 354.697183 1761
+EIG-2 native_kimera on 1.802880 0.101591 1.012888 184.328154 354.697183 1765
+EIG-2 fused_online off 0.534328 0.072108 2.103758 299.810523 354.400000 3545
+EIG-2 fused_online on 0.886053 0.089961 1.989412 255.325842 354.400000 3545
+EIG-2 fused_finalized off 0.526644 0.049721 0.869806 191.049842 354.400000 3545
+EIG-2 fused_finalized on 0.883560 0.048397 0.850105 189.435899 354.400000 3545
+LEICA-2 native_glim off 2.828135 0.092331 1.286905 206.093653 427.799116 4279
+LEICA-2 native_glim on 0.861349 0.038075 0.561518 208.666970 427.799116 4279
+LEICA-2 native_kimera off 1.097081 0.028507 0.405502 200.145838 426.895626 1937
+LEICA-2 native_kimera on 2.584159 0.062012 0.535197 201.294269 426.895626 1936
+LEICA-2 fused_online off 2.000424 0.052801 2.417982 280.154058 428.100000 4282
+LEICA-2 fused_online on 1.828658 0.052690 1.769589 235.136662 428.100000 4282
+LEICA-2 fused_finalized off 2.000564 0.035255 0.580349 204.796695 428.100000 4282
+LEICA-2 fused_finalized on 1.831814 0.029802 0.417429 205.890093 428.100000 4282
+SNOW-3 NOT_COMPLETE {"state": "blocked", "evidence": "/home/yeranis/repos/gnssFGO/experiments/velodyne_full_campaign_cpv4_20261024/snow3/blocked.json"}
+ARC-5 NOT_COMPLETE {"state": "failed", "returncode": 1, "finished": "2026-10-24T03:40:32.523444+03:00", "evidence": {"state": "failed", "stage": "capture_off", "updated": "2026-10-24T03:40:32.517851+03:00", "pid": 494891, "failure": {"stage": "capture_off", "error": "CalledProcessError(1, ['python3', '/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_arc5_velodyne_full_cpv4_20261024/prepared/run_case.py', 'full', 'off'])", "at": "2026-10-24T03:39:37.045759+03:00"}, "cleanup_error": null}}
+
+UNAVAILABLE INPUTS
+{
+  "ETH1": "No mission anymal_velodyne bag found in canonical datasets, Downloads or local datasets.",
+  "SPX-2": "Missing Alphasense, CPT7 IMU and IE-TC bags; ADIS is not an authorized substitute.",
+  "CON-1": "Missing Alphasense and IE-TC bags."
+}
+
+All raw covariance/revision/payload/timing histories are retained in per-sequence prepared roots.
+No weights/model/calibration tuning; no nonlinear stationarity/calibrated uncertainty claim.
+Read per-sequence terminal omissions, prior-absorbed revision expiry and coverage limitations.
+Existing mean-only source-to-source covariance alignment approximation remains unchanged.
+
+FINAL AUDIT / COMPACT CROSS-SEQUENCE SUMMARY (2026-10-24)
+=======================================================
+Three full matched pairs completed, one numerical OFF failure; campaign closed.
+ARC-5 failed near380.6/401.29s: GTSAM indeterminate linear system near x3758
+in fusion, followed by transport Broken pipe. No ON/no full-pair metrics; exact
+numerical root cause unresolved. See FINAL_AUDIT.txt, not just controller exit1.
+All24 gates for completed pairs pass; source profiles exact between modes,
+all-LOCAL dense per-version covariance provenance/payload checks pass. Protected
+files2847/2847/2850 plus failed ARC2850 unchanged; all four closeouts pass.
+Both containers stopped; owned jobs exited. Hesai checkpoint667files verifies.
+Follow-up PAUSED. No retry,tuning,build,default promotion,commit or push.
+
+COVERAGE (seconds; OFF/ON)
+Dataset capture  nativeGLIM_span   nativeKimera_span  ONLINE_span common_supported/envelope queries/excluded
+SPX-3   197.02   196.000/196.000  196.798/196.698    196.4/196.4 191.799817/195.099814 1923/36
+EIG-2   355.02   354.000/354.000  354.697/354.697    354.4/354.4 352.999663/352.999663 3531/8
+LEICA-2 428.75   427.799/427.799  426.896/426.896    428.1/428.1 384.599633/389.699628 3850/414
+All saved poses are evaluated, not just the common mask; detailed common-mask
+ATE/RPE/path tables are in each sequence's RESULTS_REPORT.txt/results.json.
+Common supported duration sums supported segment lengths; envelopes are not
+dense coverage. Native Kimera has sparse stationary-tail keyframes (LEICA-2
+up to5.10s); no interpolation across these gaps in common-mask comparison.
+Capture windows begin at bag29/5.7/6s respectively; earlier startup/settling and
+sensor-only tails are excluded under the frozen physical-window policy.
+Initialization and tail gaps remain in the per-case source_coverage records.
+
+ACCOUNTING (all transported versions, not independent measurements)
+Dataset mode received inserted replaced preinit_excluded expired terminal_omitted pending
+SPX-3   OFF 116775 2890 113859 25 0   1 0
+SPX-3   ON  116784 2891 113868 25 0   0 0
+EIG-2   OFF 213494 5282 208162 50 0   0 0
+EIG-2   ON  213866 5290 208526 50 0   0 0
+LEICA-2 OFF 253524 6185 247118 50 171 0 0
+LEICA-2 ON  253594 6184 247191 50 169 0 0
+Rows conserve received=inserted+replaced+preinit_excluded+expired+terminal_omitted.
+All completed cases have duplicate/stale0 and71retained supports,peak175slots.
+SPX-3 OFF's single terminal Kimera factor needs an unavailable future support;
+frozen EOF predicate permits this explicit omission, not zero-factor-loss.
+LEICA-2 expired known-ID revisions are audited/ignored after absorption under
+seal_at_absorption; last accepted versions remain in the prior. Forgone changes
+are retained in checks.receiver.expiry, not incorporated or called GT errors.
+Covariance payload error0 in all six captures; max mean log roundtrip error
+6.05e-14. Native LOCAL provenance is not a claim of statistical independence.
+
+COVARIANCE SCALE SUMMARY (median over ALL first and revised versions)
+Dataset sender  translation_trace_m2_OFF/ON     rotation_trace_rad2_OFF/ON
+SPX-3   GLIM    2.759259e-6 / 2.753891e-6       9.742655e-8 / 9.796958e-8
+SPX-3   Kimera  6.055514e-6 / 6.656070e-6       4.956796e-8 / 5.104989e-8
+EIG-2   GLIM    3.910392e-6 / 3.893992e-6       1.256917e-8 / 1.257973e-8
+EIG-2   Kimera  7.856488e-7 / 1.947480e-6       2.358577e-8 / 3.253073e-8
+LEICA-2 GLIM    2.493693e-6 / 2.493562e-6       6.672325e-8 / 6.649933e-8
+LEICA-2 Kimera  1.012580e-6 / 1.848608e-6       1.966693e-8 / 2.485640e-8
+Dense6x6 matrices retained; all summary minimum eigenvalues positive and
+maximum symmetry error0. These are revision-mixed distributions, not paired
+equal-age/equal-endpoint calibration tests, effective optimizer weights or
+NEES/NIS. Small traces alone do not establish accuracy or trustworthy direction.
+No covariance correction or causal claim is inferred from these medians.
+Full p95/max/eigenvalue/first-last summaries and source histories retained.
+
+TIMING (milliseconds median/p95, after initial5s for sources)
+Dataset mode GLIM_per_scan Kimera_backend_per_keyframe Fusion_per_support_cycle
+SPX-3   OFF 83.54/177.48   98.01/130.68                83.54/124.04
+SPX-3   ON  82.54/239.59   97.22/132.57                89.82/131.49
+EIG-2   OFF 109.17/356.53  146.81/187.60               99.19/151.68
+EIG-2   ON  85.57/337.96   103.58/150.74               78.93/173.92
+LEICA-2 OFF 70.18/211.50   81.38/106.55                48.05/75.67
+LEICA-2 ON  62.24/201.33   81.41/106.14                45.17/74.68
+Fusion cycle includes intervening revisions, not one individual factor call;
+parallel estimator times are not added. Sources' detailed MAIN/post-callback/
+smoother/outgoing breakdowns are retained in each results.json. MAIN sync GPU
+calls0 in all completed captures. ON scans>500ms:33/37/28 (SPX/EIG/LEICA),
+OFF0; these did not truncate the three completed pairs. GLIM internal queue
+max2 for EIG-2 ON,0 otherwise. No0.5x capacity claim from0.20x captures.
+Receiver receipt-to-processing p95 OFF/ON(ms): SPX34.00/36.38,EIG42.93/44.59,
+LEICA19.99/19.84. ONLINE poses published during source:1965/3545/4282 each
+mode. End queues0. Finalized output remains DELAYED, not ONLINE/full-history.
+
+RETAINED INTERPRETATION
+CBS improves ONLINE fusion ATE in SPX-3 and LEICA-2, worsens it in EIG-2;
+common-mask ATE has the same directions. Kimera improves in SPX-3/EIG-2 but
+worsens in LEICA-2, where GLIM improves substantially. No universal accuracy
+claim or tuning choice follows. ONLINE path-length inflation versus finalized
+paths remains visible in the full table; do not replace ONLINE results with
+the smoother finalized trajectory. IE-TC is shared-CPT7 reference, not independent
+prism GT. No nonlinear-stationarity or exhaustive same-input parity certificate.

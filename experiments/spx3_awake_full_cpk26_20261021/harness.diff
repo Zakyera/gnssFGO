@@ -1,0 +1,361 @@
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_full_cpk25_20261021/prepared/PROTOCOL.txt
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/PROTOCOL.txt
+@@ -1,4 +1,4 @@
+-CP-K25 — full usable SPX-3 matched OFF/ON, authorized2026-10-21
++CP-K26 — full usable SPX-3 matched OFF/ON, authorized2026-10-21
+ 
+ User requests SPX-3 similarly to completed ETH1 CP-K23 and EIG-2 CP-K24/24A.
+ One fresh OFF/ON pair; no tuning, rebuild, automatic retry, promotion or push.
+@@ -57,6 +57,16 @@
+ timestamps and availability,full payload conservation,expiry/EOF accounting,
+ runtime and launch identities. No nonlinear stationarity certification.
+ 
+-H=/home/yeranis/repos/gnssFGO/experiments/spx3_full_cpk25_20261021
+-P=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_full_cpk25_20261021/prepared
+-V=/home/yeranis/results/gnssfgo_spx3_full_cpk25_20261021
++H=/home/yeranis/repos/gnssFGO/experiments/spx3_awake_full_cpk26_20261021
++P=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared
++V=/home/yeranis/results/gnssfgo_spx3_awake_full_cpk26_20261021
++
++CP-K26 restart authorization: user explicitly requests full SPX-3 restart after
++CP-K25 OFF passed and ON was interrupted by host suspend17:14:12--17:34:44.
++Do not reuse those captures as this pair or overwrite them. Both modes rerun
++from the same start. No estimator, covariance, retention or validation change.
++GNOME session suspend/idle inhibitor supplements the original system inhibitor,
++both scoped to this finite controller. Verify both before starting containers.
++No permanent power-setting edits or sleep-service masks. Manual/forced suspend
++can still override protection; no claim the old bypass mechanism is established.
++Neither initial diagnostics nor the old failed ON prefix is a completed result.
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_full_cpk25_20261021/prepared/full_off.json
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/full_off.json
+@@ -1,7 +1,7 @@
+ {
+-  "sequence": "SPX-3 LOCAL CP-K25 bag32-226.02s matched OFF",
++  "sequence": "SPX-3 LOCAL CP-K26 bag32-226.02s matched OFF",
+   "source_protocol": "classic",
+-  "ros_master_uri": "http://127.0.0.1:11475",
++  "ros_master_uri": "http://127.0.0.1:11476",
+   "imu_topic": "/boxi/cpt7/imu",
+   "imu_frame": "cpt7_imu",
+   "world_frame": "gnssfgo_world",
+@@ -12,18 +12,18 @@
+   "drain_timeout_wall_sec": 300,
+   "ros1_container": "cbsms_ws_gpu",
+   "receiver_container": "ubuntu-jammy-humble-nvidia",
+-  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_full_cpk25_20261021/prepared/receiver_cpk19.sh",
++  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/receiver_cpk19.sh",
+   "sources": [
+     {
+       "id": "glim_hesai",
+-      "session": "spx3_cpk25_full_off_20261021",
++      "session": "spx3_cpk26_full_off_20261021",
+       "kind": "glim",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/ros_logs/*/glim_rosnode-*-stdout.log"
+     },
+     {
+       "id": "kimera_front",
+-      "session": "spx3_cpk25_full_off_20261021",
++      "session": "spx3_cpk26_full_off_20261021",
+       "kind": "kimera",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/estimators.log"
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_full_cpk25_20261021/prepared/full_on.json
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/full_on.json
+@@ -1,7 +1,7 @@
+ {
+-  "sequence": "SPX-3 LOCAL CP-K25 bag32-226.02s matched ON",
++  "sequence": "SPX-3 LOCAL CP-K26 bag32-226.02s matched ON",
+   "source_protocol": "classic",
+-  "ros_master_uri": "http://127.0.0.1:11475",
++  "ros_master_uri": "http://127.0.0.1:11476",
+   "imu_topic": "/boxi/cpt7/imu",
+   "imu_frame": "cpt7_imu",
+   "world_frame": "gnssfgo_world",
+@@ -12,18 +12,18 @@
+   "drain_timeout_wall_sec": 300,
+   "ros1_container": "cbsms_ws_gpu",
+   "receiver_container": "ubuntu-jammy-humble-nvidia",
+-  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_full_cpk25_20261021/prepared/receiver_cpk19.sh",
++  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/receiver_cpk19.sh",
+   "sources": [
+     {
+       "id": "glim_hesai",
+-      "session": "spx3_cpk25_full_on_20261021",
++      "session": "spx3_cpk26_full_on_20261021",
+       "kind": "glim",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/ros_logs/*/glim_rosnode-*-stdout.log"
+     },
+     {
+       "id": "kimera_front",
+-      "session": "spx3_cpk25_full_on_20261021",
++      "session": "spx3_cpk26_full_on_20261021",
+       "kind": "kimera",
+       "belief_body_frame": "cpt7_imu",
+       "log_glob": "${SOURCE_RUN}/estimators.log"
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_full_cpk25_20261021/prepared/active_window.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/active_window.launch
+@@ -111,7 +111,7 @@
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_stride" value="20"/>
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_max_updates" value="40"/>
+ 
+-  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_full_cpk25_20261021/prepared/glim_profile.launch">
++  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/glim_profile.launch">
+     <arg name="config_path" value="$(arg glim_config_path)"/>
+     <arg name="glim_node_output" value="$(arg diagnostic_node_output)"/>
+     <arg name="glim_input_imu_topic" value="$(arg glim_input_imu_topic)"/>
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_full_cpk25_20261021/prepared/active_window_on.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/active_window_on.launch
+@@ -111,7 +111,7 @@
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_stride" value="20"/>
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_max_updates" value="40"/>
+ 
+-  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_full_cpk25_20261021/prepared/glim_profile_on.launch">
++  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/glim_profile_on.launch">
+     <arg name="config_path" value="$(arg glim_config_path)"/>
+     <arg name="glim_node_output" value="$(arg diagnostic_node_output)"/>
+     <arg name="glim_input_imu_topic" value="$(arg glim_input_imu_topic)"/>
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_full_cpk25_20261021/prepared/glim_profile.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/glim_profile.launch
+@@ -116,7 +116,7 @@
+         <env name="CPK16_MAIN_GPU_BATCHING" value="1"/>
+         <env name="GLIM_SHARED_NATIVE_PROVIDER" value="shared_native"/>
+         <env name="GLIM_REVISION_COVARIANCE_POLICY" value="native_local"/>
+-        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_full_cpk25_20261021/prepared/full_off_source/e1b_profile.jsonl"/>
++        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/full_off_source/e1b_profile.jsonl"/>
+ 		<param name="config_path" value="$(arg config_path)" />
+ 		<param name="glim_dump_path" value="$(arg glim_dump_path)" />
+ 		<param name="deterministic_input_event_log_path" value="$(arg glim_deterministic_input_event_log_path)" />
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_full_cpk25_20261021/prepared/glim_profile_on.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/glim_profile_on.launch
+@@ -116,7 +116,7 @@
+         <env name="CPK16_MAIN_GPU_BATCHING" value="1"/>
+         <env name="GLIM_SHARED_NATIVE_PROVIDER" value="shared_native"/>
+         <env name="GLIM_REVISION_COVARIANCE_POLICY" value="native_local"/>
+-        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_full_cpk25_20261021/prepared/full_on_source/e1b_profile.jsonl"/>
++        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/full_on_source/e1b_profile.jsonl"/>
+ 		<param name="config_path" value="$(arg config_path)" />
+ 		<param name="glim_dump_path" value="$(arg glim_dump_path)" />
+ 		<param name="deterministic_input_event_log_path" value="$(arg glim_deterministic_input_event_log_path)" />
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_full_cpk25_20261021/prepared/preflight_on.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/preflight_on.py
+@@ -2,7 +2,7 @@
+ from pathlib import Path
+ import hashlib,json
+ P=Path(__file__).resolve().parent
+-V=Path('/home/yeranis/results/gnssfgo_spx3_full_cpk25_20261021/off')
++V=Path('/home/yeranis/results/gnssfgo_spx3_awake_full_cpk26_20261021/off')
+ def sha(p):
+  with Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+ for p in [P/'full_off_source/candidate_validation.json',P/'full_off_source/local_provenance.json',
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_full_cpk25_20261021/prepared/run_case.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/run_case.py
+@@ -33,7 +33,7 @@
+     own.mkdir(exist_ok=False)
+     inside = '/workspace/'+str(own.relative_to('/home/yeranis/repos/V4RL'))
+     env_inside = '/workspace/'+str((ROOT/'source.env').relative_to('/home/yeranis/repos/V4RL'))
+-    master_uri = 'http://127.0.0.1:11475'
++    master_uri = 'http://127.0.0.1:11476'
+     jobs = {}
+     streams = []
+     def start(name, command):
+@@ -47,7 +47,7 @@
+             text=True, capture_output=True, check=check)
+     def stop_pid(name):
+         # The PID is recorded by this case, command must match the owned port/run.
+-        token = '11475' if name=='master' else str(source.name)
++        token = '11476' if name=='master' else str(source.name)
+         script = ('import os,signal,sys; from pathlib import Path; p=Path(sys.argv[1]); '
+           'pid=int(p.read_text()) if p.exists() else 0; c=Path("/proc/%d/cmdline"%pid); '
+           'e=Path("/proc/%d/environ"%pid); '
+@@ -59,7 +59,7 @@
+     started = time.time()
+     try:
+         assert ros('rosparam get /rosversion',check=False).returncode != 0, 'port is already in use'
+-        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11475'
++        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11476'
+         start('master',['docker','exec','cbsms_ws_gpu','setsid','--wait','bash','-lc',master_script])
+         for _ in range(60):
+             if ros('rosparam get /rosversion',check=False).returncode==0:
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_full_cpk25_20261021/prepared/run_case_on.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/run_case_on.py
+@@ -34,7 +34,7 @@
+     own.mkdir(exist_ok=False)
+     inside = '/workspace/'+str(own.relative_to('/home/yeranis/repos/V4RL'))
+     env_inside = '/workspace/'+str((ROOT/'source.env').relative_to('/home/yeranis/repos/V4RL'))
+-    master_uri = 'http://127.0.0.1:11475'
++    master_uri = 'http://127.0.0.1:11476'
+     jobs = {}
+     streams = []
+     def start(name, command):
+@@ -48,7 +48,7 @@
+             text=True, capture_output=True, check=check)
+     def stop_pid(name):
+         # The PID is recorded by this case, command must match the owned port/run.
+-        token = '11475' if name=='master' else str(source.name)
++        token = '11476' if name=='master' else str(source.name)
+         script = ('import os,signal,sys; from pathlib import Path; p=Path(sys.argv[1]); '
+           'pid=int(p.read_text()) if p.exists() else 0; c=Path("/proc/%d/cmdline"%pid); '
+           'e=Path("/proc/%d/environ"%pid); '
+@@ -60,7 +60,7 @@
+     started = time.time()
+     try:
+         assert ros('rosparam get /rosversion',check=False).returncode != 0, 'port is already in use'
+-        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11475'
++        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11476'
+         start('master',['docker','exec','cbsms_ws_gpu','setsid','--wait','bash','-lc',master_script])
+         for _ in range(60):
+             if ros('rosparam get /rosversion',check=False).returncode==0:
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_full_cpk25_20261021/prepared/source.env
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/source.env
+@@ -2,7 +2,7 @@
+ # to off_source/on_source and CBSMS_CBS_ENABLE to false/true.
+ : "${CBSMS_RUN_NAME:?Set fresh SPX-3 source run name}"
+ : "${CBSMS_CBS_ENABLE:?Set false or true}"
+-export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_full_cpk25_20261021/prepared
++export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared
+ export CBSMS_RUN_NAME CBSMS_CBS_ENABLE
+ export ROS_LOG_DIR="${CBSMS_RUN_ROOT}/${CBSMS_RUN_NAME}/ros_logs"
+ export CBSMS_PROJECT_ROOT=/workspace/cbs_gtsam4.3
+@@ -12,7 +12,7 @@
+ export CBSMS_POST_PLAYBACK_DRAIN_SEC=25
+ export CBSMS_BAG_RATE=0.20
+ export CBSMS_SEED_CLOCK_SECS=1730565901
+-export CBSMS_ROS_MASTER_PORT=11475
++export CBSMS_ROS_MASTER_PORT=11476
+ export CBSMS_USE_EXISTING_ROS_MASTER=true
+ export CBSMS_KIMERA_MODE=stereo_shared_cpt7
+ # The recovered classic Kimera source path is "current", not experimental RIGHT.
+@@ -35,7 +35,7 @@
+ export CBSMS_KIMERA_RECEIVER_AUDIT_MAX_SAMPLES=40
+ export CBSMS_KIMERA_RECEIVER_AUDIT_STRIDE=20
+ export CBSMS_DIAGNOSTIC_NODE_OUTPUT=log
+-export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_full_cpk25_20261021/prepared/input_profiles/glim_config
+-export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_full_cpk25_20261021/prepared/input_profiles/kimera_profile
++export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/input_profiles/glim_config
++export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/input_profiles/kimera_profile
+ 
+ export CBSMS_DATASET_DIR=/workspace/cbs_gtsam4.3/src/datasets/GrandTour/SPX-3
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_full_cpk25_20261021/prepared/source_runner.sh
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/source_runner.sh
+@@ -578,7 +578,7 @@
+   "kimera_receive_cbs_beliefs=${kimera_receive_external_beliefs}" \
+   "glim_cbs_mode=${glim_cbs_mode}" \
+   "kimera_cbs_odom_factor_mode=active_window_temporary" \
+-  "experiment=gnssfgo_spx3_full_cpk25_20261021" \
++  "experiment=gnssfgo_spx3_awake_full_cpk26_20261021" \
+   "glim_sensor_pair=hesai+cpt7_imu" \
+   "kimera_sensor_pair=${kimera_sensor_pair}" \
+   "glim_body_frame=cpt7_imu" \
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_full_cpk25_20261021/prepared/source_runner_on.sh
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/source_runner_on.sh
+@@ -578,7 +578,7 @@
+   "kimera_receive_cbs_beliefs=${kimera_receive_external_beliefs}" \
+   "glim_cbs_mode=${glim_cbs_mode}" \
+   "kimera_cbs_odom_factor_mode=active_window_temporary" \
+-  "experiment=gnssfgo_spx3_full_cpk25_20261021" \
++  "experiment=gnssfgo_spx3_awake_full_cpk26_20261021" \
+   "glim_sensor_pair=hesai+cpt7_imu" \
+   "kimera_sensor_pair=${kimera_sensor_pair}" \
+   "glim_body_frame=cpt7_imu" \
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_full_cpk25_20261021/prepared/validate_candidate.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/validate_candidate.py
+@@ -1,4 +1,4 @@
+-"""CP-K25 source lifecycle gate; no nonlinear-stationarity claim."""
++"""CP-K26 source lifecycle gate; no nonlinear-stationarity claim."""
+ import csv
+ import hashlib
+ import json
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_full_cpk25_20261021/prepared/validate_case.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/validate_case.py
+@@ -11,7 +11,7 @@
+ OUT=REC/'receiver'
+ CTL=P/f'full_{MODE}_control'
+ EXE=Path('/home/yeranis/results/gnssfgo_receiver_finalization_cpk19_20261021/live')
+-RESULT=Path(f'/home/yeranis/results/gnssfgo_spx3_full_cpk25_20261021/{MODE}')
++RESULT=Path(f'/home/yeranis/results/gnssfgo_spx3_awake_full_cpk26_20261021/{MODE}')
+ LIB=Path('/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib')
+ 
+ def sha(p):
+@@ -181,5 +181,5 @@
+ 
+ if __name__=='__main__':
+     phase=sys.argv[1]
+-    assert phase=='check', 'CP-K25 does not authorize a saved-journal solver repeat'
++    assert phase=='check', 'CP-K26 does not authorize a saved-journal solver repeat'
+     print(json.dumps(check(),indent=2))
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_full_cpk25_20261021/prepared/transport_tools/live_receiver_protocol.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/transport_tools/live_receiver_protocol.py
+@@ -132,7 +132,7 @@
+         raise ValueError('unknown receiver_publication_policy')
+     if policy == 'fl4a_fixed_lag_incremental':
+         # Private FL4a adapter only. No nonlinear stationarity certificate is claimed.
+-        expected = '/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_full_cpk25_20261021/prepared/receiver_cpk19.sh'
++        expected = '/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/receiver_cpk19.sh'
+         if config.get('receiver_model') != 'source_wnoa' or config.get('receiver_binary') != expected:
+             raise ValueError('FL4a policy requires the pinned fixed-lag wrapper')
+         if config.get('receiver_fixed_lag_seconds') != 7 or any(key.startswith('WNOJ_') for key in environment):
+--- /home/yeranis/repos/gnssFGO/experiments/spx3_full_cpk25_20261021/run_pair.py
++++ /home/yeranis/repos/gnssFGO/experiments/spx3_awake_full_cpk26_20261021/run_pair.py
+@@ -10,8 +10,8 @@
+ import time
+ 
+ H = Path(__file__).resolve().parent
+-P = Path('/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_full_cpk25_20261021/prepared')
+-V = Path('/home/yeranis/results/gnssfgo_spx3_full_cpk25_20261021')
++P = Path('/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared')
++V = Path('/home/yeranis/results/gnssfgo_spx3_awake_full_cpk26_20261021')
+ PY = '/home/yeranis/.local/share/pipx/venvs/evo/bin/python'
+ CONTAINERS = ('cbsms_ws_gpu', 'ubuntu-jammy-humble-nvidia')
+ stage = 'preflight'
+@@ -54,13 +54,16 @@
+     assert json.loads((P/'preflight/validation.json').read_text())['passed']
+     count = hashes()
+     inhibitors = subprocess.check_output(['systemd-inhibit','--list','--no-pager','--no-legend'], text=True)
+-    matches = [line for line in inhibitors.splitlines() if 'SPX3-CPK25' in line]
++    matches = [line for line in inhibitors.splitlines() if 'SPX3-CPK26' in line]
+     assert len(matches) == 1 and 'block' in matches[0]
+     assert all(token in matches[0] for token in ('sleep','idle','handle-lid-switch'))
++    session_inhibitors = subprocess.check_output(['gnome-session-inhibit','--list'], text=True)
++    session_matches = [line for line in session_inhibitors.splitlines() if line.startswith('SPX3-CPK26:')]
++    assert len(session_matches) == 1 and all(t in session_matches[0] for t in ('suspend','idle'))
+     initial = subprocess.check_output(['docker','inspect','-f','{{.State.Status}}',*CONTAINERS], text=True).split()
+     assert initial == ['exited','exited'], ('unexpected initial containers', initial)
+     save('start.json', dict(started=now(), pid=os.getpid(), original_containers=initial,
+-                           sleep_inhibitor=matches[0], protected_files=count))
++                           sleep_inhibitor=matches[0], session_inhibitor=session_matches[0], protected_files=count))
+     started = False; failure = None
+     try:
+         started = True
+@@ -79,7 +82,7 @@
+                 step('validate_'+mode+'_'+name, [PY,str(P/arguments[0]),*arguments[1:]])
+             assert all(json.loads(path.read_text())['passed'] for path in gate_paths(mode))
+             save(mode+'_validated.json', dict(passed=True, finished=now(), gates=list(map(str,gate_paths(mode)))))
+-        script = '/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_full_cpk25_20261021/prepared/evaluate_fl4f.py'
++        script = '/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared/evaluate_fl4f.py'
+         step('evaluate', ['docker','exec','cbsms_ws_gpu','bash','-lc',
+                          'source /opt/ros/noetic/setup.bash && python3 '+script])
+         step('summarize', ['python3',str(H/'summarize.py')])
+--- /home/yeranis/repos/gnssFGO/experiments/spx3_full_cpk25_20261021/summarize.py
++++ /home/yeranis/repos/gnssFGO/experiments/spx3_awake_full_cpk26_20261021/summarize.py
+@@ -3,8 +3,8 @@
+ import collections,csv,hashlib,json,math,re,statistics
+ 
+ H=Path(__file__).resolve().parent
+-P=Path('/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_full_cpk25_20261021/prepared')
+-V=Path('/home/yeranis/results/gnssfgo_spx3_full_cpk25_20261021')
++P=Path('/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_awake_full_cpk26_20261021/prepared')
++V=Path('/home/yeranis/results/gnssfgo_spx3_awake_full_cpk26_20261021')
+ def load(p):return json.loads(p.read_text())
+ def sha(p):
+  with Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+@@ -83,7 +83,7 @@
+     identical_source_profiles=True,no_exhaustive_observer=True,no_saved_journal_repeat=True,
+     limits='One full-sequence experimental pair, not an exhaustive batching-preservation certificate; IE-TC shares CPT7; no nonlinear stationarity claim.')
+ with (H/'results.json').open('x') as f:json.dump(result,f,indent=2)
+-lines=['CP-K25 matched SPX-3 batched finalized-policy full194.02s OFF/ON — COMPLETED',
++lines=['CP-K26 matched SPX-3 batched finalized-policy full194.02s OFF/ON — COMPLETED',
+  'One capture per mode,0.20x,headless. No paired observer,optimizer rebuild or tuning.',
+  'Native GLIM / native Kimera ROS odometry / concurrent ONLINE fusion.',
+  'EOF contract: only final partial-cell omissions allowed; every omission disclosed below. No fabricated support.',

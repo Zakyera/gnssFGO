@@ -1,0 +1,187 @@
+CP-K3 — historical Kimera, temporary CBS and the FL4q wrapper
+2026-10-19. CODE / RETAINED-EVIDENCE AUDIT COMPLETE. No estimator repair or run.
+
+Decision in plain terms
+----------------------
+The user's concern is justified: keeping the classic CBS exchange and the same
+Kimera YAML did NOT keep the historical Kimera optimization behavior unchanged.
+FL4q is an additional backend optimization/acceptance policy, not passive logging.
+It affects CBS-OFF as well as ON. We must not call its update531 stop proof that
+ordinary historical Kimera cannot run ETH1. Nor may we assume that disabling it
+solves the different temporary-CBS ON instability that motivated the wrapper.
+
+Pause CP-K2's proposed joint-landmark redesign. The next useful control is the
+ordinary incremental backend, not another new landmark solver. Production and
+frozen run settings remain unchanged pending that separately authorized control.
+
+Scope and provenance
+--------------------
+Read the current FL4v launch pointer, repository instructions, canonical classic
+CBS runbook, engineering ledger and CP-K1 protocol/report. Inspected archived
+FL4q code, current CBS/GTSAM source, historical committed wrapper and saved
+September ETH1 profiles; recounted existing CP-K1 OFF logs. No ROS/container
+launch, compilation, estimator/replay, optimization, covariance tuning, commit
+or push. Only this report and task/instruction pointers are edited.
+
+W=/home/yeranis/repos/V4RL/cbs_gtsam4.3
+G=/home/yeranis/repos/gnssFGO
+A=G/experiments/checkpoints/20261017_fl4v/snapshot/kimera_fl4q
+K=W/runs/kimera_failed_factor_cpk1_20261019
+H=G/experiments/kimera_classic_backend_audit_cpk3_20261019
+All abbreviated paths below resolve against these explicit roots.
+
+1. What stayed the same, and what did not
+----------------------------------------
+The complete BackendParams.yaml files in September7 ETH1 OFF, successful
+bidirectional ON, and K/kimera_profile are byte-identical. SHA256:
+782ee8ade78a8b7c67d7c7919b7161fc5f4d95b48e0de47b7d452933532ae455
+Historical directories under W/runs/grandtour_eth1_presentation/:
+ grandtour_eth1_stereo_shared_cpt7_no_sidecar_cbs_off_full_346s_20260907
+ grandtour_eth1_stereo_shared_cpt7_no_sidecar_bidirectional_stride1_rate015_glimfg30_full_346s_live_rerun_20260907
+This proves equality of that file, NOT all code, scheduling, inputs or outputs.
+Historical binary hashes are not retained; exact September reproduction cannot
+be certified. Earlier CBS was already our BPSAM fork, not untouched upstream VIO.
+
+Setting/policy                       Historical evidence    Current frozen setup
+nr_states / numOptimize              25 / 1                 25 / 1
+relinearize threshold / skip         .01 / 1                .01 / 1
+wildfire / useDogLeg                 .001 / false           .001 / false
+source CBS protocol                 classic                classic
+external-factor marginal lifecycle persistent             active_window_temporary
+extra strict-cost LM/rebuild policy  no October FL4q        FL4Q_ENABLE=1
+downstream fusion                   distinct history       FL4e WNOA/no central IMU
+
+The historical ETH1 OFF/ON playback rates also differed (.30/.15x); current
+captures use .10x. Successful historical trajectories do not establish exact
+event/binary equivalence, monotonic nonlinear convergence or current capacity.
+The old runbook's source protocol, the factor lifetime, and the backend solver
+are three distinct settings. Keeping the first does not freeze the other two.
+
+2. Exact ordinary and added code paths
+-------------------------------------
+W/src/Kimera-VIO/src/backend/VioBackendParams.cpp:27-52 selects Gauss-Newton,
+cached linear factors, .01/1 relinearization, Cholesky, nonlinear-error reporting
+off. K/kimera_profile/BackendParams.yaml:63-74 supplies the values above.
+A/VioBackend.cpp:1557-1630 constructs our BPSAM fixed-lag smoother.
+A/VioBackend.cpp:5087-5109 only calls extra smoother updates for numOptimize>1;
+the frozen profile is1. This does not mean every update is a batch optimum.
+
+W/src/gtsam/gtsam/nonlinear/IncrementalFixedLagSmoother.cpp:101-144 performs
+ordinary iSAM2 update, then marginalizeLeaves. The older CBS wrapper (git
+5cc2073^, include/cbs/bpsam/incremental_fixed_lag_bpsam_smoother.h) has the same
+high-level update/marginalize flow, without FL4q. The commit is a structural
+source reference, not proof that it was the exact historical executable.
+
+In A/include/cbs/bpsam/incremental_fixed_lag_bpsam_smoother.h:
+  182-203: schedule expired external slots for removal before update;
+  266-280: ordinary BPSAM/iSAM update;
+  283: call fl4q::accept whenever FL4Q_ENABLE is enabled, even with no peers;
+  417-427: only afterward marginalize old keys.
+G/experiments/fixed_lag_current_chart_fl4q_20261016/CurrentChartFallback.h:
+  51-87: compare proposal and initialized cost; on increase run current-chart
+         LM (10-iteration bound); throw if no sufficient decrease is accepted;
+  124-146: install accepted fallback and verify rebuilt equations.
+Sibling CoreRebuild.inc:8-43 rebuilds the ISAM core at accepted Values, preserves
+factor slots/ownership, and resets delta. This changes states AND future
+linearization history. It is not a harmless exception handler or logger.
+
+3. New decisive recount: OFF was already altered before its failure
+------------------------------------------------------------------
+K/off_capture/acceptance.csv has531 committed records, indices0--530.
+Its schema is written by CurrentChartFallback.h:150-153; column5 is fallback.
+There are17 accepted fallback replacements, at updates:
+44,303,371,384,385,393,449,503,513,515,516,520,522,525,527,529,530.
+Only one of these reaches10 iterations. First replacement, update44:
+  initialized cost224.25364126368507
+  ordinary proposal235.37119459234654
+  accepted fallback127.9175040582795 (3 iterations).
+K/off_capture/objective.csv schema comes from A/RetirementAudit.h:45-49;
+column3 is CBS retirement count. Its sum is ZERO across all531 rows.
+These are CBS-OFF records, not evidence of removal of GLIM factors from Kimera.
+
+Reproduction commands (read-only):
+ awk -F, '$5==1 {print $1,$2,$3,$4,$6}' K/off_capture/acceptance.csv
+ awk -F, '{n+=$3} END {print n+0}' K/off_capture/objective.csv
+Input hashes:
+ acceptance.csv 383894869816189b8d80a32e3187d775c0cb56199cc458610bcacb8b6fc070e4
+ objective.csv  35df5acfc6a403b9a2a1498f7456eb2520d9cfd7c9c4a4b9c5ca624b31ff9b70
+
+CP-K1 reproduced531 native ROS messages and the failed decision exactly against
+FL4u. That establishes repeatability of the MODIFIED backend, not parity with
+an unmodified incremental trajectory. At update531 the ordinary proposal
+returns; the added fallback returns unchanged after one LM iteration and the
+wrapper throws. Its cost and Schur-eliminated visual model treat nonstationary
+landmarks differently (CP-K1). This is neither a demonstrated GLIM covariance
+regression nor a native iSAM2 exception. The actual data-driven outcome of an
+FL4q-disabled run is UNKNOWN: the histories would diverge already at44.
+
+4. Why simply removing the wrapper is not yet the full solution
+--------------------------------------------------------------
+Retained FL4m/FL4n/FL4p evidence concerns a DIFFERENT problem in temporary CBS-ON:
+- FL4m uses450 identical already-aligned incoming GLIM factors. Remove vs retain
+  is identical before retirement, then different histories develop. The harmful
+  update438 is present with removal; retaining the factors avoids that large
+  event. Retain is a diagnostic, NOT exact historical persistent CBS.
+- FL4n at three checkpoints finds no missing retired factor, bad cache assembly
+  or erroneous linear solve: fresh-at-the-same-theta, cached and tree equations
+  agree. Do not repeat this check without new evidence.
+- FL4p at update89 finds a downhill direction with an oversized full step,
+  dominated by an old-anchor native IMU approximation. Current-point IMU
+  derivatives agree with numerical derivatives. Most pose anchors are fixed.
+
+W/src/gtsam/gtsam/nonlinear/ISAM2.cpp:739-741 fixes linearization points incident
+to marginal priors; ISAM2-impl.h:382-387 excludes those keys even on full solve.
+The estimated states are NOT fixed. CBS bpsam.cpp:4163-4167,4210-4233 forces
+re-elimination/full solve for active-window CBS changes, but does not bypass
+fixed anchor exclusion. This explains why correct old-chart equations need
+not yield a good finite nonlinear step. It is not proof of a wrong IMU formula.
+
+Therefore two problems must not be merged:
+ (a) temporary removal/prior-history sensitivity and old-anchor steps in ON;
+ (b) our later universal nonlinear acceptance/fallback incompatibility in OFF.
+The second is not evidence that the first was imaginary. CP-K2's standalone
+infinite-depth candidate is a third, rejected diagnostic, not native VIO behavior.
+
+CP-I2 already validates explicit native-information prior provenance for the
+temporary/remove policy at fixed charts. Preserve it: switching to persistent
+would change the intended information lifecycle, not merely fix a launch typo.
+Neither LOCAL provenance nor removal proves statistical independence.
+
+5. Smallest defensible next gate — proposed, NOT executed
+--------------------------------------------------------
+First establish an ordinary-incremental OFF control using the EXISTING
+FL4Q_ENABLE=0 selector in an isolated copy of the current diagnostic harness.
+Maximum111s ETH1, Kimera only, same sensors/profile/noise/timing, no GLIM/fusion,
+no receive, no new solver or landmark rule, no full346s run. Keep source
+exceptions, finite-state/coverage/slot/lifecycle checks and saved evidence.
+Cost diagnostics are observations, not a claimed stationarity certificate.
+Production guards and frozen captures are NOT altered by this proposal.
+
+Before playback: verify the disabled path bypasses both replacement and core
+rebuild, and preserve copied-factor observational nonmutation. Compare the
+native messages before first replacement44 with the retained reference. Run
+once and stop on failure; do not patch the next symptom automatically.
+At44/531 and the end, distinguish ordinary solver return/finite outputs from
+actual trajectory health. Completion alone is not repair acceptance. Compare
+the whole available native path with the existing reference, without selecting
+parameters by ATE or dropping inconvenient intervals.
+
+If that control succeeds, the next design decision is confined to temporary
+ON's marginal-boundary integration, using the existing FL4m/FL4p evidence.
+If it fails, preserve that actual native-path failure and diagnose it; do not
+resume CP-K2 automatically. Do not run more sequences or a full comparison first.
+Do not adopt FL4q only for ON and ordinary incremental only for OFF and call it
+a solver-matched CBS comparison. Any eventual backend policy must be identical
+in both modes apart from the existence of incoming CBS factors.
+
+Status / limitations
+--------------------
+Audit complete; no claim of a validated long-sequence fix or performance gain.
+Landmark redesign paused. Existing FL4q/CP-R6/CP-R7 code, profiles and artifacts
+left untouched; failed prefixes stay failed, prior valid captures stay labeled
+with their actual modified backend. No new numerical tests were run in CP-K3.
+gnssFGO HEAD668d4c788983722f4acad37d1495c15d03a27e18 unchanged.
+Existing dirty/untracked work preserved; no clean-worktree claim or Git push.
+Final integrity check: all2013 files in CP-K2's protected_before.json retain
+their recorded SHA256. git diff --check passes. Read-only Docker inspection
+confirms both cbsms_ws_gpu and ubuntu-jammy-humble-nvidia remain stopped.

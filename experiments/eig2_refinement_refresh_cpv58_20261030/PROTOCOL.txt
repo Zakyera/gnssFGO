@@ -1,0 +1,39 @@
+CP-V58 — suspect1 isolated same-state refresh ablation
+2026-10-30 user authorized 'proceed' following CP57's proposed causal check.
+
+One CP51 Hesai EIG-2 update6 saved postordinary state, feeding refresh.
+A: original native graph/point caches, one native Gauss-Newton refresh.
+B: same state/graph/priors/weights; only the25initially-valid-now-outlier smart
+factors are candidates for landmark refinement. Use CP57's original smart-L2
+landmark positions at exactly these fixed cameras, NOT minimax points or final
+state fits. Independently enforce unchanged native rank, depth,10m and3px gates.
+Only passing points replace their invalid landmark cache for this one native
+linearization. Native smart-factor Jacobians/Schur elimination remain unchanged.
+All other smart caches, all nonvisual equations and all factor functions remain
+identical. This is a bounded support-restoration counterfactual, NOT an integrated
+general-purpose triangulation algorithm or a separate cache-clearing intervention.
+
+Require A whole Gaussian equations relative<1e-12 and captured refresh tangent
+error<1e-6 before B. Require per-factor Gaussian equality for every untouched
+slot, native parameter/function identities and exact start values. Native rank
+rejects stay rejected; no gate/weight changes. Preserve all input snapshots.
+Expected from CP57:25outlier candidates,7pass gates,266->273nonzero visual factors.
+Any mismatch stops the test; do not alter gates to obtain desired support.
+
+Release and ASan/UBSan synthetic tests must check valid point injection, rejection
+of behind/far/outlier points, unchanged function/parameters and original graph,
+identical disabled intervention equations, and deterministic native solve.
+No suppression of sanitizer errors; vendor DSOs remain uninstrumented.
+
+Report original-versus-B refresh-only and net-from-pre-admission old x0..x5
+rotation/position/velocity and gyro/accel-bias revisions; newest-state response,
+native IMU/CBS residuals/costs. Smaller revisions are NOT necessarily more accurate.
+Report all outcomes, including worsening. No threshold selected after results;
+no automatic full replay justified by one step. Original post-step native-DLT
+support counts are diagnostic, not a second refinement/solve or nonlinear
+stationarity certificate. Exactly two real graph GN steps, no extra iterations.
+
+Private executable/new roots only. >=4GiB free, containers initially stopped,
+exclusive stages; restore both containers, verify protected historical inputs and
+four-sequence Hesai checkpoint. No source capture, covariance study, production
+patch/promotion, deletion or push. Remain on suspect1 after this test.

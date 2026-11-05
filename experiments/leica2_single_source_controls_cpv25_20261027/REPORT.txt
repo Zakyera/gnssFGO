@@ -1,0 +1,202 @@
+CP-V25 — Leica-2 Velodyne CBS-OFF single-source receiver controls
+2026-10-27 | COMPLETED, BOTH CONTROLS VALIDATED | NO FIX OR PROMOTION
+
+1. Decision
+
+The proposed controls isolate TWO effects, not one:
+(a) Adding the less accurate OFF GLIM belief stream worsens the Kimera-only
+receiver's common-mask position RMSE from1.323540m to2.006010m (+51.56%).
+The BOTH receiver fails to retain the healthier source's accuracy here.
+(b) Even WITHOUT competing sources, the receiver adds newest-output instability:
+ONLINE1s rotation RPE exceeds each corresponding native source. Thus inter-source
+conflict alone does NOT explain the jitter. Finalized single-source outputs
+greatly improve local motion while retaining roughly the same global ATE.
+
+Native Kimera to Kimera-only receiver ATE also worsens1.094234->1.323540m
+(+20.96%); GLIM native to GLIM-only changes2.782169->2.807562m (+0.91%).
+These are controlled observations, not a unique proof of covariance calibration,
+correlation, frame or numerical bugs. The source-to-receiver representation,
+revisions, reconstruction model and publication semantics differ from native
+outputs. Do not attribute the20.96% to one of those without another test.
+
+2. What actually ran
+
+Exactly one full GLIM-only and one full Kimera-only saved OFF receiver replay.
+Original BOTH result reused, not rerun. No CBS-ON control or sensor run.
+H=/home/yeranis/repos/gnssFGO/experiments/leica2_single_source_controls_cpv25_20261027
+R=/home/yeranis/results/gnssfgo_leica2_single_source_controls_cpv25_20261027
+Original CP-V4 prepared root:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared
+
+Same original CP-K19 executable, no rebuild:
+/home/yeranis/results/gnssfgo_receiver_finalization_cpk19_20261021/live
+SHA256 4b08a7f5ba97f5e4ec22959df23367df79eebf5d644dc19d939747dcd4566d6e.
+Qc multiplier1.0 (rotation variances.00375/translation.015 per axis),7s lag,
+100ms uniform supports,59sample initialization, scale1/full dense covariance,
+stable-ID replacement/seal_at_absorption/EOF, no raw IMU/GNSS factors or health
+gating. CPU2; endpoint caches disabled exactly as original wrapper. NOT0.25/.1.
+GLIM-only140.749s / Kimera-only45.175s replay wall time; includes archive I/O,
+not a live optimizer throughput benchmark. Each produced4282ONLINE and4282
+DELAYED finalized states with exact original physical AND availability times.
+
+3. Primary matched comparison
+
+Frozen CP-V10 common mask:3850queries,384.6s connected support,89.7026% of
+428.75s capture, four segments. All products use exactly this mask and the
+unchanged prism lever arm/orientation, reference and rigid SE(3) no-scale fit.
+Native GLIM is FIRST-PUBLISHED; native Kimera is ROS incremental odometry.
+Single-source receiver controls are NOT relabelled native estimators.
+Reference path on this mask205.913358m.
+
+Product                       ATE m      Path m       1s RPE translation m / rotation deg
+Native GLIM initial           2.782169   206.499628    .104567 /1.449142
+Native Kimera                 1.094234   199.926635    .028573 / .406498
+Receiver GLIM-only ONLINE     2.807562   227.104877    .111915 /2.300994
+Receiver Kimera-only ONLINE   1.323540   214.476400    .044757 /1.941040
+Receiver BOTH ONLINE          2.006010   277.600025    .055686 /2.550799
+
+Adding GLIM improves ATE compared with GLIM-only, but worsens compared with
+Kimera-only; the latter is the relevant healthier-source test. BOTH has greater
+path inflation and worse1s rotational RPE than EITHER single-source receiver.
+This supports poor handling of mixed-source information under these settings,
+not a guarantee that the correct solution is to always prefer Kimera. CBS-ON
+has different source quality and was intentionally not tested in these controls.
+
+4. DELAYED finalized comparison, SAME common mask
+
+Product                       ATE m      Path m       1s RPE translation m / rotation deg
+Receiver GLIM-only finalized  2.800047   205.509491    .097854 /1.363462
+Receiver Kimera-only finalized1.321769   201.708556    .023432 / .366249
+Receiver BOTH finalized       2.005941   204.513176    .037255 / .612880
+
+Finalization removes most path inflation and rotational jitter but does not
+repair the large-scale position error. Kimera-only finalized local motion is
+good:1s translation/rotation RPE is slightly BETTER than the native published
+Kimera product, while ATE remains worse. This is further evidence that large-
+scale drift and newest-output jitter are separate. Delayed output uses later
+observations during the active lag; it is not a current-time replacement or
+full-history optimization. Do not claim native source superiority at every
+metric, or infer global accuracy from path length alone.
+
+5. Full saved receiver outputs — context including sparse-belief tail
+
+Same4282physical support times/428.1s, all GT-supported; reference205.929085m.
+Product                     ATE m      Path m       1s RPE m / deg     100ms vector RMS cm
+BOTH ONLINE                 2.000424   280.154058   .052887 /2.425509   5.319
+GLIM-only ONLINE            2.847973   228.641660   .105796 /2.179516   3.226
+Kimera-only ONLINE          1.357333   215.028270   .042456 /1.892209   2.247
+BOTH finalized              2.000564   204.796695   .035250 / .580929    .897
+GLIM-only finalized         2.841681   205.768764   .092471 /1.288143   1.519
+Kimera-only finalized       1.355716   202.080071   .022300 / .562404    .588
+
+Vector RMS here uses each full trajectory's independent full rigid fit; it is
+not the CP-V23 original-fit displacement statistic or relative-pose RPE.
+Native full-saved ATE: GLIM2.829284m / Kimera1.097081m; native sampling and
+coverage differ, so use section3 for the primary comparison.
+
+6. Actual source-endpoint relative-motion check
+
+Additional controlled evaluation at each source's own physical endpoint pairs.
+All curves in a source table use identical eligible pairs. Source timings are
+not snapped or shifted. Saved output curves are interpolated (linear position,
+SO(3) rotation; maximum500ms estimated brackets,50ms reference brackets).
+This is a post-hoc sample of stitched ONLINE/finalized files, NOT a simultaneous
+active-graph snapshot or a new causal product. Native outputs are similarly
+sampled; tiny diagnostic timestamp-rounding differences can exclude endpoints.
+
+Kimera endpoint cohort:1903/1909unique intervals,~0.2s duration,
+0.499934..390.195986s. Relative translation RMS mm / rotation RMS deg:
+ Native Kimera               6.272 / .120213
+ Kimera-only ONLINE         33.687 /2.214158
+ Kimera-only finalized       5.045 / .131546
+ BOTH ONLINE                36.923 /2.257909
+ BOTH finalized              8.541 / .179046
+
+GLIM endpoint cohort:4277/4278unique intervals,median.200393s,
+0.632081..428.431197s:
+ Native GLIM initial        24.832 / .404910
+ GLIM-only ONLINE           33.488 /1.361292
+ GLIM-only finalized        21.028 / .436109
+ BOTH ONLINE                24.150 /1.342238
+ BOTH finalized              9.103 / .324579
+
+The poor newest-output behaviour is not explained away solely by comparing
+different native sampling rates: it remains when sampled at source endpoints.
+This does not measure the exact factor residual at insertion or remove the
+different publication/revision histories. No new pose/covariance policy tested.
+
+7. Timing/coverage/lifecycle
+
+Filtering removes only the other source's B lines, leaving every selected row
+byte-identical with original event-line mapping. BOTH I/E subsequences identical:
+42875clock rows,1EOF. No re-timing, regrouping equal arrivals or payload edit.
+GLIM-only:205919B /248795total events;4278IDs inserted,201641replacements,
+4210absorbed,68active at EOF;0startup excluded,0expired,0unsupported/pending.
+Kimera-only:47605B /90481events;1907IDs inserted,45477replacements,
+1907absorbed,0active at EOF;50startup-excluded,171expired sealed revisions,
+0unsupported/pending. Expired versions remain recorded, not transport loss.
+
+All retained original belief and absorption actions match original BOTH archive
+records after mapping event IDs and removing slot IDs ONLY. All means/full C,
+endpoints, timestamps, revisions, IDs and policy actions match. Audited210202
+GLIM-only commits; Kimera commit count in kimera_only_validation.json. Event
+count is not commit count: buffered/pending events can emit no rows until later.
+No dropped retained version in accounting.17,128 state rows across both controls
+match original timestamp/availability metadata. All output numbers finite.
+
+Full fusion interval.484443335..428.584443335s: startup.484443335s and
+tail.165556665s omitted, continuous428.1s. Full savedGT4282/4282per product.
+Common-mask414/4264queries excluded; final common time390.384928s and
+38.365072s trailing common omission. All full files retain their tails.
+
+Source freshness is unchanged by deleting other-source rows. GLIM endpoint
+median~152.779ms behind newest; Kimera alternates roughly88/188ms in ordinary
+cycles. Last usable Kimera belief endpoint390.395984s, leaving38.188460s
+behind last publication. Native Kimera continues sparse stationary-tail poses;
+this is not missing camera data or38s transport latency. In Kimera-only the
+tail relies on propagated/marginalized information and the WNOA model; no
+explicit source factor remains at EOF. Primary common mask excludes that tail.
+
+8. What to investigate next — proposed, not executed
+
+Do not immediately rerun sources or select another Qc multiplier. First
+isolate the receiver's newest-state prediction using this cleaner Kimera-only
+case: compare its same-state pose/angular velocity immediately around a new
+Kimera update and support prediction with the later corrected state. Existing
+mixed-source traces localized this mechanism, but the new control demonstrates
+it persists WITHOUT a competing source. Use a bounded saved-journal trace,
+not another full sensor campaign; no code change or replay is authorized here.
+
+Separately, BOTH-vs-Kimera-only establishes a mixed-source accuracy penalty in
+this OFF case. A later health/covariance treatment should be judged against
+the Kimera-only reference, not merely against the inferior original BOTH
+score. These controls do not determine whether a scalar covariance multiplier,
+directional health selection, cross-correlation handling or another model change
+is the right repair. Do not conflate this with native source-CBS effects.
+
+9. Reproducibility / operational closeout
+
+23selected input pins and16resolved runtime-library pins verified after both
+replays.18selected files matched previous archived hashes during preparation.
+Actual process mappings saved. Full unrelated historical bag sets were NOT
+rehashed; protected_manifest itself and relevant experiment inputs are pinned.
+Scoring reuses existing tested routines: original BOTH ONLINE/finalized and
+both native common ATE reproduced within1e-9m. Independent evo/direct alignment,
+matrix RPE checks and identity/global-transform/known-yaw/gap tests pass.
+
+Initial launcher failed BEFORE either replay because container Python3.10 lacks
+hashlib.file_digest. start.json/failed.txt preserve that preflight failure.
+run_compat.py replaces only hashing with streaming SHA256, keeps original
+run.py/input pins unchanged, saves start_compat.json and compatibility_pins.
+Authoritative completion: replay_complete.json, both *_finish.json and
+*_validation.json. No numerical retry: each control binary launched ONCE.
+The earlier prelaunch commit-count correction is documented separately.
+
+Owned replay jobs exited. Only container startup shell/Zenoh router remained
+before restoration; Humble stopped afterward, Noetic never started. Original
+four-sequence Hesai checkpoint and final hashes/ownership are verified in
+closeout.json. No new build, source run, model/default edit, covariance tuning,
+deletion, commit/push, active automation or follow-on experiment. Original
+Rerun viewer and all old runs untouched. IE-TC shares CPT7, not independent
+prism GT; covariance-alignment approximation unchanged; no nonlinear
+stationarity or general bug-free claim.

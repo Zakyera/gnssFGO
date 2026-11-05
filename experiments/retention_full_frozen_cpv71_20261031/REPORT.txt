@@ -1,0 +1,39 @@
+CP-V71 -- Full EIG-2 Hesai frozen-input retention comparison
+Status: RUNNING. Launched once2026-10-31 16:52:16 local.
+Suspend-inhibiting supervisorPID32250, controllerPID32252. See launch.json,
+status.json and replay_attempt/ for exact receipts; do not duplicate stages.
+User selected full355.02s conditional test, not live three-estimator feedback.
+See PROTOCOL.txt. Reuse CP70 exact binaries, full CP49 saved ON input history.
+REMOVE and RETAIN both consume ON beliefs. No tuning/default promotion.
+CP67 live bidirectional LOCAL provenance failure remains unresolved.
+
+Preflight:9038 protected original/static files verified; exact CP70 private
+backend SHA6e620d0f24aed055ee8f9f2f638af1b59881ff09e23ebe561614162a93d634ce
+and compatible libcbs reused, no build. Copied Kimera profile identical to CP49.
+Frozen1743 accepted post-alignment beliefs with original arrival order, sender/
+receiver bindings, backend update IDs and physical endpoint timestamps. These
+join exactly to1762 original native poses. Original3541 wire beliefs include
+1798 outside the original accepted set; explicitly listed, not claimed delivered
+factors. Original .6/1.0s native gaps near tail are preserved coverage checks.
+REMOVE started once, effective flags/environment/DSO map verified; capture
+advancing past first retirement. No GLIM/fusion process or new returned feedback.
+Expected walltime about60minutes for both0.20x playbacks plus validations/scoring.
+Controller automatically runs each gate once, stops on failure, restores both
+originally stopped containers and checks original four-sequence Hesai checkpoint.
+Method1/EVO results pending, no full-sequence accuracy conclusion yet.
+
+FINAL CONTROLLER STATUS 2026-10-31T16:58:50.453145+02:00
+{
+  "passed": false,
+  "scored": false,
+  "error": "AssertionError(('capture_remove', 1))",
+  "cleanup_error": null,
+  "integrity_error": null,
+  "containers_restored": true,
+  "protected_files": 9041,
+  "completed": "2026-10-31T16:58:50.453007+02:00",
+  "controller_pid": 32252,
+  "controller_exiting": true,
+  "live_bidirectional_provenance_gate_passed": false,
+  "default_promotion": false
+}

@@ -1,0 +1,18 @@
+Before candidate launch, the reference postprocessor's initial count assertion
+failed:591timed rows versus591native outputs, instead of guessed590timed rows.
+No estimator/source failure and no capture repeated.
+
+Exact saved identities resolve this, not a relaxed numerical tolerance:
+ native ROS frames0..590 (591), timed frames1..591 (591), MAIN profiles0..591.
+ Frame0 initialization has no timing row. Frame591 is the last buffered input,
+ processed during shutdown after native output callbacks have been removed.
+ Same preserved GLIM shutdown/last-scan look-ahead behavior; source inputs all
+ received. Last online native stamp1727775067674412012ns; input end is
+1727775067855396309ns. Online tail gap.180984297s, not a full60s output span.
+
+Validator now checks these exact identity sets, reports the shutdown-only
+frame separately, and excludes it from ONLINE scan/work comparisons. It still
+requires exact sensor receipts, finite outputs, matched reference/candidate
+topology and per-version LOCAL provenance. No sensor/output files changed.
+Original traceback: assert len(scans)==len(odom)-1 -> AssertionError:(591,591).
+Authoring-only checker correction, not an experiment retry or model repair.

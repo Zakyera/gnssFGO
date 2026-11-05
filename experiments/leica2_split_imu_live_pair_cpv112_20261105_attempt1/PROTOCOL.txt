@@ -1,0 +1,47 @@
+CP-V112 attempt1, authorized by user's proceed after the failed-window diagnosis.
+One fresh LEICA-2 OFF then ON, GLIM+Kimera+concurrent gnssFGO both arms.
+Original CP112 failed OFF remains frozen; no reuse as a qualified OFF control.
+No additional automatic retry, other sequence, tuning, build, install or deletion.
+
+Same intended CP112 absolute window1732549034915071665..1732549463665071665ns,
+428.75s, selected-topic offset6.0s, .20x,25s drain. All-bag origin is
+1732549028815072565ns, not selected-topic origin1732549028915071665ns.
+Operational correction ONLY: CBSMS_BAG_PLAYBACK_START_SEC=6.099999100 passed
+to rosbag --start, while CBSMS_BAG_START_SEC=6.0 records selected-topic offset.
+No epoch shift to sensor timestamps or scoring reference. Expected headers,
+raw audit, mission calibration and all scientific guards remain unchanged.
+Fresh root/session/ports11653/11654. Both arms use corrected private Kimera
+985c115d3573446f65ef4ce7cc4125e514b4922fed6445ed05cbc4dbdfb70a09.
+GLIM Hesai+CPT7/HG4930 CP82 persistent MAIN/shared_native/native_local5s.
+Kimera AlphaSense stereo+built-in AlphaIMU CP76/CP40/CPK9 persistent smart25,
+FL4Q0/FL4Mremove, Gaussian1; biasRW.0043/.000266 at200Hz, all other profiles
+byte-identical. OFF both receivefalse, ON both persistent receivetrue.
+Failure-only archive Kimera only; original fatal exception unchanged.
+No nativeIMU override, CP66 observer, covariance freeze, seed or weight change.
+Receiver CP-K19 7s source_wnoa Qcx1, independent100ms CPT7 clock, no central
+IMU/GNSS, same priors/replacement/seal_at_absorption/EOF and full6x6 once-only
+Alpha->CPT7 frame adapter, GLIMidentity. All arrivals/order/IDs/revisions saved.
+
+Before launch: host five-stream exact record timestamps from original bags
+must match unchanged expected headers using translated offset. Negative test
+must reject old6.0 offset. Actual Noetic equivalent check precedes source/receiver
+startup, plus existing30adapterfixtures and runtime effective params/maps/body/TF.
+Each source rechecks both offset fields before playback and records them.
+Existing exact header/init/EOF coverage gate remains mandatory after capture.
+All4288Hesai/42875CPT7/85688Alpha/4287left/4287right expected, allstereo matched.
+No tail truncation, gap filling, gate relaxation or inferred qualification.
+
+Preserve original10253pins and entire failed CP112 H/P regular files plus
+symlink/FIFO metadata, without reading FIFOs. All667Hesai originals/copies.
+20GiB output allowance+5GiB reserve; runtime5GiB floor. Both containers initially
+stopped and restored stopped. One exclusive finite controller owns OFF+4gates,
+ON+4gates, cleanup, saved EVO and report verification. Monitor never duplicates.
+After terminal/exact controller+supervisor exit, post_closeout.py once if absent.
+REPORT immutable if sealed; later notes supplemental. Pause heartbeat at terminal.
+
+Method1 EVO1.36.3 SE3/no-scale versusIE-TC; reference-distance.5m t/rRPE and
+estimated/reference paths. Six-curve common100ms distinct full-native cadence;
+7s-finalized separate ONLINE/full-history. Retain all gaps/revisions/covariance/
+payload/frame/expired/EOF omissions. IE-TCsharesCPT7,notindependentprismGT;
+polyline notphysicaltravel; paritynotstationarity/calibration/health. Persistent
+mixed-prior/native-onlyoutgoingFALSE and experimental Alpha model remain.

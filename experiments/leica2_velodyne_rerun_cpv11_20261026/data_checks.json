@@ -1,0 +1,335 @@
+{
+  "case": "CP-V4 LEICA-2 Velodyne baseline",
+  "epoch_ns": 1732549034915071665,
+  "duration_s": 428.75,
+  "origin_reference_enu_m": [
+    -0.011483248279424,
+    -0.36318778123009515,
+    0.5967420335266643
+  ],
+  "reference": {
+    "path": "/workspace/cbs_gtsam4.3/src/datasets/GrandTour/LEICA-2/2024-11-25-16-36-19_cpt7_ie_tc.bag",
+    "sha256": "5455a1a68dfcdab7dd26fdcbd528d42982725da8bc165a0208ddcd74aac6ca64",
+    "topic": "/boxi/inertial_explorer/tc/odometry",
+    "frame_ids": [
+      "enu_origin"
+    ],
+    "child_frame_ids": [
+      "cpt7_imu"
+    ],
+    "caveat": "IE-TC GNSS/INS reference shares CPT7 IMU; not independent prism GT"
+  },
+  "common_coverage": {
+    "grid_queries": 4264,
+    "valid_queries": 3850,
+    "excluded_queries": 414,
+    "supported_s": 384.6,
+    "capture_s": 428.75,
+    "supported_capture_percent": 89.70262390670554,
+    "first_s": 0.684928335,
+    "last_s": 390.38492833500004,
+    "envelope_s": 389.70000000000005,
+    "start_gap_s": 0.684928335,
+    "tail_gap_s": 38.36507166499996,
+    "segments": [
+      {
+        "first_s": 0.684928335,
+        "last_s": 57.584928335,
+        "rows": 570
+      },
+      {
+        "first_s": 60.384928335000005,
+        "last_s": 195.384928335,
+        "rows": 1351
+      },
+      {
+        "first_s": 196.78492833500002,
+        "last_s": 304.38492833500004,
+        "rows": 1077
+      },
+      {
+        "first_s": 305.284928335,
+        "last_s": 390.38492833500004,
+        "rows": 852
+      }
+    ]
+  },
+  "products": {
+    "off_glim_initial": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_source/glim_odometry.csv",
+      "sha256": "4009e24f5541a38f7eb6859d8cb9d4be13dfc39ab28c702b46aaaed8728f9903",
+      "rows": 4280,
+      "first_s": 0.6320813310000001,
+      "last_s": 428.53073030800005,
+      "span_s": 427.89864897700005,
+      "csv_gate": {
+        "rows": 4280,
+        "duplicate_or_nonmonotonic_stamps": 0,
+        "frames": [
+          "map"
+        ],
+        "children": [
+          "cpt7_imu"
+        ],
+        "quaternion_norm_max_error": 2.3314683517128287e-15,
+        "max_stamp_gap_s": 0.10686612200000001
+      },
+      "alignment_rotation": [
+        [
+          0.9666382558281311,
+          -0.2559214819350721,
+          -0.010708755936369664
+        ],
+        [
+          0.25424446179793636,
+          0.9637095190108427,
+          -0.08138621881478406
+        ],
+        [
+          0.031148611760814904,
+          0.07594839071400171,
+          0.9966251080187208
+        ]
+      ],
+      "alignment_translation_m": [
+        0.8068061226309258,
+        -1.4127556414108184,
+        0.7410386274486741
+      ],
+      "common_ATE_check_m": 2.7821689969285504,
+      "native_vertices": 4280,
+      "native_path_including_gap_chords_m": 209.03827098366523,
+      "displayed_gap_aware_path_m": 209.03827098366523,
+      "gaps_over_500ms": 0,
+      "max_float32_coordinate_error_m": 1.905437486016126e-06
+    },
+    "off_kimera": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_source/kimera_odometry.csv",
+      "sha256": "7d62d57061910d47d1a334a7cccac3c2181b3826f1a6e6e53a8ecf114fb46503",
+      "rows": 1937,
+      "first_s": 0.099937912,
+      "last_s": 426.99556373900003,
+      "span_s": 426.895625827,
+      "alignment_rotation": [
+        [
+          0.08359245073392334,
+          -0.9959779827087534,
+          0.03225151375826902
+        ],
+        [
+          -0.9955282417028541,
+          -0.0820381953628191,
+          0.04683219484112275
+        ],
+        [
+          -0.04399797895723716,
+          -0.03602211072404298,
+          -0.998381983704966
+        ]
+      ],
+      "alignment_translation_m": [
+        1.6111219237369365,
+        0.3364216399771216,
+        0.23668619255156587
+      ],
+      "common_ATE_check_m": 1.0942339145911995,
+      "native_vertices": 1937,
+      "native_path_including_gap_chords_m": 200.14583756912833,
+      "displayed_gap_aware_path_m": 200.11451000754647,
+      "gaps_over_500ms": 12,
+      "max_float32_coordinate_error_m": 1.9003710036713528e-06
+    },
+    "off_fusion_online": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_receiver/receiver/online_trajectory.tum",
+      "sha256": "1ba07f8d4cf4285e03c32ef5f3e26531def78abd6114b28b9e4743708471aa23",
+      "rows": 4282,
+      "first_s": 0.48444333500000003,
+      "last_s": 428.584443335,
+      "span_s": 428.1,
+      "alignment_rotation": [
+        [
+          0.11660466240886729,
+          -0.9928638165401295,
+          0.024995889859775917
+        ],
+        [
+          -0.9930581331401219,
+          -0.1161619417383604,
+          0.018491822404247665
+        ],
+        [
+          -0.015456290265473844,
+          -0.026978604429097223,
+          -0.9995165121168771
+        ]
+      ],
+      "alignment_translation_m": [
+        3.2678739899509868,
+        -0.2845030503976176,
+        0.722727107216444
+      ],
+      "common_ATE_check_m": 2.006010451400694,
+      "native_vertices": 4282,
+      "native_path_including_gap_chords_m": 280.1540578477104,
+      "displayed_gap_aware_path_m": 280.1540578477104,
+      "gaps_over_500ms": 0,
+      "max_float32_coordinate_error_m": 1.9049509916158058e-06,
+      "reference_at_same_native_timestamps_path_m": 205.92908513096825,
+      "max_100ms_step_m": 0.225705136362699,
+      "p95_100ms_step_m": 0.13167210523862527
+    },
+    "on_glim_initial": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_on_source/glim_odometry.csv",
+      "sha256": "51dc63bd3915041d6d1e3e3a6b0e5c8cd0a37111dad135713bf05dc67c425443",
+      "rows": 4280,
+      "first_s": 0.6320813310000001,
+      "last_s": 428.53073030800005,
+      "span_s": 427.89864897700005,
+      "csv_gate": {
+        "rows": 4280,
+        "duplicate_or_nonmonotonic_stamps": 0,
+        "frames": [
+          "map"
+        ],
+        "children": [
+          "cpt7_imu"
+        ],
+        "quaternion_norm_max_error": 1.5543122344752192e-15,
+        "max_stamp_gap_s": 0.10686612200000001
+      },
+      "alignment_rotation": [
+        [
+          0.9663919931983993,
+          -0.24662066355333173,
+          -0.07255869203987894
+        ],
+        [
+          0.23995705016211816,
+          0.9666402489018021,
+          -0.08959488423205937
+        ],
+        [
+          0.0922341019337123,
+          0.06917280904788883,
+          0.9933317637772918
+        ]
+      ],
+      "alignment_translation_m": [
+        0.45863760111677365,
+        -0.43486391028015703,
+        0.40476747702638954
+      ],
+      "common_ATE_check_m": 0.848868788963257,
+      "native_vertices": 4280,
+      "native_path_including_gap_chords_m": 215.46308686073968,
+      "displayed_gap_aware_path_m": 215.46308686073968,
+      "gaps_over_500ms": 0,
+      "max_float32_coordinate_error_m": 1.9051389159585597e-06
+    },
+    "on_kimera": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_on_source/kimera_odometry.csv",
+      "sha256": "e65efc6ab169fef4f1604e686e9f0ff31843c009faa1b96d5ed793e62b24f7dd",
+      "rows": 1936,
+      "first_s": 0.099937912,
+      "last_s": 426.99556373900003,
+      "span_s": 426.895625827,
+      "alignment_rotation": [
+        [
+          0.09857317094495432,
+          -0.9902283111996955,
+          0.09864695468414479
+        ],
+        [
+          -0.9946916456480173,
+          -0.10098581818404095,
+          -0.0197584059007573
+        ],
+        [
+          0.029527276337247367,
+          -0.09617565297048199,
+          -0.9949263207533536
+        ]
+      ],
+      "alignment_translation_m": [
+        3.224391094473015,
+        0.02291974646444217,
+        1.1377868190179232
+      ],
+      "common_ATE_check_m": 2.58533397056869,
+      "native_vertices": 1936,
+      "native_path_including_gap_chords_m": 201.29426918564536,
+      "displayed_gap_aware_path_m": 201.06129626495783,
+      "gaps_over_500ms": 13,
+      "max_float32_coordinate_error_m": 1.9056430602404362e-06
+    },
+    "on_fusion_online": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_on_receiver/receiver/online_trajectory.tum",
+      "sha256": "755a14455803c00216f0fae3f52868ff5cbad4f769408bb6426b330e2a1fda99",
+      "rows": 4282,
+      "first_s": 0.48444333500000003,
+      "last_s": 428.584443335,
+      "span_s": 428.1,
+      "alignment_rotation": [
+        [
+          0.0674125169737349,
+          -0.997563855096437,
+          0.017941782531297447
+        ],
+        [
+          -0.9977243762729913,
+          -0.06742451271800752,
+          -6.383893907879229e-05
+        ],
+        [
+          0.0012733993626378938,
+          -0.017896650241700115,
+          -0.9998390312266217
+        ]
+      ],
+      "alignment_translation_m": [
+        2.9850143931444215,
+        -0.31365377379669823,
+        0.7930776309388567
+      ],
+      "common_ATE_check_m": 1.8679619777055843,
+      "native_vertices": 4282,
+      "native_path_including_gap_chords_m": 235.13666219787342,
+      "displayed_gap_aware_path_m": 235.13666219787342,
+      "gaps_over_500ms": 0,
+      "max_float32_coordinate_error_m": 1.9025839321784588e-06,
+      "reference_at_same_native_timestamps_path_m": 205.92908513096825,
+      "max_100ms_step_m": 0.16114943444564359,
+      "p95_100ms_step_m": 0.10507086210992214
+    }
+  },
+  "alignment": "single per-product SE(3), no scale, CP-V10 common mask",
+  "source_rerun": false,
+  "trajectory_resampling_or_smoothing": false,
+  "selected_inspection_window": {
+    "start_s": 380,
+    "end_s": 390,
+    "selection": "largest OFF fusion-minus-reference 10s path excess, integer-second starts, fully CP-V10-common-supported",
+    "off_path_excess_m": 6.248905885773476,
+    "not_representative": true
+  },
+  "reference_native_vertices": 85750,
+  "original_inputs_unchanged": true,
+  "input_sha256": {
+    "/home/yeranis/repos/gnssFGO/experiments/leica2_velodyne_rerun_cpv11_20261026/prepare.py": "ac1d26dd25cf38ed9e06e1ee1b50be546176da445f0d8b4622b4691c2abe927f",
+    "/home/yeranis/repos/gnssFGO/experiments/leica2_velodyne_rerun_cpv11_20261026/PROTOCOL.txt": "417ea497c2f417642f44962aef9e39e2e0de2fb5b5d2ab5af7e435ffdaf8ff68",
+    "/home/yeranis/repos/gnssFGO/experiments/first_published_comparison_cpv10_20261026/analyze.py": "78091650c4e9d040bfdbe3822e8fcb12405405c86dd07c564a8734c74056ab7e",
+    "/home/yeranis/repos/gnssFGO/experiments/cross_sequence_decision_cpv8_20261026/analyze.py": "03e9829282e597c99bd96f416eaea0bb587540a298e8ea30ddc86accdca9f7fb",
+    "/home/yeranis/repos/gnssFGO/experiments/leica2_drift_attribution_cpv7_20261025/analyze.py": "39cbdf58d0dafd0d2cd29d8b857fd6175314618bce358c4c2014d5ad8acf51c8",
+    "/home/yeranis/repos/gnssFGO/experiments/fixed_lag_eig2_g2k_reference_fl4y_20261017/analyze.py": "f450f8fd936426cd677b3b5eac231bcc12f7fa060f03d9c4105ce75c5ded9124",
+    "/home/yeranis/repos/gnssFGO/experiments/first_published_comparison_cpv10_20261026/outputs/velodyne_leica2.json": "c1420f7c39f6aa03d03d6db0842f887fcec563ac045183e9e3c781b58560674d",
+    "/home/yeranis/repos/gnssFGO/experiments/first_published_comparison_cpv10_20261026/outputs/velodyne_leica2.npz": "fbdde07fc94df0341466415dc8e59d54444fbcd7f9980225b2f9a1aa3b17b62f",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/datasets/GrandTour/LEICA-2/2024-11-25-16-36-19_cpt7_ie_tc.bag": "5455a1a68dfcdab7dd26fdcbd528d42982725da8bc165a0208ddcd74aac6ca64",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_source/glim_odometry.csv": "4009e24f5541a38f7eb6859d8cb9d4be13dfc39ab28c702b46aaaed8728f9903",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_source/kimera_odometry.csv": "7d62d57061910d47d1a334a7cccac3c2181b3826f1a6e6e53a8ecf114fb46503",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_receiver/receiver/online_trajectory.tum": "1ba07f8d4cf4285e03c32ef5f3e26531def78abd6114b28b9e4743708471aa23",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_on_source/glim_odometry.csv": "51dc63bd3915041d6d1e3e3a6b0e5c8cd0a37111dad135713bf05dc67c425443",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_on_source/kimera_odometry.csv": "e65efc6ab169fef4f1604e686e9f0ff31843c009faa1b96d5ed793e62b24f7dd",
+    "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_on_receiver/receiver/online_trajectory.tum": "755a14455803c00216f0fae3f52868ff5cbad4f769408bb6426b330e2a1fda99"
+  },
+  "npz_sha256": "1801ee33d06dd51fdb7c5f4716b5fa1f3b09d42a49c0c6990675a8584e73e14e"
+}

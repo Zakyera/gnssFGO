@@ -1,0 +1,174 @@
+CP-V64 — exact nonvisual Jacobian ablations
+2026-10-30. Saved-checkpoint test complete; numerical checks PASS.
+No material correction of the first disturbance; no production promotion.
+Authority: analysis.json, metrics_check.json, verification.json, complete.json.
+
+DECISION
+========
+Correcting the exact derivatives identified in CP63 does NOT materially reduce
+the first GLIM-induced response. CBS-only correction reduces the largest old
+orientation revision by0.00037193%; pose-prior-only correction by0.03295690%.
+Neither reduces the maximum gyro-bias revision. Both are well below the
+predeclared1% response-reduction benchmark. The visual support identities are
+unchanged, not merely the counts.
+
+These are real native Jacobian approximations, but this controlled experiment
+is evidence against either being the main cause of THIS first disturbance.
+Do not claim all later CBS events are thereby correct, that combined changes
+were tested, or that the full trajectory zigzag is solved.
+Stop pursuing these isolated approximations as a promising first-event fix.
+
+WHAT RAN / WHAT DID NOT
+======================
+Original saved CP51 EIG-2 Hesai update6: capture1.599933183s, bag+7.299933183s.
+A: original graph/native derivatives.
+B: ONLY CBS929 x4->x5 uses exact Local/Log derivative chain.
+C: ONLY pose prior0 atx0 uses exact derivative of -Local(x,prior).
+No combined B+C arm. Native no-motion206 and all other factors unchanged.
+
+Each arm starts with the same saved values and338smart-factor cache history,
+takes one ordinary native Gaussian step and one current-state refresh.
+SIX real checkpoint linear solves total; no fixture solves, extra iterations,
+line search, source replay, new full sequence, covariance/weight adjustment,
+stronger prior, re-anchoring, production/default/vendor/header change or push.
+Native priors keep their original functions. The private derived classes change
+only derivatives/clone dispatch, never the returned physical residual function.
+No files deleted; inputs and failed CP63 evidence preserved unchanged.
+
+Original A passes captured equations/state gates BEFORE B/C.
+Real exact-Jacobian checks at initial/postordinary/postrefresh pass BEFORE
+any checkpoint solve. The exact target is rechecked at each candidate step.
+At equal state/cache every non-target Gaussian is exactly equal to its native
+counterpart; original noise/residual/cost and full physical snapshot parameters
+remain identical. Candidate parameter/cache snapshots serialize byte-for-byte
+to the original ordinary snapshot before solving (derivative implementation is
+intentionally not represented by this physical-parameter serializer).
+
+RESULT: STATE REVISIONS, NOT ATE / TRUE BIAS ERROR / PHYSICAL MOTION
+================================================================
+Maximum over OLD statesx0..x5/b0..b5/v0..v5; maxima may occur at different states.
+
+After ordinary step:
+                                     Original A     Exact CBS B    Exact prior C
+Old orientation revision (deg)       .283702664      .283695630     .283721567
+Old position revision (mm)           1.893616        1.894365       1.893616
+Gyro-bias revision (rad/s)           .00713565324    .00713590363   .00713565324
+Accel-bias revision (m/s^2)          .01181396358    .01181085752   .01181417770
+Velocity revision (m/s)             .00887669241    .00887590983   .00887669161
+
+After ordinary + refresh:
+                                     Original A     Exact CBS B    Exact prior C
+Old orientation revision (deg)       .322580686      .322579486     .322474373
+Old position revision (mm)           5.721914        5.722143       5.721914
+Gyro-bias revision (rad/s)           .00746094101    .00746095345   .00746094103
+Accel-bias revision (m/s^2)          .02284792318    .02284829592   .02284862204
+Velocity revision (m/s)             .01076055400    .01076051244   .01076055534
+Orientation reduction vsA (%)          --             .000371929     .032956903
+Gyro-bias reduction vsA (%)            --            -.000166789    -.000000296
+
+For context ONLY, preserved CP52 omission of the first CBS factor gave largest
+old orientation revision .027277deg and gyro-bias revision .0003430rad/s.
+That control was NOT rerun. Neither exact-derivative arm approaches it.
+
+Direct difference from A over ALL statesx0..x6/v/b after both steps:
+                                      Exact CBS B           Exact prior C
+Maximum position difference           .384419 micrometers   .014972 micrometers
+Maximum orientation difference        .00000411228deg       .00026548922deg
+Maximum velocity difference           4.67191e-7m/s          2.38910e-8m/s
+Maximum accel-bias difference         4.10784e-7m/s^2        9.17224e-7m/s^2
+Maximum gyro-bias difference          4.85699e-8rad/s        3.31026e-10rad/s
+
+A maximum revision's small change is not the same quantity as the maximum
+candidate-to-A pose difference. The table deliberately reports both.
+Full per-state values and both phases are retained in analysis.json.
+
+NATIVE WEIGHTED COSTS AFTER REFRESH
+=================================
+Group                          Original A       Exact CBS B      Exact prior C
+CBS929                         44.278872391      44.278867869     44.278889732
+Vision                         93.700511113      93.699845373     93.700475219
+IMU                             1.253754438       1.253789353      1.253769097
+Bias-between                   15.749330755      15.749601202     15.749332298
+Pose prior                       .000631801        .000631814       .000629680
+Velocity priors                 3.151205134       3.151356695      3.151206156
+Bias prior                       .304340661        .304339253       .304341643
+Native no-motion                 .008461305        .008461380       .008461303
+Total                         158.447107597     158.446892941    158.447105127
+
+Costs are dimensionless weighted half squared residuals, NOT trajectory RMSE.
+The tiny total-cost changes are not a claim of better physical accuracy.
+Same original native functions/cache initialization are used for each diagnostic
+cost evaluation on separate clones. The solving graph is never modified by
+post-step diagnostic error evaluations.
+
+All arms:
+-285valid smart factors in ordinary linearization;
+-266valid in refreshed linearization;
+-postordinary status counts:266valid,23degenerate,2behind,44outlier,3far;
+-postrefresh:267valid,20degenerate,8behind,39outlier,4far.
+Every accepted-factor slot set matches A after each phase and in each
+linearization. These are native smart-factor statuses, not frontend deletions.
+No distinct support set explains the negligible B/C differences.
+
+VALIDATION
+==========
+Release and ASan/UBSan fixtures PASS: nonzero SE3 residuals, correlated Gaussian
+noise, both target types, exact raw/whitened/directional derivatives vs central
+FD at1e-5/1e-6. Native approximate-derivative negative controls detect differences;
+zero-residual controls agree. Vendor DSOs are not sanitizer-instrumented.
+
+Ten real target/state derivative records,20FD Jacobian comparisons:
+native raw max4.674e-13; whitened3.188e-13 (gate1e-6).
+Independent SciPy SE3 FD raw max2.436e-10; whitened1.478e-11 (gate1e-6).
+Sixteen actual-direction checks: native max2.861e-9, independent7.764e-11
+(gate1e-6). Thus the CP63 derivative discrepancies are actually corrected,
+not merely hidden by a threshold or excluded from the report.
+
+Physical cost identity exact; independent SE3 residual<=5.269e-16 and
+cost<=6.591e-15. Target Gaussian assembly<=1.102e-16.
+Full system replacement equals target-only scattered change<=3.427e-17
+(relative to full expected system; gate1e-10). Every non-target Gaussian exact.
+Native original ordinary/exact-refresh equations exact; reproduced ordinary
+state tangent3.33736e-10 and chained refresh1.22879e-10.
+Mixed state-tangent norms are not metres.
+
+Six native linear backward residuals<=2.507e-17; independent<=2.709e-17.
+These are linear-system checks, NOT nonlinear stationarity/convergence.
+Independent right SE3 retraction<=1.385e-16; vector retraction exact.
+2136endpoint native factor cost/residual checks exact.
+Original A group costs match CP63 saved endpoint calculations<=2.088e-10relative.
+930independent scalar/quaternion checks of all response metrics<=8.649e-17.
+All scientific gates passed without relaxed thresholds, failure or retry.
+
+BUILD / INTEGRITY
+=================
+Private ExactJacobians.cpp compiled/linked against the existing pinned CP40
+native libraries and CP51 capture headers. No production estimator rebuild.
+Build, link, fixtures, extraction and saved-data analysis completed once, with
+exclusive output files. No failed CP64 attempt or report repair.
+Historical CP63 failures/qualifications remain untouched.
+
+Final verify_closeout.py checks inherited/source/analysis hashes, identity of
+both captured input snapshots before/after, B/C physical-function snapshot bytes,
+exact run counts/receipts, native container states and exited owned jobs.
+Original four-sequence Hesai checkpoint must still pass667files.
+Both originally-stopped containers restored stopped.
+See verification.json and complete.json for final actual counts/time/hashes.
+
+CONCLUSION / NEXT DECISION
+=========================
+This closes a useful narrowly defined question: exact CBS or pose-prior
+derivatives individually do not materially change the first harmful response.
+Do not promote either private candidate as a zigzag fix or launch a full run
+on this evidence. Later events and a combined candidate remain untested, but
+these results do not justify chasing this lead further as the main explanation.
+
+What remains supported is the CP52/CP63 mechanism: a short-interval external
+rotation disagreement is accommodated by coupled window/gyro-bias changes,
+with worse native measurement fit. That does not determine which source is
+physically wrong, establish calibrated covariance, or prove that the overall
+CBS design cannot work.
+The next discussion should distinguish model/information-consistency questions
+from implementation faults; no weighting experiment or new capture is launched
+or authorized by this report. Stop here for the user's decision.
+

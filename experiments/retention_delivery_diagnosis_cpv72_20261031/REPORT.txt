@@ -1,0 +1,110 @@
+CP-V72 -- WHY THE FULL FROZEN REPLAY STOPPED
+2026-10-31. Saved-data diagnosis complete; no implementation or replay.
+
+CONCLUSION
+This stop is a synchronization limitation in the new diagnostic replay harness,
+not a demonstrated failure of factor retention or a numerical optimizer failure.
+CP71 ran REMOVE only. Its exact-update checker correctly refused to continue
+when the scheduled belief was absent from the backend's queue snapshot. The
+harness preserves recorded bag availability but does not synchronize backend
+readiness with callback/forwarding completion. Holding early messages solves
+early admission; it does not guarantee arrival before a faster replay update.
+
+THE EXACT EVENT
+Update346 represents sensor time69.599331232s in the selected EIG-2 window.
+Both raw stereo headers/record times equal1730638886162877266ns.
+GLIM sender685->687, receiver344->345, was scheduled for original update346.
+Its original bag availability is1730638886173423876ns:10.546610ms after that
+camera timestamp. At0.20x this nominal separation is52.73305ms wall time,
+before accounting for scheduling and queues. Its last source endpoint is
+1730638885979307776ns, so this is not a future physical measurement interval.
+Original CP49 really accepted it at update346 (saved alignment/factor rows).
+
+CP71's recorder captured the EXACT serialized message, SHA256:
+6e82dfae19aa0aa5c62c1d7dccacbdd545205858232b94d7082feb637f0335b7.
+All341 received messages are the byte-exact prefix of the frozen1743 inputs.
+Thus the message was not absent/corrupt in the input and was actually replayed.
+But the backend popped its pending queue without it and raised:
+  CPV70_DELIVERY_FAILURE: missing at target update346 sender685->687.
+Recorder receipt does NOT establish the Kimera callback had completed or that
+the wrapper had forwarded the message to the backend before this queue pop.
+
+THE RELEVANT IMPLEMENTATION
+ROS poseOdomBeliefInCallback converts and buffers incoming beliefs. In parallel
+mode, the wrapper calls flushExternalOdometryBeliefsToPipeline from a nominal
+20Hz WALL loop. The backend independently pops its pending queue when processing
+a keyframe. There is therefore a callback/forwarding boundary in addition to
+rosbag publication. The current parallel_run=1 is recorded in profile/runtime.
+
+CP70's private gate calls select immediately AFTER the pending-queue pop. It
+holds already-arrived inputs whose scheduled update is in the future, but has
+no readiness handshake or bounded wait for a due input. If such input is absent
+at its target update, it throws before native matching/optimization. The guard
+is doing its job; the scheduling harness cannot guarantee its prerequisite.
+Replaying bag timestamps alone does not recreate original concurrent CPU timing.
+
+BEFORE THE STOP
+340 accepted beliefs exactly match the original schedule, sender/receiver IDs
+and all covariance entries. Mean Exp/Log roundtrip max1.66533453694e-16.
+346 first-published poses have the exact original physical timestamps (0..345).
+346 finite objective rows and316 retirements; no active-window rollback or
+CP40 fatal error before the delivery stop. No update346 result, no RETAIN run,
+no scoring or full-sequence performance conclusion. CP70's completed60s result
+remains valid, not superseded by this incomplete test.
+
+WHY THE OLDER WORKING TEST IS NOT A CONTRADICTION
+October15 FL4m94s ETH1,0.10x:450/450 beliefs were recorded BEFORE their target
+sensor timestamp. Even the tightest margin was41.026628ms sensor time, about
+410.27ms nominal wall time at that playback rate. Both remove and retain did
+validate all450 exact admission IDs afterward; this was a genuine passed test,
+not merely missing validation. It did not use the later CP70 runtime gate.
+
+CP70 EIG-2 first60s,0.20x:292 inputs from CP66; four arrivals were after their
+target sensor stamp, maximum8.808345ms. Both actual runs satisfied the delivery
+gate. This proves those executions, not scheduling-independent delivery.
+
+CP71 full EIG-2,0.20x:1743 inputs from full CP49; seven arrivals are after target
+sensor stamps, maximum10.821545ms. Failed346 is10.546610ms after. Earlier such
+arrivals246/286/306 passed; arrival-after-stamp alone is NOT a failure rule.
+Different observed processing/forwarding timing decides whether a message is
+in the queue at the pop. The retained-factor mathematical mode is not the
+component that produced this abort, and was not enabled in the failed capture.
+
+LIMITS OF THIS DIAGNOSIS
+Exact per-message callback receive, wrapper forwarding and backend-pop wall
+timestamps were not all saved. We can establish the missing-at-pop event and
+the asynchronous scheduling defect, not apportion exact microsecond delays
+between ROS transport, callback execution and the20Hz forwarding boundary.
+Bag recorder timestamps use simulated clock; the observed -1.112269ms recorder
+minus scheduled bag time does not prove negative real transport latency.
+No claim that a specific thread's precise lateness was measured.
+
+RECOMMENDED NEXT CHANGE -- PROPOSAL ONLY
+Add a diagnostic-only bounded readiness/acknowledgement barrier before solving
+the scheduled backend update: permit actual callbacks to deliver the original
+due message, confirm it is enqueued, then continue with exactly the same frozen
+payload, endpoint binding and original update ID. Preserve recorded availability;
+do not read future payloads early, backdate messages, move the factor to another
+update, skip it, relax covariance/matching guards or add arbitrary sleeps.
+Timeout or identity/order discrepancy must still fail closed. Avoid deadlock by
+not holding the queue mutex or blocking the callback/forwarding worker while
+waiting. Bound queue/backlog and retain ordinary+one-refresh semantics.
+Validate ordering, delayed callbacks, timeout, missing/duplicate inputs and
+unchanged disabled behavior before any separately authorized fresh capture.
+This is conditional replay synchronization, not a new estimator or live latency
+certificate. No implementation/retry was done in this diagnosis.
+
+PRESERVATION / EVIDENCE
+analysis.json, input_sha256.json and verification.json contain the executable
+saved-data checks. Original CP71 output manifest verified unchanged. CP71's
+failed verdict, all captured prefixes and CP70 success remain untouched.
+No source/settings/build/container changes, optimizer calls, scoring, deletion
+or promotion. Repository AGENTS and runtime ledger corrected from stale RUNNING
+to FAILED/CLOSED; CP72 documents the separate diagnosis.
+CP67 live bidirectional LOCAL provenance limitation remains separate/unresolved.
+
+Source pointers:
+  W/runs/retention_update_gate_cpv70_20261031/RecordedUpdateGate.h:85..126
+  W/runs/retention_update_gate_cpv70_20261031/VioBackend.cpp:2428..2439
+  W/src/Kimera-VIO-ROS/src/KimeraVioRos.cpp:944..954,1079..1112,2505..2642
+W=/home/yeranis/repos/V4RL/cbs_gtsam4.3.

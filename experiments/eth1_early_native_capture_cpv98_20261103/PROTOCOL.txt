@@ -1,0 +1,46 @@
+CP-V98: one short ETH1 split-IMU both-persistent CBS-ON native checkpoint capture
+2026-11-03. User authorized the proposed approximately 12-second diagnostic.
+
+Question: can changes in the current state and smart-factor triangulation alter
+native visual information without changing visual measurements? CP97 established
+an early covariance difference in CP91 versus CP95, not its full-run ATE cause.
+
+One 12.0s sensor window, offset0, 0.20x, original25s drain. Existing CP91 source
+harness, profiles and private source binaries; no fusion, new OFF control, full
+sequence, weighting/model/calibration changes, production build, or deletion.
+GLIM Hesai/CPT7 HG4930 CP82 and Kimera stereo/Alpha IMU CP76/CP40/CPK9, native
+smart25, Gaussian1, BOTH persistent. Alpha experimental biasRW .0043/.000266,
+200Hz and all other settings unchanged. Native-only outgoing information remains
+false; independent IMUs do not remove persistent peer-feedback correlations.
+
+Enable the already-built CPV66_AUDIT_DIR and CPV66_TEST_ALL only in Kimera.
+For every backend update >=2, save four native phases, all smart observations,
+calibrations/parameters, cached triangulation result/camera poses, IMU PIMs and
+their actual biasHat, MAIN initial/theta/estimate values, original prior anchors,
+slot events and cached Gaussian equations. Existing observer-on/off persistent
+fixture parity passed in CP76. Serialization parity evaluates clones, never
+live factors. TEST_ALL adds recording and clone-evaluation overhead; this can
+change scheduling, so this run is NOT an exact CP91/95 execution reproduction.
+No complete frontend callback/RANSAC history or literal landmark-ID trace is
+available; PIM biasHat is evidence of the preintegration bias actually used.
+
+Before playback: exact raw-window header audit; frozen profile/DSO parity;
+actual topics/body/TF/mapped private DSOs and observer environment checks.
+After: exact input/init/EOF accounting, sequential native IDs, bidirectional
+persistent payloads, every expected snapshot and roundtrip receipt, no fatal
+or numerical failure. Preserve source failures; no automatic retry/extension.
+Restore both initially stopped containers, verify pinned predecessor artifacts
+and all667 Hesai checkpoint entries. No competing live experiments.
+
+Saved-only analysis: compare same complete visual factors at initial versus
+optimized saved states (and theta separately); explicitly separate changed
+measurements from changed triangulation/cache/state. Before marginalization is
+the primary interval. Record valid/degenerate/outlier changes and information,
+plus MAIN bias and PIM biasHat. Do not interpret Hessian trace alone as a relative
+covariance ratio or claim the historic ATE regression is causally solved.
+No accuracy scores are needed; any later trajectory scores must use EVO.
+
+Storage: require20GiB initially, stop at10GiB; fresh roots only. A finite owned
+controller executes capture once, restores containers on failure, and preserves
+immutable receipts. Offline analysis may compile a separate reader/test tool,
+never estimator code. All outputs are supplemental, old evidence unchanged.

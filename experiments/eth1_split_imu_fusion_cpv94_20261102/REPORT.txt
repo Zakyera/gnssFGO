@@ -1,0 +1,71 @@
+CP-V94 — split-IMU ETH1 fusion replay preflight
+Preflight complete; NO receiver/source replay launched. Awaiting user decision.
+Work started2026-11-02; closeout2026-11-03.
+
+User authorized fusion-only OFF/ON replay after frame/timing/storage validation,
+not fresh source captures, tuning, deletion or a different receiver input policy.
+
+FRAME CHECK PASSES
+A fresh standalone frame_adapter.py converts native Kimera Alpha-body relative
+poses with Y*M*X and full6x6 covariances with Ad(Y)*C*Ad(Y)', X=Alpha<-CPT7.
+GLIM native data is CPT7 and passes through. Already-CPT7 ROS wire beliefs must
+NOT be transformed again. Original production adapter/defaults untouched.
+Tested all36778OFF and36755ON native Kimera version rows. Roundtrip means
+<=4.45e-16, covariance relative errors<=9.01e-16, all transformed C Cholesky-pass.
+Metadata/IDs/endpoints/versions preserved; no arrival times invented.
+Exact same-native-version mean AND covariance match all1492OFF/1491ON recorded
+Kimera wire messages: meanerror<=2.33e-16,covariance relativeerror<=5.48e-16.
+Thirty numerical right-local adjoint/Jacobian tests maximumerror2.31e-9.
+This is a validated standalone conversion candidate,not an installed/live
+receiver adapter or an end-to-end fusion qualification.
+
+TIMING/INPUT CONTRACT BLOCKER
+CP89/91 ran source estimators only. Neither source/prepared nor experiment roots
+contain receiver events.csv,receipts.jsonl ortransport_complete.json.
+Recorded cbs.bag has FOUR topics: native GLIM/Kimera odometry and native CBS
+belief in/out. OFF3452GLIM/1492Kimera,ON3452GLIM/1491Kimera belief messages;
+all wire source_revision0. No /clock orfull-revision transport receipts recorded.
+By contrast the native diagnostic logs contain166226OFF/166205ON GLIM versions
+and36778OFF/36755ON Kimera versions (CP92 audited counts). Standard fusion
+consumes changed versions,not only native wire publications.
+
+Important wording qualification: "first-publication stream" in preflight.json
+means the revision-zero native WIRE stream,which INCLUDES repeat publications
+of some physical intervals. It is NOT literally one first message per edge.
+Do not deduplicate these blindly or silently replace full-revision input with it.
+
+The standard adapter assigns arrival when it observes a complete log line,
+using the current ROS clock and merged observed event order. No fusion adapter
+ran here; those actual receiver arrivals/ties do not exist. Physical endpoints,
+source update IDs and logger wall time cannot reproduce the absent observed
+journal exactly. Kimera logger also has no independent ROS arrival timestamp.
+Thus an exact saved full-revision causal replay with preserved RECEIVER timing,
+as previously proposed, is not supported by the retained data.
+Possible choices require disclosure/approval:
+1. Fresh matched live OFF/ON sources+fusion, recording complete actual transport;
+   this is a new source-run scope and requires a larger storage forecast.
+2. Offline full-revision replay with explicitly reconstructed timing/order;
+   useful diagnostic,not an exact live-equivalent replay.
+3. Replay recorded native wire messages at bag receipt times;
+   omits most refinements and changes the input policy,not a like-for-like
+   standard fusion result. Not launched automatically.
+
+STORAGE BLOCKER
+Free7,647,961,088bytes=7.123GiB at audit. Existing launch reserve8GiB.
+Historical CP84 full_on_receiver allocated2,123,153,408bytes (du -s -B1).
+Conservative receiver-only pair forecast:
+2arms*1.5margin*historicalallocated*(346.32/355.02)=6,213,372,387bytes.
+Plus5GiB runtime reserve =>11,582,081,507bytes=10.787GiB required.
+Shortfall3,934,120,419bytes=3.664GiB. Approximately4GiB extra space needed
+for this receiver-only planning budget; a fresh live source pair needs more.
+This is an estimate,not a guaranteed output bound. No guard lowered, archives
+suppressed, data deleted or containers started.
+
+PRESERVATION
+All148CP89+221CP91 immutable terminal outputs and preflight input hashes pass.
+preflight.json contains exact hashes/statistics,not fusion accuracy results.
+An initial preflight JSON serialization error (numpy boolean) occurred after
+read-only checks; incomplete receipt preserved as
+preflight_incomplete_serialization.json. Scalar serialization corrected; second
+read-only preflight completed. This was NOT a source/receiver retry.
+No optimizer,source capture,build or automation launched. No ATE/RPE claimed.

@@ -1,0 +1,73 @@
+CP-C6 — HISTORICAL RECEIVER SNAPSHOT CLEANUP — COMPLETE
+2026-10-29, deletion and integrity checks completed 20:00:02 +02:00.
+
+RESULT
+- Reviewed 30 explicitly named experiment folders visible in the user's blue
+  selection. Pruned qualifying intermediate histories in 22; no deletion from
+  the other eight. Did not infer the screenshot's off-screen selections.
+- Permanently deleted 1,226,682 regular diagnostic files and then 1,190,714
+  empty numbered leaf directories. These are per-update snapshots/commits,
+  NOT 1,190,714 independent experiments. No whole experiment root was removed.
+- Available space increased by 11,715,440,640 bytes (10.91 GiB) during deletion
+  and verification, after accounting for the deletion journal being written.
+- Immediately afterward: 40,268,214,272 bytes (37.50 GiB) available. Compressing
+  the new discovery inventory subsequently left approximately 37.61 GiB free.
+- No new estimator run, scoring, build, tuning, container start or Git push.
+
+WHAT WAS REMOVED
+Intermediate numbered commits and snapshot_* leaves in older fixed-lag,
+WNOA/WNOJ numerical/debugging experiments and duplicate receiver-validation
+replays of earlier short ETH1/EIG-2/SPX-3 captures. Every removed file belonged
+to the reviewed TXT/CSV diagnostic whitelist. Exact roots/counts are in
+plan.json; every file identity is in deletion_inventory.jsonl.gz and every
+removed leaf is recorded in deleted.jsonl.gz.
+
+WHAT WAS KEPT
+- All existing reports, configs, code, executables/libraries, final trajectories,
+  summaries, validation receipts and non-selected/top-level traces.
+- Synthetic test/sanitizer/fixture/source/build/runtime/checkpoint subtrees;
+  first and last two numeric snapshots per history, snapshot_final, referenced
+  fixture IDs/failure boundaries and all current/saved-checkpoint protected paths.
+- 52 otherwise eligible leaves were retained because they had unrecognized
+  contents. Unknown content defaults to KEEP, not to delete.
+- Current full Hesai/Velodyne campaign results, Leica ablations, CP-V35--41
+  evidence/builds, all current Method1/Method2 visualization recordings and
+  all source datasets are outside the deletion scope. All nine Livox bags kept.
+- The older OpenSky output recordings, old SPX visualization exports, profiling
+  samples, sanitizer executables and other non-matching content in the reviewed
+  roots remain. No attempt was made to empty the entire blue selection.
+
+VERIFICATION
+- Before deletion, all 6,184 current protected file SHA256 hashes passed.
+- Exact canonical paths, device/inode, type, size, mtime, links and blocks were
+  inventoried. All targets revalidated before the first unlink and each leaf
+  revalidated immediately before unlinking. No recursive/wildcard deletion.
+- After deletion, every selected target is absent; all 46,590 retained entries
+  pass metadata/content or symlink-identity verification. All 6,184 protected
+  file hashes and resolved paths are unchanged. Livox's nine file identities
+  are unchanged (metadata check, not a new full-content bag hash).
+- Four-sequence Hesai checkpoint passes before and after: 4 cases, 667 saved
+  files checked against originals. Both experiment containers remained exited.
+- Cleanup process exited successfully. completion.json records the closeout.
+- DECOMMISSIONED_CPC6.txt added afterward in each of the 22 pruned roots.
+  Original historical reports remain unedited.
+
+RECOVERABILITY AND LIMITS
+This is permanent deletion, not Trash. No new content backup was made. The
+inventories record identities, not the removed contents. Exhaustive historical
+per-update inspection and byte-for-byte replay checks cannot use those deleted
+histories; regeneration would require the relevant surviving inputs/tools and
+a separately authorized rerun. Retained reports describe the original outcome,
+not a claim that every historical file remains present. No automatic rerun.
+
+AUDIT FILES
+PROTOCOL.txt; cleanup.py; plan.json; completion.json; deletion_started.json;
+deletion_inventory.jsonl.gz; deleted.jsonl.gz; retained_before.json;
+protected_before.json; livox_before.json; skipped.json; reference_ids.json;
+reference_matches.json; discovery.json.gz.
+The discovery inventory was losslessly compressed after completion. Its
+decompressed SHA256 still matches plan.json's discovery_sha256:
+e220f42a53489ad016bd8bcf49e8ad577b37bf84fa12414d6d7106fef0a2d7b1.
+Do not execute this one-shot cleanup again. An initial inefficient read-only
+discovery process was stopped and optimized before it wrote any inventory;
+there was only one deletion execution.

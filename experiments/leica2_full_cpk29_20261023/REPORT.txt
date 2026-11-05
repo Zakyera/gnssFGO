@@ -1,0 +1,32 @@
+CP-K29 LEICA-2 full matched OFF/ON — RUNNING,2026-10-23
+User requested full new LEICA-2 comparison with the same method as other
+GrandTour sequences. Mission2024-11-25-16-36-19 downloaded under
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/src/datasets/GrandTour/LEICA-2.
+OFF launched ONCE16:41local, finite pair controllerPID367687. Startup effective
+settings passed; native GLIM, native Kimera and concurrent ONLINE fusion all
+publish. Initial receiver queue0,output age.010s; not a completion claim.
+One428.75s capture per mode at0.20x,bag6..434.75 through lastHesai. Quiet startup
+verified from raw cameras/IMU; initial settling6s and camera/IMU-only tail excluded.
+Independent CameraInfo/TF audit matches frozen profiles to numerical precision;
+4287synchronized camera pairs,4288Hesai,42875CPT7 samples. Six input hashes and
+2837protected files pinned; preflight disk15.61GiB. Same CP-K28 private binaries,
+all-LOCAL covariances,classic temporary CBS,7s WNOA,no central IMU,no tuning.
+Read PROTOCOL.txt,bag_preflight.json,harness.diff for exact scope/evidence.
+OFF capture ->3gates ->ON preflight/capture ->3gates ->evaluation/summary ->cleanup
+is owned by run_pair.py. Do not launch stages independently or duplicate work.
+Read status.json and capture_off.log/capture_on.log before acting. Stop on any
+failure, no automatic retry or gate relaxation. Preserve CP-K28 and all prior runs.
+Both containers originally stopped; controller restores them after owned jobs
+exit. Scoped SystemD+GNOME sleep/idle inhibitors active only for this controller.
+No persistent automation, rebuild, estimator/model/covariance tuning or push.
+Outputs: original/native GLIM, original/native Kimera ROS odometry, fusion
+ONLINE vs IE-TC for all saved journey poses and a separate common-mask check;
+ATE,1s t/r-RPE,path lengths,coverage plus full covariance/revision/timing evidence.
+DELAYED fixed-lag-finalized fusion separate. IE-TC shares CPT7; independent
+AP20 covers only part of recording. Mean-only covariance alignment unchanged.
+No results yet. Expected pair about75--80wallminutes, subject to validation.
+
+Controller finished 2026-10-23T17:58:19.883713+03:00: COMPLETED
+{"failure": null, "cleanup_error": null}
+Both modes and three gates each passed. See RESULTS_REPORT.txt/results.json for actual native/ONLINE/delayed metrics.
+No automatic retry. Scope-limited inhibitor releases when controller exits.

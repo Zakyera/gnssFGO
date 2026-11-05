@@ -1,0 +1,47 @@
+CP-V22 — Paired first-minute receiver diagnosis. 2026-10-27.
+User approved the CP-V21 proposed unchanged-model replay and numerical checks.
+
+One full saved-journal replay of original LEICA-2 Hesai CP-K29 CBS OFF and one
+of Velodyne CP-V4 CBS OFF. No bag playback, GLIM/Kimera run or CBS ON run.
+Reuse CP-V13 observer-only Receiver.h and byte-identical CP-K19 Live.cpp.
+Extend trace window to capture-relative0--60.1s. Save all active state values
+before/after actual source insertions/revisions, support creation, retirement,
+and publication. Solver queries and factor diagnostics use disposable copies.
+No model, Qc, prior, lag, endpoint timestamp, update-order, cache or guard edit.
+Keep source_wnoa7s/100ms and original Qc, seal_at_absorption and EOF policy.
+
+Require byte-identical entire ONLINE/finalized CSV/TUM, identical summary and
+all deterministic event metadata, and exact recorded commits in trace window.
+No causal interpretation if parity fails; preserve all outputs. No blind retry.
+
+Numerical checks on all newly inserted actual source factors during the trace:
+central finite differences at1e-5 and1e-6, Pose3.retract for poses and additive
+world velocity/body angular velocity coordinates. Compare each implemented
+Jacobian block with the numerical derivative of the unchanged actual residual.
+Record error/(1+abs(numeric derivative)); predeclared bound2e-5 at both steps.
+Also test residual-with-Jacobian equality, independently reconstructed physical
+endpoint brackets/fractions, and interpolation at tau0/.1 against supports.
+Save numeric failures, do not tune the test or change the estimator to pass.
+These checks do not establish calibrated covariances or nonlinear stationarity.
+
+At publication support indices50,100,200,400,550, save cloned-graph whitened
+linearizations in original marginal charts. Inspect normalized gradients and
+conditioning offline; no extra solve enters the receiver. Actual-factor
+motion-prior Jacobians will also be checked at those frozen publications.
+
+Compare first60s event contributions, newest/older-state response, pose versus
+velocity changes, same-time active-window edges, and original publication path.
+Reuse CP-V21 fixed display transforms and prism point. IE-TC shares CPT7;
+not independent prism GT. No smoothing, local refit, delayed-as-online claims.
+Operation attribution is conditional on history/order, not source-removal proof.
+
+Fresh output root only:
+/home/yeranis/results/gnssfgo_leica2_paired_receiver_trace_cpv22a_20261027
+Start only originally stopped ubuntu-jammy-humble-nvidia for private compile
+and replays; cbsms_ws_gpu remains stopped. Verify owned jobs exit before stop.
+Require at least8GiB free before each replay. No deletion, push, commit,
+default promotion, additional parameter experiment or unattended automation.
+
+CP-V22A observer repair: pre-size the Jacobian output vector required by generic
+GTSAM factors. Initial CP-V22 attempt retained with FAILURE.txt; no model,
+threshold, input, timing or algorithm change. Fresh output root; no overwrite.

@@ -1,0 +1,54 @@
+CP-V6: one LEICA-2 Velodyne rotational-weight intervention (2026-10-24)
+
+User authorized proceeding with the single reduced GLIM->Kimera rotational
+influence experiment after CP-V5. This is an exploratory sensitivity test,
+not calibration, a proven fix, or a sweep. No other sequence, automatic retry,
+default promotion, deletion, commit or push. Preserve all completed artifacts.
+
+Predeclared treatment: rotation-first right-local dense covariance C becomes
+C' = C + diag_block(9*C_rr, 0_3x3) for GLIM sender 'g' to Kimera receiver 'k'
+sender_odometry factors only. Thus rotational marginal variance is 10x,
+translation marginal and both cross blocks are unchanged. C'-C is PSD and
+C' remains SPD for SPD C. Conditional translation information can change;
+do NOT claim fully unchanged translational optimizer influence. Mean,
+alignment, timing, factor acceptance/retirement, Gaussian loss and all other
+covariance scales are unchanged. Source exports to gnssFGO are NOT rescaled.
+K2G is NOT rescaled. Use a private libcbs.so overlay for Kimera only, no ABI
+change or shared source/devel modification. Default/unset setting is identity.
+
+First prove the unchanged source/recipe rebuild reproduces the frozen libcbs
+binary, then test dense SPD matrices, untouched blocks, PSD information
+reduction, disabled identity and receiver/source/type isolation. Require raw
+versus applied covariance evidence from actual factors. Stop on a discrepancy.
+
+Single candidate CBS-ON capture: full same LEICA-2 physical window as CP-V4,
+1732549034915071665..1732549463665071665ns,428.75s, bag offset6.0,0.20x,
+25s drain. Compare with saved CP-V4 OFF and original ON; no duplicate OFF.
+This preserves the quiet initialization and does not select an error hotspot.
+The first60s provide a runtime checkpoint within this ONE capture, not an
+extra capture. Do not stop/retry due to unfavorable accuracy.
+
+Freeze CP-V4 input bags/profiles, CP-K9 Kimera binary/prior refresh1/FL4Q0/
+remove/25states, MAIN batching, GLIM5s/all-LOCAL each version/corrected means,
+classic active_window_temporary CBS, source live_revision false; CP-K19
+7s source_wnoa/100ms/no central IMU/GNSS/same Qc/priors/stable IDs/seal policy.
+All sensor/lifecycle/LOCAL/source coverage/receiver gates stay unchanged.
+Unique run root gnssfgo_leica2_rotation_weight_cpv6_20261024, port11486.
+Refuse duplicates/overwrites. Preserve failures; owned-job-only cleanup and
+restore both originally stopped containers. No persistent automation enabled.
+
+Primary comparison: native Kimera 1s rotation RPE (lower than CP-V4 ON).
+Also report native Kimera translation RPE and ATE, native GLIM and concurrent
+ONLINE fusion ATE/1s translation+rotation RPE, path length and full/common-mask
+coverage. A rotation-only gain is not overall success if translation/coverage
+deteriorate. Report all directions, without post-hoc coefficient adjustment.
+DELAYED fixed-lag-finalized fusion separate, never online/full-history.
+Retain source covariance/revision/payload/timing and applied-weight counts.
+IE-TC shares CPT7, not independent prism ground truth. Mean-only covariance
+alignment approximation remains. No nonlinear-stationarity/generalization claim.
+
+PRE-CAPTURE REPAIR A: first launch stopped before source/receiver creation
+solely because generated receiver_cpk19.sh lacked execute bits. Old evidence
+and successful cleanup preserved; only file-mode-preserving copy fixed.
+This is the same single candidate capture, not an optimizer/source retry.
+Fresh suffix cpv6a; all model/input/settings/code binaries unchanged.

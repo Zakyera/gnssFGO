@@ -1,0 +1,31 @@
+CP-K16e — exact first real GLIM update diagnosis
+2026-10-20; explicitly authorized "Proceed" after K16d failed preservation.
+
+Single question: do the first real GPU factors differ because the batching
+equations differ on identical input, or because their live prepared inputs differ?
+No assumption that the K16d differences are harmless or a batching bug.
+
+Use a diagnostic-only interposer and the existing ExactGpuSnapshot machinery.
+At the first MAIN x0/x1 GPU linearizations, retain exact device geometry,
+Values, inlier/cache metadata, synchronous and batched Gaussian equations.
+Independent snapshots must not share writable GPU factor state. Compare the
+actual returned equation with its independently synchronous-evaluated snapshot.
+For the candidate's pending result, discard it ONLY in the diagnostic copy,
+not in the real factor, to evaluate a fresh synchronous reference.
+
+If missing from existing captures, run at most two fresh two-second ETH1
+GLIM-only captures (original and unchanged candidate), same frozen CP-K14
+profiles/input,0.20x,headless,no inbound CBS. This is NOT a performance test:
+diagnostic synchronization/copies deliberately add work. No60s/full replay,
+Kimera,fuser,GT tuning,default/model/guard edit or library replacement.
+Keep exact existing estimator DSOs, add only a private removable LD_PRELOAD
+observer. Verify hashes/load paths and preserve all earlier artifacts.
+
+Inherited equation tolerance1e-8+1e-6*maxabs(reference); exact branch input,
+keys/cache/inlier identity. Report actual matrix differences and live-array
+differences, not only pass/fail. Do not relax K16d's preservation gate.
+Stop/report once a concrete first-divergence mechanism is isolated, or state
+the specific unresolved input boundary. No broad replay framework or fixes
+to unrelated components. Kimera's11.10s/7s retention mismatch stays separate.
+All jobs owned and bounded; restore originally stopped containers after cleanup.
+No commit,push,default promotion or automation.

@@ -1,0 +1,66 @@
+CP-V61: first-camera-local native triangulation candidate, suspect1
+2026-10-30. User authorized CP60's proposed saved-event candidate.
+
+Saved CP51 update6 first CBS admission only (capture1.599933183s). No source
+replay, full sequence, production patch, covariance/weight change, guard
+relaxation, new dataset or suspect2 work. Preserve all earlier evidence.
+
+Candidate: choose first LEFT camera of each track, in native observation order,
+as deterministic local reference. Transform every camera into that frame,
+setting the first left pose exactly identity. Expand stereo into left/right
+mono cameras exactly as native (omit missing right measurements). Run the SAME
+native algebraic DLT and native rank/depth/distance/outlier guards in local
+coordinates, then map a valid landmark back to world coordinates. Invalid
+status preserved. Native rank tolerance1, distance10m, max reprojection3px,
+sigma3, EPI=false, LOST=false, smart Jacobians and Schur elimination unchanged.
+Rank/point/status can change: changing the algebraic coordinate chart is the
+candidate under test, not an assertion of numerical equivalence to original.
+
+Integration only in private saved-checkpoint harness: before native linearize
+or post-evaluation, call native decideIfTriangulate. Only when true, populate
+the cache with candidate result plus current camera poses. Native subsequent
+linearize reuses that cache. Do not clear warm initial caches or rewrite their
+history. Verify smart function/parameter bytes unchanged and native freshness
+decisions retained. Thus this is original-conditioned history, NOT an integrated
+candidate from startup. Cold diagnostics below are separate from solved arms.
+
+A original native ordinary+refresh (2steps).
+B candidate ordinary+refresh from same saved graph/state (2steps).
+C same candidate with all world poses/pose-priors/cached points/cameras shifted
+by fixed[3,-2,1]m, then transform output back (2steps).
+Exactly six real saved GNsteps planned; synthetic fixtures separate. No extra
+solve for post-evaluation. B/C post-evaluation uses candidate on graph clones.
+Original A post-evaluation uses original native DLT. Distinguish used support
+from post-evaluation counts. No favorable-origin tuning.
+
+Pre-solve gates:
+- Release and ASan/UBSan synthetic exact geometry, degenerate left-only,
+  behind-camera, far-point and inconsistent-observation rejection fixtures;
+  identity/translation/rigid-rotation equivalence; missing-point-back-transform
+  negative control; warm cache preserved and normal freshness trigger.
+  Vendor DSOs are not sanitizer-instrumented.
+- Cold candidate diagnostics at 3saved states x338smart factors, identity versus
+  translation[3,-2,1] and rotation RzRyRx(.2,-.15,.3)+translation:
+  exact status match; valid landmark transformed-back difference<1e-7m;
+  native Gaussian relative difference<1e-7 and cost relative difference<1e-7.
+  Rotation test applies to smart geometry only, not IMU/gravity.
+- Original initial/theta serialized identity, no fixed/marginal keys.
+- Original A equation parity relative<1e-12 ordinary and exact-start refresh;
+  captured-state difference<1e-6 ordinary/<1e-5 chained refresh.
+- Candidate B/C same used support/status and back-transformed result mixed
+  tangent difference<1e-6 for both steps; backward residual<1e-14 each.
+- All saved snapshots/protected functions/input hashes remain unchanged.
+
+Independent NumPy native-form DLT/rank/guard reproduction on exported local
+mono geometry for1014identity diagnostic factors, with status equality and
+valid point difference<1e-7m; independent SciPy state revision checks.
+Any failed gate retained and not silently relaxed. Only diagnosed harness
+repairs may use a fresh explicit attempt, preserving failed evidence; no blind
+scientific retries.
+
+Fresh exclusive outputs, start only cbsms_ws_gpu, restore both originally
+stopped containers. Final verify protected pins, original Hesai667 checkpoint,
+owned jobs exited. Report coordinate consistency, support and pose/bias response;
+NOT trajectory accuracy, nonlinear stationarity or proof of full-zigzag cure.
+Keep suspect1 open unless evidence actually warrants closure; stop for decision.
+

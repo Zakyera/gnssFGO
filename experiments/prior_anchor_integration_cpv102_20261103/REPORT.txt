@@ -1,0 +1,54 @@
+CP-V102 — private Kimera backend integration and synthetic qualification
+
+The baseline reconstructed from preserved CP76 source and pinned link inputs is
+byte-identical to the previously successful libkimera_vio.so (b7d6829d...). The
+qualified CP101 headers are integrated in a NEW private Kimera library only.
+libcbs.so is reused byte-identically; GLIM/fusion, profiles, weights, covariance
+models, thresholds and installed binaries are unchanged. No sensor run occurred
+in CP102. The new private Kimera SHA256 is
+985c115d3573446f65ef4ce7cc4125e514b4922fed6445ed05cbc4dbdfb70a09.
+
+Both the reconstructed baseline and corrected candidate pass the inherited
+CP76 synthetic OFF/temporary/RETAIN/persistent compatibility suite. Persistent
+checks cover six replacement cases, nine absorption boundaries, nine injected
+rollback cases, LOCAL covariance and Schur checks. These alternate modes are
+synthetic compatibility controls, not changed live experiment settings.
+
+The targeted integration fixture resolves the out-of-line recorder from the
+actual new backend DSO. It exercises a real native marginal prior, successful
+promotion without archive writes, and deliberate Gaussian-cache corruption.
+Three unique failure archives were created, with exact readback of all three
+matrices, typed Pose3/velocity/bias anchor, keys, slot and error summaries. Repeat
+failures preserve earlier files. Disabled, invalid and relative output paths
+preserve the original exception. Graph/cache pointers, theta and locks remain
+unchanged on rejection; the real persistent smoother transaction restores its
+saved graph, state, covariance, smart cache, timestamps and CBS ownership.
+
+Recorder: configure CPV102_PRIOR_FAILURE_DIR to an existing absolute directory.
+Only preservation failures enter it. A unique0700 directory holds text matrices,
+failure.bin and metadata; complete.marker is last. If recording fails, the
+original guard remains fatal. No success-path environment lookup/file output;
+no retry, reanchor, tolerance increase or suppression of the safety check.
+Binary encoding is the existing CPV36 native-x86_64 format, not a portable
+cross-platform archive or a power-loss durability guarantee.
+
+One premature tests-stage request was rejected by the predecessor-process-exit
+guard while candidate cleanup/hash verification was still finishing. No test,
+compile or container launch occurred in that rejected stage. Its evidence is
+preserved in tests/PRELAUNCH_REJECTION.txt. The unchanged commands ran afterward
+in fresh tests_v2 receipts. No estimator/test failure was hidden or overwritten.
+
+Final integrity/exit details are authoritative in complete.json: all stage and
+historical pins, original6425, CP99 failure, CP101/100/98/95/91 evidence, all667
+Hesai checkpoint copies/originals, exact process exits and stopped containers.
+
+This establishes a mathematically appropriate correction for the reproduced
+unchanged-anchor false rejection, with private backend integration. It does NOT
+recover the unrecorded actual CP99 failing matrices/theta, prove that failure's
+exact branch, explain GLIM ATE variation, certify covariance calibration, or
+demonstrate nonlinear stationarity/live health.
+
+The user subsequently authorized continued solution/validation while away.
+Any live qualification must be a fresh, separately recorded CP103 artifact with
+the new private DSO and failure recorder; never alter CP99 or repeat its OFF
+implicitly. CP102 itself remains build/synthetic-only and is sealed separately.

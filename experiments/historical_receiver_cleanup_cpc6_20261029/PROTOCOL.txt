@@ -1,0 +1,42 @@
+CP-C6 — user-authorized pruning of historical receiver experiment payloads
+Date: 2026-10-29. User: "ok clean whatever we dont need", following discussion
+of the blue-selected old /home/yeranis/results experiment folders.
+
+Bounded scope: 30 explicit folders visible in the user's screenshot, listed
+in cleanup.py ROOT_NAMES. No off-screen selection is guessed. Current full
+Hesai/Velodyne campaign roots, Leica ablations, current Method1/Method2 RRDs,
+CP-V35--41 diagnostics/builds/results, source trees and all datasets excluded.
+All nine Livox bags explicitly kept. No experiment/container/build activity.
+
+Only intermediate numbered snapshot_* directories or numeric commits children
+are eligible. Each target must be a canonical, non-symlink leaf directory
+containing exclusively recognized regular diagnostic TXT/CSV files with one
+hard link. Unknown/nested/linked content defaults to KEEP. No whole experiment
+root deletion. No recursively inferred removal or wildcard deletion.
+
+Preserve first and last two snapshots in every history, snapshot_final,
+explicitly referenced numeric fixture IDs/failure boundaries, synthetic test/
+sanitizer/fixture/source/build/runtime/checkpoint subtrees, all reports, scripts,
+configs, summaries, validation receipts, final trajectories, top-level traces,
+all binaries and unknown content. Honor current CP-V41 protected paths and
+paths named by saved checkpoint manifests, including resolved symlink targets.
+
+Before deletion: record every exact target and child identity (inode/device/
+mode/size/mtime/link count/blocks), SHA256 all retained regular files in the
+30 roots and all 6,184 current protected files. Preserve retained symlink
+identities. Record Livox identities; verify four-sequence Hesai checkpoint.
+Review plan. Check host jobs and containers. Revalidate all targets and retained
+content before the first unlink, then each target immediately before unlink.
+Remove only individually inventoried regular files, followed by empty leaf
+directories. Refuse repeat execution after deletion_started.json exists.
+
+Afterward verify all targets absent, all retained and current protected hashes,
+Livox identities, and the original four-sequence Hesai checkpoint. Save exact
+deletion journal, counts, space recovered and decommission notices. Existing
+historical reports remain unchanged and describe their original evidence.
+
+Deletion is PERMANENT, not Trash or a content backup. The manifests are an
+audit trail only. Exhaustive old per-update reanalysis/byte-for-byte replay
+checks will no longer run from these pruned histories; compact conclusions,
+final trajectories and retained checkpoints remain. This does not authorize
+recreating the histories automatically or weakening any experiment guard.

@@ -1,0 +1,211 @@
+CP-R6 — matched ETH1 60s all-LOCAL CBS-OFF / CBS-ON
+2026-10-19 | COMPLETE; capture/provenance/conservation/replay gates PASS
+=====================================================================
+
+Outcome
+-------
+Both matched captures completed. Full-saved native Kimera ATE improves22.16%
+under ON, but its1s translation/rotation RPE worsen26.11%/7.85%. Native GLIM
+full-saved ATE improves only1.115mm (2.42%); that small ATE direction reverses
+on the common mask, so do not claim a robust GLIM ATE gain. GLIM1sRPE improves.
+Fusion ONLINE ATE worsens34.66%,tRPE67.62%,rRPE20.20%. DELAYED finalized
+fusion also worsens, so the result is not solely online publication jitter.
+This is a frozen comparison, not identification of a causal covariance fault,
+universal CBS behavior or proof that sources became better on every metric.
+No follow-up modification or further experiment was performed.
+
+Scope and frozen setup
+----------------------
+One matched first60s ETH1 comparison following CP-R5 SPX-3 and CP-R4/R3 EIG-2.
+Original GLIM, original Kimera ROS odometry and gnssFGO run concurrently.
+Mission2024-10-01-11-29-55; bag offset0,duration60s,rate0.10x,drain25s.
+Source profiles copied from ETH1 FL4v's actual saved source run; all30files
+match the archived checkpoint. Input bags, topics and timestamp coverage
+verified. Actual parameters and loaded libraries checked before playback.
+
+Hesai /boxi/hesai/points + CPT7 /boxi/cpt7/imu for GLIM,5s lag.
+Kimera Alphasense front stereo+CPT7,25states, native IMU support override unset.
+Classic active_window_temporary CBS, NOT source-to-source live_revision.
+Native-IMU mean alignment enabled,0.20s horizon,1pair/update,stride1,delay0.
+Both sources publish/export in both modes; receiving enabled only in ON.
+Corrected MAIN means + full dense6x6 LOCAL covariance for EVERY version.
+CP-I1 bridge and CP-I3 cached native provider; no MAIN covariance fallback,
+scaling, Huber, additional gating or health weighting. Headless, no inspectors.
+
+Unchanged FL4e7s fixed-lag source_wnoa, X/V/W states; no central IMU or GNSS
+factors. Independent100ms support clock after59IMU timing samples. Qc diagonal
+variances[.00375,.00375,.00375,.015,.015,.015]; identity X,zero V/W initially;
+prior sigmas X1e-5,V10,W3. Stable-ID mean/full-covariance revision replacement.
+CPU2,OMP1, E2 caches off. Existing incremental publication/lifecycle unchanged.
+Gaussian scales1. No estimator edits, rebuild, tuning, retry or default promotion.
+
+Pinned SHA256
+-------------
+Native provider 3f23e6115e34acc5a2f2b965b15bd4c651897c889a6c38a0a52cdb3855c0ceb7
+GLIM bridge    42df73c172232a612da965bf43ead8ec454caf08434b84e2da5de74d26cdb79f
+Kimera         6ce24c266b0f0e2561f0c05de2a661a72d5a4d9335df7c3cdfa0a4c77af9b4ae
+Receiver       53c96a2b7a762800cf2291166dc78520269098684411de641b52bee6a54dc5c9
+
+Evaluation contract
+-------------------
+Original/native GLIM, original/native Kimera ROS odometry, fusion ONLINE are
+the primary comparison. DELAYED fixed-lag-finalized output is separate, not
+online and not full-history retrospective batch optimization.
+Score EVERY saved pose against IE-TC /boxi/inertial_explorer/tc/odometry;
+same known prism lever arm, rigid no-scale SE3 ATE alignment,1s RPE.
+Separate identical-time common-mask table cross-checks differing sampling.
+Scoring helper ASTs unchanged from CP-R5; no short prism subset substituted.
+IE-TC shares CPT7 IMU and is not independent prism ground truth.
+GT bag SHA28815a4a300624766e3ffe0e1cc0f150ac60e09e395381ca25c3e6d7e04e18e3.
+
+ETH1 preflight adaptation: bag camera-info begins1727775007.955396, IE-TC
+starts1727775008.0, firstIMU1727775008.003475. Thus GT begins before the IMU
+and every output, but44.604ms after the first camera-info record. The copied
+SPX-3 offset32 metadata assumption was corrected before any capture; no
+estimator/timing/scoring gate changed. No capture failed or was retried.
+
+Results and validation
+----------------------
+Full-saved results, RMSE; distances use the existing evaluator's prism point:
+Mode Output                 ATE m       tRPE1s m    rRPE1s deg   Path m
+OFF  original GLIM          .046001083   .031004288  .505758291   25.919820
+ON   original GLIM          .044886228   .027615965  .494174952   25.878500
+OFF  original Kimera ROS    .138289963   .021572279  .627484447   25.107997
+ON   original Kimera ROS    .107644715   .027205523  .676710766   25.370426
+OFF  fusion ONLINE          .049712802   .026481073 1.306711082   27.712195
+ON   fusion ONLINE          .066940776   .044388597 1.570688748   28.158470
+
+DELAYED fixed-lag-finalized, NOT ONLINE:
+OFF  fusion finalized       .045664680   .014399144  .440488612   25.668842
+ON   fusion finalized       .057095540   .022914363  .470300579   25.797744
+
+Both modes:5986IMU samples spanning59.850013s;591GLIM poses/58.999369s,
+284Kimera poses/59.599654s,593ONLINE/finalized poses/59.2s. Exact counts and
+start/end timestamps match between OFF/ON:
+GLIM1727775008.675043--1727775067.674412;
+Kimera1727775008.1553955--1727775067.75505;
+fusion1727775008.583475--1727775067.783475.
+Native GLIM starts.671568s after firstIMU,tail.179076s; Kimera starts.151921s,
+tail.098438s. Kimera's initialization pose is followed by a3.199979s startup
+gap in BOTH modes. Poststartup maximum gaps GLIM.100990s,Kimera.200014s.
+All saved poses have IE-TC brackets. No missing startup poses invented; RPE
+does not interpolate across the missing startup interval. This is the whole
+saved output of the requested60s capture, not60s of continuous Kimera output.
+Reference paths on each original sampling grid:GLIM25.395797m,
+Kimera25.340616m,fusion25.491263m. RPE pairs579/551/582 respectively.
+Raw CPT7-origin distances are also saved in results.json; do not mix frames.
+
+Separate common-time check:560timestamps1727775011.5999973--1727775067.499944,
+55.899947s,550RPE pairs,reference path25.225468m. Its later start follows
+the genuine Kimera startup gap, not a chosen favorable GT subset.
+Mask SHA23758d6e7a6617bcfff8c81452ccdd86fd9639d6be0c03907cbba00418c300db.
+Mode Output                 ATE m       tRPE1s m    rRPE1s deg   Path m
+OFF  original GLIM          .040106515   .030800423  .513201711   25.617769
+ON   original GLIM          .043644673   .027348408  .503070532   25.548250
+OFF  original Kimera ROS    .136684709   .021588379  .627742136   24.765501
+ON   original Kimera ROS    .107329447   .027227149  .677021800   25.021028
+OFF  fusion ONLINE          .048006562   .027120298 1.339857217   26.604072
+ON   fusion ONLINE          .065795697   .045585864 1.611066783   27.091550
+OFF  fusion finalized       .043986125   .014732197  .450643237   25.293624
+ON   fusion finalized       .055941080   .023144104  .480998520   25.425217
+Resampling changes accumulated distance. Common-mask Kimera/fusion directions
+agree with full-saved; GLIM's millimetric ATE direction depends on coverage.
+
+Runtime, accounting and validation
+---------------------------------
+                                      OFF                 ON
+Capture wall seconds                  645.586             645.571
+GLIM first+revised versions            27410               27425
+Kimera versions                        6750                6750
+Total received                         34160               34175
+Insert/replace/preinit                  870/33265/25        870/33280/25
+Absorbed/active                        769/101             769/101
+Pending/unsupported tail               0/0                 0/0
+Retained supports/peak slots           71/175              71/175
+Source G->K/K->G injections             0/0                 280/281
+Kimera fallback/10iteration cap         1/0                 12/3
+Support wallp95/max seconds            .077021/.112845     .091529/.162924
+Peak transport queue                   37                  40
+Max GLIM revision first-endpoint age s 5.158689            5.189189
+Replay wall seconds                    28.447              34.061
+Byte-identical archive files           35242               35273
+
+589GLIM stableIDs; first and revised matrices LOCAL.282Kimera stableIDs,
+6750LOCAL joint queries per mode. Source->transport means/dense matrices/order
+exact; covariance payload error0 at receiver, meanLog roundtrip<=5.272e-14.
+25preinitialization versions excluded each: not every receipt is a factor.
+No duplicate/stale/late-absorption failure. All593online poses were published
+while sources ran. Revision maximum age<7s,smallest margin1.810811s.
+Producing-update arrival lag median/p95/max:.127893/.149980/.160195s OFF,
+.130565/.157799/.196858s ON (simulated time, distinct from source wall time).
+All284Kimera accepted current-chart costs nonincreasing in each mode.
+Fallbacks/caps above were accepted by existing rules; no stationarity claim.
+Five numeric products and all archived commit files byte-identical on repeat.
+No new Release/ASan/UBSan rebuild: reused unchanged CP-I3-tested55/55 builds.
+
+GLIM post5s wall median/p95/max,541updates each:
+                                      OFF                     ON
+MAIN root                    .154483/.387007/.473829  .177583/.447704/.565014
+Revision-export root         .013085/.126173/.168078  .013763/.138488/.356528
+Native covariance context    .010571/.033391/.041729  .010831/.035848/.082958
+Finish callback              .024424/.161959/.213648  .025627/.182260/.430076
+One unmatched shutdown profiling tail excluded per mode. No1x or general
+latency certification; these are observed runtimes, not a speed benchmark.
+
+Covariance records, not a tuning conclusion
+------------------------------------------
+Median traces over ALL received versions (revision-weighted, not independent
+samples, matched-edge OFF/ON ratios, or total optimizer-information weights):
+Source/mode      Rotation trace[rad^2]  Translation trace[m^2]
+GLIM OFF         1.432045e-8           2.002432e-6
+GLIM ON          1.387071e-8           1.983415e-6
+Kimera OFF       1.951670e-8           8.069065e-7
+Kimera ON        2.235974e-8           1.146208e-6
+Finite/symmetric,maximum symmetry error0. Minimum eigenvalues positive:
+GLIM OFF2.820709e-10/ON2.921533e-10;Kimera OFF9.928940e-10/ON1.074322e-9.
+Here Kimera aggregate median traces INCREASE under ON, not decrease. This
+does not by itself explain fusion degradation or identify true reliability.
+Full matrices,means,first-last and mean/median/p95/max summaries retained.
+LOCAL native-information provenance is not statistical independence or
+calibration:corrected MAIN means/charts/correspondences/sharedIMU remain coupled.
+
+Artifact locations
+------------------
+H=/home/yeranis/repos/gnssFGO/experiments/local_covariance_eth1_cpr6_20261019
+P=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_local_cov60_cpr6_20261019/prepared
+V=/home/yeranis/results/gnssfgo_eth1_local_cov60_cpr6_20261019
+H:PROTOCOL.txt,prepare.py,inspect_bags.py,harness.diff,summarize.py,REPORT.txt.
+P:protected_manifest.json,preflight/validation.json,preflight_on.json,
+  live60_{off,on}_{control,source,receiver},evaluation_full/summary.json.
+Native:P/live60_MODE_source/{odom_imu.txt,kimera_odometry.csv}.
+Fusion:P/live60_MODE_receiver/receiver/{online,finalized}_trajectory.tum.
+Complete source means/covariances/revisions:source logs and receiver/events.csv.
+V/{off,on}:validation.json,repeat_validation.json,deterministic replay archive.
+No commits/pushes authorized in this task. Preserve prior research artifacts.
+
+All1753protected files unchanged; source repositories clean:
+GLIM fad72d6e11219e42cbbe09658341fff4512769dc
+Kimera 560ad0fd33c162ff2a0a64a1372f9b61e1d8d8f9
+CBS ed93343e2601c1eb2d777d85fbd6171ca1cdfaf4
+gnssFGO HEAD668d4c788983722f4acad37d1495c15d03a27e18 unchanged.
+Only isolated harness/report/ledger/pointer files added/updated; earlier dirty
+research work preserved. All experiment jobs exited; original stopped-container
+state restored and final integrity recorded in final_checks.json.
+
+Historical completed commands, NOT authorization to reuse populated roots:
+ python3 P/run_case.py live60 off
+ EVO_PYTHON P/validate_local.py off
+ EVO_PYTHON P/validate_case.py check off
+ EVO_PYTHON P/validate_candidate.py off
+ EVO_PYTHON P/validate_case.py repeat off
+ python3 P/preflight_on.py
+ python3 P/run_case_on.py live60 on
+ same four validation commands with on
+ Existing Noetic container:python3 P/evaluate_fl4f.py
+ python3 H/summarize.py
+ python3 H/final_checks.py
+EVO_PYTHON=/home/yeranis/.local/share/pipx/venvs/evo/bin/python.
+Container prefix replaces /home/yeranis/repos/V4RL with /workspace.
+
+Decision:matched ETH1 result obtained with current all-LOCAL policy. STOP.
+No additional sequence, longer capture, covariance/weighting/model change.

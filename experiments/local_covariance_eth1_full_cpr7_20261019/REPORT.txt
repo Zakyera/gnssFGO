@@ -1,0 +1,110 @@
+CP-R7 full ETH1 — STOPPED ON KIMERA FAILURE; CBS-ON NOT STARTED
+2026-10-19
+================================================
+Final disposition
+-----------------
+The requested346.22s matched comparison did NOT complete. OFF stopped near
+109.5s of bag time; ON was not launched. No retries, solver/model/covariance
+changes, validation replay, accuracy scoring, commits or push were performed.
+
+Primary failure: full_off_source/estimators.log:678001:
+  E1019 12:15:14.323951 VioBackend.cpp:5889]
+  FL4Q no decreasing current-chart LM step
+Immediately preceding lines contain a one-point RANSAC failure and
+"Stereo tracking failure... Using IMU for pose guess." These are adjacent
+observations, not proof of the deeper cause of the LM failure. The failure
+belongs to the Kimera current-chart fallback, not the GLIM LOCAL provider.
+This is the same failure class documented in the earlier FL4t OFF capture;
+identical underlying cause has not been established here.
+
+The unchanged controller's run_case.py:99 guard detected this token, wrote
+full_off_control/failed.txt, exited1, and stopped/drained owned processes.
+source.log's later "IMU stream truncated" and insufficient-output checks are
+consequences of the stop, not the initiating error. Retained native counts
+reported by that check: GLIM1088, Kimera531. acceptance.csv ends at update530;
+no successful acceptance record exists for the following failed update.
+
+The receiver completed its truncated input stream, NOT the requested mission:
+64396source versions =51471GLIM+12925Kimera;1614inserted,62757replaced,
+25excluded,0unsupported_end,0pending_at_end;1090online publications/finalized
+poses,71retained supports,peak175slots. No deterministic replay or full LOCAL
+payload validation was run after the capture failure; these are raw saved
+counters, not acceptance of a valid full comparison. Stationarity was not
+checked under the frozen incremental policy.
+Last transport snapshot: queue0,peakqueue35,output age.090025s. About55GiB
+remained free. The recorded stop is a Kimera numerical-descent failure, not
+a disk-reserve or receiver-backlog guard. No broad performance cause inferred.
+
+All available prefix trajectories, covariance/revision journals, timing and
+failure evidence remain at the fresh CP-R7 run root. No prefix ATE is presented
+as a full-sequence result. Heartbeat paused on this blocking failure. All owned
+experiment processes exited; receiver transport/finalization drained normally.
+The two task-started containers are restored to their initial stopped state.
+Further investigation or another launch requires user direction.
+
+Historical preparation and launch record
+---------------------------------------
+Initial storage-blocked check: no estimator, bag, container, replay or automation was started. No estimator
+source, covariance, launch setting, historical result or binary was changed.
+Only this scoped protocol/status and the engineering ledger were written.
+
+The only currently available writable persistent volume has9,886,408,704bytes
+free (~9.21GiB). /tmp is on the same volume, not an alternate output disk.
+No additional mounted persistent data volume was found; /media/yeranis and
+/mnt are empty. Do not use RAM-backed storage for the required retained data.
+
+Measured allocated size of the completed CP-R6 matched60s campaign:
+prepared capture/profile/runtime directory 1,011,456KiB (~988MiB),
+deterministic replay/results directory       568,844KiB (~556MiB),
+combined                                1,580,300KiB (~1.51GiB).
+This includes ~59MiB fixed private-build overhead. Linear extrapolation to
+~346s gives roughly8.4--8.7GiB for both captures and validation, not a hard
+upper bound; longer-run diagnostics and other machine writes may grow further.
+Current9.21GiB cannot accommodate that plus the existing5GiB runtime reserve.
+The unchanged controller also requires>8GiB before each individual launch;
+starting OFF now would likely leave too little to admit matched ON.
+
+Evidence:
+CP-R6 prepared/run_case.py:32 start reserve>8GiB; :98 running reserve>5GiB.
+CP-R6 prepared/run_case_on.py:33 start reserve>8GiB; :99 running reserve>5GiB.
+Template directory:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_eth1_local_cov60_cpr6_20261019/prepared
+Replay results:
+/home/yeranis/results/gnssfgo_eth1_local_cov60_cpr6_20261019
+
+Required next action: provide at least20GiB total available persistent space
+(approximately11GiB more), or an approved output volume with comparable room.
+This is a conservative preparation target, not an exact output-size promise.
+No deletion/cleanup is authorized by the experiment request. Ask the user to
+free space, attach storage, or authorize a specific separately reviewed cleanup.
+
+After space is available, recheck state, hashes, complete full-window source
+coverage, duration-specific harness and duplicate guards before launching.
+At0.10x, two~346s captures require~115minutes playback alone plus startup,
+drain, validation and scoring. Completion/performance cannot be claimed yet.
+
+Resume after user freed storage
+------------------------------
+User asks "what about now?". Recheck51,464,863,744bytes free (~47.93GiB).
+Existing source/receiver containers were both stopped, no competing estimator
+or controller process found. Both containers started for authorized preparation.
+CP-R6's1753protected paths all still exist; full hash check is in prepare.py.
+Full common-sensor window fixed before capture: bag0--346.22s, through last
+Hesai record rounded up to1ms. Later camera/IMU-only tails excluded explicitly.
+Same CP-R6 models/settings/diagnostic load, duration-specific count/coverage
+checks only. OFF then validate, ON only after OFF passes. No retries/tuning.
+No scientific result or completed capture claimed at this stage.
+
+Launch milestone
+----------------
+Preparation completed: all1753 CP-R6 protected inputs unchanged;1823 current
+protected entries frozen. Bag coverage, profiles, private builds, controller
+diff and syntax checks passed. Preflight free space59,411,283,968bytes.
+Started run_case.py full off once,2026-10-19 at approximately14:56 local.
+Native GLIM, native Kimera and live WNOA receiver are co-running at0.10x.
+effective_mode_check.json passed before playback; loaded private DSOs checked,
+GLIM revisions native_local and cached-provider hash verified. At early15s
+progress receiver had147published poses,6963versions,0duplicates,0queued,
+peakqueue22. These are startup observations, not full-run validation.
+The existing follow-up is updated to CP-R7 paths and guards. OFF validation
+must pass before ON admission. No retry or tuning on failure.

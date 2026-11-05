@@ -1,0 +1,144 @@
+CP-V38 — private Kimera CBS-OFF incremental refresh integration
+2026-10-29. Private Release, ASan/UBSan and backend gates PASSED. No live fix.
+Final integrity/cleanup evidence: closeout.json (required for complete closeout).
+
+DECISION
+========
+The CP-V37 current-state refresh now has a private incremental implementation
+that passes focused synthetic mathematical, lifecycle and rollback tests.
+It is NOT installed as a default, and no dataset has been replayed here.
+There are no new EIG-2 RMSE/RPE/path-length results from this task.
+
+This is the next engineering gate, not proof that the visible shaking is fixed.
+CP-V37 demonstrated reduced IMU inconsistency on seven real saved windows;
+CP-V38 tests whether that operation can be integrated without corrupting the
+prior, covariance, native factors or fixed-lag bookkeeping. Full-sequence
+accuracy, large-error robustness and throughput remain untested.
+
+EXACT CANDIDATE
+===============
+Private root:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/kimera_off_incremental_refresh_cpv38_20261029
+Derived from the existing CP-K9 private headers and unchanged libcbs.so.
+No class data-layout, source-tree, installed-library or profile changes.
+
+Explicit opt-in CPV38_OFF_REFRESH=1 requires CPK9_PRIOR_REFRESH=1,
+FL4Q_ENABLE=0, FL4M_RETIREMENT=remove and native GN/active_window_temporary mode.
+Absent/0 preserves baseline. Incoming belief bookkeeping rejects before solve.
+The tests stage one synthetic incoming belief solely to check rejection; no
+CBS-ON factor graph is optimized and no GLIM/receiver is run.
+
+Each enabled fixed-lag update:
+  1. Runs the ordinary update unchanged.
+  2. Promotes native marginal containers using the existing CP-K9 immutable
+     original-chart adapter and ownership/cache checks. All fixed locks must
+     be accounted for; unknown/missing/corrupt ownership fails closed.
+  3. Executes ONE additional empty native iSAM2 update with forced all-key
+     relinearization/full back-substitution, in the same BPSAM object. The
+     pinned GTSAM forceFullSolve path selects every nonfixed key; forcing a
+     relinearization check alone would not unlock marginal-prior anchors.
+  4. Performs ordinary native marginalization once, with unchanged timestamps
+     and removal ordering. Newly formed native priors are handled next cycle.
+
+The retained prior's function, original anchor, Gaussian and weight do not
+change. Its Jacobian is expressed in the current tangent. This does NOT recover
+the eliminated nonlinear measurements, reset the prior residual or strengthen
+the prior. Native smart measurements, noise, validity/retriangulation rules,
+IMU factors and biases are retained; no explicit landmarks or cache clearing.
+
+One additional GN step per wrapper update is intentional. No LM, damping,
+line search, convergence loop, new cost-acceptance criterion or core rebuild.
+GTSAM can internally reeliminate the whole active graph because all keys are
+affected; "incremental implementation" does not mean cheap partial updating.
+Ordinary update counter/cadence is restored after the extra refresh. The wrapper
+reports two steps; original ISAM2 result slot/unused-key bookkeeping is retained
+for Kimera, so its original per-update diagnostic counts do not describe the
+extra step. There is no second sensor frame, publication or timestamp insertion.
+
+The enabled path gains a transaction/copy and mutable-smart-cache rollback.
+The inherited comment about OFF having no transaction cost applies to default
+OFF, not this opt-in. No performance claim is made for the new copying/refresh.
+
+FOCUSED RESULTS (all predeclared numerical tolerances retained)
+=============================================================
+Release passed twice through CTest, with identical metric records. The focused
+ASan/UBSan suite passed with identical metrics; linked vendor DSOs are NOT
+instrumented and leak checking is disabled.
+
+Check                                            observed error
+Current theta vs pre-refresh best estimate        9.1542e-20
+Incremental vs independent native GN state        1.6044e-19
+Original-prior off-anchor function                0
+Fresh-at-theta/cache/tree equations               1.0057e-16
+Native next marginal vs dense Schur               1.3757e-14
+LOCAL joint covariance vs independent inverse     3.2544e-14
+Worst candidate lifecycle LOCAL covariance        6.2430e-12
+
+Errors are local-coordinate norms or relative matrix/function errors as defined
+in test.cpp and PROTOCOL.txt, NOT trajectory errors. LOCAL covariance checks
+retain 12x12 joint pose blocks, including nonzero cross-state covariance, and
+test finite/SPD results. They verify implementation consistency, not statistical
+calibration, independence or NEES. Refreshed covariance may legitimately differ
+from baseline because state/Jacobians have changed.
+
+Unchanged CP-K9 and disabled CP-V38 binaries produce byte-identical synthetic
+pose/covariance dumps. Active candidate, deterministic repeat and injected-fault
+recovery trajectories/covariances are exactly equal to each other. Four13-update
+lifecycle chains include nine retirements each. Native smart pointer identity,
+key retirement, slot ownership and absence of dangling keys pass. The active
+candidate changes the synthetic pose-coordinate vector norm by3.35615e-6;
+this only confirms that the test distinguishes it, NOT improved accuracy.
+
+Failure injected into the second linearization verifies an actual refresh
+failure rolls the entire update back. A second injection after marginalization
+checks restoration after full lifecycle work. States, theta, delta, tree,
+factor pointers/slots, timestamps, fixed locks, cached LOCAL covariance and
+dumped smart triangulation/cache state return exactly. The reused rollback
+implementation also restores native smart Fs caches; their restoration is
+code-inspected, not separately byte-dumped. Unsupported selector/mode, pending
+peer, unknown fixed ownership and missing prior cache cases reject.
+
+REPAIRS / RETAINED FAILURES
+==========================
+All failed artifacts remain; no model, estimator candidate or tolerance changed
+after first compilation. No source replay, score retry or hidden numerical retry.
+1. Preparation Git inventory targeted the non-Git catkin root; corrected to
+   actual repositories before any container/build/test. Protection receipt reused.
+2. release_initial baseline/disabled parity passed, then the active test failed
+   compilation on a missing closing brace. Corrected the test only; completed
+   parity evidence reused without repeating that stage.
+3. release_bracefix passed direct mathematical checks but its test incorrectly
+   expected an adapter to survive subsequent marginalization. In this pairwise
+   fixture it is absorbed into the new native prior in the same cycle. Corrected
+   that accounting assertion, preserving direct refresh/changed-output/failure
+   injection tests. No numerical tolerance was relaxed. Final release_lifecyclefix
+   and san_initial pass. Details in the three *_REPAIR.txt files.
+
+NEXT PROPOSED GATE — NOT LAUNCHED
+===============================
+One bounded original-start EIG-2 Kimera-only CBS-OFF replay through the known
+267--268s event (300s bound), original cameras/CPT7/calibration/noise/guards,
+with this explicit private selector only. Compare against exact saved OFF
+baseline: internal IMU residuals, current-window revisions, native smart validity,
+runtime/backlog and output trajectory. Any ATE/RPE must use the existing direct
+evo protocol, with Method1/Method2 kept distinct; no success claim from smoothness
+or internal cost alone. Preserve failed evidence and do not tune/retry for better
+scores. No CBS-ON or full matched three-estimator campaign until OFF is understood.
+
+PRIVATE BUILD / INTEGRITY
+=========================
+Private VioBackend compilation, DSO link and ldd -r pass without missing
+dependencies/unresolved symbols. Native refresh and original-chart-prior symbols
+are present in the built library; libcbs resolves to the unchanged private copy.
+libkimera_vio.so SHA256:
+  560ad4e82323e91db43eae606bafcd3ecec6ccbd85dcf271fb84a7f50658ecf4
+Inherited smart-dump/FL4Q indentation warnings and mixed OpenCV3.4/4.2 link
+warnings remain recorded. They were not new runtime sanitizer findings.
+
+Build receipts, commands, CTest logs and binary identities live under the private
+root. Host receipts here account for container start/stop and owned jobs. Both
+containers were restored stopped after every gate. closeout.json rechecks the
+5613protected artifacts, original four-sequence667-file Hesai checkpoint,
+original RRDs, candidate-code nonmutation, private library and owned job exits.
+No original artifact overwritten, source/receiver replay, CBS-ON solve, production
+promotion, default/profile change, deletion, commit or push.

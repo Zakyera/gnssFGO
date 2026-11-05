@@ -1,0 +1,57 @@
+CP-V91: one full ETH1 split-IMU persistent CBS-ON source experiment.
+ATTEMPT1: original startup stopped before sensor playback due diagnostic path
+off_source/e1b_profile.jsonl. Original failure/cleanup artifacts preserved and
+pinned. Repair only that path to on_source plus fresh paths/port11592. This is
+not a source-data retry or estimator/model change. No subsequent automatic retry.
+Authorization: user "ok proceed to run the cbs on with this new setup".
+Continuation of completed CP89 full CBS-OFF, not a new sensor/noise hypothesis.
+
+346.32s, offset0, 0.20x, 25s drain. Same raw ETH1 bags and exact input window.
+GLIM Hesai+CPT7/HG4930, CP82 release4 inject_persistent; Kimera front stereo+
+Alphasense IMU, CP76 persistent/CP40/CPK9, native smart25states, FL4Q0,
+FL4Mremove, native IMU override unset. Both Gaussian1. GLIM MAIN/shared_native/
+native_local all-LOCAL dense covariance every version, corrected MAIN means.
+Alpha rate200Hz, accel biasRW.0043, gyro.000266; all other CP89 noise, priors,
+timing, initialization, calibration and private binaries byte-identical.
+Only source receive toggles OFF->ON in both directions; new paths/port11592.
+No fusion: split-body receiver log adapter remains unqualified and is not used.
+No source retries, builds, tuning, deletion, next sequence or default promotion.
+
+Frame contract: GLIM native body CPT7; Kimera native body Alphasense. Both
+wire relative beliefs are CPT7. Existing Kimera ROS bridge converts outgoing
+Alpha->CPT7 and incoming CPT7->Alpha using conjugation and full6x6 adjoints.
+Use author static T_alpha_cpt7, not identity or a fitted transform. Existing
+mean-only native IMU timestamp alignment remains unchanged. Verify saved CP89
+native-to-wire payloads, exact transform and numerical round-trip before launch;
+preplayback verify actual node topics/body/TF/private DSOs, receive and factor modes.
+Postcapture match logged incoming means to transformed recorded wire beliefs.
+This is not a claim that unlogged native factors or time-aligned covariance are
+independently certified. Persistent marginalization carries peer history:
+native-only outgoing information remains FALSE; split IMUs do not break feedback
+correlation. User previously accepted this limitation, not uncertainty calibration.
+
+Exclusive finite controller: capture -> exact raw input/init/EOF/native coverage
+and numerical gates -> owned cleanup/container restore -> saved frame/payload
+audit -> saved-only EVO -> report verification -> immutable terminal receipt.
+Do not launch stages separately while active or overwrite prior evidence.
+Both originally-stopped containers must return stopped; owned command/start
+identities must exit. Preserve CP89/90 terminal hashes and Hesai667 originals/copies.
+Storage admission >max(10GiB, conservative output forecast+5GiB), runtime5GiB.
+No deletion or guard relaxation. Missing right image203.898841154s retained:
+3464left/3463right,3463paired; expected CPT7/Alpha/Hesai34618/69186/3462.
+Native Kimera keyframe tail gaps from OFF must remain explicit, not bridged.
+
+Evaluation: EVO1.36.3 only. Method1 first/newest absolute per state, not native
+incremental Kimera ROS output. Convert both bodies to same prism physical point.
+IE-TC reference shares CPT7, not independent prismGT. SE3/no-scale ATE; reference
+distance delta0.5m translation/rotation RPE. Same100ms mask across OFF/ON and
+both estimators; <=0.5s estimator interpolation, <=0.05s reference interpolation;
+no gaps bridged. Full-saved native cadence separately, not same RPE pairs/mask.
+CP89 OFF is saved matched-settings control, not a newly repeated OFF capture.
+Report retained revisions/timing/covariance and actual payload counts/omissions.
+Estimated path is a segmented polyline, not physical travel. Incremental parity
+and report-process pass do not establish nonlinear stationarity or health.
+
+Fresh H=experiments/eth1_split_imu_persistent_on_cpv91_20261102_attempt1.
+P=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/<H-name>/prepared.
+Only launch after preflight; only supplemental post_closeout after owned jobs exit.

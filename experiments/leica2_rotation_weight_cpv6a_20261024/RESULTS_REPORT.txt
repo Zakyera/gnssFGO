@@ -1,0 +1,1846 @@
+CP-V6 LEICA-2 rotational-variance10 candidate with saved controls full-usable428.75s OFF/ON — COMPLETED
+One new ON capture at0.20x; OFF/baseline_on are saved CP-V4. Only G2K rotation covariance changed.
+Native GLIM / native Kimera ROS odometry / concurrent ONLINE fusion.
+EOF contract: only final partial-cell omissions allowed; every omission disclosed below. No fabricated support.
+Terminal omissions OFF/ON: {'off': 0, 'on': 0}
+Reference: full-window IE-TC shares CPT7; not independent prism GT.
+Existing rigid no-scale ATE alignment and prism lever arm;1sRPE unchanged.
+
+FULL-SAVED OUTPUTS: every saved pose against reference; NOT a favorable short mask.
+role mode ATE_m tRPE1s_m rRPE1s_deg path_prism_m span_s rows
+native_glim off 2.828135 0.092331 1.286905 206.093653 427.799116 4279
+native_glim baseline_on 0.861349 0.038075 0.561518 208.666970 427.799116 4279
+native_glim on 0.713107 0.043295 0.667497 210.488098 427.799116 4279
+native_kimera off 1.097081 0.028507 0.405502 200.145838 426.895626 1937
+native_kimera baseline_on 2.584159 0.062012 0.535197 201.294269 426.895626 1936
+native_kimera on 4.430475 0.050929 0.472271 201.672773 426.695628 1937
+fused_online off 2.000424 0.052801 2.417982 280.154058 428.100000 4282
+fused_online baseline_on 1.828658 0.052690 1.769589 235.136662 428.100000 4282
+fused_online on 2.934918 0.054026 1.814063 238.038330 428.100000 4282
+fused_finalized off 2.000564 0.035255 0.580349 204.796695 428.100000 4282
+fused_finalized baseline_on 1.831814 0.029802 0.417429 205.890093 428.100000 4282
+fused_finalized on 2.937190 0.029541 0.405594 206.497779 428.100000 4282
+
+COMMON MASK: all sources/modes, same physical timestamps.
+{"rows": 3850, "start_s": 1732549035.6, "end_s": 1732549425.2996283, "coverage": {"grid_queries": 4262, "excluded_queries": 412, "envelope_s": 389.6996283531189, "covered_contiguous_duration_s": 384.5996332168579, "segments": [{"start_s": 1732549035.6, "end_s": 1732549092.4999456, "rows": 570}, {"start_s": 1732549095.299943, "end_s": 1732549230.2998142, "rows": 1351}, {"start_s": 1732549231.699813, "end_s": 1732549339.2997103, "rows": 1077}, {"start_s": 1732549340.1997094, "end_s": 1732549425.2996283, "rows": 852}], "maximum_query_gap_s": 2.799997329711914}, "timestamps_sha256": "6c038880e8491746ad2d7d52577422daa4c9f34694f890552f17bf4f6010218a", "interpolation_gap_estimate_s": 0.5, "interpolation_gap_reference_s": 0.05}
+role mode ATE_m tRPE1s_m rRPE1s_deg path_prism_m
+native_glim off 2.780917 0.097665 1.361472 205.148133
+native_glim baseline_on 0.848116 0.040169 0.591787 206.808671
+native_glim on 0.664167 0.045419 0.703389 207.781619
+native_kimera off 1.094233 0.028573 0.406449 199.932828
+native_kimera baseline_on 2.585334 0.062125 0.536150 200.916847
+native_kimera on 4.425270 0.051021 0.473093 201.407026
+fused_online off 2.006012 0.055747 2.556960 278.155447
+fused_online baseline_on 1.867963 0.055661 1.871671 233.180042
+fused_online on 2.927589 0.057005 1.917890 236.197080
+fused_finalized off 2.005941 0.037257 0.613361 204.569831
+fused_finalized baseline_on 1.871014 0.031394 0.439192 205.587636
+fused_finalized on 2.928730 0.030787 0.425319 206.220199
+
+COVERAGE / TIMING / CONSERVATION
+off
+{
+  "checks": {
+    "receiver": {
+      "passed": true,
+      "validation_contract": "finite_recording_eof_cpk24a",
+      "terminal_boundary": {
+        "passed": true,
+        "contract": "finite_recording_terminal_cell_only",
+        "original_zero_unsupported_gate_passed": true,
+        "excluded_versions": 0,
+        "final_partial_cell_ns": 60371000,
+        "details": [],
+        "state_clock_not_extended": true,
+        "captured_outputs_unchanged": true,
+        "omission_not_recovered": true
+      },
+      "source_coverage": {
+        "passed": true,
+        "requested_s": 428.75,
+        "imu_samples": 42875,
+        "imu_span_s": 428.7403712272644,
+        "coverage_contract": "native_keyframes_cpk22",
+        "kimera_gap_bound_s": 5.1499999999999995,
+        "native_glim": {
+          "rows": 4279,
+          "start_s": 1732549035.547153,
+          "end_s": 1732549463.346269,
+          "span_s": 427.799115896225,
+          "maximum_pose_gap_s": 0.10686612129211426,
+          "post_startup_max_gap_s": 0.10686612129211426,
+          "start_after_first_imu_s": 0.7276380062103271,
+          "tail_behind_last_imu_s": 0.21361732482910156,
+          "path_length_m": 202.7609805225614,
+          "gaps_over_1s": [],
+          "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+        },
+        "native_kimera": {
+          "rows": 1937,
+          "start_s": 1732549035.0150096,
+          "end_s": 1732549461.9106357,
+          "span_s": 426.89562606811523,
+          "maximum_pose_gap_s": 5.0999462604522705,
+          "post_startup_max_gap_s": 5.0999462604522705,
+          "start_after_first_imu_s": 0.1954946517944336,
+          "tail_behind_last_imu_s": 1.6492505073547363,
+          "path_length_m": 196.68655844919556,
+          "gaps_over_1s": [
+            {
+              "before_index": 1927,
+              "after_index": 1928,
+              "start_s": 1732549425.3110552,
+              "end_s": 1732549430.4109938,
+              "gap_s": 5.099938631057739
+            },
+            {
+              "before_index": 1928,
+              "after_index": 1929,
+              "start_s": 1732549430.4109938,
+              "end_s": 1732549435.5109324,
+              "gap_s": 5.099938631057739
+            },
+            {
+              "before_index": 1929,
+              "after_index": 1930,
+              "start_s": 1732549435.5109324,
+              "end_s": 1732549440.6108732,
+              "gap_s": 5.099940776824951
+            },
+            {
+              "before_index": 1930,
+              "after_index": 1931,
+              "start_s": 1732549440.6108732,
+              "end_s": 1732549445.7108195,
+              "gap_s": 5.0999462604522705
+            },
+            {
+              "before_index": 1931,
+              "after_index": 1932,
+              "start_s": 1732549445.7108195,
+              "end_s": 1732549450.8107617,
+              "gap_s": 5.099942207336426
+            },
+            {
+              "before_index": 1932,
+              "after_index": 1933,
+              "start_s": 1732549450.8107617,
+              "end_s": 1732549455.910703,
+              "gap_s": 5.099941253662109
+            },
+            {
+              "before_index": 1935,
+              "after_index": 1936,
+              "start_s": 1732549456.8106928,
+              "end_s": 1732549461.9106357,
+              "gap_s": 5.099942922592163
+            }
+          ],
+          "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+        },
+        "kimera_processing": {
+          "passed": true,
+          "logs": [
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_source/estimators.log",
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_source/ros_logs/442bd0be-cf34-11f1-96f5-fa3e8f968d05/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log",
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_source/ros_logs/latest/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log"
+          ],
+          "frontend_processed": 4286,
+          "synchronized_input_pairs_reference": 4287,
+          "frontend_reference_after_startup": 4284,
+          "backend_processed": 1937,
+          "sequential_native_ids": true,
+          "gaps": [
+            {
+              "before_id": 1927,
+              "after_id": 1928,
+              "gap_s": 5.099938631057739,
+              "wall_interval_s": 25.493487119674683,
+              "frontend_counter_first": 3906,
+              "frontend_counter_last": 3954,
+              "backend_before_ms": 79.0477,
+              "backend_after_ms": 75.7491,
+              "low_disparity_lines": 4
+            },
+            {
+              "before_id": 1928,
+              "after_id": 1929,
+              "gap_s": 5.099938631057739,
+              "wall_interval_s": 25.496753931045532,
+              "frontend_counter_first": 3956,
+              "frontend_counter_last": 4005,
+              "backend_before_ms": 75.7491,
+              "backend_after_ms": 73.1669,
+              "low_disparity_lines": 4
+            },
+            {
+              "before_id": 1929,
+              "after_id": 1930,
+              "gap_s": 5.099940776824951,
+              "wall_interval_s": 25.496175050735474,
+              "frontend_counter_first": 4008,
+              "frontend_counter_last": 4056,
+              "backend_before_ms": 73.1669,
+              "backend_after_ms": 72.0216,
+              "low_disparity_lines": 4
+            },
+            {
+              "before_id": 1930,
+              "after_id": 1931,
+              "gap_s": 5.0999462604522705,
+              "wall_interval_s": 25.50236201286316,
+              "frontend_counter_first": 4058,
+              "frontend_counter_last": 4108,
+              "backend_before_ms": 72.0216,
+              "backend_after_ms": 73.4818,
+              "low_disparity_lines": 4
+            },
+            {
+              "before_id": 1931,
+              "after_id": 1932,
+              "gap_s": 5.099942207336426,
+              "wall_interval_s": 25.497891902923584,
+              "frontend_counter_first": 4110,
+              "frontend_counter_last": 4158,
+              "backend_before_ms": 73.4818,
+              "backend_after_ms": 70.7668,
+              "low_disparity_lines": 4
+            },
+            {
+              "before_id": 1932,
+              "after_id": 1933,
+              "gap_s": 5.099941253662109,
+              "wall_interval_s": 25.502195119857788,
+              "frontend_counter_first": 4160,
+              "frontend_counter_last": 4209,
+              "backend_before_ms": 70.7668,
+              "backend_after_ms": 70.1271,
+              "low_disparity_lines": 4
+            },
+            {
+              "before_id": 1935,
+              "after_id": 1936,
+              "gap_s": 5.099942922592163,
+              "wall_interval_s": 25.492909908294678,
+              "frontend_counter_first": 4220,
+              "frontend_counter_last": 4269,
+              "backend_before_ms": 63.7294,
+              "backend_after_ms": 63.5923,
+              "low_disparity_lines": 4
+            }
+          ],
+          "scope": "Native counters, not a new per-image receipt or branch-decision audit."
+        }
+      },
+      "transport": {
+        "imu": 42875,
+        "duplicate_imu": 0,
+        "imu_clock_lag_events": 41896,
+        "max_imu_clock_lag_ns": 2453030,
+        "belief_clock_lag_events": 0,
+        "max_belief_clock_lag_ns": 0,
+        "beliefs": 253524,
+        "duplicates": 0,
+        "published_poses": 4282,
+        "max_queue": 40,
+        "sources": {
+          "glim_velodyne": 205919,
+          "kimera_front": 47605
+        }
+      },
+      "summary": {
+        "complete": true,
+        "model": "source_wnoa_fixed_lag",
+        "lag_seconds": 7,
+        "stationarity": "not_checked_incremental_policy",
+        "events": 296400,
+        "received": 253524,
+        "absorbed_revision_policy": "seal_at_absorption",
+        "expired": 171,
+        "expired_duplicate": 0,
+        "expired_stale": 0,
+        "duplicate": 0,
+        "stale": 0,
+        "inserted": 6185,
+        "replaced": 247118,
+        "excluded": 50,
+        "unsupported_end": 0,
+        "absorbed": 6117,
+        "active": 68,
+        "pending_at_end": 0,
+        "publications": 4282,
+        "finalized": 4282,
+        "retained_supports": 71,
+        "peak_slots": 175
+      },
+      "actions": {
+        "before_initialization": 50,
+        "insert": 6185,
+        "replace": 247118,
+        "expired_revision": 171
+      },
+      "expiry": {
+        "passed": true,
+        "policy": "seal_at_absorption",
+        "expired": {
+          "versions": 171,
+          "ids": 24,
+          "changes": {
+            "endpoint_age_s": {
+              "n": 171,
+              "median": 26.533095397,
+              "rms": 26.503590199136664,
+              "p95": 38.133635892,
+              "max": 39.829539848
+            },
+            "since_absorption_s": {
+              "n": 171,
+              "median": 19.444305697,
+              "rms": 20.051726231490107,
+              "p95": 31.044852192,
+              "max": 32.740783848
+            },
+            "version_jump": {
+              "n": 171,
+              "median": 4.0,
+              "rms": 5.055828666872714,
+              "p95": 8.0,
+              "max": 9.0
+            },
+            "translation_change_m": {
+              "n": 171,
+              "median": 0.0002567243930359028,
+              "rms": 0.0005066699110677599,
+              "p95": 0.0009940970910425535,
+              "max": 0.0010664387784356875
+            },
+            "rotation_change_rad": {
+              "n": 171,
+              "median": 3.8934462426128555e-05,
+              "rms": 3.8795300040742635e-05,
+              "p95": 5.389180227340151e-05,
+              "max": 5.9416532537347385e-05
+            },
+            "rotation_trace_ratio": {
+              "n": 171,
+              "median": 0.969560458962681,
+              "rms": 0.9585067450002848,
+              "p95": 1.010300353034831,
+              "max": 1.0261418471815364
+            },
+            "translation_trace_ratio": {
+              "n": 171,
+              "median": 1.076915894820622,
+              "rms": 1.1928801855383269,
+              "p95": 1.7288235624943822,
+              "max": 2.3034906024131403
+            },
+            "full_covariance_relative_frobenius": {
+              "n": 171,
+              "median": 0.09619635808505625,
+              "rms": 0.31529651925013424,
+              "p95": 0.7896099827171745,
+              "max": 1.2570309678698828
+            }
+          }
+        },
+        "by_source": {
+          "kimera_front": {
+            "received_versions": 47605,
+            "received_ids": 1909,
+            "expired_fraction": 0.0035920596575989916,
+            "versions": 171,
+            "ids": 24,
+            "changes": {
+              "endpoint_age_s": {
+                "n": 171,
+                "median": 26.533095397,
+                "rms": 26.503590199136664,
+                "p95": 38.133635892,
+                "max": 39.829539848
+              },
+              "since_absorption_s": {
+                "n": 171,
+                "median": 19.444305697,
+                "rms": 20.051726231490107,
+                "p95": 31.044852192,
+                "max": 32.740783848
+              },
+              "version_jump": {
+                "n": 171,
+                "median": 4.0,
+                "rms": 5.055828666872714,
+                "p95": 8.0,
+                "max": 9.0
+              },
+              "translation_change_m": {
+                "n": 171,
+                "median": 0.0002567243930359028,
+                "rms": 0.0005066699110677599,
+                "p95": 0.0009940970910425535,
+                "max": 0.0010664387784356875
+              },
+              "rotation_change_rad": {
+                "n": 171,
+                "median": 3.8934462426128555e-05,
+                "rms": 3.8795300040742635e-05,
+                "p95": 5.389180227340151e-05,
+                "max": 5.9416532537347385e-05
+              },
+              "rotation_trace_ratio": {
+                "n": 171,
+                "median": 0.969560458962681,
+                "rms": 0.9585067450002848,
+                "p95": 1.010300353034831,
+                "max": 1.0261418471815364
+              },
+              "translation_trace_ratio": {
+                "n": 171,
+                "median": 1.076915894820622,
+                "rms": 1.1928801855383269,
+                "p95": 1.7288235624943822,
+                "max": 2.3034906024131403
+              },
+              "full_covariance_relative_frobenius": {
+                "n": 171,
+                "median": 0.09619635808505625,
+                "rms": 0.31529651925013424,
+                "p95": 0.7896099827171745,
+                "max": 1.2570309678698828
+              }
+            }
+          },
+          "glim_velodyne": {
+            "received_versions": 205919,
+            "received_ids": 4278,
+            "expired_fraction": 0.0,
+            "versions": 0,
+            "ids": 0,
+            "changes": {
+              "endpoint_age_s": {
+                "n": 0
+              },
+              "since_absorption_s": {
+                "n": 0
+              },
+              "version_jump": {
+                "n": 0
+              },
+              "translation_change_m": {
+                "n": 0
+              },
+              "rotation_change_rad": {
+                "n": 0
+              },
+              "rotation_trace_ratio": {
+                "n": 0
+              },
+              "translation_trace_ratio": {
+                "n": 0
+              },
+              "full_covariance_relative_frobenius": {
+                "n": 0
+              }
+            }
+          }
+        },
+        "reference_rows_not_receipts": 171,
+        "caveat": "Changes vs last accepted belief, NOT GT errors or proof that omitted corrections are harmless."
+      },
+      "mean_log_roundtrip_error": 2.545880173343562e-14,
+      "covariance_payload_error": 0.0,
+      "online_path_m": 268.7293159986347,
+      "finalized_path_m": 201.1398507857506,
+      "fused_span_s": 428.1,
+      "support_cycle_seconds": {
+        "n": 4282,
+        "mean": 0.053089715954927605,
+        "median": 0.04804717000000001,
+        "p95": 0.07567304299999997,
+        "max": 0.12616578299999998
+      },
+      "receipt_to_processing_seconds": {
+        "n": 296400,
+        "mean": 0.008031122606454116,
+        "median": 0.007106397,
+        "p95": 0.019990953000000002,
+        "max": 0.074221851
+      },
+      "monitor_output_age_s": {
+        "n": 1086,
+        "mean": 0.048295992868324124,
+        "median": 0.05015,
+        "p95": 0.090286,
+        "max": 0.100355
+      },
+      "published_during_source": 4282,
+      "max_monitor_queue": 9,
+      "protected_unchanged": 2850,
+      "claim": "live 0.2x full-usable428.75-second LEICA-2 capture; fixed-lag incremental without stationarity certificate"
+    },
+    "lifecycle": {
+      "passed": true,
+      "mode": "off",
+      "native_updates": 1937,
+      "source_injections": {
+        "g2k_injected": 0,
+        "k2g_injected": 0
+      },
+      "planned_retirements": 0,
+      "prior_refresh_updates": 0,
+      "max_cache_error": 0,
+      "observed_total_cost_increases": 18,
+      "imu_factor_cost": {
+        "median": 88.79074668423924,
+        "max": 10192.402263391714,
+        "last": 599.0799428255373
+      },
+      "stationarity_certified": false,
+      "obsolete_FL4q_executed": false,
+      "candidate_sha256": "be637ad745f73bf12596d3bf06754f56ed7bcadfdb8b4792b94c4fcfee62aad9",
+      "note": "CP-K9 equation/lifecycle gate; cost increases are observational."
+    },
+    "local": {
+      "passed": true,
+      "mode": "off",
+      "sources": {
+        "glim": {
+          "ids": 4278,
+          "versions": 205919,
+          "first": 4278,
+          "revised": 201641,
+          "provider_queries": 4278,
+          "local_joint_queries": 0
+        },
+        "kimera": {
+          "ids": 1909,
+          "versions": 47605,
+          "first": 0,
+          "revised": 0,
+          "provider_queries": 0,
+          "local_joint_queries": 47605
+        }
+      },
+      "all_payloads_exact": true,
+      "revision_provenance": "per-version native_local row plus pinned/tested provider route; no separate repeated matrix dump",
+      "limits": "native explicit information at corrected charts; not independent/calibrated likelihood"
+    }
+  },
+  "capture": {
+    "seconds": 2191.833510875702,
+    "phase": "full",
+    "mode": "off"
+  },
+  "glim_timing": {
+    "whole": {
+      "scan_ms": {
+        "n": 4278,
+        "median": 69.94101950000001,
+        "p95": 211.238651,
+        "max": 280.800332
+      },
+      "main_ms": {
+        "n": 4278,
+        "median": 31.697664,
+        "p95": 53.018694,
+        "max": 62.065208
+      },
+      "post_callback_ms": {
+        "n": 4278,
+        "median": 26.590422,
+        "p95": 177.738402,
+        "max": 249.782137
+      },
+      "scans_over_500ms": 0
+    },
+    "after5s": {
+      "scan_ms": {
+        "n": 4235,
+        "median": 70.176739,
+        "p95": 211.495322,
+        "max": 280.800332
+      },
+      "main_ms": {
+        "n": 4235,
+        "median": 31.842171,
+        "p95": 53.054416,
+        "max": 62.065208
+      },
+      "post_callback_ms": {
+        "n": 4235,
+        "median": 26.696234,
+        "p95": 178.177862,
+        "max": 249.782137
+      },
+      "scans_over_500ms": 0
+    },
+    "last20s": {
+      "scan_ms": {
+        "n": 197,
+        "median": 55.015794,
+        "p95": 72.941179,
+        "max": 86.529597
+      },
+      "main_ms": {
+        "n": 197,
+        "median": 26.184213,
+        "p95": 42.089004,
+        "max": 51.707808
+      },
+      "post_callback_ms": {
+        "n": 197,
+        "median": 24.224556,
+        "p95": 27.309178,
+        "max": 33.699729
+      },
+      "scans_over_500ms": 0
+    }
+  },
+  "glim_internal_queue_max": 0,
+  "main_prepared_hits": 7365136,
+  "main_sync_calls": 0,
+  "kimera_timing_after5s": {
+    "optimize_ms": {
+      "n": 1914,
+      "median": 80.33395,
+      "p95": 105.237,
+      "max": 126.008
+    },
+    "smoother_ms": {
+      "n": 1914,
+      "median": 25.81005,
+      "p95": 36.4545,
+      "max": 44.6597
+    },
+    "outgoing_ms": {
+      "n": 1914,
+      "median": 50.5344,
+      "p95": 63.361,
+      "max": 77.1172
+    },
+    "backend_ms": {
+      "n": 1914,
+      "median": 81.37995,
+      "p95": 106.552,
+      "max": 127.388
+    }
+  },
+  "source_coverage": {
+    "passed": true,
+    "requested_s": 428.75,
+    "imu_samples": 42875,
+    "imu_span_s": 428.7403712272644,
+    "coverage_contract": "native_keyframes_cpk22",
+    "kimera_gap_bound_s": 5.1499999999999995,
+    "native_glim": {
+      "rows": 4279,
+      "start_s": 1732549035.547153,
+      "end_s": 1732549463.346269,
+      "span_s": 427.799115896225,
+      "maximum_pose_gap_s": 0.10686612129211426,
+      "post_startup_max_gap_s": 0.10686612129211426,
+      "start_after_first_imu_s": 0.7276380062103271,
+      "tail_behind_last_imu_s": 0.21361732482910156,
+      "path_length_m": 202.7609805225614,
+      "gaps_over_1s": [],
+      "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+    },
+    "native_kimera": {
+      "rows": 1937,
+      "start_s": 1732549035.0150096,
+      "end_s": 1732549461.9106357,
+      "span_s": 426.89562606811523,
+      "maximum_pose_gap_s": 5.0999462604522705,
+      "post_startup_max_gap_s": 5.0999462604522705,
+      "start_after_first_imu_s": 0.1954946517944336,
+      "tail_behind_last_imu_s": 1.6492505073547363,
+      "path_length_m": 196.68655844919556,
+      "gaps_over_1s": [
+        {
+          "before_index": 1927,
+          "after_index": 1928,
+          "start_s": 1732549425.3110552,
+          "end_s": 1732549430.4109938,
+          "gap_s": 5.099938631057739
+        },
+        {
+          "before_index": 1928,
+          "after_index": 1929,
+          "start_s": 1732549430.4109938,
+          "end_s": 1732549435.5109324,
+          "gap_s": 5.099938631057739
+        },
+        {
+          "before_index": 1929,
+          "after_index": 1930,
+          "start_s": 1732549435.5109324,
+          "end_s": 1732549440.6108732,
+          "gap_s": 5.099940776824951
+        },
+        {
+          "before_index": 1930,
+          "after_index": 1931,
+          "start_s": 1732549440.6108732,
+          "end_s": 1732549445.7108195,
+          "gap_s": 5.0999462604522705
+        },
+        {
+          "before_index": 1931,
+          "after_index": 1932,
+          "start_s": 1732549445.7108195,
+          "end_s": 1732549450.8107617,
+          "gap_s": 5.099942207336426
+        },
+        {
+          "before_index": 1932,
+          "after_index": 1933,
+          "start_s": 1732549450.8107617,
+          "end_s": 1732549455.910703,
+          "gap_s": 5.099941253662109
+        },
+        {
+          "before_index": 1935,
+          "after_index": 1936,
+          "start_s": 1732549456.8106928,
+          "end_s": 1732549461.9106357,
+          "gap_s": 5.099942922592163
+        }
+      ],
+      "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+    },
+    "kimera_processing": {
+      "passed": true,
+      "logs": [
+        "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_source/estimators.log",
+        "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_source/ros_logs/442bd0be-cf34-11f1-96f5-fa3e8f968d05/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log",
+        "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off_source/ros_logs/latest/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log"
+      ],
+      "frontend_processed": 4286,
+      "synchronized_input_pairs_reference": 4287,
+      "frontend_reference_after_startup": 4284,
+      "backend_processed": 1937,
+      "sequential_native_ids": true,
+      "gaps": [
+        {
+          "before_id": 1927,
+          "after_id": 1928,
+          "gap_s": 5.099938631057739,
+          "wall_interval_s": 25.493487119674683,
+          "frontend_counter_first": 3906,
+          "frontend_counter_last": 3954,
+          "backend_before_ms": 79.0477,
+          "backend_after_ms": 75.7491,
+          "low_disparity_lines": 4
+        },
+        {
+          "before_id": 1928,
+          "after_id": 1929,
+          "gap_s": 5.099938631057739,
+          "wall_interval_s": 25.496753931045532,
+          "frontend_counter_first": 3956,
+          "frontend_counter_last": 4005,
+          "backend_before_ms": 75.7491,
+          "backend_after_ms": 73.1669,
+          "low_disparity_lines": 4
+        },
+        {
+          "before_id": 1929,
+          "after_id": 1930,
+          "gap_s": 5.099940776824951,
+          "wall_interval_s": 25.496175050735474,
+          "frontend_counter_first": 4008,
+          "frontend_counter_last": 4056,
+          "backend_before_ms": 73.1669,
+          "backend_after_ms": 72.0216,
+          "low_disparity_lines": 4
+        },
+        {
+          "before_id": 1930,
+          "after_id": 1931,
+          "gap_s": 5.0999462604522705,
+          "wall_interval_s": 25.50236201286316,
+          "frontend_counter_first": 4058,
+          "frontend_counter_last": 4108,
+          "backend_before_ms": 72.0216,
+          "backend_after_ms": 73.4818,
+          "low_disparity_lines": 4
+        },
+        {
+          "before_id": 1931,
+          "after_id": 1932,
+          "gap_s": 5.099942207336426,
+          "wall_interval_s": 25.497891902923584,
+          "frontend_counter_first": 4110,
+          "frontend_counter_last": 4158,
+          "backend_before_ms": 73.4818,
+          "backend_after_ms": 70.7668,
+          "low_disparity_lines": 4
+        },
+        {
+          "before_id": 1932,
+          "after_id": 1933,
+          "gap_s": 5.099941253662109,
+          "wall_interval_s": 25.502195119857788,
+          "frontend_counter_first": 4160,
+          "frontend_counter_last": 4209,
+          "backend_before_ms": 70.7668,
+          "backend_after_ms": 70.1271,
+          "low_disparity_lines": 4
+        },
+        {
+          "before_id": 1935,
+          "after_id": 1936,
+          "gap_s": 5.099942922592163,
+          "wall_interval_s": 25.492909908294678,
+          "frontend_counter_first": 4220,
+          "frontend_counter_last": 4269,
+          "backend_before_ms": 63.7294,
+          "backend_after_ms": 63.5923,
+          "low_disparity_lines": 4
+        }
+      ],
+      "scope": "Native counters, not a new per-image receipt or branch-decision audit."
+    }
+  }
+}
+on
+{
+  "checks": {
+    "receiver": {
+      "passed": true,
+      "validation_contract": "finite_recording_eof_cpk24a",
+      "terminal_boundary": {
+        "passed": true,
+        "contract": "finite_recording_terminal_cell_only",
+        "original_zero_unsupported_gate_passed": true,
+        "excluded_versions": 0,
+        "final_partial_cell_ns": 60371000,
+        "details": [],
+        "state_clock_not_extended": true,
+        "captured_outputs_unchanged": true,
+        "omission_not_recovered": true
+      },
+      "source_coverage": {
+        "passed": true,
+        "requested_s": 428.75,
+        "imu_samples": 42875,
+        "imu_span_s": 428.7403712272644,
+        "coverage_contract": "native_keyframes_cpk22",
+        "kimera_gap_bound_s": 5.1499999999999995,
+        "native_glim": {
+          "rows": 4279,
+          "start_s": 1732549035.547153,
+          "end_s": 1732549463.346269,
+          "span_s": 427.799115896225,
+          "maximum_pose_gap_s": 0.10686612129211426,
+          "post_startup_max_gap_s": 0.10686612129211426,
+          "start_after_first_imu_s": 0.7276380062103271,
+          "tail_behind_last_imu_s": 0.21361732482910156,
+          "path_length_m": 207.1809779973412,
+          "gaps_over_1s": [],
+          "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+        },
+        "native_kimera": {
+          "rows": 1937,
+          "start_s": 1732549035.0150096,
+          "end_s": 1732549461.710638,
+          "span_s": 426.6956284046173,
+          "maximum_pose_gap_s": 5.0999462604522705,
+          "post_startup_max_gap_s": 5.0999462604522705,
+          "start_after_first_imu_s": 0.1954946517944336,
+          "tail_behind_last_imu_s": 1.8492481708526611,
+          "path_length_m": 198.13890963227925,
+          "gaps_over_1s": [
+            {
+              "before_index": 286,
+              "after_index": 287,
+              "start_s": 1732549092.8144822,
+              "end_s": 1732549093.9144728,
+              "gap_s": 1.0999906063079834
+            },
+            {
+              "before_index": 1928,
+              "after_index": 1929,
+              "start_s": 1732549425.3110552,
+              "end_s": 1732549430.4109938,
+              "gap_s": 5.099938631057739
+            },
+            {
+              "before_index": 1929,
+              "after_index": 1930,
+              "start_s": 1732549430.4109938,
+              "end_s": 1732549435.5109324,
+              "gap_s": 5.099938631057739
+            },
+            {
+              "before_index": 1930,
+              "after_index": 1931,
+              "start_s": 1732549435.5109324,
+              "end_s": 1732549440.6108732,
+              "gap_s": 5.099940776824951
+            },
+            {
+              "before_index": 1931,
+              "after_index": 1932,
+              "start_s": 1732549440.6108732,
+              "end_s": 1732549445.7108195,
+              "gap_s": 5.0999462604522705
+            },
+            {
+              "before_index": 1932,
+              "after_index": 1933,
+              "start_s": 1732549445.7108195,
+              "end_s": 1732549450.8107617,
+              "gap_s": 5.099942207336426
+            },
+            {
+              "before_index": 1933,
+              "after_index": 1934,
+              "start_s": 1732549450.8107617,
+              "end_s": 1732549455.910703,
+              "gap_s": 5.099941253662109
+            },
+            {
+              "before_index": 1935,
+              "after_index": 1936,
+              "start_s": 1732549456.6106951,
+              "end_s": 1732549461.710638,
+              "gap_s": 5.099942922592163
+            }
+          ],
+          "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+        },
+        "kimera_processing": {
+          "passed": true,
+          "logs": [
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_rotation_weight_cpv6a_20261024/prepared/full_on_source/estimators.log",
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_rotation_weight_cpv6a_20261024/prepared/full_on_source/ros_logs/fd6b96d8-cf9b-11f1-8daf-267a13c78027/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log",
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_rotation_weight_cpv6a_20261024/prepared/full_on_source/ros_logs/latest/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log"
+          ],
+          "frontend_processed": 4286,
+          "synchronized_input_pairs_reference": 4287,
+          "frontend_reference_after_startup": 4284,
+          "backend_processed": 1937,
+          "sequential_native_ids": true,
+          "gaps": [
+            {
+              "before_id": 286,
+              "after_id": 287,
+              "gap_s": 1.0999906063079834,
+              "wall_interval_s": 5.508434057235718,
+              "frontend_counter_first": 580,
+              "frontend_counter_last": 589,
+              "backend_before_ms": 67.5078,
+              "backend_after_ms": 74.2805,
+              "low_disparity_lines": 2
+            },
+            {
+              "before_id": 1928,
+              "after_id": 1929,
+              "gap_s": 5.099938631057739,
+              "wall_interval_s": 25.500638008117676,
+              "frontend_counter_first": 3906,
+              "frontend_counter_last": 3954,
+              "backend_before_ms": 104.401,
+              "backend_after_ms": 100.204,
+              "low_disparity_lines": 4
+            },
+            {
+              "before_id": 1929,
+              "after_id": 1930,
+              "gap_s": 5.099938631057739,
+              "wall_interval_s": 25.523380041122437,
+              "frontend_counter_first": 3956,
+              "frontend_counter_last": 4005,
+              "backend_before_ms": 100.204,
+              "backend_after_ms": 115.574,
+              "low_disparity_lines": 4
+            },
+            {
+              "before_id": 1930,
+              "after_id": 1931,
+              "gap_s": 5.099940776824951,
+              "wall_interval_s": 25.45661497116089,
+              "frontend_counter_first": 4008,
+              "frontend_counter_last": 4056,
+              "backend_before_ms": 115.574,
+              "backend_after_ms": 88.6623,
+              "low_disparity_lines": 4
+            },
+            {
+              "before_id": 1931,
+              "after_id": 1932,
+              "gap_s": 5.0999462604522705,
+              "wall_interval_s": 25.49288010597229,
+              "frontend_counter_first": 4058,
+              "frontend_counter_last": 4107,
+              "backend_before_ms": 88.6623,
+              "backend_after_ms": 84.7067,
+              "low_disparity_lines": 4
+            },
+            {
+              "before_id": 1932,
+              "after_id": 1933,
+              "gap_s": 5.099942207336426,
+              "wall_interval_s": 25.502824068069458,
+              "frontend_counter_first": 4110,
+              "frontend_counter_last": 4158,
+              "backend_before_ms": 84.7067,
+              "backend_after_ms": 81.7215,
+              "low_disparity_lines": 4
+            },
+            {
+              "before_id": 1933,
+              "after_id": 1934,
+              "gap_s": 5.099941253662109,
+              "wall_interval_s": 25.49403691291809,
+              "frontend_counter_first": 4160,
+              "frontend_counter_last": 4209,
+              "backend_before_ms": 81.7215,
+              "backend_after_ms": 76.5537,
+              "low_disparity_lines": 4
+            },
+            {
+              "before_id": 1935,
+              "after_id": 1936,
+              "gap_s": 5.099942922592163,
+              "wall_interval_s": 25.476284980773926,
+              "frontend_counter_first": 4218,
+              "frontend_counter_last": 4267,
+              "backend_before_ms": 85.2388,
+              "backend_after_ms": 69.5838,
+              "low_disparity_lines": 4
+            }
+          ],
+          "scope": "Native counters, not a new per-image receipt or branch-decision audit."
+        }
+      },
+      "transport": {
+        "imu": 42875,
+        "duplicate_imu": 0,
+        "imu_clock_lag_events": 41876,
+        "max_imu_clock_lag_ns": 2389704,
+        "belief_clock_lag_events": 0,
+        "max_belief_clock_lag_ns": 0,
+        "beliefs": 253687,
+        "duplicates": 0,
+        "published_poses": 4282,
+        "max_queue": 48,
+        "sources": {
+          "glim_velodyne": 206048,
+          "kimera_front": 47639
+        }
+      },
+      "summary": {
+        "complete": true,
+        "model": "source_wnoa_fixed_lag",
+        "lag_seconds": 7,
+        "stationarity": "not_checked_incremental_policy",
+        "events": 296563,
+        "received": 253687,
+        "absorbed_revision_policy": "seal_at_absorption",
+        "expired": 155,
+        "expired_duplicate": 0,
+        "expired_stale": 0,
+        "duplicate": 0,
+        "stale": 0,
+        "inserted": 6187,
+        "replaced": 247295,
+        "excluded": 50,
+        "unsupported_end": 0,
+        "absorbed": 6119,
+        "active": 68,
+        "pending_at_end": 0,
+        "publications": 4282,
+        "finalized": 4282,
+        "retained_supports": 71,
+        "peak_slots": 175
+      },
+      "actions": {
+        "before_initialization": 50,
+        "insert": 6187,
+        "replace": 247295,
+        "expired_revision": 155
+      },
+      "expiry": {
+        "passed": true,
+        "policy": "seal_at_absorption",
+        "expired": {
+          "versions": 155,
+          "ids": 24,
+          "changes": {
+            "endpoint_age_s": {
+              "n": 155,
+              "median": 24.031712381000002,
+              "rms": 25.755099099409215,
+              "p95": 38.293189721,
+              "max": 39.833166241
+            },
+            "since_absorption_s": {
+              "n": 155,
+              "median": 16.942960781,
+              "rms": 19.361335482246552,
+              "p95": 31.204410341,
+              "max": 32.744412341
+            },
+            "version_jump": {
+              "n": 155,
+              "median": 4.0,
+              "rms": 4.563530042808188,
+              "p95": 7.299999999999983,
+              "max": 8.0
+            },
+            "translation_change_m": {
+              "n": 155,
+              "median": 0.00011207824329693474,
+              "rms": 0.00029099898211211374,
+              "p95": 0.0007376710537617672,
+              "max": 0.0012263585147351068
+            },
+            "rotation_change_rad": {
+              "n": 155,
+              "median": 5.3938307592501895e-05,
+              "rms": 6.871094232263661e-05,
+              "p95": 0.00012322324015371063,
+              "max": 0.0001589841396389452
+            },
+            "rotation_trace_ratio": {
+              "n": 155,
+              "median": 0.9534628522401142,
+              "rms": 0.9385225310314943,
+              "p95": 0.9878604966581898,
+              "max": 0.9947567341579612
+            },
+            "translation_trace_ratio": {
+              "n": 155,
+              "median": 0.9862121156476132,
+              "rms": 0.976450955066085,
+              "p95": 0.99864916412706,
+              "max": 1.0020572847954452
+            },
+            "full_covariance_relative_frobenius": {
+              "n": 155,
+              "median": 0.025175204457324633,
+              "rms": 0.04684163785361481,
+              "p95": 0.09826830250035531,
+              "max": 0.11881320856767527
+            }
+          }
+        },
+        "by_source": {
+          "kimera_front": {
+            "received_versions": 47639,
+            "received_ids": 1911,
+            "expired_fraction": 0.0032536367262117174,
+            "versions": 155,
+            "ids": 24,
+            "changes": {
+              "endpoint_age_s": {
+                "n": 155,
+                "median": 24.031712381000002,
+                "rms": 25.755099099409215,
+                "p95": 38.293189721,
+                "max": 39.833166241
+              },
+              "since_absorption_s": {
+                "n": 155,
+                "median": 16.942960781,
+                "rms": 19.361335482246552,
+                "p95": 31.204410341,
+                "max": 32.744412341
+              },
+              "version_jump": {
+                "n": 155,
+                "median": 4.0,
+                "rms": 4.563530042808188,
+                "p95": 7.299999999999983,
+                "max": 8.0
+              },
+              "translation_change_m": {
+                "n": 155,
+                "median": 0.00011207824329693474,
+                "rms": 0.00029099898211211374,
+                "p95": 0.0007376710537617672,
+                "max": 0.0012263585147351068
+              },
+              "rotation_change_rad": {
+                "n": 155,
+                "median": 5.3938307592501895e-05,
+                "rms": 6.871094232263661e-05,
+                "p95": 0.00012322324015371063,
+                "max": 0.0001589841396389452
+              },
+              "rotation_trace_ratio": {
+                "n": 155,
+                "median": 0.9534628522401142,
+                "rms": 0.9385225310314943,
+                "p95": 0.9878604966581898,
+                "max": 0.9947567341579612
+              },
+              "translation_trace_ratio": {
+                "n": 155,
+                "median": 0.9862121156476132,
+                "rms": 0.976450955066085,
+                "p95": 0.99864916412706,
+                "max": 1.0020572847954452
+              },
+              "full_covariance_relative_frobenius": {
+                "n": 155,
+                "median": 0.025175204457324633,
+                "rms": 0.04684163785361481,
+                "p95": 0.09826830250035531,
+                "max": 0.11881320856767527
+              }
+            }
+          },
+          "glim_velodyne": {
+            "received_versions": 206048,
+            "received_ids": 4278,
+            "expired_fraction": 0.0,
+            "versions": 0,
+            "ids": 0,
+            "changes": {
+              "endpoint_age_s": {
+                "n": 0
+              },
+              "since_absorption_s": {
+                "n": 0
+              },
+              "version_jump": {
+                "n": 0
+              },
+              "translation_change_m": {
+                "n": 0
+              },
+              "rotation_change_rad": {
+                "n": 0
+              },
+              "rotation_trace_ratio": {
+                "n": 0
+              },
+              "translation_trace_ratio": {
+                "n": 0
+              },
+              "full_covariance_relative_frobenius": {
+                "n": 0
+              }
+            }
+          }
+        },
+        "reference_rows_not_receipts": 155,
+        "caveat": "Changes vs last accepted belief, NOT GT errors or proof that omitted corrections are harmless."
+      },
+      "mean_log_roundtrip_error": 2.963601586358777e-14,
+      "covariance_payload_error": 0.0,
+      "online_path_m": 231.52934065962012,
+      "finalized_path_m": 202.9199901145791,
+      "fused_span_s": 428.1,
+      "support_cycle_seconds": {
+        "n": 4282,
+        "mean": 0.05464240565693601,
+        "median": 0.050107954499999996,
+        "p95": 0.078084236,
+        "max": 0.155981928
+      },
+      "receipt_to_processing_seconds": {
+        "n": 296563,
+        "mean": 0.009253409699217369,
+        "median": 0.00886931,
+        "p95": 0.022220629000000002,
+        "max": 0.106138854
+      },
+      "monitor_output_age_s": {
+        "n": 1086,
+        "mean": 0.04764061981952118,
+        "median": 0.0500805,
+        "p95": 0.09029687,
+        "max": 0.100364
+      },
+      "published_during_source": 4282,
+      "max_monitor_queue": 12,
+      "protected_unchanged": 3002,
+      "claim": "live 0.2x full-usable428.75-second LEICA-2 capture; fixed-lag incremental without stationarity certificate"
+    },
+    "lifecycle": {
+      "passed": true,
+      "mode": "on",
+      "native_updates": 1937,
+      "source_injections": {
+        "g2k_injected": 1908,
+        "k2g_injected": 1919
+      },
+      "planned_retirements": 1891,
+      "prior_refresh_updates": 1891,
+      "max_cache_error": 2.5416877253638906e-09,
+      "observed_total_cost_increases": 0,
+      "imu_factor_cost": {
+        "median": 6.101741709914608,
+        "max": 5467.283080738627,
+        "last": 6.588544097073328
+      },
+      "stationarity_certified": false,
+      "obsolete_FL4q_executed": false,
+      "candidate_sha256": "be637ad745f73bf12596d3bf06754f56ed7bcadfdb8b4792b94c4fcfee62aad9",
+      "note": "CP-K9 equation/lifecycle gate; cost increases are observational."
+    },
+    "local": {
+      "passed": true,
+      "mode": "on",
+      "sources": {
+        "glim": {
+          "ids": 4278,
+          "versions": 206048,
+          "first": 4278,
+          "revised": 201770,
+          "provider_queries": 4278,
+          "local_joint_queries": 0
+        },
+        "kimera": {
+          "ids": 1911,
+          "versions": 47639,
+          "first": 0,
+          "revised": 0,
+          "provider_queries": 0,
+          "local_joint_queries": 47639
+        }
+      },
+      "all_payloads_exact": true,
+      "revision_provenance": "per-version native_local row plus pinned/tested provider route; no separate repeated matrix dump",
+      "limits": "native explicit information at corrected charts; not independent/calibrated likelihood"
+    }
+  },
+  "capture": {
+    "seconds": 2191.898651123047,
+    "phase": "full",
+    "mode": "on"
+  },
+  "glim_timing": {
+    "whole": {
+      "scan_ms": {
+        "n": 4278,
+        "median": 71.0030125,
+        "p95": 206.122437,
+        "max": 746.219743
+      },
+      "main_ms": {
+        "n": 4278,
+        "median": 32.972567999999995,
+        "p95": 50.854962,
+        "max": 75.76607
+      },
+      "post_callback_ms": {
+        "n": 4278,
+        "median": 26.071075,
+        "p95": 165.798388,
+        "max": 253.309306
+      },
+      "scans_over_500ms": 28
+    },
+    "after5s": {
+      "scan_ms": {
+        "n": 4235,
+        "median": 71.270629,
+        "p95": 206.867571,
+        "max": 746.219743
+      },
+      "main_ms": {
+        "n": 4235,
+        "median": 33.248104,
+        "p95": 50.877935,
+        "max": 75.76607
+      },
+      "post_callback_ms": {
+        "n": 4235,
+        "median": 26.139958,
+        "p95": 166.737894,
+        "max": 253.309306
+      },
+      "scans_over_500ms": 28
+    },
+    "last20s": {
+      "scan_ms": {
+        "n": 197,
+        "median": 52.155762,
+        "p95": 58.309255,
+        "max": 73.981422
+      },
+      "main_ms": {
+        "n": 197,
+        "median": 25.037451,
+        "p95": 29.682668,
+        "max": 43.398575
+      },
+      "post_callback_ms": {
+        "n": 197,
+        "median": 23.589666,
+        "p95": 27.175096,
+        "max": 31.986693
+      },
+      "scans_over_500ms": 0
+    }
+  },
+  "glim_internal_queue_max": 0,
+  "main_prepared_hits": 8836650,
+  "main_sync_calls": 0,
+  "kimera_timing_after5s": {
+    "optimize_ms": {
+      "n": 1914,
+      "median": 84.78995,
+      "p95": 115.964,
+      "max": 155.925
+    },
+    "smoother_ms": {
+      "n": 1914,
+      "median": 29.37855,
+      "p95": 43.351,
+      "max": 66.7141
+    },
+    "outgoing_ms": {
+      "n": 1914,
+      "median": 51.2192,
+      "p95": 66.6829,
+      "max": 101.023
+    },
+    "backend_ms": {
+      "n": 1914,
+      "median": 85.9277,
+      "p95": 117.38,
+      "max": 157.654
+    }
+  },
+  "source_coverage": {
+    "passed": true,
+    "requested_s": 428.75,
+    "imu_samples": 42875,
+    "imu_span_s": 428.7403712272644,
+    "coverage_contract": "native_keyframes_cpk22",
+    "kimera_gap_bound_s": 5.1499999999999995,
+    "native_glim": {
+      "rows": 4279,
+      "start_s": 1732549035.547153,
+      "end_s": 1732549463.346269,
+      "span_s": 427.799115896225,
+      "maximum_pose_gap_s": 0.10686612129211426,
+      "post_startup_max_gap_s": 0.10686612129211426,
+      "start_after_first_imu_s": 0.7276380062103271,
+      "tail_behind_last_imu_s": 0.21361732482910156,
+      "path_length_m": 207.1809779973412,
+      "gaps_over_1s": [],
+      "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+    },
+    "native_kimera": {
+      "rows": 1937,
+      "start_s": 1732549035.0150096,
+      "end_s": 1732549461.710638,
+      "span_s": 426.6956284046173,
+      "maximum_pose_gap_s": 5.0999462604522705,
+      "post_startup_max_gap_s": 5.0999462604522705,
+      "start_after_first_imu_s": 0.1954946517944336,
+      "tail_behind_last_imu_s": 1.8492481708526611,
+      "path_length_m": 198.13890963227925,
+      "gaps_over_1s": [
+        {
+          "before_index": 286,
+          "after_index": 287,
+          "start_s": 1732549092.8144822,
+          "end_s": 1732549093.9144728,
+          "gap_s": 1.0999906063079834
+        },
+        {
+          "before_index": 1928,
+          "after_index": 1929,
+          "start_s": 1732549425.3110552,
+          "end_s": 1732549430.4109938,
+          "gap_s": 5.099938631057739
+        },
+        {
+          "before_index": 1929,
+          "after_index": 1930,
+          "start_s": 1732549430.4109938,
+          "end_s": 1732549435.5109324,
+          "gap_s": 5.099938631057739
+        },
+        {
+          "before_index": 1930,
+          "after_index": 1931,
+          "start_s": 1732549435.5109324,
+          "end_s": 1732549440.6108732,
+          "gap_s": 5.099940776824951
+        },
+        {
+          "before_index": 1931,
+          "after_index": 1932,
+          "start_s": 1732549440.6108732,
+          "end_s": 1732549445.7108195,
+          "gap_s": 5.0999462604522705
+        },
+        {
+          "before_index": 1932,
+          "after_index": 1933,
+          "start_s": 1732549445.7108195,
+          "end_s": 1732549450.8107617,
+          "gap_s": 5.099942207336426
+        },
+        {
+          "before_index": 1933,
+          "after_index": 1934,
+          "start_s": 1732549450.8107617,
+          "end_s": 1732549455.910703,
+          "gap_s": 5.099941253662109
+        },
+        {
+          "before_index": 1935,
+          "after_index": 1936,
+          "start_s": 1732549456.6106951,
+          "end_s": 1732549461.710638,
+          "gap_s": 5.099942922592163
+        }
+      ],
+      "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+    },
+    "kimera_processing": {
+      "passed": true,
+      "logs": [
+        "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_rotation_weight_cpv6a_20261024/prepared/full_on_source/estimators.log",
+        "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_rotation_weight_cpv6a_20261024/prepared/full_on_source/ros_logs/fd6b96d8-cf9b-11f1-8daf-267a13c78027/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log",
+        "/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_rotation_weight_cpv6a_20261024/prepared/full_on_source/ros_logs/latest/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log"
+      ],
+      "frontend_processed": 4286,
+      "synchronized_input_pairs_reference": 4287,
+      "frontend_reference_after_startup": 4284,
+      "backend_processed": 1937,
+      "sequential_native_ids": true,
+      "gaps": [
+        {
+          "before_id": 286,
+          "after_id": 287,
+          "gap_s": 1.0999906063079834,
+          "wall_interval_s": 5.508434057235718,
+          "frontend_counter_first": 580,
+          "frontend_counter_last": 589,
+          "backend_before_ms": 67.5078,
+          "backend_after_ms": 74.2805,
+          "low_disparity_lines": 2
+        },
+        {
+          "before_id": 1928,
+          "after_id": 1929,
+          "gap_s": 5.099938631057739,
+          "wall_interval_s": 25.500638008117676,
+          "frontend_counter_first": 3906,
+          "frontend_counter_last": 3954,
+          "backend_before_ms": 104.401,
+          "backend_after_ms": 100.204,
+          "low_disparity_lines": 4
+        },
+        {
+          "before_id": 1929,
+          "after_id": 1930,
+          "gap_s": 5.099938631057739,
+          "wall_interval_s": 25.523380041122437,
+          "frontend_counter_first": 3956,
+          "frontend_counter_last": 4005,
+          "backend_before_ms": 100.204,
+          "backend_after_ms": 115.574,
+          "low_disparity_lines": 4
+        },
+        {
+          "before_id": 1930,
+          "after_id": 1931,
+          "gap_s": 5.099940776824951,
+          "wall_interval_s": 25.45661497116089,
+          "frontend_counter_first": 4008,
+          "frontend_counter_last": 4056,
+          "backend_before_ms": 115.574,
+          "backend_after_ms": 88.6623,
+          "low_disparity_lines": 4
+        },
+        {
+          "before_id": 1931,
+          "after_id": 1932,
+          "gap_s": 5.0999462604522705,
+          "wall_interval_s": 25.49288010597229,
+          "frontend_counter_first": 4058,
+          "frontend_counter_last": 4107,
+          "backend_before_ms": 88.6623,
+          "backend_after_ms": 84.7067,
+          "low_disparity_lines": 4
+        },
+        {
+          "before_id": 1932,
+          "after_id": 1933,
+          "gap_s": 5.099942207336426,
+          "wall_interval_s": 25.502824068069458,
+          "frontend_counter_first": 4110,
+          "frontend_counter_last": 4158,
+          "backend_before_ms": 84.7067,
+          "backend_after_ms": 81.7215,
+          "low_disparity_lines": 4
+        },
+        {
+          "before_id": 1933,
+          "after_id": 1934,
+          "gap_s": 5.099941253662109,
+          "wall_interval_s": 25.49403691291809,
+          "frontend_counter_first": 4160,
+          "frontend_counter_last": 4209,
+          "backend_before_ms": 81.7215,
+          "backend_after_ms": 76.5537,
+          "low_disparity_lines": 4
+        },
+        {
+          "before_id": 1935,
+          "after_id": 1936,
+          "gap_s": 5.099942922592163,
+          "wall_interval_s": 25.476284980773926,
+          "frontend_counter_first": 4218,
+          "frontend_counter_last": 4267,
+          "backend_before_ms": 85.2388,
+          "backend_after_ms": 69.5838,
+          "low_disparity_lines": 4
+        }
+      ],
+      "scope": "Native counters, not a new per-image receipt or branch-decision audit."
+    }
+  }
+}
+
+SOURCE EXPORT COVARIANCE SUMMARY: no direct rescale; optimizer states may change. G2K received factor rotation variance10; see weight_validation.json.
+{
+  "off": {
+    "kimera_front": {
+      "versions": 47605,
+      "stable_ids": 1909,
+      "revised_ids": 1909,
+      "rotation_trace_rad2": {
+        "n": 47605,
+        "mean": 2.203678433487363e-08,
+        "median": 1.966692825412969e-08,
+        "p95": 4.389119787237582e-08,
+        "max": 1.1999833070560525e-05
+      },
+      "translation_trace_m2": {
+        "n": 47605,
+        "mean": 1.4116547634304993e-06,
+        "median": 1.0125803428102625e-06,
+        "p95": 3.99529238793427e-06,
+        "max": 0.002357276150484848
+      },
+      "min_eigenvalue": 7.128404797136576e-11,
+      "max_eigenvalue": 0.001176617990839093,
+      "max_symmetry_error": 0.0,
+      "first_last_rotation_trace_ratio": {
+        "n": 1909,
+        "mean": 0.6037499090663027,
+        "median": 0.5821291252062262,
+        "p95": 0.9721434849206375,
+        "max": 1.5502018284163939
+      },
+      "first_last_translation_trace_ratio": {
+        "n": 1909,
+        "mean": 0.6394265849579875,
+        "median": 0.5262892132064745,
+        "p95": 1.3285232442296526,
+        "max": 5.72506242133956
+      }
+    },
+    "glim_velodyne": {
+      "versions": 205919,
+      "stable_ids": 4278,
+      "revised_ids": 4277,
+      "rotation_trace_rad2": {
+        "n": 205919,
+        "mean": 1.346443516328178e-07,
+        "median": 6.672325138625635e-08,
+        "p95": 5.00882158208059e-07,
+        "max": 3.1722979847120366e-06
+      },
+      "translation_trace_m2": {
+        "n": 205919,
+        "mean": 2.836439867885131e-06,
+        "median": 2.4936928467107267e-06,
+        "p95": 4.956656925353608e-06,
+        "max": 1.563611970409562e-05
+      },
+      "min_eigenvalue": 6.136513181430948e-10,
+      "max_eigenvalue": 8.900798941085855e-06,
+      "max_symmetry_error": 0.0,
+      "first_last_rotation_trace_ratio": {
+        "n": 4277,
+        "mean": 0.7731065053568204,
+        "median": 0.788159145132066,
+        "p95": 0.841810770340353,
+        "max": 1.2522940170244272
+      },
+      "first_last_translation_trace_ratio": {
+        "n": 4277,
+        "mean": 0.5579516031768461,
+        "median": 0.5699448724228845,
+        "p95": 0.6237659903528217,
+        "max": 0.6599765567328948
+      }
+    }
+  },
+  "baseline_on": {
+    "kimera_front": {
+      "versions": 47563,
+      "stable_ids": 1908,
+      "revised_ids": 1908,
+      "rotation_trace_rad2": {
+        "n": 47563,
+        "mean": 2.7102959164359863e-08,
+        "median": 2.485639809147152e-08,
+        "p95": 5.2266695410490304e-08,
+        "max": 1.1999833070560525e-05
+      },
+      "translation_trace_m2": {
+        "n": 47563,
+        "mean": 2.7931694316196194e-06,
+        "median": 1.8486078651281726e-06,
+        "p95": 7.4829741288542144e-06,
+        "max": 0.002357276150484848
+      },
+      "min_eigenvalue": 5.699543310040153e-10,
+      "max_eigenvalue": 0.001176617990839093,
+      "max_symmetry_error": 0.0,
+      "first_last_rotation_trace_ratio": {
+        "n": 1908,
+        "mean": 0.5217326705035683,
+        "median": 0.5048524620124835,
+        "p95": 0.7668588631120042,
+        "max": 4.637222795961906
+      },
+      "first_last_translation_trace_ratio": {
+        "n": 1908,
+        "mean": 0.42752166138480585,
+        "median": 0.3251763066637662,
+        "p95": 0.9562898584765025,
+        "max": 19.288064721625187
+      }
+    },
+    "glim_velodyne": {
+      "versions": 206031,
+      "stable_ids": 4278,
+      "revised_ids": 4277,
+      "rotation_trace_rad2": {
+        "n": 206031,
+        "mean": 1.3141384025947797e-07,
+        "median": 6.649932974394723e-08,
+        "p95": 4.6714337823627133e-07,
+        "max": 2.965698259248307e-06
+      },
+      "translation_trace_m2": {
+        "n": 206031,
+        "mean": 2.7695372438717875e-06,
+        "median": 2.493562409948062e-06,
+        "p95": 4.691894840548331e-06,
+        "max": 1.4652899367158564e-05
+      },
+      "min_eigenvalue": 6.144250450510339e-10,
+      "max_eigenvalue": 8.73067857385774e-06,
+      "max_symmetry_error": 0.0,
+      "first_last_rotation_trace_ratio": {
+        "n": 4277,
+        "mean": 0.7817219042898109,
+        "median": 0.7943673317693226,
+        "p95": 0.8433477071780308,
+        "max": 1.0406350757587104
+      },
+      "first_last_translation_trace_ratio": {
+        "n": 4277,
+        "mean": 0.5638966264810665,
+        "median": 0.5732527782904873,
+        "p95": 0.6249969894762373,
+        "max": 0.6667515064433658
+      }
+    }
+  },
+  "on": {
+    "kimera_front": {
+      "versions": 47639,
+      "stable_ids": 1911,
+      "revised_ids": 1911,
+      "rotation_trace_rad2": {
+        "n": 47639,
+        "mean": 2.4170071942103075e-08,
+        "median": 2.2072193769903754e-08,
+        "p95": 4.69340498167716e-08,
+        "max": 1.1999833070560525e-05
+      },
+      "translation_trace_m2": {
+        "n": 47639,
+        "mean": 2.3754766467338623e-06,
+        "median": 1.7301727449148758e-06,
+        "p95": 6.092300357038509e-06,
+        "max": 0.002357276150484848
+      },
+      "min_eigenvalue": 6.90722792377541e-10,
+      "max_eigenvalue": 0.001176617990839093,
+      "max_symmetry_error": 0.0,
+      "first_last_rotation_trace_ratio": {
+        "n": 1911,
+        "mean": 0.5076695025879709,
+        "median": 0.4833920431325768,
+        "p95": 0.7355094688918706,
+        "max": 4.0220385943807475
+      },
+      "first_last_translation_trace_ratio": {
+        "n": 1911,
+        "mean": 0.4738441803590495,
+        "median": 0.3495505742743341,
+        "p95": 1.0918099216500923,
+        "max": 16.64470603283541
+      }
+    },
+    "glim_velodyne": {
+      "versions": 206048,
+      "stable_ids": 4278,
+      "revised_ids": 4277,
+      "rotation_trace_rad2": {
+        "n": 206048,
+        "mean": 1.3282362705579117e-07,
+        "median": 6.723064700284065e-08,
+        "p95": 4.795522489186689e-07,
+        "max": 2.9649868230457323e-06
+      },
+      "translation_trace_m2": {
+        "n": 206048,
+        "mean": 2.8109799938099007e-06,
+        "median": 2.5574377767998126e-06,
+        "p95": 4.702062646773846e-06,
+        "max": 1.4676083510775158e-05
+      },
+      "min_eigenvalue": 5.806840323563568e-10,
+      "max_eigenvalue": 8.649381459048127e-06,
+      "max_symmetry_error": 0.0,
+      "first_last_rotation_trace_ratio": {
+        "n": 4277,
+        "mean": 0.7819258974067901,
+        "median": 0.7942545409491685,
+        "p95": 0.8456936134931223,
+        "max": 1.380202845325713
+      },
+      "first_last_translation_trace_ratio": {
+        "n": 4277,
+        "mean": 0.5626803939915783,
+        "median": 0.5710067372892182,
+        "p95": 0.6262020223311341,
+        "max": 0.6666908093998841
+      }
+    }
+  }
+}
+
+LIMITS: DELAYED finalized is not ONLINE or full-history. Startup/tail gaps are
+reported in source_coverage, including sparse stationary-tail keyframes. Common
+mask segments exclude unsupported interpolation; its envelope is not dense coverage.
+Mean-only source-to-source alignment covariance approximation unchanged.
+Native sensors both still use CPT7; no central IMU/GNSS factor in7s WNOA receiver.
+Stable-ID downstream revisions replace rather than accumulate. Source CBS temporary/classic.
+No saved-journal replay or exhaustive same-input checker requested/run. Existing K16
+incomplete preservation gates remain incomplete; no default promotion or exhaustive preservation claim.
+Known post-absorption revisions are explicitly expired under CP-K19; counts and
+forgone mean/covariance changes are included in checks.receiver.expiry above.
+These changes are not GT errors; the late corrections were not incorporated.
+Raw source means,covariances,revisions,events,profiles,hashes and timing retained under:
+/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_rotation_weight_cpv6a_20261024/prepared

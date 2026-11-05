@@ -1,0 +1,1469 @@
+{
+  "passed": true,
+  "validation_contract": "finite_recording_eof_cpk24a",
+  "original_strict_on_gate_passed": false,
+  "cases": {
+    "off": {
+      "checks": {
+        "receiver": {
+          "passed": true,
+          "validation_contract": "finite_recording_eof_cpk24a",
+          "terminal_boundary": {
+            "passed": true,
+            "contract": "finite_recording_terminal_cell_only",
+            "original_zero_unsupported_gate_passed": true,
+            "excluded_versions": 0,
+            "final_partial_cell_ns": 30291000,
+            "details": [],
+            "state_clock_not_extended": true,
+            "captured_outputs_unchanged": true,
+            "omission_not_recovered": true
+          },
+          "source_coverage": {
+            "passed": true,
+            "requested_s": 355.02,
+            "imu_samples": 35502,
+            "imu_span_s": 355.01029086112976,
+            "coverage_contract": "native_keyframes_cpk22",
+            "kimera_gap_bound_s": 5.1499999999999995,
+            "native_glim": {
+              "rows": 3543,
+              "start_s": 1730638817.279943,
+              "end_s": 1730639171.479259,
+              "span_s": 354.1993160247803,
+              "maximum_pose_gap_s": 0.10129117965698242,
+              "post_startup_max_gap_s": 0.10129117965698242,
+              "start_after_first_imu_s": 0.7110128402709961,
+              "tail_behind_last_imu_s": 0.09996199607849121,
+              "path_length_m": 186.10243308745265,
+              "gaps_over_1s": [],
+              "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+            },
+            "native_kimera": {
+              "rows": 1761,
+              "start_s": 1730638816.7634923,
+              "end_s": 1730639171.4606757,
+              "span_s": 354.6971833705902,
+              "maximum_pose_gap_s": 0.7999942302703857,
+              "post_startup_max_gap_s": 0.7999942302703857,
+              "start_after_first_imu_s": 0.19456219673156738,
+              "tail_behind_last_imu_s": 0.1185452938079834,
+              "path_length_m": 175.26912770008352,
+              "gaps_over_1s": [],
+              "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+            },
+            "kimera_processing": {
+              "passed": true,
+              "logs": [
+                "/workspace/cbs_gtsam4.3/runs/gnssfgo_eig2_full_cpk24_20261021/prepared/full_off_source/estimators.log",
+                "/workspace/cbs_gtsam4.3/runs/gnssfgo_eig2_full_cpk24_20261021/prepared/full_off_source/ros_logs/5f7fc1ec-cd43-11f1-bdfa-96bc9a326793/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log",
+                "/workspace/cbs_gtsam4.3/runs/gnssfgo_eig2_full_cpk24_20261021/prepared/full_off_source/ros_logs/latest/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log"
+              ],
+              "frontend_processed": 3549,
+              "synchronized_input_pairs_reference": 3550,
+              "frontend_reference_after_startup": 3547,
+              "backend_processed": 1761,
+              "sequential_native_ids": true,
+              "gaps": [],
+              "scope": "Native counters, not a new per-image receipt or branch-decision audit."
+            }
+          },
+          "transport": {
+            "imu": 35502,
+            "duplicate_imu": 0,
+            "imu_clock_lag_events": 34575,
+            "max_imu_clock_lag_ns": 2115132,
+            "belief_clock_lag_events": 0,
+            "max_belief_clock_lag_ns": 0,
+            "beliefs": 213710,
+            "duplicates": 0,
+            "published_poses": 3545,
+            "max_queue": 49,
+            "sources": {
+              "glim_hesai": 170366,
+              "kimera_front": 43344
+            }
+          },
+          "summary": {
+            "complete": true,
+            "model": "source_wnoa_fixed_lag",
+            "lag_seconds": 7,
+            "stationarity": "not_checked_incremental_policy",
+            "events": 249213,
+            "received": 213710,
+            "absorbed_revision_policy": "seal_at_absorption",
+            "expired": 0,
+            "expired_duplicate": 0,
+            "expired_stale": 0,
+            "duplicate": 0,
+            "stale": 0,
+            "inserted": 5283,
+            "replaced": 208377,
+            "excluded": 50,
+            "unsupported_end": 0,
+            "absorbed": 5186,
+            "active": 97,
+            "pending_at_end": 0,
+            "publications": 3545,
+            "finalized": 3545,
+            "retained_supports": 71,
+            "peak_slots": 175
+          },
+          "actions": {
+            "before_initialization": 50,
+            "insert": 5283,
+            "replace": 208377
+          },
+          "expiry": {
+            "passed": true,
+            "policy": "seal_at_absorption",
+            "expired": {
+              "versions": 0,
+              "ids": 0,
+              "changes": {
+                "endpoint_age_s": {
+                  "n": 0
+                },
+                "since_absorption_s": {
+                  "n": 0
+                },
+                "version_jump": {
+                  "n": 0
+                },
+                "translation_change_m": {
+                  "n": 0
+                },
+                "rotation_change_rad": {
+                  "n": 0
+                },
+                "rotation_trace_ratio": {
+                  "n": 0
+                },
+                "translation_trace_ratio": {
+                  "n": 0
+                },
+                "full_covariance_relative_frobenius": {
+                  "n": 0
+                }
+              }
+            },
+            "by_source": {
+              "kimera_front": {
+                "received_versions": 43344,
+                "received_ids": 1744,
+                "expired_fraction": 0.0,
+                "versions": 0,
+                "ids": 0,
+                "changes": {
+                  "endpoint_age_s": {
+                    "n": 0
+                  },
+                  "since_absorption_s": {
+                    "n": 0
+                  },
+                  "version_jump": {
+                    "n": 0
+                  },
+                  "translation_change_m": {
+                    "n": 0
+                  },
+                  "rotation_change_rad": {
+                    "n": 0
+                  },
+                  "rotation_trace_ratio": {
+                    "n": 0
+                  },
+                  "translation_trace_ratio": {
+                    "n": 0
+                  },
+                  "full_covariance_relative_frobenius": {
+                    "n": 0
+                  }
+                }
+              },
+              "glim_hesai": {
+                "received_versions": 170366,
+                "received_ids": 3541,
+                "expired_fraction": 0.0,
+                "versions": 0,
+                "ids": 0,
+                "changes": {
+                  "endpoint_age_s": {
+                    "n": 0
+                  },
+                  "since_absorption_s": {
+                    "n": 0
+                  },
+                  "version_jump": {
+                    "n": 0
+                  },
+                  "translation_change_m": {
+                    "n": 0
+                  },
+                  "rotation_change_rad": {
+                    "n": 0
+                  },
+                  "rotation_trace_ratio": {
+                    "n": 0
+                  },
+                  "translation_trace_ratio": {
+                    "n": 0
+                  },
+                  "full_covariance_relative_frobenius": {
+                    "n": 0
+                  }
+                }
+              }
+            },
+            "reference_rows_not_receipts": 0,
+            "caveat": "Changes vs last accepted belief, NOT GT errors or proof that omitted corrections are harmless."
+          },
+          "mean_log_roundtrip_error": 3.5985103785662886e-14,
+          "covariance_payload_error": 0.0,
+          "online_path_m": 216.12065567018675,
+          "finalized_path_m": 185.24494102332736,
+          "fused_span_s": 354.40000000000003,
+          "support_cycle_seconds": {
+            "n": 3545,
+            "mean": 0.05330807679379408,
+            "median": 0.04909430000000001,
+            "p95": 0.077996047,
+            "max": 0.14015149500000007
+          },
+          "receipt_to_processing_seconds": {
+            "n": 249213,
+            "mean": 0.010483020170797672,
+            "median": 0.010481540000000001,
+            "p95": 0.023957966,
+            "max": 0.07288122100000001
+          },
+          "monitor_output_age_s": {
+            "n": 901,
+            "mean": 0.048169267295227525,
+            "median": 0.050209,
+            "p95": 0.090213,
+            "max": 0.100291
+          },
+          "published_during_source": 3545,
+          "max_monitor_queue": 8,
+          "protected_unchanged": 2464,
+          "claim": "live 0.2x full355.02-second EIG-2 capture; fixed-lag incremental without stationarity certificate"
+        },
+        "lifecycle": {
+          "passed": true,
+          "mode": "off",
+          "native_updates": 1761,
+          "source_injections": {
+            "g2k_injected": 0,
+            "k2g_injected": 0
+          },
+          "planned_retirements": 0,
+          "prior_refresh_updates": 0,
+          "max_cache_error": 0,
+          "observed_total_cost_increases": 166,
+          "imu_factor_cost": {
+            "median": 305.40705741224787,
+            "max": 4221455914.9639416,
+            "last": 21.123181322484026
+          },
+          "stationarity_certified": false,
+          "obsolete_FL4q_executed": false,
+          "candidate_sha256": "be637ad745f73bf12596d3bf06754f56ed7bcadfdb8b4792b94c4fcfee62aad9",
+          "note": "CP-K9 equation/lifecycle gate; cost increases are observational."
+        },
+        "local": {
+          "passed": true,
+          "mode": "off",
+          "sources": {
+            "glim": {
+              "ids": 3541,
+              "versions": 170366,
+              "first": 3541,
+              "revised": 166825,
+              "provider_queries": 3541,
+              "local_joint_queries": 0
+            },
+            "kimera": {
+              "ids": 1744,
+              "versions": 43344,
+              "first": 0,
+              "revised": 0,
+              "provider_queries": 0,
+              "local_joint_queries": 43344
+            }
+          },
+          "all_payloads_exact": true,
+          "revision_provenance": "per-version native_local row plus pinned/tested provider route; no separate repeated matrix dump",
+          "limits": "native explicit information at corrected charts; not independent/calibrated likelihood"
+        }
+      },
+      "capture": {
+        "seconds": 1821.3280272483826,
+        "phase": "full",
+        "mode": "off"
+      },
+      "glim_timing": {
+        "whole": {
+          "scan_ms": {
+            "n": 3542,
+            "median": 55.6094425,
+            "p95": 142.748254,
+            "max": 255.717601
+          },
+          "main_ms": {
+            "n": 3542,
+            "median": 24.3589265,
+            "p95": 41.979057,
+            "max": 67.906791
+          },
+          "post_callback_ms": {
+            "n": 3542,
+            "median": 24.3001455,
+            "p95": 116.077303,
+            "max": 231.040283
+          },
+          "scans_over_500ms": 0
+        },
+        "after5s": {
+          "scan_ms": {
+            "n": 3500,
+            "median": 55.8387215,
+            "p95": 143.212927,
+            "max": 255.717601
+          },
+          "main_ms": {
+            "n": 3500,
+            "median": 24.561914,
+            "p95": 42.03817,
+            "max": 67.906791
+          },
+          "post_callback_ms": {
+            "n": 3500,
+            "median": 24.338295000000002,
+            "p95": 119.041694,
+            "max": 231.040283
+          },
+          "scans_over_500ms": 0
+        },
+        "last20s": {
+          "scan_ms": {
+            "n": 199,
+            "median": 57.500705,
+            "p95": 66.797578,
+            "max": 71.691268
+          },
+          "main_ms": {
+            "n": 199,
+            "median": 29.248463,
+            "p95": 33.588438,
+            "max": 35.349216
+          },
+          "post_callback_ms": {
+            "n": 199,
+            "median": 23.959498,
+            "p95": 28.429433,
+            "max": 34.113212
+          },
+          "scans_over_500ms": 0
+        }
+      },
+      "glim_internal_queue_max": 1,
+      "main_prepared_hits": 4691886,
+      "main_sync_calls": 0,
+      "kimera_timing_after5s": {
+        "optimize_ms": {
+          "n": 1737,
+          "median": 87.3982,
+          "p95": 109.476,
+          "max": 158.931
+        },
+        "smoother_ms": {
+          "n": 1737,
+          "median": 27.5778,
+          "p95": 38.5104,
+          "max": 47.7488
+        },
+        "outgoing_ms": {
+          "n": 1737,
+          "median": 53.631,
+          "p95": 65.5688,
+          "max": 109.649
+        },
+        "backend_ms": {
+          "n": 1737,
+          "median": 88.4566,
+          "p95": 110.759,
+          "max": 160.233
+        }
+      },
+      "source_coverage": {
+        "passed": true,
+        "requested_s": 355.02,
+        "imu_samples": 35502,
+        "imu_span_s": 355.01029086112976,
+        "coverage_contract": "native_keyframes_cpk22",
+        "kimera_gap_bound_s": 5.1499999999999995,
+        "native_glim": {
+          "rows": 3543,
+          "start_s": 1730638817.279943,
+          "end_s": 1730639171.479259,
+          "span_s": 354.1993160247803,
+          "maximum_pose_gap_s": 0.10129117965698242,
+          "post_startup_max_gap_s": 0.10129117965698242,
+          "start_after_first_imu_s": 0.7110128402709961,
+          "tail_behind_last_imu_s": 0.09996199607849121,
+          "path_length_m": 186.10243308745265,
+          "gaps_over_1s": [],
+          "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+        },
+        "native_kimera": {
+          "rows": 1761,
+          "start_s": 1730638816.7634923,
+          "end_s": 1730639171.4606757,
+          "span_s": 354.6971833705902,
+          "maximum_pose_gap_s": 0.7999942302703857,
+          "post_startup_max_gap_s": 0.7999942302703857,
+          "start_after_first_imu_s": 0.19456219673156738,
+          "tail_behind_last_imu_s": 0.1185452938079834,
+          "path_length_m": 175.26912770008352,
+          "gaps_over_1s": [],
+          "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+        },
+        "kimera_processing": {
+          "passed": true,
+          "logs": [
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_eig2_full_cpk24_20261021/prepared/full_off_source/estimators.log",
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_eig2_full_cpk24_20261021/prepared/full_off_source/ros_logs/5f7fc1ec-cd43-11f1-bdfa-96bc9a326793/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log",
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_eig2_full_cpk24_20261021/prepared/full_off_source/ros_logs/latest/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log"
+          ],
+          "frontend_processed": 3549,
+          "synchronized_input_pairs_reference": 3550,
+          "frontend_reference_after_startup": 3547,
+          "backend_processed": 1761,
+          "sequential_native_ids": true,
+          "gaps": [],
+          "scope": "Native counters, not a new per-image receipt or branch-decision audit."
+        }
+      }
+    },
+    "on": {
+      "checks": {
+        "receiver": {
+          "passed": true,
+          "validation_contract": "finite_recording_eof_cpk24a",
+          "terminal_boundary": {
+            "passed": true,
+            "contract": "finite_recording_terminal_cell_only",
+            "original_zero_unsupported_gate_passed": false,
+            "excluded_versions": 1,
+            "final_partial_cell_ns": 30291000,
+            "details": [
+              {
+                "last_support_ns": 1730639171548930000,
+                "next_required_support_ns": 1730639171648930000,
+                "last_clock_ns": 1730639171579221000,
+                "from_ns": 1730639171360676500,
+                "to_ns": 1730639171560675100,
+                "end_after_last_support_ms": 11.745099999999999,
+                "missing_clock_ms": 69.709,
+                "source": "kimera_front",
+                "session": "eig2_cpk24_full_on_20261021",
+                "from_id": "1759",
+                "to_id": "1760",
+                "revision": "0",
+                "source_ordinal": "5284",
+                "arrival_ns": 1730639171579221000,
+                "classified_event": 249180
+              }
+            ],
+            "state_clock_not_extended": true,
+            "captured_outputs_unchanged": true,
+            "omission_not_recovered": true
+          },
+          "source_coverage": {
+            "passed": true,
+            "requested_s": 355.02,
+            "imu_samples": 35502,
+            "imu_span_s": 355.01029086112976,
+            "coverage_contract": "native_keyframes_cpk22",
+            "kimera_gap_bound_s": 5.1499999999999995,
+            "native_glim": {
+              "rows": 3543,
+              "start_s": 1730638817.279943,
+              "end_s": 1730639171.479259,
+              "span_s": 354.1993160247803,
+              "maximum_pose_gap_s": 0.10129117965698242,
+              "post_startup_max_gap_s": 0.10129117965698242,
+              "start_after_first_imu_s": 0.7110128402709961,
+              "tail_behind_last_imu_s": 0.09996199607849121,
+              "path_length_m": 186.29830697670081,
+              "gaps_over_1s": [],
+              "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+            },
+            "native_kimera": {
+              "rows": 1761,
+              "start_s": 1730638816.7634923,
+              "end_s": 1730639171.5606751,
+              "span_s": 354.7971827983856,
+              "maximum_pose_gap_s": 0.9999926090240479,
+              "post_startup_max_gap_s": 0.9999926090240479,
+              "start_after_first_imu_s": 0.19456219673156738,
+              "tail_behind_last_imu_s": 0.018545866012573242,
+              "path_length_m": 183.21572053083747,
+              "gaps_over_1s": [],
+              "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+            },
+            "kimera_processing": {
+              "passed": true,
+              "logs": [
+                "/workspace/cbs_gtsam4.3/runs/gnssfgo_eig2_full_cpk24_20261021/prepared/full_on_source/estimators.log",
+                "/workspace/cbs_gtsam4.3/runs/gnssfgo_eig2_full_cpk24_20261021/prepared/full_on_source/ros_logs/b6da4846-cd47-11f1-8547-96bc9a326793/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log",
+                "/workspace/cbs_gtsam4.3/runs/gnssfgo_eig2_full_cpk24_20261021/prepared/full_on_source/ros_logs/latest/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log"
+              ],
+              "frontend_processed": 3549,
+              "synchronized_input_pairs_reference": 3550,
+              "frontend_reference_after_startup": 3547,
+              "backend_processed": 1761,
+              "sequential_native_ids": true,
+              "gaps": [],
+              "scope": "Native counters, not a new per-image receipt or branch-decision audit."
+            }
+          },
+          "transport": {
+            "imu": 35502,
+            "duplicate_imu": 0,
+            "imu_clock_lag_events": 34570,
+            "max_imu_clock_lag_ns": 2277559,
+            "belief_clock_lag_events": 0,
+            "max_belief_clock_lag_ns": 0,
+            "beliefs": 213677,
+            "duplicates": 0,
+            "published_poses": 3545,
+            "max_queue": 46,
+            "sources": {
+              "glim_hesai": 170354,
+              "kimera_front": 43323
+            }
+          },
+          "summary": {
+            "complete": true,
+            "model": "source_wnoa_fixed_lag",
+            "lag_seconds": 7,
+            "stationarity": "not_checked_incremental_policy",
+            "events": 249180,
+            "received": 213677,
+            "absorbed_revision_policy": "seal_at_absorption",
+            "expired": 0,
+            "expired_duplicate": 0,
+            "expired_stale": 0,
+            "duplicate": 0,
+            "stale": 0,
+            "inserted": 5282,
+            "replaced": 208344,
+            "excluded": 50,
+            "unsupported_end": 1,
+            "absorbed": 5185,
+            "active": 97,
+            "pending_at_end": 0,
+            "publications": 3545,
+            "finalized": 3545,
+            "retained_supports": 71,
+            "peak_slots": 175
+          },
+          "actions": {
+            "before_initialization": 50,
+            "insert": 5282,
+            "replace": 208344,
+            "unsupported_at_end": 1
+          },
+          "expiry": {
+            "passed": true,
+            "policy": "seal_at_absorption",
+            "expired": {
+              "versions": 0,
+              "ids": 0,
+              "changes": {
+                "endpoint_age_s": {
+                  "n": 0
+                },
+                "since_absorption_s": {
+                  "n": 0
+                },
+                "version_jump": {
+                  "n": 0
+                },
+                "translation_change_m": {
+                  "n": 0
+                },
+                "rotation_change_rad": {
+                  "n": 0
+                },
+                "rotation_trace_ratio": {
+                  "n": 0
+                },
+                "translation_trace_ratio": {
+                  "n": 0
+                },
+                "full_covariance_relative_frobenius": {
+                  "n": 0
+                }
+              }
+            },
+            "by_source": {
+              "kimera_front": {
+                "received_versions": 43323,
+                "received_ids": 1744,
+                "expired_fraction": 0.0,
+                "versions": 0,
+                "ids": 0,
+                "changes": {
+                  "endpoint_age_s": {
+                    "n": 0
+                  },
+                  "since_absorption_s": {
+                    "n": 0
+                  },
+                  "version_jump": {
+                    "n": 0
+                  },
+                  "translation_change_m": {
+                    "n": 0
+                  },
+                  "rotation_change_rad": {
+                    "n": 0
+                  },
+                  "rotation_trace_ratio": {
+                    "n": 0
+                  },
+                  "translation_trace_ratio": {
+                    "n": 0
+                  },
+                  "full_covariance_relative_frobenius": {
+                    "n": 0
+                  }
+                }
+              },
+              "glim_hesai": {
+                "received_versions": 170354,
+                "received_ids": 3541,
+                "expired_fraction": 0.0,
+                "versions": 0,
+                "ids": 0,
+                "changes": {
+                  "endpoint_age_s": {
+                    "n": 0
+                  },
+                  "since_absorption_s": {
+                    "n": 0
+                  },
+                  "version_jump": {
+                    "n": 0
+                  },
+                  "translation_change_m": {
+                    "n": 0
+                  },
+                  "rotation_change_rad": {
+                    "n": 0
+                  },
+                  "rotation_trace_ratio": {
+                    "n": 0
+                  },
+                  "translation_trace_ratio": {
+                    "n": 0
+                  },
+                  "full_covariance_relative_frobenius": {
+                    "n": 0
+                  }
+                }
+              }
+            },
+            "reference_rows_not_receipts": 0,
+            "caveat": "Changes vs last accepted belief, NOT GT errors or proof that omitted corrections are harmless."
+          },
+          "mean_log_roundtrip_error": 5.393775703854686e-14,
+          "covariance_payload_error": 0.0,
+          "online_path_m": 210.34259073469983,
+          "finalized_path_m": 185.4694526574932,
+          "fused_span_s": 354.40000000000003,
+          "support_cycle_seconds": {
+            "n": 3545,
+            "mean": 0.05397687260423131,
+            "median": 0.05041572200000001,
+            "p95": 0.07813821500000002,
+            "max": 0.12423026700000005
+          },
+          "receipt_to_processing_seconds": {
+            "n": 249180,
+            "mean": 0.01075453514819809,
+            "median": 0.010899846500000001,
+            "p95": 0.023982458,
+            "max": 0.076157915
+          },
+          "monitor_output_age_s": {
+            "n": 902,
+            "mean": 0.04723561399113082,
+            "median": 0.050053692999999996,
+            "p95": 0.090202,
+            "max": 0.100279
+          },
+          "published_during_source": 3545,
+          "max_monitor_queue": 23,
+          "protected_unchanged": 2464,
+          "claim": "live 0.2x full355.02-second EIG-2 capture; fixed-lag incremental without stationarity certificate"
+        },
+        "lifecycle": {
+          "passed": true,
+          "mode": "on",
+          "native_updates": 1761,
+          "source_injections": {
+            "g2k_injected": 1740,
+            "k2g_injected": 1746
+          },
+          "planned_retirements": 1717,
+          "prior_refresh_updates": 1717,
+          "max_cache_error": 7.053902765502596e-09,
+          "observed_total_cost_increases": 12,
+          "imu_factor_cost": {
+            "median": 1159.640766292168,
+            "max": 231642.96259077665,
+            "last": 90.33544086441597
+          },
+          "stationarity_certified": false,
+          "obsolete_FL4q_executed": false,
+          "candidate_sha256": "be637ad745f73bf12596d3bf06754f56ed7bcadfdb8b4792b94c4fcfee62aad9",
+          "note": "CP-K9 equation/lifecycle gate; cost increases are observational."
+        },
+        "local": {
+          "passed": true,
+          "mode": "on",
+          "sources": {
+            "glim": {
+              "ids": 3541,
+              "versions": 170354,
+              "first": 3541,
+              "revised": 166813,
+              "provider_queries": 3541,
+              "local_joint_queries": 0
+            },
+            "kimera": {
+              "ids": 1744,
+              "versions": 43323,
+              "first": 0,
+              "revised": 0,
+              "provider_queries": 0,
+              "local_joint_queries": 43323
+            }
+          },
+          "all_payloads_exact": true,
+          "revision_provenance": "per-version native_local row plus pinned/tested provider route; no separate repeated matrix dump",
+          "limits": "native explicit information at corrected charts; not independent/calibrated likelihood"
+        }
+      },
+      "capture": {
+        "seconds": 1823.3957929611206,
+        "phase": "full",
+        "mode": "on"
+      },
+      "glim_timing": {
+        "whole": {
+          "scan_ms": {
+            "n": 3542,
+            "median": 57.4827885,
+            "p95": 159.518213,
+            "max": 731.372899
+          },
+          "main_ms": {
+            "n": 3542,
+            "median": 25.209424,
+            "p95": 43.547509,
+            "max": 63.547286
+          },
+          "post_callback_ms": {
+            "n": 3542,
+            "median": 24.4018035,
+            "p95": 116.580447,
+            "max": 231.518179
+          },
+          "scans_over_500ms": 17
+        },
+        "after5s": {
+          "scan_ms": {
+            "n": 3500,
+            "median": 57.676063,
+            "p95": 159.962225,
+            "max": 731.372899
+          },
+          "main_ms": {
+            "n": 3500,
+            "median": 25.44374,
+            "p95": 43.60741,
+            "max": 63.547286
+          },
+          "post_callback_ms": {
+            "n": 3500,
+            "median": 24.4321035,
+            "p95": 116.853967,
+            "max": 231.518179
+          },
+          "scans_over_500ms": 17
+        },
+        "last20s": {
+          "scan_ms": {
+            "n": 199,
+            "median": 61.079765,
+            "p95": 79.303145,
+            "max": 117.819489
+          },
+          "main_ms": {
+            "n": 199,
+            "median": 31.072437,
+            "p95": 49.533388,
+            "max": 55.62235
+          },
+          "post_callback_ms": {
+            "n": 199,
+            "median": 24.680208,
+            "p95": 28.491286,
+            "max": 58.152414
+          },
+          "scans_over_500ms": 0
+        }
+      },
+      "glim_internal_queue_max": 1,
+      "main_prepared_hits": 4943020,
+      "main_sync_calls": 0,
+      "kimera_timing_after5s": {
+        "optimize_ms": {
+          "n": 1737,
+          "median": 91.0354,
+          "p95": 121.168,
+          "max": 142.238
+        },
+        "smoother_ms": {
+          "n": 1737,
+          "median": 29.0447,
+          "p95": 49.7885,
+          "max": 67.7719
+        },
+        "outgoing_ms": {
+          "n": 1737,
+          "median": 54.0174,
+          "p95": 65.7749,
+          "max": 88.4431
+        },
+        "backend_ms": {
+          "n": 1737,
+          "median": 92.0383,
+          "p95": 122.5,
+          "max": 143.618
+        }
+      },
+      "source_coverage": {
+        "passed": true,
+        "requested_s": 355.02,
+        "imu_samples": 35502,
+        "imu_span_s": 355.01029086112976,
+        "coverage_contract": "native_keyframes_cpk22",
+        "kimera_gap_bound_s": 5.1499999999999995,
+        "native_glim": {
+          "rows": 3543,
+          "start_s": 1730638817.279943,
+          "end_s": 1730639171.479259,
+          "span_s": 354.1993160247803,
+          "maximum_pose_gap_s": 0.10129117965698242,
+          "post_startup_max_gap_s": 0.10129117965698242,
+          "start_after_first_imu_s": 0.7110128402709961,
+          "tail_behind_last_imu_s": 0.09996199607849121,
+          "path_length_m": 186.29830697670081,
+          "gaps_over_1s": [],
+          "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+        },
+        "native_kimera": {
+          "rows": 1761,
+          "start_s": 1730638816.7634923,
+          "end_s": 1730639171.5606751,
+          "span_s": 354.7971827983856,
+          "maximum_pose_gap_s": 0.9999926090240479,
+          "post_startup_max_gap_s": 0.9999926090240479,
+          "start_after_first_imu_s": 0.19456219673156738,
+          "tail_behind_last_imu_s": 0.018545866012573242,
+          "path_length_m": 183.21572053083747,
+          "gaps_over_1s": [],
+          "path_note": "Polyline through actual samples, including gap chords; no dense coverage claim."
+        },
+        "kimera_processing": {
+          "passed": true,
+          "logs": [
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_eig2_full_cpk24_20261021/prepared/full_on_source/estimators.log",
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_eig2_full_cpk24_20261021/prepared/full_on_source/ros_logs/b6da4846-cd47-11f1-8547-96bc9a326793/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log",
+            "/workspace/cbs_gtsam4.3/runs/gnssfgo_eig2_full_cpk24_20261021/prepared/full_on_source/ros_logs/latest/kimera_vio_ros-kimera_vio_ros_node-4-stdout.log"
+          ],
+          "frontend_processed": 3549,
+          "synchronized_input_pairs_reference": 3550,
+          "frontend_reference_after_startup": 3547,
+          "backend_processed": 1761,
+          "sequential_native_ids": true,
+          "gaps": [],
+          "scope": "Native counters, not a new per-image receipt or branch-decision audit."
+        }
+      }
+    }
+  },
+  "evaluation": {
+    "reference": {
+      "path": "/workspace/cbs_gtsam4.3/src/datasets/GrandTour/EIG-2/2024-11-03-13-59-54_cpt7_ie_tc.bag",
+      "sha256": "cabd6722696c73c86ed219495a5a15e78c82e6452fb90c184f81d38fa557c1af",
+      "topic": "/boxi/inertial_explorer/tc/odometry",
+      "frame_ids": [
+        "enu_origin"
+      ],
+      "child_frame_ids": [
+        "cpt7_imu"
+      ],
+      "caveat": "IE-TC GNSS/INS reference shares CPT7 IMU; not independent prism GT"
+    },
+    "common_mask": {
+      "rows": 3526,
+      "start_s": 1730638817.3,
+      "end_s": 1730639171.3996623,
+      "coverage": {
+        "grid_queries": 3542,
+        "excluded_queries": 16,
+        "envelope_s": 354.09966230392456,
+        "covered_contiguous_duration_s": 352.29966402053833,
+        "segments": [
+          {
+            "start_s": 1730638817.3,
+            "end_s": 1730639154.3996785,
+            "rows": 3372
+          },
+          {
+            "start_s": 1730639155.0996778,
+            "end_s": 1730639170.2996633,
+            "rows": 153
+          },
+          {
+            "start_s": 1730639171.3996623,
+            "end_s": 1730639171.3996623,
+            "rows": 1
+          }
+        ],
+        "maximum_query_gap_s": 1.099998950958252
+      },
+      "timestamps_sha256": "fb6742b2ef64760070f064e25a7469698626c66c6e56cb9cb2de800c28a3fe55",
+      "interpolation_gap_estimate_s": 0.5,
+      "interpolation_gap_reference_s": 0.05
+    },
+    "path_length_caveat": "Polyline through actual saved or supported queried positions; includes chords across missing intervals, not dense coverage.",
+    "convention": "Per-path rigid SE(3) no-scale alignment for ATE at prism lever arm; 1s RPE in prism frame, no global alignment",
+    "results": {
+      "off_native_glim": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_eig2_full_cpk24_20261021/prepared/full_off_source/odom_imu.txt",
+        "sha256": "ac15488f39a20ef7c398b614abdc2cdae1aa5ea60d4bf435845138843ed8dd6c",
+        "full_saved_rows": 3543,
+        "full_saved_span_s": 354.1993160247803,
+        "full_saved_path_length_CPT7_m": 186.10243308745265,
+        "full_saved": {
+          "rows": 3543,
+          "start_s": 1730638817.279943,
+          "end_s": 1730639171.479259,
+          "span_s": 354.1993160247803,
+          "ATE_RMSE_m": 0.051085372371915926,
+          "translation_RPE_1s_RMSE_m": 0.0186453679177851,
+          "rotation_RPE_1s_RMSE_deg": 0.6342100430071982,
+          "path_length_prism_m": 189.32135610144277,
+          "reference_path_length_prism_m": 188.09764877983451,
+          "rpe_pairs": 3532,
+          "error_m": {
+            "n": 3543,
+            "mean": 0.04802508582006529,
+            "median": 0.045919070963836496,
+            "p95": 0.08330399062887281,
+            "max": 0.1395445323637779
+          }
+        },
+        "common": {
+          "rows": 3526,
+          "start_s": 1730638817.3,
+          "end_s": 1730639171.3996623,
+          "ATE_RMSE_m": 0.05111475491222696,
+          "translation_RPE_1s_RMSE_m": 0.018685816683316443,
+          "rotation_RPE_1s_RMSE_deg": 0.6366110038786218,
+          "path_length_prism_m": 188.2999196519692,
+          "reference_path_length_prism_m": 188.03706546542583,
+          "error_m": {
+            "n": 3526,
+            "mean": 0.04804263293829415,
+            "median": 0.04592909484988505,
+            "p95": 0.08335754621463201,
+            "max": 0.14108949368562032
+          },
+          "rpe_pairs": 3505
+        }
+      },
+      "off_native_kimera": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_eig2_full_cpk24_20261021/prepared/full_off_source/kimera_odometry.csv",
+        "sha256": "6080bbfc5f0694d0f23a3424da4f3770f369b200455e3c60bfdf4bd1d4942a47",
+        "full_saved_rows": 1761,
+        "full_saved_span_s": 354.6971833705902,
+        "full_saved_path_length_CPT7_m": 175.26912770008352,
+        "full_saved": {
+          "rows": 1761,
+          "start_s": 1730638816.7634923,
+          "end_s": 1730639171.4606757,
+          "span_s": 354.6971833705902,
+          "ATE_RMSE_m": 1.8826437885180227,
+          "translation_RPE_1s_RMSE_m": 0.1089614099102418,
+          "rotation_RPE_1s_RMSE_deg": 0.8447526002358042,
+          "path_length_prism_m": 178.19054184241605,
+          "reference_path_length_prism_m": 186.63122524520577,
+          "rpe_pairs": 3529,
+          "error_m": {
+            "n": 1761,
+            "mean": 1.6792015303825338,
+            "median": 1.300614456697085,
+            "p95": 3.981063490700156,
+            "max": 4.325812336817509
+          }
+        },
+        "common": {
+          "rows": 3526,
+          "start_s": 1730638817.3,
+          "end_s": 1730639171.3996623,
+          "ATE_RMSE_m": 1.881039778593608,
+          "translation_RPE_1s_RMSE_m": 0.10933178785665885,
+          "rotation_RPE_1s_RMSE_deg": 0.8475668713420267,
+          "path_length_prism_m": 177.37212623545685,
+          "reference_path_length_prism_m": 188.03706546542583,
+          "error_m": {
+            "n": 3526,
+            "mean": 1.677760579418057,
+            "median": 1.296543911131309,
+            "p95": 3.9801038413217116,
+            "max": 4.325851002771344
+          },
+          "rpe_pairs": 3505
+        }
+      },
+      "off_fused_online": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_eig2_full_cpk24_20261021/prepared/full_off_receiver/receiver/online_trajectory.tum",
+        "sha256": "709afca0b93c7d207b801989e295b8eb38012cfc3a9e4caa3151bd30c66337a4",
+        "full_saved_rows": 3545,
+        "full_saved_span_s": 354.39999985694885,
+        "full_saved_path_length_CPT7_m": 216.12065567018675,
+        "full_saved": {
+          "rows": 3545,
+          "start_s": 1730638817.14893,
+          "end_s": 1730639171.54893,
+          "span_s": 354.39999985694885,
+          "ATE_RMSE_m": 0.1675075593338063,
+          "translation_RPE_1s_RMSE_m": 0.0432201951658406,
+          "rotation_RPE_1s_RMSE_deg": 2.4134683303358093,
+          "path_length_prism_m": 225.5621742469782,
+          "reference_path_length_prism_m": 188.1258214497184,
+          "rpe_pairs": 3533,
+          "error_m": {
+            "n": 3545,
+            "mean": 0.1517829633613727,
+            "median": 0.1302709972318833,
+            "p95": 0.2777152822809703,
+            "max": 0.34649856928305756
+          }
+        },
+        "common": {
+          "rows": 3526,
+          "start_s": 1730638817.3,
+          "end_s": 1730639171.3996623,
+          "ATE_RMSE_m": 0.1654896785203829,
+          "translation_RPE_1s_RMSE_m": 0.04337189666171172,
+          "rotation_RPE_1s_RMSE_deg": 2.422711412521806,
+          "path_length_prism_m": 201.55505070324395,
+          "reference_path_length_prism_m": 188.03706546542583,
+          "error_m": {
+            "n": 3526,
+            "mean": 0.1497434574579188,
+            "median": 0.12652215860000837,
+            "p95": 0.2792250544701128,
+            "max": 0.3122653862164443
+          },
+          "rpe_pairs": 3505
+        }
+      },
+      "off_fused_finalized": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_eig2_full_cpk24_20261021/prepared/full_off_receiver/receiver/finalized_trajectory.tum",
+        "sha256": "0ebe2927993e3ba90eb674e0a5fd97006ac0d940bf4e059dc211141fa1ec6b8a",
+        "full_saved_rows": 3545,
+        "full_saved_span_s": 354.39999985694885,
+        "full_saved_path_length_CPT7_m": 185.24494102332739,
+        "full_saved": {
+          "rows": 3545,
+          "start_s": 1730638817.14893,
+          "end_s": 1730639171.54893,
+          "span_s": 354.39999985694885,
+          "ATE_RMSE_m": 0.16619317278898013,
+          "translation_RPE_1s_RMSE_m": 0.021704529112659493,
+          "rotation_RPE_1s_RMSE_deg": 0.6664991046335385,
+          "path_length_prism_m": 188.5117608296244,
+          "reference_path_length_prism_m": 188.1258214497184,
+          "rpe_pairs": 3533,
+          "error_m": {
+            "n": 3545,
+            "mean": 0.15045638027927058,
+            "median": 0.12579798295826217,
+            "p95": 0.27866193659316185,
+            "max": 0.29207174056720114
+          }
+        },
+        "common": {
+          "rows": 3526,
+          "start_s": 1730638817.3,
+          "end_s": 1730639171.3996623,
+          "ATE_RMSE_m": 0.16548550842393903,
+          "translation_RPE_1s_RMSE_m": 0.02176271520055601,
+          "rotation_RPE_1s_RMSE_deg": 0.6691162366848872,
+          "path_length_prism_m": 186.8858064095541,
+          "reference_path_length_prism_m": 188.03706546542583,
+          "error_m": {
+            "n": 3526,
+            "mean": 0.14966377089306368,
+            "median": 0.12502107659552641,
+            "p95": 0.2806547111200988,
+            "max": 0.2913011291687787
+          },
+          "rpe_pairs": 3505
+        }
+      },
+      "on_native_glim": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_eig2_full_cpk24_20261021/prepared/full_on_source/odom_imu.txt",
+        "sha256": "232ef25d8c37e83d50615b379d23e09eebb4c061e5d7cd0ab11af63b1a48a660",
+        "full_saved_rows": 3543,
+        "full_saved_span_s": 354.1993160247803,
+        "full_saved_path_length_CPT7_m": 186.29830697670081,
+        "full_saved": {
+          "rows": 3543,
+          "start_s": 1730638817.279943,
+          "end_s": 1730639171.479259,
+          "span_s": 354.1993160247803,
+          "ATE_RMSE_m": 0.04455465109417666,
+          "translation_RPE_1s_RMSE_m": 0.015873621052963756,
+          "rotation_RPE_1s_RMSE_deg": 0.62945605648255,
+          "path_length_prism_m": 189.48961364995498,
+          "reference_path_length_prism_m": 188.09764877983451,
+          "rpe_pairs": 3532,
+          "error_m": {
+            "n": 3543,
+            "mean": 0.042279469999401346,
+            "median": 0.03971568662557513,
+            "p95": 0.07281589556704289,
+            "max": 0.10627090385893011
+          }
+        },
+        "common": {
+          "rows": 3526,
+          "start_s": 1730638817.3,
+          "end_s": 1730639171.3996623,
+          "ATE_RMSE_m": 0.04450227637634442,
+          "translation_RPE_1s_RMSE_m": 0.015899270553967802,
+          "rotation_RPE_1s_RMSE_deg": 0.6318450035036215,
+          "path_length_prism_m": 188.2095474100474,
+          "reference_path_length_prism_m": 188.03706546542583,
+          "error_m": {
+            "n": 3526,
+            "mean": 0.042206475927236184,
+            "median": 0.039693072248097004,
+            "p95": 0.07310480216955315,
+            "max": 0.10959430695828327
+          },
+          "rpe_pairs": 3505
+        }
+      },
+      "on_native_kimera": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_eig2_full_cpk24_20261021/prepared/full_on_source/kimera_odometry.csv",
+        "sha256": "e557ef66c303b56a6f471c35308ff301e60d85f2066ebfab9944a3cb992f8909",
+        "full_saved_rows": 1761,
+        "full_saved_span_s": 354.7971827983856,
+        "full_saved_path_length_CPT7_m": 183.21572053083747,
+        "full_saved": {
+          "rows": 1761,
+          "start_s": 1730638816.7634923,
+          "end_s": 1730639171.5606751,
+          "span_s": 354.7971827983856,
+          "ATE_RMSE_m": 0.688833557299455,
+          "translation_RPE_1s_RMSE_m": 0.02563691168845315,
+          "rotation_RPE_1s_RMSE_deg": 0.8408302356111782,
+          "path_length_prism_m": 185.97728934525878,
+          "reference_path_length_prism_m": 186.63425875295843,
+          "rpe_pairs": 3514,
+          "error_m": {
+            "n": 1761,
+            "mean": 0.6493821954322675,
+            "median": 0.6685056124490223,
+            "p95": 1.033785218592217,
+            "max": 1.2965783858000246
+          }
+        },
+        "common": {
+          "rows": 3526,
+          "start_s": 1730638817.3,
+          "end_s": 1730639171.3996623,
+          "ATE_RMSE_m": 0.688001417113798,
+          "translation_RPE_1s_RMSE_m": 0.025664138043982248,
+          "rotation_RPE_1s_RMSE_deg": 0.8418239130546937,
+          "path_length_prism_m": 185.28502615662208,
+          "reference_path_length_prism_m": 188.03706546542583,
+          "error_m": {
+            "n": 3526,
+            "mean": 0.6487134385105667,
+            "median": 0.6659013845860459,
+            "p95": 1.0393677158046597,
+            "max": 1.302347390160083
+          },
+          "rpe_pairs": 3505
+        }
+      },
+      "on_fused_online": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_eig2_full_cpk24_20261021/prepared/full_on_receiver/receiver/online_trajectory.tum",
+        "sha256": "ada6a783334555c6598ff32fe42c6074bbfb1e955ad7f37647b16ae5020045a5",
+        "full_saved_rows": 3545,
+        "full_saved_span_s": 354.39999985694885,
+        "full_saved_path_length_CPT7_m": 210.3425907346998,
+        "full_saved": {
+          "rows": 3545,
+          "start_s": 1730638817.14893,
+          "end_s": 1730639171.54893,
+          "span_s": 354.39999985694885,
+          "ATE_RMSE_m": 0.13576483614749912,
+          "translation_RPE_1s_RMSE_m": 0.03907652882804523,
+          "rotation_RPE_1s_RMSE_deg": 2.3993130009288963,
+          "path_length_prism_m": 221.24588154349118,
+          "reference_path_length_prism_m": 188.1258214497184,
+          "rpe_pairs": 3533,
+          "error_m": {
+            "n": 3545,
+            "mean": 0.12760771297417223,
+            "median": 0.12122446361154407,
+            "p95": 0.20456100444975772,
+            "max": 0.2771469647031575
+          }
+        },
+        "common": {
+          "rows": 3526,
+          "start_s": 1730638817.3,
+          "end_s": 1730639171.3996623,
+          "ATE_RMSE_m": 0.13456064098128595,
+          "translation_RPE_1s_RMSE_m": 0.03921385525120375,
+          "rotation_RPE_1s_RMSE_deg": 2.4087855614933824,
+          "path_length_prism_m": 200.51375946673355,
+          "reference_path_length_prism_m": 188.03706546542583,
+          "error_m": {
+            "n": 3526,
+            "mean": 0.12656412502347056,
+            "median": 0.11971748947470909,
+            "p95": 0.20229033863619017,
+            "max": 0.25066014603347325
+          },
+          "rpe_pairs": 3505
+        }
+      },
+      "on_fused_finalized": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_eig2_full_cpk24_20261021/prepared/full_on_receiver/receiver/finalized_trajectory.tum",
+        "sha256": "1bcabbdf23972efde95e85e14009a469311ecc5400ab897a477e6c41505f8689",
+        "full_saved_rows": 3545,
+        "full_saved_span_s": 354.39999985694885,
+        "full_saved_path_length_CPT7_m": 185.4694526574932,
+        "full_saved": {
+          "rows": 3545,
+          "start_s": 1730638817.14893,
+          "end_s": 1730639171.54893,
+          "span_s": 354.39999985694885,
+          "ATE_RMSE_m": 0.1323142047271319,
+          "translation_RPE_1s_RMSE_m": 0.01483741420102639,
+          "rotation_RPE_1s_RMSE_deg": 0.6669643680822176,
+          "path_length_prism_m": 188.6695431088388,
+          "reference_path_length_prism_m": 188.1258214497184,
+          "rpe_pairs": 3533,
+          "error_m": {
+            "n": 3545,
+            "mean": 0.12482005262822962,
+            "median": 0.11924126981426025,
+            "p95": 0.1953498864524983,
+            "max": 0.21434402749155937
+          }
+        },
+        "common": {
+          "rows": 3526,
+          "start_s": 1730638817.3,
+          "end_s": 1730639171.3996623,
+          "ATE_RMSE_m": 0.13240004254144253,
+          "translation_RPE_1s_RMSE_m": 0.014846535736306786,
+          "rotation_RPE_1s_RMSE_deg": 0.6695836474212317,
+          "path_length_prism_m": 186.97168981195614,
+          "reference_path_length_prism_m": 188.03706546542583,
+          "error_m": {
+            "n": 3526,
+            "mean": 0.12487489136509418,
+            "median": 0.11919652866031492,
+            "p95": 0.19567536614284084,
+            "max": 0.21415886010587148
+          },
+          "rpe_pairs": 3505
+        }
+      }
+    },
+    "covariance": {
+      "off": {
+        "kimera_front": {
+          "versions": 43344,
+          "stable_ids": 1744,
+          "revised_ids": 1743,
+          "rotation_trace_rad2": {
+            "n": 43344,
+            "mean": 3.2586193736909734e-08,
+            "median": 2.358577301447677e-08,
+            "p95": 9.547109678705568e-08,
+            "max": 1.1999834607540381e-05
+          },
+          "translation_trace_m2": {
+            "n": 43344,
+            "mean": 5.467934157357873e-06,
+            "median": 7.856487800073729e-07,
+            "p95": 2.6722771530386907e-05,
+            "max": 0.0023572813087913967
+          },
+          "min_eigenvalue": 5.612564298217931e-10,
+          "max_eigenvalue": 0.0011766212774396274,
+          "max_symmetry_error": 0.0,
+          "first_last_rotation_trace_ratio": {
+            "n": 1743,
+            "mean": 0.7102449420780534,
+            "median": 0.5923473363500353,
+            "p95": 1.5280567709413384,
+            "max": 4.792627722626246
+          },
+          "first_last_translation_trace_ratio": {
+            "n": 1743,
+            "mean": 1.2524598708760617,
+            "median": 0.6724909214477588,
+            "p95": 4.191339240705104,
+            "max": 30.51606942370776
+          }
+        },
+        "glim_hesai": {
+          "versions": 170366,
+          "stable_ids": 3541,
+          "revised_ids": 3540,
+          "rotation_trace_rad2": {
+            "n": 170366,
+            "mean": 8.572615919381806e-09,
+            "median": 6.7279041148573665e-09,
+            "p95": 1.8793473388031825e-08,
+            "max": 8.698949404871094e-08
+          },
+          "translation_trace_m2": {
+            "n": 170366,
+            "mean": 2.0132382442000945e-06,
+            "median": 1.8472745051336133e-06,
+            "p95": 3.201098735693704e-06,
+            "max": 8.783805110302395e-06
+          },
+          "min_eigenvalue": 1.581775003809112e-10,
+          "max_eigenvalue": 5.426263823228354e-06,
+          "max_symmetry_error": 0.0,
+          "first_last_rotation_trace_ratio": {
+            "n": 3540,
+            "mean": 0.75788060429436,
+            "median": 0.7613602734082228,
+            "p95": 0.8263194293273067,
+            "max": 0.9079238809432344
+          },
+          "first_last_translation_trace_ratio": {
+            "n": 3540,
+            "mean": 0.6101225495019662,
+            "median": 0.6186466561624988,
+            "p95": 0.6598876303049478,
+            "max": 0.716411016052912
+          }
+        }
+      },
+      "on": {
+        "kimera_front": {
+          "versions": 43323,
+          "stable_ids": 1744,
+          "revised_ids": 1743,
+          "rotation_trace_rad2": {
+            "n": 43323,
+            "mean": 2.2787981955401303e-08,
+            "median": 1.7587130162617295e-08,
+            "p95": 6.80758166935621e-08,
+            "max": 1.1999834607540381e-05
+          },
+          "translation_trace_m2": {
+            "n": 43323,
+            "mean": 7.5752309026719356e-06,
+            "median": 6.66684015831352e-07,
+            "p95": 3.704339030672991e-05,
+            "max": 0.0023572813087913967
+          },
+          "min_eigenvalue": 7.192988989767004e-10,
+          "max_eigenvalue": 0.0011766212774396274,
+          "max_symmetry_error": 0.0,
+          "first_last_rotation_trace_ratio": {
+            "n": 1743,
+            "mean": 0.48056796663722934,
+            "median": 0.46071086739709766,
+            "p95": 0.7012356116908138,
+            "max": 1.2467771099450775
+          },
+          "first_last_translation_trace_ratio": {
+            "n": 1743,
+            "mean": 0.38435051249645613,
+            "median": 0.3180217221964681,
+            "p95": 0.8192196524365145,
+            "max": 7.203555894372204
+          }
+        },
+        "glim_hesai": {
+          "versions": 170354,
+          "stable_ids": 3541,
+          "revised_ids": 3540,
+          "rotation_trace_rad2": {
+            "n": 170354,
+            "mean": 8.619955300135846e-09,
+            "median": 6.822130499050091e-09,
+            "p95": 1.8537279393503504e-08,
+            "max": 9.263798118026817e-08
+          },
+          "translation_trace_m2": {
+            "n": 170354,
+            "mean": 2.019109465054945e-06,
+            "median": 1.8714982596160046e-06,
+            "p95": 3.2342057696712003e-06,
+            "max": 8.593664346587376e-06
+          },
+          "min_eigenvalue": 1.565274641183918e-10,
+          "max_eigenvalue": 5.351223674996889e-06,
+          "max_symmetry_error": 0.0,
+          "first_last_rotation_trace_ratio": {
+            "n": 3540,
+            "mean": 0.7573304251021289,
+            "median": 0.760156023133132,
+            "p95": 0.8263937949060741,
+            "max": 0.9079386707013078
+          },
+          "first_last_translation_trace_ratio": {
+            "n": 3540,
+            "mean": 0.6097811311218778,
+            "median": 0.6177071058211685,
+            "p95": 0.6607807948451894,
+            "max": 0.7158790788771728
+          }
+        }
+      }
+    }
+  },
+  "protected_unchanged": 2464,
+  "identical_source_profiles": true,
+  "no_exhaustive_observer": true,
+  "no_saved_journal_repeat": true,
+  "limits": "One full-sequence experimental pair, not an exhaustive batching-preservation certificate; IE-TC shares CPT7; no nonlinear stationarity claim."
+}

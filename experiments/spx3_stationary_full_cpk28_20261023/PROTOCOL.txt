@@ -1,0 +1,56 @@
+CP-K28 — full usable SPX-3 with verified quiet startup, 2026-10-23
+================================================================
+Authorization: "Ok so we need to rerun ful spx3 right? Do it"
+
+One matched CBS-OFF/ON pair; extend successful CP-K27 without changing the
+estimator implementation, initialization, profiles, covariance or model.
+Selected-topic epoch1730565870872888651ns, offset29.0s, duration197.02s,
+start1730565899872888651ns, end1730566096892888651ns. This includes the last
+Hesai record1730566096888473034ns. Earlier29s and camera/IMU-only tail excluded.
+This is the full usable sequence from verified quiet initialization through
+the last LiDAR scan, not a claim to process the entire raw recording from0.
+
+CP-K27 raw images/IMU corroborate quiet bag29..31; no GT is supplied to any
+estimator or initializer. Original stationary autoInitialize=1 and initial
+velocity prior remain unchanged. This is a launch correction, not a pure
+single-prior causal ablation: both estimators have earlier causal history/CBS.
+
+Headless0.20x,port11478,25s drain. Identical frozen CP-K27 private binaries and
+SPX-3 profiles: Hesai + CPT7 GLIM; Alphasense front-left/front-right + CPT7
+Kimera. CP-K16 MAIN batching, CP-K9 Kimera, CPK9_PRIOR_REFRESH=1,FL4Q_ENABLE=0,
+FL4M_RETIREMENT=remove,native IMU override unset;25-state Kimera,5s GLIM lag.
+CP-I1/I3 all-LOCAL dense covariance for EVERY first/revised version, corrected
+MAIN means. Classic active_window_temporary bidirectional CBS, no source
+live_revision,0.20s horizon,one pair/update,Gaussian scales1,no health/robust loss.
+Existing mean-only source-to-source covariance alignment approximation retained.
+
+Receiver CP-K19 FL4e7s source_wnoa, independent100ms supports, no central IMU
+or GNSS, unchanged Qc/priors, stable-ID replacement, seal_at_absorption.
+Known absorbed revisions explicitly expired; unknown old first arrivals fail.
+Same finite-recording CP-K24A final-partial-cell predicate in BOTH modes,
+every terminal omission reported, never called zero factor loss.
+
+Input audit before launch must confirm1970 stereo pairs and exact end through
+lastHesai. Coverage bounds: processed frontend1967..1970, >=1950 GLIM poses
+and first beliefs, >=195.02s GLIM/fusion span. All other source/covariance,
+cache/lifecycle, receiver conservation/coverage/latency gates unchanged.
+Only capture-window counts/duration/identities change from CP-K27. Three gates
+per mode: validate_local, validate_candidate, validate_case check. No fresh
+saved-journal solver replay, exhaustive batching or nonlinear stationarity claim.
+
+Finite controller: OFF capture -> three validations -> ON preflight -> ON
+capture -> three validations -> existing scoring -> summary -> cleanup.
+Exclusive new roots, never overwrite or retry any stage. Stop on any failure;
+no ON after failed OFF. Scope-limited SystemD and GNOME sleep/idle inhibitors
+only; no host power-policy change or persistent app automation. Both containers
+initially stopped, restore only after owned jobs exit. Preserve old artifacts.
+
+Evaluate original/native GLIM, original/native Kimera ROS odometry, and fusion
+ONLINE/as-played OFF/ON over all saved trajectories vs IE-TC, reporting actual
+spans, gaps, ATE,1s t/rRPE,path lengths. Same-mask comparison secondary, disclose
+its supported duration separately from time envelope. DELAYED fixed-lag-
+finalized fusion separately, not ONLINE/full-history. Reference shares CPT7,
+not independent prism GT. Retain full source mean/covariance/revision histories,
+received payloads, provenance, conservation/acceptance, timestamps and timing.
+No covariance tuning, optimizer change, other sequence, default promotion,
+commit, push, data deletion or automatic retries.

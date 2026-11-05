@@ -1,0 +1,87 @@
+CP-V81 -- GLIM symmetric-persistent admission review
+2026-11-01
+
+RESULT: Current frozen GLIM binary/configuration does NOT admit persistent
+reception with the required shared-native covariance provider. No 60-second
+capture has been launched. This is a startup compatibility restriction, NOT
+evidence that persistent GLIM is numerically unstable or mathematically invalid.
+
+1. Exact blocker
+The bridge compiled into CP80's CP-I1 libglim_ros.so requires
+mode == ActiveWindowTemporary whenever shared_native is enabled.
+I1/cbs_bridge.cpp:685-688 throws "shared-native provider unsupported CBS
+configuration" for InjectPersistent, before installing the belief subscriber.
+CP80's profile requires GLIM_SHARED_NATIVE_PROVIDER=shared_native and
+GLIM_REVISION_COVARIANCE_POLICY=native_local, with MAIN GPU batching enabled.
+The private S4 provider report explicitly documents temporary-only admission.
+This restriction was introduced with that provider; it does not imply older
+persistent configurations never worked.
+
+2. Existing mechanisms that support a compatibility investigation
+The bridge already parses persistent/inject/inject_persistent and appends a
+normal Pose3 BetweenFactor through appendExternalFactor (I1/cbs_bridge.cpp:2745).
+It uses the same buildExternalFactor mean/covariance transform as temporary
+mode. Temporary expiry is conditional on ActiveWindowTemporary. Classic
+persistent factors remain subject to the smoother's ordinary marginalization;
+"persistent" does not mean infinite explicit-factor graph growth.
+
+Native factors are explicitly admitted at I1/cbs_bridge.cpp:1279 BEFORE incoming
+peer factors are appended. S4/ShadowObserver.cpp records only those admitted
+native identities and maintains a separate Gaussian marginal history. It does
+not classify external factors as native just because their classes match.
+This is useful support, NOT end-to-end persistent-bridge certification.
+
+The saved S4 test Lifecycle.ActualWrapperMultipleRetirementsDenseOracleAndExact-
+Noninterference already left external factors in MAIN through marginalization:
+16 arrivals, 33 captures, 17 admitted/15 absorbed/2 active native factors;
+dense relative error 3.23556e-16, covariance error 1.40247e-12 and no extra native
+evaluations. Saved Release and ASan receipts passed. These are historical
+synthetic wrapper tests, NOT newly executed tests of the present bridge.
+The newer CP-K16b GPU/IMU test removes peer factors after three arrivals;
+its success must NOT be relabeled full persistent-GPU lifecycle coverage.
+
+3. What must not be changed to get past the blocker
+Disabling shared_native while retaining native_local revisions also throws
+(I1/RevisionCovariance.h:25). Switching revisions to MAIN or reverting to the
+old independent sidecar changes the covariance definition and is not merely
+a persistence setting. MAIN batching activation also checks provider/observer
+attachment. Do not bypass guards, change weights, replace installed libraries,
+or silently change covariance methods. Kimera's already accepted mixed-prior
+outgoing provenance remains a limitation, not a new reason to refuse the run.
+
+4. Proposed separate implementation step, before the approved short run
+Create a private GLIM candidate allowing the exact classic persistent/provider
+combination, retaining every other configuration restriction. Establish whether
+any additional lifecycle changes are actually needed rather than assume them.
+Test the real bridge admission/dispatch, retained peer factors crossing multiple
+5s retirements, native-history conservation/exclusion, same-ID duplicate handling,
+slot reuse, reset/fallback fail-closed behavior, and first/revision covariance
+queries. Include GPU MAIN batching and prove existing temporary behavior is
+unchanged. A no-data startup must verify exact effective mode and loaded DSOs.
+Only after those gates pass: one 60s EIG-2 Hesai live run, persistent reception
+both directions, unchanged weights/covariance/profile/WNOA, with owned cleanup.
+Require actual insertion and retirement evidence in both estimators, not flags
+alone. Score Method 1 with EVO and separate full-saved/common masks. No automatic
+full sequence or seven-case campaign follows this admission audit.
+
+Classic persistent and temporary paths also have different duplicate/admission
+rules; any eventual comparison is a policy comparison, not automatically an
+isolated retention-only effect. Symmetric retention does not make the two
+estimators' internal priors statistically independent or identically defined.
+
+5. Evidence and integrity
+audit.py writes a fresh audit.json with source/DSO/config identities, successful
+compile/link receipts, the exact source guard and binary error-string presence,
+plus read-only protected/terminal/checkpoint checks and container observations.
+It is explicitly a static admission audit, not a runtime rejection experiment.
+All prior terminal evidence is preserved. No estimator source, library, launch
+profile, weight or default was edited; no container was started.
+Completed read-only audit at 12:11:58 local: evidence verified; live admission
+FALSE. All 1617 protected identities, 192 CP80 terminal output hashes, 218 CP78
+terminal output hashes and 667 original Hesai checkpoint entries pass. Both
+cbsms_ws_gpu and ubuntu-jammy-humble-nvidia remain stopped.
+
+Path aliases:
+I1=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/local_revision_covariance_cpi1_20261019
+S4=/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/shared_linearization_s4_provider_20261012/release_2/source
+S4 saved report/tests=/home/yeranis/repos/gnssFGO/experiments/shared_linearization_s4_provider_20261012

@@ -1,0 +1,121 @@
+CP-V31 — ETH1 HESAI RPE, DISTANCE DELTA 0.5 m, EVO ONLY
+Completed 2026-10-29. Original matched CP-K23 CBS OFF/ON; original WNOA Qc1.0.
+
+OUTCOME
+-------
+All translation and rotation RPE values below were computed directly by the
+installed evo1.36.3 CLI, not by a custom RPE formula. All24 CLI calls exited0.
+Independent calls to evo's Python metric API produce identical error arrays.
+Saved native evo result ZIPs contain all errors and full summary statistics.
+No estimator run, receiver replay, container, build or parameter change.
+
+RPE RMSE — METHOD1 (newest absolute pose at each output update)
+Estimator   Translation OFF(m) ON(m)    Improvement    Rotation OFF(deg) ON(deg)
+GLIM             0.018428920 0.015033748   +18.42%          0.349387740 0.334394717
+Kimera           1.802373322 0.889107891   +50.67%          1.258652170 2.858507113
+Fusion           0.065906399 0.037127227   +43.67%          2.040630249 1.932894395
+
+RPE RMSE — METHOD2 (accumulated same-update relative motions)
+Estimator   Translation OFF(m) ON(m)    Improvement    Rotation OFF(deg) ON(deg)
+GLIM             0.020437887 0.018545281    +9.26%          0.370254851 0.360011901
+Kimera           0.330895558 0.016697500   +94.95%          0.448390963 0.461237035
+Fusion           0.064149834 0.039518069   +38.40%          2.375300723 2.219675844
+
+Positive improvement =100*(OFF-ON)/OFF; percentages use unrounded evo RMSE.
+Rotation improvements method1 GLIM/Kimera/Fusion: +4.29%/-127.11%/+5.28%.
+Rotation improvements method2 GLIM/Kimera/Fusion: +2.77%/-2.86%/+6.55%.
+Units are metres and degrees of relative pose error, NOT percent-per-metre,
+degrees-per-metre, ATE or one-second RPE. Smaller is better.
+
+WHAT IS BEING COMPARED
+----------------------
+Method1: saved CP-V27 GLIM first-published absolute MAIN pose, Kimera recovered
+absolute backend pose at the same output update, fusion original ONLINE newest
+support. Kimera method1 is NOT its native incremental ROS odometry. Original
+six-significant-digit Kimera backend logging rounding bound <=0.504mm remains.
+Historical absolute points are not retroactively replaced with refined poses.
+
+Method2: saved CP-V28 GLIM/fusion accumulated relative motions from two states
+in the SAME publication solution; Kimera original native incremental ROS.
+Both plotting and evaluation use that accumulated trajectory. This is not
+finalized fixed-lag output and not the authors' universal benchmark policy.
+Use original historical OFF/ON together, not fresh CP-V29 OFF plus old ON.
+
+EVO SETTINGS AND COVERAGE
+------------------------
+Delta0.5m along the REFERENCE path; --pairs_from_reference ensures the same
+physical motion intervals for all three estimators, both modes and methods.
+Consecutive pairs (evo default), not overlapping --all_pairs. No alignment,
+scale correction, 2D projection, smoothing or new resampling. RPE compares
+relative SE3 transforms; independent constant world-frame transforms do not
+require an ATE alignment. All trajectories retain the existing prism frame.
+
+Exactly365 identical pairs for every row. Discrete sampled reference distances
+range0.500560771--0.593297036m. Delta0.5m is evo's consecutive distance threshold,
+not exact0.500000m spatial interpolation. Default relative tolerance0.1 is NOT
+used by evo's consecutive-distance selector; it applies to --all_pairs mode.
+
+Frozen CP-V10 common grid reused, identical in CP-V27 and CP-V28:2970 supported
+100ms samples /296.7s,85.672% of346.32s capture, three contiguous segments.
+All saved reference coordinates and masks match exactly between methods.
+Reference accumulated path on these segments201.375536m (evo path_length).
+Segments:
+  2873rows /287.2s /200.579190m:365distance pairs.
+    Reference endpoints span captured time3.744604--290.944604s.
+    Actual selected pair endpoints span6.044604--280.944604s.
+  83rows /8.2s /0.791206m:0consecutive distance pairs.
+    Evo needs two distance-triggered endpoints for its first consecutive pair;
+    the initial0.5m trigger alone is not a pair with the segment origin.
+  14rows /1.3s /0.005141m:0distance pairs.
+No distance pair crosses a missing interval. No relaxed delta to include short
+segments or stationary tails. This table is NOT full346.32s RPE coverage.
+Reference is IE-TC and shares CPT7 with estimators, NOT independent prism GT.
+
+INTERPRETATION
+--------------
+For this ETH1 distance-based metric, CBS ON improves translation RPE for all
+three estimators under both policies. In chosen method2, ON translation RPE
+is GLIM1.855cm, Kimera1.670cm, fusion3.952cm. Fusion remains worse than either
+source for ON translation, and its rotation RPE is substantially higher than
+both sources in both modes. Kimera method2 rotation worsens slightly with ON.
+Method1 Kimera is heavily affected by publication correction jumps; do not
+attribute its1.802/0.889m RPE to the native incremental ROS output.
+These are single-run, local motion errors on selected distance pairs. They do
+not establish global ATE improvement, calibrated covariance or a causal fault.
+
+REPRODUCIBILITY AND VERIFICATION
+-------------------------------
+evaluate.py prepares existing arrays and invokes evo. Exact executed commands
+in commands.json and each *_command.json. Example translation invocation:
+  /home/yeranis/.local/bin/evo_rpe tum REFERENCE.tum ESTIMATE.tum \
+    -r trans_part -d 0.5 -u m --pairs_from_reference \
+    -c evo_config.json --save_results RESULT.zip
+Rotation uses -r angle_deg. evo_config.json freezes other relevant options.
+TUMs use seconds relative to1727775008700000000ns for robust exact association;
+pair_indices.json retains original integer epoch timestamps/grid indices.
+All TUM export/import is through evo. No manual RPE or RMSE implementation.
+Aggregate archives pool evo errors and call evo's statistics API (not an
+unweighted average of segment RMSEs); only segment0 contributes here.
+
+Checks: original CP-V27/28 JSON/NPZ hashes match historical closeout manifests;
+54script/config/input/evo-source pins unchanged. CLI/API error difference0;
+CLI vs original array metric maximum difference1.552e-12; TUM pose component
+roundtrip difference4.864e-13. All native evo aggregate ZIPs read back exactly.
+Four-sequence Hesai checkpoint reverified PASS4cases/667files; originals=True.
+Prior reports remain untouched; they have not been relabelled evo-only.
+Going forward, user requires reported accuracy metrics from evo directly.
+
+Read-only preparation notes: initial ad-hoc probe looked for the pair helper
+in evo.core.filters rather than evo.core.metrics, then encountered the expected
+empty-pair exception for a short segment. Both were before metric output;
+final script records empty segments using evo's selector, without relaxing
+settings or changing data. The one saved evaluation completed on its first run.
+
+Official metric documentation:
+https://github.com/MichaelGrupp/evo/wiki/Metrics
+Installed source defines exact pairing:
+/home/yeranis/.local/share/pipx/venvs/evo/lib/python3.12/site-packages/evo/core/filters.py
+
+Evidence: results.json, verification.json, pair_indices.json, commands.json,
+input_sha256.json, evo_config.json, outputs/*/*.tum, per-command logs/ZIPs,
+outputs/*_aggregate.zip, closeout.json. No production default promoted.

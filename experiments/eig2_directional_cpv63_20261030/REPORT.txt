@@ -1,0 +1,214 @@
+CP-V63 — first-insertion directional factor/cost audit
+2026-10-30. Completed with QUALIFIED numerical verdict: derivative gates fail.
+Authoritative evidence: analysis.json, gate_explanation.json, attempt_vector_api/
+results receipts; final integrity/cleanup authority: verification.json, complete.json.
+
+BOTTOM LINE
+===========
+The saved first GLIM factor is fitted through a coupled pose/velocity/bias change,
+not just a harmless rigid reorientation of Kimera's window. Keeping that same
+pose/velocity correction but omitting its gyro-bias correction gives a very large
+IMU residual. That is a cost probe, NOT a frozen-bias optimized solution.
+
+The existing identical-graph no-CBS control (CP52, not rerun) shows the tradeoff:
+Kimera fits the external factor while its native visual, IMU and bias-evolution
+fit become worse. This supports a mechanism for the first disturbance, not proof
+of a single root cause of all later trajectory zigzags or true bias error.
+
+A NEW, SPECIFIC MATHEMATICAL CAVEAT: the native BetweenFactor and pose prior use
+approximate Jacobians. Three factor/phase derivative checks fail the predeclared
+1e-6 normalized gate reproducibly at BOTH perturbation spacings. Independent
+exact SE3 cost/derivative reconstruction confirms these discrepancies. Their
+effect on the optimized response has NOT been tested here. Do not announce
+"the bug is fixed", "all checks passed", or assume that a small directional
+difference is harmless in the coupled system. No graph was optimized in CP63.
+
+SCOPE
+=====
+Original CP51 EIG-2 Hesai update6, first CBS929 (GLIM5->7, Kimera x4->x5).
+Capture1.599933183s, original bag offset7.299933183s. Old states x0..x5; x6 new.
+No fixed/marginalized keys at this event. Native no-motion206 retained.
+Original ordinary and refresh saved start/end states, 356 factors each:
+338 smart visual, six IMU, six bias-between, four priors, one native no-motion,
+one CBS. All source means, noise, priors, smart parameters/caches and model
+settings unchanged. No CP61 candidate, estimator rebuild, source playback,
+full run, weight/covariance adjustment, trajectory scoring, deletion or push.
+
+Delta is the actual saved endpoint expressed in the starting state's local chart.
+No optimizer calls, including fixtures. Evaluate independent retract(alpha*Delta)
+probes at0,.25,.5,.75,1,1.25; derivative probes +/-1e-5,+/-1e-6; fullstep component
+probes poses-only / without gyro-bias / without accel-bias changes.
+Each factor evaluation starts from a clone of its phase's original baseline
+cache; probes do not evolve caches sequentially. Thirteen cases per phase.
+Reproducing a saved displacement is NOT a new solution or stationarity test.
+
+ACTUAL COST BUDGET (weighted half-squared residual; NOT metres/ATE)
+================================================================
+Group                  Initial       After ordinary    After refresh
+CBS929                 1572.591005      59.117622          44.278872
+Native vision            16.593292      96.519202          93.700511
+IMU                    3771.693459       1.748454           1.253754
+Bias-between              0.107486      22.965879          15.749331
+Pose prior                0.000174       0.000575           0.000632
+Velocity priors           0.144978       3.508171           3.151205
+Bias prior                0.985584       0.348324           0.304341
+Native no-motion          0.000746       0.006716           0.008461
+Native total           5362.116724     184.214943         158.447108
+
+IMPORTANT: the very large initial IMU cost is shared with the no-CBS control.
+Do not attribute its entire reduction to CBS or claim initial-to-final total
+reduction proves CBS is beneficial. The meaningful controlled comparison is:
+
+Final native quantity      CP52 omit ONLY CBS929       CP63 original with CBS
+IMU cost                         0.052557                    1.253754
+Visual cost                     33.764394                   93.700511
+Bias-between cost                0.445083                   15.749331
+All native priors cost           1.303581                    3.456178
+Native no-motion cost            0.000560                    0.008461
+Valid smart tracks              285                         267
+
+The control's recorded CBS residual cost1662.935255 is diagnostic evaluation
+of the omitted factor, NOT part of B's optimization objective.
+CP52 already established maximum old-pose revision .027277deg without versus
+.322581deg with CBS; maximum gyro-bias revision .0003430 versus .0074609rad/s.
+Those are revisions, not errors against independently known true poses/biases.
+No new no-CBS solve was performed to obtain this table.
+
+DIRECTIONAL PREDICTIONS AND COUPLING
+==================================
+For each factor C_linear(alpha)-C_linear(0)=alpha*s + .5*alpha^2*q.
+The 5 block directions are pose rotation, pose translation, velocity,
+accel bias, gyro bias. Full per-factor slopes/5x5cross matrices in analysis.json
+and native factors.jsonl; cross terms are retained, not discarded.
+
+                         Ordinary s       Ordinary q     Refresh s    Refresh q
+CBS929                    -2715.336690      2403.705599    -19.558211      9.436254
+Vision                        5.443100       245.124388    -10.927108     26.906857
+IMU                       -7546.182532      7551.813451     -0.915473      0.836356
+Bias-between                 -1.806140        49.329065     -8.944310      3.455524
+Velocity priors              -1.630931         9.988248     -0.453025      0.192119
+Bias prior                   -0.813120         0.351720     -0.056834      0.025703
+Pose prior                    0.000282         0.000238      0.000014      0.000081
+No-motion                    -0.001383         0.014706      0.001435      0.000618
+
+CBS's ordinary first-order rotation part is -2704.880635 versus translation
+-10.456054 (local tangent directional terms, NOT independent physical costs).
+The IMU quadratic diagonal-block sum is972107.956739, while cross terms sum
+-964556.143288, leaving7551.813451. In refresh those are40846.778538,
+-40845.942182 and0.836356. Pose/bias/velocity changes compensate strongly.
+These figures depend on the ACTUAL displacement direction; they are not
+unit-independent observability eigenvalues, covariance calibration or a proposed
+new weighting rule. Native approximate-Jacobian caveat below applies.
+
+Native IMU cost at each phase endpoint:
+Probe                          Ordinary        Refresh
+Full saved step                   1.748454         1.253754
+Same step, no gyro-bias change 228972.769549      2259.569397
+Same step, no accel-bias change  130.195467       394.056054
+Pose changes only            249311.002688     10196.628831
+
+This verifies compensation along the saved update. It does NOT establish that
+locking bias would yield these costs after reoptimization, that bias is truly
+wrong, or that a stronger bias prior is the right fix.
+
+Three distinct visual quantities (do NOT conflate):
+                             Ordinary start->end       Refresh start->end
+Native re-triangulate/gate     16.593292->96.519202       96.519202->93.700511
+Fixed initial points/support  16.593292->492.500945      96.519202->352.076500
+Fixed-point linear model      16.593292->492.272148      96.519202->351.492479
+Native reduced-pose model     16.593292->144.598586      96.519202->99.045523
+
+Fixed points forbid landmark motion and visual gauge adaptation; that is a
+restrictive sensitivity diagnostic, NOT the profiled smart objective or the
+cost the optimizer should minimize. No fixed-point depth invalidities occurred.
+Reduced smart native constant is unreduced b'b; CP62 accounts for this convention.
+Use prediction CHANGES, not a false fully-profiled constant comparison.
+
+Native total along alpha [0,.25,.5,.75,1,1.25]:
+ordinary [5362.116724,3118.121144,1512.318479,537.866494,184.214943,459.843398]
+refresh  [184.214943,177.044489,170.692405,163.646279,158.447108,159.081738]
+Among these samples alpha1 is lowest. This is NOT a line-search optimum,
+nonlinear convergence/stationarity certificate, or accuracy against reference.
+
+VISUAL SUPPORT ACCOUNTING
+=========================
+Ordinary: starting285; endpoint266 =256retained +10new;29lost.
+Retained cost10.483187->95.916813; lost tracks had6.110105 starting cost and
+contributezero after rejection; new tracks contribute0.602389.
+Refresh: starting266; endpoint267 =263retained +4new;3lost (706,779,861).
+Retained cost92.238389->92.251203, i.e. slightly WORSE.
+Lost tracks had4.280813 cost; new tracks contribute1.449308.
+Thus the refresh's visual cost decrease2.818691 is accounted for by changing
+support, not improving the total fit of the263retained tracks.
+These are native post-evaluation smart statuses, not frontend feature deletions.
+All338 factors remain in the graph. This is not proof that rejection initiated
+the disturbance: CP61 established the large ordinary change precedes refreshed
+support loss, and suspect1 interventions did not materially fix that first jump.
+
+NUMERICAL VERDICT — DO NOT RELABEL AS ALL-PASS
+============================================
+Native saved matrices EXACT in both phases; endpoint reconstruction<=8.94e-17.
+712 factor-state decompositions;9256 factor/probe native residual checks.
+Assembly<=1.03e-18relative; component identities<=3.23e-11 (<1e-10).
+Native cost vs half whitened residual squared<=8.98e-14 (<1e-9).
+Independent SE3 retraction<=1.53e-16;7163fixed-point costs<=4.61e-12 (<1e-8).
+Fixed visual directional derivatives pass both eps: max1.17e-8 /8.85e-8 (<1e-6).
+No input snapshot/function/cache mutation; Release and ASan/UBSan fixtures pass
+(vendor DSOs uninstrumented). No scene-estimator or nonlinear solve executed.
+
+FAILED strict checks retained unchanged in analysis.json:
+1. CBS929 ordinary slope predicted -2715.336689746 versus native finite
+   difference -2715.315942100 / -2715.315940691.
+   Normalized differences7.63810e-6 /7.63862e-6 >1e-6.
+2. CBS929 refresh predicted -19.558211121 versus -19.557926292 /-19.557926283.
+   Differences1.38548e-5 /1.38552e-5 >1e-6.
+3. Pose prior0 refresh predicted1.42239520e-5 versus1.14097496e-5 /
+   1.14097495e-5. Absolute difference~2.8142e-6, gate failed.
+All other nonvisual factor/phase derivatives passed the declared gate.
+
+Local native code explains an approximation, not a transport/frame mismatch:
+devel/include/gtsam/slam/BetweenFactor.h:117 uses exact Local Jacobian only
+under GTSAM_SLOW_BUT_CORRECT_BETWEENFACTOR, disabled in config.h:99.
+Without it, Between derivatives are returned without the Local/Log chain.
+devel/include/gtsam/nonlinear/ExtendedPriorFactor.h:147 supplies identity
+for its Jacobian while returning the manifold Local error.
+An independent saved-data SE3 reconstruction recovers the same mean/weight from
+recorded equations and reproduces all52 CBS/prior probe costs<=6.12e-14relative.
+Its exact-chain slopes agree with native cost FD, not the approximate slopes.
+No replacement Jacobian or optimized-response test was executed. The small
+CBS directional discrepancy cannot, by itself, prove or rule out causality.
+
+4. One additional conservative cross-language quadratic check fails:
+   ordinary IMU655 alpha1.25: C++ .972441393016693 versus NumPy .972441392765484,
+   absolute2.51210e-10, normalized1.27360e-10 >1e-10.
+   Long-double evaluation .972441392792362; internal absolute quadratic terms
+   sum~3.15346e6. This is consistent with floating-point cancellation/evaluation
+   order, not evidence of a material different graph. Kept FAILED; no tolerance
+   changed, no rerun to obtain a pass. It is below the protocol's independent
+   check1e-8, but the implementation's stricter extra1e-10 gate still failed.
+
+BUILD AND EVIDENCE
+==================
+Initial harness compile failed before any fixture/event evaluation: duplicated
+closing brace plus Eigen dot() dynamic-matrix/static-vector type assertion.
+Original source, logs, failure, cleanup retained. Fresh attempt_vector_api
+corrects only syntax/API shape; original mathematical expressions/guards remain.
+Second private build, both fixture variants, native extraction passed; all
+analysis retains original failed gate verdict. This was not a scientific retry.
+BUILD_REPAIR.txt documents exact repair. No protected file edited.
+No files deleted; both originally-stopped containers restored. Final verifier
+checks original Hesai667 files, all inherited/input hashes and actual jobs/states.
+
+NEXT DECISION — NOT LAUNCHED
+============================
+Before changing weights or claiming the implementation has been cleared, the
+narrow remaining check suggested by THESE results is a single same-checkpoint
+exact-nonvisual-Jacobian ablation: CBS Local/Log chain (and separately native
+pose-prior chart derivative) only; same residual functions, covariances, smart
+factors, cache policy and saved starting state. First prove derivatives using
+finite differences, then quantify response against original; predeclare no
+full-run "fix" claim from one event. If response stays materially unchanged,
+do not keep chasing this as the explanation: return to the demonstrated
+measurement conflict and coupled bias/window response.
+This is a proposal only; no new optimizer/native test/source run authorized here.
+

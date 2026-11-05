@@ -1,0 +1,569 @@
+{
+  "case": "velodyne_spx3",
+  "sensor": "Velodyne",
+  "sequence": "SPX-3",
+  "original_receiver_Qc_multiplier": 1.0,
+  "epoch_ns": 1730565899872888651,
+  "timestamp_origin_ns": 1730565900700000000,
+  "common_coverage": {
+    "grid_queries": 1961,
+    "valid_queries": 1925,
+    "excluded_queries": 36,
+    "supported_s": 192.0,
+    "capture_s": 197.02,
+    "supported_capture_percent": 97.4520353263628,
+    "first_s": 1.5271113490000001,
+    "last_s": 196.827111349,
+    "envelope_s": 195.3,
+    "start_gap_s": 1.5271113490000001,
+    "tail_gap_s": 0.19288865100000407,
+    "segments": [
+      {
+        "first_s": 1.5271113490000001,
+        "last_s": 1.6271113490000002,
+        "rows": 2
+      },
+      {
+        "first_s": 2.627111349,
+        "last_s": 159.12711134900002,
+        "rows": 1566
+      },
+      {
+        "first_s": 159.827111349,
+        "last_s": 168.327111349,
+        "rows": 86
+      },
+      {
+        "first_s": 169.227111349,
+        "last_s": 170.62711134900002,
+        "rows": 15
+      },
+      {
+        "first_s": 171.327111349,
+        "last_s": 196.827111349,
+        "rows": 256
+      }
+    ]
+  },
+  "segments": [
+    {
+      "segment": 0,
+      "rows": 2,
+      "pairs": 0,
+      "reference_path_m": 0.0010193828063725008,
+      "first_s": 1.5271113490000001,
+      "last_s": 1.6271113490000002,
+      "omission": "No evo consecutive delta0.5m pair; no bridging or relaxation."
+    },
+    {
+      "segment": 1,
+      "rows": 1566,
+      "pairs": 167,
+      "reference_path_m": 90.54218363823301,
+      "first_s": 2.627111349,
+      "last_s": 159.12711134900002,
+      "actual_min_m": 0.5003107624231982,
+      "actual_max_m": 0.6137204324306964
+    },
+    {
+      "segment": 2,
+      "rows": 86,
+      "pairs": 0,
+      "reference_path_m": 0.033327721478171,
+      "first_s": 159.827111349,
+      "last_s": 168.327111349,
+      "omission": "No evo consecutive delta0.5m pair; no bridging or relaxation."
+    },
+    {
+      "segment": 3,
+      "rows": 15,
+      "pairs": 0,
+      "reference_path_m": 0.0011790925024139484,
+      "first_s": 169.227111349,
+      "last_s": 170.62711134900002,
+      "omission": "No evo consecutive delta0.5m pair; no bridging or relaxation."
+    },
+    {
+      "segment": 4,
+      "rows": 256,
+      "pairs": 0,
+      "reference_path_m": 0.1891955348795396,
+      "first_s": 171.327111349,
+      "last_s": 196.827111349,
+      "omission": "No evo consecutive delta0.5m pair; no bridging or relaxation."
+    }
+  ],
+  "reference_path_length_m": 90.7669053698995,
+  "RPE_pairs": 167,
+  "results": {
+    "method1_off_glim": {
+      "method": "method1",
+      "mode": "off",
+      "estimator": "GLIM",
+      "ATE_RMSE_m": 0.05238273394421129,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method1_off_glim_ape.zip",
+      "path_length_m": 91.73909701228804,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.027747207211740725,
+            "mean": 0.024408061155172158,
+            "median": 0.02277218018875575,
+            "std": 0.013196744246087834,
+            "min": 0.0040560848511122394,
+            "max": 0.10749293318377252,
+            "sse": 0.12857455384456318
+          },
+          "pairs": 167,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method1_off_glim_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 0.45284083363085154,
+            "mean": 0.38880293978967895,
+            "median": 0.34511932789693905,
+            "std": 0.23215747804968057,
+            "min": 0.033489946253151624,
+            "max": 1.1278568905147728,
+            "sse": 34.245825040781924
+          },
+          "pairs": 167,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method1_off_glim_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method1_off_kimera": {
+      "method": "method1",
+      "mode": "off",
+      "estimator": "Kimera",
+      "ATE_RMSE_m": 0.3616449165192672,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method1_off_kimera_ape.zip",
+      "path_length_m": 102.59824947288347,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.1518890288240616,
+            "mean": 0.09839268653830997,
+            "median": 0.05635588141512132,
+            "std": 0.11571152195391127,
+            "min": 0.005718601655266604,
+            "max": 0.7193859204570698,
+            "sse": 3.8527362718784746
+          },
+          "pairs": 167,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method1_off_kimera_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 0.7107781676841126,
+            "mean": 0.537834802052125,
+            "median": 0.41572070595975524,
+            "std": 0.4646927257424374,
+            "min": 0.04444933760140075,
+            "max": 3.715438360960387,
+            "sse": 84.36933581061622
+          },
+          "pairs": 167,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method1_off_kimera_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method1_off_fusion": {
+      "method": "method1",
+      "mode": "off",
+      "estimator": "Fusion",
+      "ATE_RMSE_m": 0.12462784457830178,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method1_off_fusion_ape.zip",
+      "path_length_m": 94.27009828092586,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.037591713992894175,
+            "mean": 0.033477780149900375,
+            "median": 0.029508113351414532,
+            "std": 0.01709898234277384,
+            "min": 0.008961350054852154,
+            "max": 0.09279821226720569,
+            "sse": 0.2359938724742338
+          },
+          "pairs": 167,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method1_off_fusion_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 1.4297502537772357,
+            "mean": 1.2500104216631176,
+            "median": 1.116675633804716,
+            "std": 0.694017099147899,
+            "min": 0.14330566722470622,
+            "max": 4.7373900837203,
+            "sse": 341.37902662540364
+          },
+          "pairs": 167,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method1_off_fusion_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method1_on_glim": {
+      "method": "method1",
+      "mode": "on",
+      "estimator": "GLIM",
+      "ATE_RMSE_m": 0.05811405742027726,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method1_on_glim_ape.zip",
+      "path_length_m": 92.09908472350885,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.030254458301292326,
+            "mean": 0.02572294931642321,
+            "median": 0.02220483283514991,
+            "std": 0.015926773859427992,
+            "min": 0.0030100616066151623,
+            "max": 0.14676598699274107,
+            "sse": 0.15286048526647422
+          },
+          "pairs": 167,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method1_on_glim_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 0.3521879310398281,
+            "mean": 0.2986545178304067,
+            "median": 0.2447738494489708,
+            "std": 0.18665963074430958,
+            "min": 0.0376623630874923,
+            "max": 0.9200104014298497,
+            "sse": 20.714068574609158
+          },
+          "pairs": 167,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method1_on_glim_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method1_on_kimera": {
+      "method": "method1",
+      "mode": "on",
+      "estimator": "Kimera",
+      "ATE_RMSE_m": 0.2713507802186688,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method1_on_kimera_ape.zip",
+      "path_length_m": 119.31266382513944,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.2130645987107759,
+            "mean": 0.15944271411769506,
+            "median": 0.12705958931718375,
+            "std": 0.14133132752000505,
+            "min": 0.002741645981973334,
+            "max": 1.2071556758973572,
+            "sse": 7.581219378371923
+          },
+          "pairs": 167,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method1_on_kimera_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 1.8678041597645176,
+            "mean": 1.338430291824165,
+            "median": 0.8508193134805091,
+            "std": 1.3028034130908301,
+            "min": 0.11979791244164345,
+            "max": 7.130788029783996,
+            "sse": 582.6116273320172
+          },
+          "pairs": 167,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method1_on_kimera_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method1_on_fusion": {
+      "method": "method1",
+      "mode": "on",
+      "estimator": "Fusion",
+      "ATE_RMSE_m": 0.10965003789557774,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method1_on_fusion_ape.zip",
+      "path_length_m": 94.57637153559172,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.04136561382870579,
+            "mean": 0.03644496115224258,
+            "median": 0.03388560290870917,
+            "std": 0.019567289389109167,
+            "min": 0.005582802080713653,
+            "max": 0.17424127118168808,
+            "sse": 0.28575603924007775
+          },
+          "pairs": 167,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method1_on_fusion_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 1.3537534975833012,
+            "mean": 1.1658685885953524,
+            "median": 1.0458052050269657,
+            "std": 0.6880399453125541,
+            "min": 0.1228323049061243,
+            "max": 3.7983100764470814,
+            "sse": 306.05230488057657
+          },
+          "pairs": 167,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method1_on_fusion_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method2_off_glim": {
+      "method": "method2",
+      "mode": "off",
+      "estimator": "GLIM",
+      "ATE_RMSE_m": 0.2583204731725603,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method2_off_glim_ape.zip",
+      "path_length_m": 88.99232906404332,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.032460293683536035,
+            "mean": 0.029222968673504855,
+            "median": 0.026643601364716343,
+            "std": 0.014131127624105722,
+            "min": 0.00509441764100169,
+            "max": 0.08967884646263684,
+            "sse": 0.1759630012255754
+          },
+          "pairs": 167,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method2_off_glim_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 0.5208055622591525,
+            "mean": 0.43586286957150494,
+            "median": 0.3617299023932858,
+            "std": 0.28506489192632106,
+            "min": 0.0673070083167085,
+            "max": 1.5361274741351592,
+            "sse": 45.296818424572024
+          },
+          "pairs": 167,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method2_off_glim_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method2_off_kimera": {
+      "method": "method2",
+      "mode": "off",
+      "estimator": "Kimera",
+      "ATE_RMSE_m": 0.4821499487656876,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method2_off_kimera_ape.zip",
+      "path_length_m": 88.80075156821138,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.06365255806851028,
+            "mean": 0.045597426584832436,
+            "median": 0.02978391634995577,
+            "std": 0.04441309308645243,
+            "min": 0.00426505377794796,
+            "max": 0.3022014847277885,
+            "sse": 0.6766252408270671
+          },
+          "pairs": 167,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method2_off_kimera_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 0.4735687012168241,
+            "mean": 0.3897859781429662,
+            "median": 0.33498499568728296,
+            "std": 0.26895019244336066,
+            "min": 0.028928473285895057,
+            "max": 1.51350104019049,
+            "sse": 37.45264156695566
+          },
+          "pairs": 167,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method2_off_kimera_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method2_off_fusion": {
+      "method": "method2",
+      "mode": "off",
+      "estimator": "Fusion",
+      "ATE_RMSE_m": 0.6531385074817653,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method2_off_fusion_ape.zip",
+      "path_length_m": 88.93912510815451,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.0699543906180456,
+            "mean": 0.05296173306746227,
+            "median": 0.03760229213162723,
+            "std": 0.04570198679743562,
+            "min": 0.005945953976294658,
+            "max": 0.2382550744591788,
+            "sse": 0.8172340000459317
+          },
+          "pairs": 167,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method2_off_fusion_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 2.5120728286648437,
+            "mean": 1.9091883345231249,
+            "median": 1.504075585893489,
+            "std": 1.632638906750971,
+            "min": 0.29104116297679206,
+            "max": 9.155934229803886,
+            "sse": 1053.8551527182037
+          },
+          "pairs": 167,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method2_off_fusion_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method2_on_glim": {
+      "method": "method2",
+      "mode": "on",
+      "estimator": "GLIM",
+      "ATE_RMSE_m": 0.2651899253776186,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method2_on_glim_ape.zip",
+      "path_length_m": 89.23762664254313,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.03311796774576509,
+            "mean": 0.029314009365271378,
+            "median": 0.026329284700068806,
+            "std": 0.015410666518431919,
+            "min": 0.002087669369764264,
+            "max": 0.12035825322196629,
+            "sse": 0.1831655645307926
+          },
+          "pairs": 167,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method2_on_glim_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 0.4792763059953495,
+            "mean": 0.39121144205882413,
+            "median": 0.3077420148333293,
+            "std": 0.2768743128042092,
+            "min": 0.05563432321241698,
+            "max": 1.5185459881744543,
+            "sse": 38.360864840587496
+          },
+          "pairs": 167,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method2_on_glim_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method2_on_kimera": {
+      "method": "method2",
+      "mode": "on",
+      "estimator": "Kimera",
+      "ATE_RMSE_m": 0.3737375044864546,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method2_on_kimera_ape.zip",
+      "path_length_m": 88.74975708237189,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.04493025009160272,
+            "mean": 0.038581928126643364,
+            "median": 0.03430463572292636,
+            "std": 0.023025251254318434,
+            "min": 0.004127493761782452,
+            "max": 0.16405697327464525,
+            "sse": 0.3371274713400924
+          },
+          "pairs": 167,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method2_on_kimera_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 0.510049428629553,
+            "mean": 0.43446204987527903,
+            "median": 0.38645901311147074,
+            "std": 0.26719496040064855,
+            "min": 0.044658932740756385,
+            "max": 1.7147455854851612,
+            "sse": 43.4451200807707
+          },
+          "pairs": 167,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method2_on_kimera_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    },
+    "method2_on_fusion": {
+      "method": "method2",
+      "mode": "on",
+      "estimator": "Fusion",
+      "ATE_RMSE_m": 0.44073402688486907,
+      "ATE_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method2_on_fusion_ape.zip",
+      "path_length_m": 89.60375071684233,
+      "RPE": {
+        "translation_m": {
+          "statistics": {
+            "rmse": 0.07583762445537989,
+            "mean": 0.060352622737950896,
+            "median": 0.04586507130817206,
+            "std": 0.04592282887285809,
+            "min": 0.014901938789764615,
+            "max": 0.23789905967393524,
+            "sse": 0.9604746622668843
+          },
+          "pairs": 167,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method2_on_fusion_translation_m_aggregate.zip",
+          "reused_CPV31": false
+        },
+        "rotation_deg": {
+          "statistics": {
+            "rmse": 2.5593012501230796,
+            "mean": 1.9078728390814383,
+            "median": 1.3964138580867413,
+            "std": 1.705885142316706,
+            "min": 0.13709841913837767,
+            "max": 9.233465233704047,
+            "sse": 1093.8538224432202
+          },
+          "pairs": 167,
+          "evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method2_on_fusion_rotation_deg_aggregate.zip",
+          "reused_CPV31": false
+        }
+      }
+    }
+  },
+  "verification": {
+    "TUM_roundtrip_pose_max_component": 2.6423307986078726e-13,
+    "CLI_API_error_max_difference": 0.0,
+    "old_ATE_max_difference_m": 2.6645352591003757e-15,
+    "old_path_max_difference_m": 0.0,
+    "historical_hashes_verified": true,
+    "masks_and_reference_identical": true
+  },
+  "original_terminal_omissions": {
+    "off": 1,
+    "on": 0
+  },
+  "new_CLI_calls": 36
+}

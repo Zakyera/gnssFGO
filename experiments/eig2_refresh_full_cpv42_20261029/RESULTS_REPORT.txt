@@ -1,0 +1,58 @@
+CP-V42 FULL MATCHED EIG-2 VELODYNE — DIRECT EVO METHOD1 RESULTS
+Both full355.02s captures and all gates passed; corrected CP-V40 Kimera in both modes.
+Original Qc x1.0 and all other frozen settings. No default promotion or tuning.
+Method1: GLIM first-published absolute; Kimera newest absolute backend; fusion ONLINE absolute.
+Kimera absolute log rows matched to exact native header stamps; not native incremental ROS path.
+IE-TC reference shares CPT7 IMU; not independent prism GT. Same physical prism point.
+ATE: EVO SE3 alignment per curve, no scale. RPE: EVO reference-distance0.5m consecutive pairs.
+Common100ms grid; maximum interpolation gap0.5s (reference0.05s); no bridging excluded intervals.
+Supported 352.300s / 355.02s (99.234%), 3526 queries; 348 common RPE pairs.
+Reference path on common support: 188.012598m
+
+Role | ATE OFF -> ON m | ATE improvement | Path OFF -> ON m | RPE translation OFF -> ON m | RPE rotation OFF -> ON deg
+glim | 0.390391 -> 0.384648 | +1.47% | 204.1411 -> 204.2043 | 0.113178 -> 0.085507 | 0.901470 -> 0.804068
+kimera | 0.515187 -> 2.073638 | -302.50% | 186.9186 -> 791.8826 | 0.030823 -> 1.072331 | 0.819211 -> 5.622269
+fusion_online | 0.518175 -> 0.962769 | -85.80% | 209.4630 -> 212.9174 | 0.056296 -> 0.098964 | 1.913497 -> 1.746401
+fusion_delayed | 0.516078 -> 0.961244 | -86.26% | 187.5712 -> 187.3346 | 0.027165 -> 0.058642 | 0.824691 -> 0.820051
+
+fusion_delayed is DELAYED seven-second fixed-lag-finalized, NOT ONLINE or full-history.
+Path is estimated polyline on common support, not physical distance actually travelled.
+
+FULL SAVED (native cadence; different coverage/pair samples, not common-table substitutes)
+Product | ATE m | no-gap path m | polyline with gap chords m | rows | first/last seconds | gaps
+off_glim | 0.390688 | 205.0132 | 205.0132 | 3542 | 0.7393 / 354.8389 | 0
+off_kimera | 0.515120 | 188.0518 | 188.0543 | 1761 | 0.1999 / 354.8971 | 2
+off_fusion_online | 0.521445 | 294.4277 | 294.4277 | 3545 | 0.5854 / 354.9854 | 0
+off_fusion_delayed | 0.518100 | 192.3162 | 192.3162 | 3545 | 0.5854 / 354.9854 | 0
+on_glim | 0.385076 | 205.4429 | 205.4429 | 3542 | 0.7393 / 354.8389 | 0
+on_kimera | 2.111881 | 923.2350 | 923.2680 | 1765 | 0.1999 / 354.8971 | 1
+on_fusion_online | 0.964198 | 259.5737 | 259.5737 | 3545 | 0.5854 / 354.9854 | 0
+on_fusion_delayed | 0.962338 | 189.9569 | 189.9569 | 3545 | 0.5854 / 354.9854 | 0
+
+RETAINED ENGINEERING EVIDENCE (not nonlinear stationarity/calibrated uncertainty)
+off: 1761 native Kimera / 3541 GLIM / 3545 ONLINE+3545 finalized; 5283 inserts/208319 replacements/50 pre-init exclusions/0 terminal omissions/0 pending.
+  Kimera previous-state revision max 0.288107m; >0.5m=0; >1m=0; observed paired steps=1745, missing IDs=[4, 1555, 1557, 1559, 1563, 1582, 1597, 1599, 1609, 1611, 1681, 1682, 1712, 1757, 1759].
+  Native IMU cost median 0.511618 / max 27.079; not unwhitened residual or ATE.
+  Receiver covariance payload error=0; support service p95 0.120292s; receipt-processing p95 0.032354s.
+  kimera_front: 43369 transported versions, median tr(Crot) 1.48485311e-08 rad2 / tr(Ctrans) 5.00778665e-07 m2; min eigenvalue 1.83996775e-10.
+  glim_velodyne: 170283 transported versions, median tr(Crot) 1.25875762e-08 rad2 / tr(Ctrans) 3.92448828e-06 m2; min eigenvalue 2.45901181e-10.
+on: 1765 native Kimera / 3541 GLIM / 3545 ONLINE+3545 finalized; 5290 inserts/208452 replacements/50 pre-init exclusions/0 terminal omissions/0 pending.
+  Kimera previous-state revision max 7.270845m; >0.5m=475; >1m=211; observed paired steps=1752, missing IDs=[4, 1555, 1558, 1563, 1582, 1597, 1599, 1609, 1683, 1685, 1760, 1763].
+  Native IMU cost median 2366.38 / max 3.17473e+06; not unwhitened residual or ATE.
+  Receiver covariance payload error=0; support service p95 0.108686s; receipt-processing p95 0.027333s.
+  kimera_front: 43543 transported versions, median tr(Crot) 3.71995044e-08 rad2 / tr(Ctrans) 2.67069151e-06 m2; min eigenvalue 6.75560449e-10.
+  glim_velodyne: 170249 transported versions, median tr(Crot) 1.2397845e-08 rad2 / tr(Ctrans) 3.85077952e-06 m2; min eigenvalue 2.46095974e-10.
+
+All raw logs, journals, source/receiver outputs and covariance histories retained.
+No stale/duplicate/expired receiver versions. Source mean-only covariance alignment approximation unchanged.
+Do not compare old ON/new OFF as a matched algorithm pair. Historical tables are preserved.
+6253 pre-capture protected files and Hesai667 passed controller closeout; both containers restored.
+EVO CLI/API parity max 0; TUM roundtrip max 1.7e-15; 48 direct EVO CLI invocations.
+See results.json, evaluation/commands.json, pair_indices.json, input_sha256.json and all EVO ZIPs.
+
+COUNT/PATH QUALIFICATIONS
+The engineering3541GLIM count above belongs to validated odom_imu.txt, not the
+first-published glim_odometry.csv scored here (3542rows each). Neither is lost.
+Common-grid interpolation can attenuate high-frequency publication jumps:
+full-native ONLINE path294.43->259.57m differs materially from common209.46->212.92m.
+Keep these products explicit; neither is the physical distance travelled.

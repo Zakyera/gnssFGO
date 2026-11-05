@@ -1,0 +1,143 @@
+DECIDED ALGORITHM POLICY — LOCAL covariance for every source-belief version
+2026-10-19 | CP-D1
+=======================================================================
+
+Status: SOURCE POLICY GATES PASSED; CP-R4 OFF + CP-R3 ON MATCHED60s EIG-2 PASSED.
+CP-R5 subsequently passes matched60s SPX-3 OFF/ON with the same cachedLOCAL
+builds/settings:experiments/local_covariance_spx3_cpr5_20261019/REPORT.txt.
+NativeKimera and ONLINEfusion ATE/RPE improve; nativeGLIM ATE/tRPE slightly
+worsen. This does not isolate the covariance policy's accuracy effect or
+establish universal improvement/calibration; no parameters/defaults changed.
+CP-R6 also passes matched60s ETH1 OFF/ON with these builds/settings:
+experiments/local_covariance_eth1_cpr6_20261019/REPORT.txt. Native Kimera ATE
+improves.138290->.107645m but1sRPE worsens; ONLINEfusion ATE.049713->.066941m
+and1sRPE worsen. Coverage/startup gaps and delayedfinalized path are disclosed.
+All1753protected files/exact payloads/replay pass. This confirms runtime and
+policy consistency, not calibration or universal performance improvement.
+CP-R1 failed on revision latency; CP-I3 repaired repeated preparation, and CP-R2
+validated one new30s EIG-2 OFF capture. CP-R3 subsequently validated one60s ON;
+CP-R4 now supplies its matched60s cached-policy OFF. No1x certification.
+This document does not relabel existing captures or authorize new experiments.
+Frozen FL4v/FL4w/FL4x builds retain their actual mixed GLIM covariance policy.
+Read GNSSFGO_GRANDTOUR_FL4V_LAUNCH_20261017.txt for that historical baseline.
+
+User decision
+-------------
+Always use LOCAL covariance for outgoing source beliefs, including later
+stable-ID revisions supplied to gnssFGO. Do not switch from LOCAL to MAIN
+posterior covariance merely because the message is a revision.
+
+Contract for GLIM and Kimera, CBS-OFF and CBS-ON
+----------------------------------------------
+1. Preserve the current corrected source relative mean from MAIN.
+2. Recompute the full6x6 LOCAL relative covariance for the same physical
+   endpoints and source update. Preserve [phi,rho] right-local coordinates,
+   full cross terms, and chart transport to the current endpoint estimates.
+3. LOCAL means native source information and native marginal history, without
+   explicitly received peer factors. Maintain separate history when MAIN's prior
+   is not native-only; a redundant copy is not required when removal-before-
+   elimination proves native provenance (CP-I2 below). It does not mean
+   merely deleting visible CBS slots while copying an externally conditioned
+   MAIN marginal prior. Verify each source's actual implementation; do not
+   certify a path solely because a parameter or class is called LOCAL.
+4. Preserve revised means AND revised LOCAL covariances. Do not freeze the
+   first matrix, discard useful revisions, or reconstruct covariance from a
+   saved trajectory.
+5. gnssFGO keeps the existing stable-ID replacement/lifecycle. No duplicate
+   factors, added covariance scale, gate, robust loss, Qc/prior/timing change,
+   or central IMU is introduced by this policy decision.
+6. If LOCAL covariance is unavailable, report an explicit query failure under
+   the diagnostic failure policy; never silently substitute MAIN covariance.
+7. Keep source-to-source classic CBS separate from downstream diagnostic
+   revisions. This decision does NOT enable source-to-source live_revision.
+
+Rationale and limits
+--------------------
+The receiver should not silently re-import explicit peer-factor precision
+inside a source covariance while also accepting the peer's own beliefs as
+separate factors. Consistent native-information conditioning is the intended
+compression policy, rather than alternation between native and MAIN posterior.
+
+This is NOT a proof of statistically independent measurements or perfectly
+calibrated uncertainty. Corrected MAIN means, linearization points, selected
+correspondences, past nonlinear history and shared CPT7 IMU can still carry
+common information. LOCAL covariance around a corrected MAIN mean is a declared
+approximation, not the exact posterior covariance of that MAIN estimate.
+The EIG-2 first-publication confidence blind spot can remain under this policy.
+No accuracy improvement is promised by this decision.
+
+CP-I1 implementation update
+--------------------------
+See experiments/local_revision_covariance_cpi1_20261019/REPORT.txt.
+Private GLIM revision selector native_local reuses the first-publication provider;
+Release50/50 and focusedASan/UBSan50/50 pass. Frozen/default builds unchanged.
+No new estimator run. Kimera already uses LOCAL for first/revised queries; its
+temporary-removal fixture passes, but it uses MAIN's surviving marginal prior,
+not an independently maintained native history. Literal contract3 remained an
+explicit certification item at CP-I1, resolved by CP-I2 below. Do not announce
+a live all-LOCAL baseline before capture validation.
+
+CP-I2 prior-gate resolution
+--------------------------
+See experiments/kimera_native_prior_cpi2_20261019/REPORT.txt. Actual temporary
+removal plus incident-factor elimination preserves a native-information prior
+in MAIN: surviving peer factors remain separate. Nonzero-disagreement fixture,
+13retirements, dense independent Schur Hessian/RHS errors below5e-16; Release
+and focused sanitizer pass. This proves explicit native-information provenance
+for this mode, not statistical independence or nonlinear counterfactual equality.
+
+CP-R1 capture outcome
+--------------------
+First EIG-2 OFF attempt stopped14.28s into60s: new LOCAL per-edge query cost
+delayed GLIM revisions beyond receiver7s retention. No ON/other-sequence capture,
+no retry, tuning or model change. See experiments/local_covariance_cpr1_20261019/
+REPORT.txt. At that gate the policy remained selected but was NOT live-certified;
+the subsequent bounded CP-R2/R3 live gates are distinct evidence below.
+
+CP-R3 standalone60s ON outcome
+-----------------------------
+See experiments/local_covariance_on60_cpr3_20261019/REPORT.txt. Same private
+CP-I1 bridge/CP-I3 cache and frozen source/receiver settings:60s EIG-2 ON
+completed at0.10x, both CBS directions active, all34552versions LOCAL/exact,
+no retention failure, maximum GLIM endpoint age5.216840s below7s. Deterministic
+replay passed. Full native output/ONLINE/delayed metrics and covariance traces
+are retained; shared-CPT7 IE-TC covers all saved rows. No source edits/tuning.
+This is NOT matched60s OFF/ON evidence or statistical independence/calibration.
+
+CP-R4 matched60s OFF/ON outcome
+-----------------------------
+See experiments/local_covariance_off60_cpr4_20261019/REPORT.txt. Fresh matching
+60s OFF completed649.188s wall; cachedLOCAL policy, profiles, libraries, receiver
+and evaluator match the retained CP-R3 ON. Only source receiving differs.
+All34546OFF versions preserve exact payloads; no latefailure, max revision age
+5.192968s<7s; deterministic replay passed. Full saved nativeGLIM/nativeKimera/
+ONLINEfusion ATE OFF/ON:.020797/.025337,.081560/.138205,.043669/.060148m.
+ON still worsens ATE in this window; provenance consistency does not imply
+calibrated covariance or improved accuracy. No tuning or subsequent run.
+
+Bounded implementation plan and remaining gates
+-----------------------------------------------
+- CP-I3 runtime repair: experiments/native_covariance_cache_cpi3_20261019/REPORT.txt.
+  One native preparation per committed epoch, identical tested matrices;
+  saved-equation median paired22.25x query-batch speedup. CP-R2 subsequently
+  passed30s EIG-2 OFF: matched revision median1.024->.086s, max endpoint age
+  5.157s<7s, exact payload conservation/replay. See
+  experiments/local_covariance_live_cpr2_20261019/REPORT.txt. No default promotion
+  or universal latency claim; longer matched captures still require validation.
+- Preserve the frozen mixed-policy binaries/results as the comparison baseline.
+- Route GLIM revision covariance through the existing shared-native provider;
+  reuse equations/history rather than adding nonlinear optimization.
+- Verify Kimera first/revision paths obey the same contract before labeling
+  any new run all-LOCAL. Change only proven violations, not its native method.
+- Focused same-update provider equality, dense covariance/chart, stable-ID,
+  retirement and failure-path tests; preserve source estimator trajectories
+  and ordinary classic CBS payloads. Record provenance in diagnostics.
+- Only then prepare the previously proposed bounded same-source diagnostic
+  comparison. No sequence rerun, tuning or performance claim is implied now.
+
+Evidence motivating the decision:
+experiments/covariance_provenance_cp1_20261019/REPORT.txt
+First GLIM publications used native-only shared equations; downstream revisions
+used MAIN marginals.109615 retained GLIM versions verified. This was explicitly
+preserved S4d policy, not a new arithmetic regression. Existing ATE/RPE numbers
+remain results of that actual baseline and are not relabeled all-LOCAL.

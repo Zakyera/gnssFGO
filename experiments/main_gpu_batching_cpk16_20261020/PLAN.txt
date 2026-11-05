@@ -1,0 +1,204 @@
+CP-K16 — isolated MAIN synchronous-compatible GPU batching
+2026-10-20. PLANNING COMPLETE; IMPLEMENTATION/BUILDS/TESTS NOT STARTED.
+
+AUTHORIZATION AND TARGET
+=======================
+User requests a plan to repair MAIN GPU batching using existing machinery,
+checking equations and inlier/cache behavior before claiming preservation.
+This document is NOT authorization to execute every gate or start a new run.
+Execute one gate, report, and obtain the next decision.
+
+Single hypothesis: batching the SAME requested MAIN VGICP linearizations at
+the SAME linearization points, preserving their stateful synchronous semantics,
+reduces the dominant synchronous GPU cost without changing the estimator.
+This is scheduling/integration work, not a new optimizer or covariance method.
+
+CP-K15 measured MAIN synchronous GPU linearization at95.39% of MAIN time in
+CP-K14. Its archived ROS object omitted BUILD_GTSAM_POINTS_GPU, and the loaded
+bridge has no registration/factory references despite unconditional startup text.
+This proves missing native batching integration, not that enabling the ordinary
+native factory is numerically equivalent. LOCAL shared-Gaussian reuse remains.
+
+BASELINE AND REUSE
+=================
+W = /home/yeranis/repos/V4RL/cbs_gtsam4.3
+G = /home/yeranis/repos/gnssFGO
+Reference: exact loaded CP-K14 private build, not today's workspace defaults.
+Evidence: G/experiments/eth1_latency_cpk15_20261020/{REPORT.txt,supplement.json}.
+Existing relevant build recipes:
+  W/runs/local_revision_covariance_cpi1_20261019/release_commands.json
+  W/runs/native_covariance_cache_cpi3_20261019/release_v2/commands.json
+  W/runs/e1b4a_local_update_batching_20261012/release_2/libraries_commands.json
+Before implementation verify these manifests against the CP-K15 runtime maps
+and pin all used inputs, compiler/ABI settings, object files and DSOs by hash.
+Preserve dirty source work, installed libraries, earlier private builds, captures,
+profiles and the paused automation. Use a NEW private overlay/build directory.
+Rollback is selection of the old exact private library set, not git reset.
+No broad catkin rebuild, install, global CUDA flag flip, commits or push.
+
+Reuse these actual mechanisms, not their old validation claims:
+  W/src/gtsam_points/src/gtsam_points/cuda/nonlinear_factor_set_gpu.cpp:
+    linearizePreservingSynchronousVGICP(), linearizeImpl().
+  W/src/gtsam_points/src/gtsam_points/factors/integrated_vgicp_factor_gpu.cpp:
+    store_linearized_preserving_sync(), linearize(), error().
+  W/src/glim_ros1/include/glim_ros/cbs_local_graph_linearizer.hpp:
+    preflight, exact-type checks, fallback and single-consumption cache pattern.
+  G/experiments/e1_sync_compatible_batching_20261011/PROTOCOL.txt:
+    existing strict equation/covariance tolerances.
+  W/runs/e1b4a_snapshot_checker_20261012/authoring/ExactGpuSnapshot.*:
+    exact device geometry, inliers and cache copies for independent tests.
+Its LOCAL smoother snapshot helper is NOT automatically a MAIN snapshot oracle.
+
+PROPOSED INTEGRATION — NARROW, EXPLICIT, DEFAULT DISABLED
+======================================================
+Use the existing NonlinearFactorSetGPU compatibility backend at MAIN's existing
+ISAM2Ext linearization sites. Add a narrow opt-in MAIN dispatch/adapter, not a
+second optimizer, new CUDA kernels or a process-wide ordinary-hook enable.
+Choose the smallest instance-scoped or explicitly scoped integration after
+checking the archived implementation; do not apply it to every smoother.
+
+Required call-site inventory in gtsam_points/optimizers/isam2_ext.cpp:
+  update(): new factors;
+  recalculateBatch(): full selected graph;
+  relinearizeAffectedFactors(): exact uncached affected subset;
+  marginalizeLeaves(): the factors the existing code actually linearizes.
+Keep factor selection, theta, cacheLinearizedFactors decisions and elimination
+unchanged. Never freshly linearize a factor whose existing Gaussian is reused.
+Keep Gaussian factors in the ORIGINAL synchronous ordering and factor slots.
+The stock hook appends GPU results after CPU results in some loops; do not
+silently inherit that ordering change or misassociate results with indices.
+Retain null slots, key order, removed/replaced factors and slot-reuse semantics.
+
+Prepare only real derivative requests, consume each prepared result once at the
+same Values, and finish the operation before returning to the solver. No reuse
+across theta epochs, residual queries, replacement, retirement or rollback.
+Keep synchronous inlier selection/reset rules and do NOT call the ordinary
+store_linearized() compaction/update_inliers or overwrite evaluation_result.
+Do not treat "same number of inliers" as proof of identical correspondences:
+check indices, anchor, buffers and relevant settings.
+
+Error-only requests retain the original synchronous behavior. Some native hook
+call sites linearize before evaluating error; do not introduce those extra
+state changes via a global factory registration. The frozen odometry profile
+uses Gauss-Newton (use_isam2_dogleg=false); evaluateNonlinearError defaults false
+in the inspected construction. Assert effective parameters in the candidate.
+Unsupported optimizer/error modes must retain the reference route or fail
+admission explicitly, NOT change settings to make a test pass.
+
+Only exact supported VGICP types enter the compatibility backend. Preflight
+the whole request for aliases, pending caches, types and required Values before
+mutation. Unsupported batches use the original synchronous route with a counted
+reason. Preserve aliases; never batch a shared mutable factor twice. On a
+catchable failure, leave no newly prepared cache for a later Values epoch.
+Do not clear a pre-existing cache or conceal fatal CUDA failures with retries.
+Use the existing serialized backend ownership; no new host concurrency.
+
+Prove effective activation through actual loaded paths/hashes and counters:
+eligible/prepared/consumed factors, synchronous fallbacks by reason, batch sizes.
+An unconditional startup message or build flag is not an activation check.
+If registration is used, it must precede MAIN construction, occur exactly once,
+and avoid also enabling the ordinary hook or affecting an unrelated smoother.
+
+GATE K16a — PRIVATE INTEGRATION AND FACTOR-EQUATION CORRECTNESS
+===========================================================
+First implementation gate only; no source playback or performance claim.
+Build from the pinned private recipe, reusing unchanged CUDA kernels/dependencies.
+Disabled candidate must reproduce the reference route. Enabled candidate must
+match independent synchronous factors with identical geometry/runtime settings,
+Values, inlier state and initial caches. Do not use ordinary clone() or shared
+pointers as an exact independent GPU oracle.
+
+Reuse the existing focused fixtures; cover fresh/used unary and binary VGICP,
+mixed CPU/GPU order, changed Values across inlier-refresh thresholds, cached
+error interleaving, pending linearization, duplicate pointers, missing Values,
+unsupported types, and exception cleanup. Compare:
+  augmented Gaussian matrix (H, RHS and constant), factor keys and error;
+  inlier indices/anchor/state and pending-cache contents/lifecycle;
+  full joint and full dense6x6 relative covariance.
+Predeclared inherited limits:
+  CPU matrices: maxabs difference <=1e-12+1e-12*maxabs(reference).
+  GPU Gaussian matrix/error: <=1e-8+1e-6*maxabs(reference).
+  GPU joint/relative covariance: <=1e-10+1e-6*maxabs(reference).
+  IDs/slots/order/inlier state/cache lifecycle exact; no nonfinite values.
+Keep original tests/assertions; report maximum differences, not just PASS.
+Focused Release and applicable host UBSan/CPU ASan; disclose untested CUDA
+device/sanitizer scope. Do not relax tolerances after seeing failures.
+STOP and report K16a before solver-lifecycle validation.
+
+GATE K16b — ACTUAL MAIN LIFECYCLE AND SHARED-LOCAL PARITY
+======================================================
+Only after K16a and authorization. A small deterministic sequence through the
+actual private MAIN ISAM2Ext/fixed-lag wrapper, not the old LOCAL solver alone.
+Exercise new factors, incremental and batch relinearization, cached reuse,
+temporary external-factor insertion/removal, marginalization and slot reuse.
+Use independent reference/candidate graphs, equal inputs and solver parameters.
+Replay identical incoming external factors; do not let changed live arrivals
+confound arithmetic equivalence.
+
+Check same factor IDs/order, active keys, selected relinearization sets,
+retirement decisions and native Gaussian-cache ownership. Compare state,
+Gaussian equations and marginalized priors; the existing shared-native provider
+must still receive the matching MAIN native equations without CBS factors.
+Check CP-I1/CP-I3 first and revised LOCAL covariance queries and corrected MAIN
+relative means. No independent LOCAL optimizer may reappear.
+State gates inherited from previous fixture: p/v/bias max difference<=1e-9,
+orientation<=1e-10rad; matrices/covariances use K16a bounds. Exact decisions.
+Where CPU elimination follows GPU arithmetic, use the declared GPU matrix bound.
+These are same-input fixture limits, not a requirement for byte-identical live
+trajectories with different arrival interleavings.
+
+Check ABI/loaded-symbol identity, no double registration, multiple independent
+smoothers and candidate-disabled parity. Any unimplemented MAIN snapshot/cache
+state is an explicit blocker, not permission to use a shallow smoother copy.
+STOP and report correctness before the timing gate.
+
+GATE K16c — MEASURE THE GAIN, THEN PROPOSE ONE BOUNDED SOURCE CHECK
+===============================================================
+Only after K16b and authorization. First compare identical factor workloads at
+small and filled-window loads, including actual relinearization/marginalization.
+Reuse available exact real GPU fixtures if genuinely sufficient; text logs and
+receiver journals alone cannot reconstruct the source GPU state.
+If missing, state that fact and request one bounded source capture/observer;
+do not quietly start a full sequence or build a general replay framework.
+
+Use warmed alternating reference/candidate repetitions, synchronized CUDA
+completion and identical diagnostic load. Report median/p95/max, synchronous
+calls/prepared hits, batch size, MAIN update and memory costs. Do not add nested
+timers or confuse kernel launch time with completed GPU work. Keep correctness
+observers out of the throughput comparison.
+Carry forward the existing engineering benchmark target: median and p95
+GPU-heavy update time each<=80% of reference, with all numerical gates passing.
+A smaller/no gain is a reported result, not grounds to alter models or tests.
+No synthetic ratio is advertised as whole-GLIM or live-system speedup.
+
+Then propose ONE short headless GLIM source acceptance check using the same
+frozen sensor/model settings, saved incoming CBS inputs if needed for controlled
+ON behavior, and actual first/revised covariance export. Measure complete-scan
+time, MAIN time, outgoing time, queue age and effective batching, including
+filled-window load. State whether it is frozen-input or live exchange. Select
+any later matched run's rate from measured capacity with margin, not ATE.
+No full OFF/ON, default promotion or automatic replay is authorized by this plan.
+
+NON-GOALS AND STOP RULE
+======================
+No changes to covariances, correspondence thresholds, voxel/keyframe selection,
+relinearization thresholds/frequency, graph topology, lag, solver/damping,
+IMU dynamics, source CBS, revision cadence, WNOA/Qc, priors or safety guards.
+Do not skip factors/updates, introduce cross-update memoization, or optimize
+logging as an untracked second hypothesis.
+
+This repair addresses GLIM computational backlog only. It does NOT solve the
+independent CP-K14 Kimera11.10s revision-history versus receiver7s retention
+mismatch. Even perfect GPU speed does not certify full-sequence admission.
+Keep that contract a separate design decision; do not silently change the lag.
+
+Any equation/cache/lifecycle mismatch stops the next gate; localize the first
+divergence against the exact reference, preserve evidence, report. No retuning,
+automatic full-run retry or ATE-based acceptance.
+
+STATUS AT HANDOFF
+=================
+Plan grounded in source inspection and CP-K15/existing E1 fixtures.
+No implementation, build, test, timing, source/receiver run, container start,
+settings change, commit/push or automation reactivation performed.
+Next proposed action is K16a only, subject to user authorization.

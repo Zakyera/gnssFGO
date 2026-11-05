@@ -1,0 +1,1298 @@
+{
+  "passed": true,
+  "cases": {
+    "off": {
+      "checks": {
+        "receiver": {
+          "passed": true,
+          "source_coverage": {
+            "passed": true,
+            "requested_s": 60.0,
+            "imu_samples": 6000,
+            "imu_span_s": 59.99000382423401,
+            "native_glim": {
+              "rows": 592,
+              "start_s": 1730565903.58883,
+              "end_s": 1730565962.688581,
+              "span_s": 59.099750995635986,
+              "maximum_pose_gap_s": 0.10047793388366699,
+              "post_startup_max_gap_s": 0.10047793388366699,
+              "start_after_first_imu_s": 0.7146358489990234,
+              "tail_behind_last_imu_s": 0.17561697959899902,
+              "path_length_m": 33.87444055016654
+            },
+            "native_kimera": {
+              "rows": 297,
+              "start_s": 1730565903.0725975,
+              "end_s": 1730565962.7720606,
+              "span_s": 59.69946312904358,
+              "maximum_pose_gap_s": 0.49999523162841797,
+              "post_startup_max_gap_s": 0.49999523162841797,
+              "start_after_first_imu_s": 0.19840335845947266,
+              "tail_behind_last_imu_s": 0.09213733673095703,
+              "path_length_m": 32.76575772729007
+            }
+          },
+          "transport": {
+            "imu": 6000,
+            "duplicate_imu": 0,
+            "imu_clock_lag_events": 5886,
+            "max_imu_clock_lag_ns": 1874194000,
+            "belief_clock_lag_events": 0,
+            "max_belief_clock_lag_ns": 0,
+            "beliefs": 34287,
+            "duplicates": 0,
+            "published_poses": 595,
+            "max_queue": 24,
+            "sources": {
+              "glim_hesai": 27254,
+              "kimera_front": 7033
+            }
+          },
+          "summary": {
+            "complete": true,
+            "model": "source_wnoa_fixed_lag",
+            "lag_seconds": 7,
+            "stationarity": "not_checked_incremental_policy",
+            "events": 40288,
+            "received": 34287,
+            "inserted": 881,
+            "replaced": 33356,
+            "excluded": 50,
+            "unsupported_end": 0,
+            "absorbed": 785,
+            "active": 96,
+            "pending_at_end": 0,
+            "publications": 595,
+            "finalized": 595,
+            "retained_supports": 71,
+            "peak_slots": 176
+          },
+          "actions": {
+            "before_initialization": 50,
+            "insert": 881,
+            "replace": 33356
+          },
+          "mean_log_roundtrip_error": 6.394624413319505e-15,
+          "covariance_payload_error": 0.0,
+          "online_path_m": 36.854504456362584,
+          "finalized_path_m": 33.88782849934015,
+          "fused_span_s": 59.400000000000006,
+          "support_cycle_seconds": {
+            "n": 595,
+            "mean": 0.08207905594957983,
+            "median": 0.07248226000000002,
+            "p95": 0.11164004799999998,
+            "max": 0.165556815
+          },
+          "receipt_to_processing_seconds": {
+            "n": 40288,
+            "mean": 0.012389668934074663,
+            "median": 0.0134916415,
+            "p95": 0.026268739000000003,
+            "max": 0.080952171
+          },
+          "monitor_output_age_s": {
+            "n": 313,
+            "mean": 0.04708469634504792,
+            "median": 0.050002,
+            "p95": 0.090003,
+            "max": 0.100003
+          },
+          "published_during_source": 595,
+          "max_monitor_queue": 5,
+          "protected_unchanged": 1623,
+          "claim": "live 0.1x bounded pilot; fixed-lag incremental without stationarity certificate"
+        },
+        "repeat": {
+          "passed": true,
+          "seconds": 27.490821389001212,
+          "archive_files_byte_identical": 35376,
+          "numeric_products_byte_identical": [
+            "online_states.csv",
+            "finalized_states.csv",
+            "online_trajectory.tum",
+            "finalized_trajectory.tum",
+            "summary.json"
+          ],
+          "receiver_executable_sha256": "53c96a2b7a762800cf2291166dc78520269098684411de641b52bee6a54dc5c9"
+        },
+        "source": {
+          "passed": true,
+          "mode": "off",
+          "native_updates": 297,
+          "all_steps_nonincreasing": true,
+          "fallback_count": 1,
+          "fallback_rows": [
+            [
+              194.0,
+              117577.72916155281,
+              297252.19010663615,
+              732.1192242480796,
+              1.0,
+              5.0,
+              0.211060443,
+              0.0,
+              3.63040199916201e-15
+            ]
+          ],
+          "iteration_cap_hits": 0,
+          "max_cache_fresh_error": 0.0,
+          "max_tree_error": 3.63040199916201e-15,
+          "planned_retirements": 0,
+          "source_injections": {
+            "g2k_injected": 0,
+            "k2g_injected": 0
+          },
+          "stationarity_certified": false
+        },
+        "local_provenance": {
+          "passed": true,
+          "mode": "off",
+          "sources": {
+            "glim": {
+              "ids": 590,
+              "versions": 27254,
+              "first": 590,
+              "revised": 26664,
+              "provider_queries": 590,
+              "local_joint_queries": 0
+            },
+            "kimera": {
+              "ids": 293,
+              "versions": 7033,
+              "first": 0,
+              "revised": 0,
+              "provider_queries": 0,
+              "local_joint_queries": 7033
+            }
+          },
+          "all_payloads_exact": true,
+          "revision_provenance": "per-version native_local row plus pinned/tested provider route; no separate repeated matrix dump",
+          "limits": "native explicit information at corrected charts; not independent/calibrated likelihood"
+        }
+      },
+      "capture": {
+        "seconds": 649.1545867919922,
+        "phase": "live60",
+        "mode": "off"
+      },
+      "revision_first_endpoint_age_s": {
+        "n": 26664,
+        "mean": 2.7033699502761404,
+        "median": 2.710312163,
+        "p95": 4.835547604,
+        "max": 5.14704368,
+        "min": 0.405820444
+      },
+      "revision_producing_update_lag_s": {
+        "n": 26664,
+        "mean": 0.12509208697731022,
+        "median": 0.12710617300000002,
+        "p95": 0.138806769,
+        "max": 0.167162904,
+        "min": 0.106236544
+      },
+      "revision_within_source_history_s": {
+        "n": 26664,
+        "mean": 2.57827786329883,
+        "median": 2.59941495,
+        "p95": 4.70065,
+        "max": 5.0,
+        "min": 0.2985649
+      },
+      "worst_revision": {
+        "edge": [
+          234,
+          236
+        ],
+        "update": 284,
+        "revision": 48,
+        "age_s": 5.14704368
+      },
+      "lag_margin_s": 1.8529563199999997,
+      "post5s_timing_seconds": {
+        "1": {
+          "n": 541,
+          "mean": 0.13946850357116453,
+          "median": 0.16976386400000001,
+          "p95": 0.2571549,
+          "max": 0.466433598,
+          "min": 0.006647435
+        },
+        "4": {
+          "n": 541,
+          "mean": 0.042355042968576714,
+          "median": 0.029031249000000002,
+          "p95": 0.170943902,
+          "max": 0.28918717800000004,
+          "min": 0.01734619
+        },
+        "3": {
+          "n": 541,
+          "mean": 0.023309912473197785,
+          "median": 0.020717442000000003,
+          "p95": 0.050838742000000006,
+          "max": 0.0924258,
+          "min": 0.014408877
+        },
+        "source_finish_callback": {
+          "n": 541,
+          "mean": 0.06906109815157117,
+          "median": 0.0544315,
+          "p95": 0.228304,
+          "max": 0.384622,
+          "min": 0.032319
+        }
+      },
+      "unpaired_profile_shutdown_tail": 1
+    },
+    "on": {
+      "checks": {
+        "receiver": {
+          "passed": true,
+          "source_coverage": {
+            "passed": true,
+            "requested_s": 60.0,
+            "imu_samples": 6000,
+            "imu_span_s": 59.99000382423401,
+            "native_glim": {
+              "rows": 592,
+              "start_s": 1730565903.58883,
+              "end_s": 1730565962.688581,
+              "span_s": 59.099750995635986,
+              "maximum_pose_gap_s": 0.10047793388366699,
+              "post_startup_max_gap_s": 0.10047793388366699,
+              "start_after_first_imu_s": 0.7146358489990234,
+              "tail_behind_last_imu_s": 0.17561697959899902,
+              "path_length_m": 33.95214130456903
+            },
+            "native_kimera": {
+              "rows": 297,
+              "start_s": 1730565903.0725975,
+              "end_s": 1730565962.7720606,
+              "span_s": 59.69946312904358,
+              "maximum_pose_gap_s": 0.49999523162841797,
+              "post_startup_max_gap_s": 0.49999523162841797,
+              "start_after_first_imu_s": 0.19840335845947266,
+              "tail_behind_last_imu_s": 0.09213733673095703,
+              "path_length_m": 34.12238609102499
+            }
+          },
+          "transport": {
+            "imu": 6000,
+            "duplicate_imu": 0,
+            "imu_clock_lag_events": 5899,
+            "max_imu_clock_lag_ns": 1046910,
+            "belief_clock_lag_events": 0,
+            "max_belief_clock_lag_ns": 0,
+            "beliefs": 34413,
+            "duplicates": 0,
+            "published_poses": 595,
+            "max_queue": 42,
+            "sources": {
+              "glim_hesai": 27380,
+              "kimera_front": 7033
+            }
+          },
+          "summary": {
+            "complete": true,
+            "model": "source_wnoa_fixed_lag",
+            "lag_seconds": 7,
+            "stationarity": "not_checked_incremental_policy",
+            "events": 40414,
+            "received": 34413,
+            "inserted": 881,
+            "replaced": 33482,
+            "excluded": 50,
+            "unsupported_end": 0,
+            "absorbed": 785,
+            "active": 96,
+            "pending_at_end": 0,
+            "publications": 595,
+            "finalized": 595,
+            "retained_supports": 71,
+            "peak_slots": 176
+          },
+          "actions": {
+            "before_initialization": 50,
+            "insert": 881,
+            "replace": 33482
+          },
+          "mean_log_roundtrip_error": 1.1768797741895654e-14,
+          "covariance_payload_error": 0.0,
+          "online_path_m": 35.66464419811597,
+          "finalized_path_m": 34.031459820163334,
+          "fused_span_s": 59.400000000000006,
+          "support_cycle_seconds": {
+            "n": 595,
+            "mean": 0.04600315112268907,
+            "median": 0.041791666000000005,
+            "p95": 0.06412608200000001,
+            "max": 0.07303686500000002
+          },
+          "receipt_to_processing_seconds": {
+            "n": 40414,
+            "mean": 0.008153226236749642,
+            "median": 0.0086488975,
+            "p95": 0.01823556,
+            "max": 0.031233832000000003
+          },
+          "monitor_output_age_s": {
+            "n": 312,
+            "mean": 0.04697310448076923,
+            "median": 0.0500015,
+            "p95": 0.090003,
+            "max": 0.100003
+          },
+          "published_during_source": 595,
+          "max_monitor_queue": 14,
+          "protected_unchanged": 1623,
+          "claim": "live 0.1x bounded pilot; fixed-lag incremental without stationarity certificate"
+        },
+        "repeat": {
+          "passed": true,
+          "seconds": 26.681068325000524,
+          "archive_files_byte_identical": 35502,
+          "numeric_products_byte_identical": [
+            "online_states.csv",
+            "finalized_states.csv",
+            "online_trajectory.tum",
+            "finalized_trajectory.tum",
+            "summary.json"
+          ],
+          "receiver_executable_sha256": "53c96a2b7a762800cf2291166dc78520269098684411de641b52bee6a54dc5c9"
+        },
+        "source": {
+          "passed": true,
+          "mode": "on",
+          "native_updates": 297,
+          "all_steps_nonincreasing": true,
+          "fallback_count": 6,
+          "fallback_rows": [
+            [
+              183.0,
+              1137569.118557077,
+              1170465.8504015382,
+              3959.6766814903694,
+              1.0,
+              10.0,
+              0.139986647,
+              0.0,
+              1.1330476877968174e-10
+            ],
+            [
+              190.0,
+              350408.840070345,
+              660343.5034500792,
+              4262.244148286707,
+              1.0,
+              6.0,
+              0.153240126,
+              0.0,
+              3.5468991736610495e-13
+            ],
+            [
+              207.0,
+              316675.23463154596,
+              374379.02423299215,
+              4268.10580859493,
+              1.0,
+              6.0,
+              0.078233938,
+              0.0,
+              1.0035207935018591e-13
+            ],
+            [
+              219.0,
+              73487.06852135889,
+              80117.50645001419,
+              4055.075827139079,
+              1.0,
+              7.0,
+              0.10962827,
+              0.0,
+              1.502756333190577e-12
+            ],
+            [
+              222.0,
+              21000.31577272786,
+              27416.765534090777,
+              3821.4161467610124,
+              1.0,
+              4.0,
+              0.079797885,
+              0.0,
+              9.155250168175817e-14
+            ],
+            [
+              231.0,
+              93564.64298843424,
+              125682.24895032914,
+              2523.7388677868717,
+              1.0,
+              5.0,
+              0.099328571,
+              0.0,
+              2.629114692204222e-13
+            ]
+          ],
+          "iteration_cap_hits": 1,
+          "max_cache_fresh_error": 0.0,
+          "max_tree_error": 1.1330476877968174e-10,
+          "planned_retirements": 267,
+          "source_injections": {
+            "g2k_injected": 289,
+            "k2g_injected": 292
+          },
+          "stationarity_certified": false
+        },
+        "local_provenance": {
+          "passed": true,
+          "mode": "on",
+          "sources": {
+            "glim": {
+              "ids": 590,
+              "versions": 27380,
+              "first": 590,
+              "revised": 26790,
+              "provider_queries": 590,
+              "local_joint_queries": 0
+            },
+            "kimera": {
+              "ids": 293,
+              "versions": 7033,
+              "first": 0,
+              "revised": 0,
+              "provider_queries": 0,
+              "local_joint_queries": 7033
+            }
+          },
+          "all_payloads_exact": true,
+          "revision_provenance": "per-version native_local row plus pinned/tested provider route; no separate repeated matrix dump",
+          "limits": "native explicit information at corrected charts; not independent/calibrated likelihood"
+        }
+      },
+      "capture": {
+        "seconds": 645.603527545929,
+        "phase": "live60",
+        "mode": "on"
+      },
+      "revision_first_endpoint_age_s": {
+        "n": 26790,
+        "mean": 2.7056333584580816,
+        "median": 2.7165251835,
+        "p95": 4.832757842,
+        "max": 5.147209107,
+        "min": 0.40634767600000005
+      },
+      "revision_producing_update_lag_s": {
+        "n": 26790,
+        "mean": 0.11921763634535275,
+        "median": 0.119381337,
+        "p95": 0.129851819,
+        "max": 0.148831305,
+        "min": 0.105685713
+      },
+      "revision_within_source_history_s": {
+        "n": 26790,
+        "mean": 2.586415722112729,
+        "median": 2.5997115500000003,
+        "p95": 4.7008121,
+        "max": 5.0,
+        "min": 0.2985649
+      },
+      "worst_revision": {
+        "edge": [
+          272,
+          274
+        ],
+        "update": 322,
+        "revision": 48,
+        "age_s": 5.147209107
+      },
+      "lag_margin_s": 1.8527908929999999,
+      "post5s_timing_seconds": {
+        "1": {
+          "n": 541,
+          "mean": 0.1044445833327172,
+          "median": 0.11048413900000001,
+          "p95": 0.142195288,
+          "max": 0.259303645,
+          "min": 0.003845167
+        },
+        "4": {
+          "n": 541,
+          "mean": 0.0178183753012939,
+          "median": 0.011073925,
+          "p95": 0.061791979000000004,
+          "max": 0.15590468200000002,
+          "min": 0.009539916
+        },
+        "3": {
+          "n": 541,
+          "mean": 0.010427402900184844,
+          "median": 0.00887358,
+          "p95": 0.017691492,
+          "max": 0.040673402000000004,
+          "min": 0.007945453
+        },
+        "source_finish_callback": {
+          "n": 541,
+          "mean": 0.02971053622920518,
+          "median": 0.0215827,
+          "p95": 0.082182,
+          "max": 0.200587,
+          "min": 0.018482099999999998
+        }
+      },
+      "unpaired_profile_shutdown_tail": 1
+    }
+  },
+  "evaluation": {
+    "reference": {
+      "path": "/workspace/cbs_gtsam4.3/src/datasets/GrandTour/SPX-3/2024-11-02-17-43-10_cpt7_ie_tc.bag",
+      "sha256": "563ad3681eb40ed85bb682926ea1bdafb86b038dfffa7e6413cc4e32b8fb75aa",
+      "topic": "/boxi/inertial_explorer/tc/odometry",
+      "frame_ids": [
+        "enu_origin"
+      ],
+      "child_frame_ids": [
+        "cpt7_imu"
+      ],
+      "caveat": "IE-TC GNSS/INS reference shares CPT7 IMU; not independent prism GT"
+    },
+    "common_mask": {
+      "rows": 590,
+      "start_s": 1730565903.6,
+      "end_s": 1730565962.4999437,
+      "timestamps_sha256": "051307b574d10b9c909880f512dca48d557c9cacf59c84e4eb0bf27b5375df7f",
+      "interpolation_gap_estimate_s": 0.5,
+      "interpolation_gap_reference_s": 0.05
+    },
+    "convention": "Per-path rigid SE(3) no-scale alignment for ATE at prism lever arm; 1s RPE in prism frame, no global alignment",
+    "results": {
+      "off_native_glim": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared/live60_off_source/odom_imu.txt",
+        "sha256": "8cd4663b31792bdcd1e4b619698861f53c000ba7aba79671262a01c4f3bda66c",
+        "full_saved_rows": 592,
+        "full_saved_span_s": 59.099750995635986,
+        "full_saved_path_length_CPT7_m": 33.87444055016654,
+        "full_saved": {
+          "rows": 592,
+          "start_s": 1730565903.58883,
+          "end_s": 1730565962.688581,
+          "span_s": 59.099750995635986,
+          "ATE_RMSE_m": 0.010246400400094372,
+          "translation_RPE_1s_RMSE_m": 0.005283369682062749,
+          "rotation_RPE_1s_RMSE_deg": 0.2180147977526556,
+          "path_length_prism_m": 34.191249922279724,
+          "reference_path_length_prism_m": 34.16737592704193,
+          "rpe_pairs": 580,
+          "error_m": {
+            "n": 592,
+            "mean": 0.009391078185433235,
+            "median": 0.008888208155452937,
+            "p95": 0.016519858487561698,
+            "max": 0.029834734903620028
+          }
+        },
+        "common": {
+          "rows": 590,
+          "start_s": 1730565903.6,
+          "end_s": 1730565962.4999437,
+          "ATE_RMSE_m": 0.010240081288629872,
+          "translation_RPE_1s_RMSE_m": 0.005283356093790198,
+          "rotation_RPE_1s_RMSE_deg": 0.21801344433309647,
+          "path_length_prism_m": 34.00705800356654,
+          "reference_path_length_prism_m": 34.00874896831402,
+          "error_m": {
+            "n": 590,
+            "mean": 0.009402244154275267,
+            "median": 0.008916041416750264,
+            "p95": 0.0164120168468002,
+            "max": 0.028331902938766036
+          },
+          "rpe_pairs": 580
+        }
+      },
+      "off_native_kimera": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared/live60_off_source/kimera_odometry.csv",
+        "sha256": "a354f231af449165505cabeaf2b181c941364de5dbffddb09e9e86792653ac37",
+        "full_saved_rows": 297,
+        "full_saved_span_s": 59.69946312904358,
+        "full_saved_path_length_CPT7_m": 32.76575772729007,
+        "full_saved": {
+          "rows": 297,
+          "start_s": 1730565903.0725975,
+          "end_s": 1730565962.7720606,
+          "span_s": 59.69946312904358,
+          "ATE_RMSE_m": 0.5304512179949995,
+          "translation_RPE_1s_RMSE_m": 0.22742503481442508,
+          "rotation_RPE_1s_RMSE_deg": 0.6720947525833635,
+          "path_length_prism_m": 33.128971598464744,
+          "reference_path_length_prism_m": 34.43876209563717,
+          "rpe_pairs": 587,
+          "error_m": {
+            "n": 297,
+            "mean": 0.39771686849230337,
+            "median": 0.2890519825164651,
+            "p95": 0.934554206180264,
+            "max": 2.5050718045576086
+          }
+        },
+        "common": {
+          "rows": 590,
+          "start_s": 1730565903.6,
+          "end_s": 1730565962.4999437,
+          "ATE_RMSE_m": 0.47350543473579837,
+          "translation_RPE_1s_RMSE_m": 0.2179185199588775,
+          "rotation_RPE_1s_RMSE_deg": 0.6275942168241492,
+          "path_length_prism_m": 32.65679591319096,
+          "reference_path_length_prism_m": 34.00874896831402,
+          "error_m": {
+            "n": 590,
+            "mean": 0.37610078022498583,
+            "median": 0.2800396593134238,
+            "p95": 0.8782471029050058,
+            "max": 2.298059718191103
+          },
+          "rpe_pairs": 580
+        }
+      },
+      "off_fused_online": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared/live60_off_receiver/receiver/online_trajectory.tum",
+        "sha256": "58cd8e1921e30e33b79241e4fff1f74754d288647bab1098d4a7121201599bf9",
+        "full_saved_rows": 595,
+        "full_saved_span_s": 59.39999985694885,
+        "full_saved_path_length_CPT7_m": 36.85450445636258,
+        "full_saved": {
+          "rows": 595,
+          "start_s": 1730565903.454194,
+          "end_s": 1730565962.854194,
+          "span_s": 59.39999985694885,
+          "ATE_RMSE_m": 0.05464792512104255,
+          "translation_RPE_1s_RMSE_m": 0.036831118452625086,
+          "rotation_RPE_1s_RMSE_deg": 1.2410655166067486,
+          "path_length_prism_m": 37.2348791754939,
+          "reference_path_length_prism_m": 34.392900098032214,
+          "rpe_pairs": 583,
+          "error_m": {
+            "n": 595,
+            "mean": 0.04553812500772517,
+            "median": 0.03957343368730273,
+            "p95": 0.08844376514112605,
+            "max": 0.22856684887344275
+          }
+        },
+        "common": {
+          "rows": 590,
+          "start_s": 1730565903.6,
+          "end_s": 1730565962.4999437,
+          "ATE_RMSE_m": 0.050506910973016815,
+          "translation_RPE_1s_RMSE_m": 0.0365639312011902,
+          "rotation_RPE_1s_RMSE_deg": 1.241250095411222,
+          "path_length_prism_m": 34.93160359823324,
+          "reference_path_length_prism_m": 34.00874896831402,
+          "error_m": {
+            "n": 590,
+            "mean": 0.04256752904885573,
+            "median": 0.03756667927304971,
+            "p95": 0.07077292229284682,
+            "max": 0.203807207984635
+          },
+          "rpe_pairs": 580
+        }
+      },
+      "off_fused_finalized": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared/live60_off_receiver/receiver/finalized_trajectory.tum",
+        "sha256": "1561aa2eee26723468c8e7f083a16e09bc7f9aad641e2e5bafe5c344b50d867c",
+        "full_saved_rows": 595,
+        "full_saved_span_s": 59.39999985694885,
+        "full_saved_path_length_CPT7_m": 33.88782849934015,
+        "full_saved": {
+          "rows": 595,
+          "start_s": 1730565903.454194,
+          "end_s": 1730565962.854194,
+          "span_s": 59.39999985694885,
+          "ATE_RMSE_m": 0.0404830452243938,
+          "translation_RPE_1s_RMSE_m": 0.01246819664361023,
+          "rotation_RPE_1s_RMSE_deg": 0.24171584495779475,
+          "path_length_prism_m": 34.20907604041102,
+          "reference_path_length_prism_m": 34.392900098032214,
+          "rpe_pairs": 583,
+          "error_m": {
+            "n": 595,
+            "mean": 0.0357875187585576,
+            "median": 0.03236617912561462,
+            "p95": 0.061200163010547,
+            "max": 0.22820722754252035
+          }
+        },
+        "common": {
+          "rows": 590,
+          "start_s": 1730565903.6,
+          "end_s": 1730565962.4999437,
+          "ATE_RMSE_m": 0.03923891008863898,
+          "translation_RPE_1s_RMSE_m": 0.011359021121818011,
+          "rotation_RPE_1s_RMSE_deg": 0.2403123854777531,
+          "path_length_prism_m": 33.83160788599178,
+          "reference_path_length_prism_m": 34.00874896831402,
+          "error_m": {
+            "n": 590,
+            "mean": 0.035390728953168714,
+            "median": 0.032637439822295125,
+            "p95": 0.06032061362483391,
+            "max": 0.15013654665680964
+          },
+          "rpe_pairs": 580
+        }
+      },
+      "on_native_glim": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared/live60_on_source/odom_imu.txt",
+        "sha256": "8f73c421638d7c251c98bb8d1bc99a67c43931006fb88c6941d364b7681c707e",
+        "full_saved_rows": 592,
+        "full_saved_span_s": 59.099750995635986,
+        "full_saved_path_length_CPT7_m": 33.95214130456903,
+        "full_saved": {
+          "rows": 592,
+          "start_s": 1730565903.58883,
+          "end_s": 1730565962.688581,
+          "span_s": 59.099750995635986,
+          "ATE_RMSE_m": 0.011236616606157782,
+          "translation_RPE_1s_RMSE_m": 0.006095105509836614,
+          "rotation_RPE_1s_RMSE_deg": 0.19024272995160074,
+          "path_length_prism_m": 34.26586239776804,
+          "reference_path_length_prism_m": 34.16737592704193,
+          "rpe_pairs": 580,
+          "error_m": {
+            "n": 592,
+            "mean": 0.010209750597739107,
+            "median": 0.009569843171349814,
+            "p95": 0.018683385696935423,
+            "max": 0.031015717585107704
+          }
+        },
+        "common": {
+          "rows": 590,
+          "start_s": 1730565903.6,
+          "end_s": 1730565962.4999437,
+          "ATE_RMSE_m": 0.011217564969113204,
+          "translation_RPE_1s_RMSE_m": 0.006095100588810486,
+          "rotation_RPE_1s_RMSE_deg": 0.1902414512976022,
+          "path_length_prism_m": 34.06193651748513,
+          "reference_path_length_prism_m": 34.00874896831402,
+          "error_m": {
+            "n": 590,
+            "mean": 0.010215714609931384,
+            "median": 0.009620139711917197,
+            "p95": 0.018508266077107545,
+            "max": 0.029579761444766064
+          },
+          "rpe_pairs": 580
+        }
+      },
+      "on_native_kimera": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared/live60_on_source/kimera_odometry.csv",
+        "sha256": "a68df5884236b0dba9a20c9283501413ba95f1985f4e8e6e62a6801841a73643",
+        "full_saved_rows": 297,
+        "full_saved_span_s": 59.69946312904358,
+        "full_saved_path_length_CPT7_m": 34.12238609102499,
+        "full_saved": {
+          "rows": 297,
+          "start_s": 1730565903.0725975,
+          "end_s": 1730565962.7720606,
+          "span_s": 59.69946312904358,
+          "ATE_RMSE_m": 0.07011800632394664,
+          "translation_RPE_1s_RMSE_m": 0.03745272874069053,
+          "rotation_RPE_1s_RMSE_deg": 0.4721402132464863,
+          "path_length_prism_m": 34.417180298553816,
+          "reference_path_length_prism_m": 34.43876209563717,
+          "rpe_pairs": 587,
+          "error_m": {
+            "n": 297,
+            "mean": 0.05396108704202393,
+            "median": 0.04190794227362684,
+            "p95": 0.11233604844397141,
+            "max": 0.3907602423940831
+          }
+        },
+        "common": {
+          "rows": 590,
+          "start_s": 1730565903.6,
+          "end_s": 1730565962.4999437,
+          "ATE_RMSE_m": 0.06048282519586458,
+          "translation_RPE_1s_RMSE_m": 0.023636888221210146,
+          "rotation_RPE_1s_RMSE_deg": 0.43860801619473844,
+          "path_length_prism_m": 33.94534626272619,
+          "reference_path_length_prism_m": 34.00874896831402,
+          "error_m": {
+            "n": 590,
+            "mean": 0.04981815858851504,
+            "median": 0.040542845295118105,
+            "p95": 0.11145044783565297,
+            "max": 0.2357627962569856
+          },
+          "rpe_pairs": 580
+        }
+      },
+      "on_fused_online": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared/live60_on_receiver/receiver/online_trajectory.tum",
+        "sha256": "863086a82a88dab1f5c1e88b12a6d4193ede9f92365d5b6253de06285d6980e1",
+        "full_saved_rows": 595,
+        "full_saved_span_s": 59.39999985694885,
+        "full_saved_path_length_CPT7_m": 35.66464419811597,
+        "full_saved": {
+          "rows": 595,
+          "start_s": 1730565903.454194,
+          "end_s": 1730565962.854194,
+          "span_s": 59.39999985694885,
+          "ATE_RMSE_m": 0.0350178746628177,
+          "translation_RPE_1s_RMSE_m": 0.025837968859203524,
+          "rotation_RPE_1s_RMSE_deg": 1.2093551126392026,
+          "path_length_prism_m": 36.122330839957996,
+          "reference_path_length_prism_m": 34.392900098032214,
+          "rpe_pairs": 583,
+          "error_m": {
+            "n": 595,
+            "mean": 0.027297674001383245,
+            "median": 0.022080492286843903,
+            "p95": 0.05756382836037133,
+            "max": 0.2785455214085222
+          }
+        },
+        "common": {
+          "rows": 590,
+          "start_s": 1730565903.6,
+          "end_s": 1730565962.4999437,
+          "ATE_RMSE_m": 0.03127241810083627,
+          "translation_RPE_1s_RMSE_m": 0.02582330253873121,
+          "rotation_RPE_1s_RMSE_deg": 1.210514036185045,
+          "path_length_prism_m": 34.86071393363947,
+          "reference_path_length_prism_m": 34.00874896831402,
+          "error_m": {
+            "n": 590,
+            "mean": 0.024270719161978177,
+            "median": 0.019599185591537838,
+            "p95": 0.052525891828313354,
+            "max": 0.23292938380840786
+          },
+          "rpe_pairs": 580
+        }
+      },
+      "on_fused_finalized": {
+        "path": "/workspace/cbs_gtsam4.3/runs/gnssfgo_spx3_local_cov60_cpr5_20261019/prepared/live60_on_receiver/receiver/finalized_trajectory.tum",
+        "sha256": "72a8003a531140f9b648e9d60703ab9c53f74abc037f8b8bed9e381508c5f213",
+        "full_saved_rows": 595,
+        "full_saved_span_s": 59.39999985694885,
+        "full_saved_path_length_CPT7_m": 34.031459820163334,
+        "full_saved": {
+          "rows": 595,
+          "start_s": 1730565903.454194,
+          "end_s": 1730565962.854194,
+          "span_s": 59.39999985694885,
+          "ATE_RMSE_m": 0.02711377032963826,
+          "translation_RPE_1s_RMSE_m": 0.008235102749138202,
+          "rotation_RPE_1s_RMSE_deg": 0.23079099608498468,
+          "path_length_prism_m": 34.355999279886746,
+          "reference_path_length_prism_m": 34.392900098032214,
+          "rpe_pairs": 583,
+          "error_m": {
+            "n": 595,
+            "mean": 0.02039185739267639,
+            "median": 0.015227741077524677,
+            "p95": 0.057728658526634516,
+            "max": 0.1386553718856737
+          }
+        },
+        "common": {
+          "rows": 590,
+          "start_s": 1730565903.6,
+          "end_s": 1730565962.4999437,
+          "ATE_RMSE_m": 0.026117323820461485,
+          "translation_RPE_1s_RMSE_m": 0.0076059785425298745,
+          "rotation_RPE_1s_RMSE_deg": 0.22999875648483145,
+          "path_length_prism_m": 33.943999600514246,
+          "reference_path_length_prism_m": 34.00874896831402,
+          "error_m": {
+            "n": 590,
+            "mean": 0.019978164006485777,
+            "median": 0.015306260291502009,
+            "p95": 0.05605227861074062,
+            "max": 0.11499058694081199
+          },
+          "rpe_pairs": 580
+        }
+      }
+    },
+    "covariance": {
+      "off": {
+        "kimera_front": {
+          "versions": 7033,
+          "stable_ids": 293,
+          "revised_ids": 292,
+          "rotation_trace_rad2": {
+            "n": 7033,
+            "mean": 1.6019839137228173e-07,
+            "median": 1.2074286874058778e-07,
+            "p95": 3.700699411024143e-07,
+            "max": 1.1999514634161957e-05
+          },
+          "translation_trace_m2": {
+            "n": 7033,
+            "mean": 1.7699417452474845e-05,
+            "median": 9.966850127012449e-06,
+            "p95": 4.574608665455154e-05,
+            "max": 0.003373263724912369
+          },
+          "min_eigenvalue": 2.393474006783617e-10,
+          "max_eigenvalue": 0.002821042172822127,
+          "max_symmetry_error": 0.0,
+          "first_last_rotation_trace_ratio": {
+            "n": 292,
+            "mean": 0.6308045380527318,
+            "median": 0.6304449535165311,
+            "p95": 1.07066042635773,
+            "max": 1.2958101555584538
+          },
+          "first_last_translation_trace_ratio": {
+            "n": 292,
+            "mean": 0.4553314029388743,
+            "median": 0.3947358404025425,
+            "p95": 0.9861658351360126,
+            "max": 1.519456645971628
+          }
+        },
+        "glim_hesai": {
+          "versions": 27254,
+          "stable_ids": 590,
+          "revised_ids": 589,
+          "rotation_trace_rad2": {
+            "n": 27254,
+            "mean": 1.0397645324619058e-07,
+            "median": 1.0061905117118823e-07,
+            "p95": 1.8695154241953092e-07,
+            "max": 3.289788973618791e-07
+          },
+          "translation_trace_m2": {
+            "n": 27254,
+            "mean": 2.186272987285363e-06,
+            "median": 2.065079230842743e-06,
+            "p95": 3.0973742493607694e-06,
+            "max": 7.895652823814194e-06
+          },
+          "min_eigenvalue": 4.210735479649687e-09,
+          "max_eigenvalue": 2.907718279636912e-06,
+          "max_symmetry_error": 0.0,
+          "first_last_rotation_trace_ratio": {
+            "n": 589,
+            "mean": 0.7700983262802173,
+            "median": 0.7799470108778472,
+            "p95": 0.8288495290028897,
+            "max": 0.8657285576407187
+          },
+          "first_last_translation_trace_ratio": {
+            "n": 589,
+            "mean": 0.6086175352715611,
+            "median": 0.6159450111949136,
+            "p95": 0.646937366948982,
+            "max": 0.6828390937642622
+          }
+        }
+      },
+      "on": {
+        "kimera_front": {
+          "versions": 7033,
+          "stable_ids": 293,
+          "revised_ids": 292,
+          "rotation_trace_rad2": {
+            "n": 7033,
+            "mean": 1.0842671763647351e-07,
+            "median": 7.903161188758879e-08,
+            "p95": 1.3217404635011375e-07,
+            "max": 1.1999514634161957e-05
+          },
+          "translation_trace_m2": {
+            "n": 7033,
+            "mean": 1.1984966932832953e-05,
+            "median": 6.949165605933661e-06,
+            "p95": 2.6032813155529975e-05,
+            "max": 0.0023572865873421086
+          },
+          "min_eigenvalue": 1.045863242598384e-09,
+          "max_eigenvalue": 0.0017652355296963237,
+          "max_symmetry_error": 0.0,
+          "first_last_rotation_trace_ratio": {
+            "n": 292,
+            "mean": 0.6151050598156032,
+            "median": 0.6359701438598041,
+            "p95": 1.0152241105351476,
+            "max": 1.1203218091267364
+          },
+          "first_last_translation_trace_ratio": {
+            "n": 292,
+            "mean": 0.4310705268417066,
+            "median": 0.38264592137507414,
+            "p95": 0.8970361871142494,
+            "max": 1.4745143292502891
+          }
+        },
+        "glim_hesai": {
+          "versions": 27380,
+          "stable_ids": 590,
+          "revised_ids": 589,
+          "rotation_trace_rad2": {
+            "n": 27380,
+            "mean": 1.0735082623641052e-07,
+            "median": 1.0258391177693569e-07,
+            "p95": 1.861714892603148e-07,
+            "max": 3.2116162952293647e-07
+          },
+          "translation_trace_m2": {
+            "n": 27380,
+            "mean": 2.27923284961139e-06,
+            "median": 2.1201459021579514e-06,
+            "p95": 3.120779733634449e-06,
+            "max": 8.061637537238943e-06
+          },
+          "min_eigenvalue": 4.456407217310481e-09,
+          "max_eigenvalue": 2.994570042871737e-06,
+          "max_symmetry_error": 0.0,
+          "first_last_rotation_trace_ratio": {
+            "n": 589,
+            "mean": 0.7691451336836685,
+            "median": 0.779427458070277,
+            "p95": 0.8276879109815416,
+            "max": 0.8679722262798828
+          },
+          "first_last_translation_trace_ratio": {
+            "n": 589,
+            "mean": 0.6058146225944901,
+            "median": 0.6108200040476058,
+            "p95": 0.6410222415739388,
+            "max": 0.6799838272529454
+          }
+        }
+      }
+    }
+  },
+  "comparison_full": {
+    "native_glim": {
+      "ATE_RMSE_m": {
+        "off": 0.010246400400094372,
+        "on": 0.011236616606157782,
+        "on_minus_off": 0.0009902162060634098,
+        "percent": 9.664039734913054
+      },
+      "translation_RPE_1s_RMSE_m": {
+        "off": 0.005283369682062749,
+        "on": 0.006095105509836614,
+        "on_minus_off": 0.0008117358277738651,
+        "percent": 15.363979365853208
+      },
+      "rotation_RPE_1s_RMSE_deg": {
+        "off": 0.2180147977526556,
+        "on": 0.19024272995160074,
+        "on_minus_off": -0.027772067801054845,
+        "percent": -12.738615950538868
+      },
+      "path_length_prism_m": {
+        "off": 34.191249922279724,
+        "on": 34.26586239776804,
+        "on_minus_off": 0.07461247548831551,
+        "percent": 0.2182209648899036
+      }
+    },
+    "native_kimera": {
+      "ATE_RMSE_m": {
+        "off": 0.5304512179949995,
+        "on": 0.07011800632394664,
+        "on_minus_off": -0.46033321167105284,
+        "percent": -86.78144116833612
+      },
+      "translation_RPE_1s_RMSE_m": {
+        "off": 0.22742503481442508,
+        "on": 0.03745272874069053,
+        "on_minus_off": -0.18997230607373455,
+        "percent": -83.53183554693031
+      },
+      "rotation_RPE_1s_RMSE_deg": {
+        "off": 0.6720947525833635,
+        "on": 0.4721402132464863,
+        "on_minus_off": -0.19995453933687718,
+        "percent": -29.750944873219453
+      },
+      "path_length_prism_m": {
+        "off": 33.128971598464744,
+        "on": 34.417180298553816,
+        "on_minus_off": 1.288208700089072,
+        "percent": 3.88846570821042
+      }
+    },
+    "fused_online": {
+      "ATE_RMSE_m": {
+        "off": 0.05464792512104255,
+        "on": 0.0350178746628177,
+        "on_minus_off": -0.01963005045822485,
+        "percent": -35.92094377736249
+      },
+      "translation_RPE_1s_RMSE_m": {
+        "off": 0.036831118452625086,
+        "on": 0.025837968859203524,
+        "on_minus_off": -0.010993149593421563,
+        "percent": -29.847449806776204
+      },
+      "rotation_RPE_1s_RMSE_deg": {
+        "off": 1.2410655166067486,
+        "on": 1.2093551126392026,
+        "on_minus_off": -0.031710403967545986,
+        "percent": -2.5550950810595996
+      },
+      "path_length_prism_m": {
+        "off": 37.2348791754939,
+        "on": 36.122330839957996,
+        "on_minus_off": -1.1125483355359052,
+        "percent": -2.987919821875318
+      }
+    },
+    "fused_finalized": {
+      "ATE_RMSE_m": {
+        "off": 0.0404830452243938,
+        "on": 0.02711377032963826,
+        "on_minus_off": -0.013369274894755537,
+        "percent": -33.02438050460601
+      },
+      "translation_RPE_1s_RMSE_m": {
+        "off": 0.01246819664361023,
+        "on": 0.008235102749138202,
+        "on_minus_off": -0.004233093894472028,
+        "percent": -33.95113195171996
+      },
+      "rotation_RPE_1s_RMSE_deg": {
+        "off": 0.24171584495779475,
+        "on": 0.23079099608498468,
+        "on_minus_off": -0.010924848872810061,
+        "percent": -4.51970737570705
+      },
+      "path_length_prism_m": {
+        "off": 34.20907604041102,
+        "on": 34.355999279886746,
+        "on_minus_off": 0.1469232394757256,
+        "percent": 0.42948613783713174
+      }
+    }
+  },
+  "coverage": {
+    "native_glim": {
+      "rows": {
+        "off": 592,
+        "on": 592
+      },
+      "start_s": {
+        "off": 1730565903.58883,
+        "on": 1730565903.58883
+      },
+      "end_s": {
+        "off": 1730565962.688581,
+        "on": 1730565962.688581
+      },
+      "span_s": {
+        "off": 59.099750995635986,
+        "on": 59.099750995635986
+      },
+      "rpe_pairs": {
+        "off": 580,
+        "on": 580
+      }
+    },
+    "native_kimera": {
+      "rows": {
+        "off": 297,
+        "on": 297
+      },
+      "start_s": {
+        "off": 1730565903.0725975,
+        "on": 1730565903.0725975
+      },
+      "end_s": {
+        "off": 1730565962.7720606,
+        "on": 1730565962.7720606
+      },
+      "span_s": {
+        "off": 59.69946312904358,
+        "on": 59.69946312904358
+      },
+      "rpe_pairs": {
+        "off": 587,
+        "on": 587
+      }
+    },
+    "fused_online": {
+      "rows": {
+        "off": 595,
+        "on": 595
+      },
+      "start_s": {
+        "off": 1730565903.454194,
+        "on": 1730565903.454194
+      },
+      "end_s": {
+        "off": 1730565962.854194,
+        "on": 1730565962.854194
+      },
+      "span_s": {
+        "off": 59.39999985694885,
+        "on": 59.39999985694885
+      },
+      "rpe_pairs": {
+        "off": 583,
+        "on": 583
+      }
+    },
+    "fused_finalized": {
+      "rows": {
+        "off": 595,
+        "on": 595
+      },
+      "start_s": {
+        "off": 1730565903.454194,
+        "on": 1730565903.454194
+      },
+      "end_s": {
+        "off": 1730565962.854194,
+        "on": 1730565962.854194
+      },
+      "span_s": {
+        "off": 59.39999985694885,
+        "on": 59.39999985694885
+      },
+      "rpe_pairs": {
+        "off": 583,
+        "on": 583
+      }
+    }
+  },
+  "matching": {
+    "runtime_covariance_provider": true,
+    "source_flags_except_receiving": true,
+    "copied_profiles": true
+  },
+  "protected_unchanged": 1623,
+  "source_repos": {
+    "glim_ros1": {
+      "clean": true,
+      "head": "fad72d6e11219e42cbbe09658341fff4512769dc"
+    },
+    "Kimera-VIO": {
+      "clean": true,
+      "head": "560ad0fd33c162ff2a0a64a1372f9b61e1d8d8f9"
+    },
+    "cbs": {
+      "clean": true,
+      "head": "ed93343e2601c1eb2d777d85fbd6171ca1cdfaf4"
+    }
+  },
+  "free_bytes": 11760979968,
+  "gnssFGO_head": "668d4c788983722f4acad37d1495c15d03a27e18",
+  "limits": "One matched60s SPX-3 pair at0.10x; no stationarity/independence/1x claim. Full shared-CPT7 IE-TC reference. Finalized is delayed, not ONLINE."
+}

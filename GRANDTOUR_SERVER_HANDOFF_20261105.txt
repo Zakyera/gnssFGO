@@ -1,0 +1,316 @@
+GRANDTOUR / CBS / gnssFGO — LAB SERVER HANDOFF
+Prepared 2026-11-05. Context and migration starting point, NOT a launch script.
+
+1. USER INTENT AND FIRST TASK
+
+The user wants to download NEW GrandTour sequences directly onto the lab server
+and run new experiments there, using its additional GPU, RAM and storage.
+Do not automatically rerun ETH1, EIG-2, SPX-3 or LEICA-2. New sequence choices,
+available topics and mission-specific calibration still need to be established.
+Preserve the completed local experiments and the scientific baseline below.
+
+The immediate remote task is a READ-ONLY inventory and migration/build plan.
+Do not interpret historical protocols or this document as permission to execute
+old controllers, start experiments, install packages, or change scientific settings.
+The user prefers autonomous execution of clearly authorized work, without repeated
+confirmation questions; nevertheless respect host permissions and shared-lab rules.
+
+Codex exposes this saved remote project:
+  Host: v4rl-server-2
+  Host ID: remote-ssh-discovered:v4rl-server-2
+  Project: gnssFGO
+  Project ID: acf91529-456f-4ffb-a738-e842bf65d996
+  Remote project path: /home/zachariasyeranis/repos/gnssFGO
+The app reported isGitRepository=false. Verify on the server; this metadata does
+not establish that the directory is empty. Hardware, software, available datasets,
+free space, permissions and build readiness have NOT been inspected remotely.
+
+This report was written on the LOCAL machine. A separate task does not inherit
+the entire conversation or access local files merely because their paths appear
+here. Attach this document or transfer it explicitly. Source code, dependencies,
+test fixtures and datasets require a separate, verified transfer/download plan.
+
+2. LOCAL PATH LEGEND AND READING ORDER
+
+All paths in this section are LOCAL unless explicitly marked remote:
+  R = /home/yeranis/repos/gnssFGO
+  E = /home/yeranis/repos/gnssFGO/experiments
+  W = /home/yeranis/repos/V4RL/cbs_gtsam4.3
+Resolve these abbreviations before reading. They are not shell assignments.
+The server's V4RL/build/data locations have not been selected or verified.
+
+Read applicable AGENTS.md instructions on the server before acting. Transfer and
+read these local documents as context, preserving their original versions:
+  E/checkpoints/20261023_hesai_four_sequences/README.txt
+  R/AGENTS.md
+  R/GNSSFGO_RUNTIME_ENGINEERING_PLAN_20261011.md
+  W/src/cbsms/docs/CLASSIC_CBS_ON_RUNBOOK_20260925.md
+  R/GNSSFGO_GRANDTOUR_CLASSIC_LIVE_BASELINE_20260929.md
+
+IMPORTANT: the October checkpoint and older runbooks contain historical operating
+points. Their temporary-CBS/shared-IMU configurations are NOT substitutes for the
+latest persistent/split-IMU protocols below. Some historical launch paragraphs
+still say ACTIVE; the latest terminal closeouts supersede those paragraphs.
+
+Latest scientific/operational reference directories:
+  E/prior_anchor_candidate_cpv101_20261103
+  E/prior_anchor_integration_cpv102_20261103
+  E/eth1_prior_fix_live_cpv103_20261103
+  E/eth1_prior_fix_evaluation_cpv104_20261104
+  E/eig2_split_imu_live_pair_cpv108_20261104
+  E/spx3_split_imu_live_pair_cpv111_20261104
+  E/leica2_split_imu_live_pair_cpv112_20261105_attempt1
+Read PROTOCOL.txt, PRELAUNCH_REVIEW.txt, PREPARATION_REPAIR.txt, prepared.json,
+effective settings and final receipts as applicable. For final pair results use
+RESULTS_REPORT.txt, results.json, report_verification.json, complete.json and
+post_closeout.json. REPORT.txt may be an immutable historical startup snapshot.
+Treat archived scripts as evidence/reference, not ready-to-run server commands.
+
+3. CURRENT SCIENTIFIC BASELINE — KEEP DISTINCT FROM HOST MIGRATION
+
+Both arms of a new matched experiment must use the same qualified build/settings,
+with fresh live source estimators and concurrent gnssFGO fusion in BOTH arms.
+OFF: both sources receive=false. ON: both sources receive=true, persistent CBS.
+Both sources publish in both arms. Saved-stream receiver replays are not live pairs.
+
+GLIM: Hesai LiDAR + CPT7/HG4930 IMU; CP82 persistent; MAIN batching;
+shared_native/native_local; all-LOCAL 5-second source window.
+
+Kimera: front AlphaSense stereo + its built-in Alpha IMU, not CPT7 IMU;
+CP76 persistent / CP40 / CPK9; native smart-factor limit 25;
+FL4Q_ENABLE=0; FL4M_RETIREMENT=remove; Gaussian=1.
+Use the CP102/103 corrected private backend in BOTH arms.
+Alpha bias random walks: acceleration .0043, gyroscope .000266; nominal 200 Hz.
+Preserve other white noise, priors, initializer and profile bytes unless an explicit
+new protocol authorizes a change. This Alpha noise/calibration model is experimental.
+Native-IMU support override and CP66 observer remain unset; no seed change.
+Failure-only archive CPV102_PRIOR_FAILURE_DIR belongs ONLY to Kimera, pointing
+to a fresh writable archive directory. Recording must not suppress fatal errors.
+
+Receiver: CP-K19 seven-second source_wnoa fixed-lag incremental receiver, Qc x1;
+independent 100 ms CPT7 timestamp support clock, no central IMU or GNSS factors.
+CPT7 being a clock source does NOT mean central inertial measurements are fused.
+Preserve priors, stable-ID revision replacement, seal_at_absorption and EOF policy.
+Save actual arrival order, wall/sensor timing, IDs, versions and revisions.
+Convert Kimera native Alpha->CPT7 mean AND full 6x6 covariance exactly once with
+the actual mission extrinsics; GLIM conversion is identity. Retain source wire data.
+Do not replace covariance with a scalar trace or drop cross terms.
+
+Keep source 5-second / 25-keyframe windows distinct from receiver 7-second lag.
+Initial qualified playback operating point is 0.20x with 25-second drain.
+More server resources do not authorize changing rate, tuning weights, relaxing
+guards or assuming the implementation uses multiple GPUs automatically.
+No CP106/CP110 covariance freeze, new robust loss, health gate or scale tuning.
+
+Known limitations remain: persistent priors contain peer information;
+native-only outgoing information is FALSE. Split IMUs do not remove feedback
+correlation or establish independent beliefs. Source-to-source mean-only temporal
+alignment/covariance approximation is not repaired by the spatial frame conversion.
+Do not describe this baseline as calibrated, independent or health-certified.
+
+4. PRIVATE CORRECTION THAT MUST NOT BE LOST DURING TRANSFER/REBUILD
+
+CP101/102 addresses a reproducible prior-preservation numerical failure:
+clone the original Gaussian ONLY when its anchor is exactly unchanged.
+Retain the original 1e-8 original/cache and converted/cache guards, and leave the
+moved-anchor branch unchanged. No epsilon-based anchor test, reanchoring shortcut,
+weight adjustment or guard relaxation was authorized.
+
+Local corrected libkimera_vio.so SHA256:
+  985c115d3573446f65ef4ce7cc4125e514b4922fed6445ed05cbc4dbdfb70a09
+CP102 reconstructed its baseline byte-identically to the CP76 b7d6829d... DSO.
+The CBS library remained unchanged (hash prefix 82f85c2a; obtain full hash from
+the saved manifest, rather than treating this prefix as sufficient verification).
+
+CP101 tested 1,100 cases: baseline 126 false rejections, candidate zero;
+66,660 moved-anchor checks and negative controls preserved the intended behavior.
+CP102 baseline/candidate compatibility suites passed with all 48 metrics identical,
+including 6 persistent replacements, 9 absorptions and 9 injected rollbacks.
+The actual backend recorder passed unique-archive, matrix/typed-anchor readback,
+fatal-exception preservation and graph/cache/lock rollback checks.
+Read complete.json and the reports for exact test scopes and exclusions.
+CP99's actual failed prior/theta was not recorded: these tests do not reconstruct
+that exact historical failure or prove every future numerical failure impossible.
+
+Private source/build evidence is OUTSIDE an ordinary clean source checkout:
+  W/runs/prior_anchor_candidate_cpv101_20261103/candidate
+  W/runs/prior_anchor_integration_cpv102_20261103/candidate
+  W/runs/prior_anchor_integration_cpv102_20261103/private_build
+  W/runs/persistent_compatibility_cpv76_20261101
+  E/prior_anchor_integration_cpv102_20261103/build_stage.py
+The CP102 build consumes saved CP76 compile/link commands and existing object/
+archive inputs. It is NOT evidence of a standalone clean CMake rebuild recipe.
+Trace .d files, saved commands, link inputs, include trees and runtime dependencies
+before deciding that the server has a complete source/build package.
+Do not execute old build_stage.py in its archived paths: it owns fresh-path and
+container lifecycle operations that are not a general migration procedure.
+
+5. WHAT TO INVENTORY AND POTENTIALLY TRANSFER
+
+This is a dependency-discovery list, NOT a verified complete transfer manifest.
+Record Git remotes, exact commits, submodules, dirty diffs, untracked AND relevant
+ignored sources, build options, compiler/toolchain, package versions and hashes.
+An upstream git clone alone may omit the private corrections and live harness.
+
+Core local source trees to inspect under W/src:
+  cbs, cbsms, Kimera-VIO, Kimera-VIO-ROS, Kimera-RPGO,
+  glim, glim_ros1, gtsam, gtsam_points.
+Resolve supporting dependencies from actual builds, including relevant catkin,
+visualization, camera/feature and sensor-driver packages. The workspace also has
+catkin_simple, cmake_external_project_catkin, dbow2_catkin, gflags_catkin,
+glog_catkin, opencv3_catkin, opengv_catkin, pose_graph_tools and Hesai-related
+runtime assets; do not assume every unrelated workspace package is required.
+Include R and the exact receiver/transport, frame adapter, calibration, evaluation,
+test fixtures, private overlays and pinned launch/profile inputs actually used.
+
+Receiver executable is NOT confined to R or W:
+  /home/yeranis/results/gnssfgo_receiver_finalization_cpk19_20261021/live
+Runtime library location referenced by the latest configuration:
+  /home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib
+Trace their source/build provenance and ABI dependencies as well as the binaries.
+Latest wrapper/config reference:
+  W/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/receiver_cpk19.sh
+  W/runs/leica2_split_imu_live_pair_cpv112_20261105_attempt1/prepared/full_on.json
+The wrapper uses seal_at_absorption, OMP_NUM_THREADS=1,
+E2_EXACT_LINEARIZATION_CACHE=0 and E2B_ENDPOINT_CACHE=0;
+WNOJ_STRICT_PUBLICATION and WNOJ_INCREMENTAL_PROFILE are unset.
+It pins CPU 2 locally; check server allocation/affinity before adapting this
+operational detail, and document changes rather than silently inheriting it.
+
+Local environments: ROS1 Noetic source container cbsms_ws_gpu and ROS2 Humble
+receiver container ubuntu-jammy-humble-nvidia. Names alone do not identify images.
+Inventory image digests/build recipes, mounts, NVIDIA runtime, ROS/GTSAM/OpenCV/
+compiler ABI and dynamic library resolution. Do not mix incompatible GTSAM builds.
+Current evaluation interpreter is under the local pipx EVO environment:
+  /home/yeranis/.local/share/pipx/venvs/evo/bin/python
+Pin EVO 1.36.3 and its evaluation contract, not an arbitrary latest version.
+
+For transfers: copy, do not move/delete originals. Produce source/destination
+manifests and hash verification. Do not overwrite pre-existing server work or use
+rsync --delete. Inspect symlinks explicitly. Never read/copy FIFO contents as files.
+Do not transfer credentials, SSH keys, cookies or Klein authentication tokens in
+the bundle. Authenticate downloads on the server through the user's approved flow.
+Old datasets/captures are not automatically required for NEW sequences; identify
+minimal fixtures/evidence needed for qualification before proposing large copies.
+
+6. SERVER INVENTORY, BUILD AND QUALIFICATION PLAN
+
+First inspect read-only: host/user/project path and applicable instructions; Git
+state; CPU architecture/cores/affinity; RAM/swap; disk space, quota and mount paths;
+NVIDIA GPU model/count/VRAM and driver; container engine/NVIDIA runtime; available
+ROS/toolchains; existing repositories/datasets; current jobs and lab scheduling
+policy. Do not stop other people's jobs or consume all shared GPUs/CPUs by default.
+
+Deliver: (a) what is already present, (b) missing source/dependencies/data,
+(c) exact proposed transfer manifest and fresh destination roots,
+(d) reproducible build and bounded validation plan, (e) remaining user choices.
+Mark unknown dependencies as unknown; do not claim readiness from this report.
+
+After setup/build is authorized, use isolated new build/output paths and pinned
+sources. Record host/compiler/CUDA/GPU identities. A server rebuild can have a
+different hash; qualify its source provenance, ABI and behavior. Do not claim the
+old binary SHA applies to a new build, or promise bit-identical GPU trajectories.
+Do not install over known-good global binaries or silently upgrade dependencies.
+
+Qualification ladder: private prior/cache/rollback tests; actual source-container
+adapter fixtures and frame/Jacobian/negative-schema tests; receiver revision/EOF
+tests; synthetic evaluation CLI checks; then an explicitly bounded fresh live
+integration protocol, followed by a full new matched OFF/ON protocol if qualified.
+Use fresh paths, ports and session IDs. Keep tests distinct from scientific scores.
+Check actual loaded DSOs/maps, effective parameters, topics, body frames, archive
+writability and resource reserve BEFORE playback. Save admission and exit receipts.
+Preserve failures and inspect causes; never automatically retry for a lucky pass.
+
+7. NEW GRANDTOUR SEQUENCE INPUT CHECKS
+
+The user will download new sequences on the server. For each mission establish
+an explicit input manifest: Hesai data, CPT7/HG4930 IMU/timestamps, front stereo,
+original AlphaSense IMU, actual mission intrinsics/extrinsics and the intended
+reference trajectory. Missing Alpha IMU must not silently fall back to CPT7.
+Record original file sizes/checksums, topics, exact timestamps, stereo matches,
+IMU cadence/gaps, quiet-start statistics, reference coverage and calibration parity.
+Observed Alpha quiet acceleration norms differed from CPT7 in prior sequences;
+record such findings, do not tune them away during migration.
+
+Define full usable bounds and quiet pre-roll from this mission, not another
+sequence's offset/duration. Preserve sensor/reference epochs.
+Distinguish selected-topic time origin from rosbag's ALL-BAG playback origin.
+LEICA-2 originally failed strict coverage because they differed by 99.9991 ms:
+selected offset 6.0 s required rosbag offset 6.099999100 s for THAT mission.
+Attempt1 corrected only the operational offset and recaptured both arms fresh.
+These numbers are NOT universal. Compute each new mission's offset and validate
+all five selected streams against original-bag exact timestamps before launch.
+Counts alone can match while early records replace missing tail records.
+Use structured configuration edits: a broad port-number text replacement once
+corrupted copied fixture/timestamp JSON and was caught by prelaunch tests.
+Do not weaken coverage/init/EOF guards, trim a failing tail or fill unsupported gaps.
+
+8. SAVED RESULTS: WHAT WE KNOW, AND WHAT WE DO NOT
+
+ONLINE fusion ATE RMSE in metres, Method1 EVO 1.36.3, SE3 alignment/no scale.
+Each row uses its own saved common evaluation mask, NOT a cross-sequence mask.
+
+Sequence / evidence                 OFF         ON          Interpretation
+ETH1, CP104 evaluation              0.061504    0.094335    Worse, historical OFF
+EIG-2, CP108 fresh matched pair     0.083176    0.134650    Worse, about 61.89%
+SPX-3, CP111 fresh matched pair     0.127351    0.047204    Better, about 62.93%
+LEICA-2, CP112 attempt1 fresh pair  0.552047    0.501756    Better, about 9.11%
+
+CRITICAL ETH1 caveat: CP103 was corrected-backend ON ONLY. CP104 compared it
+with historical CP95 OFF; this was not a fresh identical-binary matched pair.
+Its 11-curve common mask has 2,966 rows/296.3 s. Do not present it as a fourth
+fresh matched pair or use it alone to isolate the correction's causal effect.
+The ETH1 missing right image at 203.898841154 s remains an actual omission.
+
+EIG-2: full usable 355.02 s; six-curve common 3,532 rows/353.0 s (~99.43%).
+SPX-3: quiet-start usable 197.02 s, offset 29 s; common 1,931 rows/192.7 s
+(~97.81%). This is not the entire raw bag from time zero. Its fusion translation
+RPE worsened despite improved ATE; improvement is metric-specific.
+LEICA-2: quiet-start usable 428.75 s; common 3,844 rows/384.0 s (~89.56%).
+Last 38.365 s are not six-curve common-scored; native Kimera gaps remain.
+Full-native ONLINE ATE separately is 0.630471 -> 0.576433 m.
+Full capture does not mean dense six-curve trajectory coverage.
+
+LEICA-2 attempt1 completed 2026-11-05 03:14:32 local, post-audit 03:17:51.
+The closeout verified 273,236 protected files, 647 sealed outputs, 667 Hesai
+checkpoint originals/copies, 24 owned job exits and restoration of both initially
+stopped containers. This is a saved closeout, not a new current-host process check.
+Original failed CP112 is preserved; its ON never started and it has no pair scores.
+The experiment-only local heartbeat was paused after terminal notification.
+Do not start it, an old controller or another experiment from historical notes.
+
+The user wants to understand why fusion improves on some sequences and worsens
+on others. Feedback correlation/unjustified information accumulation is a concern,
+not a proven explanation for every discrepancy. Marginal covariance trace alone
+does not explain the result: changed means, directional/cross-covariance structure,
+revisions and timing must also be examined. No production covariance fix is proven.
+Saved diagnosis/intervention context:
+  E/eth1_fusion_diagnosis_cpv105_20261104
+  E/eth1_covariance_freeze_cpv106_20261104
+  E/eth1_covariance_provenance_cpv107_20261104
+  E/eig2_fusion_localization_cpv109_20261104
+  E/eig2_fusion_intervention_cpv110_20261104
+Receiver-only covariance/mean interventions are diagnostic counterfactuals, not
+live matched experiments or authorization to deploy a covariance freeze.
+
+9. REQUIRED REPORTING AND PRESERVATION
+
+For each new qualified pair report native GLIM, native Kimera and ONLINE fusion;
+keep seven-second fixed-lag-finalized output separate from ONLINE/full-history.
+Report Method1 SE3/no-scale ATE, reference-distance 0.5 m translation/rotation RPE,
+and estimated polyline paths/reference. Keep six-curve common 100 ms masks
+separate from full-native cadence; record exact support/gap/interpolation rules.
+Preserve actual coverage, omissions, native and transported full covariance,
+payload/frame checks, revisions/replacements, arrivals/timing and expired/EOF
+counts. No gap filling or treating a failed prefix as a complete pair.
+
+IE-TC shares CPT7 and is NOT independent prism ground truth. Reference geometry
+and the calibrated physical evaluation point must match the actual mission.
+Estimated path length is not physical distance travelled. Incremental parity is
+not nonlinear stationarity, uncertainty calibration or health certification.
+These realizations do not establish a reliable variance distribution, prove
+randomness, or demonstrate that CBS generally improves fusion on unseen data.
+
+Do not edit sealed captures/reports or remove failed evidence. Write supplements
+in fresh paths. Preserve local originals throughout migration. This handoff itself
+does not transfer files, certify a clean build, or authorize an experiment.

@@ -1,0 +1,24 @@
+CP-V28 execution notes, 2026-10-28
+
+Before start, Docker inspect confirmed ubuntu-jammy-humble-nvidia and
+cbsms_ws_gpu both exited. Only Humble was started. Controller started once
+via docker exec -u1000:1000, PID24 in that container; replay_start.json and
+per-case launch/finish records identify exact children. No source job started.
+The first sandbox Docker inspection was denied access to docker.sock; the
+explicitly escalated inspection/start/replay calls were approved. No workaround.
+
+First six GLIM pairs reconstructed from saved logs while receiver replay ran;
+Leica-2 Velodyne reused. No missing pair; logger timestamps differ by at most
+50ns from exact native CSV times. Native current pose equality is exact.
+
+Storage is tight. New replay evidence is RAM-staged as specified in PROTOCOL.
+The six NEW GLIM compressed NPZ products (not original experiments) were also
+copied to a separate temporary RAM directory, SHA-verified, and replaced with
+temporary symlinks at their original CP-V28 paths. staged_products.json records
+every path and hash. Restore these after the last replay before final scoring;
+stage_products.py restore verifies each permanent copy before removing its RAM
+duplicate. This is a storage-only action; no reconstruction or scoring change.
+Do not shut down before replays and storage restoration are complete.
+
+The matched common-mask report is primary. Full-saved own-native-sampling
+results, coverage and relative errors will remain separately labelled.

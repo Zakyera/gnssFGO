@@ -1,0 +1,49 @@
+CP-V90: saved-data AP20 position evaluation of CP-V89,2026-11-02.
+User approved a separate EVO position comparison against raw Leica/AP20 on a
+shared valid timestamp mask. No estimator/source rerun,ROS launch,container
+start,build,tuning,calibration change,CBS-ON,fusion or additional sequence.
+Preserve CP89/CP88 and all historical reference tables/terminal hashes.
+
+Scope: CP89 full346.32s ETH1 CBS-OFF,GLIM Hesai+CPT7/HG4930 and Kimera front
+stereo+Alphasense experimental biasRW.0043/.000266. Method1 first/newest absolute
+poses are read from CP89's immutable full-native prism-frame TUM exports.
+Verify their row counts,source identities and pinned body-to-prism calibration.
+Read raw /boxi/ap20/prism_position PointStamped from the supplied ETH1 bag using
+the pure-Python rosbags file reader. No ROS runtime or sensor replay. Raw header
+timestamps and measured positions remain unchanged. Verify finite coordinates,
+positive unique monotonic stamps,frame IDs,record/header parity and actual gaps.
+Do not filter observations by estimation error or fit timestamps/calibration.
+
+PRIMARY: sample both already-prism-transformed native position curves at raw
+AP20 timestamps within the CP89 requested window. Linear position interpolation
+only between native samples <=0.5s apart,as CP89's declared support convention;
+no extrapolation/no smoothing/no bridging native long gaps. Record both native
+brackets and interpolation weights per accepted AP20 row. Identical reference
+positions/timestamps for GLIM and Kimera. One EVO SE3/no-scale alignment over
+ALL accepted rows per estimator,not per fragment. EVO1.36.3 APE trans_part RMSE,
+mean/median/p95/max and full error arrays. Identity reference quaternions are
+serialization placeholders only; no orientation metric will be computed.
+
+Coverage/path: split whenever original AP20 indices are not adjacent or raw
+AP20 gap>0.20s (existing prism scorer's reference-gap convention). Sum supported
+intervals and separate path lengths across segments; never connect outages.
+Report measured raw-reference support and final common support against the
+actual346.32s requested window,not the paper's mission-wide coverage percentage.
+All-saved counts/spans and common scoring coverage are different quantities.
+Dense interpolation of estimator positions is a scoring choice,not extra output.
+
+SUPPLEMENTAL reference check: load raw IE-TC odometry and convert CPT7 poses to
+the same physical prism with CP89 calibration. Interpolate only over<=0.05s
+IE-TC intervals. Require IE-TC support for all primary accepted timestamps;
+do not silently reduce the primary mask. Evaluate IE-TC versus AP20,then GLIM
+and Kimera versus IE-TC on this EXACT mask with separate global rigid alignments.
+This isolates mask/reference effects from old full-window tables. No new RPE
+or rotation score: raw AP20 supplies position only. Do not claim a correction
+to IE-TC or an official ETH1 benchmark score,or infer causality from agreement.
+
+Verification: each EVO CLI result independently checked against EVO Python API,
+archive error arrays and TUM roundtrip; CLI/config/pairing/inputs hashed and kept.
+Pre/post verify CP89 protected/terminal/report-input hashes and post_closeout;
+read-only Hesai667copies/originals verification. Fresh exclusive output roots;
+never overwrite older results. Results are partial-reference checks,not full
+temporal coverage or calibrated uncertainty. No defaults promoted.

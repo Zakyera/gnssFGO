@@ -1,0 +1,457 @@
+{
+  "case": "velodyne_spx3",
+  "sensor": "Velodyne",
+  "sequence": "SPX-3",
+  "method": 1,
+  "original_receiver_Qc_multiplier": 1.0,
+  "epoch_ns": 1730565899872888651,
+  "duration_s": 197.02,
+  "origin_enu_m": [
+    5.891410366081132,
+    4.255473516927893,
+    0.71045366729591
+  ],
+  "reference": {
+    "path": "/workspace/cbs_gtsam4.3/src/datasets/GrandTour/SPX-3/2024-11-02-17-43-10_cpt7_ie_tc.bag",
+    "sha256": "563ad3681eb40ed85bb682926ea1bdafb86b038dfffa7e6413cc4e32b8fb75aa",
+    "topic": "/boxi/inertial_explorer/tc/odometry",
+    "frame_ids": [
+      "enu_origin"
+    ],
+    "child_frame_ids": [
+      "cpt7_imu"
+    ],
+    "caveat": "IE-TC GNSS/INS reference shares CPT7 IMU; not independent prism GT"
+  },
+  "reference_vertices": 39404,
+  "products": {
+    "off_glim": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_full_cpv4_20261024/prepared/full_off_source/glim_odometry.csv",
+      "sha256": "2660dd1c7d9960a9eb904cb245e374e73d0fdba73d0e6056f5d1e07ac5ab6892",
+      "product": "glim_initial",
+      "rows": 1962,
+      "alignment_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method1_off_glim_ape.zip",
+      "alignment_SE3": [
+        [
+          0.7199358201208058,
+          -0.694007023556507,
+          0.006831263515743607,
+          5.665029475309807
+        ],
+        [
+          0.6940333790012378,
+          0.7199384446555386,
+          -0.002510923951193711,
+          4.074324049689619
+        ],
+        [
+          -0.003175490372811885,
+          0.006548828994743032,
+          0.9999735141990962,
+          0.4990530639275733
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "common_ATE_m": 0.05238273394421129,
+      "common_path_m": 91.73909701228804,
+      "common_RPE_translation_m": 0.027747207211740725,
+      "common_RPE_rotation_deg": 0.45284083363085154,
+      "common_RPE_pairs": 167,
+      "path_with_gap_chords_m": 91.89555012701123,
+      "displayed_gap_aware_path_m": 91.89555012701123,
+      "gaps_over_500ms": 0,
+      "max_float32_error_m": 4.746256614396316e-07,
+      "common_pose_max_difference_m": 0.0,
+      "evo_error_max_difference_m": 0.0,
+      "first_s": 0.7294463250000001,
+      "last_s": 196.82921329500002
+    },
+    "off_kimera": {
+      "path": "/home/yeranis/repos/gnssFGO/experiments/newest_absolute_comparison_cpv27_20261028/velodyne_spx3.npz",
+      "sha256": "6712232a1badad7b69621c50f7f46630bfd799c63d4445ee490b9c2030656df1",
+      "product": "recovered absolute backend, NOT native incremental ROS",
+      "rows": 958,
+      "alignment_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method1_off_kimera_ape.zip",
+      "alignment_SE3": [
+        [
+          0.8895248991239126,
+          0.45688612739656975,
+          -0.0007214091480636643,
+          5.338825483539747
+        ],
+        [
+          0.4567430403606651,
+          -0.8892836942559118,
+          -0.023670788171388058,
+          4.037359985280277
+        ],
+        [
+          -0.011456392132310082,
+          0.0207262568527068,
+          -0.999719547351249,
+          0.494649060953955
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "common_ATE_m": 0.3616449165192672,
+      "common_path_m": 102.59824947288347,
+      "common_RPE_translation_m": 0.1518890288240616,
+      "common_RPE_rotation_deg": 0.7107781676841126,
+      "common_RPE_pairs": 167,
+      "path_with_gap_chords_m": 107.0502400603915,
+      "displayed_gap_aware_path_m": 107.03424330366258,
+      "gaps_over_500ms": 3,
+      "max_float32_error_m": 4.722680060353923e-07,
+      "common_pose_max_difference_m": 0.0,
+      "evo_error_max_difference_m": 0.0,
+      "first_s": 0.199733622,
+      "last_s": 196.998019298
+    },
+    "off_fusion": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_full_cpv4_20261024/prepared/full_off_receiver/receiver/online_trajectory.tum",
+      "sha256": "a169cc60bdbb5209dac0bcbc4d4371d884865a1509502c4744f8def3c9402d7d",
+      "product": "fusion_online",
+      "rows": 1965,
+      "alignment_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method1_off_fusion_ape.zip",
+      "alignment_SE3": [
+        [
+          0.8683879096713016,
+          0.49530734326074927,
+          -0.023938965071315533,
+          5.948711233612462
+        ],
+        [
+          0.49552966241459206,
+          -0.8685815347867867,
+          0.004058459647551597,
+          3.9940208632218996
+        ],
+        [
+          -0.01878275815709078,
+          -0.015386784570166371,
+          -0.9997051839700559,
+          0.5811639108698822
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "common_ATE_m": 0.12462784457830178,
+      "common_path_m": 94.27009828092586,
+      "common_RPE_translation_m": 0.037591713992894175,
+      "common_RPE_rotation_deg": 1.4297502537772357,
+      "common_RPE_pairs": 167,
+      "path_with_gap_chords_m": 101.56863953452142,
+      "displayed_gap_aware_path_m": 101.56863953452142,
+      "gaps_over_500ms": 0,
+      "max_float32_error_m": 4.7540071967944186e-07,
+      "common_pose_max_difference_m": 0.0,
+      "evo_error_max_difference_m": 0.0,
+      "first_s": 0.5813053490000001,
+      "last_s": 196.98130534900002
+    },
+    "on_glim": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_full_cpv4_20261024/prepared/full_on_source/glim_odometry.csv",
+      "sha256": "5f376e5990687d6d2dcca3d92d2183916b876f70e4d629262d720e08482f14fd",
+      "product": "glim_initial",
+      "rows": 1962,
+      "alignment_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method1_on_glim_ape.zip",
+      "alignment_SE3": [
+        [
+          0.7195316305877608,
+          -0.6944454701415907,
+          0.004440898956684162,
+          5.675153013365657
+        ],
+        [
+          0.6944596349254109,
+          0.7195189010662024,
+          -0.004285611712447906,
+          4.077091411549185
+        ],
+        [
+          -0.00021918709656423965,
+          0.006167658251723168,
+          0.9999809557930124,
+          0.4972161751298352
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "common_ATE_m": 0.05811405742027726,
+      "common_path_m": 92.09908472350885,
+      "common_RPE_translation_m": 0.030254458301292326,
+      "common_RPE_rotation_deg": 0.3521879310398281,
+      "common_RPE_pairs": 167,
+      "path_with_gap_chords_m": 92.29890850949099,
+      "displayed_gap_aware_path_m": 92.29890850949099,
+      "gaps_over_500ms": 0,
+      "max_float32_error_m": 4.7231813304904335e-07,
+      "common_pose_max_difference_m": 0.0,
+      "evo_error_max_difference_m": 0.0,
+      "first_s": 0.7294463250000001,
+      "last_s": 196.82921329500002
+    },
+    "on_kimera": {
+      "path": "/home/yeranis/repos/gnssFGO/experiments/newest_absolute_comparison_cpv27_20261028/velodyne_spx3.npz",
+      "sha256": "6712232a1badad7b69621c50f7f46630bfd799c63d4445ee490b9c2030656df1",
+      "product": "recovered absolute backend, NOT native incremental ROS",
+      "rows": 956,
+      "alignment_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method1_on_kimera_ape.zip",
+      "alignment_SE3": [
+        [
+          0.8797886317295978,
+          0.47535618148866976,
+          0.00290932979788379,
+          5.784609962171928
+        ],
+        [
+          0.4752780431169648,
+          -0.8794939503534019,
+          -0.024518829961394255,
+          4.160287307498801
+        ],
+        [
+          -0.009096439428196683,
+          0.022954128436465916,
+          -0.9996951349173664,
+          0.6513641302098757
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "common_ATE_m": 0.2713507802186688,
+      "common_path_m": 119.31266382513944,
+      "common_RPE_translation_m": 0.2130645987107759,
+      "common_RPE_rotation_deg": 1.8678041597645176,
+      "common_RPE_pairs": 167,
+      "path_with_gap_chords_m": 126.95323214742854,
+      "displayed_gap_aware_path_m": 126.89686468599272,
+      "gaps_over_500ms": 5,
+      "max_float32_error_m": 4.7642542178039093e-07,
+      "common_pose_max_difference_m": 0.0,
+      "evo_error_max_difference_m": 0.0,
+      "first_s": 0.199733622,
+      "last_s": 196.89802009800002
+    },
+    "on_fusion": {
+      "path": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_full_cpv4_20261024/prepared/full_on_receiver/receiver/online_trajectory.tum",
+      "sha256": "9b7dcd11414043f0342b76c4c65c3f780439559874d73be2b2fcc817143af986",
+      "product": "fusion_online",
+      "rows": 1965,
+      "alignment_evo_archive": "/home/yeranis/repos/gnssFGO/experiments/all_evo_tables_cpv32_20261029/velodyne_spx3/method1_on_fusion_ape.zip",
+      "alignment_SE3": [
+        [
+          0.8841653583288241,
+          0.4657279963643717,
+          -0.036729450495352936,
+          5.840846828460908
+        ],
+        [
+          0.46669436948766424,
+          -0.8840854081288902,
+          0.024276668265754222,
+          4.096067498453008
+        ],
+        [
+          -0.021165647161721726,
+          -0.03860601683677765,
+          -0.9990303252875881,
+          0.614830810817757
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "common_ATE_m": 0.10965003789557774,
+      "common_path_m": 94.57637153559172,
+      "common_RPE_translation_m": 0.04136561382870579,
+      "common_RPE_rotation_deg": 1.3537534975833012,
+      "common_RPE_pairs": 167,
+      "path_with_gap_chords_m": 100.5627922972995,
+      "displayed_gap_aware_path_m": 100.5627922972995,
+      "gaps_over_500ms": 0,
+      "max_float32_error_m": 4.752804620977713e-07,
+      "common_pose_max_difference_m": 0.0,
+      "evo_error_max_difference_m": 0.0,
+      "first_s": 0.5813053490000001,
+      "last_s": 196.98130534900002
+    }
+  },
+  "common_coverage": {
+    "grid_queries": 1961,
+    "valid_queries": 1925,
+    "excluded_queries": 36,
+    "supported_s": 192.0,
+    "capture_s": 197.02,
+    "supported_capture_percent": 97.4520353263628,
+    "first_s": 1.5271113490000001,
+    "last_s": 196.827111349,
+    "envelope_s": 195.3,
+    "start_gap_s": 1.5271113490000001,
+    "tail_gap_s": 0.19288865100000407,
+    "segments": [
+      {
+        "first_s": 1.5271113490000001,
+        "last_s": 1.6271113490000002,
+        "rows": 2
+      },
+      {
+        "first_s": 2.627111349,
+        "last_s": 159.12711134900002,
+        "rows": 1566
+      },
+      {
+        "first_s": 159.827111349,
+        "last_s": 168.327111349,
+        "rows": 86
+      },
+      {
+        "first_s": 169.227111349,
+        "last_s": 170.62711134900002,
+        "rows": 15
+      },
+      {
+        "first_s": 171.327111349,
+        "last_s": 196.827111349,
+        "rows": 256
+      }
+    ]
+  },
+  "terminal_omissions": {
+    "off": 1,
+    "on": 0
+  },
+  "kimera_reconstruction_checks": {
+    "off": {
+      "rows": 958,
+      "first_keyframe": 0,
+      "last_keyframe": 957,
+      "every_id_unique_contiguous_and_matches_csv": true,
+      "exact_header_stamps_used": true,
+      "rounded_log_timestamps_not_used": true,
+      "every_increment_pose_within_log_rounding_bounds": true,
+      "increment_position_max_difference_m": 4.988995231946322e-05,
+      "increment_quaternion_max_component_difference": 4.995009965647057e-07,
+      "graph_quaternion_norm_max_error": 6.326069487139208e-07,
+      "graph_prism_position_rounding_bound_m": 5.135780065218782e-05,
+      "graph_rotation_rounding_bound_rad": 2.000010000058334e-05,
+      "logged_no_incremental_pose": false,
+      "graph_vs_increment_position_max_m": 1.0021598394166524,
+      "source_log": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_full_cpv4_20261024/prepared/full_off_source/estimators.log",
+      "rounded_incremental_common_ATE_difference_m": 5.624129739700834e-08,
+      "rounded_incremental_full_ATE_difference_m": 5.766589467048888e-08
+    },
+    "on": {
+      "rows": 956,
+      "first_keyframe": 0,
+      "last_keyframe": 955,
+      "every_id_unique_contiguous_and_matches_csv": true,
+      "exact_header_stamps_used": true,
+      "rounded_log_timestamps_not_used": true,
+      "every_increment_pose_within_log_rounding_bounds": true,
+      "increment_position_max_difference_m": 4.9494104793749034e-05,
+      "increment_quaternion_max_component_difference": 4.997268489431717e-07,
+      "graph_quaternion_norm_max_error": 6.254468908339916e-07,
+      "graph_prism_position_rounding_bound_m": 5.136026335820814e-05,
+      "graph_rotation_rounding_bound_rad": 2.000010000058334e-05,
+      "logged_no_incremental_pose": false,
+      "graph_vs_increment_position_max_m": 1.2090258181602245,
+      "source_log": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_spx3_velodyne_full_cpv4_20261024/prepared/full_on_source/estimators.log",
+      "rounded_incremental_common_ATE_difference_m": 3.40305742474456e-07,
+      "rounded_incremental_full_ATE_difference_m": 3.453642223871789e-07
+    }
+  },
+  "cloud_path": "/home/yeranis/repos/gnssFGO/experiments/all_method2_rerun_cpv30_20261029/velodyne_spx3_cloud.npz",
+  "cloud_points": 121479,
+  "submaps": [
+    {
+      "id": "000000",
+      "points": 28223,
+      "frame_check_m": 6.61779890206092e-07,
+      "first_s": 0.7294464111328125,
+      "last_s": 40.92884945869446
+    },
+    {
+      "id": "000001",
+      "points": 28675,
+      "frame_check_m": 4.580452160696649e-06,
+      "first_s": 41.029709339141846,
+      "last_s": 84.52953743934631
+    },
+    {
+      "id": "000002",
+      "points": 26384,
+      "frame_check_m": 5.889002836818208e-06,
+      "first_s": 84.6303973197937,
+      "last_s": 109.82948732376099
+    },
+    {
+      "id": "000003",
+      "points": 27328,
+      "frame_check_m": 1.8066710328422025e-06,
+      "first_s": 109.93034744262695,
+      "last_s": 127.52778744697571
+    },
+    {
+      "id": "000004",
+      "points": 10869,
+      "frame_check_m": 6.176419481756441e-06,
+      "first_s": 127.62732028961182,
+      "last_s": 196.7296802997589
+    }
+  ],
+  "cloud_alignment": {
+    "source": "CP-V10 ON first-published fit, not method2 fit",
+    "rotation": [
+      [
+        0.7195316305877608,
+        -0.6944454701415907,
+        0.004440898956684162
+      ],
+      [
+        0.6944596349254109,
+        0.7195189010662024,
+        -0.004285611712447906
+      ],
+      [
+        -0.00021918709656423965,
+        0.006167658251723168,
+        0.9999809557930124
+      ]
+    ],
+    "translation_m": [
+      5.675153013365657,
+      4.077091411549185,
+      0.4972161751298352
+    ]
+  },
+  "trajectory_npz_sha256": "ac2881663fec045d75f268dd5f7efd5828391f7b64c9cf220d69488e2b3babd0",
+  "cloud_npz_sha256": "52f321206ead297bb4a80e13341cc2930bb33fc4ce24374470fb27455e85475e",
+  "reference_and_cloud_identical_to_method2": true,
+  "evo_version": "v1.36.3"
+}

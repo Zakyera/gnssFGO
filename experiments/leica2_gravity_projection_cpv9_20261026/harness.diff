@@ -1,0 +1,416 @@
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/evaluate_fl4f.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared/evaluate_fl4f.py
+@@ -15,9 +15,11 @@
+ 
+ ROOT = Path(__file__).resolve().parent
+ OUT = ROOT / 'evaluation_full'
+-ON_ROOT = ROOT
++BASE = Path('/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared')
+ def source_root(mode):
+-    return ON_ROOT if mode == 'on' else ROOT
++    return ROOT if mode == 'on' else BASE
++def case_mode(mode):
++    return 'on' if mode == 'baseline_on' else mode
+ TOOLS = Path('/workspace/cbs_gtsam4.3/src/cbsms/tools')
+ sys.path.insert(0, str(TOOLS))
+ import score_grandtour_prism as prism
+@@ -100,7 +102,7 @@
+         rpe_pairs=len(terr),error_m=stat(errors))
+ 
+ def covariances(mode):
+-    path = source_root(mode) / f'full_{mode}_receiver/events.csv'
++    path = source_root(mode) / f'full_{case_mode(mode)}_receiver/events.csv'
+     groups = collections.defaultdict(list)
+     versions = collections.defaultdict(list)
+     with path.open(newline='') as f:
+@@ -133,14 +135,14 @@
+ 
+ def main():
+     assert not OUT.exists(), 'Refusing to overwrite an evaluation'
+-    for mode in ('off','on'):
+-        assert (source_root(mode)/f'full_{mode}_control/complete.json').is_file()
+-        assert (source_root(mode)/f'full_{mode}_source/complete.marker').is_file()
+-        assert (source_root(mode)/f'full_{mode}_receiver/complete.marker').is_file()
++    for mode in ('off','baseline_on','on'):
++        assert (source_root(mode)/f'full_{case_mode(mode)}_control/complete.json').is_file()
++        assert (source_root(mode)/f'full_{case_mode(mode)}_source/complete.marker').is_file()
++        assert (source_root(mode)/f'full_{case_mode(mode)}_receiver/complete.marker').is_file()
+     paths = {}
+-    for mode in ('off','on'):
+-        src = source_root(mode) / f'full_{mode}_source'
+-        rec = source_root(mode) / f'full_{mode}_receiver/receiver'
++    for mode in ('off','baseline_on','on'):
++        src = source_root(mode) / f'full_{case_mode(mode)}_source'
++        rec = source_root(mode) / f'full_{case_mode(mode)}_receiver/receiver'
+         paths[f'{mode}_native_glim'] = src/'odom_imu.txt'
+         paths[f'{mode}_native_kimera'] = src/'kimera_odometry.csv'
+         paths[f'{mode}_fused_online'] = rec/'online_trajectory.tum'
+@@ -181,7 +183,7 @@
+             interpolation_gap_estimate_s=.5,interpolation_gap_reference_s=.05),
+         path_length_caveat='Polyline through actual saved or supported queried positions; includes chords across missing intervals, not dense coverage.',
+         convention='Per-path rigid SE(3) no-scale alignment for ATE at prism lever arm; 1s RPE in prism frame, no global alignment',
+-        results=results,covariance={mode:covariances(mode) for mode in ('off','on')})
++        results=results,covariance={mode:covariances(mode) for mode in ('off','baseline_on','on')})
+     OUT.mkdir(exist_ok=False)
+     with (OUT/'summary.json').open('x') as f:
+         json.dump(report,f,indent=2,allow_nan=False)
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_off.json
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared/full_off.json
+@@ -1,7 +1,7 @@
+ {
+   "sequence": "LEICA-2 LOCAL CP-V4 Velodyne physical 1732549034915071665..1732549463665071665ns matched OFF",
+   "source_protocol": "classic",
+-  "ros_master_uri": "http://127.0.0.1:11483",
++  "ros_master_uri": "http://127.0.0.1:11487",
+   "imu_topic": "/boxi/cpt7/imu",
+   "imu_frame": "cpt7_imu",
+   "world_frame": "gnssfgo_world",
+@@ -12,7 +12,7 @@
+   "drain_timeout_wall_sec": 300,
+   "ros1_container": "cbsms_ws_gpu",
+   "receiver_container": "ubuntu-jammy-humble-nvidia",
+-  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/receiver_cpk19.sh",
++  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared/receiver_cpk19.sh",
+   "sources": [
+     {
+       "id": "glim_velodyne",
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_on.json
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared/full_on.json
+@@ -1,7 +1,7 @@
+ {
+   "sequence": "LEICA-2 LOCAL CP-V4 Velodyne physical 1732549034915071665..1732549463665071665ns matched ON",
+   "source_protocol": "classic",
+-  "ros_master_uri": "http://127.0.0.1:11483",
++  "ros_master_uri": "http://127.0.0.1:11487",
+   "imu_topic": "/boxi/cpt7/imu",
+   "imu_frame": "cpt7_imu",
+   "world_frame": "gnssfgo_world",
+@@ -12,7 +12,7 @@
+   "drain_timeout_wall_sec": 300,
+   "ros1_container": "cbsms_ws_gpu",
+   "receiver_container": "ubuntu-jammy-humble-nvidia",
+-  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/receiver_cpk19.sh",
++  "receiver_binary": "/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared/receiver_cpk19.sh",
+   "sources": [
+     {
+       "id": "glim_velodyne",
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/active_window_on.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared/active_window_on.launch
+@@ -17,7 +17,7 @@
+   -->
+ 
+   <arg name="glim_config_path"
+-       default="/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/input_profiles/glim_config"/>
++       default="/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared/input_profiles/glim_config"/>
+   <arg name="kimera_mode" default="mono"/>
+   <arg name="kimera_enable" default="true"/>
+   <arg name="kimera_params_folder"/>
+@@ -111,7 +111,7 @@
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_stride" value="20"/>
+   <param name="/glim_rosnode/glim_cbs_active_factor_diagnostics_max_updates" value="40"/>
+ 
+-  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/glim_profile_on.launch">
++  <include file="/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared/glim_profile_on.launch">
+     <arg name="config_path" value="$(arg glim_config_path)"/>
+     <arg name="glim_node_output" value="$(arg diagnostic_node_output)"/>
+     <arg name="glim_input_imu_topic" value="$(arg glim_input_imu_topic)"/>
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/glim_profile_on.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared/glim_profile_on.launch
+@@ -116,7 +116,7 @@
+         <env name="CPK16_MAIN_GPU_BATCHING" value="1"/>
+         <env name="GLIM_SHARED_NATIVE_PROVIDER" value="shared_native"/>
+         <env name="GLIM_REVISION_COVARIANCE_POLICY" value="native_local"/>
+-        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/full_on_source/e1b_profile.jsonl"/>
++        <env name="CBS_E1B_PROFILE_PATH" value="/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared/full_on_source/e1b_profile.jsonl"/>
+ 		<param name="config_path" value="$(arg config_path)" />
+ 		<param name="glim_dump_path" value="$(arg glim_dump_path)" />
+ 		<param name="deterministic_input_event_log_path" value="$(arg glim_deterministic_input_event_log_path)" />
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/kimera_vio_ros.launch
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared/kimera_vio_ros.launch
+@@ -452,6 +452,7 @@
+            unless="$(arg online)"/>
+     <env name="FL4Q_ENABLE" value="0"/>
+     <env name="CPK9_PRIOR_REFRESH" value="1"/>
++    <env name="CPV9_G2K_GRAVITY_PROJECTION" value="1"/>
+     <env name="FL4Q_LOG" value="$(env ROS_LOG_DIR)/../acceptance.csv"/>
+     <env name="FL4M_RETIREMENT" value="remove"/>
+     <env name="FL4M_AUDIT" value="$(env ROS_LOG_DIR)/../objective.csv"/>
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/preflight_on.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared/preflight_on.py
+@@ -5,10 +5,11 @@
+ V=Path('/home/yeranis/results/gnssfgo_leica2_velodyne_full_cpv4_20261024/off')
+ def sha(p):
+  with Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+-for p in [P/'full_off_source/candidate_validation.json',P/'full_off_source/local_provenance.json',P/'full_off_source/velodyne_validation.json',
++B=Path('/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared')
++for p in [B/'full_off_source/candidate_validation.json',B/'full_off_source/local_provenance.json',B/'full_off_source/velodyne_validation.json',
+  V/'validation.json']:
+  assert json.loads(p.read_text())['passed'],p
+-assert (P/'full_off_control/complete.json').is_file()
++assert (B/'full_off_control/complete.json').is_file()
+ assert not any((P/f'full_on_{part}').exists() for part in ('source','receiver','control'))
+ manifest=json.loads((P/'protected_manifest.json').read_text())
+ for p,want in manifest.items():assert sha(p)==want,p
+@@ -18,7 +19,7 @@
+  for k in ('sequence','ros_master_uri','receiver_binary'):c.pop(k)
+  for source in c['sources']:source.pop('session')
+ assert cfg[0]==cfg[1]
+-result=dict(passed=True,admission='same30.0s OFF passes all gates before matched ON',
++result=dict(passed=True,admission='saved CP-V4 full OFF passes all gates; CP-V9 changes only G2K gravity projection',
+  protected_unchanged=len(manifest),receiver_config_unchanged=True)
+ with (P/'preflight_on.json').open('x') as f:json.dump(result,f,indent=2)
+ print(json.dumps(result,indent=2))
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/run_case_on.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared/run_case_on.py
+@@ -34,7 +34,7 @@
+     own.mkdir(exist_ok=False)
+     inside = '/workspace/'+str(own.relative_to('/home/yeranis/repos/V4RL'))
+     env_inside = '/workspace/'+str((ROOT/'source.env').relative_to('/home/yeranis/repos/V4RL'))
+-    master_uri = 'http://127.0.0.1:11483'
++    master_uri = 'http://127.0.0.1:11487'
+     jobs = {}
+     streams = []
+     def start(name, command):
+@@ -48,7 +48,7 @@
+             text=True, capture_output=True, check=check)
+     def stop_pid(name):
+         # The PID is recorded by this case, command must match the owned port/run.
+-        token = '11483' if name=='master' else str(source.name)
++        token = '11487' if name=='master' else str(source.name)
+         script = ('import os,signal,sys; from pathlib import Path; p=Path(sys.argv[1]); '
+           'pid=int(p.read_text()) if p.exists() else 0; c=Path("/proc/%d/cmdline"%pid); '
+           'e=Path("/proc/%d/environ"%pid); '
+@@ -60,7 +60,7 @@
+     started = time.time()
+     try:
+         assert ros('rosparam get /rosversion',check=False).returncode != 0, 'port is already in use'
+-        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11483'
++        master_script = 'source /opt/ros/noetic/setup.bash; echo $$ > '+shlex.quote(inside+'/master.pid')+'; exec roscore -p 11487'
+         start('master',['docker','exec','cbsms_ws_gpu','setsid','--wait','bash','-lc',master_script])
+         for _ in range(60):
+             if ros('rosparam get /rosversion',check=False).returncode==0:
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/source.env
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared/source.env
+@@ -2,7 +2,7 @@
+ # to off_source/on_source and CBSMS_CBS_ENABLE to false/true.
+ : "${CBSMS_RUN_NAME:?Set fresh LEICA-2 source run name}"
+ : "${CBSMS_CBS_ENABLE:?Set false or true}"
+-export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared
++export CBSMS_RUN_ROOT=/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared
+ export CBSMS_RUN_NAME CBSMS_CBS_ENABLE
+ export ROS_LOG_DIR="${CBSMS_RUN_ROOT}/${CBSMS_RUN_NAME}/ros_logs"
+ export CBSMS_PROJECT_ROOT=/workspace/cbs_gtsam4.3
+@@ -12,7 +12,7 @@
+ export CBSMS_POST_PLAYBACK_DRAIN_SEC=25
+ export CBSMS_BAG_RATE=0.20
+ export CBSMS_SEED_CLOCK_SECS=1732549033
+-export CBSMS_ROS_MASTER_PORT=11483
++export CBSMS_ROS_MASTER_PORT=11487
+ export CBSMS_USE_EXISTING_ROS_MASTER=true
+ export CBSMS_KIMERA_MODE=stereo_shared_cpt7
+ # The recovered classic Kimera source path is "current", not experimental RIGHT.
+@@ -35,7 +35,7 @@
+ export CBSMS_KIMERA_RECEIVER_AUDIT_MAX_SAMPLES=40
+ export CBSMS_KIMERA_RECEIVER_AUDIT_STRIDE=20
+ export CBSMS_DIAGNOSTIC_NODE_OUTPUT=log
+-export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/input_profiles/glim_config
+-export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/input_profiles/kimera_profile
++export CBSMS_GLIM_CONFIG_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared/input_profiles/glim_config
++export CBSMS_KIMERA_PROFILE_SOURCE=/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared/input_profiles/kimera_profile
+ 
+ export CBSMS_DATASET_DIR=/workspace/cbs_gtsam4.3/src/datasets/GrandTour/LEICA-2
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/source_runner_on.sh
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared/source_runner_on.sh
+@@ -44,7 +44,7 @@
+ experiment_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ launch_file="${experiment_dir}/active_window_on.launch"
+ [[ "${cbs_enable}" == true && "${cbs_direction}" == bidirectional && "${duration_sec}" == 428.75 && "${bag_rate}" == 0.20 && "${bag_start_sec}" == 6.0 ]] || { echo "Prepared LEICA-2 full-usable428.75-second 0.20x classic CBS-ON fixed-lag capture only." >&2; exit 2; }
+-glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/input_profiles/glim_config}"
++glim_config_source="${CBSMS_GLIM_CONFIG_SOURCE:-/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared/input_profiles/glim_config}"
+ kimera_profile_source="${CBSMS_KIMERA_PROFILE_SOURCE:-}"
+ kimera_calibration_overlay="${CBSMS_KIMERA_CALIBRATION_OVERLAY:-${project_root}/src/cbsms/config/grandtour_kimera/eth1_mono_shared_cpt7}"
+ reference_bag="${CBSMS_REFERENCE_BAG:-${dataset_dir}/${mission}_ap20_prism_position.bag}"
+@@ -579,7 +579,7 @@
+   "kimera_receive_cbs_beliefs=${kimera_receive_external_beliefs}" \
+   "glim_cbs_mode=${glim_cbs_mode}" \
+   "kimera_cbs_odom_factor_mode=active_window_temporary" \
+-  "experiment=gnssfgo_leica2_velodyne_full_cpv4_20261024" \
++  "experiment=gnssfgo_leica2_gravity_projection_cpv9_20261026" \
+   "glim_sensor_pair=velodyne+cpt7_imu" \
+   "kimera_sensor_pair=${kimera_sensor_pair}" \
+   "glim_body_frame=cpt7_imu" \
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/validate_case.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared/validate_case.py
+@@ -11,7 +11,7 @@
+ OUT=REC/'receiver'
+ CTL=P/f'full_{MODE}_control'
+ EXE=Path('/home/yeranis/results/gnssfgo_receiver_finalization_cpk19_20261021/live')
+-RESULT=Path(f'/home/yeranis/results/gnssfgo_leica2_velodyne_full_cpv4_20261024/{MODE}')
++RESULT=Path(f'/home/yeranis/results/gnssfgo_leica2_gravity_projection_cpv9_20261026/{MODE}')
+ LIB=Path('/home/yeranis/results/gnssfgo_synthetic_uncertainty_20261004/baseline/runtime/lib')
+ 
+ def sha(p):
+--- /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/verify_effective_on.py
++++ /home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared/verify_effective_on.py
+@@ -79,6 +79,8 @@
+ assert str(root/'private_build/libcbs.so') in loaded
+ def env(pid):
+     return dict(x.decode().split('=',1) for x in Path('/proc/%d/environ'%pid).read_bytes().split(b'\0') if b'=' in x)
++assert env(pid)['CPV9_G2K_GRAVITY_PROJECTION']=='1'
++assert 'CPV9_G2K_GRAVITY_PROJECTION' not in env(glim_pid)
+ assert env(pid)['FL4Q_ENABLE']=='0'
+ assert env(pid)['CPK9_PRIOR_REFRESH']=='1'
+ assert env(pid)['FL4M_RETIREMENT']=='remove'
+@@ -96,6 +98,7 @@
+ assert env(glim_pid)['GLIM_REVISION_COVARIANCE_POLICY']=='native_local'
+ assert 'GLIM_REVISION_COVARIANCE_POLICY' not in env(pid)
+ import hashlib
++assert hashlib.sha256((root/'private_build/libcbs.so').read_bytes()).hexdigest()=='1cb352151f192b0b9553de776be566480de7a33362f6c4f1932fbd4bbd53c8c2'
+ assert hashlib.sha256((root/'private_build/libkimera_vio.so').read_bytes()).hexdigest()=='be637ad745f73bf12596d3bf06754f56ed7bcadfdb8b4792b94c4fcfee62aad9'
+ assert hashlib.sha256(Path('/workspace/cbs_gtsam4.3/runs/local_revision_covariance_cpi1_20261019/libglim_ros.so').read_bytes()).hexdigest()=='42df73c172232a612da965bf43ead8ec454caf08434b84e2da5de74d26cdb79f'
+ assert hashlib.sha256(Path('/workspace/cbs_gtsam4.3/runs/main_gpu_batching_cpk16_20261020/release_1/libgtsam_points.so.1.2.1').read_bytes()).hexdigest()=='6f71292d29d974a0555abd9fda6b2370fdab81ca634a4e1343c216d2a762d2ca'
+--- /home/yeranis/repos/gnssFGO/experiments/velodyne_full_campaign_cpv4_20261024/leica2/run_pair.py
++++ /home/yeranis/repos/gnssFGO/experiments/leica2_gravity_projection_cpv9_20261026/run_candidate.py
+@@ -10,8 +10,8 @@
+ import time
+ 
+ H = Path(__file__).resolve().parent
+-P = Path('/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared')
+-V = Path('/home/yeranis/results/gnssfgo_leica2_velodyne_full_cpv4_20261024')
++P = Path('/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared')
++V = Path('/home/yeranis/results/gnssfgo_leica2_gravity_projection_cpv9_20261026')
+ PY = '/home/yeranis/.local/share/pipx/venvs/evo/bin/python'
+ CONTAINERS = ('cbsms_ws_gpu', 'ubuntu-jammy-humble-nvidia')
+ stage = 'preflight'
+@@ -42,6 +42,9 @@
+     return len(manifest)
+ 
+ def gate_paths(mode):
++    if mode=='off':
++        B=Path('/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared')
++        return [B/'full_off_source/local_provenance.json', B/'full_off_source/velodyne_validation.json', B/'full_off_source/candidate_validation.json', Path('/home/yeranis/results/gnssfgo_leica2_velodyne_full_cpv4_20261024/off/validation.json')]
+     return [P/f'full_{mode}_source/local_provenance.json',P/f'full_{mode}_source/velodyne_validation.json',
+             P/f'full_{mode}_source/candidate_validation.json', V/mode/'validation.json']
+ 
+@@ -54,11 +57,11 @@
+     assert json.loads((P/'preflight/validation.json').read_text())['passed']
+     count = hashes()
+     inhibitors = subprocess.check_output(['systemd-inhibit','--list','--no-pager','--no-legend'], text=True)
+-    matches = [line for line in inhibitors.splitlines() if 'LEICA2-CPV4' in line]
++    matches = [line for line in inhibitors.splitlines() if 'LEICA2-CPV9' in line]
+     assert len(matches) == 1 and 'block' in matches[0]
+     assert all(token in matches[0] for token in ('sleep','idle','handle-lid-switch'))
+     session_inhibitors = subprocess.check_output(['gnome-session-inhibit','--list'], text=True)
+-    session_matches = [line for line in session_inhibitors.splitlines() if line.startswith('LEICA2-CPV4:')]
++    session_matches = [line for line in session_inhibitors.splitlines() if line.startswith('LEICA2-CPV9:')]
+     assert len(session_matches) == 1 and all(t in session_matches[0] for t in ('suspend','idle'))
+     initial = subprocess.check_output(['docker','inspect','-f','{{.State.Status}}',*CONTAINERS], text=True).split()
+     assert initial == ['exited','exited'], ('unexpected initial containers', initial)
+@@ -68,7 +71,7 @@
+     try:
+         started = True
+         step('start_containers', ['docker','start',*CONTAINERS])
+-        for mode in ('off','on'):
++        for mode in ('on',):
+             if mode == 'on':
+                 assert all(json.loads(path.read_text())['passed'] for path in gate_paths('off'))
+                 step('preflight_on', ['python3', str(P/'preflight_on.py')])
+@@ -80,13 +83,15 @@
+                                     ('candidate',['validate_candidate.py',mode]),
+                                     ('receiver',['validate_case.py','check',mode])]:
+                 step('validate_'+mode+'_'+name, [PY,str(P/arguments[0]),*arguments[1:]])
++            step('validate_on_projection', [PY, str(H/'validate_projection.py')])
+             assert all(json.loads(path.read_text())['passed'] for path in gate_paths(mode))
+             save(mode+'_validated.json', dict(passed=True, finished=now(), gates=list(map(str,gate_paths(mode)))))
+-        script = '/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared/evaluate_fl4f.py'
++        script = '/workspace/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared/evaluate_fl4f.py'
+         step('evaluate', ['docker','exec','cbsms_ws_gpu','bash','-lc',
+                          'source /opt/ros/noetic/setup.bash && python3 '+script])
+         step('summarize', ['python3',str(H/'summarize.py')])
+         assert json.loads((H/'results.json').read_text())['passed']
++        step('decision', [PY, str(H/'decision.py')])
+     except BaseException as exc:
+         failure = dict(stage=stage, error=repr(exc), at=now())
+         save('failed.json', failure)
+@@ -119,7 +124,7 @@
+         with (H/'REPORT.txt').open('a') as report:
+             report.write('\nController finished '+now()+': '+('COMPLETED' if ok else 'STOPPED/FAILED')+'\n')
+             report.write(json.dumps(dict(failure=failure,cleanup_error=cleanup_error))+'\n')
+-            if ok: report.write('Both modes and four gates each passed. See RESULTS_REPORT.txt/results.json for actual native/ONLINE/delayed metrics.\n')
++            if ok: report.write('Candidate ON and all gates passed; saved CP-V4 OFF/original ON controls used. See RESULTS_REPORT.txt/results.json for actual native/ONLINE/delayed metrics.\n')
+             report.write('No automatic retry. Scope-limited inhibitor releases when controller exits.\n')
+     if failure or cleanup_error: raise SystemExit(1)
+ 
+--- /home/yeranis/repos/gnssFGO/experiments/velodyne_full_campaign_cpv4_20261024/leica2/summarize.py
++++ /home/yeranis/repos/gnssFGO/experiments/leica2_gravity_projection_cpv9_20261026/summarize.py
+@@ -3,8 +3,8 @@
+ import collections,csv,hashlib,json,math,re,statistics
+ 
+ H=Path(__file__).resolve().parent
+-P=Path('/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared')
+-V=Path('/home/yeranis/results/gnssfgo_leica2_velodyne_full_cpv4_20261024')
++P=Path('/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_gravity_projection_cpv9_20261026/prepared')
++V=Path('/home/yeranis/results/gnssfgo_leica2_gravity_projection_cpv9_20261026')
+ def load(p):return json.loads(p.read_text())
+ def sha(p):
+  with Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+@@ -19,10 +19,14 @@
+ for p,w in manifest.items():assert sha(p)==w,p
+ evaluation=load(P/'evaluation_full/summary.json')
+ cases={}
++BASE=Path('/home/yeranis/repos/V4RL/cbs_gtsam4.3/runs/gnssfgo_leica2_velodyne_full_cpv4_20261024/prepared')
++BASE_V=Path('/home/yeranis/results/gnssfgo_leica2_velodyne_full_cpv4_20261024')
+ for mode in ('off','on'):
+- S=P/f'full_{mode}_source';R=P/f'full_{mode}_receiver';C=P/f'full_{mode}_control'
++ Q=P if mode=='on' else BASE
++ QV=V if mode=='on' else BASE_V
++ S=Q/f'full_{mode}_source';R=Q/f'full_{mode}_receiver';C=Q/f'full_{mode}_control'
+  assert not (C/'failed.txt').exists()
+- checks={k:load(p) for k,p in dict(receiver=V/mode/'validation.json',
++ checks={k:load(p) for k,p in dict(receiver=QV/mode/'validation.json',
+      lifecycle=S/'candidate_validation.json',local=S/'local_provenance.json').items()}
+  assert all(v['passed'] for v in checks.values())
+  effective=load(S/'effective_mode_check.json')
+@@ -76,15 +80,15 @@
+ for folder in ('glim_config','kimera_profile'):
+  trees=[]
+  for mode in ('off','on'):
+-  d=P/f'full_{mode}_source'/folder
++  d=(P if mode=='on' else BASE)/f'full_{mode}_source'/folder
+   trees.append({str(p.relative_to(d)):sha(p) for p in d.rglob('*') if p.is_file()})
+  assert trees[0]==trees[1],folder
+-result=dict(passed=True,validation_contract='finite_recording_eof_cpk24a',terminal_omissions={m:c['checks']['receiver']['terminal_boundary']['excluded_versions'] for m,c in cases.items()},cases=cases,evaluation=evaluation,protected_unchanged=len(manifest),
++result=dict(passed=True,projection_validation=load(P/'full_on_source/projection_validation.json'),validation_contract='finite_recording_eof_cpk24a',terminal_omissions={m:c['checks']['receiver']['terminal_boundary']['excluded_versions'] for m,c in cases.items()},cases=cases,evaluation=evaluation,protected_unchanged=len(manifest),
+     identical_source_profiles=True,no_exhaustive_observer=True,no_saved_journal_repeat=True,
+     limits='Full usable rear-Velodyne matched pair, not an exhaustive batching-preservation certificate; IE-TC shares CPT7; no nonlinear stationarity claim.')
+ with (H/'results.json').open('x') as f:json.dump(result,f,indent=2)
+-lines=['CP-V4 matched LEICA-2 batched finalized-policy full-usable428.75s OFF/ON — COMPLETED',
+- 'One capture per mode,0.20x,headless. No paired observer,optimizer rebuild or tuning.',
++lines=['CP-V9 LEICA-2 gravity-projection candidate with saved controls full-usable428.75s OFF/ON — COMPLETED',
++ 'One new ON capture at0.20x; OFF/baseline_on are saved CP-V4. Only receiving G2K factor is projected to 4D.',
+  'Native GLIM / native Kimera ROS odometry / concurrent ONLINE fusion.',
+  'EOF contract: only final partial-cell omissions allowed; every omission disclosed below. No fabricated support.',
+  'Terminal omissions OFF/ON: '+str(result['terminal_omissions']),
+@@ -93,19 +97,19 @@
+  'FULL-SAVED OUTPUTS: every saved pose against reference; NOT a favorable short mask.',
+  'role mode ATE_m tRPE1s_m rRPE1s_deg path_prism_m span_s rows']
+ for role in ('native_glim','native_kimera','fused_online','fused_finalized'):
+- for mode in ('off','on'):
++ for mode in ('off','baseline_on','on'):
+   r=evaluation['results'][mode+'_'+role]['full_saved']
+   lines.append(f"{role} {mode} {r['ATE_RMSE_m']:.6f} {r['translation_RPE_1s_RMSE_m']:.6f} {r['rotation_RPE_1s_RMSE_deg']:.6f} {r['path_length_prism_m']:.6f} {r['span_s']:.6f} {r['rows']}")
+ lines+=['','COMMON MASK: all sources/modes, same physical timestamps.',json.dumps(evaluation['common_mask']),
+  'role mode ATE_m tRPE1s_m rRPE1s_deg path_prism_m']
+ for role in ('native_glim','native_kimera','fused_online','fused_finalized'):
+- for mode in ('off','on'):
++ for mode in ('off','baseline_on','on'):
+   r=evaluation['results'][mode+'_'+role]['common']
+   lines.append(f"{role} {mode} {r['ATE_RMSE_m']:.6f} {r['translation_RPE_1s_RMSE_m']:.6f} {r['rotation_RPE_1s_RMSE_deg']:.6f} {r['path_length_prism_m']:.6f}")
+ lines+=['','COVERAGE / TIMING / CONSERVATION']
+ for mode,c in cases.items():
+  lines+=[mode,json.dumps(c,indent=2)]
+-lines+=['','SOURCE COVARIANCE SUMMARY: unchanged dense6x6 scales1; rotation then translation.',
++lines+=['','SOURCE EXPORT COVARIANCE SUMMARY: no direct rescale; optimizer states may change. G2K received factor gravity-separated 4D marginal projection; see projection_validation.json.',
+  json.dumps(evaluation['covariance'],indent=2),'',
+  'LIMITS: DELAYED finalized is not ONLINE or full-history. Startup/tail gaps are',
+  'reported in source_coverage, including sparse stationary-tail keyframes. Common',

@@ -1,0 +1,62 @@
+CP-V4: user-authorized overnight full Velodyne matched CBS-OFF/ON campaign.
+User: run full available sequences, handle problems without asking overnight.
+This authorizes routine harness/launch/report repairs, not unreported scientific
+changes, covariance tuning or disabling a failing safety/conservation check.
+
+Order: SPX-3, EIG-2, LEICA-2, then SNOW-3 and ARC-5 if independent preflight
+passes. ETH1/SPX-2/CON-1 currently lack required local inputs; record as missing,
+do not download or substitute sensors. All five use rear Velodyne, front
+Alphasense stereo and shared CPT7, with the validated CP-V2 private binaries.
+Read parent CP-V2 protocol and repository AGENTS/runbooks. Existing completed
+Hesai/Velodyne30 outputs and old failed evidence are immutable.
+
+Freeze all settings from CP-V2: 0.20x headless,25s drain, GLIM MAIN batching,
+5s source lag, all-LOCAL dense covariance every version/corrected MAIN means;
+CP-K9 Kimera prior-refresh1,FL4Q0,retirement=remove,25states,IMU override unset;
+classic active_window_temporary bidirectional CBS,0.20s horizon,one pair/update,
+Gaussian scales1,no health/robust weighting,no source live_revision. Receiver
+CP-K19 7s fixed-lag source_wnoa, independent100ms clock, same Qc/priors, no
+central IMU/GNSS, stable-ID replacement, seal_at_absorption; unchanged explicit
+finite-recording EOF omission policy. Same mean-only peer covariance-alignment
+approximation. No live visualization load, same capped40/stride20 diagnostics.
+
+First three retain EXACT established full usable Hesai physical windows. For
+the new missions choose the earliest raw-sensor quiet 2s initialization interval
+within the first15s (gyro p95<.01rad/s, per-axis accel std<.1m/s2, downwards
+mean z<-9m/s2, resized frame difference max<1.5grey levels). This is an input
+initialization prerequisite, NOT selection by estimator ATE. End at last
+Velodyne scan with camera/IMU coverage. Record startup/tail exclusions explicitly.
+Reject missing full-window IE-TC coverage or calibration/profile mismatches;
+do not silently transplant a different calibration or relax thresholds.
+
+Before capture: independent full selected-cloud header/signed-time audit,
+mission camera intrinsics/distortion/extrinsics/body/prism and static-TF check,
+stereo/IMU timing, exact record-time window and input hashes. Derive frontend
+counts and GLIM coverage minima from actual input counts (same startup allowance
+as CP-V2), not a hardcoded30s window. Source/receiver maths and guards unchanged.
+
+Fresh roots and unique ports11481..11485. Sequential pairs, no concurrent
+datasets; receiver ready before source playback. OFF must pass sensor-time,
+LOCAL payload, source lifecycle and receiver accounting/coverage gates before
+ON. Preserve per-mode failed prefixes and every omission. Existing8GiB launch
+and5GiB runtime reserves; forecast remaining storage, never delete other runs
+to continue. One first capture per mode; any diagnosed infrastructure-only
+retry needs a fresh explicit attempt root and preserved failure, not blind retry.
+Do not rerun sources just to repair a reporting-script bug.
+
+If a sequence fails numerically, fails physical input checks, or requires model/
+profile changes: mark blocked with evidence and continue only independent safe
+sequences once owned jobs cleanly exit. If cleanup/integrity/storage fails,
+stop the campaign. No default promotion, builds, pushes or parameter search.
+
+Reports for every valid pair: original/native GLIM, original/native Kimera ROS
+odometry, ONLINE fusion OFF/ON ATE,1s translation/rotation RPE,path length,
+full-saved and common-mask coverage. DELAYED fixed-lag-finalized separate.
+IE-TC shares CPT7, not independent prism GT; no short prism-only substitution.
+Retain full mean/covariance/revision/arrival/installed payload histories and
+source/receiver timing. No nonlinear stationarity or calibrated-covariance claim.
+
+Finite campaign controller uses scoped systemd+GNOME inhibitors, restores
+initially stopped containers after owned jobs exit, saves statuses and reports.
+An experiment-only app follow-up may inspect/repair routine harness issues;
+disable it when all available cases complete or no safe work remains.

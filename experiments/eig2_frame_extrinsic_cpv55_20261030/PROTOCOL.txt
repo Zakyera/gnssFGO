@@ -1,0 +1,37 @@
+CP-V55: bidirectional spatial-frame/extrinsic audit, 2026-10-30
+Authority: user requests extensive audit of camera/LiDAR extrinsics and frames
+of GLIM/Kimera beliefs before insertion, including a specific diagnostic test.
+
+Hypothesis: an incorrect body-frame conversion, inverse, optical-frame handling,
+world gauge, or serialization changes the exchanged relative motion.
+No covariance weighting/calibration study, tuning, production edits, source
+replay, estimator optimization, scoring rerun, deletion, promotion or push.
+Use original EIG-2 tf_minimal and saved CP49/51/54 and CPV4 profiles/logs/bags.
+Do not execute prior controllers; preserve every original artifact.
+
+Notation T_A_B maps B coordinates to A. Native X=T_world_body.
+Delta_body=inv(X_i)*X_j. E=T_body_sensor gives Delta_sensor=inv(E)*Delta_body*E.
+Convert back with E*Delta_sensor*inv(E). Different constant world origins cancel.
+Time-endpoint bridging is separate from spatial body conversion.
+
+Checks:
+1. Independently compose mission calibration TF to CPT7 for left/right cameras,
+   Hesai and Velodyne. Compare actual saved profiles, not inherited profile labels.
+2. Trace native graph states, point transforms, stereo rectification, exporter,
+   wire format, receiver and factor creation in both directions; qualify source
+   versus historical binary provenance. Inspect resolved runtime frame settings.
+3. Join saved native endpoint means and incoming payloads in both directions;
+   compare logged aligned/frozen measurements and available native snapshots.
+4. Synthetic nonidentity extrinsic experiment using native GTSAM and production
+   conversion helper: noncommuting rotations, lever arms, both directions,
+   world gauge invariance, serialization, identity actual branch, and deliberately
+   wrong inverse/missing/double transforms as negative controls. Release and
+   sanitizer tests, no live ROS graph. Coordinate covariance transform may be
+   checked for algebra only; no weight change or calibrated-confidence claim.
+5. Pin inputs, preserve failed test attempts, verify original checkpoint667,
+   restore any originally stopped container used for standalone test compilation.
+
+Limits: matching manufacturer TF is not an independent physical recalibration.
+Passing synthetic helpers is not full historical binary branch coverage. Saved
+snapshots are finite; label missing native observations. No universal bug-free
+or root-cause claim. Report incomplete gates explicitly.
